@@ -1,18 +1,13 @@
 package org.openlmis.core.view.activity;
 
-import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,18 +20,14 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
-import org.openlmis.core.view.listener.MovementDateListener;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.AddLotDialogFragment;
+import org.openlmis.core.view.widget.MovementDetailsView;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 
 import roboguice.inject.ContentView;
@@ -45,38 +36,8 @@ import rx.functions.Action1;
 
 @ContentView(R.layout.activity_stock_card_new_movement)
 public class NewStockMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener {
-    @InjectView(R.id.ly_requested_quantity)
-    View lyRequestedQuantity;
 
-    @InjectView(R.id.et_movement_date)
-    EditText etMovementDate;
-
-    @InjectView(R.id.ly_movement_date)
-    TextInputLayout lyMovementDate;
-
-    @InjectView(R.id.et_document_number)
-    EditText etDocumentNumber;
-
-    @InjectView(R.id.et_movement_reason)
-    EditText etMovementReason;
-
-    @InjectView(R.id.ly_movement_reason)
-    TextInputLayout lyMovementReason;
-
-    @InjectView(R.id.et_requested_quantity)
-    EditText etRequestedQuantity;
-
-    @InjectView(R.id.et_movement_quantity)
-    EditText etMovementQuantity;
-
-    @InjectView(R.id.ly_movement_quantity)
-    TextInputLayout lyMovementQuantity;
-
-    @InjectView(R.id.et_movement_signature)
-    EditText etMovementSignature;
-
-    @InjectView(R.id.ly_movement_signature)
-    TextInputLayout lyMovementSignature;
+    MovementDetailsView movementDetailsView;
 
     @InjectView(R.id.btn_complete)
     View btnComplete;
@@ -145,6 +106,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         presenter.loadData(stockCardId, movementType);
         stockMovementViewModel = presenter.getStockMovementViewModel();
         stockMovementViewModel.setKit(isKit);
+
         initView();
     }
 
@@ -185,28 +147,11 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     private void initView() {
         setTitle(movementType.getDescription() + " " + stockName);
-        if (movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
-            lyRequestedQuantity.setVisibility(View.VISIBLE);
-        }
 
-        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
-                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
-            lyMovementReason.setHint(getResources().getString(R.string.hint_movement_reason_receive));
-        }
+        setUpMovementDetailsView();
 
         btnComplete.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
-
-        etMovementDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                etMovementDate.setEnabled(false);
-                showDatePickerDialog(presenter.getStockCard().getLastStockMovementDate());
-            }
-        });
-        etMovementDate.setKeyListener(null);
-        etMovementReason.setOnClickListener(getMovementReasonOnClickListener());
-        etMovementReason.setKeyListener(null);
 
         if (!isKit) {
             if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
@@ -218,7 +163,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
             initNewLotListView();
             initLotErrorBanner();
         } else {
-            lyMovementQuantity.setVisibility(View.VISIBLE);
+            movementDetailsView.setMovementQuantityVisibility(View.VISIBLE);
             lyLotList.setVisibility(View.GONE);
         }
     }
@@ -227,6 +172,23 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         if (stockMovementViewModel.hasLotDataChanged()) {
             updateAddPositiveLotAmountAlert();
         }
+    }
+
+    private void setUpMovementDetailsView() {
+        movementDetailsView = (MovementDetailsView) this.findViewById(R.id.view_movement_details);
+        movementDetailsView.initMovementDetailsView(presenter);
+
+        if (movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
+            movementDetailsView.setRequestedQuantityVisibility(View.VISIBLE);
+        }
+
+        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
+                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+            movementDetailsView.setMovementReasonHind(getResources().getString(R.string.hint_movement_reason_receive));
+        }
+
+        movementDetailsView.setMovementDateClickListener();
+        movementDetailsView.setMovementReasonClickListener(getMovementReasonOnClickListener());
     }
 
     @NonNull
@@ -297,7 +259,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                etMovementReason.setEnabled(false);
+                movementDetailsView.setMovementReasonEnable(false);
                 reasonListStr = FluentIterable.from(movementReasons).transform(new Function<MovementReasonManager.MovementReason, String>() {
                     @Override
                     public String apply(MovementReasonManager.MovementReason movementReason) {
@@ -320,34 +282,14 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         return intent;
     }
 
-    private void showDatePickerDialog(Date previousMovementDate) {
-        final Calendar today = GregorianCalendar.getInstance();
-
-        DatePickerDialog dialog = new DatePickerDialog(this, DatePickerDialog.BUTTON_NEUTRAL,
-                new MovementDateListener(stockMovementViewModel, previousMovementDate, etMovementDate),
-                today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                etMovementDate.setEnabled(true);
-            }
-        });
-        dialog.show();
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_complete:
                 loading();
                 btnComplete.setEnabled(false);
-                stockMovementViewModel.setMovementDate(etMovementDate.getText().toString());
-                stockMovementViewModel.setDocumentNo(etDocumentNumber.getText().toString());
-                stockMovementViewModel.setRequested(etRequestedQuantity.getText().toString());
-                HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-                quantityMap.put(movementType, etMovementQuantity.getText().toString());
-                stockMovementViewModel.setTypeQuantityMap(quantityMap);
-                stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
+                movementDetailsView.setMovementModelValue(movementType);
+
                 if (showErrors()) {
                     existingLotMovementAdapter.notifyDataSetChanged();
                     newLotMovementAdapter.notifyDataSetChanged();
@@ -365,10 +307,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     public void clearErrorAlerts() {
         alertAddPositiveLotAmount.setVisibility(View.GONE);
-        lyMovementDate.setErrorEnabled(false);
-        lyMovementReason.setErrorEnabled(false);
-        lyMovementQuantity.setErrorEnabled(false);
-        lyMovementSignature.setErrorEnabled(false);
+        movementDetailsView.clearTextInputLayoutError();
     }
 
     protected boolean showErrors() {
@@ -444,28 +383,24 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @Override
     public void showMovementDateEmpty() {
         clearErrorAlerts();
-        lyMovementDate.setError(getResources().getString(R.string.msg_empty_movement_date));
-        etMovementDate.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+        movementDetailsView.showMovementDateEmptyError();
     }
 
     @Override
     public void showMovementReasonEmpty() {
         clearErrorAlerts();
-        lyMovementReason.setError(getResources().getString(R.string.msg_empty_movement_reason));
-        etMovementReason.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+        movementDetailsView.showMovementReasonEmptyError();
     }
 
     @Override
     public void showQuantityErrors(String errorMsg) {
         clearErrorAlerts();
-        lyMovementQuantity.setError(errorMsg);
-        etMovementQuantity.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+        movementDetailsView.showMovementQuantityError(errorMsg);
     }
 
-    private void showSignatureErrors(String string) {
+    private void showSignatureErrors(String errorMsg) {
         clearErrorAlerts();
-        lyMovementSignature.setError(string);
-        etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+        movementDetailsView.showSignatureError(errorMsg);
     }
 
     @Override
@@ -500,10 +435,10 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            etMovementReason.setText(reasonListStr[position]);
+            movementDetailsView.setMovementReasonText(reasonListStr[position]);
             stockMovementViewModel.setReason(movementReasons.get(position));
             reasonsDialog.dismiss();
-            etMovementReason.setEnabled(true);
+            movementDetailsView.setMovementReasonEnable(true);
         }
     }
 }
