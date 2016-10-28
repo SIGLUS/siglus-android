@@ -176,18 +176,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     private void setUpMovementDetailsView() {
         movementDetailsView = (MovementDetailsView) this.findViewById(R.id.view_movement_details);
-        movementDetailsView.initMovementDetailsView(presenter);
-
-        if (movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
-            movementDetailsView.setRequestedQuantityVisibility(View.VISIBLE);
-        }
-
-        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
-                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
-            movementDetailsView.setMovementReasonHind(getResources().getString(R.string.hint_movement_reason_receive));
-        }
-
-        movementDetailsView.setMovementDateClickListener();
+        movementDetailsView.initMovementDetailsView(presenter, movementType);
         movementDetailsView.setMovementReasonClickListener(getMovementReasonOnClickListener());
     }
 
@@ -288,7 +277,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
             case R.id.btn_complete:
                 loading();
                 btnComplete.setEnabled(false);
-                movementDetailsView.setMovementModelValue(movementType);
+                movementDetailsView.setMovementModelValue();
 
                 if (showErrors()) {
                     existingLotMovementAdapter.notifyDataSetChanged();

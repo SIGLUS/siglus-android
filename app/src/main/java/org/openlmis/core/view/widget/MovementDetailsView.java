@@ -62,6 +62,7 @@ public class MovementDetailsView extends LinearLayout {
 
     private NewStockMovementPresenter newStockMovementPresenter;
     private StockMovementViewModel stockMovementViewModel;
+    private MovementReasonManager.MovementType movementType;
 
     public MovementDetailsView(Context context) {
         super(context);
@@ -79,9 +80,24 @@ public class MovementDetailsView extends LinearLayout {
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
     }
 
-    public void initMovementDetailsView(NewStockMovementPresenter presenter) {
+    public void initMovementDetailsView(NewStockMovementPresenter presenter, MovementReasonManager.MovementType movementType) {
         this.newStockMovementPresenter = presenter;
         this.stockMovementViewModel = presenter.getStockMovementViewModel();
+        this.movementType = movementType;
+        initView();
+    }
+
+    private void initView() {
+        if (movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
+            lyRequestedQuantity.setVisibility(View.VISIBLE);
+        }
+
+        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
+                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+            lyMovementReason.setHint(getResources().getString(R.string.hint_movement_reason_receive));
+        }
+
+        setMovementDateClickListener();
     }
 
     public void setMovementDateClickListener() {
@@ -115,14 +131,6 @@ public class MovementDetailsView extends LinearLayout {
         dialog.show();
     }
 
-    public void setRequestedQuantityVisibility(int requestedQuantityVisibility) {
-        lyRequestedQuantity.setVisibility(requestedQuantityVisibility);
-    }
-
-    public void setMovementReasonHind(String movementReasonHind) {
-        lyMovementReason.setHint(movementReasonHind);
-    }
-
 
     public void setMovementReasonEnable(boolean movementReasonEnable) {
         etMovementReason.setEnabled(movementReasonEnable);
@@ -132,7 +140,7 @@ public class MovementDetailsView extends LinearLayout {
         lyMovementQuantity.setVisibility(movementQuantityVisibility);
     }
 
-    public void setMovementModelValue(MovementReasonManager.MovementType movementType) {
+    public void setMovementModelValue() {
         stockMovementViewModel.setMovementDate(etMovementDate.getText().toString());
         stockMovementViewModel.setDocumentNo(etDocumentNumber.getText().toString());
         stockMovementViewModel.setRequested(etRequestedQuantity.getText().toString());
