@@ -40,7 +40,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(LMISTestRunner.class)
-public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
+public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
     private StockMovementViewModel stockMovementViewModel;
     private MovementReasonManager.MovementReason movementReason;
@@ -239,4 +239,19 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").build());
         assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
     }
+
+    @Test
+    public void shouldValidateLotChange() throws Exception {
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").setHasLotDataChanged(false).build());
+        assertFalse(stockMovementViewModel.hasLotDataChanged());
+
+        stockMovementViewModel.newLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("30").build());
+        assertTrue(stockMovementViewModel.hasLotDataChanged());
+
+        stockMovementViewModel.newLotMovementViewModelList.clear();
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").setHasLotDataChanged(true).build());
+        assertTrue(stockMovementViewModel.hasLotDataChanged());
+    }
+
+
 }

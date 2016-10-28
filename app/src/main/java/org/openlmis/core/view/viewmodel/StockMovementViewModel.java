@@ -224,4 +224,13 @@ public class StockMovementViewModel {
         }
         return true;
     }
+
+    public boolean hasLotDataChanged() {
+        for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
+            if (lotMovementViewModel.isDataChanged) {
+                return true;
+            }
+        }
+        return !newLotMovementViewModelList.isEmpty();
+    }
 }

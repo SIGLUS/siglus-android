@@ -216,9 +216,16 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
             }
             initExistingLotListView();
             initNewLotListView();
+            initLotErrorBanner();
         } else {
             lyMovementQuantity.setVisibility(View.VISIBLE);
             lyLotList.setVisibility(View.GONE);
+        }
+    }
+
+    private void initLotErrorBanner() {
+        if (stockMovementViewModel.hasLotDataChanged()) {
+            updateAddPositiveLotAmountAlert();
         }
     }
 

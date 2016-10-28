@@ -27,7 +27,7 @@ public class LotMovementViewModelBuilder {
     }
 
     public LotMovementViewModelBuilder setMovementType(MovementReasonManager.MovementType movementType) {
-        viewModel.setMovementType(MovementReasonManager.MovementType.RECEIVE);
+        viewModel.setMovementType(movementType);
         return this;
     }
 
@@ -38,5 +38,10 @@ public class LotMovementViewModelBuilder {
 
     public LotMovementViewModel build() {
         return viewModel;
+    }
+
+    public LotMovementViewModelBuilder setHasLotDataChanged(boolean changedStatus) {
+        viewModel.setDataChanged(changedStatus);
+        return this;
     }
 }
