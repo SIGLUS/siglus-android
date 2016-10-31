@@ -16,100 +16,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
 
-        <LinearLayout
-            android:id="@+id/ly_lot_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_normal"
-                android:text="@string/label_available_lots"
-                android:textSize="@dimen/font_size_medium" />
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/alert_add_positive_lot_amount"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bottom_border_gray_bg"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_normal"
-                            android:background="@drawable/error_banner"
-                            android:padding="@dimen/padding_small"
-                            android:text="@string/alert_add_lot_amount"
-                            android:textColor="@color/color_requisition_banner_text"
-                            android:textSize="@dimen/font_size_regular" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/alert_soonest_expire"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bottom_border_gray_bg"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_normal"
-                            android:background="@drawable/warning_banner"
-                            android:padding="@dimen/padding_small"
-                            android:text="@string/alert_soonest_expire"
-                            android:textColor="@color/color_requisition_banner_text"
-                            android:textSize="@dimen/font_size_regular" />
-                    </LinearLayout>
-
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rv_existing_lot_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:overScrollMode="never"
-                        android:scrollbars="none" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/lot_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:overScrollMode="never"
-                        android:scrollbars="none" />
-
-                    <LinearLayout
-                        android:id="@+id/action_add_new_lot"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/padding_normal"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/btn_add_new_lot"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/btn_add_new_lot"
-                            android:textColor="@color/color_accent"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
-
+        <org.openlmis.core.view.widget.LotListView
+            android:id="@+id/view_lot_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:id="@+id/action_panel"

@@ -3,10 +3,7 @@ package org.openlmis.core.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
@@ -18,11 +15,11 @@ import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.AddLotDialogFragment;
+import org.openlmis.core.view.widget.LotListView;
 import org.openlmis.core.view.widget.MovementDetailsView;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -39,35 +36,17 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     MovementDetailsView movementDetailsView;
 
+    LotListView lotListView;
+
     @InjectView(R.id.btn_complete)
     View btnComplete;
 
     @InjectView(R.id.btn_cancel)
     TextView tvCancel;
 
-    @InjectView(R.id.alert_add_positive_lot_amount)
-    ViewGroup alertAddPositiveLotAmount;
-
-    @InjectView(R.id.alert_soonest_expire)
-    ViewGroup alertSoonestExpire;
-
-    @InjectView(R.id.action_add_new_lot)
-    View actionAddNewLot;
-
-    @InjectView(R.id.lot_list)
-    private RecyclerView newLotMovementRecycleView;
-
-    @InjectView(R.id.rv_existing_lot_list)
-    private RecyclerView existingLotListView;
-
-    @InjectView(R.id.ly_lot_list)
-    private ViewGroup lyLotList;
-
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 
-    private LotMovementAdapter newLotMovementAdapter;
-    private LotMovementAdapter existingLotMovementAdapter;
     private String stockName;
     public MovementReasonManager.MovementType movementType;
 
@@ -110,45 +89,11 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         initView();
     }
 
-    private void initExistingLotListView() {
-        existingLotListView.setLayoutManager(new LinearLayoutManager(this));
-        existingLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getExistingLotMovementViewModelList());
-        existingLotListView.setAdapter(existingLotMovementAdapter);
-        existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
-            @Override
-            public void movementChange() {
-                updateAddPositiveLotAmountAlert();
-                updateSoonestToExpireNotUsedBanner();
-            }
-        });
-    }
-
-    private void updateAddPositiveLotAmountAlert() {
-        if (!this.stockMovementViewModel.movementQuantitiesExist()) {
-            alertAddPositiveLotAmount.setVisibility(View.VISIBLE);
-        } else {
-            alertAddPositiveLotAmount.setVisibility(View.GONE);
-        }
-    }
-
-    private void initNewLotListView() {
-        newLotMovementRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        newLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getNewLotMovementViewModelList(), presenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
-        newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
-    }
-
-    private void updateSoonestToExpireNotUsedBanner() {
-        alertSoonestExpire.setVisibility(movementType == MovementReasonManager.MovementType.ISSUE && !stockMovementViewModel.validateSoonestToExpireLotsIssued() ? View.VISIBLE : View.GONE);
-    }
-
-    private void refreshNewLotList() {
-        newLotMovementAdapter.notifyDataSetChanged();
-    }
-
     private void initView() {
         setTitle(movementType.getDescription() + " " + stockName);
 
         setUpMovementDetailsView();
+        setUpLostListView();
 
         btnComplete.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
@@ -156,21 +101,15 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         if (!isKit) {
             if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
                     || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
-                actionAddNewLot.setVisibility(View.VISIBLE);
-                actionAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
+                lotListView.setActionAddNewLotVisibility(View.VISIBLE);
+                lotListView.setActionAddNewLotListener(getAddNewLotOnClickListener());
             }
-            initExistingLotListView();
-            initNewLotListView();
-            initLotErrorBanner();
+            lotListView.initExistingLotListView();
+            lotListView.initNewLotListView();
+            lotListView.initLotErrorBanner();
         } else {
             movementDetailsView.setMovementQuantityVisibility(View.VISIBLE);
-            lyLotList.setVisibility(View.GONE);
-        }
-    }
-
-    private void initLotErrorBanner() {
-        if (stockMovementViewModel.hasLotDataChanged()) {
-            updateAddPositiveLotAmountAlert();
+            lotListView.setLotListVisibility(View.GONE);
         }
     }
 
@@ -180,12 +119,17 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         movementDetailsView.setMovementReasonClickListener(getMovementReasonOnClickListener());
     }
 
+    private void setUpLostListView() {
+        lotListView = (LotListView) this.findViewById(R.id.view_lot_list);
+        lotListView.initLotListView(presenter, movementType);
+    }
+
     @NonNull
     private View.OnClickListener getAddNewLotOnClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionAddNewLot.setEnabled(false);
+                lotListView.setActionAddNewEnabled(false);
                 addLotDialogFragment = new AddLotDialogFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.PARAM_STOCK_NAME, stockName);
@@ -209,16 +153,16 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                                     .subscribe(new Action1<List<LotMovementViewModel>>() {
                                         @Override
                                         public void call(List<LotMovementViewModel> lotMovementViewModels) {
-                                            refreshNewLotList();
+                                            lotListView.refreshNewLotList();
                                         }
                                     });
                             addLotDialogFragment.dismiss();
                         }
-                        actionAddNewLot.setEnabled(true);
+                        lotListView.setActionAddNewEnabled(true);
                         break;
                     case R.id.btn_cancel:
                         addLotDialogFragment.dismiss();
-                        actionAddNewLot.setEnabled(true);
+                        lotListView.setActionAddNewEnabled(true);
                         break;
                 }
             }
@@ -280,8 +224,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                 movementDetailsView.setMovementModelValue();
 
                 if (showErrors()) {
-                    existingLotMovementAdapter.notifyDataSetChanged();
-                    newLotMovementAdapter.notifyDataSetChanged();
+                    lotListView.notifyDataChanged();
                     btnComplete.setEnabled(true);
                     loaded();
                     return;
@@ -295,7 +238,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     public void clearErrorAlerts() {
-        alertAddPositiveLotAmount.setVisibility(View.GONE);
+        lotListView.setAlertAddPositiveLotAmountVisibility(View.GONE);
         movementDetailsView.clearTextInputLayoutError();
     }
 
@@ -354,7 +297,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     private void showLotQuantityError() {
-        alertAddPositiveLotAmount.setVisibility(View.VISIBLE);
+        lotListView.setAlertAddPositiveLotAmountVisibility(View.VISIBLE);
     }
 
     private boolean checkSignature(String signature) {
@@ -395,17 +338,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @Override
     public boolean showLotListError() {
         clearErrorAlerts();
-        int position1 = existingLotMovementAdapter.validateExisting(movementType);
-        if (position1 >= 0) {
-            existingLotListView.scrollToPosition(position1);
-            return true;
-        }
-        int position2 = newLotMovementAdapter.validateAll();
-        if (position2 >= 0) {
-            newLotMovementRecycleView.scrollToPosition(position2);
-            return true;
-        }
-        return false;
+        return lotListView.validateLotList();
     }
 
     @Override
