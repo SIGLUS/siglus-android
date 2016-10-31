@@ -224,7 +224,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                 movementDetailsView.setMovementModelValue();
 
                 if (showErrors()) {
-                    lotListView.notifyDataChanged();
+                    if(!isKit) {
+                        lotListView.notifyDataChanged();
+                    }
                     btnComplete.setEnabled(true);
                     loaded();
                     return;
