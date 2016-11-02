@@ -128,6 +128,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
                 dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
                     @Override
                     public void positiveClick(String tag) {
+                        etLotAmount.setText("");
                         lotMovementAdapter.remove(viewModel);
                         if (context instanceof InventoryActivity) {
                             ((InventoryActivity) context).productListRecycleView.getAdapter().notifyDataSetChanged();

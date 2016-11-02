@@ -29,7 +29,6 @@ import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-import rx.functions.Action1;
 
 @ContentView(R.layout.activity_stock_card_new_movement)
 public class NewStockMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener {
@@ -148,14 +147,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                 switch (v.getId()) {
                     case R.id.btn_complete:
                         if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
-                            presenter.addLotMovement(new LotMovementViewModel(addLotDialogFragment.getLotNumber(),
-                                    addLotDialogFragment.getExpiryDate(), movementType))
-                                    .subscribe(new Action1<List<LotMovementViewModel>>() {
-                                        @Override
-                                        public void call(List<LotMovementViewModel> lotMovementViewModels) {
-                                            lotListView.refreshNewLotList();
-                                        }
-                                    });
+                            lotListView.addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), movementType));
                             addLotDialogFragment.dismiss();
                         }
                         lotListView.setActionAddNewEnabled(true);
@@ -224,7 +216,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                 movementDetailsView.setMovementModelValue();
 
                 if (showErrors()) {
-                    if(!isKit) {
+                    if (!isKit) {
                         lotListView.notifyDataChanged();
                     }
                     btnComplete.setEnabled(true);

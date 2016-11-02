@@ -1,6 +1,7 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -12,6 +13,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import roboguice.RoboGuice;
@@ -71,13 +73,18 @@ public class LotListView extends LinearLayout {
         existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
         existingLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getExistingLotMovementViewModelList());
         existingLotListView.setAdapter(existingLotMovementAdapter);
-        existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
+        existingLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
+    }
+
+    @NonNull
+    private LotMovementAdapter.MovementChangedListener getMovementChangedListener() {
+        return new LotMovementAdapter.MovementChangedListener() {
             @Override
             public void movementChange() {
                 updateAddPositiveLotAmountAlert();
-                updateSoonestToExpireNotUsedBanner();
+                updateSoonestToExpireNotIssuedBanner();
             }
-        });
+        };
     }
 
     private void updateAddPositiveLotAmountAlert() {
@@ -91,10 +98,11 @@ public class LotListView extends LinearLayout {
     public void initNewLotListView() {
         newLotMovementRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         newLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getNewLotMovementViewModelList(), newStockMovementPresenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
         newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
     }
 
-    private void updateSoonestToExpireNotUsedBanner() {
+    private void updateSoonestToExpireNotIssuedBanner() {
         alertSoonestExpire.setVisibility(movementType == MovementReasonManager.MovementType.ISSUE && !stockMovementViewModel.validateSoonestToExpireLotsIssued() ? View.VISIBLE : View.GONE);
     }
 
@@ -145,5 +153,11 @@ public class LotListView extends LinearLayout {
             return true;
         }
         return false;
+    }
+
+    public void addNewLot(LotMovementViewModel lotMovementViewModel) {
+        stockMovementViewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
+        updateAddPositiveLotAmountAlert();
+        refreshNewLotList();
     }
 }

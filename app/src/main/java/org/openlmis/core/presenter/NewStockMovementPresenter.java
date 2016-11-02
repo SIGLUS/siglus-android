@@ -37,7 +37,6 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.Comparator;
-import java.util.List;
 
 import lombok.Getter;
 import rx.Observable;
@@ -113,17 +112,6 @@ public class NewStockMovementPresenter extends Presenter {
         if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
             sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
         }
-    }
-
-    public Observable<List<LotMovementViewModel>> addLotMovement(final LotMovementViewModel lotMovementViewModel) {
-        return Observable.create(new Observable.OnSubscribe<List<LotMovementViewModel>>() {
-            @Override
-            public void call(Subscriber<? super List<LotMovementViewModel>> subscriber) {
-                stockMovementViewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
-                subscriber.onNext(stockMovementViewModel.getNewLotMovementViewModelList());
-                subscriber.onCompleted();
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     private void loadExistingLotMovementViewModels() {

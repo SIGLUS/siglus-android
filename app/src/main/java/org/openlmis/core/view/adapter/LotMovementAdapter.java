@@ -86,6 +86,9 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
 
     public void remove(LotMovementViewModel viewModel) {
         lotList.remove(viewModel);
+        if (movementChangedListener != null) {
+            movementChangedListener.movementChange();
+        }
         this.notifyDataSetChanged();
     }
 
