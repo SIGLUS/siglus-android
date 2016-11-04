@@ -240,7 +240,9 @@
     <string name="label_mmia_name">MMIA</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
-    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição.</string>
+  <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma%1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição
+
+.</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
     <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]></string>
@@ -343,7 +345,7 @@
     <string name="msg_empty_movement_reason">Razão do movimento não pode estar em branco</string>
     <string name="msg_empty_quantity">Quantidade não pode estar em branco</string>
     <string name="msg_empty_signature">Rúbrica não pode estar em branco</string>
-    <string name="msg_invalid_quantity">Quantidade não pode ser maior que o estoque existente</string>
+    <string name="msg_invalid_quantity">A quantidade não pode ser maior que o estoque existente</string>
     <!--Lot management-->
     <string name="label_lot_number">Qual é o número do lote?</string>
     <string name="hint_lot_number">Número do lote</string>
@@ -369,6 +371,6 @@
     <string name="msg_export_data_sucess">Os dados foram exportados e gravados com sucesso <![CDATA[<b>%1$s</b>]]></string>
     <string name="action_export_data">Exportar todos os dados de aplicativos</string>
     <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
-    <string name="label_movement_detail">Movement Details</string>
-    <string name="label_available_lots">Available Lots</string>
+    <string name="label_movement_detail">Detalhes do movimento</string>
+    <string name="label_available_lots">Lotes disponíveis</string>
 </resources>
