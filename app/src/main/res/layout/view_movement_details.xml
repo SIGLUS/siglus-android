@@ -92,7 +92,6 @@
                         android:drawableLeft="@drawable/ic_movement_origin"
                         android:drawablePadding="5dp"
                         android:focusableInTouchMode="false"
-                        android:hint="@string/hint_movement_reason"
                         android:inputType="text" />
                 </android.support.design.widget.TextInputLayout>
 

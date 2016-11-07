@@ -95,6 +95,8 @@ public class MovementDetailsView extends LinearLayout {
         if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
                 || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
             lyMovementReason.setHint(getResources().getString(R.string.hint_movement_reason_receive));
+        } else {
+            lyMovementReason.setHint(getResources().getString(R.string.hint_movement_reason_negative));
         }
 
         setMovementDateClickListener();
