@@ -107,6 +107,7 @@
         android:layout_marginBottom="@dimen/margin_small"
         android:gravity="center|bottom"
         android:orientation="horizontal"
+        android:textSize="@dimen/font_size_normal"
         android:text="@string/version_number" />
 
 </RelativeLayout>
