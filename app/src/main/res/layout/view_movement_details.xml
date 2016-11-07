@@ -66,6 +66,7 @@
                         android:hint="@string/hint_document_number"
                         android:drawableLeft="@drawable/ic_document"
                         android:drawablePadding="5dp"
+                        android:inputType="textShortMessage"
                         android:maxLength="9" />
                 </android.support.design.widget.TextInputLayout>
 
