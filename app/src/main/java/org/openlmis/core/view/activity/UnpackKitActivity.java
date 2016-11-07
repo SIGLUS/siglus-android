@@ -18,6 +18,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 
@@ -182,4 +183,21 @@ public class UnpackKitActivity extends BaseActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+                getString(R.string.msg_unpack_kit_onback_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), "on_back_pressed");
+        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+            @Override
+            public void positiveClick(String tag) {
+                finish();
+            }
+
+            @Override
+            public void negativeClick(String tag) {
+                dialogFragment.dismiss();
+            }
+        });
+        dialogFragment.show(getFragmentManager(), "back_confirm_dialog");
+    }
 }
