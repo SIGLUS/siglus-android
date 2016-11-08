@@ -373,5 +373,6 @@
     <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
     <string name="label_movement_detail">Detalhes do movimento</string>
     <string name="label_available_lots">Lotes disponíveis</string>
-    <string name="msg_unpack_kit_onback_confirm">Tem certeza que quer sair sem gravar suas alteraçães?</string>
+    <string name="msg_unpack_kit_onback_confirm">All product and lot information entered so far will be discarded.</string>
+    <string name="btn_discard">Discard</string>
 </resources>

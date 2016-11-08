@@ -186,7 +186,7 @@ public class UnpackKitActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                getString(R.string.msg_unpack_kit_onback_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), "on_back_pressed");
+                getString(R.string.msg_unpack_kit_onback_confirm), getString(R.string.btn_discard), getString(R.string.btn_cancel), "on_back_pressed");
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
             @Override
             public void positiveClick(String tag) {

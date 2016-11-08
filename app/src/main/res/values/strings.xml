@@ -415,5 +415,6 @@
     <string name="msg_has_archived_old_data">Historical data beyond 13-months are archived on the web portal.</string>
     <string name="label_movement_detail">Movement Details</string>
     <string name="label_available_lots">Available Lots</string>
-    <string name="msg_unpack_kit_onback_confirm">Are you sure you want to quit without saving your work?</string>
+    <string name="msg_unpack_kit_onback_confirm">All product and lot information entered so far will be discarded.</string>
+    <string name="btn_discard">Discard</string>
 </resources>
