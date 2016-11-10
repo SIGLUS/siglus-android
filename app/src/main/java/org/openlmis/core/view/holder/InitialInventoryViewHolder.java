@@ -86,9 +86,22 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.rv_added_lot)
     private RecyclerView lotListRecyclerView;
 
-    private LotMovementAdapter lotMovementAdapter;
+    private InventoryViewModel viewModel;
 
+    private LotMovementAdapter lotMovementAdapter;
     private AddLotDialogFragment addLotDialogFragment;
+    private AddLotDialogFragment.AddLotListener addLot = new AddLotDialogFragment.AddLotListener() {
+        @Override
+        public void addLot(String expiryDate) {
+            txAddNewLot.setEnabled(true);
+            String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getFnm(), expiryDate);
+            if (getLotNumbers().contains(lotNumber)) {
+                ToastUtil.show("Lot ");
+            } else {
+                addNewLot(new LotMovementViewModel(lotNumber,expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
+            }
+        }
+    };
 
     public InitialInventoryViewHolder(View itemView) {
         super(itemView);
@@ -115,9 +128,10 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         }
     }
 
-    public void populate(final InventoryViewModel viewModel, String queryKeyWord, ViewHistoryListener listener) {
+    public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord, ViewHistoryListener listener) {
+        this.viewModel = inventoryViewModel;
         resetCheckBox();
-        setItemViewListener(viewModel);
+        setItemViewListener();
 
         checkBox.setChecked(viewModel.isChecked());
 
@@ -130,9 +144,9 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
         }
 
-        initHistoryView(viewModel, listener);
+        initHistoryView(listener);
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            initLotListRecyclerView(viewModel);
+            initLotListRecyclerView();
         } else {
             populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
         }
@@ -145,18 +159,18 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         lotListRecyclerView.setVisibility(View.GONE);
     }
 
-    protected void setItemViewListener(final InventoryViewModel viewModel) {
+    protected void setItemViewListener() {
         txExpireDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePicker(viewModel);
+                showDatePicker();
             }
         });
 
         txAddNewLot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddNewLotDialog(viewModel);
+                showAddNewLotDialog();
             }
         });
 
@@ -166,18 +180,18 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                checkedChangeAction(isChecked, viewModel);
+                checkedChangeAction(isChecked);
             }
         });
 
         txQuantity.addTextChangedListener(textWatcher);
     }
 
-    private void checkedChangeAction(boolean isChecked, InventoryViewModel viewModel) {
+    private void checkedChangeAction(boolean isChecked) {
         if (isChecked && !viewModel.getProduct().isArchived()) {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 if (viewModel.getLotMovementViewModelList().isEmpty()) {
-                    showAddNewLotDialog(viewModel);
+                    showAddNewLotDialog();
                 }
                 showAddNewLotPanel(View.VISIBLE);
             } else {
@@ -203,13 +217,13 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         lotMovementAdapter.notifyDataSetChanged();
     }
 
-    private void initLotListRecyclerView(InventoryViewModel viewModel) {
+    private void initLotListRecyclerView() {
         lotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
         lotListRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         lotListRecyclerView.setAdapter(lotMovementAdapter);
     }
 
-    private void showAddNewLotDialog(final InventoryViewModel viewModel) {
+    private void showAddNewLotDialog() {
         addLotDialogFragment = new AddLotDialogFragment();
         txAddNewLot.setEnabled(false);
         Bundle bundle = new Bundle();
@@ -220,8 +234,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_complete:
-                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers(viewModel))) {
-                            addLotView(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), MovementReasonManager.MovementType.PHYSICAL_INVENTORY), viewModel);
+                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
+                            addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
                             addLotDialogFragment.dismiss();
                             txAddNewLot.setEnabled(true);
                         }
@@ -236,10 +250,11 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                 }
             }
         });
+        addLotDialogFragment.setAddLotWithoutNumberListener(addLot);
         addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
     }
 
-    private List<String> getLotNumbers(InventoryViewModel viewModel) {
+    private List<String> getLotNumbers() {
         final List<String> existingLots = new ArrayList<>();
         existingLots.addAll(FluentIterable.from(viewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
             @Override
@@ -251,12 +266,12 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         return existingLots;
     }
 
-    private void addLotView(LotMovementViewModel lotMovementViewModel, InventoryViewModel viewModel) {
+    private void addNewLot(LotMovementViewModel lotMovementViewModel) {
         viewModel.addLotMovementViewModel(lotMovementViewModel);
         refreshLotList();
     }
 
-    private void initHistoryView(final InventoryViewModel viewModel, final ViewHistoryListener listener) {
+    private void initHistoryView(final ViewHistoryListener listener) {
         tvHistoryAction.setVisibility(viewModel.getProduct().isArchived() ? View.VISIBLE : View.GONE);
         tvHistoryAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,7 +312,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         }
     }
 
-    public void showDatePicker(final InventoryViewModel viewModel) {
+    public void showDatePicker() {
         final Calendar today = GregorianCalendar.getInstance();
 
         DatePickerDialog dialog = new DatePickerDialogWithoutDay(context, new DatePickerDialog.OnDateSetListener() {

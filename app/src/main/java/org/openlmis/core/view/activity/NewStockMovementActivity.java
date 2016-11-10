@@ -24,7 +24,6 @@ import org.openlmis.core.view.widget.MovementDetailsView;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.ContentView;
@@ -57,7 +56,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     SimpleSelectDialogFragment reasonsDialog;
 
-    private StockMovementViewModel stockMovementViewModel;
+    private StockMovementViewModel viewModel;
 
     private String[] reasonListStr;
 
@@ -82,8 +81,8 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         movementReasons = movementReasonManager.buildReasonListForMovementType(movementType);
 
         presenter.loadData(stockCardId, movementType);
-        stockMovementViewModel = presenter.getStockMovementViewModel();
-        stockMovementViewModel.setKit(isKit);
+        viewModel = presenter.getStockMovementViewModel();
+        viewModel.setKit(isKit);
 
         initView();
     }
@@ -134,6 +133,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                 bundle.putString(Constants.PARAM_STOCK_NAME, stockName);
                 addLotDialogFragment.setArguments(bundle);
                 addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
+                addLotDialogFragment.setAddLotWithoutNumberListener(lotListView.getAddLotWithoutNumberListener());
                 addLotDialogFragment.show(getFragmentManager(), "");
             }
         };
@@ -146,7 +146,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_complete:
-                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
+                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(lotListView.getLotNumbers())) {
                             lotListView.addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), movementType));
                             addLotDialogFragment.dismiss();
                         }
@@ -162,24 +162,6 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     @NonNull
-    private List<String> getLotNumbers() {
-        final List<String> existingLots = new ArrayList<>();
-        existingLots.addAll(FluentIterable.from(stockMovementViewModel.getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
-            @Override
-            public String apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.getLotNumber();
-            }
-        }).toList());
-        existingLots.addAll(FluentIterable.from((stockMovementViewModel.getExistingLotMovementViewModelList())).transform(new Function<LotMovementViewModel, String>() {
-            @Override
-            public String apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.getLotNumber();
-            }
-        }).toList());
-        return existingLots;
-    }
-
-    @NonNull
     private View.OnClickListener getMovementReasonOnClickListener() {
         return new View.OnClickListener() {
             @Override
@@ -191,7 +173,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                         return movementReason.getDescription();
                     }
                 }).toArray(String.class);
-                reasonsDialog = new SimpleSelectDialogFragment(NewStockMovementActivity.this, new MovementTypeOnClickListener(stockMovementViewModel), reasonListStr);
+                reasonsDialog = new SimpleSelectDialogFragment(NewStockMovementActivity.this, new MovementTypeOnClickListener(viewModel), reasonListStr);
                 reasonsDialog.setCancelable(false);
                 reasonsDialog.show(getFragmentManager(), "");
             }
@@ -237,26 +219,26 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     protected boolean showErrors() {
-        if (StringUtils.isBlank(stockMovementViewModel.getMovementDate())) {
+        if (StringUtils.isBlank(viewModel.getMovementDate())) {
             showMovementDateEmpty();
             return true;
         }
-        if (stockMovementViewModel.getReason() == null) {
+        if (viewModel.getReason() == null) {
             showMovementReasonEmpty();
             return true;
         }
 
         if (isKit && checkKitQuantityError()) return true;
 
-        if (StringUtils.isBlank(stockMovementViewModel.getSignature())) {
+        if (StringUtils.isBlank(viewModel.getSignature())) {
             showSignatureErrors(getResources().getString(R.string.msg_empty_signature));
             return true;
         }
-        if (!stockMovementViewModel.validateQuantitiesNotZero()) {
+        if (!viewModel.validateQuantitiesNotZero()) {
             showQuantityErrors(getResources().getString(R.string.msg_entries_error));
             return true;
         }
-        if (!checkSignature(stockMovementViewModel.getSignature())) {
+        if (!checkSignature(viewModel.getSignature())) {
             showSignatureErrors(getString(R.string.hint_signature_error_message));
             return true;
         }
@@ -265,12 +247,12 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     private boolean checkKitQuantityError() {
-        MovementReasonManager.MovementType movementType = stockMovementViewModel.getTypeQuantityMap().keySet().iterator().next();
-        if (StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
+        MovementReasonManager.MovementType movementType = viewModel.getTypeQuantityMap().keySet().iterator().next();
+        if (StringUtils.isBlank(viewModel.getTypeQuantityMap().get(movementType))) {
             showQuantityErrors(getResources().getString(R.string.msg_empty_quantity));
             return true;
         }
-        if (quantityIsLargerThanSoh(stockMovementViewModel.getTypeQuantityMap().get(movementType), movementType)) {
+        if (quantityIsLargerThanSoh(viewModel.getTypeQuantityMap().get(movementType), movementType)) {
             showQuantityErrors(getResources().getString(R.string.msg_invalid_quantity));
             return true;
         }
@@ -279,11 +261,11 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     private boolean lotListEmptyError() {
         clearErrorAlerts();
-        if (this.stockMovementViewModel.isLotEmpty()) {
+        if (this.viewModel.isLotEmpty()) {
             showEmptyLotError();
             return true;
         }
-        if (!this.stockMovementViewModel.movementQuantitiesExist()) {
+        if (!this.viewModel.movementQuantitiesExist()) {
             showLotQuantityError();
             return true;
         }
@@ -352,7 +334,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             movementDetailsView.setMovementReasonText(reasonListStr[position]);
-            stockMovementViewModel.setReason(movementReasons.get(position));
+            viewModel.setReason(movementReasons.get(position));
             reasonsDialog.dismiss();
             movementDetailsView.setMovementReasonEnable(true);
         }

@@ -48,6 +48,7 @@ public final class DateUtil {
     public static final String DATE_FORMAT_ONLY_DAY_AND_MONTH = "dd MMM";
     public static final String TIME_FORMAT_WITHOUT_SECOND = "dd MMM yyyy HH:mm";
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String Date_Digit_Format_ONLY_MONTH_AND_YEAR = "MMyyyy";
     public static final int DAY_PERIOD_END = 20;
 
 

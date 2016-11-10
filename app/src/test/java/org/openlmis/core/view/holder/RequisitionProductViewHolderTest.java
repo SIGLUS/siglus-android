@@ -15,8 +15,8 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.DateUtil;
@@ -79,8 +79,6 @@ public class RequisitionProductViewHolderTest {
 
     @Test
     public void shouldSetDelIconForNewAddedProduct() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_drugs_to_via_form, true);
-
         RnrFormItem formItem = new RnrFormItemBuilder().setProduct(
                 new ProductBuilder().setPrimaryName("productName").setCode("08S42").build())
                 .build();

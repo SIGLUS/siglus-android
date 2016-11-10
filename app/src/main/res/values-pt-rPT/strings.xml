@@ -375,4 +375,5 @@
     <string name="label_available_lots">Lotes disponíveis</string>
     <string name="msg_unpack_kit_onback_confirm">Todas as informações de produtos e de lotes inseridos até agora serão descartadas.</string>
     <string name="btn_discard">Descartar</string>
+    <string name="msg_confirm_empty_lot_number">Do you want to leave the lot number field blank?</string>
 </resources>

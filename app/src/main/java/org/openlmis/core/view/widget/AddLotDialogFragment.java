@@ -15,11 +15,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -60,6 +62,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
 
     @Setter
     private View.OnClickListener listener;
+    private AddLotListener addLotListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,7 +73,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         hideDay();
-        if(getArguments() != null){
+        if (getArguments() != null) {
             String drugNameFromArgs = getArguments().getString(Constants.PARAM_STOCK_NAME);
             if (drugNameFromArgs != null) {
                 this.drugName.setVisibility(View.VISIBLE);
@@ -116,17 +119,39 @@ public class AddLotDialogFragment extends BaseDialogFragment {
 
     public boolean validate() {
         clearErrorMessage();
+        Date enteredDate = DateUtil.getActualMaximumDate(new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), 1).getTime());
+        expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+
         if (StringUtils.isBlank(etLotNumber.getText().toString())) {
-            lyLotNumber.setError(getResources().getString(R.string.msg_empty_lot_number));
-            etLotNumber.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_empty_lot_number)) {
+                showConfirmNoLotNumberDialog();
+            } else {
+                lyLotNumber.setError(getResources().getString(R.string.msg_empty_lot_number));
+                etLotNumber.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+            }
             return false;
         }
 
-        Date enteredDate = DateUtil.getActualMaximumDate(new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), 1).getTime());
-
         lotNumber = etLotNumber.getText().toString().trim().toUpperCase();
-        expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
         return true;
+    }
+
+    private void showConfirmNoLotNumberDialog() {
+        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null, getString(R.string.msg_confirm_empty_lot_number), getString(R.string.btn_positive), getString(R.string.btn_negative), "on_lot_added");
+        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+            @Override
+            public void positiveClick(String tag) {
+                dialogFragment.dismiss();
+                AddLotDialogFragment.this.dismiss();
+                addLotListener.addLot(expiryDate);
+            }
+
+            @Override
+            public void negativeClick(String tag) {
+                dialogFragment.dismiss();
+            }
+        });
+        dialogFragment.show(getFragmentManager(), "on_lot_added");
     }
 
     private void clearErrorMessage() {
@@ -141,5 +166,13 @@ public class AddLotDialogFragment extends BaseDialogFragment {
             return true;
         }
         return false;
+    }
+
+    public void setAddLotWithoutNumberListener(AddLotListener addLotListener) {
+        this.addLotListener = addLotListener;
+    }
+
+    public interface AddLotListener {
+        void addLot(String expiryDate);
     }
 }

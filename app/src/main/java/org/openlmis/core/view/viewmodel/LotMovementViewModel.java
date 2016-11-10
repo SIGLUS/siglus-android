@@ -1,6 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
@@ -8,6 +9,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.DateUtil;
 
 import java.io.Serializable;
+import java.text.ParseException;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -95,5 +97,14 @@ public class LotMovementViewModel implements Serializable {
 
     public boolean isNewAdded() {
         return StringUtils.isBlank(lotSoh);
+    }
+
+    public static String generateLotNumberForProductWithoutLot(String productCode, String expiryDate) {
+        try {
+            return "SEM-LOTE-" + productCode.toUpperCase() + "-" + DateUtil.convertDate(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR, DateUtil.Date_Digit_Format_ONLY_MONTH_AND_YEAR);
+        } catch (ParseException e) {
+            new LMISException(e).reportToFabric();
+        }
+        return null;
     }
 }

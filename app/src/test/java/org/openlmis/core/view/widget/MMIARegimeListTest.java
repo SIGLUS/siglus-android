@@ -93,7 +93,6 @@ public class MMIARegimeListTest {
 
     @Test
     public void shouldShowTheCustomRegimenWhenTheFormIsMissedAndNotAuthorised() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_allow_custom_regimen_in_missed_mmia_form, true);
         RnRForm rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
 

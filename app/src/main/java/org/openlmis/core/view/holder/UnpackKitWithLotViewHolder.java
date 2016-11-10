@@ -140,8 +140,8 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
     }
 
     @Override
-    protected void initExistingLotListView(final InventoryViewModel viewModel) {
-        super.initExistingLotListView(viewModel);
+    protected void initExistingLotListView() {
+        super.initExistingLotListView();
         existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
             @Override
             public void movementChange() {
@@ -151,8 +151,8 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
     }
 
     @Override
-    protected void initLotListRecyclerView(final InventoryViewModel viewModel) {
-        super.initLotListRecyclerView(viewModel);
+    protected void initLotListRecyclerView() {
+        super.initLotListRecyclerView();
         newLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
             @Override
             public void movementChange() {

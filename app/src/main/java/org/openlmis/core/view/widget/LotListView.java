@@ -12,9 +12,15 @@ import android.widget.LinearLayout;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -29,7 +35,7 @@ public class LotListView extends LinearLayout {
     ViewGroup alertSoonestExpire;
 
     @InjectView(R.id.action_add_new_lot)
-    View actionAddNewLot;
+    View txAddNewLot;
 
     @InjectView(R.id.lot_list)
     private RecyclerView newLotMovementRecycleView;
@@ -41,7 +47,7 @@ public class LotListView extends LinearLayout {
     private ViewGroup lyLotList;
 
     private NewStockMovementPresenter newStockMovementPresenter;
-    private StockMovementViewModel stockMovementViewModel;
+    private StockMovementViewModel viewModel;
     private MovementReasonManager.MovementType movementType;
     private LotMovementAdapter newLotMovementAdapter;
     private LotMovementAdapter existingLotMovementAdapter;
@@ -64,14 +70,14 @@ public class LotListView extends LinearLayout {
 
     public void initLotListView(NewStockMovementPresenter presenter, MovementReasonManager.MovementType movementType) {
         this.newStockMovementPresenter = presenter;
-        this.stockMovementViewModel = presenter.getStockMovementViewModel();
+        this.viewModel = presenter.getStockMovementViewModel();
         this.movementType = movementType;
 
     }
 
     public void initExistingLotListView() {
         existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        existingLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getExistingLotMovementViewModelList());
+        existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
         existingLotListView.setAdapter(existingLotMovementAdapter);
         existingLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
     }
@@ -88,7 +94,7 @@ public class LotListView extends LinearLayout {
     }
 
     private void updateAddPositiveLotAmountAlert() {
-        if (!this.stockMovementViewModel.movementQuantitiesExist()) {
+        if (!this.viewModel.movementQuantitiesExist()) {
             alertAddPositiveLotAmount.setVisibility(View.VISIBLE);
         } else {
             alertAddPositiveLotAmount.setVisibility(View.GONE);
@@ -97,25 +103,25 @@ public class LotListView extends LinearLayout {
 
     public void initNewLotListView() {
         newLotMovementRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        newLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getNewLotMovementViewModelList(), newStockMovementPresenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementAdapter = new LotMovementAdapter(viewModel.getNewLotMovementViewModelList(), newStockMovementPresenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
         newLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
         newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
     }
 
     private void updateSoonestToExpireNotIssuedBanner() {
-        alertSoonestExpire.setVisibility(movementType == MovementReasonManager.MovementType.ISSUE && !stockMovementViewModel.validateSoonestToExpireLotsIssued() ? View.VISIBLE : View.GONE);
+        alertSoonestExpire.setVisibility(movementType == MovementReasonManager.MovementType.ISSUE && !viewModel.validateSoonestToExpireLotsIssued() ? View.VISIBLE : View.GONE);
     }
 
     public void setActionAddNewLotVisibility(int visibility) {
-        actionAddNewLot.setVisibility(visibility);
+        txAddNewLot.setVisibility(visibility);
     }
 
     public void setActionAddNewLotListener(OnClickListener addNewLotOnClickListener) {
-        actionAddNewLot.setOnClickListener(addNewLotOnClickListener);
+        txAddNewLot.setOnClickListener(addNewLotOnClickListener);
     }
 
     public void setActionAddNewEnabled(boolean actionAddNewEnabled) {
-        actionAddNewLot.setEnabled(actionAddNewEnabled);
+        txAddNewLot.setEnabled(actionAddNewEnabled);
     }
 
     public void refreshNewLotList() {
@@ -127,7 +133,7 @@ public class LotListView extends LinearLayout {
     }
 
     public void initLotErrorBanner() {
-        if (stockMovementViewModel.hasLotDataChanged()) {
+        if (viewModel.hasLotDataChanged()) {
             updateAddPositiveLotAmountAlert();
         }
     }
@@ -156,8 +162,42 @@ public class LotListView extends LinearLayout {
     }
 
     public void addNewLot(LotMovementViewModel lotMovementViewModel) {
-        stockMovementViewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
+        viewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
         updateAddPositiveLotAmountAlert();
         refreshNewLotList();
+    }
+
+    public AddLotDialogFragment.AddLotListener getAddLotWithoutNumberListener() {
+        return new AddLotDialogFragment.AddLotListener() {
+            @Override
+            public void addLot(String expiryDate) {
+                txAddNewLot.setEnabled(true);
+                String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(newStockMovementPresenter.getStockCard().getProduct().getCode(), expiryDate);
+                if (getLotNumbers().contains(lotNumber)) {
+                    ToastUtil.show("Lot ");
+                } else {
+                    addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
+                }
+            }
+
+        };
+    }
+
+    @NonNull
+    public List<String> getLotNumbers() {
+        final List<String> existingLots = new ArrayList<>();
+        existingLots.addAll(FluentIterable.from(viewModel.getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
+            @Override
+            public String apply(LotMovementViewModel lotMovementViewModel) {
+                return lotMovementViewModel.getLotNumber();
+            }
+        }).toList());
+        existingLots.addAll(FluentIterable.from((viewModel.getExistingLotMovementViewModelList())).transform(new Function<LotMovementViewModel, String>() {
+            @Override
+            public String apply(LotMovementViewModel lotMovementViewModel) {
+                return lotMovementViewModel.getLotNumber();
+            }
+        }).toList());
+        return existingLots;
     }
 }

@@ -72,4 +72,12 @@ public class LotMovementViewModelTest {
         LotMovementItem lotMovementItem = viewModel.convertViewToModelAndResetSOH(new Product());
         assertThat(lotMovementItem.getStockOnHand(), is(10L));
     }
+
+    @Test
+    public void shouldGenerateLotNumberForProductWithoutLot() throws Exception {
+        String productCode = "02F49";
+        String expiryDate = "Nov 2017";
+
+        assertThat(LotMovementViewModel.generateLotNumberForProductWithoutLot(productCode,expiryDate),is("SEM-LOTE-02F49-112017"));
+    }
 }
