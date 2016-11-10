@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.Constants;
@@ -51,7 +52,7 @@ public abstract class InventoryWithLotViewHolder extends BaseViewHolder {
             txAddNewLot.setEnabled(true);
             String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getFnm(), expiryDate);
             if (getLotNumbers().contains(lotNumber)) {
-                ToastUtil.show("Lot ");
+                ToastUtil.show(LMISApp.getContext().getText(R.string.error_lot_already_exists));
             } else {
                 addNewLot(new LotMovementViewModel(lotNumber,expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
             }

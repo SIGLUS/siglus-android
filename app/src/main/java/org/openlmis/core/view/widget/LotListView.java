@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
@@ -174,7 +175,7 @@ public class LotListView extends LinearLayout {
                 txAddNewLot.setEnabled(true);
                 String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(newStockMovementPresenter.getStockCard().getProduct().getCode(), expiryDate);
                 if (getLotNumbers().contains(lotNumber)) {
-                    ToastUtil.show("Lot ");
+                    ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_already_exists));
                 } else {
                     addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
                 }

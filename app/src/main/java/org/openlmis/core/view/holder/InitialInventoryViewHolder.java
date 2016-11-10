@@ -96,7 +96,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             txAddNewLot.setEnabled(true);
             String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getFnm(), expiryDate);
             if (getLotNumbers().contains(lotNumber)) {
-                ToastUtil.show("Lot ");
+                ToastUtil.show(LMISApp.getContext().getText(R.string.error_lot_already_exists));
             } else {
                 addNewLot(new LotMovementViewModel(lotNumber,expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
             }
