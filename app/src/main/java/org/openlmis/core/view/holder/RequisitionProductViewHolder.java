@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
@@ -63,8 +62,7 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
     }
 
     public Boolean hideDeleteIconInVIAPage() {
-        return !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form)
-                || !presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
+        return !presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
                 || (presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency());
     }
 

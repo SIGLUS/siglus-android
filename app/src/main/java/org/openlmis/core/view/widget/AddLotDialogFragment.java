@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.utils.Constants;
@@ -124,10 +123,6 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         }
 
         Date enteredDate = DateUtil.getActualMaximumDate(new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), 1).getTime());
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_allow_expired_lot) && enteredDate.before(new Date())) {
-            expiryDateWarning.setVisibility(View.VISIBLE);
-            return false;
-        }
 
         lotNumber = etLotNumber.getText().toString().trim().toUpperCase();
         expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);

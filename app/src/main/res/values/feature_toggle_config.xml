@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="feature_auto_quantities_in_kit">false</bool>
-    <bool name="feature_allow_custom_regimen_in_missed_mmia_form">true</bool>
-    <bool name="feature_add_drugs_to_via_form">true</bool>
     <bool name="feature_lot_management">true</bool>
-    <bool name="feature_allow_expired_lot">true</bool>
     <bool name="feature_archive_old_data">true</bool>
 </resources>

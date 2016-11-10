@@ -140,8 +140,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     public void hideOrShowAddProductMenuInVIAPage() {
-        Boolean showMenu = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form) && presenter.isFormProductEditable();
-        menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(showMenu);
+        menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(presenter.isFormProductEditable());
     }
 
     @Override
