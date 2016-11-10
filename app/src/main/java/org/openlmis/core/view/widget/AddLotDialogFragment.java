@@ -142,8 +142,8 @@ public class AddLotDialogFragment extends BaseDialogFragment {
             @Override
             public void positiveClick(String tag) {
                 dialogFragment.dismiss();
-                AddLotDialogFragment.this.dismiss();
                 addLotListener.addLot(expiryDate);
+                AddLotDialogFragment.this.dismiss();
             }
 
             @Override
