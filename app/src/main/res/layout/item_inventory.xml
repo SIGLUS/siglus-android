@@ -95,28 +95,10 @@
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_added_lot"
+        <org.openlmis.core.view.widget.InitialInventoryLotListView
+            android:id="@+id/view_lot_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:background="@drawable/top_border_gray_bg"
-            android:overScrollMode="never"/>
-
-        <LinearLayout
-            android:id="@+id/add_new_lot_panel"
-            style="@style/InventoryCard.ActionPanel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-            <TextView
-                android:id="@+id/tx_add_new_lot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/font_size_normal"
-                android:layout_marginLeft="@dimen/margin_normal"
-                android:textColor="@color/color_accent"
-                android:text="@string/btn_add_new_lot" />
-        </LinearLayout>
+            android:background="@drawable/top_border_gray_bg" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

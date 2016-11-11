@@ -101,7 +101,7 @@ public class LotMovementViewModel implements Serializable {
 
     public static String generateLotNumberForProductWithoutLot(String productCode, String expiryDate) {
         try {
-            return "SEM-LOTE-" + productCode.toUpperCase() + "-" + DateUtil.convertDate(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR, DateUtil.Date_Digit_Format_ONLY_MONTH_AND_YEAR);
+            return "SEM-LOTE-" + productCode.toUpperCase() + "-" + DateUtil.convertDate(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR, DateUtil.DATE_DIGIT_FORMAT_ONLY_MONTH_AND_YEAR);
         } catch (ParseException e) {
             new LMISException(e).reportToFabric();
         }

@@ -14,12 +14,24 @@
         <org.openlmis.core.view.widget.MovementDetailsView
             android:id="@+id/view_movement_details"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
-        <org.openlmis.core.view.widget.LotListView
-            android:id="@+id/view_lot_list"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_normal"
+            android:text="@string/label_available_lots"
+            android:textSize="@dimen/font_size_medium" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <org.openlmis.core.view.widget.LotListView
+                android:id="@+id/view_lot_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+        </android.support.v7.widget.CardView>
 
         <LinearLayout
             android:id="@+id/action_panel"

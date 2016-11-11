@@ -41,7 +41,7 @@ public class LotListView extends LinearLayout {
     @InjectView(R.id.action_add_new_lot)
     View txAddNewLot;
 
-    @InjectView(R.id.lot_list)
+    @InjectView(R.id.rv_new_lot_list)
     private RecyclerView newLotMovementRecycleView;
 
     @InjectView(R.id.rv_existing_lot_list)
@@ -79,19 +79,14 @@ public class LotListView extends LinearLayout {
         this.viewModel = presenter.getStockMovementViewModel();
         this.movementType = movementType;
 
-        if (!((NewStockMovementActivity) context).isKit) {
-            if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
-                    || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
-                setActionAddNewLotVisibility(View.VISIBLE);
-                setActionAddNewLotListener(getAddNewLotOnClickListener());
-            }
-            initExistingLotListView();
-            initNewLotListView();
-            initLotErrorBanner();
-        } else {
-            setLotListVisibility(View.GONE);
+        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
+                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+            setActionAddNewLotVisibility(View.VISIBLE);
+            setActionAddNewLotListener(getAddNewLotOnClickListener());
         }
-
+        initExistingLotListView();
+        initNewLotListView();
+        initLotErrorBanner();
     }
 
     public void initExistingLotListView() {
@@ -145,10 +140,6 @@ public class LotListView extends LinearLayout {
 
     public void refreshNewLotList() {
         newLotMovementAdapter.notifyDataSetChanged();
-    }
-
-    public void setLotListVisibility(int visibility) {
-        lyLotList.setVisibility(visibility);
     }
 
     public void initLotErrorBanner() {

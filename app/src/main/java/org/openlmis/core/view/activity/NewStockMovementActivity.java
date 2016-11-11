@@ -106,8 +106,12 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     private void setUpLostListView() {
-        lotListView = (LotListView) this.findViewById(R.id.view_lot_list);
-        lotListView.initLotListView(presenter, movementType);
+        if (!isKit) {
+            lotListView = (LotListView) this.findViewById(R.id.view_lot_list);
+            lotListView.initLotListView(presenter, movementType);
+        } else {
+            lotListView.setVisibility(View.GONE);
+        }
     }
 
 

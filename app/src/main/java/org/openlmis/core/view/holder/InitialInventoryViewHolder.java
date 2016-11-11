@@ -1,11 +1,7 @@
 package org.openlmis.core.view.holder;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.view.View;
@@ -20,27 +16,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.viewmodel.LotMovementViewModel;
-import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.openlmis.core.view.widget.DatePickerDialogWithoutDay;
+import org.openlmis.core.view.widget.InitialInventoryLotListView;
 import org.openlmis.core.view.widget.InputFilterMinMax;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import roboguice.inject.InjectView;
 
@@ -77,31 +65,10 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.touchArea_checkbox)
     LinearLayout taCheckbox;
 
-    @InjectView(R.id.add_new_lot_panel)
-    private View actionPanelForAddLot;
-
-    @InjectView(R.id.tx_add_new_lot)
-    private TextView txAddNewLot;
-
-    @InjectView(R.id.rv_added_lot)
-    private RecyclerView lotListRecyclerView;
+    @InjectView(R.id.view_lot_list)
+    InitialInventoryLotListView lotListView;
 
     private InventoryViewModel viewModel;
-
-    private LotMovementAdapter lotMovementAdapter;
-    private AddLotDialogFragment addLotDialogFragment;
-    private AddLotDialogFragment.AddLotListener addLot = new AddLotDialogFragment.AddLotListener() {
-        @Override
-        public void addLot(String expiryDate) {
-            txAddNewLot.setEnabled(true);
-            String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getFnm(), expiryDate);
-            if (getLotNumbers().contains(lotNumber)) {
-                ToastUtil.show(LMISApp.getContext().getText(R.string.error_lot_already_exists));
-            } else {
-                addNewLot(new LotMovementViewModel(lotNumber,expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
-            }
-        }
-    };
 
     public InitialInventoryViewHolder(View itemView) {
         super(itemView);
@@ -130,6 +97,11 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord, ViewHistoryListener listener) {
         this.viewModel = inventoryViewModel;
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            setUpLotListView();
+        } else {
+            populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
+        }
         resetCheckBox();
         setItemViewListener();
 
@@ -145,18 +117,25 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         }
 
         initHistoryView(listener);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            initLotListRecyclerView();
-        } else {
-            populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
-        }
+    }
+
+    public void setUpLotListView() {
+        lotListView.setUpdateCheckBoxListener(new InitialInventoryLotListView.UpdateCheckBoxListener() {
+            @Override
+            public void updateCheckBox() {
+                if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
+                    checkBox.setChecked(false);
+                }
+            }
+        });
+        lotListView.setViewModel(viewModel);
+        lotListView.initLotListView();
     }
 
     private void resetCheckBox() {
         checkBox.setOnCheckedChangeListener(null);
         checkBox.setChecked(false);
-        actionPanelForAddLot.setVisibility(View.GONE);
-        lotListRecyclerView.setVisibility(View.GONE);
+        lotListView.setVisibility(View.GONE);
     }
 
     protected void setItemViewListener() {
@@ -164,13 +143,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             @Override
             public void onClick(View v) {
                 showDatePicker();
-            }
-        });
-
-        txAddNewLot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddNewLotDialog();
             }
         });
 
@@ -191,7 +163,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         if (isChecked && !viewModel.getProduct().isArchived()) {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
-                    showAddNewLotDialog();
+                    lotListView.showAddLotDialogFragment();
                 }
                 showAddNewLotPanel(View.VISIBLE);
             } else {
@@ -201,7 +173,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 showAddNewLotPanel(View.GONE);
                 viewModel.getNewLotMovementViewModelList().clear();
-                refreshLotList();
+                lotListView.refreshNewLotList();
             } else {
                 showEditPanel(View.GONE);
             }
@@ -211,64 +183,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             viewModel.getExpiryDates().clear();
         }
         viewModel.setChecked(isChecked);
-    }
-
-    private void refreshLotList() {
-        lotMovementAdapter.notifyDataSetChanged();
-    }
-
-    private void initLotListRecyclerView() {
-        lotMovementAdapter = new LotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
-        lotListRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        lotListRecyclerView.setAdapter(lotMovementAdapter);
-    }
-
-    private void showAddNewLotDialog() {
-        addLotDialogFragment = new AddLotDialogFragment();
-        txAddNewLot.setEnabled(false);
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.PARAM_STOCK_NAME, viewModel.getProduct().getFormattedProductName());
-        addLotDialogFragment.setArguments(bundle);
-        addLotDialogFragment.setListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.btn_complete:
-                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
-                            addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
-                            addLotDialogFragment.dismiss();
-                            txAddNewLot.setEnabled(true);
-                        }
-                        break;
-                    case R.id.btn_cancel:
-                        addLotDialogFragment.dismiss();
-                        if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
-                            checkBox.setChecked(false);
-                        }
-                        txAddNewLot.setEnabled(true);
-                        break;
-                }
-            }
-        });
-        addLotDialogFragment.setAddLotWithoutNumberListener(addLot);
-        addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
-    }
-
-    private List<String> getLotNumbers() {
-        final List<String> existingLots = new ArrayList<>();
-        existingLots.addAll(FluentIterable.from(viewModel.getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
-            @Override
-            public String apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.getLotNumber();
-            }
-        }).toList());
-
-        return existingLots;
-    }
-
-    private void addNewLot(LotMovementViewModel lotMovementViewModel) {
-        viewModel.addLotMovementViewModel(lotMovementViewModel);
-        refreshLotList();
     }
 
     private void initHistoryView(final ViewHistoryListener listener) {
@@ -294,8 +208,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     public void showAddNewLotPanel(int visible) {
-        actionPanelForAddLot.setVisibility(visible);
-        lotListRecyclerView.setVisibility(visible);
+        lotListView.setVisibility(visible);
     }
 
     class EditTextWatcher extends SingleTextWatcher {
