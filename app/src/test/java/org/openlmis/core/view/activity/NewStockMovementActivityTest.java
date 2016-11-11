@@ -87,12 +87,12 @@ public class NewStockMovementActivityTest {
 
     @Test
     public void shouldNotShowActionAddNewLotWhenMovementTypeIsIssue() {
-        assertEquals(View.GONE, newStockMovementActivity.lotListView.findViewById(R.id.action_add_new_lot).getVisibility());
+        assertEquals(View.GONE, newStockMovementActivity.newMovementLotListView.findViewById(R.id.action_add_new_lot).getVisibility());
     }
 
     @Test
     public void shouldInitExistingLotList() {
-        assertEquals(View.VISIBLE, newStockMovementActivity.lotListView.findViewById(R.id.rv_existing_lot_list).getVisibility());
+        assertEquals(View.VISIBLE, newStockMovementActivity.newMovementLotListView.findViewById(R.id.rv_existing_lot_list).getVisibility());
     }
 
 }

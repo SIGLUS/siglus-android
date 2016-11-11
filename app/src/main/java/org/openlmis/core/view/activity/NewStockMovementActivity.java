@@ -17,8 +17,8 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-import org.openlmis.core.view.widget.LotListView;
 import org.openlmis.core.view.widget.MovementDetailsView;
+import org.openlmis.core.view.widget.NewMovementLotListView;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -33,7 +33,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     MovementDetailsView movementDetailsView;
 
-    LotListView lotListView;
+    NewMovementLotListView newMovementLotListView;
 
     @InjectView(R.id.btn_complete)
     View btnComplete;
@@ -107,10 +107,10 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     private void setUpLostListView() {
         if (!isKit) {
-            lotListView = (LotListView) this.findViewById(R.id.view_lot_list);
-            lotListView.initLotListView(presenter, movementType);
+            newMovementLotListView = (NewMovementLotListView) this.findViewById(R.id.view_lot_list);
+            newMovementLotListView.initLotListView(presenter, movementType);
         } else {
-            lotListView.setVisibility(View.GONE);
+            newMovementLotListView.setVisibility(View.GONE);
         }
     }
 
@@ -153,7 +153,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
                 if (showErrors()) {
                     if (!isKit) {
-                        lotListView.notifyDataChanged();
+                        newMovementLotListView.notifyDataChanged();
                     }
                     btnComplete.setEnabled(true);
                     loaded();
@@ -168,7 +168,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     public void clearErrorAlerts() {
-        lotListView.setAlertAddPositiveLotAmountVisibility(View.GONE);
+        newMovementLotListView.setAlertAddPositiveLotAmountVisibility(View.GONE);
         movementDetailsView.clearTextInputLayoutError();
     }
 
@@ -227,7 +227,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     private void showLotQuantityError() {
-        lotListView.setAlertAddPositiveLotAmountVisibility(View.VISIBLE);
+        newMovementLotListView.setAlertAddPositiveLotAmountVisibility(View.VISIBLE);
     }
 
     private boolean checkSignature(String signature) {
@@ -268,7 +268,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @Override
     public boolean showLotListError() {
         clearErrorAlerts();
-        return lotListView.validateLotList();
+        return newMovementLotListView.validateLotList();
     }
 
     @Override

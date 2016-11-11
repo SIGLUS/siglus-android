@@ -29,7 +29,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
-public class LotListView extends LinearLayout {
+public class NewMovementLotListView extends LinearLayout {
     protected Context context;
 
     @InjectView(R.id.alert_add_positive_lot_amount)
@@ -58,11 +58,11 @@ public class LotListView extends LinearLayout {
     private LotMovementAdapter newLotMovementAdapter;
     private LotMovementAdapter existingLotMovementAdapter;
 
-    public LotListView(Context context) {
+    public NewMovementLotListView(Context context) {
         super(context);
     }
 
-    public LotListView(Context context, AttributeSet attrs) {
+    public NewMovementLotListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
