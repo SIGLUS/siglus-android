@@ -170,7 +170,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
                         setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
                     }
                 }
-                if (!viewModel.validateQuantityNotGreaterThanSOH(((NewStockMovementActivity) context).movementType)) {
+                if (!viewModel.validateQuantityNotGreaterThanSOH()) {
                     setQuantityError(context.getResources().getString(R.string.msg_invalid_quantity));
                 }
             }

@@ -57,8 +57,6 @@ public class NewStockMovementPresenter extends Presenter {
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
 
-    private MovementReasonManager.MovementType newMovementType;
-
     @Getter
     private StockCard stockCard;
 
@@ -76,8 +74,7 @@ public class NewStockMovementPresenter extends Presenter {
         } catch (LMISException e) {
             e.reportToFabric();
         }
-        loadExistingLotMovementViewModels();
-        newMovementType = movementType;
+        loadExistingLotMovementViewModels(movementType);
     }
 
     public void saveStockMovement() {
@@ -114,13 +111,13 @@ public class NewStockMovementPresenter extends Presenter {
         }
     }
 
-    private void loadExistingLotMovementViewModels() {
+    private void loadExistingLotMovementViewModels(final MovementReasonManager.MovementType movementType) {
         ImmutableList<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(stockCard.getNonEmptyLotOnHandList()).transform(new Function<LotOnHand, LotMovementViewModel>() {
             @Override
             public LotMovementViewModel apply(LotOnHand lotOnHand) {
                 return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
                         DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                        lotOnHand.getQuantityOnHand().toString(), newMovementType);
+                        lotOnHand.getQuantityOnHand().toString(), movementType);
             }
         }).filter(new Predicate<LotMovementViewModel>() {
             @Override

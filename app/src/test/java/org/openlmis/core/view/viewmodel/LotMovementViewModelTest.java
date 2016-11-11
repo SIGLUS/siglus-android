@@ -48,7 +48,8 @@ public class LotMovementViewModelTest {
         viewModel.setLotSoh("100");
         viewModel.setQuantity("300");
         viewModel.validateLotWithPositiveQuantity();
-        assertFalse(viewModel.validateQuantityNotGreaterThanSOH(MovementReasonManager.MovementType.ISSUE));
+        viewModel.setMovementType(MovementReasonManager.MovementType.ISSUE);
+        assertFalse(viewModel.validateQuantityNotGreaterThanSOH());
     }
 
     @Test

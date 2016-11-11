@@ -142,7 +142,7 @@ public class LotListView extends LinearLayout {
     }
 
     public boolean validateLotList() {
-        int position1 = existingLotMovementAdapter.validateExisting(movementType);
+        int position1 = existingLotMovementAdapter.validateExisting();
         if (position1 >= 0) {
             existingLotListView.scrollToPosition(position1);
             return true;

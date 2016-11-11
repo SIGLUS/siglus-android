@@ -39,7 +39,7 @@ public class LotMovementViewModel implements Serializable {
         this.movementType = movementType;
     }
 
-    public boolean validateQuantityNotGreaterThanSOH(MovementReasonManager.MovementType movementType) {
+    public boolean validateQuantityNotGreaterThanSOH() {
         if (movementType.isNegative()) {
             quantityLessThanSoh = StringUtils.isBlank(quantity) || Long.parseLong(quantity) <= Long.parseLong(lotSoh);
         }
