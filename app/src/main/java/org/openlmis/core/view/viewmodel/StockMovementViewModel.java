@@ -51,6 +51,8 @@ public class StockMovementViewModel {
     boolean isDraft = true;
     boolean isKit;
 
+    StockCard stockCard;
+
     private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
 
     final List<LotMovementViewModel> newLotMovementViewModelList = new ArrayList<>();
@@ -58,6 +60,7 @@ public class StockMovementViewModel {
     final List<LotMovementViewModel> existingLotMovementViewModelList = new ArrayList<>();
 
     public StockMovementViewModel(StockMovementItem item) {
+        stockCard = item.getStockCard();
         movementDate = DateUtil.formatDate(item.getMovementDate());
         documentNo = item.getDocumentNumber();
         stockExistence = String.valueOf(item.getStockOnHand());

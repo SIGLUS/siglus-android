@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.NewStockMovementActivity;
@@ -52,7 +51,6 @@ public class NewMovementLotListView extends LinearLayout {
 
     private AddLotDialogFragment addLotDialogFragment;
 
-    private NewStockMovementPresenter newStockMovementPresenter;
     private StockMovementViewModel viewModel;
     private MovementReasonManager.MovementType movementType;
     private LotMovementAdapter newLotMovementAdapter;
@@ -74,9 +72,8 @@ public class NewMovementLotListView extends LinearLayout {
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
     }
 
-    public void initLotListView(NewStockMovementPresenter presenter, MovementReasonManager.MovementType movementType) {
-        this.newStockMovementPresenter = presenter;
-        this.viewModel = presenter.getStockMovementViewModel();
+    public void initLotListView(StockMovementViewModel viewModel, MovementReasonManager.MovementType movementType) {
+        this.viewModel = viewModel;
         this.movementType = movementType;
 
         if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
@@ -117,7 +114,7 @@ public class NewMovementLotListView extends LinearLayout {
 
     public void initNewLotListView() {
         newLotMovementRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        newLotMovementAdapter = new LotMovementAdapter(viewModel.getNewLotMovementViewModelList(), newStockMovementPresenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementAdapter = new LotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getStockCard().getProduct().getProductNameWithCodeAndStrength());
         newLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
         newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
     }
@@ -182,7 +179,7 @@ public class NewMovementLotListView extends LinearLayout {
             @Override
             public void addLot(String expiryDate) {
                 lyAddNewLot.setEnabled(true);
-                String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(newStockMovementPresenter.getStockCard().getProduct().getCode(), expiryDate);
+                String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getStockCard().getProduct().getCode(), expiryDate);
                 if (getLotNumbers().contains(lotNumber)) {
                     ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_already_exists));
                 } else {
