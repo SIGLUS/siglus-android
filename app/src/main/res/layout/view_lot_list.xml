@@ -62,7 +62,7 @@
                 android:scrollbars="none" />
 
             <LinearLayout
-                android:id="@+id/action_add_new_lot"
+                android:id="@+id/ly_add_new_lot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"

@@ -38,8 +38,8 @@ public class NewMovementLotListView extends LinearLayout {
     @InjectView(R.id.alert_soonest_expire)
     ViewGroup alertSoonestExpire;
 
-    @InjectView(R.id.action_add_new_lot)
-    View txAddNewLot;
+    @InjectView(R.id.ly_add_new_lot)
+    View lyAddNewLot;
 
     @InjectView(R.id.rv_new_lot_list)
     private RecyclerView newLotMovementRecycleView;
@@ -127,15 +127,15 @@ public class NewMovementLotListView extends LinearLayout {
     }
 
     public void setActionAddNewLotVisibility(int visibility) {
-        txAddNewLot.setVisibility(visibility);
+        lyAddNewLot.setVisibility(visibility);
     }
 
     public void setActionAddNewLotListener(OnClickListener addNewLotOnClickListener) {
-        txAddNewLot.setOnClickListener(addNewLotOnClickListener);
+        lyAddNewLot.setOnClickListener(addNewLotOnClickListener);
     }
 
     public void setActionAddNewEnabled(boolean actionAddNewEnabled) {
-        txAddNewLot.setEnabled(actionAddNewEnabled);
+        lyAddNewLot.setEnabled(actionAddNewEnabled);
     }
 
     public void refreshNewLotList() {
@@ -181,7 +181,7 @@ public class NewMovementLotListView extends LinearLayout {
         return new AddLotDialogFragment.AddLotListener() {
             @Override
             public void addLot(String expiryDate) {
-                txAddNewLot.setEnabled(true);
+                lyAddNewLot.setEnabled(true);
                 String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(newStockMovementPresenter.getStockCard().getProduct().getCode(), expiryDate);
                 if (getLotNumbers().contains(lotNumber)) {
                     ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_already_exists));

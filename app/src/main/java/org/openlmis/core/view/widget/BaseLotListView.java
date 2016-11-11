@@ -30,7 +30,7 @@ import roboguice.inject.InjectView;
 public abstract class BaseLotListView extends FrameLayout {
     protected Context context;
 
-    @InjectView(R.id.action_add_new_lot)
+    @InjectView(R.id.ly_add_new_lot)
     View txAddNewLot;
 
     @InjectView(R.id.rv_new_lot_list)
