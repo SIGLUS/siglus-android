@@ -31,21 +31,21 @@ public abstract class BaseLotListView extends FrameLayout {
     protected Context context;
 
     @InjectView(R.id.ly_add_new_lot)
-    View txAddNewLot;
+    protected View lyAddNewLot;
 
     @InjectView(R.id.rv_new_lot_list)
-    private RecyclerView newLotListView;
+    protected RecyclerView newLotListView;
 
     @InjectView(R.id.rv_existing_lot_list)
-    private RecyclerView existingLotListView;
+    protected RecyclerView existingLotListView;
 
     @InjectView(R.id.ly_lot_list)
-    private ViewGroup lyLotList;
+    protected ViewGroup lyLotList;
 
     protected AddLotDialogFragment addLotDialogFragment;
 
-    private LotMovementAdapter newLotMovementAdapter;
-    private LotMovementAdapter existingLotMovementAdapter;
+    protected LotMovementAdapter newLotMovementAdapter;
+    protected LotMovementAdapter existingLotMovementAdapter;
 
     public BaseLotListView(Context context) {
         super(context);
@@ -66,8 +66,8 @@ public abstract class BaseLotListView extends FrameLayout {
     public void initLotListView() {
         initExistingLotListView();
         initNewLotListView();
-        setActionAddNewLotVisibility(View.VISIBLE);
-        setActionAddNewLotListener(getAddNewLotOnClickListener());
+        lyAddNewLot.setVisibility(View.VISIBLE);
+        lyAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
     }
 
     public void initExistingLotListView() {
@@ -85,16 +85,8 @@ public abstract class BaseLotListView extends FrameLayout {
     protected abstract String getProductNameWithCodeAndStrength();
 
 
-    public void setActionAddNewLotVisibility(int visibility) {
-        txAddNewLot.setVisibility(visibility);
-    }
-
-    public void setActionAddNewLotListener(OnClickListener addNewLotOnClickListener) {
-        txAddNewLot.setOnClickListener(addNewLotOnClickListener);
-    }
-
     public void setActionAddNewEnabled(boolean actionAddNewEnabled) {
-        txAddNewLot.setEnabled(actionAddNewEnabled);
+        lyAddNewLot.setEnabled(actionAddNewEnabled);
     }
 
     public void refreshNewLotList() {
@@ -110,7 +102,7 @@ public abstract class BaseLotListView extends FrameLayout {
         return new AddLotDialogFragment.AddLotListener() {
             @Override
             public void addLot(String expiryDate) {
-                txAddNewLot.setEnabled(true);
+                lyAddNewLot.setEnabled(true);
                 String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(getProductCode(), expiryDate);
                 if (getLotNumbers().contains(lotNumber)) {
                     ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_already_exists));

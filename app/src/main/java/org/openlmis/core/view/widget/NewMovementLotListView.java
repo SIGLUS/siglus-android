@@ -3,12 +3,9 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -28,8 +25,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
-public class NewMovementLotListView extends LinearLayout {
-    protected Context context;
+public class NewMovementLotListView extends BaseLotListView {
 
     @InjectView(R.id.alert_add_positive_lot_amount)
     ViewGroup alertAddPositiveLotAmount;
@@ -37,24 +33,10 @@ public class NewMovementLotListView extends LinearLayout {
     @InjectView(R.id.alert_soonest_expire)
     ViewGroup alertSoonestExpire;
 
-    @InjectView(R.id.ly_add_new_lot)
-    View lyAddNewLot;
-
-    @InjectView(R.id.rv_new_lot_list)
-    private RecyclerView newLotMovementRecycleView;
-
-    @InjectView(R.id.rv_existing_lot_list)
-    private RecyclerView existingLotListView;
-
-    @InjectView(R.id.ly_lot_list)
-    private ViewGroup lyLotList;
-
     private AddLotDialogFragment addLotDialogFragment;
 
     private StockMovementViewModel viewModel;
     private MovementReasonManager.MovementType movementType;
-    private LotMovementAdapter newLotMovementAdapter;
-    private LotMovementAdapter existingLotMovementAdapter;
 
     public NewMovementLotListView(Context context) {
         super(context);
@@ -87,9 +69,7 @@ public class NewMovementLotListView extends LinearLayout {
     }
 
     public void initExistingLotListView() {
-        existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
-        existingLotListView.setAdapter(existingLotMovementAdapter);
+        super.initExistingLotListView();
         existingLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
     }
 
@@ -113,10 +93,13 @@ public class NewMovementLotListView extends LinearLayout {
     }
 
     public void initNewLotListView() {
-        newLotMovementRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        newLotMovementAdapter = new LotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getStockCard().getProduct().getProductNameWithCodeAndStrength());
+        super.initNewLotListView();
         newLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
-        newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
+    }
+
+    @Override
+    protected String getProductNameWithCodeAndStrength() {
+        return viewModel.getStockCard().getProduct().getProductNameWithCodeAndStrength();
     }
 
     private void updateSoonestToExpireNotIssuedBanner() {
@@ -129,10 +112,6 @@ public class NewMovementLotListView extends LinearLayout {
 
     public void setActionAddNewLotListener(OnClickListener addNewLotOnClickListener) {
         lyAddNewLot.setOnClickListener(addNewLotOnClickListener);
-    }
-
-    public void setActionAddNewEnabled(boolean actionAddNewEnabled) {
-        lyAddNewLot.setEnabled(actionAddNewEnabled);
     }
 
     public void refreshNewLotList() {
@@ -162,16 +141,15 @@ public class NewMovementLotListView extends LinearLayout {
         }
         int position2 = newLotMovementAdapter.validateAll();
         if (position2 >= 0) {
-            newLotMovementRecycleView.scrollToPosition(position2);
+            newLotListView.scrollToPosition(position2);
             return true;
         }
         return false;
     }
 
     public void addNewLot(LotMovementViewModel lotMovementViewModel) {
-        viewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
+        super.addNewLot(lotMovementViewModel);
         updateAddPositiveLotAmountAlert();
-        refreshNewLotList();
     }
 
     public AddLotDialogFragment.AddLotListener getAddLotWithoutNumberListener() {
@@ -188,6 +166,11 @@ public class NewMovementLotListView extends LinearLayout {
             }
 
         };
+    }
+
+    @Override
+    protected String getProductCode() {
+        return viewModel.getStockCard().getProduct().getCode();
     }
 
     @NonNull
@@ -208,6 +191,16 @@ public class NewMovementLotListView extends LinearLayout {
         return existingLots;
     }
 
+    @Override
+    protected List<LotMovementViewModel> getExistingLotMovementViewModelList() {
+        return viewModel.getExistingLotMovementViewModelList();
+    }
+
+    @Override
+    protected List<LotMovementViewModel> getNewLotMovementViewModelList() {
+        return viewModel.getNewLotMovementViewModelList();
+    }
+
     @NonNull
     public View.OnClickListener getAddNewLotOnClickListener() {
         return new View.OnClickListener() {
@@ -225,8 +218,13 @@ public class NewMovementLotListView extends LinearLayout {
         };
     }
 
+    @Override
+    protected String getFormattedProductName() {
+        return viewModel.getStockCard().getProduct().getFormattedProductName();
+    }
+
     @NonNull
-    private View.OnClickListener getAddNewLotDialogOnClickListener() {
+    protected View.OnClickListener getAddNewLotDialogOnClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -245,5 +243,10 @@ public class NewMovementLotListView extends LinearLayout {
                 }
             }
         };
+    }
+
+    @Override
+    protected MovementReasonManager.MovementType getMovementType() {
+        return movementType;
     }
 }

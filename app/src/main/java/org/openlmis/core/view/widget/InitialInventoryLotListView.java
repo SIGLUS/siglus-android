@@ -75,7 +75,7 @@ public class InitialInventoryLotListView extends BaseLotListView {
                     case R.id.btn_cancel:
                         addLotDialogFragment.dismiss();
                         updateCheckBoxListener.updateCheckBox();
-                        txAddNewLot.setEnabled(true);
+                        lyAddNewLot.setEnabled(true);
                         break;
                 }
             }
