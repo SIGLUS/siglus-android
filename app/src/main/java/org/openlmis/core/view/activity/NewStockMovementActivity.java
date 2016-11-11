@@ -16,9 +16,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
-import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.openlmis.core.view.widget.LotListView;
 import org.openlmis.core.view.widget.MovementDetailsView;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -26,6 +24,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
 
+import lombok.Getter;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -45,6 +44,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 
+    @Getter
     private String stockName;
     public MovementReasonManager.MovementType movementType;
 
@@ -60,9 +60,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     private String[] reasonListStr;
 
-    private boolean isKit;
-
-    private AddLotDialogFragment addLotDialogFragment;
+    public boolean isKit;
 
     @Override
     protected ScreenName getScreenName() {
@@ -73,7 +71,6 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         movementReasonManager = MovementReasonManager.getInstance();
-
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         movementType = (MovementReasonManager.MovementType) getIntent().getSerializableExtra(Constants.PARAM_MOVEMENT_TYPE);
         stockCardId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0L);
@@ -89,32 +86,23 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     private void initView() {
         setTitle(movementType.getDescription() + " " + stockName);
-
         setUpMovementDetailsView();
         setUpLostListView();
+        setUpButtonPanel();
+    }
 
+    private void setUpButtonPanel() {
         btnComplete.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
-
-        if (!isKit) {
-            if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
-                    || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
-                lotListView.setActionAddNewLotVisibility(View.VISIBLE);
-                lotListView.setActionAddNewLotListener(getAddNewLotOnClickListener());
-            }
-            lotListView.initExistingLotListView();
-            lotListView.initNewLotListView();
-            lotListView.initLotErrorBanner();
-        } else {
-            movementDetailsView.setMovementQuantityVisibility(View.VISIBLE);
-            lotListView.setLotListVisibility(View.GONE);
-        }
     }
 
     private void setUpMovementDetailsView() {
         movementDetailsView = (MovementDetailsView) this.findViewById(R.id.view_movement_details);
         movementDetailsView.initMovementDetailsView(presenter, movementType);
         movementDetailsView.setMovementReasonClickListener(getMovementReasonOnClickListener());
+        if (isKit) {
+            movementDetailsView.setMovementQuantityVisibility(View.VISIBLE);
+        }
     }
 
     private void setUpLostListView() {
@@ -122,44 +110,6 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         lotListView.initLotListView(presenter, movementType);
     }
 
-    @NonNull
-    private View.OnClickListener getAddNewLotOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lotListView.setActionAddNewEnabled(false);
-                addLotDialogFragment = new AddLotDialogFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(Constants.PARAM_STOCK_NAME, stockName);
-                addLotDialogFragment.setArguments(bundle);
-                addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
-                addLotDialogFragment.setAddLotWithoutNumberListener(lotListView.getAddLotWithoutNumberListener());
-                addLotDialogFragment.show(getFragmentManager(), "");
-            }
-        };
-    }
-
-    @NonNull
-    private View.OnClickListener getAddNewLotDialogOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.btn_complete:
-                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(lotListView.getLotNumbers())) {
-                            lotListView.addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), movementType));
-                            addLotDialogFragment.dismiss();
-                        }
-                        lotListView.setActionAddNewEnabled(true);
-                        break;
-                    case R.id.btn_cancel:
-                        addLotDialogFragment.dismiss();
-                        lotListView.setActionAddNewEnabled(true);
-                        break;
-                }
-            }
-        };
-    }
 
     @NonNull
     private View.OnClickListener getMovementReasonOnClickListener() {

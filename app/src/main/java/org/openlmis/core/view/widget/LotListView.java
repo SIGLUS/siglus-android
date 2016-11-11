@@ -1,6 +1,7 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,9 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.NewStockMovementActivity;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -47,6 +50,8 @@ public class LotListView extends LinearLayout {
     @InjectView(R.id.ly_lot_list)
     private ViewGroup lyLotList;
 
+    private AddLotDialogFragment addLotDialogFragment;
+
     private NewStockMovementPresenter newStockMovementPresenter;
     private StockMovementViewModel viewModel;
     private MovementReasonManager.MovementType movementType;
@@ -73,6 +78,19 @@ public class LotListView extends LinearLayout {
         this.newStockMovementPresenter = presenter;
         this.viewModel = presenter.getStockMovementViewModel();
         this.movementType = movementType;
+
+        if (!((NewStockMovementActivity) context).isKit) {
+            if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
+                    || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+                setActionAddNewLotVisibility(View.VISIBLE);
+                setActionAddNewLotListener(getAddNewLotOnClickListener());
+            }
+            initExistingLotListView();
+            initNewLotListView();
+            initLotErrorBanner();
+        } else {
+            setLotListVisibility(View.GONE);
+        }
 
     }
 
@@ -200,5 +218,44 @@ public class LotListView extends LinearLayout {
             }
         }).toList());
         return existingLots;
+    }
+
+    @NonNull
+    public View.OnClickListener getAddNewLotOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setActionAddNewEnabled(false);
+                addLotDialogFragment = new AddLotDialogFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.PARAM_STOCK_NAME, ((NewStockMovementActivity) context).getStockName());
+                addLotDialogFragment.setArguments(bundle);
+                addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
+                addLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
+                addLotDialogFragment.show(((NewStockMovementActivity) context).getFragmentManager(), "");
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener getAddNewLotDialogOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btn_complete:
+                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
+                            addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), movementType));
+                            addLotDialogFragment.dismiss();
+                        }
+                        setActionAddNewEnabled(true);
+                        break;
+                    case R.id.btn_cancel:
+                        addLotDialogFragment.dismiss();
+                        setActionAddNewEnabled(true);
+                        break;
+                }
+            }
+        };
     }
 }
