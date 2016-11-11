@@ -190,7 +190,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     private void checkedChangeAction(boolean isChecked) {
         if (isChecked && !viewModel.getProduct().isArchived()) {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                if (viewModel.getLotMovementViewModelList().isEmpty()) {
+                if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
                     showAddNewLotDialog();
                 }
                 showAddNewLotPanel(View.VISIBLE);
@@ -200,7 +200,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         } else {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 showAddNewLotPanel(View.GONE);
-                viewModel.getLotMovementViewModelList().clear();
+                viewModel.getNewLotMovementViewModelList().clear();
                 refreshLotList();
             } else {
                 showEditPanel(View.GONE);
@@ -218,7 +218,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     private void initLotListRecyclerView() {
-        lotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+        lotMovementAdapter = new LotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
         lotListRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         lotListRecyclerView.setAdapter(lotMovementAdapter);
     }
@@ -242,7 +242,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                         break;
                     case R.id.btn_cancel:
                         addLotDialogFragment.dismiss();
-                        if (viewModel.getLotMovementViewModelList().isEmpty()) {
+                        if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
                             checkBox.setChecked(false);
                         }
                         txAddNewLot.setEnabled(true);
@@ -256,7 +256,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private List<String> getLotNumbers() {
         final List<String> existingLots = new ArrayList<>();
-        existingLots.addAll(FluentIterable.from(viewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
+        existingLots.addAll(FluentIterable.from(viewModel.getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
             @Override
             public String apply(LotMovementViewModel lotMovementViewModel) {
                 return lotMovementViewModel.getLotNumber();

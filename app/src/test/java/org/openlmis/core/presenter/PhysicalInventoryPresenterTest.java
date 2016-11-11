@@ -243,7 +243,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         physicalInventoryPresenter.restoreDraftInventory();
         assertThat(inventoryViewModels.get(0).getQuantity(), is("20"));
         assertThat(inventoryViewModels.get(0).getExpiryDates().get(0), is("11/10/2015"));
-        assertThat(inventoryViewModels.get(0).getLotMovementViewModelList().get(0).getLotNumber(), is("testNew"));
+        assertThat(inventoryViewModels.get(0).getNewLotMovementViewModelList().get(0).getLotNumber(), is("testNew"));
         assertThat(inventoryViewModels.get(0).getExistingLotMovementViewModelList().get(0).getLotNumber(), is("test"));
     }
 

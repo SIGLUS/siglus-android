@@ -44,7 +44,7 @@ public class DraftInventoryTest {
         LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModel();
         lotMovementViewModel1.setQuantity("10");
         lotMovementViewModel1.setExpiryDate("Aug 2016");
-        viewModel.setLotMovementViewModelList(newArrayList(lotMovementViewModel1));
+        viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel1));
 
         LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModel();
         lotMovementViewModel2.setQuantity("10");

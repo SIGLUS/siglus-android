@@ -51,7 +51,7 @@ public class InventoryViewModel {
     boolean isDataChanged;
     final List<String> expiryDates = new ArrayList<>();
 
-    List<LotMovementViewModel> lotMovementViewModelList = new ArrayList<>();
+    List<LotMovementViewModel> newLotMovementViewModelList = new ArrayList<>();
     List<LotMovementViewModel> existingLotMovementViewModelList = new ArrayList<>();
 
     long stockCardId;
@@ -160,7 +160,7 @@ public class InventoryViewModel {
     }
 
     boolean validateLotList() {
-        for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
+        for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
             if (!lotMovementViewModel.validateLotWithPositiveQuantity()) {
                 return false;
             }
@@ -194,12 +194,12 @@ public class InventoryViewModel {
     }
 
     public void addLotMovementViewModel(LotMovementViewModel lotMovementViewModel) {
-        lotMovementViewModelList.add(lotMovementViewModel);
+        newLotMovementViewModelList.add(lotMovementViewModel);
     }
 
     public Long getLotListQuantityTotalAmount() {
         long lotTotalQuantity = 0L;
-        for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
+        for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
             if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
                 lotTotalQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
             }

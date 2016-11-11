@@ -23,7 +23,7 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
         @Override
         public void call(UnpackKitInventoryViewModel unpackKitInventoryViewModel) {
             unpackKitInventoryViewModel.setConfirmedNoStockReceived(true);
-            unpackKitInventoryViewModel.getLotMovementViewModelList().clear();
+            unpackKitInventoryViewModel.getNewLotMovementViewModelList().clear();
             UnpackKitAdapter.this.notifyDataSetChanged();
         }
     };

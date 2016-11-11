@@ -64,7 +64,7 @@ public class DraftInventory extends BaseModel{
         this.expireDates = DateUtil.formatExpiryDateString(viewModel.getExpiryDates());
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             this.quantity = viewModel.getLotListQuantityTotalAmount();
-            setupDraftLotList(viewModel.getExistingLotMovementViewModelList(),viewModel.getLotMovementViewModelList());
+            setupDraftLotList(viewModel.getExistingLotMovementViewModelList(),viewModel.getNewLotMovementViewModelList());
         } else {
             try {
                 this.quantity = Long.parseLong(viewModel.getQuantity());

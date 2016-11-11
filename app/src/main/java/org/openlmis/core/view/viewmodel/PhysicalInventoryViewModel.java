@@ -65,10 +65,10 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
             }
         }
         for (DraftLotItem draftLotItem: newAddedDraftLotItems) {
-            if (newAddedDraftLotItems.size() != lotMovementViewModelList.size()) {
+            if (newAddedDraftLotItems.size() != newLotMovementViewModelList.size()) {
                 return true;
             }
-            for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
+            for (LotMovementViewModel lotMovementViewModel: newLotMovementViewModelList) {
                 if (draftLotItem.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
                     if (!String.valueOf(draftLotItem.getQuantity() == null ? "" : draftLotItem.getQuantity()).equals(lotMovementViewModel.getQuantity())) {
                         return true;
@@ -85,8 +85,8 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
                 return true;
             }
         }
-        if (lotMovementViewModelList.size() > 0) return true;
-        for (LotMovementViewModel viewModel : getLotMovementViewModelList()) {
+        if (newLotMovementViewModelList.size() > 0) return true;
+        for (LotMovementViewModel viewModel : getNewLotMovementViewModelList()) {
             if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
                 return true;
             }

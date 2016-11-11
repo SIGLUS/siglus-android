@@ -75,7 +75,7 @@ public class InventoryViewModelTest {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lot1", "Feb 2017", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         lotMovementViewModel.setQuantity("10");
-        viewModel.setLotMovementViewModelList(newArrayList(lotMovementViewModel));
+        viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel));
         assertTrue(viewModel.validate());
     }
 
@@ -174,7 +174,7 @@ public class InventoryViewModelTest {
 
         LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber", "2012-09-01", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         lotMovementViewModel.validateLotWithPositiveQuantity();
-        inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
+        inventoryViewModel.newLotMovementViewModelList.add(lotMovementViewModel);
 
         assertFalse(inventoryViewModel.validate());
     }
@@ -195,7 +195,7 @@ public class InventoryViewModelTest {
 
         LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber", "2012-09-01", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         lotMovementViewModel.setQuantity("21");
-        inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
+        inventoryViewModel.newLotMovementViewModelList.add(lotMovementViewModel);
 
         assertTrue(inventoryViewModel.validate());
     }
@@ -207,7 +207,7 @@ public class InventoryViewModelTest {
         LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder().setLotNumber("lot2").setExpiryDate("Feb 2015").build();
 
         viewModel.setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
-        viewModel.setLotMovementViewModelList(newArrayList(lotMovementViewModel2));
+        viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel2));
         viewModel.setQuantity("10");
 
         DraftInventory draftInventory = new DraftInventory(viewModel);

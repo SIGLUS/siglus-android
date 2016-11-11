@@ -157,11 +157,11 @@ public class UnpackKitPresenter extends Presenter {
             stockMovementItems.add(stockCard.generateInitialStockMovementItem());
         }
 
-        if (inventoryViewModel.getLotMovementViewModelList().isEmpty()) {
+        if (inventoryViewModel.getNewLotMovementViewModelList().isEmpty()) {
             inventoryViewModel.setQuantity("0");
         } else {
             long receiveQuantity = 0;
-            for (LotMovementViewModel lotMovementViewModel : inventoryViewModel.getLotMovementViewModelList()) {
+            for (LotMovementViewModel lotMovementViewModel : inventoryViewModel.getNewLotMovementViewModelList()) {
                 receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
             }
             inventoryViewModel.setQuantity(String.valueOf(receiveQuantity));
@@ -177,7 +177,7 @@ public class UnpackKitPresenter extends Presenter {
                 return lotMovementViewModel.quantityGreaterThanZero();
             }
         }).toList());
-        totalLotMovementViewModelList.addAll(inventoryViewModel.getLotMovementViewModelList());
+        totalLotMovementViewModelList.addAll(inventoryViewModel.getNewLotMovementViewModelList());
 
         stockMovementItems.add(createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature, totalLotMovementViewModelList));
 

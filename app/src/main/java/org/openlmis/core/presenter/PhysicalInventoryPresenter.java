@@ -106,7 +106,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
 
     private void populateLotMovementModelWithDraftLotItem(InventoryViewModel inventoryViewModel, DraftInventory draftInventory) {
         List<LotMovementViewModel> existingLotMovementViewModelList = inventoryViewModel.getExistingLotMovementViewModelList();
-        List<LotMovementViewModel> newAddedLotMovementVieModelList = inventoryViewModel.getLotMovementViewModelList();
+        List<LotMovementViewModel> newAddedLotMovementVieModelList = inventoryViewModel.getNewLotMovementViewModelList();
         for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
             if (draftLotItem.isNewAdded()) {
                 if (isNotInExistingLots(draftLotItem, existingLotMovementViewModelList, newAddedLotMovementVieModelList)) {
@@ -172,7 +172,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            item.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(model.getExistingLotMovementViewModelList(), model.getLotMovementViewModelList());
+            item.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(model.getExistingLotMovementViewModelList(), model.getNewLotMovementViewModelList());
         }
 
         return item;

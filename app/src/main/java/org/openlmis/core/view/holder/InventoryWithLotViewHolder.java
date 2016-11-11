@@ -86,7 +86,7 @@ public abstract class InventoryWithLotViewHolder extends BaseViewHolder {
     }
 
     protected void initLotListRecyclerView() {
-        newLotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementAdapter = new LotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
         newLotListView.setLayoutManager(new LinearLayoutManager(context));
         newLotListView.setAdapter(newLotMovementAdapter);
     }
@@ -126,7 +126,7 @@ public abstract class InventoryWithLotViewHolder extends BaseViewHolder {
 
     private List<String> getLotNumbers() {
         final List<String> existingLots = new ArrayList<>();
-        existingLots.addAll(FluentIterable.from(viewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
+        existingLots.addAll(FluentIterable.from(viewModel.getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
             @Override
             public String apply(LotMovementViewModel lotMovementViewModel) {
                 return lotMovementViewModel.getLotNumber();

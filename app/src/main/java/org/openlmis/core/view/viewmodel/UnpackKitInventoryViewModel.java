@@ -21,7 +21,7 @@ public class UnpackKitInventoryViewModel extends InventoryViewModel {
     }
 
     public boolean hasLotChanged() {
-        for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
+        for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
             if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
                 return true;
             }

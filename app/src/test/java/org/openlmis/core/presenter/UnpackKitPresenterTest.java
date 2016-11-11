@@ -225,7 +225,7 @@ public class UnpackKitPresenterTest {
                 .setQuantity("100")
                 .build();
 
-        viewModel.setLotMovementViewModelList(newArrayList(lot, lot));
+        viewModel.setNewLotMovementViewModelList(newArrayList(lot, lot));
 
         StockCard stockCard = presenter.createStockCardForProductWithLot(viewModel, documentNumber, signature);
         List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();

@@ -99,7 +99,7 @@ public class StockMovementItem extends BaseModel {
         this.movementDate = new Date();
         this.reason = MovementReasonManager.INVENTORY;
         this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
-        populateLotQuantitiesAndCalculateNewSOH(model.getLotMovementViewModelList(), movementType);
+        populateLotQuantitiesAndCalculateNewSOH(model.getNewLotMovementViewModelList(), movementType);
     }
 
     public boolean isPositiveMovement() {
