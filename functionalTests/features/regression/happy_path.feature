@@ -38,13 +38,13 @@ Feature: Log in and initialize Inventory
 
     When I search "25D03"
     Then I see "Manual de"
-    When I clean search bar
-    And I select the inventory item called "08S01ZY"
-    And I press "Complete"
-    And I wait for 1 second
-    Then I should see text containing "Lot number can not be blank"
-    And I wait for "CANCEL" to appear
-    And I press "CANCEL"
+#    When I clean search bar
+#    And I select the inventory item called "08S01ZY"
+#    And I press "Complete"
+#    And I wait for 1 second
+#    Then I should see text containing "Lot number can not be blank"
+#    And I wait for "CANCEL" to appear
+#    And I press "CANCEL"
 
     And I wait for 1 second
     And I clean search bar
