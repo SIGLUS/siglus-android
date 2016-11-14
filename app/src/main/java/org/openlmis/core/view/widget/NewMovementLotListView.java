@@ -1,28 +1,19 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.NewStockMovementActivity;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
 public class NewMovementLotListView extends BaseLotListView {
@@ -33,8 +24,6 @@ public class NewMovementLotListView extends BaseLotListView {
     @InjectView(R.id.alert_soonest_expire)
     ViewGroup alertSoonestExpire;
 
-    private AddLotDialogFragment addLotDialogFragment;
-
     private StockMovementViewModel viewModel;
     private MovementReasonManager.MovementType movementType;
 
@@ -44,14 +33,6 @@ public class NewMovementLotListView extends BaseLotListView {
 
     public NewMovementLotListView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
-    }
-
-    private void init(Context context) {
-        this.context = context;
-        inflate(context, R.layout.view_lot_list, this);
-        RoboGuice.injectMembers(getContext(), this);
-        RoboGuice.getInjector(getContext()).injectViewMembers(this);
     }
 
     public void initLotListView(StockMovementViewModel viewModel, MovementReasonManager.MovementType movementType) {
@@ -62,15 +43,27 @@ public class NewMovementLotListView extends BaseLotListView {
                 || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
             setActionAddNewLotVisibility(View.VISIBLE);
             setActionAddNewLotListener(getAddNewLotOnClickListener());
+        } else {
+            setActionAddNewLotVisibility(GONE);
         }
         initExistingLotListView();
         initNewLotListView();
         initLotErrorBanner();
     }
 
+    public void initNewLotListView() {
+        super.initNewLotListView();
+        newLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
+    }
+
     public void initExistingLotListView() {
         super.initExistingLotListView();
         existingLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
+    }
+
+    public void addNewLot(LotMovementViewModel lotMovementViewModel) {
+        super.addNewLot(lotMovementViewModel);
+        updateAddPositiveLotAmountAlert();
     }
 
     @NonNull
@@ -92,16 +85,6 @@ public class NewMovementLotListView extends BaseLotListView {
         }
     }
 
-    public void initNewLotListView() {
-        super.initNewLotListView();
-        newLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
-    }
-
-    @Override
-    protected String getProductNameWithCodeAndStrength() {
-        return viewModel.getStockCard().getProduct().getProductNameWithCodeAndStrength();
-    }
-
     private void updateSoonestToExpireNotIssuedBanner() {
         alertSoonestExpire.setVisibility(movementType == MovementReasonManager.MovementType.ISSUE && !viewModel.validateSoonestToExpireLotsIssued() ? View.VISIBLE : View.GONE);
     }
@@ -112,10 +95,6 @@ public class NewMovementLotListView extends BaseLotListView {
 
     public void setActionAddNewLotListener(OnClickListener addNewLotOnClickListener) {
         lyAddNewLot.setOnClickListener(addNewLotOnClickListener);
-    }
-
-    public void refreshNewLotList() {
-        newLotMovementAdapter.notifyDataSetChanged();
     }
 
     public void initLotErrorBanner() {
@@ -147,48 +126,14 @@ public class NewMovementLotListView extends BaseLotListView {
         return false;
     }
 
-    public void addNewLot(LotMovementViewModel lotMovementViewModel) {
-        super.addNewLot(lotMovementViewModel);
-        updateAddPositiveLotAmountAlert();
-    }
-
-    public AddLotDialogFragment.AddLotListener getAddLotWithoutNumberListener() {
-        return new AddLotDialogFragment.AddLotListener() {
-            @Override
-            public void addLot(String expiryDate) {
-                lyAddNewLot.setEnabled(true);
-                String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getStockCard().getProduct().getCode(), expiryDate);
-                if (getLotNumbers().contains(lotNumber)) {
-                    ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_already_exists));
-                } else {
-                    addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
-                }
-            }
-
-        };
+    @Override
+    protected String getProductNameWithCodeAndStrength() {
+        return viewModel.getStockCard().getProduct().getProductNameWithCodeAndStrength();
     }
 
     @Override
     protected String getProductCode() {
         return viewModel.getStockCard().getProduct().getCode();
-    }
-
-    @NonNull
-    public List<String> getLotNumbers() {
-        final List<String> existingLots = new ArrayList<>();
-        existingLots.addAll(FluentIterable.from(viewModel.getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
-            @Override
-            public String apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.getLotNumber();
-            }
-        }).toList());
-        existingLots.addAll(FluentIterable.from((viewModel.getExistingLotMovementViewModelList())).transform(new Function<LotMovementViewModel, String>() {
-            @Override
-            public String apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.getLotNumber();
-            }
-        }).toList());
-        return existingLots;
     }
 
     @Override
@@ -201,48 +146,9 @@ public class NewMovementLotListView extends BaseLotListView {
         return viewModel.getNewLotMovementViewModelList();
     }
 
-    @NonNull
-    public View.OnClickListener getAddNewLotOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setActionAddNewEnabled(false);
-                addLotDialogFragment = new AddLotDialogFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(Constants.PARAM_STOCK_NAME, ((NewStockMovementActivity) context).getStockName());
-                addLotDialogFragment.setArguments(bundle);
-                addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
-                addLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
-                addLotDialogFragment.show(((NewStockMovementActivity) context).getFragmentManager(), "");
-            }
-        };
-    }
-
     @Override
     protected String getFormattedProductName() {
         return viewModel.getStockCard().getProduct().getFormattedProductName();
-    }
-
-    @NonNull
-    protected View.OnClickListener getAddNewLotDialogOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.btn_complete:
-                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
-                            addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), movementType));
-                            addLotDialogFragment.dismiss();
-                        }
-                        setActionAddNewEnabled(true);
-                        break;
-                    case R.id.btn_cancel:
-                        addLotDialogFragment.dismiss();
-                        setActionAddNewEnabled(true);
-                        break;
-                }
-            }
-        };
     }
 
     @Override

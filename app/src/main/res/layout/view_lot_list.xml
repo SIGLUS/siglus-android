@@ -67,8 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
                 android:orientation="horizontal"
-                android:padding="@dimen/padding_normal"
-                android:visibility="gone">
+                android:padding="@dimen/padding_normal">
 
                 <TextView
                     android:id="@+id/btn_add_new_lot"

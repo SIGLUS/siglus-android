@@ -56,7 +56,7 @@ public abstract class BaseLotListView extends FrameLayout {
         init(context);
     }
 
-    private void init(Context context) {
+    protected void init(Context context) {
         this.context = context;
         inflate(context, R.layout.view_lot_list, this);
         RoboGuice.injectMembers(getContext(), this);
@@ -66,7 +66,6 @@ public abstract class BaseLotListView extends FrameLayout {
     public void initLotListView() {
         initExistingLotListView();
         initNewLotListView();
-        lyAddNewLot.setVisibility(View.VISIBLE);
         lyAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
     }
 
@@ -82,12 +81,10 @@ public abstract class BaseLotListView extends FrameLayout {
         newLotListView.setAdapter(newLotMovementAdapter);
     }
 
-    protected abstract String getProductNameWithCodeAndStrength();
-
-
     public void setActionAddNewEnabled(boolean actionAddNewEnabled) {
         lyAddNewLot.setEnabled(actionAddNewEnabled);
     }
+
 
     public void refreshNewLotList() {
         newLotMovementAdapter.notifyDataSetChanged();
@@ -113,8 +110,6 @@ public abstract class BaseLotListView extends FrameLayout {
         };
     }
 
-    protected abstract String getProductCode();
-
     @NonNull
     public List<String> getLotNumbers() {
         final List<String> existingLots = new ArrayList<>();
@@ -132,10 +127,6 @@ public abstract class BaseLotListView extends FrameLayout {
         }).toList());
         return existingLots;
     }
-
-    protected abstract List<LotMovementViewModel> getExistingLotMovementViewModelList();
-
-    protected abstract List<LotMovementViewModel> getNewLotMovementViewModelList();
 
     @NonNull
     public View.OnClickListener getAddNewLotOnClickListener() {
@@ -157,8 +148,6 @@ public abstract class BaseLotListView extends FrameLayout {
         addLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
         addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
     }
-
-    protected abstract String getFormattedProductName();
 
     @NonNull
     protected View.OnClickListener getAddNewLotDialogOnClickListener() {
@@ -183,4 +172,14 @@ public abstract class BaseLotListView extends FrameLayout {
     }
 
     protected abstract MovementReasonManager.MovementType getMovementType();
+
+    protected abstract String getProductCode();
+
+    protected abstract String getFormattedProductName();
+
+    protected abstract String getProductNameWithCodeAndStrength();
+
+    protected abstract List<LotMovementViewModel> getExistingLotMovementViewModelList();
+
+    protected abstract List<LotMovementViewModel> getNewLotMovementViewModelList();
 }
