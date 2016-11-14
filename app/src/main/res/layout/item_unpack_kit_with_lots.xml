@@ -109,45 +109,10 @@
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/lot_list_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_existing_lot_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/color_white"
-                android:overScrollMode="never"
-                android:scrollbars="none" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_new_lot_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/color_white"
-                android:overScrollMode="never"
-                android:scrollbars="none" />
-
-            <LinearLayout
-                android:id="@+id/add_new_lot_panel"
-                style="@style/InventoryCard.ActionPanel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tx_add_new_lot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_normal"
-                    android:text="@string/btn_add_new_lot"
-                    android:textColor="@color/color_accent"
-                    android:textSize="@dimen/font_size_normal" />
-            </LinearLayout>
-        </LinearLayout>
+       <org.openlmis.core.view.widget.MovementChangeLotListView
+           android:id="@+id/view_lot_list"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

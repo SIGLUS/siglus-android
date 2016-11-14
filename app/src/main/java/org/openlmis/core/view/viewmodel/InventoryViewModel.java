@@ -189,10 +189,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         }
     }
 
-    public void addLotMovementViewModel(LotMovementViewModel lotMovementViewModel) {
-        newLotMovementViewModelList.add(lotMovementViewModel);
-    }
-
     public Long getLotListQuantityTotalAmount() {
         long lotTotalQuantity = 0L;
         for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {

@@ -53,7 +53,7 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
     @Override
     public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lots_for_unpackit, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_unpack_kit_with_lots, parent, false);
             return new UnpackKitWithLotViewHolder(view);
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false);

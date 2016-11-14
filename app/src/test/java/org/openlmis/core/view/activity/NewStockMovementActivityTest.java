@@ -55,7 +55,6 @@ public class NewStockMovementActivityTest {
         LotMovementViewModel lot2 = new LotMovementViewModelBuilder().setLotNumber("test2").setLotSOH("100").setQuantity("50").build();
         stockMovementViewModel.getExistingLotMovementViewModelList().addAll(Arrays.asList(lot1,lot2));
 
-        stockMovementViewModel.setStockCard(new StockCardBuilder().setProduct(new ProductBuilder().build()).build());
         StockCard stockcard = new StockCardBuilder().setProduct(ProductBuilder.buildAdultProduct()).build();
 
         stockMovementViewModel.setProduct(stockcard.getProduct());

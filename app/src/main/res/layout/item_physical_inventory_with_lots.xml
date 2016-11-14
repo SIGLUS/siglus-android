@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Card.Padded"
     android:layout_width="match_parent"
@@ -42,43 +41,9 @@
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/lot_list_container"
+        <org.openlmis.core.view.widget.BaseLotListView
+            android:id="@+id/view_lot_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_existing_lot_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:background="@color/color_white"
-                android:overScrollMode="never"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_new_lot_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:background="@color/color_white"
-                android:overScrollMode="never"/>
-
-            <LinearLayout
-                android:id="@+id/add_new_lot_panel"
-                style="@style/InventoryCard.ActionPanel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/tx_add_new_lot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_size_normal"
-                    android:layout_marginLeft="@dimen/margin_normal"
-                    android:textColor="@color/color_accent"
-                    android:text="@string/btn_add_new_lot" />
-            </LinearLayout>
-        </LinearLayout>
-
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

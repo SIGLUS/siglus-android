@@ -36,7 +36,7 @@ public class UnpackKitWithLotViewHolderTest {
 
     @Before
     public void setUp() throws Exception {
-        viewHolder = new UnpackKitWithLotViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_lots_for_unpackit, null, false));
+        viewHolder = new UnpackKitWithLotViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_unpack_kit_with_lots, null, false));
         product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
     }
 

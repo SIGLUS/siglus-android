@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import org.openlmis.core.LMISApp;
@@ -29,7 +28,7 @@ import lombok.Setter;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
-public abstract class BaseLotListView extends FrameLayout {
+public class BaseLotListView extends FrameLayout {
     protected Context context;
 
     @InjectView(R.id.ly_add_new_lot)
@@ -40,9 +39,6 @@ public abstract class BaseLotListView extends FrameLayout {
 
     @InjectView(R.id.rv_existing_lot_list)
     protected RecyclerView existingLotListView;
-
-    @InjectView(R.id.ly_lot_list)
-    protected ViewGroup lyLotList;
 
     protected AddLotDialogFragment addLotDialogFragment;
 
@@ -125,7 +121,7 @@ public abstract class BaseLotListView extends FrameLayout {
                 return lotMovementViewModel.getLotNumber();
             }
         }).toList());
-        existingLots.addAll(FluentIterable.from((viewModel.getExistingLotMovementViewModelList())).transform(new Function<LotMovementViewModel, String>() {
+        existingLots.addAll(FluentIterable.from(viewModel.getExistingLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
             @Override
             public String apply(LotMovementViewModel lotMovementViewModel) {
                 return lotMovementViewModel.getLotNumber();
@@ -176,5 +172,4 @@ public abstract class BaseLotListView extends FrameLayout {
             }
         };
     }
-
 }

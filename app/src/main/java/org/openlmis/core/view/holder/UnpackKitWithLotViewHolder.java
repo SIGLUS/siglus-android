@@ -3,7 +3,6 @@ package org.openlmis.core.view.holder;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,11 +12,12 @@ import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
+import org.openlmis.core.view.widget.MovementChangeLotListView;
 
 import roboguice.inject.InjectView;
 import rx.functions.Action1;
 
-public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
+public class UnpackKitWithLotViewHolder extends BaseViewHolder{
     @InjectView(R.id.tv_kit_expected_quantity)
     TextView tvKitExpectedQuantity;
 
@@ -33,21 +33,39 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
     @InjectView(R.id.vg_soh_pop)
     ViewGroup vg_soh_pop;
 
-    @InjectView(R.id.lot_list_container)
-    private LinearLayout lotListContainer;
+    @InjectView(R.id.product_name)
+    TextView tvProductName;
+
+    @InjectView(R.id.product_unit)
+    TextView tvProductUnit;
+
+    @InjectView(R.id.view_lot_list)
+    MovementChangeLotListView lotListView;
+
+    protected InventoryViewModel viewModel;
 
     public UnpackKitWithLotViewHolder(View itemView) {
         super(itemView);
     }
 
     public void populate(final InventoryViewModel viewModel, Action1 setConfirmNoStockReceivedAction) {
-        super.populate(viewModel);
+        this.viewModel = viewModel;
+        lotListView.initLotListView(viewModel, getMovementChangedListener());
 
         initViewHolderStyle(viewModel);
         setConfirmStockClickListener((UnpackKitInventoryViewModel) viewModel, setConfirmNoStockReceivedAction);
 
         validateIfShouldShowUpEmptyLotWarning(viewModel);
         updatePop(viewModel);
+    }
+
+    private LotMovementAdapter.MovementChangedListener getMovementChangedListener() {
+        return new LotMovementAdapter.MovementChangedListener() {
+            @Override
+            public void movementChange() {
+                updatePop(viewModel);
+            }
+        };
     }
 
     private void validateIfShouldShowUpEmptyLotWarning(InventoryViewModel inventoryViewModel) {
@@ -73,7 +91,7 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
             tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
             tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_black));
             tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
-            lotListContainer.setVisibility(View.GONE);
+            lotListView.setVisibility(View.GONE);
         }
     }
 
@@ -104,7 +122,7 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
     }
 
     private void initViewHolderStyle(InventoryViewModel inventoryViewModel) {
-        lotListContainer.setVisibility(View.VISIBLE);
+        lotListView.setVisibility(View.VISIBLE);
         vg_soh_pop.setVisibility(View.GONE);
         tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledName()));
@@ -121,7 +139,7 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
                 tvConfirmHasStock.setVisibility(View.VISIBLE);
                 tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
                 tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
-                lotListContainer.setVisibility(View.GONE);
+                lotListView.setVisibility(View.GONE);
                 setConfirmNoStockReceivedAction.call(inventoryViewModel);
             }
         });
@@ -132,33 +150,10 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
                 tvConfirmNoStock.setVisibility(View.VISIBLE);
                 tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_amount_change));
                 tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_red));
-                lotListContainer.setVisibility(View.VISIBLE);
+                lotListView.setVisibility(View.VISIBLE);
                 inventoryViewModel.setConfirmedNoStockReceived(false);
                 inventoryViewModel.setShouldShowEmptyLotWarning(true);
             }
         });
     }
-
-    @Override
-    protected void initExistingLotListView() {
-        super.initExistingLotListView();
-        existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
-            @Override
-            public void movementChange() {
-                updatePop(viewModel);
-            }
-        });
-    }
-
-    @Override
-    protected void initLotListRecyclerView() {
-        super.initLotListRecyclerView();
-        newLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
-            @Override
-            public void movementChange() {
-                updatePop(viewModel);
-            }
-        });
-    }
-
 }

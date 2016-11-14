@@ -15,7 +15,7 @@ import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import roboguice.inject.InjectView;
 
-public class NewMovementLotListView extends BaseLotListView {
+public class NewMovementLotListView extends MovementChangeLotListView {
 
     @InjectView(R.id.alert_add_positive_lot_amount)
     ViewGroup alertAddPositiveLotAmount;
@@ -33,6 +33,7 @@ public class NewMovementLotListView extends BaseLotListView {
 
     public void initLotListView(BaseStockMovementViewModel viewModel) {
         this.viewModel = viewModel;
+        movementChangedListener = getMovementChangedListener();
 
         if (MovementReasonManager.MovementType.RECEIVE.equals(viewModel.getMovementType())
                 || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(viewModel.getMovementType())) {
@@ -46,23 +47,13 @@ public class NewMovementLotListView extends BaseLotListView {
         initLotErrorBanner();
     }
 
-    public void initNewLotListView() {
-        super.initNewLotListView();
-        newLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
-    }
-
-    public void initExistingLotListView() {
-        super.initExistingLotListView();
-        existingLotMovementAdapter.setMovementChangeListener(getMovementChangedListener());
-    }
-
     public void addNewLot(LotMovementViewModel lotMovementViewModel) {
         super.addNewLot(lotMovementViewModel);
         updateAddPositiveLotAmountAlert();
     }
 
     @NonNull
-    private LotMovementAdapter.MovementChangedListener getMovementChangedListener() {
+    protected LotMovementAdapter.MovementChangedListener getMovementChangedListener() {
         return new LotMovementAdapter.MovementChangedListener() {
             @Override
             public void movementChange() {
