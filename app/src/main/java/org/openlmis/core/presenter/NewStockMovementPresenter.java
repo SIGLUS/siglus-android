@@ -71,7 +71,6 @@ public class NewStockMovementPresenter extends Presenter {
     public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType) {
         try {
             stockCard = stockRepository.queryStockCardById(stockCardId);
-            stockMovementViewModel.setStockCard(stockCard);
             stockMovementViewModel.setProduct(stockCard.getProduct());
             stockMovementViewModel.setMovementType(movementType);
         } catch (LMISException e) {

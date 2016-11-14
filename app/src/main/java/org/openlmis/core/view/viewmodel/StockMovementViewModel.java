@@ -51,13 +51,10 @@ public class StockMovementViewModel extends BaseStockMovementViewModel{
     boolean isDraft = true;
     boolean isKit;
 
-    StockCard stockCard;
-
     private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
 
     public StockMovementViewModel(StockMovementItem item) {
-        stockCard = item.getStockCard();
-        product = stockCard.getProduct();
+        product = item.getStockCard().getProduct();
         movementDate = DateUtil.formatDate(item.getMovementDate());
         documentNo = item.getDocumentNumber();
         stockExistence = String.valueOf(item.getStockOnHand());
