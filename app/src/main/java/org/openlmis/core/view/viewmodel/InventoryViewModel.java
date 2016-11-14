@@ -39,7 +39,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class InventoryViewModel {
+public class InventoryViewModel extends BaseStockMovementViewModel {
 
     long productId;
     String productName;
@@ -50,9 +50,6 @@ public class InventoryViewModel {
     String quantity;
     boolean isDataChanged;
     final List<String> expiryDates = new ArrayList<>();
-
-    List<LotMovementViewModel> newLotMovementViewModelList = new ArrayList<>();
-    List<LotMovementViewModel> existingLotMovementViewModelList = new ArrayList<>();
 
     long stockCardId;
 
@@ -69,7 +66,6 @@ public class InventoryViewModel {
 
     private String signature;
     StockCard stockCard;
-    protected Product product;
 
     public InventoryViewModel(StockCard stockCard) {
         this(stockCard.getProduct());

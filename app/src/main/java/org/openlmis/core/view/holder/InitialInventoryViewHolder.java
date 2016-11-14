@@ -128,8 +128,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                 }
             }
         });
-        lotListView.setViewModel(viewModel);
-        lotListView.initLotListView();
+        lotListView.initLotListView(viewModel);
     }
 
     private void resetCheckBox() {

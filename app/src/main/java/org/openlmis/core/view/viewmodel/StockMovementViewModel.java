@@ -39,7 +39,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class StockMovementViewModel {
+public class StockMovementViewModel extends BaseStockMovementViewModel{
 
     MovementReasonManager.MovementReason reason;
 
@@ -55,12 +55,9 @@ public class StockMovementViewModel {
 
     private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
 
-    final List<LotMovementViewModel> newLotMovementViewModelList = new ArrayList<>();
-
-    final List<LotMovementViewModel> existingLotMovementViewModelList = new ArrayList<>();
-
     public StockMovementViewModel(StockMovementItem item) {
         stockCard = item.getStockCard();
+        product = stockCard.getProduct();
         movementDate = DateUtil.formatDate(item.getMovementDate());
         documentNo = item.getDocumentNumber();
         stockExistence = String.valueOf(item.getStockOnHand());

@@ -112,7 +112,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     private void setUpLostListView() {
         if (!isKit) {
-            newMovementLotListView.initLotListView(viewModel, movementType);
+            newMovementLotListView.initLotListView(viewModel);
         } else {
             lyLotArea.setVisibility(View.GONE);
         }

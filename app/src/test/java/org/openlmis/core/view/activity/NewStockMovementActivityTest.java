@@ -58,6 +58,7 @@ public class NewStockMovementActivityTest {
         stockMovementViewModel.setStockCard(new StockCardBuilder().setProduct(new ProductBuilder().build()).build());
         StockCard stockcard = new StockCardBuilder().setProduct(ProductBuilder.buildAdultProduct()).build();
 
+        stockMovementViewModel.setProduct(stockcard.getProduct());
         when(mockedPresenter.getStockMovementViewModel()).thenReturn(stockMovementViewModel);
         when(mockedPresenter.getStockCard()).thenReturn(stockcard);
 

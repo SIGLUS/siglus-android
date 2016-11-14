@@ -17,6 +17,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
+import org.openlmis.core.view.viewmodel.BaseStockMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -24,6 +25,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Setter;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
@@ -47,6 +49,9 @@ public abstract class BaseLotListView extends FrameLayout {
     protected LotMovementAdapter newLotMovementAdapter;
     protected LotMovementAdapter existingLotMovementAdapter;
 
+    @Setter
+    protected BaseStockMovementViewModel viewModel;
+
     public BaseLotListView(Context context) {
         super(context);
     }
@@ -63,7 +68,8 @@ public abstract class BaseLotListView extends FrameLayout {
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
     }
 
-    public void initLotListView() {
+    public void initLotListView(BaseStockMovementViewModel viewModel) {
+        this.viewModel = viewModel;
         initExistingLotListView();
         initNewLotListView();
         lyAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
@@ -71,13 +77,13 @@ public abstract class BaseLotListView extends FrameLayout {
 
     public void initExistingLotListView() {
         existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        existingLotMovementAdapter = new LotMovementAdapter(getExistingLotMovementViewModelList());
+        existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
     public void initNewLotListView() {
         newLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        newLotMovementAdapter = new LotMovementAdapter(getNewLotMovementViewModelList(), getProductNameWithCodeAndStrength());
+        newLotMovementAdapter = new LotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
         newLotListView.setAdapter(newLotMovementAdapter);
     }
 
@@ -91,7 +97,7 @@ public abstract class BaseLotListView extends FrameLayout {
     }
 
     public void addNewLot(LotMovementViewModel lotMovementViewModel) {
-        getNewLotMovementViewModelList().add(lotMovementViewModel);
+        viewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
         refreshNewLotList();
     }
 
@@ -100,7 +106,7 @@ public abstract class BaseLotListView extends FrameLayout {
             @Override
             public void addLot(String expiryDate) {
                 lyAddNewLot.setEnabled(true);
-                String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(getProductCode(), expiryDate);
+                String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getProduct().getCode(), expiryDate);
                 if (getLotNumbers().contains(lotNumber)) {
                     ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_already_exists));
                 } else {
@@ -113,13 +119,13 @@ public abstract class BaseLotListView extends FrameLayout {
     @NonNull
     public List<String> getLotNumbers() {
         final List<String> existingLots = new ArrayList<>();
-        existingLots.addAll(FluentIterable.from(getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
+        existingLots.addAll(FluentIterable.from(viewModel.getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
             @Override
             public String apply(LotMovementViewModel lotMovementViewModel) {
                 return lotMovementViewModel.getLotNumber();
             }
         }).toList());
-        existingLots.addAll(FluentIterable.from((getExistingLotMovementViewModelList())).transform(new Function<LotMovementViewModel, String>() {
+        existingLots.addAll(FluentIterable.from((viewModel.getExistingLotMovementViewModelList())).transform(new Function<LotMovementViewModel, String>() {
             @Override
             public String apply(LotMovementViewModel lotMovementViewModel) {
                 return lotMovementViewModel.getLotNumber();
@@ -141,7 +147,7 @@ public abstract class BaseLotListView extends FrameLayout {
     public void showAddLotDialogFragment() {
         setActionAddNewEnabled(false);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.PARAM_STOCK_NAME, getFormattedProductName());
+        bundle.putString(Constants.PARAM_STOCK_NAME, viewModel.getProduct().getFormattedProductName());
         addLotDialogFragment = new AddLotDialogFragment();
         addLotDialogFragment.setArguments(bundle);
         addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
@@ -157,7 +163,7 @@ public abstract class BaseLotListView extends FrameLayout {
                 switch (v.getId()) {
                     case R.id.btn_complete:
                         if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
-                            addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), getMovementType()));
+                            addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), viewModel.getMovementType()));
                             addLotDialogFragment.dismiss();
                         }
                         setActionAddNewEnabled(true);
@@ -171,15 +177,4 @@ public abstract class BaseLotListView extends FrameLayout {
         };
     }
 
-    protected abstract MovementReasonManager.MovementType getMovementType();
-
-    protected abstract String getProductCode();
-
-    protected abstract String getFormattedProductName();
-
-    protected abstract String getProductNameWithCodeAndStrength();
-
-    protected abstract List<LotMovementViewModel> getExistingLotMovementViewModelList();
-
-    protected abstract List<LotMovementViewModel> getNewLotMovementViewModelList();
 }

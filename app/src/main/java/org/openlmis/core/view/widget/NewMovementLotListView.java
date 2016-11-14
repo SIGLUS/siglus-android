@@ -9,10 +9,9 @@ import android.view.ViewGroup;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
+import org.openlmis.core.view.viewmodel.BaseStockMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-
-import java.util.List;
 
 import roboguice.inject.InjectView;
 
@@ -24,9 +23,6 @@ public class NewMovementLotListView extends BaseLotListView {
     @InjectView(R.id.alert_soonest_expire)
     ViewGroup alertSoonestExpire;
 
-    private StockMovementViewModel viewModel;
-    private MovementReasonManager.MovementType movementType;
-
     public NewMovementLotListView(Context context) {
         super(context);
     }
@@ -35,12 +31,11 @@ public class NewMovementLotListView extends BaseLotListView {
         super(context, attrs);
     }
 
-    public void initLotListView(StockMovementViewModel viewModel, MovementReasonManager.MovementType movementType) {
+    public void initLotListView(BaseStockMovementViewModel viewModel) {
         this.viewModel = viewModel;
-        this.movementType = movementType;
 
-        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
-                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+        if (MovementReasonManager.MovementType.RECEIVE.equals(viewModel.getMovementType())
+                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(viewModel.getMovementType())) {
             setActionAddNewLotVisibility(View.VISIBLE);
             setActionAddNewLotListener(getAddNewLotOnClickListener());
         } else {
@@ -78,7 +73,7 @@ public class NewMovementLotListView extends BaseLotListView {
     }
 
     private void updateAddPositiveLotAmountAlert() {
-        if (!this.viewModel.movementQuantitiesExist()) {
+        if (!((StockMovementViewModel) viewModel).movementQuantitiesExist()) {
             alertAddPositiveLotAmount.setVisibility(View.VISIBLE);
         } else {
             alertAddPositiveLotAmount.setVisibility(View.GONE);
@@ -86,7 +81,7 @@ public class NewMovementLotListView extends BaseLotListView {
     }
 
     private void updateSoonestToExpireNotIssuedBanner() {
-        alertSoonestExpire.setVisibility(movementType == MovementReasonManager.MovementType.ISSUE && !viewModel.validateSoonestToExpireLotsIssued() ? View.VISIBLE : View.GONE);
+        alertSoonestExpire.setVisibility(viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE && !((StockMovementViewModel) viewModel).validateSoonestToExpireLotsIssued() ? View.VISIBLE : View.GONE);
     }
 
     public void setActionAddNewLotVisibility(int visibility) {
@@ -98,7 +93,7 @@ public class NewMovementLotListView extends BaseLotListView {
     }
 
     public void initLotErrorBanner() {
-        if (viewModel.hasLotDataChanged()) {
+        if (((StockMovementViewModel) viewModel).hasLotDataChanged()) {
             updateAddPositiveLotAmountAlert();
         }
     }
@@ -124,35 +119,5 @@ public class NewMovementLotListView extends BaseLotListView {
             return true;
         }
         return false;
-    }
-
-    @Override
-    protected String getProductNameWithCodeAndStrength() {
-        return viewModel.getStockCard().getProduct().getProductNameWithCodeAndStrength();
-    }
-
-    @Override
-    protected String getProductCode() {
-        return viewModel.getStockCard().getProduct().getCode();
-    }
-
-    @Override
-    protected List<LotMovementViewModel> getExistingLotMovementViewModelList() {
-        return viewModel.getExistingLotMovementViewModelList();
-    }
-
-    @Override
-    protected List<LotMovementViewModel> getNewLotMovementViewModelList() {
-        return viewModel.getNewLotMovementViewModelList();
-    }
-
-    @Override
-    protected String getFormattedProductName() {
-        return viewModel.getStockCard().getProduct().getFormattedProductName();
-    }
-
-    @Override
-    protected MovementReasonManager.MovementType getMovementType() {
-        return movementType;
     }
 }

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -53,8 +54,10 @@ public class InitialInventoryPresenter extends InventoryPresenter {
             InventoryViewModel viewModel;
             if (product.isArchived()) {
                 viewModel = new InventoryViewModel(stockRepository.queryStockCardByProductId(product.getId()));
+                viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
             } else {
                 viewModel = new InventoryViewModel(product);
+                viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
             }
             viewModel.setChecked(false);
             return viewModel;
