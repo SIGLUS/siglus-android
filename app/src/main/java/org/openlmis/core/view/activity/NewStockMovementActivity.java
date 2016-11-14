@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
@@ -31,8 +32,13 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_stock_card_new_movement)
 public class NewStockMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener {
 
+    @InjectView(R.id.view_movement_details)
     MovementDetailsView movementDetailsView;
 
+    @InjectView(R.id.ly_lot_area)
+    ViewGroup lyLotArea;
+
+    @InjectView(R.id.view_lot_list)
     NewMovementLotListView newMovementLotListView;
 
     @InjectView(R.id.btn_complete)
@@ -97,7 +103,6 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     private void setUpMovementDetailsView() {
-        movementDetailsView = (MovementDetailsView) this.findViewById(R.id.view_movement_details);
         movementDetailsView.initMovementDetailsView(presenter, movementType);
         movementDetailsView.setMovementReasonClickListener(getMovementReasonOnClickListener());
         if (isKit) {
@@ -107,10 +112,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     private void setUpLostListView() {
         if (!isKit) {
-            newMovementLotListView = (NewMovementLotListView) this.findViewById(R.id.view_lot_list);
             newMovementLotListView.initLotListView(viewModel, movementType);
         } else {
-            newMovementLotListView.setVisibility(View.GONE);
+            lyLotArea.setVisibility(View.GONE);
         }
     }
 
