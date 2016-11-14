@@ -97,14 +97,14 @@ public class BaseLotListView extends FrameLayout {
         refreshNewLotList();
     }
 
-    public AddLotDialogFragment.AddLotListener getAddLotWithoutNumberListener() {
-        return new AddLotDialogFragment.AddLotListener() {
+    public AddLotDialogFragment.AddLotWithoutNumberListener getAddLotWithoutNumberListener() {
+        return new AddLotDialogFragment.AddLotWithoutNumberListener() {
             @Override
             public void addLot(String expiryDate) {
                 lyAddNewLot.setEnabled(true);
                 String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getProduct().getCode(), expiryDate);
                 if (getLotNumbers().contains(lotNumber)) {
-                    ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_already_exists));
+                    ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
                 } else {
                     addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
                 }

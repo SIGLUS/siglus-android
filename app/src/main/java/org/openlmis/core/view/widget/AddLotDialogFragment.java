@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
 
     @Setter
     private View.OnClickListener listener;
-    private AddLotListener addLotListener;
+    private AddLotWithoutNumberListener addLotWithoutNumberListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -137,12 +138,12 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     }
 
     private void showConfirmNoLotNumberDialog() {
-        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null, getString(R.string.msg_confirm_empty_lot_number), getString(R.string.btn_positive), getString(R.string.btn_negative), "on_lot_added");
+        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(Html.fromHtml(getString(R.string.title_generate_lot_number)), Html.fromHtml(getString(R.string.msg_confirm_empty_lot_number,drugName.getText())), getString(R.string.btn_confirm_generate_lot_number), getString(R.string.btn_cancel), "on_lot_added");
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
             @Override
             public void positiveClick(String tag) {
                 dialogFragment.dismiss();
-                addLotListener.addLot(expiryDate);
+                addLotWithoutNumberListener.addLot(expiryDate);
                 AddLotDialogFragment.this.dismiss();
             }
 
@@ -168,11 +169,11 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         return false;
     }
 
-    public void setAddLotWithoutNumberListener(AddLotListener addLotListener) {
-        this.addLotListener = addLotListener;
+    public void setAddLotWithoutNumberListener(AddLotWithoutNumberListener addLotWithoutNumberListener) {
+        this.addLotWithoutNumberListener = addLotWithoutNumberListener;
     }
 
-    public interface AddLotListener {
+    public interface AddLotWithoutNumberListener {
         void addLot(String expiryDate);
     }
 }

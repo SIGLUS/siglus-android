@@ -56,7 +56,7 @@ And(/^I enter negative adjustment number "(.*?)"$/) do |number|
 end
 
 Then(/^I enter quantity number "(\d+)"$/) do |number|
-    q = query("android.widget.EditText id:'et_movement_quantity' text:''")
+    q = query("android.widget.EditText id:'et_movement_quantity'")
     touch(q.first)
     keyboard_enter_text(number)
     hide_soft_keyboard
