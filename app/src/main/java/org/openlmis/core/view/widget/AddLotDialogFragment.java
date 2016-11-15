@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
-import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.fragment.ConfirmGenerateLotNumberDialogFragment;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -138,22 +137,22 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     }
 
     private void showConfirmNoLotNumberDialog() {
-        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(Html.fromHtml(getString(R.string.title_generate_lot_number)), Html.fromHtml(getString(R.string.msg_confirm_empty_lot_number,drugName.getText())), getString(R.string.btn_confirm_generate_lot_number), getString(R.string.btn_cancel), "on_lot_added");
-        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER, getString(R.string.msg_confirm_empty_lot_number, drugName.getText()));
+        final ConfirmGenerateLotNumberDialogFragment confirmDialog = new ConfirmGenerateLotNumberDialogFragment();
+        confirmDialog.setArguments(bundle);
+        confirmDialog.setPositiveClickListener(new View.OnClickListener() {
             @Override
-            public void positiveClick(String tag) {
-                dialogFragment.dismiss();
-                addLotWithoutNumberListener.addLot(expiryDate);
+            public void onClick(View v) {
+                confirmDialog.dismiss();
+                addLotWithoutNumberListener.addLotWithoutNumber(expiryDate);
                 AddLotDialogFragment.this.dismiss();
             }
-
-            @Override
-            public void negativeClick(String tag) {
-                dialogFragment.dismiss();
-            }
         });
-        dialogFragment.show(getFragmentManager(), "on_lot_added");
+        confirmDialog.show(getFragmentManager(),"confirm generate lot number");
     }
+
+
 
     private void clearErrorMessage() {
         lyLotNumber.setErrorEnabled(false);
@@ -174,6 +173,6 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     }
 
     public interface AddLotWithoutNumberListener {
-        void addLot(String expiryDate);
+        void addLotWithoutNumber(String expiryDate);
     }
 }

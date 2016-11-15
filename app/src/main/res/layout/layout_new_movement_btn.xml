@@ -8,13 +8,13 @@
         android:id="@+id/new_movement_panel"
         style="@style/FormAction.Container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/default_button_bar_height">
+        android:layout_height="@dimen/button_bar_height_default">
 
         <Button
             android:id="@+id/btn_new_movement"
             style="@style/FormAction.CompleteBtn.StockMovement"
             android:layout_width="@dimen/new_movement_button_width"
-            android:layout_height="@dimen/default_button_height"
+            android:layout_height="@dimen/button_height_default"
             android:text="@string/btn_new_movement"
             android:textAlignment="center" />
 

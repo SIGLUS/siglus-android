@@ -8,19 +8,19 @@
         android:id="@+id/action_panel"
         style="@style/FormAction.Container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/default_button_bar_height">
+        android:layout_height="@dimen/button_bar_height_default">
 
         <LinearLayout
             android:id="@+id/btn_save"
             style="@style/FormAction.SaveContainer"
             android:layout_width="0dp"
-            android:layout_height="@dimen/default_button_height"
+            android:layout_height="@dimen/button_height_default"
             android:layout_weight="1">
 
             <Button
                 style="@style/FormAction.SaveBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/default_button_height"
+                android:layout_height="@dimen/button_height_default"
                 android:text="@string/btn_save" />
         </LinearLayout>
 
@@ -28,7 +28,7 @@
             android:id="@+id/btn_complete"
             style="@style/FormAction.CompleteBtn"
             android:layout_width="0dp"
-            android:layout_height="@dimen/default_button_height"
+            android:layout_height="@dimen/button_height_default"
             android:layout_weight="1"
             android:text="@string/btn_complete" />
     </LinearLayout>

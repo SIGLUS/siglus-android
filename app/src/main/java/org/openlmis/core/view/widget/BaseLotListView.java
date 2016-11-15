@@ -100,7 +100,7 @@ public class BaseLotListView extends FrameLayout {
     public AddLotDialogFragment.AddLotWithoutNumberListener getAddLotWithoutNumberListener() {
         return new AddLotDialogFragment.AddLotWithoutNumberListener() {
             @Override
-            public void addLot(String expiryDate) {
+            public void addLotWithoutNumber(String expiryDate) {
                 lyAddNewLot.setEnabled(true);
                 String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getProduct().getCode(), expiryDate);
                 if (getLotNumbers().contains(lotNumber)) {

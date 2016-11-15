@@ -34,16 +34,16 @@
 
         <TextView
             android:id="@+id/btn_cancel"
-            style="@style/Dialog.Btn.Negative"
+            style="@style/Dialog.Btn.TextBlue"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/default_button_height"
+            android:layout_height="@dimen/button_height_default"
             android:text="@string/btn_cancel" />
 
         <Button
             android:id="@+id/btn_done"
             style="@style/Dialog.Btn.Positive"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/default_button_height"
+            android:layout_height="@dimen/button_height_default"
             android:layout_marginStart="16dp"
             android:text="@string/btn_approve" />
     </LinearLayout>

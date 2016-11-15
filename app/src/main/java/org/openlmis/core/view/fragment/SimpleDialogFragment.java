@@ -138,7 +138,7 @@ public class SimpleDialogFragment extends RoboDialogFragment {
                 Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
                 positiveButton.setTypeface(null, Typeface.BOLD);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                        (int) getResources().getDimension(R.dimen.default_button_height));
+                        (int) getResources().getDimension(R.dimen.button_height_default));
                 positiveButton.setLayoutParams(layoutParams);
                 positiveButton.setTextColor(getResources().getColor(R.color.color_accent));
 
