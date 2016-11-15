@@ -144,6 +144,9 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     }
 
     public Date getLastStockMovementDate() {
+        if (getStockMovementItemsWrapper().isEmpty()) {
+            return null;
+        }
         return getStockMovementItemsWrapper().get(getStockMovementItemsWrapper().size()-1).getMovementDate();
     }
 

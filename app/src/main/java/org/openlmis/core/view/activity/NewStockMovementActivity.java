@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -71,6 +72,15 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.StockCardNewMovementScreen;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
+            ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
+            finish();
+        }
     }
 
     @Override
