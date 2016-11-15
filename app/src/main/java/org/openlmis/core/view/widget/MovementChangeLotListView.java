@@ -10,8 +10,8 @@ public class MovementChangeLotListView extends BaseLotListView{
     LotMovementAdapter.MovementChangedListener movementChangedListener;
 
     public void initLotListView(BaseStockMovementViewModel viewModel, LotMovementAdapter.MovementChangedListener listener) {
-        super.initLotListView(viewModel);
         movementChangedListener = listener;
+        super.initLotListView(viewModel);
     }
 
     public MovementChangeLotListView(Context context) {
