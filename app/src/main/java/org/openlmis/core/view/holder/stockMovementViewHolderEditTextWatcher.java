@@ -8,13 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
-class stockMovementViewHolderEditTextWatcher extends SingleTextWatcher {
+class StockMovementViewHolderEditTextWatcher extends SingleTextWatcher {
     private StockMovementViewHolder stockMovementViewHolder;
     private final View view;
     private final long currentStockOnHand;
     private final StockMovementViewModel model;
 
-    public stockMovementViewHolderEditTextWatcher(StockMovementViewHolder stockMovementViewHolder, View view, StockMovementViewModel model, long currentStockOnHand) {
+    public StockMovementViewHolderEditTextWatcher(StockMovementViewHolder stockMovementViewHolder, View view, StockMovementViewModel model, long currentStockOnHand) {
         this.stockMovementViewHolder = stockMovementViewHolder;
         this.view = view;
         this.currentStockOnHand = currentStockOnHand;
