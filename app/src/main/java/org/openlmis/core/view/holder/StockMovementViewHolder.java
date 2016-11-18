@@ -197,14 +197,14 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void removeTextChangeListeners(StockMovementViewModel model, long currentStockOnHand) {
-        etReceived.removeTextChangedListener(new EditTextWatcher(this, etReceived, model, currentStockOnHand));
-        etNegativeAdjustment.removeTextChangedListener(new EditTextWatcher(this, etNegativeAdjustment, model, currentStockOnHand));
-        etPositiveAdjustment.removeTextChangedListener(new EditTextWatcher(this, etPositiveAdjustment, model, currentStockOnHand));
+        etReceived.removeTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etReceived, model, currentStockOnHand));
+        etNegativeAdjustment.removeTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etNegativeAdjustment, model, currentStockOnHand));
+        etPositiveAdjustment.removeTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etPositiveAdjustment, model, currentStockOnHand));
 
-        etIssued.removeTextChangedListener(new EditTextWatcher(this, etIssued, model, currentStockOnHand));
-        etRequested.removeTextChangedListener(new EditTextWatcher(this, etRequested, model, currentStockOnHand));
+        etIssued.removeTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etIssued, model, currentStockOnHand));
+        etRequested.removeTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etRequested, model, currentStockOnHand));
 
-        etDocumentNo.removeTextChangedListener(new EditTextWatcher(this, etDocumentNo, model, currentStockOnHand));
+        etDocumentNo.removeTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etDocumentNo, model, currentStockOnHand));
     }
 
     private void addClickListeners(final StockMovementViewModel model, final Date previousMovementDate) {
@@ -243,12 +243,12 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void addTextChangedListeners(StockMovementViewModel model, long currentStockOnHand) {
-        etReceived.addTextChangedListener(new EditTextWatcher(this, etReceived, model, currentStockOnHand));
-        etNegativeAdjustment.addTextChangedListener(new EditTextWatcher(this, etNegativeAdjustment, model, currentStockOnHand));
-        etPositiveAdjustment.addTextChangedListener(new EditTextWatcher(this, etPositiveAdjustment, model, currentStockOnHand));
-        etIssued.addTextChangedListener(new EditTextWatcher(this, etIssued, model, currentStockOnHand));
-        etDocumentNo.addTextChangedListener(new EditTextWatcher(this, etDocumentNo, model, currentStockOnHand));
-        etRequested.addTextChangedListener(new EditTextWatcher(this, etRequested, model, currentStockOnHand));
+        etReceived.addTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etReceived, model, currentStockOnHand));
+        etNegativeAdjustment.addTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etNegativeAdjustment, model, currentStockOnHand));
+        etPositiveAdjustment.addTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etPositiveAdjustment, model, currentStockOnHand));
+        etIssued.addTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etIssued, model, currentStockOnHand));
+        etDocumentNo.addTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etDocumentNo, model, currentStockOnHand));
+        etRequested.addTextChangedListener(new stockMovementViewHolderEditTextWatcher(this, etRequested, model, currentStockOnHand));
     }
 
     private void setItemViewTextColor(StockMovementViewModel model) {

@@ -44,13 +44,16 @@ public class StockMovementViewModel extends BaseStockMovementViewModel{
     MovementReasonManager.MovementReason reason;
 
     String movementDate;
-    String stockExistence;
     String documentNo;
     String signature;
-    String requested;
-    boolean isDraft = true;
     boolean isKit;
+    String requested;
 
+    //old
+    String stockExistence;
+    boolean isDraft = true;
+
+    //new
     private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
 
     public StockMovementViewModel(StockMovementItem item) {
