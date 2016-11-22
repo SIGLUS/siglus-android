@@ -1,4 +1,4 @@
-@REQUISITION @dev @change_date
+@REQUISITION @weekly @change_date
 Feature: Requisition
 
   Scenario: Save requisition draft
@@ -8,9 +8,8 @@ Feature: Requisition
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
-    And I make a new movement "[01A01]" "Issues" "PAV" "issued" "10"
+    And I make a new movement "[01A01]" "Issues" "PAV" "10"
     Then I wait for 1 second
-
 
      # Archive VIA drug
     And I select stock card code called "[01A02]"

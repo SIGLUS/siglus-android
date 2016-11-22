@@ -199,7 +199,7 @@ Then(/^I make a negative movement with lot "(.*?)" "(.*?)" "(.*?)"$/) do |first_
    }
 end
 
-Then(/^I make a new movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, movement_column, number|
+Then(/^I make a new movement "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, number|
     steps %Q{
         Then I search stockcard by code "#{stock_card_code}" and select this item
         Then I wait for "Stock Card" to appear

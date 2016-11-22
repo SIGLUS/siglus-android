@@ -1,4 +1,4 @@
-@MMIA @dev @change_date
+@MMIA @weekly @change_date
 Feature: MMIA
 
   Scenario: Initial a MMIA
@@ -9,6 +9,7 @@ Feature: MMIA
     And I press "MMIA"
     Then I wait for "MMIA" to appear
     Then I should see text containing "You will be able to create a MMIA on the 18th of Feb"
+
     And I change device date to "20160221.140000"
     And I navigate back
     And I wait for 2 seconds
@@ -16,11 +17,13 @@ Feature: MMIA
     And I wait for "Stock Card Overview" to appear
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
+
     Then I wait for 1 second
-    And I make a new movement "[08S18Y]" "Issues" "PAV" "issued" "2"
+    And I make a new movement "[08S18Y]" "Issues" "PAV" "2"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I navigate back
+
     And I press "MMIA"
     Then I wait for "MMIA" to appear
     Then I should see text containing "No MMIA has been created."
@@ -83,6 +86,7 @@ Feature: MMIA
     Then I should see text containing "Your MMIA form has been successfully saved,"
     Then I wait for "MMIA" to appear
 
+#   TODO remove unnecessary manual sync
     Then I navigate back
     Then I wait for "Stock Card Overview" to appear
     And I press the menu key

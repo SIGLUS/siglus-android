@@ -37,6 +37,19 @@ Given(/^I have initialized inventory with VIA user with lot$/) do
 	}
 end
 
+Given(/^I have initialized inventory with MMIA and VIA products with lot$/) do
+  steps %Q{
+        Then I wait up to 60 seconds for "Initial Inventory" to appear
+        Then I wait for "Initial inventory" to appear
+        When I Select VIA Item with lot
+        When I Select MMIA Item with lot
+        Then I wait for "Complete" to appear
+        And I press "Complete"
+        Then I wait for "STOCK CARD OVERVIEW" to appear
+	}
+end
+
+
 When(/^I Select MMIA Item with lot$/) do
   steps %Q{
     When I search lot product by primary name "Zidovudina/Lamivudina/Nevirapi; 60mg+30mg+50mg 60 Comprimidos; Embalagem" and select this item with quantity "123" and lot number "AAA"

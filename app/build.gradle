@@ -297,5 +297,5 @@ task monkeyTests(type: Exec, dependsOn: ['bundleInstall', 'assembleProdsimDebug'
     }
 
     executable 'calabash-android'
-    args "run", "$targetPath", "--tags @monkey --format html --out stress_test_report.html"
+    args "run", "$targetPath", "--tags @monkey --format html --out monkey_test_report.html"
 }
