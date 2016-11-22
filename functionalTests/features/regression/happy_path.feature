@@ -1,4 +1,4 @@
-@regression @change_date @1
+@regression @change_date @happy_path
 Feature: Log in and initialize Inventory
 
   Scenario: User should be able to log in, initialize inventory and navigate to stock overview page
@@ -38,17 +38,15 @@ Feature: Log in and initialize Inventory
 
     When I search "25D03"
     Then I see "Manual de"
-#    When I clean search bar
-#    And I select the inventory item called "08S01ZY"
-#    And I press "Complete"
-#    And I wait for 1 second
-#    Then I should see text containing "Lot number can not be blank"
-#    And I wait for "CANCEL" to appear
-#    And I press "CANCEL"
-
+    When I clean search bar
+    And I select the inventory item called "08S01ZY"
+    Then I set date to next year
+    And I press "Complete"
     And I wait for 1 second
-    And I clean search bar
-    And I search lot product by fnm "08S01ZY" and select this item with quantity "2008" and lot number "lot123"
+    Then I should see text containing "Auto generate lot number"
+    And I press "AUTO GENERATE LOT NUMBER"
+    Then I wait for 1 second
+    Then I enter quantity "2008" for the last lot
     And I press "Complete"
     Then I wait for "Stock Overview" to appear
 

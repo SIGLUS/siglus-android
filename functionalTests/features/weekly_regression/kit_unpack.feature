@@ -142,33 +142,4 @@ Feature: Unpack Kit
     Then I enter consultationsNub "888"
     Then I swipe to the left in via requisition form
     Then I should see "889" on index "2" of "tx_theoretical" field
-    Then I swipe right
-    Then I swipe right
-    Then I enter QuantityRequested "345"
-    Then I wait for 1 second
-    Then I press "Save"
-    Then I wait for "Requisitions" to appear
-
-    And I press "Continue Working on Requisition Balancete"
-    And I rotate the page to "landscape"
-    Then I swipe right
-    Then I should see "345" in the requisition form
-
-    And I press "Submit for Approval"
-    And I sign requisition with "superuser" "testUser" and complete
-    Then I wait for "Requisitions" to appear
-
-    Then I navigate back
-    Then I wait for "Stock Card Overview" to appear
-    And I press the menu key
-    Then I see "Sync Data"
-    And I press "Sync Data"
-
-    And I wait up to 180 seconds for "0 minutes since last sync" to appear
-    And I click the last sync banner
-    Then I see "Requisition last synced 0 minutes ago"
-    Then I go back
-
-    And I press "Requisitions"
-    Then I wait for "Requisitions" to appear
-    Then I should see text containing "View Requisition Balancete"
+    #TODO do not need to do inventory, just need to see opened kit number
