@@ -1,4 +1,4 @@
-@unpack_kit @regression
+@unpack_kit @weekly
 Feature: Unpack Kit
 
   Scenario: Unpack US kit and verify kit products SOH
@@ -123,23 +123,3 @@ Feature: Unpack Kit
     And I press "Next"
     Then I should see "to 18 Feb"
     Then I should see kit receive number and open number is "3"
-
-    Then I enter consultationsNub "2015"
-    Then I wait for 1 second
-    Then I navigate back
-    Then I wait to see "Are you sure you want to quit without saving your work?"
-    Then I press "Yes"
-    Then I wait for "Requisitions" to appear
-
-    And I press "Create Requisition Balancete"
-    Then I should see "Select inventory to close period"
-    And I press "Thursday"
-    And I press "Next"
-    Then I should see "to 18 Feb"
-    Then I should see kit receive number and open number is "3"
-
-    And I should see empty consultations number
-    Then I enter consultationsNub "888"
-    Then I swipe to the left in via requisition form
-    Then I should see "889" on index "2" of "tx_theoretical" field
-    #TODO do not need to do inventory, just need to see opened kit number

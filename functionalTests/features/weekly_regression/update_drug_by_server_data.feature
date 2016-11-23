@@ -1,13 +1,10 @@
-@regression @archive
+@weekly @archive
 Feature: Archive drug
 
-  Scenario: update product as server(update product & deactivated product & add new product)
+  Scenario: update product as server(update product & add new product)
     Given I see "ESMS"
-    Given server deactivates products 12D03 and 07L01
     Given I try to log in with "initial_inventory" "password1"
     And I wait up to 180 seconds for "Initial Inventory" to appear
-    Then I shouldn't see product "Alfa tocoferol (Vitamina E); 100mg; Cápsulas" in this page
-    And I shouldn't see product "Baclofeno; 10mg; Comprimidos" in this page
 
     And I search lot product by primary name "Estavudina/Lamivudina; 6mg+30mg, 60 Comp (Baby); Embalagem" and select this item with quantity "123" and lot number "kkk"
     And I wait for "Complete" to appear
@@ -16,7 +13,6 @@ Feature: Archive drug
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
 
-    #can not see 99X99 & can see 12D03
     And I press the menu key
     And I wait for "Add new product" to appear
     And I press "Add new product"
@@ -26,11 +22,7 @@ Feature: Archive drug
     When I search "25D03"
     Then I see "Manual de procedimentos  do Deposito Distital de Medicamentos Sem Dosagem Papel"
 
-    #can not see 99X99
     When I clean search bar
-    Then I shouldn't see product "99X99" in this page
-
-    #can see 12D03Z
     Then I should see product "12D03Z" in this page
     When I navigate back
     And I wait for 1 second

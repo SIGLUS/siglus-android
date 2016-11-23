@@ -20,6 +20,11 @@ Before('@regression') do |scenario|
   reset_regression_server_data
 end
 
+Before('@weekly') do |scenario|
+  update_lmis_moz_code
+  reset_regression_server_data
+end
+
 Before('@STRESS_TEST') do |scenario|
   update_lmis_moz_code
   reset_regression_server_data
