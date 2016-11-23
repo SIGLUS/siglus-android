@@ -56,17 +56,33 @@ Feature: Log in and initialize Inventory
     Then I should see text containing "Quantity cannot be larger than stock on hand"
     And I press "CANCEL"
 
-    # Make a stock movement and save
+    # Make a stock movement and rotate
     And I wait for 1 second
     And I navigate back
     Then I wait for 1 second
     And I clean search bar
     Then I search stockcard by code "01A04Z" and select this item
-    When I make a negative movement with lot "Negative Adjustments" "Damaged on arrival" "123"
+    Then I wait for "Stock Card" to appear
+    Then I wait for 1 second
+    Then I press "NEW MOVEMENT"
+    Then I select a new movement reason "Negative Adjustments" "Damaged on arrival"
+    Then I wait for 1 second
+    Then I select movement date
+    Then I wait for 1 second
+    Then I enter signature "super"
+    When I enter quantity "123" for the last lot
+    When I rotate the page to "landscape"
+    Then I rotate the page to "portrait"
+    And I wait for 1 second
+    And I press "Complete"
+
     And I swipe right
     And I swipe right
     Then I should see "123"
-    And I see "super" in signature field
+    When I rotate the page to "landscape"
+    And I should see "super"
+    Then I rotate the page to "portrait"
+    And I wait for 1 second
 
     # Make stock movements with different movement types
     When I navigate back
