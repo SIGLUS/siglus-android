@@ -3,7 +3,7 @@ Feature: Requisition
 
   Scenario: Save requisition draft
     Given I change device date to "20160128.130000"
-    Given I try to log in with "via" "password1"
+    Given I try to log in with "superuser" "password1"
     Given I have initialized inventory with VIA user with lot
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
@@ -86,41 +86,3 @@ Feature: Requisition
     And I press "Complete"
     And I should see "Digoxina; 0,5mg/2mL; Inject"
     And I should see "Digoxina; 2,5mg/50mL; Gotas Orais"
-
-    Then I swipe right
-    Then I swipe right
-    Then I should see "123" in the requisition form
-    Then I enter QuantityRequested "345"
-    Then I wait for 1 second
-    Then I press "Save"
-    Then I wait for "Requisitions" to appear
-
-    And I press "Continue Working on Requisition Balancete"
-    And I wait for "Requisition -" to appear
-    And I rotate the page to "landscape"
-    Then I swipe right
-    Then I swipe right
-    Then I should see "345" in the requisition form
-
-    And I press "Submit for Approval"
-    And I sign requisition with "superuser" "testUser" and complete
-    Then I wait for "Requisitions" to appear
-
-    Then I navigate back
-    Then I wait for "Stock Card Overview" to appear
-    And I press the menu key
-    Then I see "Sync Data"
-    And I press "Sync Data"
-
-    And I wait up to 60 seconds for "0 minutes since last sync" to appear
-    And I press "0 minutes since last sync"
-    Then I see "Requisition last synced 0 minutes ago"
-    Then I go back
-
-    And I press "Requisitions"
-    Then I wait for "Requisitions" to appear
-    Then I should see text containing "View Requisition Balancete"
-    Then I should see text containing "You will be able to create a requisition on the 18th of"
-
-
-#TODO do not need a whole workflow

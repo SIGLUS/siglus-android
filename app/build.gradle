@@ -266,6 +266,23 @@ task regressionTests(type: Exec, dependsOn: ['bundleInstall', 'assembleRegressio
     args "run", "$targetPath", "--tags @regression --format html --out regression_test_reports.html"
 }
 
+task weeklyTests(type: Exec, dependsOn: ['bundleInstall', 'assembleRegressionDebug']) {
+    description 'Run Calabash Tests against specified apk (-PapkPath)'
+    group JavaBasePlugin.VERIFICATION_GROUP
+    workingDir "$projectDir/../functionalTests"
+
+    def targetPath
+
+    if (project.hasProperty("apkPath")) {
+        targetPath = "$apkPath"
+    } else {
+        targetPath = "$projectDir/build/outputs/apk/app-regression-debug.apk"
+    }
+
+    executable 'calabash-android'
+    args "run", "$targetPath", "--tags @weekly --format html --out weekly_test_reports.html"
+}
+
 task stressTests(type: Exec, dependsOn: ['bundleInstall', 'assembleRegressionDebug']) {
     description 'Run Calabash Tests against specified apk (-PapkPath)'
     group JavaBasePlugin.VERIFICATION_GROUP

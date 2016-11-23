@@ -1,4 +1,4 @@
-@STOCK_MOVEMENT @dev
+@STOCK_MOVEMENT @weekly @1
 Feature: stock movement Page
 
   Background: Navigate to Home Page
@@ -146,5 +146,3 @@ Feature: stock movement Page
     #clear warning banner
     And I clear banner message
     Then I should not see "has been deactivated and removed"
-
-
