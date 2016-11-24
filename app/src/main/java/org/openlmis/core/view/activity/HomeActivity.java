@@ -166,6 +166,11 @@ public class HomeActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    public void onClickRapidTestHistory(View view) {
+        Intent intent = new Intent(this, RapidTestReportsActivity.class);
+        startActivity(intent);
+    }
+
     public void syncData() {
         Log.d("HomeActivity", "requesting immediate sync");
         syncService.requestSyncImmediately();

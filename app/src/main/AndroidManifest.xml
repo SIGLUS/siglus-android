@@ -41,6 +41,10 @@
             android:label="@string/title_physical_inventory"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".view.activity.RapidTestReportsActivity"
+            android:label="@string/title_rapid_test"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.activity.ParticularPhysicalInventoryActivity"
             android:label="@string/title_physical_inventory"
             android:screenOrientation="portrait" />

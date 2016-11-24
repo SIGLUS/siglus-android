@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -37,16 +36,34 @@
                 android:layout_weight="3"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btn_inventory"
-                    style="@style/Homepage.Button"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
                     android:layout_weight="2"
-                    android:background="@color/color_blue"
-                    android:onClick="onClickInventory"
-                    android:text="@string/button_inventory" />
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btn_inventory"
+                        style="@style/Homepage.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_blue"
+                        android:onClick="onClickInventory"
+                        android:text="@string/button_inventory" />
+
+                    <Button
+                        android:id="@+id/btn_rapid_test"
+                        style="@style/Homepage.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_accent_light"
+                        android:onClick="onClickRapidTestHistory"
+                        android:text="@string/title_rapid_test" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"

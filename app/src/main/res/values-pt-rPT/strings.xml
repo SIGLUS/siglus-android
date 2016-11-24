@@ -379,4 +379,5 @@
     <string name="error_lot_without_number_already_exists">Um lote com um nome de lote gerado automaticamente e a mesma data de expiração já foi criado</string>
     <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
     <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE NÚMERO LOTE</string>
+    <string name="title_rapid_test">Rapid Test Reports</string>
 </resources>
