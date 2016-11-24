@@ -3,7 +3,7 @@ Feature: Requisition
 
   Scenario: Save requisition draft
     Given I change device date to "20160128.130000"
-    Given I try to log in with "superuser" "password1"
+    Given I try to log in with "via" "password1"
     Given I have initialized inventory with VIA user with lot
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
@@ -46,7 +46,7 @@ Feature: Requisition
 
     And I press "Requisitions"
     Then I wait for "Requisitions" to appear
-    Then I should see text containing "No Requisition Balancete has been created."
+    Then I should see text containing "No Requisition Balancete has been created"
 
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
