@@ -2,7 +2,8 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/Card.Padded"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         style="@style/ItemRnr.Type2Container"
@@ -14,39 +15,19 @@
             style="@style/ItemRnr.PeriodTextType2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bottom_border_gray_bg"/>
-
-        <View
-            android:id="@+id/action_divider"
-            style="@style/HorizontalLine" />
+            android:background="@drawable/bottom_border_gray_bg" />
 
         <TextView
             android:id="@+id/tx_message"
             style="@style/ItemRnr.MessageTextType2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <ViewStub
-            android:id="@+id/tv_drug_count"
-            style="@style/ItemRnr.MessageTextType2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout="@layout/view_drug_count" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/btn_view"
             style="@style/ItemRnr.BtnView"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height_default"
-            android:layout_marginBottom="@dimen/margin_small"/>
+            android:layout_marginBottom="@dimen/margin_small" />
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/iv_del"
-        android:padding="5dp"
-        android:layout_margin="@dimen/margin_small"
-        android:layout_gravity="right|top"
-        android:src="@drawable/ic_menu_grey"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 </android.support.v7.widget.CardView>
