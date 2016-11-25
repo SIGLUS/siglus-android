@@ -118,6 +118,48 @@ public class SyncUpManager {
         });
     }
 
+    public boolean fakeSyncRnr() {
+        List<RnRForm> forms;
+        try {
+            Log.d(TAG, "===> Preparing RnrForm for Syncing: Delete Deactivated Products...");
+            forms = rnrFormRepository.queryAllUnsyncedForms();
+            Log.d(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
+            if (forms.size() == 0) {
+                return false;
+            }
+        } catch (LMISException e) {
+            e.reportToFabric();
+            return false;
+        }
+
+        Observable.from(forms).filter(new Func1<RnRForm, Boolean>() {
+            @Override
+            public Boolean call(RnRForm rnRForm) {
+                try {
+                    syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
+                    Log.d(TAG, "===> SyncRnr : synced ->");
+                    return true;
+                } catch (Exception e) {
+                    Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
+                    syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RnRForm, rnRForm.getId()));
+                    return false;
+                }
+            }
+        }).subscribe(new Action1<RnRForm>() {
+            @Override
+            public void call(RnRForm rnRForm) {
+                markRnrFormSynced(rnRForm);
+            }
+        });
+
+        return from(forms).allMatch(new Predicate<RnRForm>() {
+            @Override
+            public boolean apply(RnRForm rnRForm) {
+                return rnRForm.isSynced();
+            }
+        });
+    }
+
     public boolean syncStockCards() {
         try {
             List<StockMovementItem> stockMovementItems = stockRepository.listUnSynced();
@@ -129,6 +171,24 @@ public class SyncUpManager {
             List<StockMovementEntry> movementEntriesToSync = convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
 
             lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
+            markStockDataSynced(stockMovementItems);
+            syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
+            Log.d(TAG, "===> SyncStockMovement : synced");
+            return true;
+        } catch (LMISException exception) {
+            exception.reportToFabric();
+            syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.StockCards, 0L));
+            Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
+            return false;
+        }
+    }
+
+    public boolean fakeSyncStockCards() {
+        try {
+            List<StockMovementItem> stockMovementItems = stockRepository.listUnSynced();
+            if (stockMovementItems.isEmpty()) {
+                return false;
+            }
             markStockDataSynced(stockMovementItems);
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
             Log.d(TAG, "===> SyncStockMovement : synced");
@@ -201,6 +261,20 @@ public class SyncUpManager {
 
                 lmisRestApi.syncUpCmms(UserInfoMgr.getInstance().getUser().getFacilityId(), cmmEntries);
 
+                for (Cmm cmm : unsyncedCmms) {
+                    cmm.setSynced(true);
+                    cmmRepository.save(cmm);
+                }
+            }
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
+    public void fakeSyncUpCmms() {
+        try {
+            List<Cmm> unsyncedCmms = cmmRepository.listUnsynced();
+            if (!unsyncedCmms.isEmpty()) {
                 for (Cmm cmm : unsyncedCmms) {
                     cmm.setSynced(true);
                     cmmRepository.save(cmm);
