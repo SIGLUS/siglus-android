@@ -46,23 +46,11 @@
                         android:id="@+id/btn_inventory"
                         style="@style/Homepage.Button"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="20dp"
-                        android:layout_weight="1"
                         android:background="@color/color_blue"
                         android:onClick="onClickInventory"
                         android:text="@string/button_inventory" />
-
-                    <Button
-                        android:id="@+id/btn_rapid_test"
-                        style="@style/Homepage.Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:background="@color/color_accent_light"
-                        android:onClick="onClickRapidTestHistory"
-                        android:text="@string/title_rapid_test" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -105,6 +93,17 @@
                         android:background="@color/color_teal"
                         android:onClick="onClickKitStockCard"
                         android:text="@string/label_kits_stock_cards" />
+
+                    <Button
+                        android:id="@+id/btn_rapid_test"
+                        style="@style/Homepage.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_material_blue_gray"
+                        android:onClick="onClickRapidTestHistory"
+                        android:text="@string/title_rapid_test" />
 
                 </LinearLayout>
 
