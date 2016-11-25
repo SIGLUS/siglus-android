@@ -186,7 +186,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     public boolean needInitInventory() {
-        return preferencesMgr.isNeedsInventory();
+        return !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training) && preferencesMgr.isNeedsInventory();
     }
 
     @Override

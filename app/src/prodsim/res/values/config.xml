@@ -10,4 +10,6 @@
     <string name="app_name">@string/app_name_in_prodsim</string>
 
     <string name="app_time_out">3600000</string>
+
+    <bool name="feature_training">false</bool>
 </resources>
