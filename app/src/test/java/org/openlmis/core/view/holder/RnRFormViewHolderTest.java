@@ -46,9 +46,9 @@ public class RnRFormViewHolderTest {
 
     private RnRFormViewHolder getViewHolderByType(int viewType) {
         if (viewType == RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL || viewType == RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY) {
-            return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_disable, null, false), mockedListener);
+            return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_report_missing, null, false), mockedListener);
         } else {
-            return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card, null, false), mockedListener);
+            return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_report, null, false), mockedListener);
         }
     }
 

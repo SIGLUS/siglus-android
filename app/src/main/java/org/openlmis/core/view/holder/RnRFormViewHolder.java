@@ -5,7 +5,6 @@ import android.text.Spanned;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
-import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -35,7 +34,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
 
     @InjectView(R.id.btn_view)
-    Button btnView;
+    TextView btnView;
 
     @InjectView(R.id.iv_del)
     View ivDelete;
