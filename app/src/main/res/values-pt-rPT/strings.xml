@@ -380,4 +380,6 @@
     <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
     <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE NÚMERO LOTE</string>
     <string name="title_rapid_test">Rapid Test Reports</string>
+    <string name="msg_report_missing">No rapid test report has been created</string>
+    <string name="btn_create_rapid_test_period">CREATE RAPID TEST REPORT</string>
 </resources>

@@ -22,18 +22,18 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
     private final RnRFormItemClickListener itemClickListener;
 
-    @InjectView(R.id.tx_period)
-    TextView txPeriod;
+    @InjectView(R.id.tv_period)
+    TextView tvPeriod;
 
-    @InjectView(R.id.tx_message)
-    TextView txMessage;
+    @InjectView(R.id.tv_report_status)
+    TextView tvMessage;
 
     @InjectView(R.id.tv_drug_count)
     ViewStub vsDrugCount;
     TextView tvDrugCount;
 
 
-    @InjectView(R.id.btn_view)
+    @InjectView(R.id.btn_report_entry)
     TextView btnView;
 
     @InjectView(R.id.iv_del)
@@ -157,10 +157,10 @@ public class RnRFormViewHolder extends BaseViewHolder {
     }
 
     private void configHolder(String period, Spanned text, int icDescription, int colorDraftTitle) {
-        txPeriod.setText(period);
-        txPeriod.setCompoundDrawablesWithIntrinsicBounds(icDescription, 0, 0, 0);
-        txPeriod.setBackgroundResource(colorDraftTitle);
-        txMessage.setText(text);
+        tvPeriod.setText(period);
+        tvPeriod.setCompoundDrawablesWithIntrinsicBounds(icDescription, 0, 0, 0);
+        tvPeriod.setBackgroundResource(colorDraftTitle);
+        tvMessage.setText(text);
 
         if (ivDelete != null) {
             ivDelete.setVisibility(View.GONE);

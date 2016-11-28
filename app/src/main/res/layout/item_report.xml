@@ -10,18 +10,17 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tx_period"
+            android:id="@+id/tv_period"
             style="@style/ItemRnr.PeriodTextType2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bottom_border_gray_bg"/>
+            android:layout_height="wrap_content"/>
 
         <View
             android:id="@+id/action_divider"
             style="@style/HorizontalLine" />
 
         <TextView
-            android:id="@+id/tx_message"
+            android:id="@+id/tv_report_status"
             style="@style/ItemRnr.MessageTextType2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -34,7 +33,7 @@
             android:layout="@layout/view_drug_count" />
 
         <TextView
-            android:id="@+id/btn_view"
+            android:id="@+id/btn_report_entry"
             style="@style/ItemRnr.BtnView"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height_default"

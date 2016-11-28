@@ -690,7 +690,7 @@
     </style>
 
     <style name="LayoutRequisition.HeaderRightContainer" parent="Divider.Vertical">
-        <item name="android:background">@drawable/border_bg_gray</item>
+        <item name="android:background">@drawable/border_bottom_left_bg_gray_</item>
         <item name="android:orientation">horizontal</item>
     </style>
 

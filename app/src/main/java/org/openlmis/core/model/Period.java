@@ -1,6 +1,8 @@
 package org.openlmis.core.model;
 
 import org.joda.time.DateTime;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
@@ -70,5 +72,9 @@ public class Period {
 
     private DateTime nextMonth(DateTime dateTime) {
         return dateTime.plusMonths(1);
+    }
+
+    public String toString() {
+        return LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDate(periodBegin.toDate()), DateUtil.formatDate(periodEnd.toDate()));
     }
 }

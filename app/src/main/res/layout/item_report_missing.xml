@@ -12,14 +12,14 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tx_period"
+            android:id="@+id/tv_period"
             style="@style/ItemRnr.PeriodTextType1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="21 Nov 2015 to 20 Dec 2015" />
 
         <TextView
-            android:id="@+id/tx_message"
+            android:id="@+id/tv_report_status"
             style="@style/ItemRnr.MessageTextType1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

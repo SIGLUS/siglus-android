@@ -62,9 +62,9 @@ public class RnRFormViewHolderTest {
 
         viewHolder.populate(viewModel);
 
-        assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName())));
-        assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
+        assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
+        assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName())));
+        assertThat(((ColorDrawable) viewHolder.tvPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_incomplete_requisition, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
     }
@@ -79,9 +79,9 @@ public class RnRFormViewHolderTest {
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
         viewHolder.populate(viewModel);
 
-        assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_unsynced_mmia_requisition)));
-        assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_red)));
+        assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
+        assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_unsynced_mmia_requisition)));
+        assertThat(((ColorDrawable) viewHolder.tvPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_red)));
     }
 
     @Test
@@ -91,9 +91,9 @@ public class RnRFormViewHolderTest {
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
         viewHolder.populate(viewModel);
 
-        assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_uncompleted_mmia_physical_inventory_message, viewModel.getName())));
-        assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
+        assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
+        assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_uncompleted_mmia_physical_inventory_message, viewModel.getName())));
+        assertThat(((ColorDrawable) viewHolder.tvPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_uncompleted_physical_inventory, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
     }
@@ -105,9 +105,9 @@ public class RnRFormViewHolderTest {
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
         viewHolder.populate(viewModel);
 
-        assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_completed_mmia_physical_inventory_message, viewModel.getName())));
-        assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
+        assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
+        assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_completed_mmia_physical_inventory_message, viewModel.getName())));
+        assertThat(((ColorDrawable) viewHolder.tvPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_completed_physical_inventory, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
     }
@@ -122,8 +122,8 @@ public class RnRFormViewHolderTest {
 
         viewHolder.populate(viewModel);
 
-        assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_mmia_submitted_message, viewModel.getSyncedTime())));
+        assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
+        assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_mmia_submitted_message, viewModel.getSyncedTime())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
         assertNull(viewHolder.tvDrugCount);
@@ -146,8 +146,8 @@ public class RnRFormViewHolderTest {
 
         assertThat(viewHolder.tvDrugCount.getVisibility(), is(View.VISIBLE));
         assertThat(viewHolder.tvDrugCount.getText().toString(), is("1 drug ordered"));
-        assertTrue(viewHolder.txPeriod.getText().toString().equals("Emergency Requisition – 22 Jan 2016 11:33"));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, "Emergency requisition balancete", viewModel.getSyncedTime())));
+        assertTrue(viewHolder.tvPeriod.getText().toString().equals("Emergency Requisition – 22 Jan 2016 11:33"));
+        assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, "Emergency requisition balancete", viewModel.getSyncedTime())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, "Emergency requisition balancete")));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
 
@@ -163,8 +163,8 @@ public class RnRFormViewHolderTest {
 
         viewHolder.populate(viewModel);
 
-        assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_can_not_create_mmia_rnr, DateUtil.getMonthAbbrByDate(viewModel.getPeriodEndMonth().toDate()))));
+        assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
+        assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_can_not_create_mmia_rnr, DateUtil.getMonthAbbrByDate(viewModel.getPeriodEndMonth().toDate()))));
     }
 
     @SuppressWarnings("ConstantConditions")

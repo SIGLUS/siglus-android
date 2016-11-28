@@ -422,4 +422,6 @@
     <string name="title_generate_lot_number">Auto generate lot number for new lot?</string>
     <string name="btn_confirm_generate_lot_number">AUTO GENERATE LOT NUMBER</string>
     <string name="title_rapid_test">Rapid Test Reports</string>
+    <string name="msg_report_missing"><![CDATA[<b>No rapid test report has been created</b>]]></string>
+    <string name="btn_create_rapid_test_period">CREATE RAPID TEST REPORT</string>
 </resources>

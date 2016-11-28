@@ -11,23 +11,24 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tx_period"
+            android:id="@+id/tv_period"
             style="@style/ItemRnr.PeriodTextType2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bottom_border_gray_bg" />
+            android:background="@drawable/border_bg" />
 
         <TextView
-            android:id="@+id/tx_message"
+            android:id="@+id/tv_report_status"
             style="@style/ItemRnr.MessageTextType2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/btn_view"
+            android:id="@+id/btn_report_entry"
             style="@style/ItemRnr.BtnView"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height_default"
-            android:layout_marginBottom="@dimen/margin_small" />
+            android:layout_marginBottom="@dimen/margin_small"
+            android:text="@string/btn_create_rapid_test_period"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>
