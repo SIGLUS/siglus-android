@@ -74,6 +74,16 @@
         <item name="actionBarStyle">@style/MyActionBar.Gray</item>
     </style>
 
+    <style name="AppTheme.BlueGray">
+        <item name="android:actionBarStyle">@style/MyActionBar.BlueGray</item>
+        <item name="actionBarStyle">@style/MyActionBar.BlueGray</item>
+    </style>
+
+    <style name="MyActionBar.BlueGray">
+        <item name="android:background">@color/color_material_blue_gray</item>
+        <item name="background">@color/color_material_blue_gray</item>
+    </style>
+
     <style name="MyActionBar.Gray">
         <item name="android:background">@color/color_black</item>
         <item name="background">@color/color_gray</item>

@@ -42,6 +42,11 @@ public class RapidTestReportsActivity extends BaseActivity {
         subscriptions.add(subscription);
     }
 
+    @Override
+    protected int getThemeRes() {
+        return R.style.AppTheme_BlueGray;
+    }
+
     private Action1<? super List<RapidTestReportViewModel>> getRefreshReportListSubscriber() {
         return new Action1<List<RapidTestReportViewModel>>() {
             @Override
