@@ -29,6 +29,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
             case MISSING:
                 tvReportStatus.setText(Html.fromHtml(context.getString(R.string.msg_report_missing)));
                 tvPeriod.setBackgroundColor(context.getResources().getColor(R.color.color_draft_title));
+                tvPeriod.setTextColor(context.getResources().getColor(R.color.color_white));
                 btnReportEntry.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
                 btnReportEntry.setTextColor(context.getResources().getColor(R.color.color_white));
                 break;
@@ -36,6 +37,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 tvPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
                 tvPeriod.setBackgroundResource(R.color.color_draft_title);
                 tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_incomplete_requisition, context.getString(R.string.title_rapid_test))));
+                tvPeriod.setTextColor(context.getResources().getColor(R.color.color_white));
                 btnReportEntry.setText(context.getString(R.string.btn_view_incomplete_requisition, context.getString(R.string.title_rapid_test)));
                 btnReportEntry.setOnClickListener(null);
                 break;
@@ -44,6 +46,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 error = context.getString(R.string.label_unsynced_requisition, context.getString(R.string.title_rapid_test));
                 tvPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_error, 0, 0, 0);
                 tvPeriod.setBackgroundResource(R.color.color_red);
+                tvPeriod.setTextColor(context.getResources().getColor(R.color.color_white));
                 tvReportStatus.setText(Html.fromHtml(error));
                 break;
             case SYNCED:
