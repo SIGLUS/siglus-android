@@ -82,6 +82,9 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_kit_stock_card)
     Button btnKitStockCard;
 
+    @InjectView(R.id.btn_rapid_test)
+    Button btnRapidTestReport;
+
     @InjectResource(R.integer.back_twice_interval)
     int BACK_TWICE_INTERVAL;
 
@@ -113,6 +116,10 @@ public class HomeActivity extends BaseActivity {
         }
         registerSyncStartReceiver();
         registerSyncFinishedReceiver();
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rapid_test)) {
+            btnRapidTestReport.setVisibility(View.GONE);
+        }
     }
 
     private void registerSyncStartReceiver() {
