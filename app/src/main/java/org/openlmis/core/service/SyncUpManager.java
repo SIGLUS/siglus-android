@@ -225,6 +225,27 @@ public class SyncUpManager {
         }
     }
 
+    public void fakeSyncUpUnSyncedStockCardCodes() {
+        if (sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()) {
+            return;
+        }
+        try {
+            List<String> unSyncedStockCardCodes = FluentIterable.from(stockRepository.listUnSynced()).transform(new Function<StockMovementItem, String>() {
+                @Override
+                public String apply(StockMovementItem stockMovementItem) {
+                    return stockMovementItem.getStockCard().getProduct().getCode();
+                }
+            }).toList();
+            sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
+            boolean isAllStockCardSyncSuccessful = unSyncedStockCardCodes.isEmpty();
+            if (isAllStockCardSyncSuccessful) {
+                sharedPreferenceMgr.setStockLastSyncTime();
+            }
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
     public void syncAppVersion() {
         try {
             if (!sharedPreferenceMgr.hasSyncedVersion()) {

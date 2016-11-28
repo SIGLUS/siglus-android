@@ -89,10 +89,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             sharedPreferenceMgr.setStockLastSyncTime();
         }
 
-        sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
-        sharedPreferenceMgr.setStockLastSyncTime();
-        sharedPreferenceMgr.setSyncedVersion(true);
-
+        syncUpManager.fakeSyncUpUnSyncedStockCardCodes();
+        if (!sharedPreferenceMgr.hasSyncedVersion()) {
+            sharedPreferenceMgr.setSyncedVersion(true);
+        }
         syncUpManager.fakeSyncUpCmms();
         sendSyncFinishedBroadcast();
     }
