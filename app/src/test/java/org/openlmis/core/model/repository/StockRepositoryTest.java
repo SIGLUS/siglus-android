@@ -564,4 +564,15 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertNotEquals(MovementReasonManager.MovementType.POSITIVE_ADJUST, stockCardQueried.getStockMovementItemsWrapper().get(0).getMovementType());
         assertEquals(0, stockCardQueried.getStockMovementItemsWrapper().get(0).getLotMovementItemListWrapper().size());
     }
+
+    @Test
+    public void shouldGetFirstStockMovementItem() throws Exception {
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+
+        Date firstMovementDate = DateUtil.parseString("10/09/2014", DateUtil.SIMPLE_DATE_FORMAT);
+        createMovementItem(ISSUE, 100, stockCard, new Date(), firstMovementDate, false);
+
+        StockMovementItem stockMovementItem = stockRepository.getFirstStockMovement();
+        assertThat(stockMovementItem.getMovementDate(), is(firstMovementDate));
+    }
 }

@@ -1,9 +1,12 @@
 package org.openlmis.core.model;
 
 import org.joda.time.DateTime;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.openlmis.core.utils.DateUtil;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -59,6 +62,14 @@ public class PeriodTest {
 
         Boolean is26ThWinthin = Period.isWithinSubmissionWindow(DateTime.parse("2017-08-26"));
         assertFalse(is26ThWinthin);
+    }
+
+    @Test @Ignore
+    public void shouldGetNextPeriod() throws Exception {
+        Period period = new Period(new DateTime(DateUtil.parseString("2016-09-12", DateUtil.DB_DATE_FORMAT)));
+
+        assertEquals(period.next().getBegin(), is(new DateTime(DateUtil.parseString("2016-09-21",DateUtil.DB_DATE_FORMAT))));
+        assertEquals(period.next().getEnd(), is(new DateTime(DateUtil.parseString("2016-10-20", DateUtil.DB_DATE_FORMAT))));
     }
 
     private void testPeriodBeginEnd(String anyDayInPeriod, String begin, String end) {

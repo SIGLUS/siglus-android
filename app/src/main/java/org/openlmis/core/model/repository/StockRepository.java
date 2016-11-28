@@ -401,6 +401,18 @@ public class StockRepository {
         return earliestDate;
     }
 
+    public StockMovementItem getFirstStockMovement() throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
+            @Override
+            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                return dao.queryBuilder()
+                        .orderBy("movementDate", true)
+                        .orderBy("createdTime", true)
+                        .queryForFirst();
+            }
+        });
+    }
+
     protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) throws LMISException {
         String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
                 + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("

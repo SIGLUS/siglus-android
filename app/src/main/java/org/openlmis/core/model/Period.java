@@ -77,4 +77,8 @@ public class Period {
     public String toString() {
         return LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDate(periodBegin.toDate()), DateUtil.formatDate(periodEnd.toDate()));
     }
+
+    public Period next() {
+        return new Period(nextMonth(periodBegin), nextMonth(periodEnd));
+    }
 }
