@@ -77,7 +77,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @Override
     protected void onStart() {
         super.onStart();
-        if (SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
+        if (isKit && SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
             ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
             finish();
         }
