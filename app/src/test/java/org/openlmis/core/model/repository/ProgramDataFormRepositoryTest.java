@@ -41,8 +41,6 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
 
         programRapidTest = new Program("RapidTest", "Rapid Test", null, false, null);
         programRapidTest.setId(1l);
-
-        when(mockProgramRepository.queryByCode(anyString())).thenReturn(programRapidTest);
     }
 
 
@@ -68,11 +66,16 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
         programDataFormRepository.save(programDataForm1);
         programDataFormRepository.save(programDataForm2);
 
-        List<ProgramDataForm> programDataFormRetrieved = programDataFormRepository.listAll();
+        when(mockProgramRepository.queryByCode("RapidTest")).thenReturn(programRapidTest);
+
+        List<ProgramDataForm> programDataFormRetrieved = programDataFormRepository.listByProgramCode("RapidTest");
 
         assertThat(programDataFormRetrieved.get(0).getPeriodBegin(), is(programDataForm1.getPeriodBegin()));
         assertThat(programDataFormRetrieved.get(0).getPeriodEnd(), is(programDataForm1.getPeriodEnd()));
         assertThat(programDataFormRetrieved.get(1).getPeriodBegin(), is(programDataForm2.getPeriodBegin()));
         assertThat(programDataFormRetrieved.get(1).getStatus(), is(programDataForm2.getStatus()));
+
+        List<ProgramDataForm> programDataNonExist = programDataFormRepository.listByProgramCode("Some other program");
+        assertThat(programDataNonExist.size(), is(0));
     }
 }

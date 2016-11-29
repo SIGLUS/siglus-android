@@ -2,6 +2,7 @@ package org.openlmis.core.view.viewmodel;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.ProgramDataForm;
 
 import lombok.Data;
 
@@ -11,6 +12,7 @@ public class RapidTestReportViewModel {
     Status status;
     private DateTime syncedTime;
 
+    private ProgramDataForm rapidTestForm;
 
     public RapidTestReportViewModel(Period period) {
         this.period = period;
@@ -23,9 +25,10 @@ public class RapidTestReportViewModel {
 
     public enum Status {
         MISSING(0),
-        Draft(1),
-        COMPLETED(2),
-        SYNCED(3);
+        DRAFT(1),
+        SUBMITTED(2),
+        AUTHORIZED(3),
+        SYNCED(4);
 
         public int type;
 

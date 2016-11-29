@@ -5,9 +5,15 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
+import org.roboguice.shaded.goole.common.base.Optional;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +27,9 @@ public class RapidTestReportsPresenter extends Presenter {
 
     @Getter
     private List<RapidTestReportViewModel> viewModelList = new ArrayList<>();
+
+    @Inject
+    private ProgramDataFormRepository programDataFormRepository;
 
     @Inject
     private PeriodService periodService;
@@ -51,9 +60,22 @@ public class RapidTestReportsPresenter extends Presenter {
 
         if (period == null) { return; }
 
+        List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
         while (period != null) {
-            viewModelList.add(new RapidTestReportViewModel(period));
+            RapidTestReportViewModel rapidTestReportViewModel = new RapidTestReportViewModel(period);
+            viewModelList.add(rapidTestReportViewModel);
+            final Period finalPeriod = period;
+            Optional<ProgramDataForm> existingProgramDataForm = FluentIterable.from(rapidTestForms).firstMatch(new Predicate<ProgramDataForm>() {
+                @Override
+                public boolean apply(ProgramDataForm programDataForm) {
+                    return programDataForm.getPeriodBegin().getTime() == finalPeriod.getBegin().getMillis();
+                }
+            });
+            if (existingProgramDataForm.isPresent()) {
+                rapidTestReportViewModel.setRapidTestForm(existingProgramDataForm.get());
+            }
             period = periodService.generateNextPeriod(period);
+
         }
     }
 }
