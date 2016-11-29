@@ -197,19 +197,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetFirstPeriodDate() throws Exception {
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
-
-        Date firstMovementDate = DateUtil.parseString("10/09/2014", DateUtil.SIMPLE_DATE_FORMAT);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), firstMovementDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), DateUtil.parseString("11/10/2015", DateUtil.SIMPLE_DATE_FORMAT), false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), DateUtil.parseString("12/11/2015", DateUtil.SIMPLE_DATE_FORMAT), false);
-
-        Date firstPeriodBegin = stockRepository.queryFirstPeriodBegin(stockCard);
-        assertThat(firstPeriodBegin, is(parseString("21/08/2014", SIMPLE_DATE_FORMAT)));
-    }
-
-    @Test
     public void shouldGetStockCardsBeforePeriodEndDate() throws Exception {
         Program program1 = new ProgramBuilder().setProgramCode("code1").build();
         Program program2 = new ProgramBuilder().setProgramCode("code2").setParentCode("code1").build();

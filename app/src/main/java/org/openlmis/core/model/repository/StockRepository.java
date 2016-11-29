@@ -66,8 +66,6 @@ public class StockRepository {
     ProductProgramRepository productProgramRepository;
     @Inject
     LotRepository lotRepository;
-    @Inject
-    InventoryRepository inventoryRepository;
 
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
@@ -254,7 +252,6 @@ public class StockRepository {
         });
     }
 
-
     public List<StockCard> listEmergencyStockCards() throws LMISException {
         List<Program> programs = programRepository.listEmergencyPrograms();
 
@@ -349,15 +346,6 @@ public class StockRepository {
             }
         });
     }
-
-    protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
-        StockMovementItem stockMovementItem = queryFirstStockMovementItem(stockCard);
-        if (stockMovementItem == null) {
-            throw new StockMovementIsNullException(stockCard);
-        }
-        return stockMovementItem.getMovementPeriod().getBegin().toDate();
-    }
-
 
     public void updateStockCardWithProduct(final StockCard stockCard) throws LMISException {
         dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
