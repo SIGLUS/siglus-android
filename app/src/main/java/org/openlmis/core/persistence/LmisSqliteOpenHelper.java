@@ -117,6 +117,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateDraftLotMovementTable());
             add(new CreateProgramDataFormTable());
             add(new AddRapidTestProgram());
+//            add(new AddRapidTestProgramFormTemplate());
+//            add(new CreateProgramDataItemTable());
         }
     };
     private static int instanceCount = 0;

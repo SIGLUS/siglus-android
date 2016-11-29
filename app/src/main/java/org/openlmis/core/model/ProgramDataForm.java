@@ -34,4 +34,7 @@ public class ProgramDataForm extends BaseModel {
     @DatabaseField
     private Date submittedTime;
 
+//    @ForeignCollectionField
+//    private List<ProgramDataFormItem> programDataFormItemList;
+
 }
