@@ -19,16 +19,33 @@ public class RapidTestReportViewModel {
         status = Status.MISSING;
     }
 
+    public void setRapidTestForm(ProgramDataForm rapidTestForm) {
+        this.rapidTestForm = rapidTestForm;
+        switch (rapidTestForm.getStatus()) {
+            case DRAFT:
+            case SUBMITTED:
+                this.status = Status.INCOMPLETE;
+                break;
+            case AUTHORIZED:
+                this.status = Status.COMPLETED;
+                break;
+            default:
+                this.status = Status.MISSING;
+        }
+        if (rapidTestForm.isSynced()) {
+            this.status = Status.SYNCED;
+        }
+    }
+
     public DateTime getSyncedTime() {
         return syncedTime;
     }
 
     public enum Status {
         MISSING(0),
-        DRAFT(1),
-        SUBMITTED(2),
-        AUTHORIZED(3),
-        SYNCED(4);
+        INCOMPLETE(1),
+        COMPLETED(2),
+        SYNCED(3);
 
         public int type;
 
