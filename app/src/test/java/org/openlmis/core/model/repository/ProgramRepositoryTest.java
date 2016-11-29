@@ -58,7 +58,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         programRepository.createOrUpdateProgramWithProduct(programs);
 
         //then
-        assertThat(programRepository.list().size(), is(10)); // 9 initialized programs + 1 new TB
+        assertThat(programRepository.list().size(), is(11)); // 10 initialized programs + 1 new TB
         assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(1));
 
         //when add product to existing program
@@ -70,7 +70,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         programRepository.createOrUpdateProgramWithProduct(programs);
 
         //then
-        assertThat(programRepository.list().size(), is(10)); // 9 initialized programs + 1 new TB
+        assertThat(programRepository.list().size(), is(11)); // 10 initialized programs + 1 new TB
         assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
         assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2"));
 
@@ -79,7 +79,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         programRepository.createOrUpdateProgramWithProduct(programs);
 
         //then
-        assertThat(programRepository.list().size(), is(10)); // 9 initialized programs + 1 new TB
+        assertThat(programRepository.list().size(), is(11)); // 10 initialized programs + 1 new TB
         assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
         assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2 Updated"));
     }
