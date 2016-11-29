@@ -16,4 +16,7 @@ public class ProgramDataFormItem extends BaseModel {
 
     @DatabaseField
     private int value;
+
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private ProgramDataForm form;
 }
