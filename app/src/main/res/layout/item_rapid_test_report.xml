@@ -15,7 +15,7 @@
             style="@style/ItemRnr.PeriodTextType2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_bg" />
+            android:background="@drawable/border_bottom" />
 
         <TextView
             android:id="@+id/tv_report_status"
