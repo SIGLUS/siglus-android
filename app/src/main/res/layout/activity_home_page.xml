@@ -103,7 +103,7 @@
                         android:layout_weight="1"
                         android:background="@color/color_material_blue_gray"
                         android:onClick="onClickRapidTestHistory"
-                        android:text="@string/title_rapid_test" />
+                        android:text="@string/title_rapid_test_reports" />
 
                 </LinearLayout>
 

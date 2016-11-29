@@ -4,15 +4,19 @@ import org.joda.time.DateTime;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ProgramDataForm;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 @Data
-public class RapidTestReportViewModel {
+public class RapidTestReportViewModel implements Serializable {
     Period period;
     Status status;
     private DateTime syncedTime;
 
     private ProgramDataForm rapidTestForm;
+
+    public static long DEFAULT_FORM_ID = 0;
 
     public RapidTestReportViewModel(Period period) {
         this.period = period;

@@ -42,7 +42,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.RapidTestReportsActivity"
-            android:label="@string/title_rapid_test"
+            android:label="@string/title_rapid_test_reports"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.RapidTestReportFormActivity"
+            android:label="@string/title_rapid_test_form"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.ParticularPhysicalInventoryActivity"
