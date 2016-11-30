@@ -56,6 +56,15 @@ public class InventoryRepository {
         });
     }
 
+    public List<Inventory> fakeQueryPeriodInventory() throws LMISException {
+        return dbUtil.withDao(Inventory.class, new DbUtil.Operation<Inventory, List<Inventory>>() {
+            @Override
+            public List<Inventory> operate(Dao<Inventory, String> dao) throws SQLException {
+                return dao.queryBuilder().orderBy("updatedAt", false).query();
+            }
+        });
+    }
+
     public void createDraft(final DraftInventory draftInventory) throws LMISException {
         dbUtil.withDaoAsBatch(DraftInventory.class, new DbUtil.Operation<DraftInventory, Object>() {
             @Override
