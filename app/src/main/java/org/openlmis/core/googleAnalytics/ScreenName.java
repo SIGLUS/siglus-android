@@ -19,7 +19,8 @@ public enum ScreenName {
     UnpackKitScreen("Unpack Kit Screen"),
     SelectRegimeProductScreen("Select Regime Products Screen"),
     SelectEmergencyProductsScreen("Select Emergency Products Screen"),
-    AddDrugsToVIAScreen("Add Drugs to VIA Classica Screen");
+    AddDrugsToVIAScreen("Add Drugs to VIA Classica Screen"),
+    RapidTestReportFormScreen("Rapid Test Report Form");
 
     private final String screenName;
 

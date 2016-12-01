@@ -37,7 +37,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 btnReportEntry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        context.startActivity(RapidTestReportFormActivity.getIntentToMe(context, RapidTestReportViewModel.DEFAULT_FORM_ID));
+                        context.startActivity(RapidTestReportFormActivity.getIntentToMe(context, RapidTestReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()));
                     }
                 });
                 break;

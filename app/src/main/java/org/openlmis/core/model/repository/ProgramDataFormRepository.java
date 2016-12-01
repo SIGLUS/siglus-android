@@ -49,4 +49,8 @@ public class ProgramDataFormRepository {
             }
         });
     }
+
+    public ProgramDataForm queryById(long formId) throws LMISException {
+        return genericDao.getById(String.valueOf(formId));
+    }
 }

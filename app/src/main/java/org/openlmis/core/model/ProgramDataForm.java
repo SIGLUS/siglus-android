@@ -5,7 +5,10 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.openlmis.core.utils.ListUtil;
+
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -38,5 +41,12 @@ public class ProgramDataForm extends BaseModel {
 
     @ForeignCollectionField
     private ForeignCollection<ProgramDataFormItem> programDataFormItemList;
+
+    private List<ProgramDataFormItem> programDataFormItemListWrapper;
+
+    public List<ProgramDataFormItem> getProgramDataFormItemListWrapper() {
+        programDataFormItemListWrapper = ListUtil.wrapOrEmpty(programDataFormItemList, programDataFormItemListWrapper);
+        return programDataFormItemListWrapper;
+    }
 
 }

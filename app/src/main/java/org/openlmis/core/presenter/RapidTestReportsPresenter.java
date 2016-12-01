@@ -17,6 +17,7 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -81,7 +82,7 @@ public class RapidTestReportsPresenter extends Presenter {
                 rapidTestReportViewModel.setRapidTestForm(existingProgramDataForm.get());
             }
             period = periodService.generateNextPeriod(period);
-
         }
+        viewModelList.add(new RapidTestReportViewModel(Period.of(new Date())));
     }
 }

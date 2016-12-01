@@ -77,4 +77,30 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
         List<ProgramDataForm> programDataNonExist = programDataFormRepository.listByProgramCode("Some other program");
         assertThat(programDataNonExist.size(), is(0));
     }
+
+    @Test
+    public void shouldQueryFormById() throws Exception {
+        ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
+                .setPeriod(DateUtil.parseString("2016-09-23", DateUtil.DB_DATE_FORMAT))
+                .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+                .setProgram(programRapidTest)
+                .build();
+        ProgramDataForm programDataForm2 = new ProgramDataFormBuilder()
+                .setPeriod(DateUtil.parseString("2016-10-23", DateUtil.DB_DATE_FORMAT))
+                .setProgram(programRapidTest)
+                .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+                .build();
+        programDataFormRepository.save(programDataForm1);
+        programDataFormRepository.save(programDataForm2);
+
+        when(mockProgramRepository.queryByCode("RapidTest")).thenReturn(programRapidTest);
+
+        ProgramDataForm programDataFormQueried1 = programDataFormRepository.queryById(1L);
+        ProgramDataForm programDataFormQueried2 = programDataFormRepository.queryById(2L);
+
+        assertThat(programDataFormQueried1.getPeriodBegin(), is(programDataForm1.getPeriodBegin()));
+        assertThat(programDataFormQueried1.getPeriodEnd(), is(programDataForm1.getPeriodEnd()));
+        assertThat(programDataFormQueried2.getPeriodBegin(), is(programDataForm2.getPeriodBegin()));
+        assertThat(programDataFormQueried2.getStatus(), is(programDataForm2.getStatus()));
+    }
 }
