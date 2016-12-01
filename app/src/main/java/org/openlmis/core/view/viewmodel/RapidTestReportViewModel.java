@@ -6,6 +6,7 @@ import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -28,6 +29,7 @@ public class RapidTestReportViewModel implements Serializable {
     RapidTestFormItemViewModel item_DENTAL_WARD = new RapidTestFormItemViewModel(DENTAL_WARD);
     RapidTestFormItemViewModel item_UNPACK_KIT = new RapidTestFormItemViewModel(UNPACK_KIT);
 
+    List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
 
     private ProgramDataForm rapidTestForm;
 
@@ -36,12 +38,28 @@ public class RapidTestReportViewModel implements Serializable {
     public RapidTestReportViewModel(Period period) {
         this.period = period;
         status = Status.MISSING;
+        setItemViewModelList();
+    }
+
+    private void setItemViewModelList() {
+        itemViewModelList.add(item_PUB_PHARMACY);
+        itemViewModelList.add(item_MATERNITY);
+        itemViewModelList.add(item_GENERAL_WARD);
+        itemViewModelList.add(item_ACC_EMERGENCY);
+        itemViewModelList.add(item_MOBILE_UNIT);
+        itemViewModelList.add(item_LABORATORY);
+        itemViewModelList.add(item_UATS);
+        itemViewModelList.add(item_PNCTL);
+        itemViewModelList.add(item_PAV);
+        itemViewModelList.add(item_DENTAL_WARD);
+        itemViewModelList.add(item_UNPACK_KIT);
     }
 
     public RapidTestReportViewModel(ProgramDataForm programDataForm) {
         setRapidTestForm(programDataForm);
         period = Period.of(programDataForm.getPeriodBegin());
         setFormItemViewModels(programDataForm.getProgramDataFormItemListWrapper());
+        setItemViewModelList();
     }
 
     private void setFormItemViewModels(List<ProgramDataFormItem> programDataFormItemList) {
