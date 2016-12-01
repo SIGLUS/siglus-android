@@ -18,13 +18,28 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 
 public class InventoryRepository {
     final Context context;
     GenericDao<Inventory> genericDao;
     GenericDao<DraftInventory> draftInventoryGenericDao;
     GenericDao<DraftLotItem> draftLotItemGenericDao;
+
+    private final Comparator<Inventory> inventoryComparator = new Comparator<Inventory>() {
+        @Override
+        public int compare(Inventory i1, Inventory i2) {
+            Calendar c1 = Calendar.getInstance();
+            Calendar c2 = Calendar.getInstance();
+            c1.setTime(i1.getUpdatedAt());
+            c2.setTime(i2.getUpdatedAt());
+            return c1.get(Calendar.DAY_OF_YEAR) - c2.get(Calendar.DAY_OF_YEAR);
+        }
+    };
 
     @Inject
     DbUtil dbUtil;
@@ -47,20 +62,28 @@ public class InventoryRepository {
         }
     }
 
+
+
     public List<Inventory> queryPeriodInventory(final Period period) throws LMISException {
         return dbUtil.withDao(Inventory.class, new DbUtil.Operation<Inventory, List<Inventory>>() {
             @Override
             public List<Inventory> operate(Dao<Inventory, String> dao) throws SQLException {
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+                    List<Inventory> inventories = dao.queryBuilder().orderBy("updatedAt", false).where().between("updatedAt", period.getBegin().toDate(), period.getEnd().toDate()).query();
+                    TreeSet<Inventory> treeSet = new TreeSet<>(new Comparator<Inventory>() {
+                        @Override
+                        public int compare(Inventory i1, Inventory i2) {
+                            Calendar c1 = Calendar.getInstance();
+                            Calendar c2 = Calendar.getInstance();
+                            c1.setTime(i1.getUpdatedAt());
+                            c2.setTime(i2.getUpdatedAt());
+                            return c1.get(Calendar.DAY_OF_YEAR) - c2.get(Calendar.DAY_OF_YEAR);
+                        }
+                    });
+                    treeSet.addAll(inventories);
+                    return new ArrayList<>(treeSet);
+                }
                 return dao.queryBuilder().orderBy("updatedAt", false).where().between("updatedAt", period.getInventoryBegin().toDate(), period.getInventoryEnd().toDate()).query();
-            }
-        });
-    }
-
-    public List<Inventory> fakeQueryPeriodInventory() throws LMISException {
-        return dbUtil.withDao(Inventory.class, new DbUtil.Operation<Inventory, List<Inventory>>() {
-            @Override
-            public List<Inventory> operate(Dao<Inventory, String> dao) throws SQLException {
-                return dao.queryBuilder().orderBy("updatedAt", false).query();
             }
         });
     }
