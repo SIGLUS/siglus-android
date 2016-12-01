@@ -212,10 +212,10 @@
             android:id="@+id/tl_rapid_test_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/vg_rapid_test_report_header"
             android:background="@drawable/border_bottom_black">
 
-            <TableRow
-                android:background="@drawable/border_top_black">
+            <TableRow android:background="@drawable/border_top_black">
 
                 <TextView
                     android:id="@+id/tv_row_header_pub_pharmacy"
@@ -224,7 +224,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Farmácia Pública"/>
+                    android:text="Farmácia Pública" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -331,6 +331,7 @@
                 </LinearLayout>
 
             </TableRow>
+
             <TableRow android:background="@drawable/border_top_black">
 
                 <TextView
@@ -340,7 +341,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Maternidade-SMI"/>
+                    android:text="Maternidade-SMI" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -447,6 +448,7 @@
                 </LinearLayout>
 
             </TableRow>
+
             <TableRow android:background="@drawable/border_top_black">
 
                 <TextView
@@ -456,7 +458,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Enfermaria"/>
+                    android:text="Enfermaria" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -563,6 +565,7 @@
                 </LinearLayout>
 
             </TableRow>
+
             <TableRow android:background="@drawable/border_top_black">
 
                 <TextView
@@ -572,7 +575,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Banco de Socorro-BIS"/>
+                    android:text="Banco de Socorro-BIS" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -679,6 +682,7 @@
                 </LinearLayout>
 
             </TableRow>
+
             <TableRow android:background="@drawable/border_top_black">
 
                 <TextView
@@ -688,7 +692,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Brigada móvel"/>
+                    android:text="Brigada móvel" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -806,7 +810,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Laboratório"/>
+                    android:text="Laboratório" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -923,7 +927,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="UATS"/>
+                    android:text="UATS" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -1030,6 +1034,7 @@
                 </LinearLayout>
 
             </TableRow>
+
             <TableRow android:background="@drawable/border_top_black">
 
                 <TextView
@@ -1039,7 +1044,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="PNCTL"/>
+                    android:text="PNCTL" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -1146,6 +1151,7 @@
                 </LinearLayout>
 
             </TableRow>
+
             <TableRow android:background="@drawable/border_top_black">
 
                 <TextView
@@ -1155,7 +1161,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="PAV"/>
+                    android:text="PAV" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -1262,6 +1268,7 @@
                 </LinearLayout>
 
             </TableRow>
+
             <TableRow android:background="@drawable/border_top_black">
 
                 <TextView
@@ -1271,7 +1278,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Estomalogia"/>
+                    android:text="Estomalogia" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -1388,7 +1395,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="Desembalar Kit"/>
+                    android:text="Desembalar Kit" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -1503,7 +1510,7 @@
             layout="@layout/layout_form_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true" />
     </RelativeLayout>
 
 
