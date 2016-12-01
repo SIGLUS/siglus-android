@@ -28,7 +28,7 @@
     <string name="msg_fetching_products">Downloading product list…</string>
     <string name="msg_sync_requisition_data">Synchronizing requisition data</string>
     <string name="msg_sync_requisition_failed">Download of requisition data failed, please login again.</string>
-    <string name="msg_sync_stockmovement_failed">Download of stock movement data failed, please login again.</string>
+    <string name="msg_sync_stock_movement_failed">Download of stock movement data failed, please login again.</string>
     <string name="msg_initial_sync_success">Initial sync successful. Tablet is ready for use.</string>
     <string name="msg_download_archived_products_fail">Download of archived products failed, please login again.</string>
     <string name="version_number"><![CDATA[Version <b>%1$s</b>]]> </string>
@@ -92,7 +92,7 @@
     <string name="label_issued_unit">Unit of Issue</string>
     <string name="hint_error_input">Invalid Input</string>
     <string name="btn_save">Save</string>
-    <string name="msg_mmia_onback_confirm">Are you sure you want to quit without saving your work? If you click \'yes\', your draft will be deleted.</string>
+    <string name="msg_back_confirm">Are you sure you want to quit without saving your work? If you click \'yes\', your draft will be deleted.</string>
     <string name="msg_regime_del_confirm">Are you sure that you want to remove this regime?</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
@@ -410,13 +410,13 @@
 
     <string name="msg_draft_saved">Draft saved successfully</string>
     <string name="alert_soonest_expire">Your movement includes a batch that is not the first to expire</string>
-    <string name="msg_export_data_sucess">Data are successfully exported and saved to <![CDATA[<b>%1$s</b>]]></string>
+    <string name="msg_export_data_success">Data are successfully exported and saved to <![CDATA[<b>%1$s</b>]]></string>
     <string name="action_export_data">Export all app data</string>
 
     <string name="msg_has_archived_old_data">Historical data beyond 13-months are archived on the web portal.</string>
     <string name="label_movement_detail">Movement Details</string>
     <string name="label_available_lots">Available Lots</string>
-    <string name="msg_unpack_kit_onback_confirm">All product and lot information entered so far will be discarded.</string>
+    <string name="msg_unpack_kit_back_confirm">All product and lot information entered so far will be discarded.</string>
     <string name="btn_discard">Discard</string>
     <string name="msg_confirm_empty_lot_number">You have left the lot number blank. Would you like to add a new lot to <![CDATA[<b>%1$s</b>]]> using a default auto generated lot number?</string>
     <string name="error_lot_without_number_already_exists">A lot with an auto generated lot name and the same expiry date has already been created</string>

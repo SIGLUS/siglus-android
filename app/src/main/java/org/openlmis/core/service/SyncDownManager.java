@@ -164,7 +164,7 @@ public class SyncDownManager {
             } catch (LMISException e) {
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
                 e.reportToFabric();
-                throw new LMISException(errorMessage(R.string.msg_sync_stockmovement_failed));
+                throw new LMISException(errorMessage(R.string.msg_sync_stock_movement_failed));
             }
         }
     }

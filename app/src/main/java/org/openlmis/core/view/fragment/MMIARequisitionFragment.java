@@ -330,7 +330,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     public void onBackPressed() {
         if (presenter.getRnrFormStatus() == RnRForm.STATUS.DRAFT) {
-            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null, getString(R.string.msg_mmia_onback_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), TAG_BACK_PRESSED);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null, getString(R.string.msg_back_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), TAG_BACK_PRESSED);
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
             dialogFragment.setCallBackListener(this);
         } else {

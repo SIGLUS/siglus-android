@@ -106,7 +106,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     private void showDataChangeConfirmDialog() {
         DialogFragment dialogFragment = SimpleDialogFragment.newInstance(
                 null,
-                getString(R.string.msg_mmia_onback_confirm),
+                getString(R.string.msg_back_confirm),
                 getString(R.string.btn_positive),
                 getString(R.string.btn_negative),
                 "onBackPressed");

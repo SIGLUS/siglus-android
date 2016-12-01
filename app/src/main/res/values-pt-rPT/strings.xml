@@ -25,7 +25,7 @@
     <string name="msg_fetching_products">Descarregando lista de produtos…</string>
     <string name="msg_sync_requisition_data">Sincronizando dados de requisição</string>
     <string name="msg_sync_requisition_failed">Descarregamento de dados de requisição a partir do servidor falhou, por favor entre novamente.</string>
-    <string name="msg_sync_stockmovement_failed">Descarregamento de movimentos de estoque a partir do servidor falhou, por favor entre novamente.</string>
+    <string name="msg_sync_stock_movement_failed">Descarregamento de movimentos de estoque a partir do servidor falhou, por favor entre novamente.</string>
     <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
     <string name="msg_download_archived_products_fail">Descarregamento de produtos arquivados a partir do servidor falhou, por favor entre novamente.</string>
     <string name="version_number"><![CDATA[Versão <b>%1$s</b>]]></string>
@@ -86,7 +86,7 @@
     <string name="label_issued_unit">Unidade de Saída</string>
     <string name="hint_error_input">Entrada inválida</string>
     <string name="btn_save">Guardar</string>
-    <string name="msg_mmia_onback_confirm">Tem certeza que quer sair sem gravar suas alteraçães? Se você pressionar \'sim\', o seu rascunho será excluído</string>
+    <string name="msg_back_confirm">Tem certeza que quer sair sem gravar suas alteraçães? Se você pressionar \'sim\', o seu rascunho será excluído</string>
     <string name="msg_regime_del_confirm">Tem a certeza que pretende remover este regime?</string>
     <string name="btn_positive">Sim</string>
     <string name="btn_negative">Não</string>
@@ -368,12 +368,12 @@
     <string name="error_lot_already_exists">O lote já existe, por favor, adicione um novo.</string>
     <string name="msg_draft_saved">Rascunho gravado com sucesso</string>
     <string name="alert_soonest_expire">Seu movimento inclui um lote que não é o primeiro a expirar</string>
-    <string name="msg_export_data_sucess">Os dados foram exportados e gravados com sucesso <![CDATA[<b>%1$s</b>]]></string>
+    <string name="msg_export_data_success">Os dados foram exportados e gravados com sucesso <![CDATA[<b>%1$s</b>]]></string>
     <string name="action_export_data">Exportar todos os dados de aplicativos</string>
     <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
     <string name="label_movement_detail">Detalhes do movimento</string>
     <string name="label_available_lots">Lotes disponíveis</string>
-    <string name="msg_unpack_kit_onback_confirm">Todas as informações de produtos e de lotes inseridos até agora serão descartadas.</string>
+    <string name="msg_unpack_kit_back_confirm">Todas as informações de produtos e de lotes inseridos até agora serão descartadas.</string>
     <string name="btn_discard">Descartar</string>
     <string name="msg_confirm_empty_lot_number">Você deixou o número do lote em branco. Deseja adicionar um novo lote ao <![CDATA[<b>%1$s</b>]]> utilizando um número de lote gerado automaticamente?</string>
     <string name="error_lot_without_number_already_exists">Um lote com um nome de lote gerado automaticamente e a mesma data de expiração já foi criado</string>

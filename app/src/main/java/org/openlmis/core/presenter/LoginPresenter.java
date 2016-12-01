@@ -123,7 +123,7 @@ public class LoginPresenter extends Presenter {
 
         if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced()) {
             view.loaded();
-            ToastUtil.show(R.string.msg_sync_stockmovement_failed);
+            ToastUtil.show(R.string.msg_sync_stock_movement_failed);
             return;
         }
         if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
