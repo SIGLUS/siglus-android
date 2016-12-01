@@ -54,6 +54,7 @@ public class RapidTestReportsPresenter extends Presenter {
         viewModelList.clear();
         try {
             generateViewModelsForAllPeriods();
+            viewModelList.add(new RapidTestReportViewModel(Period.of(new Date())));
         } catch (LMISException e) {
             e.printStackTrace();
         }
@@ -63,26 +64,28 @@ public class RapidTestReportsPresenter extends Presenter {
     protected void generateViewModelsForAllPeriods() throws LMISException {
         Period period = periodService.getFirstStandardPeriod();
 
-        if (period == null) {
-            return;
-        }
-
         List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
         while (period != null) {
-            RapidTestReportViewModel rapidTestReportViewModel = new RapidTestReportViewModel(period);
-            viewModelList.add(rapidTestReportViewModel);
-            final Period finalPeriod = period;
-            Optional<ProgramDataForm> existingProgramDataForm = FluentIterable.from(rapidTestForms).firstMatch(new Predicate<ProgramDataForm>() {
-                @Override
-                public boolean apply(ProgramDataForm programDataForm) {
-                    return programDataForm.getPeriodBegin().getTime() == finalPeriod.getBegin().getMillis();
-                }
-            });
-            if (existingProgramDataForm.isPresent()) {
-                rapidTestReportViewModel.setRapidTestForm(existingProgramDataForm.get());
-            }
+            addViewModel(period, rapidTestForms);
             period = periodService.generateNextPeriod(period);
         }
-        viewModelList.add(new RapidTestReportViewModel(Period.of(new Date())));
+    }
+
+    private void addViewModel(Period period, List<ProgramDataForm> rapidTestForms) {
+        RapidTestReportViewModel rapidTestReportViewModel = new RapidTestReportViewModel(period);
+        setExistingProgramDataForm(rapidTestReportViewModel, rapidTestForms);
+        viewModelList.add(rapidTestReportViewModel);
+    }
+
+    private void setExistingProgramDataForm(final RapidTestReportViewModel viewModel, List<ProgramDataForm> rapidTestForms) {
+        Optional<ProgramDataForm> existingProgramDataForm = FluentIterable.from(rapidTestForms).firstMatch(new Predicate<ProgramDataForm>() {
+            @Override
+            public boolean apply(ProgramDataForm programDataForm) {
+                return programDataForm.getPeriodBegin().getTime() == viewModel.getPeriod().getBegin().getMillis();
+            }
+        });
+        if (existingProgramDataForm.isPresent()) {
+            viewModel.setRapidTestForm(existingProgramDataForm.get());
+        }
     }
 }
