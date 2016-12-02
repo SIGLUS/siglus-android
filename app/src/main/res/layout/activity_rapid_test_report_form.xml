@@ -45,10 +45,14 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/border_right_black"
                     android:gravity="center"
                     android:text="Consumo"
                     android:textColor="@color/color_black" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_black" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -91,10 +95,14 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/border_right_black"
                     android:gravity="center"
                     android:text="Consumo"
                     android:textColor="@color/color_black" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_black" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -137,10 +145,15 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/border_right_black"
                     android:gravity="center"
                     android:text="Consumo"
                     android:textColor="@color/color_black" />
+
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_black" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -183,10 +196,14 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/border_right_black"
                     android:gravity="center"
                     android:text="Consumo"
                     android:textColor="@color/color_black" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_black" />
 
                 <TextView
                     android:layout_width="0dp"
