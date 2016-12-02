@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_tiny">
 
     <LinearLayout
         android:id="@+id/vg_rapid_test_report_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:background="@drawable/border_right_black_bold"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_right_black_bold" />
-
+            android:layout_weight="1" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/border_right_black_bold"
+            android:background="@drawable/border_left_black_bold"
             android:orientation="vertical">
 
             <TextView
@@ -67,7 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/border_right_black_bold"
+            android:background="@drawable/border_left_black_bold"
             android:orientation="vertical">
 
             <TextView
@@ -113,7 +112,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/border_right_black_bold"
+            android:background="@drawable/border_left_black_bold"
             android:orientation="vertical">
 
             <TextView
@@ -159,7 +158,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/border_right_black_bold"
+            android:background="@drawable/border_left_black_bold"
             android:orientation="vertical">
 
             <TextView
@@ -209,7 +208,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/vg_rapid_test_report_header"
-        android:background="@drawable/border_bottom_black" />
+        android:background="@drawable/border_bottom_black_right_black_bold"
+        android:overScrollMode="never" />
 
     <include
         android:id="@+id/action_panel"

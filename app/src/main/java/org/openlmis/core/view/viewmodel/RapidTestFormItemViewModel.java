@@ -2,6 +2,7 @@ package org.openlmis.core.view.viewmodel;
 
 import org.openlmis.core.model.ProgramDataFormItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -9,46 +10,49 @@ import lombok.Data;
 @Data
 public class RapidTestFormItemViewModel {
     String issueReason;
-    String consumeHIVDetermine;
-    String positiveHIVDetermine;
-    String consumeHIVUnigold;
-    String positiveHIVUnigold;
-    String consumeSyphillis;
-    String positiveSyphillis;
-    String consumeMalaria;
-    String positiveMalaria;
+
+    RapidTestFormGridViewModel gridHIVDetermine = RapidTestFormGridViewModel.HIVDetermine;
+    RapidTestFormGridViewModel gridHIVUnigold = RapidTestFormGridViewModel.HIVUnigold;
+    RapidTestFormGridViewModel gridSyphillis = RapidTestFormGridViewModel.Syphillis;
+    RapidTestFormGridViewModel gridMalaria  = RapidTestFormGridViewModel.Malaria;
 
     List<ProgramDataFormItem> programDataFormItemList;
 
+    List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = new ArrayList<>();
+
     public RapidTestFormItemViewModel(String issueReason) {
         this.issueReason = issueReason;
+        rapidTestFormGridViewModelList.add(gridHIVDetermine);
+        rapidTestFormGridViewModelList.add(gridHIVUnigold);
+        rapidTestFormGridViewModelList.add(gridSyphillis);
+        rapidTestFormGridViewModelList.add(gridMalaria);
     }
 
     public void setColumnValue(String columnCode, int value) {
         switch (columnCode) {
             case CONSUME_HIVDETERMINE:
-                consumeHIVDetermine = String.valueOf(value);
+                gridHIVDetermine.setConsumptionValue(String.valueOf(value));
                 break;
             case POSITIVE_HIVDETERMINE:
-                positiveHIVDetermine = String.valueOf(value);
+                gridHIVDetermine.setPositiveValue(String.valueOf(value));
                 break;
             case CONSUME_HIVUNIGOLD:
-                consumeHIVUnigold = String.valueOf(value);
+                gridHIVUnigold.setConsumptionValue(String.valueOf(value));
                 break;
             case POSITIVE_HIVUNIGOLD:
-                positiveHIVUnigold = String.valueOf(value);
+                gridHIVUnigold.setPositiveValue(String.valueOf(value));
                 break;
             case CONSUME_SYPHILLIS:
-                consumeSyphillis = String.valueOf(value);
+                gridSyphillis.setConsumptionValue(String.valueOf(value));
                 break;
             case POSITIVE_SYPHILLIS:
-                positiveSyphillis = String.valueOf(value);
+                gridSyphillis.setPositiveValue(String.valueOf(value));
                 break;
             case CONSUME_MALARIA:
-                consumeMalaria = String.valueOf(value);
+                gridMalaria.setConsumptionValue(String.valueOf(value));
                 break;
             case POSITIVE_MALARIA:
-                positiveMalaria = String.valueOf(value);
+                gridMalaria.setPositiveValue(String.valueOf(value));
                 break;
         }
     }
