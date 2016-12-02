@@ -2,38 +2,32 @@ package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum RapidTestFormGridViewModel {
-    HIVDetermine("10","10"),
-    HIVUnigold("20","30"),
-    Syphillis("10","1"),
-    Malaria("3","4");
+import lombok.Data;
 
-    String consumptionValue;
-    String positiveValue;
+@Data
+public class RapidTestFormGridViewModel {
+    ColumnCode columnCode;
+    String consumptionValue = "";
+    String positiveValue = "";
 
-    RapidTestFormGridViewModel(String consumptionValue, String positiveValue) {
-        this.consumptionValue = consumptionValue;
-        this.positiveValue = positiveValue;
-    }
-
-    public String getConsumptionValue() {
-        return consumptionValue;
-    }
-
-    public String getPositiveValue() {
-        return positiveValue;
-    }
-
-    public void setConsumptionValue(String consumptionValue) {
-        this.consumptionValue = consumptionValue;
-    }
-
-    public void setPositiveValue(String positiveValue) {
-        this.positiveValue = positiveValue;
+    RapidTestFormGridViewModel(ColumnCode columnCode) {
+        this.columnCode = columnCode;
     }
 
     public boolean validate() {
-        return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue)
-                || Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue);
+        try {
+            return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue)
+                    || Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue);
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
+
+    public enum ColumnCode {
+        HIVDetermine,
+        HIVUnigold,
+        Syphillis,
+        Malaria
+    }
+
 }

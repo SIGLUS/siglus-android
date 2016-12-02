@@ -1,7 +1,5 @@
 package org.openlmis.core.view.viewmodel;
 
-import org.openlmis.core.model.ProgramDataFormItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +9,10 @@ import lombok.Data;
 public class RapidTestFormItemViewModel {
     String issueReason;
 
-    RapidTestFormGridViewModel gridHIVDetermine = RapidTestFormGridViewModel.HIVDetermine;
-    RapidTestFormGridViewModel gridHIVUnigold = RapidTestFormGridViewModel.HIVUnigold;
-    RapidTestFormGridViewModel gridSyphillis = RapidTestFormGridViewModel.Syphillis;
-    RapidTestFormGridViewModel gridMalaria  = RapidTestFormGridViewModel.Malaria;
-
-    List<ProgramDataFormItem> programDataFormItemList;
+    RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVDetermine);
+    RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVUnigold);
+    RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Syphillis);
+    RapidTestFormGridViewModel gridMalaria  = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Malaria);
 
     List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = new ArrayList<>();
 
@@ -57,12 +53,12 @@ public class RapidTestFormItemViewModel {
         }
     }
 
-    public static final String CONSUME_HIVDETERMINE = "consumeHIVDetermine";
-    public static final String POSITIVE_HIVDETERMINE = "positiveHIVDetermine";
-    public static final String CONSUME_HIVUNIGOLD = "consumeHIVUnigold";
-    public static final String POSITIVE_HIVUNIGOLD = "positiveHIVUnigold";
-    public static final String CONSUME_SYPHILLIS = "consumeSyphillis";
-    public static final String POSITIVE_SYPHILLIS = "positiveSyphillis";
-    public static final String CONSUME_MALARIA = "consumeMalaria";
-    public static final String POSITIVE_MALARIA = "positiveMalaria";
+    public static final String CONSUME_HIVDETERMINE = "CONSUME_HIVDETERMINE";
+    public static final String POSITIVE_HIVDETERMINE = "POSITIVE_HIVDETERMINE";
+    public static final String CONSUME_HIVUNIGOLD = "CONSUME_HIVUNIGOLD";
+    public static final String POSITIVE_HIVUNIGOLD = "POSITIVE_HIVUNIGOLD";
+    public static final String CONSUME_SYPHILLIS = "CONSUME_SYPHILLIS";
+    public static final String POSITIVE_SYPHILLIS = "POSITIVE_SYPHILLIS";
+    public static final String CONSUME_MALARIA = "CONSUME_MALARIA";
+    public static final String POSITIVE_MALARIA = "POSITIVE_MALARIA";
 }

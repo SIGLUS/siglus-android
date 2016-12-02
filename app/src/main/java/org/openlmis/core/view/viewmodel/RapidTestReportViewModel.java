@@ -58,14 +58,14 @@ public class RapidTestReportViewModel implements Serializable {
     public RapidTestReportViewModel(ProgramDataForm programDataForm) {
         setRapidTestForm(programDataForm);
         period = Period.of(programDataForm.getPeriodBegin());
-        setFormItemViewModels(programDataForm.getProgramDataFormItemListWrapper());
         setItemViewModelList();
+        setFormItemViewModels(programDataForm.getProgramDataFormItemListWrapper());
     }
 
     private void setFormItemViewModels(List<ProgramDataFormItem> programDataFormItemList) {
         for (ProgramDataFormItem item : programDataFormItemList) {
             switch (item.getName()) {
-                case  PUB_PHARMACY:
+                case PUB_PHARMACY:
                     item_PUB_PHARMACY.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
                     break;
                 case MATERNITY:
@@ -97,6 +97,8 @@ public class RapidTestReportViewModel implements Serializable {
                     break;
                 case UNPACK_KIT:
                     item_UNPACK_KIT.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
+                    break;
+                default:
                     break;
             }
         }
