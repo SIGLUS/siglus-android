@@ -755,6 +755,7 @@
 
     <style name="RapidTestForm"/>
     <style name="RapidTestForm.RowHeading">
+        <item name="android:textSize">@dimen/font_size_normal</item>
         <item name="android:textColor">@color/color_black</item>
         <item name="android:background">@color/color_rapid_test_form_row_header</item>
         <item name="android:gravity">center</item>
