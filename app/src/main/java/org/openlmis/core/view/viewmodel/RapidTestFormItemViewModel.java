@@ -1,7 +1,11 @@
 package org.openlmis.core.view.viewmodel;
 
-import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -12,45 +16,24 @@ public class RapidTestFormItemViewModel {
     RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVDetermine);
     RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVUnigold);
     RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Syphillis);
-    RapidTestFormGridViewModel gridMalaria  = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Malaria);
+    RapidTestFormGridViewModel gridMalaria = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Malaria);
 
-    List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = new ArrayList<>();
+    List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = Arrays.asList(gridHIVDetermine, gridHIVUnigold, gridSyphillis, gridMalaria);
+
+    Map<String, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
 
     public RapidTestFormItemViewModel(String issueReason) {
         this.issueReason = issueReason;
-        rapidTestFormGridViewModelList.add(gridHIVDetermine);
-        rapidTestFormGridViewModelList.add(gridHIVUnigold);
-        rapidTestFormGridViewModelList.add(gridSyphillis);
-        rapidTestFormGridViewModelList.add(gridMalaria);
+        for (RapidTestFormGridViewModel viewModel : rapidTestFormGridViewModelList) {
+            rapidTestFormGridViewModelMap.put(StringUtils.upperCase(viewModel.getColumnCode().name()), viewModel);
+        }
     }
 
     public void setColumnValue(String columnCode, int value) {
-        switch (columnCode) {
-            case CONSUME_HIVDETERMINE:
-                gridHIVDetermine.setConsumptionValue(String.valueOf(value));
-                break;
-            case POSITIVE_HIVDETERMINE:
-                gridHIVDetermine.setPositiveValue(String.valueOf(value));
-                break;
-            case CONSUME_HIVUNIGOLD:
-                gridHIVUnigold.setConsumptionValue(String.valueOf(value));
-                break;
-            case POSITIVE_HIVUNIGOLD:
-                gridHIVUnigold.setPositiveValue(String.valueOf(value));
-                break;
-            case CONSUME_SYPHILLIS:
-                gridSyphillis.setConsumptionValue(String.valueOf(value));
-                break;
-            case POSITIVE_SYPHILLIS:
-                gridSyphillis.setPositiveValue(String.valueOf(value));
-                break;
-            case CONSUME_MALARIA:
-                gridMalaria.setConsumptionValue(String.valueOf(value));
-                break;
-            case POSITIVE_MALARIA:
-                gridMalaria.setPositiveValue(String.valueOf(value));
-                break;
-        }
+        String[] columnNames = columnCode.split("_");
+        String quantityCategory = columnNames[0];
+        String columnName = columnNames[1];
+        rapidTestFormGridViewModelMap.get(columnName).setValue(quantityCategory, value);
     }
 
     public static final String CONSUME_HIVDETERMINE = "CONSUME_HIVDETERMINE";

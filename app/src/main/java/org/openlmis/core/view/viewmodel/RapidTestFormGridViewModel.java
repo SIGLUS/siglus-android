@@ -23,6 +23,14 @@ public class RapidTestFormGridViewModel {
         }
     }
 
+    public void setValue(String quantityCategory, int value) {
+        if (quantityCategory.equals("CONSUME")) {
+            setConsumptionValue(String.valueOf(value));
+        } else {
+            setPositiveValue(String.valueOf(value));
+        }
+    }
+
     public enum ColumnCode {
         HIVDetermine,
         HIVUnigold,

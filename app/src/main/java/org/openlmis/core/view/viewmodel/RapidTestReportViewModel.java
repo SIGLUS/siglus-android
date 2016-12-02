@@ -6,8 +6,10 @@ import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -29,7 +31,9 @@ public class RapidTestReportViewModel implements Serializable {
     RapidTestFormItemViewModel item_DENTAL_WARD = new RapidTestFormItemViewModel(DENTAL_WARD);
     RapidTestFormItemViewModel item_UNPACK_KIT = new RapidTestFormItemViewModel(UNPACK_KIT);
 
-    List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
+    List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(item_PUB_PHARMACY, item_MATERNITY, item_GENERAL_WARD, item_ACC_EMERGENCY, item_MOBILE_UNIT, item_LABORATORY, item_UATS, item_PNCTL, item_PAV, item_DENTAL_WARD, item_UNPACK_KIT);
+
+    Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
 
     private ProgramDataForm rapidTestForm;
 
@@ -38,69 +42,25 @@ public class RapidTestReportViewModel implements Serializable {
     public RapidTestReportViewModel(Period period) {
         this.period = period;
         status = Status.MISSING;
-        setItemViewModelList();
+        setItemViewModelMap();
     }
 
-    private void setItemViewModelList() {
-        itemViewModelList.add(item_PUB_PHARMACY);
-        itemViewModelList.add(item_MATERNITY);
-        itemViewModelList.add(item_GENERAL_WARD);
-        itemViewModelList.add(item_ACC_EMERGENCY);
-        itemViewModelList.add(item_MOBILE_UNIT);
-        itemViewModelList.add(item_LABORATORY);
-        itemViewModelList.add(item_UATS);
-        itemViewModelList.add(item_PNCTL);
-        itemViewModelList.add(item_PAV);
-        itemViewModelList.add(item_DENTAL_WARD);
-        itemViewModelList.add(item_UNPACK_KIT);
+    private void setItemViewModelMap() {
+        for (RapidTestFormItemViewModel viewModel : itemViewModelList) {
+            itemViewModelMap.put(viewModel.getIssueReason(), viewModel);
+        }
     }
 
     public RapidTestReportViewModel(ProgramDataForm programDataForm) {
         setRapidTestForm(programDataForm);
         period = Period.of(programDataForm.getPeriodBegin());
-        setItemViewModelList();
+        setItemViewModelMap();
         setFormItemViewModels(programDataForm.getProgramDataFormItemListWrapper());
     }
 
     private void setFormItemViewModels(List<ProgramDataFormItem> programDataFormItemList) {
         for (ProgramDataFormItem item : programDataFormItemList) {
-            switch (item.getName()) {
-                case PUB_PHARMACY:
-                    item_PUB_PHARMACY.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case MATERNITY:
-                    item_MATERNITY.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case GENERAL_WARD:
-                    item_GENERAL_WARD.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case ACC_EMERGENCY:
-                    item_ACC_EMERGENCY.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case MOBILE_UNIT:
-                    item_MOBILE_UNIT.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case LABORATORY:
-                    item_LABORATORY.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case UATS:
-                    item_UATS.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case PNCTL:
-                    item_PNCTL.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case PAV:
-                    item_PAV.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case DENTAL_WARD:
-                    item_DENTAL_WARD.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                case UNPACK_KIT:
-                    item_UNPACK_KIT.setColumnValue(item.getProgramDataColumnCode(), item.getValue());
-                    break;
-                default:
-                    break;
-            }
+            itemViewModelMap.get(item.getName()).setColumnValue(item.getProgramDataColumnCode(),item.getValue());
         }
     }
 
