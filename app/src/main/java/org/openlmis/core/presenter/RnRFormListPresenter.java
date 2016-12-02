@@ -36,6 +36,7 @@ import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.view.BaseView;
@@ -66,6 +67,9 @@ public class RnRFormListPresenter extends Presenter {
 
     @Inject
     SyncErrorsRepository syncErrorsRepository;
+
+    @Inject
+    StockRepository stockRepository;
 
     @Setter
     String programCode;
@@ -127,16 +131,33 @@ public class RnRFormListPresenter extends Presenter {
             Period nextPeriodInSchedule = periodService.generateNextPeriod(programCode, null);
 
             if (isAllRnrFormInDBCompletedOrNoRnrFormInDB()) {
-                rnRFormViewModels.add(generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+                    rnRFormViewModels.add(fakeGenerateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
+                } else {
+                    rnRFormViewModels.add(generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
+                }
+
             }
         }
     }
 
     private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            if (isCanNotCreateRnr(currentPeriod)) {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
-            }
+        if (isCanNotCreateRnr(currentPeriod)) {
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+        }
+
+        List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
+        if (physicalInventories == null || physicalInventories.size() == 0) {
+
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+        } else {
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE);
+        }
+    }
+
+    private RnRFormViewModel fakeGenerateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
+        if (stockRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
         }
         List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
         if (physicalInventories == null || physicalInventories.size() == 0) {

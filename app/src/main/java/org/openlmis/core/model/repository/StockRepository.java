@@ -361,6 +361,16 @@ public class StockRepository {
     public Date queryEarliestStockMovementDateByProgram(final String programCode) {
         Date earliestDate = null;
 
+        for (String movementDate : queryStockMovementDatesByProgram(programCode)) {
+            Date date = DateUtil.parseString(movementDate, DateUtil.DB_DATE_FORMAT);
+            if (earliestDate == null || date.before(earliestDate)) {
+                earliestDate = date;
+            }
+        }
+        return earliestDate;
+    }
+
+    public List<String> queryStockMovementDatesByProgram(final String programCode) {
         String rawSql = "SELECT movementDate FROM stock_items s1 "
                 + "JOIN stock_cards s2 ON s1.stockCard_id = s2.id "
                 + "JOIN products p1 ON s2.product_id = p1.id "
@@ -379,13 +389,7 @@ public class StockRepository {
             cursor.close();
         }
 
-        for (String movementDate : movementDates) {
-            Date date = DateUtil.parseString(movementDate, DateUtil.DB_DATE_FORMAT);
-            if (earliestDate == null || date.before(earliestDate)) {
-                earliestDate = date;
-            }
-        }
-        return earliestDate;
+        return movementDates;
     }
 
     public StockMovementItem getFirstStockMovement() throws LMISException {

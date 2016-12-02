@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
@@ -54,7 +55,9 @@ public class IncompleteRequisitionBanner extends LinearLayout {
         try {
             int periodOffsetMonthMmia = periodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
             int periodOffsetMonthVia = periodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
-            if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0) {
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+                this.setVisibility(View.GONE);
+            } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0) {
                 this.setVisibility(View.GONE);
             } else if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 1) {
                 String periodRange = getPeriodRangeForIncompleteRequisition(Constants.VIA_PROGRAM_CODE);
