@@ -33,7 +33,7 @@ public class ProgramDataFormRepository {
     }
 
     public void save(ProgramDataForm form) throws LMISException {
-        genericDao.create(form);
+        genericDao.createOrUpdate(form);
     }
 
     public List<ProgramDataForm> listByProgramCode(String programCode) throws LMISException {

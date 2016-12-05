@@ -76,6 +76,15 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
 
         List<ProgramDataForm> programDataNonExist = programDataFormRepository.listByProgramCode("Some other program");
         assertThat(programDataNonExist.size(), is(0));
+
+
+        //update
+        programDataForm1.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+        programDataForm1.setPeriodBegin(DateUtil.parseString("2015-09-30",DateUtil.DB_DATE_FORMAT));
+        programDataFormRepository.save(programDataForm1);
+        List<ProgramDataForm> programDataFormRetrievedAfterRevision = programDataFormRepository.listByProgramCode("RapidTest");
+        assertThat(programDataFormRetrievedAfterRevision.get(0).getPeriodBegin(),is(programDataForm1.getPeriodBegin()));
+        assertThat(programDataFormRetrievedAfterRevision.get(0).getStatus(),is(ProgramDataForm.STATUS.AUTHORIZED));
     }
 
     @Test
