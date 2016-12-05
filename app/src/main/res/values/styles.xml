@@ -581,7 +581,6 @@
     <style name="ItemRnr.PeriodTextType2" parent="Text.Black.Regular">
         <item name="android:padding">@dimen/padding_small</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:drawableStart">@drawable/ic_done_mini</item>
         <item name="android:drawablePadding">@dimen/padding_small</item>
     </style>
 
