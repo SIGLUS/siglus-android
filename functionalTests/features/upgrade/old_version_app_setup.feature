@@ -7,8 +7,18 @@ Feature: Old version set up before upgrade
 
     And I press "Stock Card Overview"
     And I wait for 1 second
-    And I make a movement on tablet "01A01" "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "positive adjustment" "1"
-
+#    And I make a positive movement with lot "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "1"
+    And I search stockcard by code "01A01" and select this item
+    Then I wait for "Stock Card" to appear
+    Then I wait for 1 second
+    Then I press "NEW MOVEMENT"
+    Then I select a new movement reason "Entries" "District( DDM)"
+    Then I wait for 1 second
+    Then I select movement date
+    Then I wait for 1 second
+    Then I enter signature "super"
+    Then I add a new lot with lot number "AAA" and quantity "1"
+    And I press "Complete"
     # to run this in a physical device, we need to wait longer, IO is slow on physical devices
 
     # Given I press "Create a Via Classica Requisition"
