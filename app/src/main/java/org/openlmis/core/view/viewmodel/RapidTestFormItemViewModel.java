@@ -1,7 +1,9 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.model.ProgramDataFormItem;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -44,4 +46,12 @@ public class RapidTestFormItemViewModel {
     public static final String POSITIVE_SYPHILLIS = "POSITIVE_SYPHILLIS";
     public static final String CONSUME_MALARIA = "CONSUME_MALARIA";
     public static final String POSITIVE_MALARIA = "POSITIVE_MALARIA";
+
+    public List<ProgramDataFormItem> convertToDataModel() {
+        List<ProgramDataFormItem> programDataFormItems = new ArrayList<>();
+        for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
+            programDataFormItems.addAll(gridViewModel.convertFormGridViewModelToDataModel(issueReason));
+        }
+        return programDataFormItems;
+    }
 }

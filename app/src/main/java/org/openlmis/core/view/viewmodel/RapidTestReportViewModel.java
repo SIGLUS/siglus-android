@@ -2,6 +2,7 @@ package org.openlmis.core.view.viewmodel;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 
@@ -60,7 +61,7 @@ public class RapidTestReportViewModel implements Serializable {
 
     private void setFormItemViewModels(List<ProgramDataFormItem> programDataFormItemList) {
         for (ProgramDataFormItem item : programDataFormItemList) {
-            itemViewModelMap.get(item.getName()).setColumnValue(item.getProgramDataColumnCode(),item.getValue());
+            itemViewModelMap.get(item.getName()).setColumnValue(item.getProgramDataColumnCode(), item.getValue());
         }
     }
 
@@ -84,6 +85,22 @@ public class RapidTestReportViewModel implements Serializable {
 
     public DateTime getSyncedTime() {
         return syncedTime;
+    }
+
+    public void convertFormViewModelToDataModel(Program program) {
+        if (rapidTestForm == null) {
+            rapidTestForm = new ProgramDataForm();
+            rapidTestForm.setProgram(program);
+            rapidTestForm.setPeriodBegin(period.getBegin().toDate());
+            rapidTestForm.setPeriodEnd(period.getEnd().toDate());
+            convertFormItemViewModelToDataModel();
+        }
+    }
+
+    private void convertFormItemViewModelToDataModel() {
+        for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+            rapidTestForm.getProgramDataFormItemListWrapper().addAll(itemViewModel.convertToDataModel());
+        }
     }
 
     public enum Status {

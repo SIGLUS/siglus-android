@@ -77,10 +77,21 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO validate the form and make the wrong input text red
-                //TODO save the form
+                loading();
+                Subscription subscription = presenter.saveDraftForm().subscribe(getSavedSubscriber());
+                subscriptions.add(subscription);
             }
         });
+    }
+
+    private Action1<? super RapidTestReportViewModel> getSavedSubscriber() {
+        return new Action1<RapidTestReportViewModel>() {
+            @Override
+            public void call(RapidTestReportViewModel viewModel) {
+                loaded();
+                RapidTestReportFormActivity.this.finish();
+            }
+        };
     }
 
     @NonNull
