@@ -29,7 +29,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
         switch (viewModel.getStatus()) {
             case MISSING:
                 tvReportStatus.setText(Html.fromHtml(context.getString(R.string.msg_report_missing)));
-                tvPeriod.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+                tvPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
                 tvPeriod.setBackgroundColor(context.getResources().getColor(R.color.color_draft_title));
                 tvPeriod.setTextColor(context.getResources().getColor(R.color.color_white));
                 btnReportEntry.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
