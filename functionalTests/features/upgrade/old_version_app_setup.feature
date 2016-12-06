@@ -9,7 +9,7 @@ Feature: Old version set up before upgrade
     And I wait for 1 second
 #    And I make a positive movement with lot "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "1"
 #    And I search stockcard by code "01A01" and select this item
-    When I search "01A01"
+    When I search "01A01" without clearing text
     Then I select stock card code called "[01A01]"
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
