@@ -13,7 +13,7 @@ public class ProgramDataFormItem extends BaseModel {
     @DatabaseField
     private String name;
 
-    @DatabaseField
+    @DatabaseField(columnName = "program_data_column_code")
     private String programDataColumnCode;
 
     @DatabaseField
