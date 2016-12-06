@@ -1,5 +1,6 @@
 package org.openlmis.core.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.presenter.RapidTestReportsPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.RapidTestReportAdapter;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
@@ -38,6 +40,10 @@ public class RapidTestReportsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         loading();
         setupReportsList();
+        loadForms();
+    }
+
+    private void loadForms() {
         Subscription subscription = presenter.loadViewModels().subscribe(getRefreshReportListSubscriber());
         subscriptions.add(subscription);
     }
@@ -59,9 +65,14 @@ public class RapidTestReportsActivity extends BaseActivity {
 
     private void setupReportsList() {
         rapidTestListView.setLayoutManager(new LinearLayoutManager(this));
-        rapidTestReportAdapter = new RapidTestReportAdapter(this,presenter.getViewModelList());
+        rapidTestReportAdapter = new RapidTestReportAdapter(this, presenter.getViewModelList());
         rapidTestListView.setAdapter(rapidTestReportAdapter);
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM) {
+            loadForms();
+        }
+    }
 }
