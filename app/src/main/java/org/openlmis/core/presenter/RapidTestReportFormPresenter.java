@@ -27,7 +27,7 @@ public class RapidTestReportFormPresenter extends Presenter {
     ProgramRepository programRepository;
 
     @Getter
-    private RapidTestReportViewModel viewModel;
+    protected RapidTestReportViewModel viewModel;
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
@@ -68,14 +68,13 @@ public class RapidTestReportFormPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
                 try {
-
                     viewModel.convertFormViewModelToDataModel(programRepository.queryByCode(Constants.RAPID_TEST_CODE));
-                    programDataFormRepository.save(viewModel.getRapidTestForm());
+                    programDataFormRepository.batchCreateOrUpdate(viewModel.getRapidTestForm());
                     subscriber.onNext(viewModel);
                     subscriber.onCompleted();
-                } catch (LMISException e) {
+                } catch (Exception e) {
                     subscriber.onError(e);
-                    e.reportToFabric();
+                    new LMISException(e).reportToFabric();
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
