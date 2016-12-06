@@ -8,7 +8,9 @@ Feature: Old version set up before upgrade
     And I press "Stock Card Overview"
     And I wait for 1 second
 #    And I make a positive movement with lot "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "1"
-    And I search stockcard by code "01A01" and select this item
+#    And I search stockcard by code "01A01" and select this item
+    When I search "01A01"
+    Then I select stock card code called "[01A01]"
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
     Then I press "NEW MOVEMENT"
