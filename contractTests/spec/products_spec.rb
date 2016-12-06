@@ -13,7 +13,7 @@ describe "Get programs with products information for a facility" do
     expect(body['latestUpdatedTime']).not_to be_nil
     latest_products = body['latestProducts']
 
-    expect(latest_products.length).to eq 1266
+    expect(latest_products.length).to eq 1268
 
     kit1 = latest_products.detect { |p| p['product']['code'] == 'SCOD10'}
     expect(kit1['product']['kitProductList'].length).to eq 44
