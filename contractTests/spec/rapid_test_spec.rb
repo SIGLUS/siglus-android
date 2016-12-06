@@ -9,7 +9,7 @@ describe "Sync stock card data" do
     facility_id = JSON.parse(login_response.body)['userInformation']['facilityId']
 
     rapid_test_data = {
-        facilityId: 1,
+        facilityId: facility_id,
         programCode: "RAPID_TEST",
         periodBegin: "2016-02-21",
         periodEnd: "2016-03-20",
