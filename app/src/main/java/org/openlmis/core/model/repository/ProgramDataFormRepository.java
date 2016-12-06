@@ -51,15 +51,19 @@ public class ProgramDataFormRepository {
     }
 
     public void saveFormItems(final ProgramDataForm form) throws LMISException {
+        deleteFormItemsByFormId(form.getId());
+        for (ProgramDataFormItem item : form.getProgramDataFormItemListWrapper()) {
+            programDataFormItemGenericDao.create(item);
+        }
+    }
+
+    private void deleteFormItemsByFormId(final long formId) throws LMISException {
         dbUtil.withDao(ProgramDataFormItem.class, new DbUtil.Operation<ProgramDataFormItem, Void>() {
             @Override
             public Void operate(Dao<ProgramDataFormItem, String> dao) throws SQLException, LMISException {
                 DeleteBuilder<ProgramDataFormItem, String> deleteBuilder = dao.deleteBuilder();
-                deleteBuilder.where().eq("form_id", form.getId());
+                deleteBuilder.where().eq("form_id", formId);
                 deleteBuilder.delete();
-                for (ProgramDataFormItem item : form.getProgramDataFormItemListWrapper()) {
-                    programDataFormItemGenericDao.create(item);
-                }
                 return null;
             }
         });
@@ -81,5 +85,25 @@ public class ProgramDataFormRepository {
 
     public ProgramDataForm queryById(long formId) throws LMISException {
         return genericDao.getById(String.valueOf(formId));
+    }
+
+    public void delete(final ProgramDataForm programDataForm) throws LMISException, SQLException {
+        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                genericDao.delete(programDataForm);
+                deleteFormItemsByFormId(programDataForm.getId());
+                return null;
+            }
+        });
+    }
+
+    public List<ProgramDataFormItem> listProgramDataItemsByFormId(final long formId) throws LMISException {
+        return dbUtil.withDao(ProgramDataFormItem.class, new DbUtil.Operation<ProgramDataFormItem, List<ProgramDataFormItem>>() {
+            @Override
+            public List<ProgramDataFormItem> operate(Dao<ProgramDataFormItem, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().eq("form_id", formId).query();
+            }
+        });
     }
 }

@@ -133,7 +133,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     @Override
     public void positiveClick(String tag) {
-        //TODO delete draft
+        presenter.deleteDraft();
         super.onBackPressed();
     }
 

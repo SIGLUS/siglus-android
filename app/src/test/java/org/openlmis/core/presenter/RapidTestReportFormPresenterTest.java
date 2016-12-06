@@ -117,6 +117,19 @@ public class RapidTestReportFormPresenterTest {
         subscriber.assertNoErrors();
     }
 
+    @Test
+    public void shouldDeleteDraftForm() throws Exception {
+        rapidTestReportFormPresenter.viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2015-09-12", DateUtil.DB_DATE_FORMAT)));
+        rapidTestReportFormPresenter.deleteDraft();
+        verify(programDataFormRepositoryMock,never()).delete(any(ProgramDataForm.class));
+
+        ProgramDataForm rapidTestForm = new ProgramDataForm();
+        rapidTestForm.setStatus(ProgramDataForm.STATUS.DRAFT);
+        rapidTestReportFormPresenter.viewModel.setRapidTestForm(rapidTestForm);
+        rapidTestReportFormPresenter.deleteDraft();
+        verify(programDataFormRepositoryMock).delete(any(ProgramDataForm.class));
+    }
+
     private class MyTestModule extends AbstractModule {
         @Override
         public void configure() {

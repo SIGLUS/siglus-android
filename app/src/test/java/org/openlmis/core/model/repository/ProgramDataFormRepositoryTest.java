@@ -19,7 +19,9 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
+import static junit.framework.Assert.assertNull;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -143,5 +145,55 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(programDataFormQueried1.getPeriodEnd(), is(programDataForm1.getPeriodEnd()));
         assertThat(programDataFormQueried2.getPeriodBegin(), is(programDataForm2.getPeriodBegin()));
         assertThat(programDataFormQueried2.getStatus(), is(programDataForm2.getStatus()));
+    }
+
+    @Test
+    public void shouldListProgramDataItemsByFormId() throws Exception {
+        ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
+                .setPeriod(DateUtil.parseString("2016-09-23", DateUtil.DB_DATE_FORMAT))
+                .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+                .setProgram(programRapidTest)
+                .build();
+
+        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", "POSITIVE_COLUMN1", 1);
+        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", "CONSUME_COLUMN1", 9);
+        dataFormItem1.setForm(programDataForm1);
+        dataFormItem2.setForm(programDataForm1);
+        programDataForm1.getProgramDataFormItemListWrapper().add(dataFormItem1);
+        programDataForm1.getProgramDataFormItemListWrapper().add(dataFormItem2);
+
+        programDataFormRepository.batchCreateOrUpdate(programDataForm1);
+
+        List<ProgramDataFormItem> programDataFormItemList = programDataFormRepository.listProgramDataItemsByFormId(programDataForm1.getId());
+
+        assertEquals(2, programDataFormItemList.size());
+        assertEquals("name1", programDataFormItemList.get(0).getName());
+        assertEquals("POSITIVE_COLUMN1", programDataFormItemList.get(0).getProgramDataColumnCode());
+        assertEquals(1, programDataFormItemList.get(0).getValue());
+        assertEquals("name2", programDataFormItemList.get(1).getName());
+        assertEquals("CONSUME_COLUMN1", programDataFormItemList.get(1).getProgramDataColumnCode());
+        assertEquals(9, programDataFormItemList.get(1).getValue());
+    }
+
+    @Test
+    public void shouldDelete() throws Exception {
+        ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
+                .setPeriod(DateUtil.parseString("2016-09-23", DateUtil.DB_DATE_FORMAT))
+                .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+                .setProgram(programRapidTest)
+                .build();
+
+        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", "POSITIVE_COLUMN1", 1);
+        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", "CONSUME_COLUMN1", 9);
+        dataFormItem1.setForm(programDataForm1);
+        dataFormItem2.setForm(programDataForm1);
+        programDataForm1.getProgramDataFormItemListWrapper().add(dataFormItem1);
+        programDataForm1.getProgramDataFormItemListWrapper().add(dataFormItem2);
+
+        programDataFormRepository.batchCreateOrUpdate(programDataForm1);
+
+        programDataFormRepository.delete(programDataForm1);
+        assertNull(programDataFormRepository.queryById(programDataForm1.getId()));
+        assertEquals(0, programDataFormRepository.listProgramDataItemsByFormId(programDataForm1.getId()).size());
     }
 }

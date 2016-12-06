@@ -79,4 +79,14 @@ public class RapidTestReportFormPresenter extends Presenter {
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
+
+    public void deleteDraft() {
+        if (viewModel.getRapidTestForm() != null) {
+            try {
+                programDataFormRepository.delete(viewModel.getRapidTestForm());
+            } catch (Exception e) {
+                new LMISException(e).reportToFabric();
+            }
+        }
+    }
 }
