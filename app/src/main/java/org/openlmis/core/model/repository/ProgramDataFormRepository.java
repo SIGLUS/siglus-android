@@ -4,20 +4,26 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class ProgramDataFormRepository {
 
     private final GenericDao<ProgramDataForm> genericDao;
+    private final GenericDao<ProgramDataFormItem> programDataFormItemGenericDao;
     private final Context context;
 
     @Inject
@@ -28,12 +34,35 @@ public class ProgramDataFormRepository {
 
     @Inject
     public ProgramDataFormRepository(Context context) {
-        genericDao = new GenericDao<>(ProgramDataForm.class, context);
         this.context = context;
+        genericDao = new GenericDao<>(ProgramDataForm.class, context);
+        programDataFormItemGenericDao = new GenericDao<>(ProgramDataFormItem.class, context);
     }
 
-    public void save(ProgramDataForm form) throws LMISException {
-        genericDao.createOrUpdate(form);
+    public void batchCreateOrUpdate(final ProgramDataForm form) throws SQLException {
+        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                genericDao.createOrUpdate(form);
+                saveFormItems(form);
+                return null;
+            }
+        });
+    }
+
+    public void saveFormItems(final ProgramDataForm form) throws LMISException {
+        dbUtil.withDao(ProgramDataFormItem.class, new DbUtil.Operation<ProgramDataFormItem, Void>() {
+            @Override
+            public Void operate(Dao<ProgramDataFormItem, String> dao) throws SQLException, LMISException {
+                DeleteBuilder<ProgramDataFormItem, String> deleteBuilder = dao.deleteBuilder();
+                deleteBuilder.where().eq("form_id", form.getId());
+                deleteBuilder.delete();
+                for (ProgramDataFormItem item : form.getProgramDataFormItemListWrapper()) {
+                    programDataFormItemGenericDao.create(item);
+                }
+                return null;
+            }
+        });
     }
 
     public List<ProgramDataForm> listByProgramCode(String programCode) throws LMISException {
