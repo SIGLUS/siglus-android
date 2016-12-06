@@ -93,13 +93,18 @@ public class RapidTestReportViewModel implements Serializable {
             rapidTestForm.setProgram(program);
             rapidTestForm.setPeriodBegin(period.getBegin().toDate());
             rapidTestForm.setPeriodEnd(period.getEnd().toDate());
-            convertFormItemViewModelToDataModel();
+        } else {
+            rapidTestForm.getProgramDataFormItemListWrapper().clear();
         }
+        convertFormItemViewModelToDataModel();
     }
 
     private void convertFormItemViewModelToDataModel() {
         for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
             rapidTestForm.getProgramDataFormItemListWrapper().addAll(itemViewModel.convertToDataModel());
+        }
+        for (ProgramDataFormItem item : rapidTestForm.getProgramDataFormItemListWrapper()) {
+            item.setForm(rapidTestForm);
         }
     }
 
