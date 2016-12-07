@@ -51,8 +51,6 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 error = context.getString(R.string.label_unsynced_requisition, context.getString(R.string.title_rapid_test_reports));
                 setRedHeader();
                 tvReportStatus.setText(Html.fromHtml(error));
-                btnReportEntry.setVisibility(View.INVISIBLE);
-                btnReportEntry.getLayoutParams().height /= 2;
                 break;
             case SYNCED:
                 setWhiteHeader();

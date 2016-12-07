@@ -118,16 +118,22 @@ public class RapidTestReportViewModel implements Serializable {
     }
 
     public enum Status {
-        MISSING(true),
-        INCOMPLETE(true),
-        COMPLETED(false),
-        SYNCED(false);
+        MISSING(true, 0),
+        INCOMPLETE(true, 1),
+        COMPLETED(false, 2),
+        SYNCED(false, 3);
 
         @Getter
         private boolean editable;
+        private int viewType;
 
-        Status(boolean editable) {
+        Status(boolean editable, int viewType) {
             this.editable = editable;
+            this.viewType = viewType;
+        }
+
+        public int getViewType() {
+            return viewType;
         }
     }
 

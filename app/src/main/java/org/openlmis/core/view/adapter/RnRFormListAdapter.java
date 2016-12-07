@@ -60,7 +60,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
         if (viewType == RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL
                 || (viewType == RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY)
                 || viewType == RnRFormViewModel.TYPE_MISSED_PERIOD) {
-            return new RnRFormViewHolder(inflater.inflate(R.layout.item_report_missing, parent, false), itemClickListener);
+            return new RnRFormViewHolder(inflater.inflate(R.layout.item_report_no_button, parent, false), itemClickListener);
         }
 
         return new RnRFormViewHolder(inflater.inflate(R.layout.item_report, parent, false), itemClickListener);

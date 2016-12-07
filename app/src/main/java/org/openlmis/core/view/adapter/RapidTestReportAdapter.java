@@ -21,6 +21,9 @@ public class RapidTestReportAdapter extends RecyclerView.Adapter<RapidTestReport
 
     @Override
     public RapidTestReportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == RapidTestReportViewModel.Status.COMPLETED.getViewType()) {
+            return new RapidTestReportViewHolder(LayoutInflater.from(context).inflate(R.layout.item_report_no_button,parent,false));
+        }
         return new RapidTestReportViewHolder(LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report,parent,false));
     }
 
@@ -32,5 +35,10 @@ public class RapidTestReportAdapter extends RecyclerView.Adapter<RapidTestReport
     @Override
     public int getItemCount() {
         return viewModels.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return viewModels.get(position).getStatus().getViewType();
     }
 }
