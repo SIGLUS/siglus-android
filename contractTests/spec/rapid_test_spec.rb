@@ -13,7 +13,7 @@ describe "Sync stock card data" do
         programCode: "RAPID_TEST",
         periodBegin: "2016-02-21",
         periodEnd: "2016-03-20",
-        submittedTime: "2016-11-25 12:30:00",
+        submittedTime: "20161125T120300.000Z",
         programDataFormItems: [
         {
             name: "PUB_PHARMACY",
