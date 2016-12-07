@@ -50,7 +50,7 @@ public class ProgramDataFormRepository {
         });
     }
 
-    public void saveFormItems(final ProgramDataForm form) throws LMISException {
+    private void saveFormItems(final ProgramDataForm form) throws LMISException {
         deleteFormItemsByFormId(form.getId());
         for (ProgramDataFormItem item : form.getProgramDataFormItemListWrapper()) {
             programDataFormItemGenericDao.create(item);

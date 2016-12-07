@@ -56,17 +56,6 @@ public class RapidTestReportsPresenter extends Presenter {
             generateViewModelsForAllPeriods();
             viewModelList.add(new RapidTestReportViewModel(Period.of(new Date())));
 
-//            RapidTestReportViewModel mockViewModel1 = new RapidTestReportViewModel(Period.of(new Date()));
-//            mockViewModel1.setStatus(RapidTestReportViewModel.Status.INCOMPLETE);
-//            viewModelList.add(mockViewModel1);
-//
-//            RapidTestReportViewModel mockViewModel2 = new RapidTestReportViewModel(Period.of(new Date()));
-//            mockViewModel2.setStatus(RapidTestReportViewModel.Status.COMPLETED);
-//            viewModelList.add(mockViewModel2);
-//
-//            RapidTestReportViewModel mockViewModel3 = new RapidTestReportViewModel(Period.of(new Date()));
-//            mockViewModel3.setStatus(RapidTestReportViewModel.Status.SYNCED);
-//            viewModelList.add(mockViewModel3);
         } catch (LMISException e) {
             e.printStackTrace();
         }

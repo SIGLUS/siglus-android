@@ -109,7 +109,8 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     private void populateFormData(RapidTestReportViewModel viewModel) {
-        adapter.refresh(viewModel.getItemViewModelList(), !viewModel.isSynced());
+        actionPanel.setVisibility(viewModel.getStatus().isEditable() ? View.VISIBLE : View.GONE);
+        adapter.refresh(viewModel.getItemViewModelList(), viewModel.getStatus().isEditable());
     }
 
     public static Intent getIntentToMe(Context context, long formId, DateTime periodBegin) {
@@ -121,7 +122,11 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     @Override
     public void onBackPressed() {
-        showConfirmDialog();
+        if (presenter.getViewModel().isEditable()) {
+            showConfirmDialog();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void showConfirmDialog() {

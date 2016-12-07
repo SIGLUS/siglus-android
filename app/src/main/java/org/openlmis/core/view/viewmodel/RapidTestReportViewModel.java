@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 public class RapidTestReportViewModel implements Serializable {
@@ -108,16 +109,25 @@ public class RapidTestReportViewModel implements Serializable {
         }
     }
 
+    public boolean isSynced() {
+        return status == Status.SYNCED;
+    }
+
+    public boolean isEditable() {
+        return status.isEditable();
+    }
+
     public enum Status {
-        MISSING(0),
-        INCOMPLETE(1),
-        COMPLETED(2),
-        SYNCED(3);
+        MISSING(true),
+        INCOMPLETE(true),
+        COMPLETED(false),
+        SYNCED(false);
 
-        public int type;
+        @Getter
+        private boolean editable;
 
-        Status(int type) {
-            this.type = type;
+        Status(boolean editable) {
+            this.editable = editable;
         }
     }
 
