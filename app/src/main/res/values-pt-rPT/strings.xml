@@ -383,4 +383,5 @@
     <string name="msg_report_missing">No rapid test report has been created</string>
     <string name="btn_create_rapid_test_period">CREATE RAPID TEST REPORT</string>
     <string name="title_rapid_test_form">Rapid Test Report</string>
+    <string name="title_rapid_test">Rapid Test</string>
 </resources>
