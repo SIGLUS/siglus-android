@@ -46,6 +46,8 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 tvPeriod.setBackgroundResource(R.color.color_draft_title);
                 tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_incomplete_requisition, context.getString(R.string.title_rapid_test_reports))));
                 tvPeriod.setTextColor(context.getResources().getColor(R.color.color_white));
+                btnReportEntry.setTextColor(context.getResources().getColor(R.color.color_accent));
+                btnReportEntry.setBackgroundColor(context.getResources().getColor(R.color.color_white));
                 btnReportEntry.setText(context.getString(R.string.btn_view_incomplete_requisition, context.getString(R.string.title_rapid_test_reports)));
                 btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());
                 break;
@@ -56,7 +58,8 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 tvPeriod.setBackgroundResource(R.color.color_red);
                 tvPeriod.setTextColor(context.getResources().getColor(R.color.color_white));
                 tvReportStatus.setText(Html.fromHtml(error));
-                btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());
+                btnReportEntry.setVisibility(View.INVISIBLE);
+                btnReportEntry.getLayoutParams().height /= 2;
                 break;
             case SYNCED:
                 tvPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_done_green, 0, 0, 0);
