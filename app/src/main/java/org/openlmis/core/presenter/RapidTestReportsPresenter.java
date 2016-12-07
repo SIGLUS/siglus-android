@@ -17,7 +17,6 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -54,8 +53,6 @@ public class RapidTestReportsPresenter extends Presenter {
         viewModelList.clear();
         try {
             generateViewModelsForAllPeriods();
-            viewModelList.add(new RapidTestReportViewModel(Period.of(new Date())));
-
         } catch (LMISException e) {
             e.printStackTrace();
         }

@@ -36,6 +36,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 tvReportStatus.setText(Html.fromHtml(context.getString(R.string.msg_report_missing)));
                 setGrayHeader();
                 setBlueButton();
+                btnReportEntry.setText(context.getString(R.string.btn_create_rapid_test_period));
                 btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());
                 break;
             case INCOMPLETE:
