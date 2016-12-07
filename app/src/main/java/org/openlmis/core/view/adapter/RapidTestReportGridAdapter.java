@@ -15,11 +15,13 @@ import java.util.List;
 
 public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestReportGridViewHolder> {
     Context context;
+    private Boolean editable;
     List<RapidTestFormGridViewModel> viewModels;
 
-    public RapidTestReportGridAdapter(List<RapidTestFormGridViewModel> viewModels, Context context) {
+    public RapidTestReportGridAdapter(List<RapidTestFormGridViewModel> viewModels, Context context, Boolean editable) {
         this.viewModels = viewModels;
         this.context = context;
+        this.editable = editable;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestRe
     @Override
     public void onBindViewHolder(RapidTestReportGridViewHolder holder, int position) {
         RapidTestFormGridViewModel viewModel = viewModels.get(position);
-        holder.populate(viewModel);
+        holder.populate(viewModel, editable);
     }
 
     @Override

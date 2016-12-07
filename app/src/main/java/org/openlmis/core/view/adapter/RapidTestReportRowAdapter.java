@@ -14,6 +14,7 @@ import java.util.List;
 public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestReportRowViewHolder> {
 
     private List<RapidTestFormItemViewModel> viewModels;
+    private Boolean editable = true;
 
     public RapidTestReportRowAdapter() {
         this.viewModels = new ArrayList<>();
@@ -27,7 +28,7 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestRep
     @Override
     public void onBindViewHolder(RapidTestReportRowViewHolder holder, int position) {
         final RapidTestFormItemViewModel viewModel = viewModels.get(position);
-        holder.populate(viewModel);
+        holder.populate(viewModel,editable);
     }
 
     @Override
@@ -35,8 +36,9 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestRep
         return viewModels.size();
     }
 
-    public void refresh(List<RapidTestFormItemViewModel> itemViewModelList) {
+    public void refresh(List<RapidTestFormItemViewModel> itemViewModelList, Boolean editable) {
         viewModels = itemViewModelList;
+        this.editable = editable;
         notifyDataSetChanged();
     }
 }

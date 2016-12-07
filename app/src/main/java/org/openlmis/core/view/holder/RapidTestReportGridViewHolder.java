@@ -23,13 +23,22 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void populate(RapidTestFormGridViewModel viewModel) {
+    public void populate(RapidTestFormGridViewModel viewModel, Boolean editable) {
         this.viewModel = viewModel;
+        populateData(viewModel);
+        setEditable(editable);
+        setTextWatcher();
+        updateAlert();
+    }
+
+    public void setEditable(Boolean editable) {
+        etConsume.setFocusableInTouchMode(editable);
+        etPositive.setFocusableInTouchMode(editable);
+    }
+
+    public void populateData(RapidTestFormGridViewModel viewModel) {
         etConsume.setText(viewModel.getConsumptionValue());
         etPositive.setText(viewModel.getPositiveValue());
-        setTextWatcher();
-
-        updateAlert();
     }
 
     private void setTextWatcher() {

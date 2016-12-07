@@ -24,9 +24,9 @@ public class RapidTestReportRowViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void populate(RapidTestFormItemViewModel viewModel) {
+    public void populate(RapidTestFormItemViewModel viewModel, Boolean editable) {
         tvRowHeader.setText(viewModel.getIssueReason());
-        adapter = new RapidTestReportGridAdapter(viewModel.getRapidTestFormGridViewModelList(), context);
+        adapter = new RapidTestReportGridAdapter(viewModel.getRapidTestFormGridViewModelList(), context, editable);
         rvRapidReportGridListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         rvRapidReportGridListView.setAdapter(adapter);
     }

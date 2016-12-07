@@ -26,7 +26,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 @ContentView(R.layout.activity_rapid_test_report_form)
-public class RapidTestReportFormActivity extends BaseActivity implements SimpleDialogFragment.MsgDialogCallBack{
+public class RapidTestReportFormActivity extends BaseActivity implements SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
 
@@ -35,6 +35,9 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     @InjectView(R.id.btn_save)
     View btnSave;
+
+    @InjectView(R.id.action_panel)
+    View actionPanel;
 
     @InjectPresenter(RapidTestReportFormPresenter.class)
     RapidTestReportFormPresenter presenter;
@@ -106,7 +109,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     private void populateFormData(RapidTestReportViewModel viewModel) {
-        adapter.refresh(viewModel.getItemViewModelList());
+        adapter.refresh(viewModel.getItemViewModelList(), !viewModel.isSynced());
     }
 
     public static Intent getIntentToMe(Context context, long formId, DateTime periodBegin) {
