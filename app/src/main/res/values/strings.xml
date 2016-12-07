@@ -426,5 +426,6 @@
     <string name="msg_report_missing"><![CDATA[<b>No rapid test report has been created</b>]]></string>
     <string name="btn_create_rapid_test_period">CREATE RAPID TEST REPORT</string>
     <string name="title_rapid_test_form">Rapid Test Report</string>
+    <string name="msg_sync_rapid_tests_failed">Sync Rapid Tests failed.</string>
     <string name="title_rapid_test">Rapid Test</string>
 </resources>

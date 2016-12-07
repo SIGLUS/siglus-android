@@ -1,5 +1,7 @@
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -30,18 +32,23 @@ public class ProgramDataForm extends BaseModel {
     @DatabaseField
     private boolean synced = false;
 
+    @Expose
     @DatabaseField
     private Date periodBegin;
 
+    @Expose
     @DatabaseField
     private Date periodEnd;
 
+    @Expose
     @DatabaseField
     private Date submittedTime;
 
     @ForeignCollectionField
     private ForeignCollection<ProgramDataFormItem> programDataFormItemList;
 
+    @Expose
+    @SerializedName("programDataFormItems")
     private List<ProgramDataFormItem> programDataFormItemListWrapper;
 
     public List<ProgramDataFormItem> getProgramDataFormItemListWrapper() {

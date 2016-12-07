@@ -11,15 +11,18 @@ import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
+import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.LMISRestManagerMock;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
@@ -44,6 +47,7 @@ public class SyncDownManagerIT {
     private LotRepository lotRepository;
     private User defaultUser;
     private SharedPreferenceMgr sharedPreferenceMgr;
+    private ProgramDataFormRepository programDataFormRepository;
 
     @Before
     public void setup() {
@@ -86,7 +90,7 @@ public class SyncDownManagerIT {
         assertTrue(productProgram.isActive());
     }
 
-    @Test @Ignore
+    @Test
     public void shouldSyncDownStockCardsWithMovements() throws Exception {
         //set shared preferences to have synced all historical data already
         Calendar cal = Calendar.getInstance();
@@ -107,7 +111,7 @@ public class SyncDownManagerIT {
 
         String stockMovementJson = JsonFileReader.readJson(getClass(), "SyncDownStockMovementsResponse.json");
         lmisRestManager.addNewMockedResponse("/rest-api/facilities/" + defaultUser.getFacilityId()
-                + "/stockCards?startTime="+startDateStr+"&endTime="+endDateStr, 200, "OK", stockMovementJson);
+                + "/stockCards?startTime=" + startDateStr + "&endTime=" + endDateStr, 200, "OK", stockMovementJson);
 
         String emptyRequisitions = "{\"requisitions\": []}";
         lmisRestManager.addNewMockedResponse("/rest-api/requisitions?facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", emptyRequisitions);
@@ -133,4 +137,38 @@ public class SyncDownManagerIT {
         assertEquals(5, lotOnHand.getQuantityOnHand(), 0L);
     }
 
+    @Test @Ignore
+    public void shouldSyncDownRapidTests() throws Exception {
+        //set shared preferences to have synced all historical data already
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.YEAR, -1);
+        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, cal.getTimeInMillis()).apply();
+
+
+        //given
+        String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", productJson, RuntimeEnvironment.application);
+
+        sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
+        sharedPreferenceMgr.setRequisitionDataSynced(true);
+
+        String rapidTestsResponseJson = JsonFileReader.readJson(getClass(), "SyncDownRapidTestsResponse.json");
+        lmisRestManager.addNewMockedResponse("/rest-api/programData/", 200, "OK", rapidTestsResponseJson);
+
+        syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+
+        //when
+        TestSubscriber<SyncDownManager.SyncProgress> subscriber = new TestSubscriber<>();
+        syncDownManager.syncDownServerData(subscriber);
+
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        List<ProgramDataForm> programDataForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
+        assertEquals(1, programDataForms.size());
+        assertEquals("2016-02-21", DateUtil.formatDate(programDataForms.get(0).getPeriodBegin(), DateUtil.DB_DATE_FORMAT));
+        assertEquals("2016-03-20", DateUtil.formatDate(programDataForms.get(0).getPeriodEnd(), DateUtil.DB_DATE_FORMAT));
+        assertEquals(8, programDataForms.get(0).getProgramDataFormItemListWrapper().size());
+    }
 }

@@ -112,6 +112,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             sharedPreferenceMgr.setStockLastSyncTime();
         }
 
+        syncUpManager.syncRapidTestForms();
         syncUpManager.syncUpUnSyncedStockCardCodes();
         syncUpManager.syncAppVersion();
         syncUpManager.syncArchivedProducts();

@@ -28,12 +28,14 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
+import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -41,10 +43,13 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -72,6 +77,9 @@ public class SyncUpManager {
 
     @Inject
     CmmRepository cmmRepository;
+
+    @Inject
+    ProgramDataFormRepository programDataFormRepository;
 
     @Inject
     private SyncErrorsRepository syncErrorsRepository;
@@ -353,6 +361,43 @@ public class SyncUpManager {
         } catch (LMISException e) {
             e.reportToFabric();
             Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
+        }
+    }
+
+    public void syncRapidTestForms() {
+        try {
+            Log.d(TAG, "===> Preparing RnrForm for Syncing: Delete Deactivated Products...");
+
+            Observable.from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).subscribe(new Action1<ProgramDataForm>() {
+                @Override
+                public void call(ProgramDataForm programDataForm) {
+                    if (!programDataForm.isSynced()) {
+                        try {
+                            lmisRestApi.syncUpProgramDataForm(programDataForm);
+                        } catch (LMISException e) {
+                            e.reportToFabric();
+                        }
+                        markProgramDataFormsSynced(programDataForm);
+                    }
+                }
+            });
+
+            Log.d(TAG, "===> SyncRapidTests: Rapid Tests ready to sync...");
+
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+
+
+    }
+
+    private void markProgramDataFormsSynced(ProgramDataForm programDataForm) {
+        programDataForm.setSynced(true);
+        try {
+            programDataFormRepository.batchCreateOrUpdate(programDataForm);
+        } catch (SQLException e) {
+            new LMISException(e).reportToFabric();
+            Log.e(TAG, "===> SyncRapidTests : mark synced failed -> " + programDataForm.getId());
         }
     }
 }

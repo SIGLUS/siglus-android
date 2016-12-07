@@ -50,6 +50,22 @@ public class ProgramDataFormRepository {
         });
     }
 
+    public void batchSaveForms(final List<ProgramDataForm> programDataForms) {
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    for (ProgramDataForm programDataForm: programDataForms) {
+                        batchCreateOrUpdate(programDataForm);
+                    }
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            new LMISException(e).reportToFabric();
+        }
+    }
+    
     private void saveFormItems(final ProgramDataForm form) throws LMISException {
         deleteFormItemsByFormId(form.getId());
         for (ProgramDataFormItem item : form.getProgramDataFormItemListWrapper()) {

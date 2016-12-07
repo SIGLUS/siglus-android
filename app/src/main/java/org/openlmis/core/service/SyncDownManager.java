@@ -30,6 +30,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -37,6 +38,7 @@ import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
+import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.utils.DateUtil;
@@ -72,6 +74,8 @@ public class SyncDownManager {
     @Inject
     ProductProgramRepository productProgramRepository;
     @Inject
+    ProgramDataFormRepository programDataFormRepository;
+    @Inject
     StockService stockService;
 
     public SyncDownManager() {
@@ -91,6 +95,7 @@ public class SyncDownManager {
                     syncDownProducts(subscriber);
                     syncDownLastMonthStockCards(subscriber);
                     syncDownRequisition(subscriber);
+                    syncDownRapidTests(subscriber);
                     syncDownLastYearStockCardsSilently(subscriber);
 
                     isSyncing = false;
@@ -101,6 +106,31 @@ public class SyncDownManager {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+    }
+
+    private void syncDownRapidTests(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        if (!sharedPreferenceMgr.isRapidTestDataSynced()) {
+            try {
+                subscriber.onNext(SyncProgress.SyncingRapidTests);
+                fetchAndSaveRapidTests();
+                sharedPreferenceMgr.setRapidTestsDataSynced(true);
+                subscriber.onNext(SyncProgress.RapidTestsSynced);
+            } catch (LMISException e) {
+                sharedPreferenceMgr.setRapidTestsDataSynced(false);
+                e.reportToFabric();
+                throw new LMISException(errorMessage(R.string.msg_sync_rapid_tests_failed));
+            }
+        }
+    }
+
+    private void fetchAndSaveRapidTests() throws LMISException {
+        SyncDownProgramDataResponse syncDownProgramDataResponse = lmisRestApi.fetchProgramData(Long.getLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
+
+        if (syncDownProgramDataResponse == null) {
+            throw new LMISException("Can't get SyncDownRapidTestsResponse, you can check json parse to POJO logic");
+        }
+
+        programDataFormRepository.batchSaveForms(syncDownProgramDataResponse.getProgramDataForms());
     }
 
     public void syncDownServerData() {
@@ -294,11 +324,13 @@ public class SyncDownManager {
         SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
         SyncingRequisition(R.string.msg_sync_requisition_data),
         SyncingStockCardsLastYear,
+        SyncingRapidTests,
 
         ProductSynced,
         StockCardsLastMonthSynced,
         RequisitionSynced,
-        StockCardsLastYearSynced;
+        StockCardsLastYearSynced,
+        RapidTestsSynced;
 
         private int messageCode;
 

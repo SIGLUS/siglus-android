@@ -33,15 +33,18 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -50,6 +53,7 @@ import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -99,12 +103,15 @@ public class SyncUpManagerTest {
 
     private SyncUpManager syncUpManager;
 
+    private ProgramDataFormRepository mockedProgramDataFormRepository;
+
     @Before
     public void setup() throws LMISException {
         mockedRnrFormRepository = mock(RnrFormRepository.class);
         mockedSyncErrorsRepository = mock(SyncErrorsRepository.class);
         mockedProductRepository = mock(ProductRepository.class);
         mockedCmmRepository = mock(CmmRepository.class);
+        mockedProgramDataFormRepository = mock(ProgramDataFormRepository.class);
 
         mockedSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         mockedLmisRestApi = mock(LMISRestApi.class);
@@ -258,6 +265,15 @@ public class SyncUpManagerTest {
     }
 
     @Test
+    public void shouldSyncUpRapidTestsData() throws Exception {
+        ProgramDataForm rapidTest = new ProgramDataFormBuilder().build();
+        syncUpManager.programDataFormRepository = mockedProgramDataFormRepository;
+        when(mockedProgramDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).thenReturn(newArrayList(rapidTest));
+        syncUpManager.syncRapidTestForms();
+        verify(mockedLmisRestApi).syncUpProgramDataForm(rapidTest);
+    }
+
+    @Test
     public void shouldSaveErrorMessageWhenSyncRnRFormFail() throws Exception {
         List<RnRForm> unSyncedList = new ArrayList<>();
         RnRForm form = new RnRForm();
@@ -393,6 +409,7 @@ public class SyncUpManagerTest {
             bind(SharedPreferenceMgr.class).toInstance(mockedSharedPreferenceMgr);
             bind(SyncErrorsRepository.class).toInstance(mockedSyncErrorsRepository);
             bind(CmmRepository.class).toInstance(mockedCmmRepository);
+            bind(ProgramDataFormRepository.class).toInstance(mockedProgramDataFormRepository);
         }
     }
 }

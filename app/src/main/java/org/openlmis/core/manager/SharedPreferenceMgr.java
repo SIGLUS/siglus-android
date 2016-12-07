@@ -62,6 +62,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_HAS_LOT_INFO = "has_lot_info";
     public static final String KEY_HAS_DELETED_OLD_STOCK_MOVEMENT = "has_deleted_old_stock_movement";
     public static final String KEY_HAS_DELETED_OLD_RNR = "has_deleted_old_rnr";
+    private static final String KEY_HAS_SYNCED_DOWN_RAPID_TESTS = "syncedRapidTests";
     public static final String MONTH_OFFSET_DEFINED_OLD_DATA = "month_offset_that_defined_old_data";
     final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
@@ -253,5 +254,13 @@ public class SharedPreferenceMgr {
 
     public void setHasDeletedOldRnr(boolean hasDeletedOldRnr) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_DELETED_OLD_RNR, hasDeletedOldRnr).apply();
+    }
+
+    public boolean isRapidTestDataSynced() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_DOWN_RAPID_TESTS, false);
+    }
+
+    public void setRapidTestsDataSynced(boolean hasRapidTestsDataSynced) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_DOWN_RAPID_TESTS, hasRapidTestsDataSynced).apply();
     }
 }
