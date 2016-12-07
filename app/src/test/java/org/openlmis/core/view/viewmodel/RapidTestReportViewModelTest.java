@@ -10,15 +10,19 @@ import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class RapidTestReportViewModelTest {
@@ -87,5 +91,22 @@ public class RapidTestReportViewModelTest {
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(0).getForm(), is(viewModel.getRapidTestForm()));
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(1).getProgramDataColumnCode(), is("POSITIVE_HIVDETERMINE"));
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(1).getForm(), is(viewModel.getRapidTestForm()));
+    }
+
+    @Test
+    public void shouldValidateItemList() throws Exception {
+        viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        RapidTestFormItemViewModel itemViewModel1 = mock(RapidTestFormItemViewModel.class);
+        RapidTestFormItemViewModel itemViewModel2 = mock(RapidTestFormItemViewModel.class);
+
+        when(itemViewModel1.validate()).thenReturn(true);
+        when(itemViewModel2.validate()).thenReturn(false);
+
+        viewModel.setItemViewModelList(new ArrayList<RapidTestFormItemViewModel>());
+        viewModel.getItemViewModelList().add(itemViewModel1);
+        assertTrue(viewModel.validate());
+
+        viewModel.getItemViewModelList().add(itemViewModel2);
+        assertFalse(viewModel.validate());
     }
 }

@@ -117,6 +117,26 @@ public class RapidTestReportViewModel implements Serializable {
         return status.isEditable();
     }
 
+    public boolean isSubmitted() {
+        if (rapidTestForm != null) {
+            return rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
+        }
+        return false;
+    }
+
+    public boolean isNotSubmitted() {
+        return rapidTestForm == null || rapidTestForm.getStatus() == ProgramDataForm.STATUS.DRAFT;
+    }
+
+    public boolean validate() {
+        for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+            if (!itemViewModel.validate()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public enum Status {
         MISSING(true, 0),
         INCOMPLETE(true, 1),

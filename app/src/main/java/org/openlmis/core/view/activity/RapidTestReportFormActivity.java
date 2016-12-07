@@ -56,8 +56,6 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
         long formId = getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
 
-        setUpButtonPanel();
-
         setUpRowItems();
         Subscription subscription = presenter.loadViewModel(formId, periodBegin).subscribe(getPopulateFormDataAction());
         subscriptions.add(subscription);
@@ -75,13 +73,21 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     private void setUpButtonPanel() {
+        actionPanel.setVisibility(presenter.getViewModel().getStatus().isEditable() ? View.VISIBLE : View.GONE);
+        if (presenter.getViewModel().isNotSubmitted()) {
+            btnComplete.setText(getResources().getString(R.string.btn_submit));
+        } else {
+            btnComplete.setText(getResources().getString(R.string.btn_complete));
+        }
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO validate
-                //TODO show sign dialog
+                if (presenter.getViewModel().validate()) {
+                    //TODO show sign dialog
+                }
             }
         });
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,13 +114,13 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
             @Override
             public void call(RapidTestReportViewModel viewModel) {
                 populateFormData(viewModel);
+                setUpButtonPanel();
                 loaded();
             }
         };
     }
 
     private void populateFormData(RapidTestReportViewModel viewModel) {
-        actionPanel.setVisibility(viewModel.getStatus().isEditable() ? View.VISIBLE : View.GONE);
         adapter.refresh(viewModel.getItemViewModelList(), viewModel.getStatus().isEditable());
     }
 

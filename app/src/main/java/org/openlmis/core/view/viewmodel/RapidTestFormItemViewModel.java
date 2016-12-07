@@ -54,4 +54,13 @@ public class RapidTestFormItemViewModel {
         }
         return programDataFormItems;
     }
+
+    public boolean validate() {
+        for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
+            if (!gridViewModel.validate()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
