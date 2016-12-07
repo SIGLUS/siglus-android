@@ -23,6 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
@@ -31,10 +32,12 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -80,6 +83,30 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
 
     @Override
     public JsonElement serialize(ProgramDataForm src, Type typeOfSrc, JsonSerializationContext context) {
-        return null;
+        try {
+            return buildProgramDataFormJson(src);
+        } catch (LMISException e) {
+            throw new JsonParseException("can not find Signature by programDataForm");
+        } catch (NullPointerException e) {
+            throw new JsonParseException("No Program associated !");
+        }
+
+    }
+
+    private JsonElement buildProgramDataFormJson(ProgramDataForm programDataForm) throws LMISException {
+        JsonObject root = gson.toJsonTree(programDataForm).getAsJsonObject();
+        String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+        String programCode = programDataForm.getProgram().getProgramCode();
+        String periodBegin = DateUtil.formatDate(programDataForm.getPeriodBegin(), DateUtil.DB_DATE_FORMAT);
+        String periodEnd = DateUtil.formatDate(programDataForm.getPeriodEnd(), DateUtil.DB_DATE_FORMAT);
+        String submittedTime = DateUtil.formatDate(programDataForm.getSubmittedTime(), DateUtil.ISO_BASIC_DATE_TIME_FORMAT);
+
+        root.addProperty("facilityId", facilityId);
+        root.addProperty("programCode", programCode);
+        root.addProperty("periodBegin", periodBegin);
+        root.addProperty("periodEnd", periodEnd);
+        root.addProperty("submittedTime", submittedTime);
+        root.add("programDataFormItems", jsonParser.parse(gson.toJson(programDataForm.getProgramDataFormItemListWrapper())));
+        return root;
     }
 }

@@ -1,5 +1,6 @@
 package org.openlmis.core.service;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.inject.AbstractModule;
 
@@ -11,7 +12,9 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.network.adapter.ProgramDataFormAdapter;
 import org.openlmis.core.utils.Constants;
@@ -22,9 +25,11 @@ import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class ProgramDataFormAdapterTest {
@@ -61,6 +66,36 @@ public class ProgramDataFormAdapterTest {
         assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getName(), is("PUB_PHARMACY"));
         assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getProgramDataColumnCode(), is("HIV-DETERMINE-CONSUME"));
         assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getValue(), is(10));
+    }
+
+    @Test
+    public void shouldSerializeProgramDataFormToJson() throws LMISException {
+        User user = new User();
+        user.setFacilityId("123");
+        UserInfoMgr.getInstance().setUser(user);
+        ProgramDataForm programDataForm = new ProgramDataFormBuilder().setProgram(program)
+                .setPeriod(DateUtil.parseString("2016-03-21", DateUtil.DB_DATE_FORMAT))
+                .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+                .setSubmittedTime(DateUtil.parseString("2016-11-25 12:03:00", DateUtil.DATE_TIME_FORMAT))
+                .setSynced(false).build();
+        ProgramDataFormItem programDataFormItem1 = new ProgramDataFormItem("PUBLIC_PHARMACY", "HIV-DETERMINE-CONSUME", 50);
+        ProgramDataFormItem programDataFormItem2 = new ProgramDataFormItem("PUBLIC_PHARMACY", "HIV-DETERMINE-POSITIVE", 20);
+        ProgramDataFormItem programDataFormItem3 = new ProgramDataFormItem("WARD", "HIV-UNIGOLD-CONSUME", 60);
+        ProgramDataFormItem programDataFormItem4 = new ProgramDataFormItem("WARD", "HIV-UNIGOLD-POSITIVE", 20);
+        programDataForm.setProgramDataFormItemListWrapper(newArrayList(programDataFormItem1, programDataFormItem2, programDataFormItem3, programDataFormItem4));
+
+        JsonElement jsonElement = programDataAdapter.serialize(programDataForm, null, null);
+
+        assertThat(jsonElement.getAsJsonObject().get("facilityId").getAsInt(), is(123));
+        assertThat(jsonElement.getAsJsonObject().get("programCode").getAsString(), is(Constants.RAPID_TEST_CODE));
+        assertThat(jsonElement.getAsJsonObject().get("periodBegin").getAsString(), is("2016-03-21"));
+        assertThat(jsonElement.getAsJsonObject().get("periodEnd").getAsString(), is("2016-04-20"));
+        assertThat(jsonElement.getAsJsonObject().get("submittedTime").getAsString(), startsWith("20161125T120300.000"));
+
+        assertThat(jsonElement.getAsJsonObject().get("programDataFormItems").getAsJsonArray().size(), is(4));
+        assertThat(jsonElement.getAsJsonObject().get("programDataFormItems").getAsJsonArray().get(0).getAsJsonObject().get("name").toString(), is("\"PUBLIC_PHARMACY\""));
+        assertThat(jsonElement.getAsJsonObject().get("programDataFormItems").getAsJsonArray().get(0).getAsJsonObject().get("columnCode").toString(), is("\"HIV-DETERMINE-CONSUME\""));
+        assertThat(jsonElement.getAsJsonObject().get("programDataFormItems").getAsJsonArray().get(0).getAsJsonObject().get("value").getAsInt(), is(50));
     }
 
 

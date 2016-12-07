@@ -28,6 +28,11 @@ public class ProgramDataFormBuilder {
         return this;
     }
 
+    public ProgramDataFormBuilder setSubmittedTime(Date submittedTime) {
+        programDataForm.setSubmittedTime(submittedTime);
+        return this;
+    }
+
     public ProgramDataFormBuilder setPeriod(Date periodBegin) {
         programDataForm.setPeriodBegin(periodBegin);
         programDataForm.setPeriodEnd(Period.of(periodBegin).getEnd().toDate());
