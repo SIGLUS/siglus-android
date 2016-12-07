@@ -49,7 +49,6 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
