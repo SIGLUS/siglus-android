@@ -11,6 +11,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -45,6 +46,19 @@ public class ProgramDataFormRepository {
             public Void call() throws Exception {
                 genericDao.createOrUpdate(form);
                 saveFormItems(form);
+                saveSignatures(form.getSignaturesWrapper());
+                return null;
+            }
+        });
+    }
+
+    private void saveSignatures(final List<ProgramDataFormSignature> signatures) throws LMISException {
+        dbUtil.withDao(ProgramDataFormSignature.class, new DbUtil.Operation<ProgramDataFormSignature, Void>() {
+            @Override
+            public Void operate(Dao<ProgramDataFormSignature, String> dao) throws SQLException, LMISException {
+                for (ProgramDataFormSignature signature : signatures) {
+                    dao.create(signature);
+                }
                 return null;
             }
         });

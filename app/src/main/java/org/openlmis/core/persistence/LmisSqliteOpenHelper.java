@@ -45,7 +45,6 @@ import org.openlmis.core.persistence.migrations.AddNewPrograms;
 import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
 import org.openlmis.core.persistence.migrations.AddRapidTestColumnsTemplate;
 import org.openlmis.core.persistence.migrations.AddRapidTestProgram;
-import org.openlmis.core.persistence.migrations.CreateProgramDataColumnsTable;
 import org.openlmis.core.persistence.migrations.AddRequestedColumnToStockItems;
 import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
 import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
@@ -60,6 +59,8 @@ import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 import org.openlmis.core.persistence.migrations.CreateKitProductsTable;
 import org.openlmis.core.persistence.migrations.CreateProductProgramsTable;
+import org.openlmis.core.persistence.migrations.CreateProgramDataColumnsTable;
+import org.openlmis.core.persistence.migrations.CreateProgramDataFormSignatureTable;
 import org.openlmis.core.persistence.migrations.CreateProgramDataFormTable;
 import org.openlmis.core.persistence.migrations.CreateProgramDataItemsTable;
 import org.openlmis.core.persistence.migrations.CreateRegimeShortCodeTable;
@@ -123,6 +124,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateProgramDataColumnsTable());
             add(new AddRapidTestColumnsTemplate());
             add(new CreateProgramDataItemsTable());
+            add(new CreateProgramDataFormSignatureTable());
         }
     };
     private static int instanceCount = 0;
