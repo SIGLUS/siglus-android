@@ -86,7 +86,7 @@ public interface LMISRestApi {
     SyncDownLatestProductsResponse fetchLatestProducts(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
 
     @GET("/rest-api/programData/facilities/{facilityId}")
-    SyncDownProgramDataResponse fetchProgramData(@Query("facilityId") Long facilityId) throws LMISException;
+    SyncDownProgramDataResponse fetchProgramDataForms(@Path("facilityId") Long facilityId) throws LMISException;
 
     @POST("/rest-api/programData")
     void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;

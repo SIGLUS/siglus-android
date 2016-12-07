@@ -124,7 +124,7 @@ public class SyncDownManager {
     }
 
     private void fetchAndSaveRapidTests() throws LMISException {
-        SyncDownProgramDataResponse syncDownProgramDataResponse = lmisRestApi.fetchProgramData(Long.getLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
+        SyncDownProgramDataResponse syncDownProgramDataResponse = lmisRestApi.fetchProgramDataForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
 
         if (syncDownProgramDataResponse == null) {
             throw new LMISException("Can't get SyncDownRapidTestsResponse, you can check json parse to POJO logic");

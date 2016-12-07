@@ -16,12 +16,14 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
+import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -32,9 +34,11 @@ import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
+import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
+import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.text.ParseException;
@@ -61,10 +65,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.ProductSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.RapidTestsSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastMonthSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastYearSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingProduct;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRapidTests;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRequisition;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastMonth;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastYear;
@@ -106,6 +112,7 @@ public class SyncDownManagerTest {
         syncDownManager.lmisRestApi = lmisRestApi;
         User user = new User();
         user.setFacilityCode("HF XXX");
+        user.setFacilityId("123");
         UserInfoMgr.getInstance().setUser(user);
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
@@ -124,6 +131,7 @@ public class SyncDownManagerTest {
         mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
+        mockRapidTestsResponse();
 
         //when
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
@@ -138,8 +146,10 @@ public class SyncDownManagerTest {
         assertThat(subscriber.syncProgresses.get(3), is(StockCardsLastMonthSynced));
         assertThat(subscriber.syncProgresses.get(4), is(SyncingRequisition));
         assertThat(subscriber.syncProgresses.get(5), is(RequisitionSynced));
-        assertThat(subscriber.syncProgresses.get(6), is(SyncingStockCardsLastYear));
-        assertThat(subscriber.syncProgresses.get(7), is(StockCardsLastYearSynced));
+        assertThat(subscriber.syncProgresses.get(6), is(SyncingRapidTests));
+        assertThat(subscriber.syncProgresses.get(7), is(RapidTestsSynced));
+        assertThat(subscriber.syncProgresses.get(8), is(SyncingStockCardsLastYear));
+        assertThat(subscriber.syncProgresses.get(9), is(StockCardsLastYearSynced));
         verify(stockService).immediatelyUpdateAvgMonthlyConsumption();
     }
 
@@ -149,6 +159,7 @@ public class SyncDownManagerTest {
         mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
+        mockRapidTestsResponse();
 
         //when
         CountOnNextSubscriber firstEnterSubscriber = new CountOnNextSubscriber();
@@ -161,7 +172,7 @@ public class SyncDownManagerTest {
         laterEnterSubscriber.assertNoTerminalEvent();
 
         //then
-        assertThat(firstEnterSubscriber.syncProgresses.size(), is(8));
+        assertThat(firstEnterSubscriber.syncProgresses.size(), is(10));
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }
 
@@ -170,6 +181,7 @@ public class SyncDownManagerTest {
         mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
+        mockRapidTestsResponse();
         when(productRepository.getByCode(anyString())).thenReturn(new Product());
 
         Program program = new Program();
@@ -317,6 +329,31 @@ public class SyncDownManagerTest {
         when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
 
         when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
+    }
+
+    private void mockRapidTestsResponse() throws ParseException, LMISException {
+        createdPreferences = LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
+        when(sharedPreferenceMgr.isRapidTestDataSynced()).thenReturn(false);
+        when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
+
+        when(lmisRestApi.fetchProgramDataForms(anyLong())).thenReturn(getRapidTestsResponse());
+    }
+
+    private SyncDownProgramDataResponse getRapidTestsResponse() {
+        ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
+                .setProgram(new Program())
+                .setPeriod(DateUtil.parseString("2016-03-21", DateUtil.DB_DATE_FORMAT))
+                .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+                .setSynced(false).build();
+        ProgramDataForm programDataForm2 = new ProgramDataFormBuilder()
+                .setProgram(new Program())
+                .setPeriod(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT))
+                .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+                .setSynced(false).build();
+
+        SyncDownProgramDataResponse syncDownProgramDataResponse = new SyncDownProgramDataResponse();
+        syncDownProgramDataResponse.setProgramDataForms(newArrayList(programDataForm1, programDataForm2));
+        return syncDownProgramDataResponse;
     }
 
     private void verifyLastMonthStockCardsSynced() throws LMISException {
