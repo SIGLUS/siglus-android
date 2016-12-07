@@ -61,6 +61,7 @@ public class RapidTestReportFormPresenter extends Presenter {
 
     private void generateNewRapidTestForm(DateTime periodBegin) {
         viewModel = new RapidTestReportViewModel(new Period(periodBegin));
+        viewModel.setStatus(RapidTestReportViewModel.Status.INCOMPLETE);
     }
 
     public Observable<RapidTestReportViewModel> saveDraftForm() {
@@ -81,7 +82,7 @@ public class RapidTestReportFormPresenter extends Presenter {
     }
 
     public void deleteDraft() {
-        if (viewModel.getRapidTestForm() != null) {
+        if (viewModel.getRapidTestForm().getId() != 0L) {
             try {
                 programDataFormRepository.delete(viewModel.getRapidTestForm());
             } catch (Exception e) {
@@ -90,4 +91,14 @@ public class RapidTestReportFormPresenter extends Presenter {
         }
     }
 
+    public Observable<RapidTestReportViewModel> sign(final String signature) {
+        return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
+            @Override
+            public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
+                viewModel.setSignature(signature);
+                subscriber.onNext(viewModel);
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
 }

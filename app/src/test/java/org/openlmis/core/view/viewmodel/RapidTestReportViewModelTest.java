@@ -7,6 +7,7 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.Signature;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
@@ -18,6 +19,7 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -108,5 +110,28 @@ public class RapidTestReportViewModelTest {
 
         viewModel.getItemViewModelList().add(itemViewModel2);
         assertFalse(viewModel.validate());
+    }
+
+    @Test
+    public void shouldReturnIsAuthorized() throws Exception {
+        viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        assertFalse(viewModel.isAuthorized());
+
+
+    }
+
+    @Test
+    public void shouldSetSignature() throws Exception {
+        viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+
+        assertNull(viewModel.getRapidTestForm().getStatus());
+
+        viewModel.setSignature("submit");
+        assertEquals(Signature.TYPE.SUBMITTER,viewModel.getRapidTestForm().getSignaturesWrapper().get(0).getType());
+        assertEquals("submit", viewModel.getRapidTestForm().getSignaturesWrapper().get(0).getSignature());
+
+        viewModel.setSignature("authorize");
+        assertEquals(Signature.TYPE.APPROVER,viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getType());
+        assertEquals("authorize", viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getSignature());
     }
 }

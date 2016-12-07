@@ -16,9 +16,11 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.presenter.RapidTestReportFormPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
+import org.openlmis.core.view.widget.SignatureDialog;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -74,16 +76,14 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     private void setUpButtonPanel() {
         actionPanel.setVisibility(presenter.getViewModel().getStatus().isEditable() ? View.VISIBLE : View.GONE);
-        if (presenter.getViewModel().isNotSubmitted()) {
-            btnComplete.setText(getResources().getString(R.string.btn_submit));
-        } else {
-            btnComplete.setText(getResources().getString(R.string.btn_complete));
-        }
+        updateButtonName();
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (presenter.getViewModel().validate()) {
-                    //TODO show sign dialog
+                    showSignDialog();
+                } else {
+                    ToastUtil.show(getString(R.string.error_positive_larger_than_consumption));
                 }
             }
         });
@@ -91,12 +91,50 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loading();
-                Subscription subscription = presenter.saveDraftForm().subscribe(getSavedSubscriber());
-                subscriptions.add(subscription);
+                onSaveForm();
             }
         });
     }
+
+    public void onSaveForm() {
+        loading();
+        Subscription subscription = presenter.saveDraftForm().subscribe(getSavedSubscriber());
+        subscriptions.add(subscription);
+    }
+
+    private void updateButtonName() {
+        if (presenter.getViewModel().isNotSubmitted()) {
+            btnComplete.setText(getResources().getString(R.string.btn_submit));
+        } else {
+            btnComplete.setText(getResources().getString(R.string.btn_complete));
+        }
+    }
+
+    private void showSignDialog() {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        String signatureDialogTitle = presenter.getViewModel().isNotSubmitted() ? getResources().getString(R.string.msg_rapid_test_submit_signature) : getResources().getString(R.string.msg_approve_signature_rapid_test);
+
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
+        signatureDialog.setDelegate(signatureDialogDelegate);
+
+        signatureDialog.show(getFragmentManager());
+    }
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        public void onSign(String sign) {
+            Subscription subscription = presenter.sign(sign).subscribe(new Action1<RapidTestReportViewModel>() {
+                @Override
+                public void call(RapidTestReportViewModel viewModel) {
+                    if (viewModel.isAuthorized()) {
+                        onSaveForm();
+                    } else {
+                        updateButtonName();
+                    }
+                }
+            });
+            subscriptions.add(subscription);
+        }
+    };
 
     private Action1<? super RapidTestReportViewModel> getSavedSubscriber() {
         return new Action1<RapidTestReportViewModel>() {

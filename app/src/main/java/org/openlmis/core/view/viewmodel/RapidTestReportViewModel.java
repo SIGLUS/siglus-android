@@ -5,6 +5,8 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.ProgramDataFormSignature;
+import org.openlmis.core.model.Signature;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -37,7 +39,7 @@ public class RapidTestReportViewModel implements Serializable {
 
     Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
 
-    private ProgramDataForm rapidTestForm;
+    private ProgramDataForm rapidTestForm = new ProgramDataForm();
 
     public static long DEFAULT_FORM_ID = 0;
 
@@ -89,14 +91,10 @@ public class RapidTestReportViewModel implements Serializable {
     }
 
     public void convertFormViewModelToDataModel(Program program) {
-        if (rapidTestForm == null) {
-            rapidTestForm = new ProgramDataForm();
-            rapidTestForm.setProgram(program);
-            rapidTestForm.setPeriodBegin(period.getBegin().toDate());
-            rapidTestForm.setPeriodEnd(period.getEnd().toDate());
-        } else {
-            rapidTestForm.getProgramDataFormItemListWrapper().clear();
-        }
+        rapidTestForm.setProgram(program);
+        rapidTestForm.setPeriodBegin(period.getBegin().toDate());
+        rapidTestForm.setPeriodEnd(period.getEnd().toDate());
+        rapidTestForm.getProgramDataFormItemListWrapper().clear();
         convertFormItemViewModelToDataModel();
     }
 
@@ -117,15 +115,8 @@ public class RapidTestReportViewModel implements Serializable {
         return status.isEditable();
     }
 
-    public boolean isSubmitted() {
-        if (rapidTestForm != null) {
-            return rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
-        }
-        return false;
-    }
-
     public boolean isNotSubmitted() {
-        return rapidTestForm == null || rapidTestForm.getStatus() == ProgramDataForm.STATUS.DRAFT;
+        return rapidTestForm.getSignaturesWrapper().isEmpty();
     }
 
     public boolean validate() {
@@ -135,6 +126,21 @@ public class RapidTestReportViewModel implements Serializable {
             }
         }
         return true;
+    }
+
+    public void setSignature(String signature) {
+        if (rapidTestForm.getSignaturesWrapper().size() == 0) {
+            rapidTestForm.getSignaturesWrapper().add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
+            rapidTestForm.setStatus(ProgramDataForm.STATUS.SUBMITTED);
+        } else {
+            rapidTestForm.getSignaturesWrapper().add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.APPROVER));
+            rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+            status = Status.COMPLETED;
+        }
+    }
+
+    public boolean isAuthorized() {
+        return rapidTestForm.getSignaturesWrapper().size() == 2;
     }
 
     public enum Status {

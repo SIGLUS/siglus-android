@@ -68,7 +68,7 @@ public class RapidTestReportFormPresenterTest {
         RapidTestReportViewModel viewModel1 = subscriber1.getOnNextEvents().get(0);
 
         assertEquals(period.getBegin(), viewModel1.getPeriod().getBegin());
-        assertEquals(RapidTestReportViewModel.Status.MISSING, viewModel1.getStatus());
+        assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel1.getStatus());
 
         //convert db model to view model
         ProgramDataForm form = new ProgramDataForm();
@@ -125,6 +125,7 @@ public class RapidTestReportFormPresenterTest {
 
         ProgramDataForm rapidTestForm = new ProgramDataForm();
         rapidTestForm.setStatus(ProgramDataForm.STATUS.DRAFT);
+        rapidTestForm.setId(1L);
         rapidTestReportFormPresenter.viewModel.setRapidTestForm(rapidTestForm);
         rapidTestReportFormPresenter.deleteDraft();
         verify(programDataFormRepositoryMock).delete(any(ProgramDataForm.class));

@@ -18,8 +18,6 @@
 
 package org.openlmis.core.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -31,30 +29,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @DatabaseTable(tableName = "rnr_form_signature")
 @NoArgsConstructor
-public class RnRFormSignature {
-    public enum TYPE {
-        SUBMITTER,
-        APPROVER
-    }
-
+public class RnRFormSignature extends Signature {
     public RnRFormSignature(RnRForm form, String signature, TYPE type) {
+        super(signature, type);
         this.form = form;
-        this.signature = signature;
-        this.type = type;
     }
-
-    @DatabaseField(uniqueIndex = true, generatedId = true)
-    private long id;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RnRForm form;
-
-    @Expose
-    @SerializedName("text")
-    @DatabaseField
-    private String signature;
-
-    @Expose
-    @DatabaseField
-    private TYPE type;
 }

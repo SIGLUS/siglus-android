@@ -51,6 +51,15 @@ public class ProgramDataForm extends BaseModel {
     @SerializedName("programDataFormItems")
     private List<ProgramDataFormItem> programDataFormItemListWrapper;
 
+    @ForeignCollectionField()
+    private ForeignCollection<ProgramDataFormSignature> signatures;
+    private List<ProgramDataFormSignature> signaturesWrapper;
+
+    public List<ProgramDataFormSignature> getSignaturesWrapper() {
+        signaturesWrapper = ListUtil.wrapOrEmpty(signatures, signaturesWrapper);
+        return signaturesWrapper;
+    }
+
     public List<ProgramDataFormItem> getProgramDataFormItemListWrapper() {
         programDataFormItemListWrapper = ListUtil.wrapOrEmpty(programDataFormItemList, programDataFormItemListWrapper);
         return programDataFormItemListWrapper;
