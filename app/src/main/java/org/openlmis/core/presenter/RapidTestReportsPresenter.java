@@ -14,15 +14,18 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Getter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class RapidTestReportsPresenter extends Presenter {
 
@@ -67,6 +70,12 @@ public class RapidTestReportsPresenter extends Presenter {
             addViewModel(period, rapidTestForms);
             period = periodService.generateNextPeriod(period);
         }
+        Collections.sort(viewModelList, new Comparator<RapidTestReportViewModel>() {
+            @Override
+            public int compare(RapidTestReportViewModel lhs, RapidTestReportViewModel rhs) {
+                return rhs.getPeriod().getBegin().toDate().compareTo(lhs.getPeriod().getBegin().toDate());
+            }
+        });
     }
 
     private void addViewModel(Period period, List<ProgramDataForm> rapidTestForms) {
@@ -76,7 +85,7 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     private void setExistingProgramDataForm(final RapidTestReportViewModel viewModel, List<ProgramDataForm> rapidTestForms) {
-        Optional<ProgramDataForm> existingProgramDataForm = FluentIterable.from(rapidTestForms).firstMatch(new Predicate<ProgramDataForm>() {
+        Optional<ProgramDataForm> existingProgramDataForm = from(rapidTestForms).firstMatch(new Predicate<ProgramDataForm>() {
             @Override
             public boolean apply(ProgramDataForm programDataForm) {
                 return programDataForm.getPeriodBegin().getTime() == viewModel.getPeriod().getBegin().getMillis();
