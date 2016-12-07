@@ -63,6 +63,11 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
         subscriptions.add(subscription);
     }
 
+    @Override
+    protected int getThemeRes() {
+        return R.style.AppTheme_BlueGray;
+    }
+
     private void setUpRowItems() {
         adapter = new RapidTestReportRowAdapter();
         rvReportRowItemListView.setLayoutManager(new LinearLayoutManager(this));
