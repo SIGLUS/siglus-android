@@ -186,6 +186,5 @@ public class RapidTestReportViewModel implements Serializable {
     public static final String PNCTL = "PNCTL";
     public static final String PAV = "PAV";
     public static final String DENTAL_WARD = "DENTAL_WARD";
-    public static final String UNPACK_KIT = "UNPACK_KIT";
 }
 

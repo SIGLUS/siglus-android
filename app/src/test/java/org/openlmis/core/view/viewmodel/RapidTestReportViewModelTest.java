@@ -19,6 +19,7 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -133,5 +134,6 @@ public class RapidTestReportViewModelTest {
         viewModel.setSignature("authorize");
         assertEquals(Signature.TYPE.APPROVER,viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getType());
         assertEquals("authorize", viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getSignature());
+        assertNotNull(viewModel.getRapidTestForm().getSubmittedTime());
     }
 }
