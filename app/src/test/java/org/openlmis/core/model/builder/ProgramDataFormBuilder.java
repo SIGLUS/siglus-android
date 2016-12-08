@@ -3,6 +3,8 @@ package org.openlmis.core.model.builder;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataFormSignature;
+import org.openlmis.core.model.Signature;
 
 import java.util.Date;
 
@@ -36,6 +38,11 @@ public class ProgramDataFormBuilder {
     public ProgramDataFormBuilder setPeriod(Date periodBegin) {
         programDataForm.setPeriodBegin(periodBegin);
         programDataForm.setPeriodEnd(Period.of(periodBegin).getEnd().toDate());
+        return this;
+    }
+
+    public ProgramDataFormBuilder setSignatures(String signature, Signature.TYPE type) {
+        programDataForm.getSignaturesWrapper().add(new ProgramDataFormSignature(programDataForm, signature, type));
         return this;
     }
 

@@ -11,6 +11,8 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.ProgramDataFormSignature;
+import org.openlmis.core.model.Signature;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -59,6 +61,7 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
                 .setPeriod(DateUtil.parseString("2016-09-23", DateUtil.DB_DATE_FORMAT))
                 .setStatus(ProgramDataForm.STATUS.SUBMITTED)
                 .setProgram(programRapidTest)
+                .setSignatures("signature", ProgramDataFormSignature.TYPE.SUBMITTER)
                 .build();
 
         ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", "POSITIVE_COLUMN1", 1);
@@ -88,6 +91,9 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getName(), is("name2"));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getProgramDataColumnCode(), is("CONSUME_COLUMN1"));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getValue(), is(9));
+        assertThat(programDataFormRetrieved.get(0).getSignaturesWrapper().get(0).getSignature(), is("signature"));
+        assertThat(programDataFormRetrieved.get(0).getSignaturesWrapper().get(0).getType(), is(Signature.TYPE.SUBMITTER));
+
         assertThat(programDataFormRetrieved.get(1).getPeriodBegin(), is(programDataForm2.getPeriodBegin()));
         assertThat(programDataFormRetrieved.get(1).getStatus(), is(programDataForm2.getStatus()));
 
