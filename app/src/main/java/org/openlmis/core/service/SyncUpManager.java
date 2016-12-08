@@ -23,7 +23,6 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.json.JSONObject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;

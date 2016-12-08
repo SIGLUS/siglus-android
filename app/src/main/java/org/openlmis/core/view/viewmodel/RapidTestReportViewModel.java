@@ -1,6 +1,5 @@
 package org.openlmis.core.view.viewmodel;
 
-import org.joda.time.DateTime;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
