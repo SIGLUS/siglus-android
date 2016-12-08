@@ -27,22 +27,22 @@ describe "Sync stock card data" do
         programDataFormItems: [
         {
             name: "PUB_PHARMACY",
-            columnCode: "HIV-DETERMINE-CONSUME",
+            columnCode: "CONSUME_HIVDETERMINE",
             value: 10
         },
         {
             name: "PUB_PHARMACY",
-            columnCode: "HIV-DETERMINE-POSITIVE",
+            columnCode: "POSITIVE_HIVDETERMINE",
             value: 5
         },
         {
             name: "PUB_PHARMACY",
-            columnCode: "SYPHILLIS-CONSUME",
+            columnCode: "CONSUME_SYPHILLIS",
             value: 20
         },
         {
             name: "PUB_PHARMACY",
-            columnCode: "SYPHILLIS-POSITIVE",
+            columnCode: "POSITIVE_SYPHILLIS",
             value: 10
         }
         ]
@@ -68,7 +68,7 @@ describe "Sync stock card data" do
     expect(program_form['programDataFormSignatures'][0]['text']).to eq 'mystique'
 
     item1 = program_form['programDataFormItems'].detect do |item|
-        item['columnCode']=="HIV-DETERMINE-CONSUME" && item['name']=="PUB_PHARMACY"
+        item['columnCode']=="CONSUME_HIVDETERMINE" && item['name']=="PUB_PHARMACY"
     end
     expect(item1['value']).to eq 10
   end

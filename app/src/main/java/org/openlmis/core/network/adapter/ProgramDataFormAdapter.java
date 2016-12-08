@@ -112,6 +112,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
         root.addProperty("periodEnd", periodEnd);
         root.addProperty("submittedTime", submittedTime);
         root.add("programDataFormItems", jsonParser.parse(gson.toJson(programDataForm.getProgramDataFormItemListWrapper())));
+        root.add("programDataFormSignatures", jsonParser.parse(gson.toJson(programDataForm.getSignaturesWrapper())));
         return root;
     }
 }
