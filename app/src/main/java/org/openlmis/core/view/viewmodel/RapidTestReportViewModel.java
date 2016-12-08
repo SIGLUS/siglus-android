@@ -10,6 +10,7 @@ import org.openlmis.core.model.Signature;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +34,8 @@ public class RapidTestReportViewModel implements Serializable {
     RapidTestFormItemViewModel item_PNCTL = new RapidTestFormItemViewModel(PNCTL);
     RapidTestFormItemViewModel item_PAV = new RapidTestFormItemViewModel(PAV);
     RapidTestFormItemViewModel item_DENTAL_WARD = new RapidTestFormItemViewModel(DENTAL_WARD);
-    RapidTestFormItemViewModel item_UNPACK_KIT = new RapidTestFormItemViewModel(UNPACK_KIT);
 
-    List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(item_PUB_PHARMACY, item_MATERNITY, item_GENERAL_WARD, item_ACC_EMERGENCY, item_MOBILE_UNIT, item_LABORATORY, item_UATS, item_PNCTL, item_PAV, item_DENTAL_WARD, item_UNPACK_KIT);
+    List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(item_PUB_PHARMACY, item_MATERNITY, item_GENERAL_WARD, item_ACC_EMERGENCY, item_MOBILE_UNIT, item_LABORATORY, item_UATS, item_PNCTL, item_PAV, item_DENTAL_WARD);
 
     Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
 
@@ -135,6 +135,7 @@ public class RapidTestReportViewModel implements Serializable {
         } else {
             rapidTestForm.getSignaturesWrapper().add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.APPROVER));
             rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+            rapidTestForm.setSubmittedTime(new Date());
             status = Status.COMPLETED;
         }
     }
