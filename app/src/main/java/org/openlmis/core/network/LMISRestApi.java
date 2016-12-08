@@ -89,5 +89,5 @@ public interface LMISRestApi {
     SyncDownProgramDataResponse fetchProgramDataForms(@Path("facilityId") Long facilityId) throws LMISException;
 
     @POST("/rest-api/programData")
-    void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
+    Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
 }

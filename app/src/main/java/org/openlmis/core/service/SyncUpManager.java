@@ -23,6 +23,7 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.json.JSONObject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -365,29 +366,29 @@ public class SyncUpManager {
 
     public void syncRapidTestForms() {
         try {
-            Log.d(TAG, "===> Preparing RnrForm for Syncing: Delete Deactivated Products...");
-
-            Observable.from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).subscribe(new Action1<ProgramDataForm>() {
+            Observable.from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).filter(new Func1<ProgramDataForm, Boolean>() {
+                @Override
+                public Boolean call(ProgramDataForm programDataForm) {
+                    try {
+                        lmisRestApi.syncUpProgramDataForm(programDataForm);
+                        return true;
+                    } catch (LMISException e) {
+                        e.reportToFabric();
+                        return false;
+                    }
+                }
+            }).subscribe(new Action1<ProgramDataForm>() {
                 @Override
                 public void call(ProgramDataForm programDataForm) {
-                    if (!programDataForm.isSynced()) {
-                        try {
-                            lmisRestApi.syncUpProgramDataForm(programDataForm);
-                        } catch (LMISException e) {
-                            e.reportToFabric();
-                        }
-                        markProgramDataFormsSynced(programDataForm);
-                    }
+                    markProgramDataFormsSynced(programDataForm);
                 }
             });
 
-            Log.d(TAG, "===> SyncRapidTests: Rapid Tests ready to sync...");
+            Log.d(TAG, "===> SyncRapidTests: Rapid Tests synced...");
 
         } catch (LMISException e) {
             e.reportToFabric();
         }
-
-
     }
 
     private void markProgramDataFormsSynced(ProgramDataForm programDataForm) {
