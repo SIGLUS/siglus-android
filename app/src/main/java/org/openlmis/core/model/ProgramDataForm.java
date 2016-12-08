@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @DatabaseTable(tableName = "program_data_forms")
@@ -23,23 +24,29 @@ public class ProgramDataForm extends BaseModel {
         AUTHORIZED
     }
 
+    @Getter
     @DatabaseField(defaultValue = "DRAFT")
     private STATUS status;
 
+    @Getter
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Program program;
 
+    @Getter
     @DatabaseField
     private boolean synced = false;
 
+    @Getter
     @Expose
     @DatabaseField
     private Date periodBegin;
 
+    @Getter
     @Expose
     @DatabaseField
     private Date periodEnd;
 
+    @Getter
     @Expose
     @DatabaseField
     private Date submittedTime;
