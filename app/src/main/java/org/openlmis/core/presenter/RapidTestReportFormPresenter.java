@@ -66,21 +66,23 @@ public class RapidTestReportFormPresenter extends Presenter {
         viewModel.setStatus(RapidTestReportViewModel.Status.INCOMPLETE);
     }
 
-    public Observable<RapidTestReportViewModel> saveDraftForm() {
+    public Observable<RapidTestReportViewModel> onSaveDraftForm() {
         return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
             @Override
             public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
-                try {
-                    viewModel.convertFormViewModelToDataModel(programRepository.queryByCode(Constants.RAPID_TEST_CODE));
-                    programDataFormRepository.batchCreateOrUpdate(viewModel.getRapidTestForm());
-                    subscriber.onNext(viewModel);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                    new LMISException(e).reportToFabric();
-                }
+                saveForm();
+                subscriber.onNext(viewModel);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public void saveForm() {
+        try {
+            viewModel.convertFormViewModelToDataModel(programRepository.queryByCode(Constants.RAPID_TEST_CODE));
+            programDataFormRepository.batchCreateOrUpdate(viewModel.getRapidTestForm());
+        } catch (Exception e) {
+            new LMISException(e).reportToFabric();
+        }
     }
 
     public void deleteDraft() {
@@ -102,5 +104,9 @@ public class RapidTestReportFormPresenter extends Presenter {
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public boolean isSubmitted() {
+        return viewModel.isSubmitted();
     }
 }

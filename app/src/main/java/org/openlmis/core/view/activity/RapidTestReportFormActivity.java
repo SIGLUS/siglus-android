@@ -104,12 +104,12 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     public void onSaveForm() {
         loading();
-        Subscription subscription = presenter.saveDraftForm().subscribe(getSavedSubscriber());
+        Subscription subscription = presenter.onSaveDraftForm().subscribe(getSavedSubscriber());
         subscriptions.add(subscription);
     }
 
     private void updateButtonName() {
-        if (presenter.getViewModel().isNotSubmitted()) {
+        if (presenter.getViewModel().isDraft()) {
             btnComplete.setText(getResources().getString(R.string.btn_submit));
         } else {
             btnComplete.setText(getResources().getString(R.string.btn_complete));
@@ -118,7 +118,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     private void showSignDialog() {
         SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = presenter.getViewModel().isNotSubmitted() ? getResources().getString(R.string.msg_rapid_test_submit_signature) : getResources().getString(R.string.msg_approve_signature_rapid_test);
+        String signatureDialogTitle = presenter.getViewModel().isDraft() ? getResources().getString(R.string.msg_rapid_test_submit_signature) : getResources().getString(R.string.msg_approve_signature_rapid_test);
 
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
         signatureDialog.setDelegate(signatureDialogDelegate);
@@ -134,6 +134,8 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
                     if (viewModel.isAuthorized()) {
                         onSaveForm();
                     } else {
+                        showMessageNotifyDialog();
+                        presenter.saveForm();
                         adapter.setEditable(false);
                         adapter.notifyDataSetChanged();
                         updateButtonName();
@@ -143,6 +145,24 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
             subscriptions.add(subscription);
         }
     };
+
+    public void showMessageNotifyDialog() {
+        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+                getString(R.string.msg_requisition_signature_message_notify_via), getString(R.string.btn_continue), null, "showMessageNotifyDialog");
+
+        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+            @Override
+            public void positiveClick(String tag) {
+                dialogFragment.dismiss();
+            }
+
+            @Override
+            public void negativeClick(String tag) {
+
+            }
+        });
+        dialogFragment.show(getFragmentManager(), "showMessageNotifyDialog");
+    }
 
     private Action1<? super RapidTestReportViewModel> getSavedSubscriber() {
         return new Action1<RapidTestReportViewModel>() {
@@ -161,9 +181,16 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
             public void call(RapidTestReportViewModel viewModel) {
                 populateFormData(viewModel);
                 setUpButtonPanel();
+                loadMessageDialogIfIsDraft();
                 loaded();
             }
         };
+    }
+
+    private void loadMessageDialogIfIsDraft() {
+        if (presenter.isSubmitted()) {
+            showMessageNotifyDialog();
+        }
     }
 
     private void populateFormData(RapidTestReportViewModel viewModel) {

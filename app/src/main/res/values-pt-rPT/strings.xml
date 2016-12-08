@@ -137,6 +137,7 @@
     <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
     <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
     <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
+    <string name="msg_requisition_signature_message_notify_rapid_test">Please hand the device to the person responsible for approval and submission of Rapid Test</string>
     <string name="btn_continue">Continuar</string>
     <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
     <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$s</b> Fechados <i>%2$s</i>. São<b>%3$s</b> <i>%4$s</i> em cada kit.<br/>]]></string>

@@ -112,11 +112,11 @@ public class RapidTestReportViewModel implements Serializable {
     }
 
     public boolean isEditable() {
-        return status.isEditable() && isNotSubmitted();
+        return status.isEditable() && isDraft();
     }
 
-    public boolean isNotSubmitted() {
-        return rapidTestForm.getSignaturesWrapper().isEmpty();
+    public boolean isDraft() {
+        return rapidTestForm.getStatus() == null || rapidTestForm.getStatus() == ProgramDataForm.STATUS.DRAFT;
     }
 
     public boolean validate() {
@@ -140,7 +140,7 @@ public class RapidTestReportViewModel implements Serializable {
     }
 
     public boolean isAuthorized() {
-        return rapidTestForm.getSignaturesWrapper().size() == 2;
+        return rapidTestForm.getStatus() == ProgramDataForm.STATUS.AUTHORIZED;
     }
 
     public boolean isFormEmpty() {
@@ -150,6 +150,10 @@ public class RapidTestReportViewModel implements Serializable {
             }
         }
         return true;
+    }
+
+    public boolean isSubmitted() {
+        return rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
     }
 
     public enum Status {

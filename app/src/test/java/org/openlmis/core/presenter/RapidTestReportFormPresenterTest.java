@@ -108,14 +108,10 @@ public class RapidTestReportFormPresenterTest {
         when(programRepositoryMock.queryByCode(Constants.RAPID_TEST_CODE)).thenReturn(new Program());
         when(viewModelMock.getRapidTestForm()).thenReturn(dataForm);
 
-        TestSubscriber<RapidTestReportViewModel> subscriber = new TestSubscriber<>();
-        Observable<RapidTestReportViewModel> observable = rapidTestReportFormPresenter.saveDraftForm();
-        observable.subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
+        rapidTestReportFormPresenter.saveForm();
 
         verify(viewModelMock).convertFormViewModelToDataModel(any(Program.class));
         verify(programDataFormRepositoryMock).batchCreateOrUpdate(dataForm);
-        subscriber.assertNoErrors();
     }
 
     @Test
