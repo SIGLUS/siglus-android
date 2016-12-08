@@ -71,7 +71,8 @@
         <activity
             android:name=".view.activity.MMIARequisitionActivity"
             android:label="@string/label_mmia_title"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".view.activity.ArchivedDrugsListActivity"
             android:label="@string/title_archived_drugs"
