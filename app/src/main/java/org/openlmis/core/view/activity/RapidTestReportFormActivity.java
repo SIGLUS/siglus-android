@@ -45,6 +45,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     RapidTestReportFormPresenter presenter;
 
     RapidTestReportRowAdapter adapter;
+    private SignatureDialog signatureDialog;
 
     @Override
     protected ScreenName getScreenName() {
@@ -54,6 +55,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        signatureDialog = null;
         long formId = getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
 
@@ -117,7 +119,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     private void showSignDialog() {
-        SignatureDialog signatureDialog = new SignatureDialog();
+        signatureDialog = new SignatureDialog();
         String signatureDialogTitle = presenter.getViewModel().isDraft() ? getResources().getString(R.string.msg_rapid_test_submit_signature) : getResources().getString(R.string.msg_approve_signature_rapid_test);
 
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
@@ -231,5 +233,13 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     @Override
     public void negativeClick(String tag) {
+    }
+
+    @Override
+    protected void onPause() {
+        if (signatureDialog != null) {
+            signatureDialog.dismiss();
+        }
+        super.onPause();
     }
 }
