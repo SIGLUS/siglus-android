@@ -57,7 +57,7 @@ public class ProgramDataFormRepository {
             @Override
             public Void operate(Dao<ProgramDataFormSignature, String> dao) throws SQLException, LMISException {
                 for (ProgramDataFormSignature signature : signatures) {
-                    dao.create(signature);
+                    dao.createOrUpdate(signature);
                 }
                 return null;
             }
