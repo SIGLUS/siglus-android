@@ -53,6 +53,9 @@ public class ProgramDataForm extends BaseModel {
 
     @ForeignCollectionField()
     private ForeignCollection<ProgramDataFormSignature> signatures;
+
+    @Expose
+    @SerializedName("programDataFormSignatures")
     private List<ProgramDataFormSignature> signaturesWrapper;
 
     public List<ProgramDataFormSignature> getSignaturesWrapper() {

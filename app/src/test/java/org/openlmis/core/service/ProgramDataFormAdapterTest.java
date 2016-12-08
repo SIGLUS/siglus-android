@@ -13,6 +13,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.Signature;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -66,6 +67,9 @@ public class ProgramDataFormAdapterTest {
         assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getName(), is("PUB_PHARMACY"));
         assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getProgramDataColumnCode(), is("HIV-DETERMINE-CONSUME"));
         assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getValue(), is(10));
+        assertThat(programDataForm.getSignaturesWrapper().get(0).getSignature(), is("mystique"));
+        assertThat(programDataForm.getSignaturesWrapper().get(0).getType(), is(Signature.TYPE.SUBMITTER));
+        assertThat(programDataForm.getSignaturesWrapper().get(0).getForm(), is(programDataForm));
     }
 
     @Test
@@ -77,6 +81,8 @@ public class ProgramDataFormAdapterTest {
                 .setPeriod(DateUtil.parseString("2016-03-21", DateUtil.DB_DATE_FORMAT))
                 .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
                 .setSubmittedTime(DateUtil.parseString("2016-11-25 12:03:00", DateUtil.DATE_TIME_FORMAT))
+                .setSignatures("mystique", Signature.TYPE.SUBMITTER)
+                .setSignatures("magneto", Signature.TYPE.APPROVER)
                 .setSynced(false).build();
         ProgramDataFormItem programDataFormItem1 = new ProgramDataFormItem("PUBLIC_PHARMACY", "HIV-DETERMINE-CONSUME", 50);
         ProgramDataFormItem programDataFormItem2 = new ProgramDataFormItem("PUBLIC_PHARMACY", "HIV-DETERMINE-POSITIVE", 20);
@@ -91,7 +97,8 @@ public class ProgramDataFormAdapterTest {
         assertThat(jsonElement.getAsJsonObject().get("periodBegin").getAsString(), is("2016-03-21"));
         assertThat(jsonElement.getAsJsonObject().get("periodEnd").getAsString(), is("2016-04-20"));
         assertThat(jsonElement.getAsJsonObject().get("submittedTime").getAsString(), startsWith("20161125T120300.000"));
-
+        assertThat(jsonElement.getAsJsonObject().get("programDataFormSignatures").getAsJsonArray().get(0).getAsJsonObject().get("type").toString(), is("\"SUBMITTER\""));
+        assertThat(jsonElement.getAsJsonObject().get("programDataFormSignatures").getAsJsonArray().get(0).getAsJsonObject().get("text").toString(), is("\"mystique\""));
         assertThat(jsonElement.getAsJsonObject().get("programDataFormItems").getAsJsonArray().size(), is(4));
         assertThat(jsonElement.getAsJsonObject().get("programDataFormItems").getAsJsonArray().get(0).getAsJsonObject().get("name").toString(), is("\"PUBLIC_PHARMACY\""));
         assertThat(jsonElement.getAsJsonObject().get("programDataFormItems").getAsJsonArray().get(0).getAsJsonObject().get("columnCode").toString(), is("\"HIV-DETERMINE-CONSUME\""));

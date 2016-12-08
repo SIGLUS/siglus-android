@@ -36,6 +36,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.utils.DateUtil;
 
@@ -77,6 +78,10 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
         programDataForm.setSynced(true);
         for (ProgramDataFormItem item : programDataForm.getProgramDataFormItemListWrapper()) {
             item.setForm(programDataForm);
+        }
+
+        for (ProgramDataFormSignature signature : programDataForm.getSignaturesWrapper()) {
+            signature.setForm(programDataForm);
         }
         return programDataForm;
     }

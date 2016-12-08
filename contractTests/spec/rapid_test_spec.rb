@@ -14,6 +14,16 @@ describe "Sync stock card data" do
         periodBegin: "2016-02-21",
         periodEnd: "2016-03-20",
         submittedTime: "20161125T120300.000Z",
+        programDataFormSignatures: [
+        {
+            type: "SUBMITTER",
+            text: "mystique"
+        },
+        {
+            type: "APPROVER",
+            text: "magneto"
+        }
+        ],
         programDataFormItems: [
         {
             name: "PUB_PHARMACY",
@@ -55,6 +65,7 @@ describe "Sync stock card data" do
     expect(program_form['periodBegin']).to eq 1455984000000
     expect(program_form['periodEnd']).to eq 1458403200000
     expect(program_form['submittedTime']).to eq 1480046580000
+    expect(program_form['programDataFormSignatures'][0]['text']).to eq 'mystique'
 
     item1 = program_form['programDataFormItems'].detect do |item|
         item['columnCode']=="HIV-DETERMINE-CONSUME" && item['name']=="PUB_PHARMACY"

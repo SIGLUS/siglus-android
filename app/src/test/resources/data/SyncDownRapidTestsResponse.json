@@ -4,6 +4,16 @@
   "periodBegin":1455984000000,
   "periodEnd":1458403200000,
   "submittedTime":1480046580000,
+  "programDataFormSignatures": [
+    {
+      "type": "SUBMITTER",
+      "text": "mystique"
+    },
+    {
+      "type": "APPROVER",
+      "text": "magneto"
+    }
+  ],
   "programDataFormItems":[
     {
       "name":"PUB_PHARMACY",
