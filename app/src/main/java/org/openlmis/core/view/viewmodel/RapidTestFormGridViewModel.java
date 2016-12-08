@@ -25,7 +25,7 @@ public class RapidTestFormGridViewModel {
 
     public boolean validate() {
         try {
-            return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue)
+            return isEmpty()
                     || Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue);
         } catch (NumberFormatException e) {
             return false;
@@ -55,7 +55,11 @@ public class RapidTestFormGridViewModel {
 
     @NonNull
     public String generateFullColumnName(String prefix) {
-        return  prefix + StringUtils.upperCase(getColumnCode().name());
+        return prefix + StringUtils.upperCase(getColumnCode().name());
+    }
+
+    public boolean isEmpty() {
+        return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue);
     }
 
     public enum ColumnCode {

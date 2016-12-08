@@ -11,9 +11,13 @@ import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Setter;
+
 public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestReportRowViewHolder> {
 
     private List<RapidTestFormItemViewModel> viewModels;
+
+    @Setter
     private Boolean editable = true;
 
     public RapidTestReportRowAdapter() {

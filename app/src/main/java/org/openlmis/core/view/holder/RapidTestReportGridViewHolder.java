@@ -53,8 +53,10 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     private void updateAlert() {
         if (viewModel.validate()) {
             etPositive.setTextColor(context.getResources().getColor(R.color.color_black));
+            etConsume.setTextColor(context.getResources().getColor(R.color.color_black));
         } else {
             etPositive.setTextColor(context.getResources().getColor(R.color.color_red));
+            etConsume.setTextColor(context.getResources().getColor(R.color.color_red));
         }
     }
 

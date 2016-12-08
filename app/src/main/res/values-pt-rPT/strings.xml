@@ -386,4 +386,5 @@
     <string name="title_rapid_test">Rapid Test</string>
     <string name="msg_sync_rapid_tests_failed">Sync Rapid Tests failed.</string>
     <string name="error_positive_larger_than_consumption">Positive number cannot be larger than Consumption number, please correct your inputs and continue.</string>
+    <string name="error_empty_rapid_test">Rapid test report cannot be empty.</string>
 </resources>

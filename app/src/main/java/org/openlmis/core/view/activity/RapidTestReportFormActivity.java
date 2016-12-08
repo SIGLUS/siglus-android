@@ -80,10 +80,12 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (presenter.getViewModel().validate()) {
-                    showSignDialog();
-                } else {
+                if (presenter.getViewModel().isFormEmpty()) {
+                    ToastUtil.show(getString(R.string.error_empty_rapid_test));
+                } else if (!presenter.getViewModel().validate()) {
                     ToastUtil.show(getString(R.string.error_positive_larger_than_consumption));
+                } else {
+                    showSignDialog();
                 }
             }
         });
@@ -128,6 +130,8 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
                     if (viewModel.isAuthorized()) {
                         onSaveForm();
                     } else {
+                        adapter.setEditable(false);
+                        adapter.notifyDataSetChanged();
                         updateButtonName();
                     }
                 }
@@ -159,7 +163,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     private void populateFormData(RapidTestReportViewModel viewModel) {
-        adapter.refresh(viewModel.getItemViewModelList(), viewModel.getStatus().isEditable());
+        adapter.refresh(viewModel.getItemViewModelList(), viewModel.isEditable());
     }
 
     public static Intent getIntentToMe(Context context, long formId, DateTime periodBegin) {

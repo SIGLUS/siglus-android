@@ -63,4 +63,13 @@ public class RapidTestFormItemViewModel {
         }
         return true;
     }
+
+    public boolean isEmpty() {
+        for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
+            if (!gridViewModel.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
