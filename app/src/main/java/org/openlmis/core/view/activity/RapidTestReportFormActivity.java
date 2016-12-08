@@ -148,7 +148,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     public void showMessageNotifyDialog() {
         final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                getString(R.string.msg_requisition_signature_message_notify_via), getString(R.string.btn_continue), null, "showMessageNotifyDialog");
+                getString(R.string.msg_requisition_signature_message_notify_rapid_test), getString(R.string.btn_continue), null, "showMessageNotifyDialog");
 
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
             @Override
