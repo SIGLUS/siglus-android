@@ -87,6 +87,7 @@ public class RapidTestReportFormPresenterTest {
         form.setPeriodEnd(period.getEnd().toDate());
         when(programDataFormRepositoryMock.queryById(anyInt())).thenReturn(form);
         TestSubscriber<RapidTestReportViewModel> subscriber2 = new TestSubscriber<>();
+        rapidTestReportFormPresenter.viewModel = null;
         Observable<RapidTestReportViewModel> observable2 = rapidTestReportFormPresenter.loadViewModel(1L, period.getBegin());
         observable2.subscribe(subscriber2);
         subscriber2.awaitTerminalEvent();

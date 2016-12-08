@@ -54,11 +54,15 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loading();
         long formId = getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
 
         setUpRowItems();
+        loadForm(formId, periodBegin);
+    }
+
+    private void loadForm(long formId, DateTime periodBegin) {
+        loading();
         Subscription subscription = presenter.loadViewModel(formId, periodBegin).subscribe(getPopulateFormDataAction());
         subscriptions.add(subscription);
     }

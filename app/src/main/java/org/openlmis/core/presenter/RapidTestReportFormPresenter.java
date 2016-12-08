@@ -39,11 +39,13 @@ public class RapidTestReportFormPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
                 try {
-                    if (formId == 0) {
-                        generateNewRapidTestForm(periodBegin);
-                    } else {
-                        ProgramDataForm programDataForm = programDataFormRepository.queryById(formId);
-                        convertProgramDataFormToRapidTestReportViewModel(programDataForm);
+                    if (viewModel == null) {
+                        if (formId == 0) {
+                            generateNewRapidTestForm(periodBegin);
+                        } else {
+                            ProgramDataForm programDataForm = programDataFormRepository.queryById(formId);
+                            convertProgramDataFormToRapidTestReportViewModel(programDataForm);
+                        }
                     }
                     subscriber.onNext(viewModel);
                     subscriber.onCompleted();
