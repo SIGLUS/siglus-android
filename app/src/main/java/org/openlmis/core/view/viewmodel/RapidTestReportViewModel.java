@@ -22,7 +22,7 @@ import lombok.Getter;
 public class RapidTestReportViewModel implements Serializable {
     Period period;
     Status status;
-    private DateTime syncedTime;
+    private Date syncedTime;
 
     RapidTestFormItemViewModel item_PUB_PHARMACY = new RapidTestFormItemViewModel(PUB_PHARMACY);
     RapidTestFormItemViewModel item_MATERNITY = new RapidTestFormItemViewModel(MATERNITY);
@@ -86,8 +86,8 @@ public class RapidTestReportViewModel implements Serializable {
         }
     }
 
-    public DateTime getSyncedTime() {
-        return syncedTime;
+    public Date getSyncedTime() {
+        return rapidTestForm.getSubmittedTime();
     }
 
     public void convertFormViewModelToDataModel(Program program) {

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 
@@ -54,7 +55,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 break;
             case SYNCED:
                 setWhiteHeader();
-                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_submitted_message, context.getString(R.string.title_rapid_test_reports), rapidTestReportViewModel.getSyncedTime())));
+                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_submitted_message, context.getString(R.string.title_rapid_test_reports), DateUtil.formatDate(rapidTestReportViewModel.getSyncedTime()))));
                 setWhiteButton();
                 btnReportEntry.setText(context.getString(R.string.btn_view_requisition, context.getString(R.string.title_rapid_test_reports)));
                 btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());

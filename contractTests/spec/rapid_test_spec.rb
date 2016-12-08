@@ -59,8 +59,8 @@ describe "Sync stock card data" do
       :content_type => :json, :authorization => http_basic_auth('mystique', 'password1')
     response_body = JSON.parse(response.body)
 
-    expect(response_body['programData'].length).to be 1
-    program_form = response_body['programData'][0]
+    expect(response_body['programDataForms'].length).to be 1
+    program_form = response_body['programDataForms'][0]
     expect(program_form['programCode']).to eq 'RAPID_TEST'
     expect(program_form['periodBegin']).to eq 1455984000000
     expect(program_form['periodEnd']).to eq 1458403200000
