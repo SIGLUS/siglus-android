@@ -46,6 +46,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     RapidTestReportRowAdapter adapter;
     private SignatureDialog signatureDialog;
+    private SimpleDialogFragment notifyDialog;
 
     @Override
     protected ScreenName getScreenName() {
@@ -149,21 +150,10 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     };
 
     public void showMessageNotifyDialog() {
-        final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                getString(R.string.msg_requisition_signature_message_notify_rapid_test), getString(R.string.btn_continue), null, "showMessageNotifyDialog");
+        notifyDialog = SimpleDialogFragment.newInstance(null,
+                getString(R.string.msg_requisition_signature_message_notify_rapid_test), null, getString(R.string.btn_continue), "showMessageNotifyDialog");
 
-        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
-            @Override
-            public void positiveClick(String tag) {
-                dialogFragment.dismiss();
-            }
-
-            @Override
-            public void negativeClick(String tag) {
-
-            }
-        });
-        dialogFragment.show(getFragmentManager(), "showMessageNotifyDialog");
+        notifyDialog.show(getFragmentManager(), "showMessageNotifyDialog");
     }
 
     private Action1<? super RapidTestReportViewModel> getSavedSubscriber() {
@@ -239,6 +229,9 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     protected void onPause() {
         if (signatureDialog != null) {
             signatureDialog.dismiss();
+        }
+        if (notifyDialog != null) {
+            notifyDialog.dismiss();
         }
         super.onPause();
     }
