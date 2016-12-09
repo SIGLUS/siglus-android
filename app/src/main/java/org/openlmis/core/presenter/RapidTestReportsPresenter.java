@@ -10,6 +10,7 @@ import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.roboguice.shaded.goole.common.base.Optional;
@@ -88,7 +89,7 @@ public class RapidTestReportsPresenter extends Presenter {
         Optional<ProgramDataForm> existingProgramDataForm = from(rapidTestForms).firstMatch(new Predicate<ProgramDataForm>() {
             @Override
             public boolean apply(ProgramDataForm programDataForm) {
-                return programDataForm.getPeriodBegin().getTime() == viewModel.getPeriod().getBegin().getMillis();
+                return DateUtil.formatDate(programDataForm.getPeriodBegin()).equals(DateUtil.formatDate(viewModel.getPeriod().getBegin().toDate()));
             }
         });
         if (existingProgramDataForm.isPresent()) {
