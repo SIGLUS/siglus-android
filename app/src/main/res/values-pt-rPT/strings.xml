@@ -25,7 +25,7 @@
     <string name="msg_fetching_products">Descarregando lista de produtos…</string>
     <string name="msg_sync_requisition_data">Sincronizando dados de requisição</string>
     <string name="msg_sync_requisition_failed">Descarregamento de dados de requisição a partir do servidor falhou, por favor entre novamente.</string>
-    <string name="msg_sync_stock_movement_failed">Descarregamento de movimentos de estoque a partir do servidor falhou, por favor entre novamente.</string>
+    <string name="msg_sync_stock_movement_failed">Falha no descarregamentp de dados de movimentos de estoque, faça o login novamente.</string>
     <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
     <string name="msg_download_archived_products_fail">Descarregamento de produtos arquivados a partir do servidor falhou, por favor entre novamente.</string>
     <string name="version_number"><![CDATA[Versão <b>%1$s</b>]]></string>
@@ -86,7 +86,7 @@
     <string name="label_issued_unit">Unidade de Saída</string>
     <string name="hint_error_input">Entrada inválida</string>
     <string name="btn_save">Guardar</string>
-    <string name="msg_back_confirm">Tem certeza que quer sair sem gravar suas alteraçães? Se você pressionar \'sim\', o seu rascunho será excluído</string>
+    <string name="msg_back_confirm">Tem certeza de que deseja encerrar sem guardar seu trabalho? Se você clicar em \"Sim\", o rascunho será excluído.</string>
     <string name="msg_regime_del_confirm">Tem a certeza que pretende remover este regime?</string>
     <string name="btn_positive">Sim</string>
     <string name="btn_negative">Não</string>
@@ -132,12 +132,14 @@
     <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
     <string name="btn_approve">Visto</string>
     <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
+    <string name="msg_rapid_test_submit_signature">Digite suas iniciais e em seguida, aprove as quantidades de testes rápidos.</string>
     <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
+    <string name="msg_approve_signature_rapid_test">Digite suas iniciais e em seguida, aprove o teste rápido</string>
     <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
     <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
     <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
     <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
-    <string name="msg_requisition_signature_message_notify_rapid_test">Please hand the device to the person responsible for approval and submission of Rapid Test</string>
+    <string name="msg_requisition_signature_message_notify_rapid_test">Por favor, entregue o dispositivo à pessoa responsável pela aprovação e envio do teste rápido</string>
     <string name="btn_continue">Continuar</string>
     <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
     <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$s</b> Fechados <i>%2$s</i>. São<b>%3$s</b> <i>%4$s</i> em cada kit.<br/>]]></string>
@@ -246,6 +248,7 @@
 .</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
+    <string name="label_fake_select_close_of_period"><![CDATA[Selecione um inventário da lista abaixo. A data de hoje é <b>%2$s</b>]]></string>
     <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]></string>
     <string name="label_completed_physical_inventory_message"><![CDATA[<b>Nenhuma %1$s Foi criado.</b>]]></string>
     <string name="btn_view_completed_physical_inventory">Criar %1$s</string>
@@ -369,23 +372,23 @@
     <string name="error_lot_already_exists">O lote já existe, por favor, adicione um novo.</string>
     <string name="msg_draft_saved">Rascunho gravado com sucesso</string>
     <string name="alert_soonest_expire">Seu movimento inclui um lote que não é o primeiro a expirar</string>
-    <string name="msg_export_data_success">Os dados foram exportados e gravados com sucesso <![CDATA[<b>%1$s</b>]]></string>
+    <string name="msg_export_data_success">Os dados foram exportados e gravados com sucesso para <![CDATA[<b>%1$s</b>]]></string>
     <string name="action_export_data">Exportar todos os dados de aplicativos</string>
     <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
     <string name="label_movement_detail">Detalhes do movimento</string>
     <string name="label_available_lots">Lotes disponíveis</string>
-    <string name="msg_unpack_kit_back_confirm">Todas as informações de produtos e de lotes inseridos até agora serão descartadas.</string>
+    <string name="msg_unpack_kit_back_confirm">Todas as informações de produtos e lotes inseridas até agora serão descartadas.</string>
     <string name="btn_discard">Descartar</string>
     <string name="msg_confirm_empty_lot_number">Você deixou o número do lote em branco. Deseja adicionar um novo lote ao <![CDATA[<b>%1$s</b>]]> utilizando um número de lote gerado automaticamente?</string>
     <string name="error_lot_without_number_already_exists">Um lote com um nome de lote gerado automaticamente e a mesma data de expiração já foi criado</string>
     <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
     <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE UM NÚMERO DE LOTE</string>
-    <string name="title_rapid_test_reports">Rapid Test Reports</string>
-    <string name="msg_report_missing">No rapid test report has been created</string>
-    <string name="btn_create_rapid_test_period">CREATE RAPID TEST REPORT</string>
-    <string name="title_rapid_test_form">Rapid Test Report</string>
-    <string name="title_rapid_test">Rapid Test</string>
-    <string name="msg_sync_rapid_tests_failed">Sync Rapid Tests failed.</string>
-    <string name="error_positive_larger_than_consumption">Positive number cannot be larger than Consumption number, please correct your inputs and continue.</string>
-    <string name="error_empty_rapid_test">Rapid test report cannot be empty.</string>
+    <string name="title_rapid_test_reports">Relatórios de testes rápidos</string>
+    <string name="msg_report_missing"><![CDATA[<b>Nenhum relatório de teste rápido foi criado </b>]]></string>
+    <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE TESTE RÁPIDO</string>
+    <string name="title_rapid_test_form">Relatório de testes rápido</string>
+    <string name="msg_sync_rapid_tests_failed">Falha na sincronização de testes rápidos.</string>
+    <string name="title_rapid_test">Teste Rápido</string>
+    <string name="error_positive_larger_than_consumption">O número de testes positivos não pode ser superior ao número de testes consumidos. Introduza os dados correctos</string>
+    <string name="error_empty_rapid_test">O relatório de teste rápido não pode estar vazio.</string>
 </resources>
