@@ -28,7 +28,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 @ContentView(R.layout.activity_rapid_test_report_form)
-public class RapidTestReportFormActivity extends BaseActivity implements SimpleDialogFragment.MsgDialogCallBack {
+public class RapidTestReportFormActivity extends BaseActivity implements SimpleDialogFragment.MsgDialogCallBack, RapidTestReportFormPresenter.RapidTestReportView {
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
 
@@ -56,7 +56,6 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        signatureDialog = null;
         long formId = getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
 
@@ -131,23 +130,26 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
-            Subscription subscription = presenter.sign(sign).subscribe(new Action1<RapidTestReportViewModel>() {
-                @Override
-                public void call(RapidTestReportViewModel viewModel) {
-                    if (viewModel.isAuthorized()) {
-                        onSaveForm();
-                    } else {
-                        showMessageNotifyDialog();
-                        presenter.saveForm();
-                        adapter.setEditable(false);
-                        adapter.notifyDataSetChanged();
-                        updateButtonName();
-                    }
-                }
-            });
-            subscriptions.add(subscription);
+            presenter.processSign(sign);
         }
     };
+
+    @Override
+    public void onFormSigned() {
+        if (presenter.getViewModel().isAuthorized()) {
+            onSaveForm();
+        } else {
+            showMessageNotifyDialog();
+            presenter.saveForm();
+            updateUIAfterSubmit();
+        }
+    }
+
+    public void updateUIAfterSubmit() {
+        adapter.setEditable(false);
+        adapter.notifyDataSetChanged();
+        updateButtonName();
+    }
 
     public void showMessageNotifyDialog() {
         notifyDialog = SimpleDialogFragment.newInstance(null,
@@ -227,9 +229,6 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
 
     @Override
     protected void onPause() {
-        if (signatureDialog != null) {
-            signatureDialog.dismiss();
-        }
         if (notifyDialog != null) {
             notifyDialog.dismiss();
         }

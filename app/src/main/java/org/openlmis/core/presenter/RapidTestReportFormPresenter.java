@@ -29,8 +29,11 @@ public class RapidTestReportFormPresenter extends Presenter {
     @Getter
     protected RapidTestReportViewModel viewModel;
 
+    RapidTestReportView view;
+
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
+        view = (RapidTestReportView) v;
     }
 
 
@@ -95,18 +98,16 @@ public class RapidTestReportFormPresenter extends Presenter {
         }
     }
 
-    public Observable<RapidTestReportViewModel> sign(final String signature) {
-        return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
-            @Override
-            public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
-                viewModel.setSignature(signature);
-                subscriber.onNext(viewModel);
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
-
     public boolean isSubmitted() {
         return viewModel.isSubmitted();
+    }
+
+    public void processSign(String signature) {
+        viewModel.setSignature(signature);
+        view.onFormSigned();
+    }
+
+    public interface RapidTestReportView extends BaseView {
+        void onFormSigned();
     }
 }
