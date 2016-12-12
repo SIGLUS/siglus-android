@@ -114,7 +114,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected void updateFormUI() {
+    public void updateFormUI() {
         if (rnRForm != null) {
             view.refreshRequisitionForm(rnRForm);
             view.setProcessButtonName(rnRForm.isDraft() ? R.string.btn_submit : R.string.btn_complete);

@@ -141,7 +141,11 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         }
 
         initUI();
-        presenter.loadData(formId, periodEndDate);
+        if (isSavedInstanceState && presenter.getRnRForm() != null) {
+            presenter.updateFormUI();
+        } else {
+            presenter.loadData(formId, periodEndDate);
+        }
     }
 
     protected void initUI() {
