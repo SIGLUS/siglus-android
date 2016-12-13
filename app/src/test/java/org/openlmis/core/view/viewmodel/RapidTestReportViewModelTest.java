@@ -8,6 +8,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.Signature;
+import org.openlmis.core.model.builder.ProgramDataColumnBuilder;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
@@ -84,15 +85,15 @@ public class RapidTestReportViewModelTest {
         rapidTestForm.setPeriodBegin(this.viewModel.getPeriod().getBegin().toDate());
         rapidTestForm.setPeriodEnd(this.viewModel.getPeriod().getEnd().toDate());
         this.viewModel.setRapidTestForm(rapidTestForm);
-        this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().add(new ProgramDataFormItem("name", "code", 100));
+        this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().add(new ProgramDataFormItem("name", new ProgramDataColumnBuilder().setCode("code").build(), 100));
 
         Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null);
         this.viewModel.convertFormViewModelToDataModel(program);
 
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().size(), is(2));
-        assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(0).getProgramDataColumnCode(), is("CONSUME_HIVDETERMINE"));
+        assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(0).getProgramDataColumn().getCode(), is("CONSUME_HIVDETERMINE"));
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(0).getForm(), is(viewModel.getRapidTestForm()));
-        assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(1).getProgramDataColumnCode(), is("POSITIVE_HIVDETERMINE"));
+        assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(1).getProgramDataColumn().getCode(), is("POSITIVE_HIVDETERMINE"));
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(1).getForm(), is(viewModel.getRapidTestForm()));
     }
 

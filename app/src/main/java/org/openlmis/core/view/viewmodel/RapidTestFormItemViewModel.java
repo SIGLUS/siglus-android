@@ -1,6 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
 
 import java.util.ArrayList;
@@ -31,11 +32,10 @@ public class RapidTestFormItemViewModel {
         }
     }
 
-    public void setColumnValue(String columnCode, int value) {
-        String[] columnNames = columnCode.split("_");
-        String quantityCategory = columnNames[0];
+    public void setColumnValue(ProgramDataColumn column, int value) {
+        String[] columnNames = column.getCode().split("_");
         String columnName = columnNames[1];
-        rapidTestFormGridViewModelMap.get(columnName).setValue(quantityCategory, value);
+        rapidTestFormGridViewModelMap.get(columnName).setValue(column, value);
     }
 
     public static final String CONSUME_HIVDETERMINE = "CONSUME_HIVDETERMINE";

@@ -63,7 +63,7 @@ public class RapidTestReportViewModel implements Serializable {
 
     private void setFormItemViewModels(List<ProgramDataFormItem> programDataFormItemList) {
         for (ProgramDataFormItem item : programDataFormItemList) {
-            itemViewModelMap.get(item.getName()).setColumnValue(item.getProgramDataColumnCode(), item.getValue());
+            itemViewModelMap.get(item.getName()).setColumnValue(item.getProgramDataColumn(), item.getValue());
         }
     }
 

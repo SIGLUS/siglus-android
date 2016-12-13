@@ -9,6 +9,7 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
@@ -25,6 +26,7 @@ public class ProgramDataFormRepository {
 
     private final GenericDao<ProgramDataForm> genericDao;
     private final GenericDao<ProgramDataFormItem> programDataFormItemGenericDao;
+    private final GenericDao<ProgramDataColumn> programDataColumnGenericDao;
     private final Context context;
 
     @Inject
@@ -38,6 +40,7 @@ public class ProgramDataFormRepository {
         this.context = context;
         genericDao = new GenericDao<>(ProgramDataForm.class, context);
         programDataFormItemGenericDao = new GenericDao<>(ProgramDataFormItem.class, context);
+        programDataColumnGenericDao = new GenericDao<>(ProgramDataColumn.class, context);
     }
 
     public void batchCreateOrUpdate(final ProgramDataForm form) throws SQLException {
@@ -83,8 +86,20 @@ public class ProgramDataFormRepository {
     private void saveFormItems(final ProgramDataForm form) throws LMISException {
         deleteFormItemsByFormId(form.getId());
         for (ProgramDataFormItem item : form.getProgramDataFormItemListWrapper()) {
+            if (item.getProgramDataColumn().getId() == 0) {
+                item.setProgramDataColumn(getProgramDataColumnByCode(item.getProgramDataColumn().getCode()));
+            }
             programDataFormItemGenericDao.create(item);
         }
+    }
+
+    public ProgramDataColumn getProgramDataColumnByCode(final String columnCode) throws LMISException {
+        return dbUtil.withDao(ProgramDataColumn.class, new DbUtil.Operation<ProgramDataColumn, ProgramDataColumn>() {
+            @Override
+            public ProgramDataColumn operate(Dao<ProgramDataColumn, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().eq("code", columnCode).queryForFirst();
+            }
+        });
     }
 
     private void deleteFormItemsByFormId(final long formId) throws LMISException {

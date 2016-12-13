@@ -1,7 +1,6 @@
 package org.openlmis.core.model;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -16,10 +15,8 @@ public class ProgramDataFormItem extends BaseModel {
     @DatabaseField
     private String name;
 
-    @Expose
-    @SerializedName("columnCode")
-    @DatabaseField(columnName = "program_data_column_code")
-    private String programDataColumnCode;
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private ProgramDataColumn programDataColumn;
 
     @Expose
     @DatabaseField
@@ -28,9 +25,9 @@ public class ProgramDataFormItem extends BaseModel {
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private ProgramDataForm form;
 
-    public ProgramDataFormItem(String name, String programDataColumnCode, int value) {
+    public ProgramDataFormItem(String name, ProgramDataColumn programDataColumn, int value) {
         this.name = name;
-        this.programDataColumnCode = programDataColumnCode;
+        this.programDataColumn = programDataColumn;
         this.value = value;
     }
 }

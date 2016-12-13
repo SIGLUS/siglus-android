@@ -16,6 +16,7 @@ import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.Signature;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.builder.ProgramDataColumnBuilder;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.network.adapter.ProgramDataFormAdapter;
@@ -66,7 +67,7 @@ public class ProgramDataFormAdapterTest {
         assertThat(programDataForm.getProgramDataFormItemListWrapper().size(), is(8));
         assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getForm(), is(programDataForm));
         assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getName(), is("PUB_PHARMACY"));
-        assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getProgramDataColumnCode(), is("HIV-DETERMINE-CONSUME"));
+        assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getProgramDataColumn().getCode(), is("HIV-DETERMINE-CONSUME"));
         assertThat(programDataForm.getProgramDataFormItemListWrapper().get(0).getValue(), is(10));
         assertThat(programDataForm.getSignaturesWrapper().get(0).getSignature(), is("mystique"));
         assertThat(programDataForm.getSignaturesWrapper().get(0).getType(), is(Signature.TYPE.SUBMITTER));
@@ -85,10 +86,10 @@ public class ProgramDataFormAdapterTest {
                 .setSignatures("mystique", Signature.TYPE.SUBMITTER)
                 .setSignatures("magneto", Signature.TYPE.APPROVER)
                 .setSynced(false).build();
-        ProgramDataFormItem programDataFormItem1 = new ProgramDataFormItem("PUBLIC_PHARMACY", "HIV-DETERMINE-CONSUME", 50);
-        ProgramDataFormItem programDataFormItem2 = new ProgramDataFormItem("PUBLIC_PHARMACY", "HIV-DETERMINE-POSITIVE", 20);
-        ProgramDataFormItem programDataFormItem3 = new ProgramDataFormItem("WARD", "HIV-UNIGOLD-CONSUME", 60);
-        ProgramDataFormItem programDataFormItem4 = new ProgramDataFormItem("WARD", "HIV-UNIGOLD-POSITIVE", 20);
+        ProgramDataFormItem programDataFormItem1 = new ProgramDataFormItem("PUBLIC_PHARMACY", new ProgramDataColumnBuilder().setCode("HIV-DETERMINE-CONSUME").build(), 50);
+        ProgramDataFormItem programDataFormItem2 = new ProgramDataFormItem("PUBLIC_PHARMACY", new ProgramDataColumnBuilder().setCode("HIV-DETERMINE-POSITIVE").build(), 20);
+        ProgramDataFormItem programDataFormItem3 = new ProgramDataFormItem("WARD", new ProgramDataColumnBuilder().setCode("HIV-UNIGOLD-CONSUME").build(), 60);
+        ProgramDataFormItem programDataFormItem4 = new ProgramDataFormItem("WARD",new ProgramDataColumnBuilder().setCode("HIV-UNIGOLD-POSITIVE").build(), 20);
         programDataForm.setProgramDataFormItemListWrapper(newArrayList(programDataFormItem1, programDataFormItem2, programDataFormItem3, programDataFormItem4));
 
         JsonElement jsonElement = programDataAdapter.serialize(programDataForm, null, null);

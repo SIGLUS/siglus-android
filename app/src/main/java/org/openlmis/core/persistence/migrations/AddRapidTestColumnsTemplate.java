@@ -14,7 +14,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
         String formatDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'HIV-DETERMINE-CONSUME', " +
+                "'CONSUME_HIVDETERMINE', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
@@ -23,7 +23,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
 
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'HIV-DETERMINE-POSITIVE', " +
+                "'POSITIVE_HIVDETERMINE', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
@@ -32,7 +32,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
 
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'HIV-UNIGOLD-CONSUME', " +
+                "'CONSUME_HIVUNIGOLD', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
@@ -41,7 +41,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
 
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'HIV-UNIGOLD-POSITIVE', " +
+                "'POSITIVE_HIVUNIGOLD', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
@@ -50,7 +50,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
 
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'SYPHILLIS-CONSUME', " +
+                "'CONSUME_SYPHYLLIS', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
@@ -59,7 +59,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
 
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'SYPHILLIS-POSITIVE', " +
+                "'POSITIVE_SYPHYLLIS', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
@@ -68,7 +68,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
 
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'MALARIA-CONSUME', " +
+                "'CONSUME_MALARIA', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
@@ -77,7 +77,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
 
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'MALARIA-POSITIVE', " +
+                "'POSITIVE_MALARIA', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +

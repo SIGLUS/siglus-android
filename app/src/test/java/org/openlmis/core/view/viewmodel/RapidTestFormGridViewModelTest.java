@@ -3,6 +3,7 @@ package org.openlmis.core.view.viewmodel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
 
 import java.util.List;
@@ -38,12 +39,19 @@ public class RapidTestFormGridViewModelTest {
     public void shouldConvertFormGridViewModelToDataModel() throws Exception {
         viewModel.setConsumptionValue("20");
         viewModel.setPositiveValue("1001");
+        ProgramDataColumn consumeColumn = new ProgramDataColumn();
+        consumeColumn.setCode("CONSUME_MALARIA");
+        viewModel.setConsumeColumn(consumeColumn);
+        ProgramDataColumn positiveColumn = new ProgramDataColumn();
+        positiveColumn.setCode("POSITIVE_MALARIA");
+        viewModel.setPositiveColumn(positiveColumn);
+
         List<ProgramDataFormItem> programDataFormItems = viewModel.convertFormGridViewModelToDataModel(RapidTestReportViewModel.ACC_EMERGENCY);
         assertThat(programDataFormItems.get(0).getName(), is(RapidTestReportViewModel.ACC_EMERGENCY));
-        assertThat(programDataFormItems.get(0).getProgramDataColumnCode(), is("CONSUME_MALARIA"));
+        assertThat(programDataFormItems.get(0).getProgramDataColumn().getCode(), is("CONSUME_MALARIA"));
         assertThat(programDataFormItems.get(0).getValue(), is(20));
         assertThat(programDataFormItems.get(1).getName(), is(RapidTestReportViewModel.ACC_EMERGENCY));
-        assertThat(programDataFormItems.get(1).getProgramDataColumnCode(), is("POSITIVE_MALARIA"));
+        assertThat(programDataFormItems.get(1).getProgramDataColumn().getCode(), is("POSITIVE_MALARIA"));
         assertThat(programDataFormItems.get(1).getValue(), is(1001));
     }
 }

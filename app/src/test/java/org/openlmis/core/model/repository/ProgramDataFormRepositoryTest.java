@@ -13,6 +13,7 @@ import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.Signature;
+import org.openlmis.core.model.builder.ProgramDataColumnBuilder;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -64,8 +65,8 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
                 .setSignatures("signature", ProgramDataFormSignature.TYPE.SUBMITTER)
                 .build();
 
-        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", "POSITIVE_COLUMN1", 1);
-        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", "CONSUME_COLUMN1", 9);
+        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", new ProgramDataColumnBuilder().setCode("POSITIVE_SYPHYLLIS").build(), 1);
+        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", new ProgramDataColumnBuilder().setCode("CONSUME_SYPHYLLIS").build(), 9);
         dataFormItem1.setForm(programDataForm1);
         dataFormItem2.setForm(programDataForm1);
         programDataForm1.getProgramDataFormItemListWrapper().add(dataFormItem1);
@@ -86,10 +87,10 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(programDataFormRetrieved.get(0).getPeriodBegin(), is(programDataForm1.getPeriodBegin()));
         assertThat(programDataFormRetrieved.get(0).getPeriodEnd(), is(programDataForm1.getPeriodEnd()));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(0).getName(), is("name1"));
-        assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(0).getProgramDataColumnCode(), is("POSITIVE_COLUMN1"));
+        assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(0).getProgramDataColumn().getCode(), is("POSITIVE_SYPHYLLIS"));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(0).getValue(), is(1));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getName(), is("name2"));
-        assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getProgramDataColumnCode(), is("CONSUME_COLUMN1"));
+        assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getProgramDataColumn().getCode(), is("CONSUME_SYPHYLLIS"));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getValue(), is(9));
         assertThat(programDataFormRetrieved.get(0).getSignaturesWrapper().get(0).getSignature(), is("signature"));
         assertThat(programDataFormRetrieved.get(0).getSignaturesWrapper().get(0).getType(), is(Signature.TYPE.SUBMITTER));
@@ -106,8 +107,8 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
         programDataForm1.setPeriodBegin(DateUtil.parseString("2015-09-30", DateUtil.DB_DATE_FORMAT));
         programDataForm1.getProgramDataFormItemListWrapper().clear();
 
-        ProgramDataFormItem dataFormItem3 = new ProgramDataFormItem("name3", "POSITIVE_COLUMN3", 100);
-        ProgramDataFormItem dataFormItem4 = new ProgramDataFormItem("name4", "CONSUME_COLUMN4", 900);
+        ProgramDataFormItem dataFormItem3 = new ProgramDataFormItem("name3", new ProgramDataColumnBuilder().setCode("POSITIVE_MALARIA").build(), 100);
+        ProgramDataFormItem dataFormItem4 = new ProgramDataFormItem("name4", new ProgramDataColumnBuilder().setCode("CONSUME_MALARIA").build(), 900);
         dataFormItem3.setForm(programDataForm1);
         dataFormItem4.setForm(programDataForm1);
 
@@ -120,10 +121,10 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(programDataFormRetrievedAfterRevision.get(0).getStatus(), is(ProgramDataForm.STATUS.AUTHORIZED));
         assertThat(programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().size(), is(2));
         assertThat(programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().get(0).getName(), is("name3"));
-        assertThat(programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().get(0).getProgramDataColumnCode(), is("POSITIVE_COLUMN3"));
+        assertThat(programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().get(0).getProgramDataColumn().getCode(), is("POSITIVE_MALARIA"));
         assertThat(programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().get(0).getValue(), is(100));
         assertThat(programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().get(1).getName(), is("name4"));
-        assertThat(programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().get(1).getProgramDataColumnCode(), is("CONSUME_COLUMN4"));
+        assertThat(programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().get(1).getProgramDataColumn().getCode(), is("CONSUME_MALARIA"));
         assertThat(programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().get(1).getValue(), is(900));
     }
 
@@ -161,8 +162,8 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
                 .setProgram(programRapidTest)
                 .build();
 
-        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", "POSITIVE_COLUMN1", 1);
-        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", "CONSUME_COLUMN1", 9);
+        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", new ProgramDataColumnBuilder().setCode("POSITIVE_HIVDETERMINE").build(), 1);
+        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", new ProgramDataColumnBuilder().setCode("CONSUME_HIVDETERMINE").build(), 9);
         dataFormItem1.setForm(programDataForm1);
         dataFormItem2.setForm(programDataForm1);
         programDataForm1.getProgramDataFormItemListWrapper().add(dataFormItem1);
@@ -174,10 +175,10 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
 
         assertEquals(2, programDataFormItemList.size());
         assertEquals("name1", programDataFormItemList.get(0).getName());
-        assertEquals("POSITIVE_COLUMN1", programDataFormItemList.get(0).getProgramDataColumnCode());
+        assertEquals("POSITIVE_HIVDETERMINE", programDataFormItemList.get(0).getProgramDataColumn().getCode());
         assertEquals(1, programDataFormItemList.get(0).getValue());
         assertEquals("name2", programDataFormItemList.get(1).getName());
-        assertEquals("CONSUME_COLUMN1", programDataFormItemList.get(1).getProgramDataColumnCode());
+        assertEquals("CONSUME_HIVDETERMINE", programDataFormItemList.get(1).getProgramDataColumn().getCode());
         assertEquals(9, programDataFormItemList.get(1).getValue());
     }
 
@@ -189,8 +190,8 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
                 .setProgram(programRapidTest)
                 .build();
 
-        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", "POSITIVE_COLUMN1", 1);
-        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", "CONSUME_COLUMN1", 9);
+        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", new ProgramDataColumnBuilder().setCode("POSITIVE_HIVDETERMINE").build(), 1);
+        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", new ProgramDataColumnBuilder().setCode("CONSUME_HIVDETERMINE").build(), 9);
         dataFormItem1.setForm(programDataForm1);
         dataFormItem2.setForm(programDataForm1);
         programDataForm1.getProgramDataFormItemListWrapper().add(dataFormItem1);

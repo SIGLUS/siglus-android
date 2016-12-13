@@ -6,7 +6,7 @@ public class CreateProgramDataItemsTable extends Migration {
     @Override
     public void up() {
         execSQL("CREATE TABLE `program_data_items` " +
-                "(`program_data_column_code` VARCHAR , " +
+                "(`programDataColumn_id` BIGINT NOT NULL, " +
                 "`form_id` BIGINT , " +
                 "`name` VARCHAR , " +
                 "`value` BIGINT , " +

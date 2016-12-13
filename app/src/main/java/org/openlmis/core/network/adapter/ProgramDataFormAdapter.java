@@ -37,6 +37,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
+import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.utils.DateUtil;
 
@@ -51,6 +52,9 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
     @Inject
     public ProgramRepository programRepository;
 
+    @Inject
+    public ProgramDataFormRepository programDataFormRepository;
+
     private final Gson gson;
     private final JsonParser jsonParser;
 
@@ -58,6 +62,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(Date.class, new DateAdapter()).setDateFormat(DateFormat.LONG)
+                .registerTypeAdapter(ProgramDataFormItem.class, new ProgramDataFormItemAdapter())
                 .create();
         jsonParser = new JsonParser();
     }
