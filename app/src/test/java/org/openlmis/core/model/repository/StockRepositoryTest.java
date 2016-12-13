@@ -62,15 +62,12 @@ import roboguice.RoboGuice;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
 import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
 import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
-import static org.openlmis.core.utils.DateUtil.SIMPLE_DATE_FORMAT;
-import static org.openlmis.core.utils.DateUtil.parseString;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -527,9 +524,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldDeleteDataOver13Months() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2016-08-11", DateUtil.DB_DATE_FORMAT).getTime());
         StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
 
-        StockMovementItem stockMovementItem = createMovementItem(MovementReasonManager.MovementType.POSITIVE_ADJUST, 100L, stockCard, new Date(), DateUtil.parseString("2015-06-01", DateUtil.DB_DATE_FORMAT), true);
+        StockMovementItem stockMovementItem = createMovementItem(MovementReasonManager.MovementType.POSITIVE_ADJUST, 100L, stockCard, new Date(), new Date(), true);
 
         Lot lot1 = new Lot();
         lot1.setProduct(product);
@@ -548,8 +546,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockCard stockCardQueried = stockRepository.queryStockCardById(stockCard.getId());
 
         assertEquals(1, stockCardQueried.getStockMovementItemsWrapper().size());
-        assertNotEquals(MovementReasonManager.MovementType.POSITIVE_ADJUST, stockCardQueried.getStockMovementItemsWrapper().get(0).getMovementType());
-        assertEquals(0, stockCardQueried.getStockMovementItemsWrapper().get(0).getLotMovementItemListWrapper().size());
+        assertEquals(MovementReasonManager.MovementType.POSITIVE_ADJUST, stockCardQueried.getStockMovementItemsWrapper().get(0).getMovementType());
+        assertEquals(1, stockCardQueried.getStockMovementItemsWrapper().get(0).getLotMovementItemListWrapper().size());
     }
 
     @Test
