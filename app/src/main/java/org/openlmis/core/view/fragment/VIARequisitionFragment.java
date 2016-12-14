@@ -21,13 +21,13 @@ package org.openlmis.core.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.inject.Inject;
 
@@ -45,6 +45,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
@@ -60,13 +61,7 @@ import roboguice.inject.InjectView;
 
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
 
-public class VIARequisitionFragment extends BaseFragment implements VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
-    @InjectView(R.id.btn_complete)
-    Button btnComplete;
-
-    @InjectView(R.id.btn_save)
-    View btnSave;
-
+public class VIARequisitionFragment extends BaseFragment implements VIARequisitionView, SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.view_consultation)
     ViaReportConsultationNumberView consultationView;
 
@@ -76,11 +71,11 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @InjectView(R.id.view_via_body)
     ViaRequisitionBodyView bodyView;
 
-    @InjectView(R.id.action_panel)
-    View actionPanel;
-
     @InjectView(R.id.vg_container)
     ViewGroup vgContainer;
+
+    @InjectView(R.id.action_panel)
+    ActionPanelView actionPanel;
 
     @Inject
     VIARequisitionPresenter presenter;
@@ -194,7 +189,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private void refreshNormalRnr(RnRForm rnRForm) {
         consultationView.refreshNormalRnrConsultationView(presenter);
-        btnSave.setVisibility(View.VISIBLE);
+        actionPanel.setNegativeButtonVisibility(View.VISIBLE);
         setTitleWithPeriod(rnRForm);
         setKitValues();
     }
@@ -216,7 +211,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
         getActivity().setTitle(getString(R.string.label_emergency_requisition_title,
                 DateUtil.formatDateWithoutYear(new Date(LMISApp.getInstance().getCurrentTimeMillis()))));
-        btnSave.setVisibility(View.GONE);
+        actionPanel.setNegativeButtonVisibility(View.GONE);
     }
 
     public void setTitleWithPeriod(RnRForm rnRForm) {
@@ -259,15 +254,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btn_save) {
-            onSaveBtnClick();
-        } else if (view.getId() == R.id.btn_complete) {
-            onProcessButtonClick();
-        }
-    }
-
-    @Override
     public void showListInputError(int index) {
         bodyView.showListInputError(index);
     }
@@ -279,23 +265,38 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void bindListeners() {
-        btnComplete.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
+        actionPanel.setListener(getOnCompleteClickListener(), getOnSaveClickListener());
         bodyView.setHideImmOnTouchListener();
     }
 
+    @NonNull
+    private View.OnClickListener getOnCompleteClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.processRequisition(consultationView.getValue());
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener getOnSaveClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.saveVIAForm(consultationView.getValue());
+            }
+        };
+    }
+
     @Override
-    public void setProcessButtonName(String name) {
-        btnComplete.setText(name);
+    public void setProcessButtonName(String buttonName) {
+        actionPanel.setPositiveButtonText(buttonName);
     }
 
     @Override
     public boolean validateConsultationNumber() {
         return consultationView.validate();
-    }
-
-    protected void onProcessButtonClick() {
-        presenter.processRequisition(consultationView.getValue());
     }
 
     @Override
@@ -332,10 +333,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void completeSuccess() {
         ToastUtil.showForLongTime(R.string.msg_requisition_submit_tip);
         finish();
-    }
-
-    private void onSaveBtnClick() {
-        presenter.saveVIAForm(consultationView.getValue());
     }
 
     private void finish() {

@@ -209,6 +209,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
         void showValidationAlert();
 
-        void setProcessButtonName(String text);
+        void setProcessButtonName(String buttonName);
     }
 }

@@ -57,7 +57,7 @@ import java.util.Date;
 
 import roboguice.inject.InjectView;
 
-public class MMIARequisitionFragment extends BaseFragment implements MMIARequisitionPresenter.MMIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
+public class MMIARequisitionFragment extends BaseFragment implements MMIARequisitionPresenter.MMIARequisitionView, SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.rnr_form_list)
     protected MMIARnrForm rnrFormList;
 
@@ -373,17 +373,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     @Override
-    public void setProcessButtonName(String text) {
-        actionPanel.setPositiveButtonText(text);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btn_save) {
-            presenter.saveMMIAForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-        } else if (view.getId() == R.id.btn_complete && regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
-            presenter.processRequisition(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-        }
+    public void setProcessButtonName(String buttonName) {
+        actionPanel.setPositiveButtonText(buttonName);
     }
 
     @Override
