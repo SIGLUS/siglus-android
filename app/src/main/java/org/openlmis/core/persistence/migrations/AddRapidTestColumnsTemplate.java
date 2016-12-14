@@ -50,7 +50,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
 
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'CONSUME_SYPHYLLIS', " +
+                "'CONSUME_SYPHILLIS', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
@@ -59,7 +59,7 @@ public class AddRapidTestColumnsTemplate extends Migration {
 
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
-                "'POSITIVE_SYPHYLLIS', " +
+                "'POSITIVE_SYPHILLIS', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +

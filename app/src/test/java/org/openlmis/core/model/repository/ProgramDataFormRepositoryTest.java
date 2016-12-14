@@ -65,8 +65,8 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
                 .setSignatures("signature", ProgramDataFormSignature.TYPE.SUBMITTER)
                 .build();
 
-        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", new ProgramDataColumnBuilder().setCode("POSITIVE_SYPHYLLIS").build(), 1);
-        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", new ProgramDataColumnBuilder().setCode("CONSUME_SYPHYLLIS").build(), 9);
+        ProgramDataFormItem dataFormItem1 = new ProgramDataFormItem("name1", new ProgramDataColumnBuilder().setCode("POSITIVE_SYPHILLIS").build(), 1);
+        ProgramDataFormItem dataFormItem2 = new ProgramDataFormItem("name2", new ProgramDataColumnBuilder().setCode("CONSUME_SYPHILLIS").build(), 9);
         dataFormItem1.setForm(programDataForm1);
         dataFormItem2.setForm(programDataForm1);
         programDataForm1.getProgramDataFormItemListWrapper().add(dataFormItem1);
@@ -87,10 +87,10 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(programDataFormRetrieved.get(0).getPeriodBegin(), is(programDataForm1.getPeriodBegin()));
         assertThat(programDataFormRetrieved.get(0).getPeriodEnd(), is(programDataForm1.getPeriodEnd()));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(0).getName(), is("name1"));
-        assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(0).getProgramDataColumn().getCode(), is("POSITIVE_SYPHYLLIS"));
+        assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(0).getProgramDataColumn().getCode(), is("POSITIVE_SYPHILLIS"));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(0).getValue(), is(1));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getName(), is("name2"));
-        assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getProgramDataColumn().getCode(), is("CONSUME_SYPHYLLIS"));
+        assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getProgramDataColumn().getCode(), is("CONSUME_SYPHILLIS"));
         assertThat(programDataFormRetrieved.get(0).getProgramDataFormItemListWrapper().get(1).getValue(), is(9));
         assertThat(programDataFormRetrieved.get(0).getSignaturesWrapper().get(0).getSignature(), is("signature"));
         assertThat(programDataFormRetrieved.get(0).getSignaturesWrapper().get(0).getType(), is(Signature.TYPE.SUBMITTER));
