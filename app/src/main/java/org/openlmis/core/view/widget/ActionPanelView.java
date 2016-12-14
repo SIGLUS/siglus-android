@@ -38,7 +38,7 @@ public class ActionPanelView extends FrameLayout {
         btnSave.setOnClickListener(negativeClickListener);
     }
 
-    public void setPositiveButtonText(int resId) {
-        btnComplete.setText(resId);
+    public void setPositiveButtonText(String text) {
+        btnComplete.setText(text);
     }
 }

@@ -373,8 +373,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     @Override
-    public void setProcessButtonName(int resId) {
-        actionPanel.setPositiveButtonText(resId);
+    public void setProcessButtonName(String text) {
+        actionPanel.setPositiveButtonText(text);
     }
 
     @Override
