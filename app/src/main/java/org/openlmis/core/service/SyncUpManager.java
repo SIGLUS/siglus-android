@@ -331,6 +331,17 @@ public class SyncUpManager {
         }
     }
 
+    private boolean submitProgramDataForm(ProgramDataForm programDataForm) {
+        try {
+            lmisRestApi.syncUpProgramDataForm(programDataForm);
+            Log.d(TAG, "===> SyncRapidTests: Rapid Tests synced...");
+            return true;
+        } catch (LMISException e) {
+            e.reportToFabric();
+            return false;
+        }
+    }
+
     private List<StockMovementEntry> convertStockMovementItemsToStockMovementEntriesForSync(final String facilityId, List<StockMovementItem> stockMovementItems) {
 
         return FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
@@ -364,30 +375,37 @@ public class SyncUpManager {
     }
 
     public void syncRapidTestForms() {
+        List<ProgramDataForm> forms;
         try {
-            Observable.from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).filter(new Func1<ProgramDataForm, Boolean>() {
+            Log.d(TAG, "===> Preparing RapidTestForms for Syncing");
+            forms = FluentIterable.from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).filter(new Predicate<ProgramDataForm>() {
                 @Override
-                public Boolean call(ProgramDataForm programDataForm) {
-                    try {
-                        lmisRestApi.syncUpProgramDataForm(programDataForm);
-                        return true;
-                    } catch (LMISException e) {
-                        e.reportToFabric();
-                        return false;
-                    }
+                public boolean apply(ProgramDataForm programDataForm) {
+                    return !programDataForm.isSynced() && programDataForm.getStatus().equals(ProgramDataForm.STATUS.AUTHORIZED);
                 }
-            }).subscribe(new Action1<ProgramDataForm>() {
-                @Override
-                public void call(ProgramDataForm programDataForm) {
-                    markProgramDataFormsSynced(programDataForm);
-                }
-            });
+            }).toList();
 
-            Log.d(TAG, "===> SyncRapidTests: Rapid Tests synced...");
+            Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");
 
+            if (forms.size() == 0) {
+                return;
+            }
         } catch (LMISException e) {
             e.reportToFabric();
+            return;
         }
+
+        Observable.from(forms).filter(new Func1<ProgramDataForm, Boolean>() {
+            @Override
+            public Boolean call(ProgramDataForm programDataForm) {
+                return submitProgramDataForm(programDataForm);
+            }
+        }).subscribe(new Action1<ProgramDataForm>() {
+            @Override
+            public void call(ProgramDataForm programDataForm) {
+                markProgramDataFormsSynced(programDataForm);
+            }
+        });
     }
 
     private void markProgramDataFormsSynced(ProgramDataForm programDataForm) {

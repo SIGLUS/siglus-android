@@ -266,11 +266,18 @@ public class SyncUpManagerTest {
 
     @Test
     public void shouldSyncUpRapidTestsData() throws Exception {
-        ProgramDataForm rapidTest = new ProgramDataFormBuilder().build();
+        ProgramDataForm rapidTest1 = new ProgramDataFormBuilder().build();
+        rapidTest1.setSynced(false);
+        rapidTest1.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+        ProgramDataForm rapidTest2 = new ProgramDataFormBuilder().build();
+        rapidTest2.setSynced(true);
+        rapidTest2.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+
         syncUpManager.programDataFormRepository = mockedProgramDataFormRepository;
-        when(mockedProgramDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).thenReturn(newArrayList(rapidTest));
+        when(mockedProgramDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).thenReturn(newArrayList(rapidTest1,rapidTest2));
         syncUpManager.syncRapidTestForms();
-        verify(mockedLmisRestApi).syncUpProgramDataForm(rapidTest);
+
+        verify(mockedLmisRestApi).syncUpProgramDataForm(rapidTest1);
     }
 
     @Test
