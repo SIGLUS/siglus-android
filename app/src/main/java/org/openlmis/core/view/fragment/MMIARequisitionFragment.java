@@ -66,9 +66,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @InjectView(R.id.mmia_info_list)
     protected MMIAInfoList mmiaInfoListView;
 
-    @InjectView(R.id.btn_complete)
-    protected Button btnComplete;
-
     @InjectView(R.id.tv_regime_total)
     protected TextView tvRegimeTotal;
 
@@ -78,14 +75,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @InjectView(R.id.scrollview)
     protected ScrollView scrollView;
 
-    @InjectView(R.id.btn_save)
-    protected View btnSave;
-
     @InjectView(R.id.tv_total_mismatch)
     protected TextView tvMismatch;
-
-    @InjectView(R.id.action_panel)
-    protected View bottomView;
 
     @InjectView(R.id.mmia_rnr_items_header_freeze)
     protected ViewGroup rnrItemsHeaderFreeze;
@@ -95,6 +86,15 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     @InjectView(R.id.mmia_rnr_items_header_freeze_right)
     protected ViewGroup rnrItemsHeaderFreezeRight;
+
+    @InjectView(R.id.btn_save)
+    protected View btnSave;
+
+    @InjectView(R.id.btn_complete)
+    protected Button btnComplete;
+
+    @InjectView(R.id.action_panel)
+    protected View bottomView;
 
     @Inject
     MMIARequisitionPresenter presenter;

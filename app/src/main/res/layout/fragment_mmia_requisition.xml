@@ -110,7 +110,7 @@
 
             <include
                 android:id="@+id/action_panel"
-                layout="@layout/layout_form_action" />
+                layout="@layout/view_action_panel" />
         </LinearLayout>
     </ScrollView>
 

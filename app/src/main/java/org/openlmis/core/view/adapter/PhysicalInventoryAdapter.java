@@ -68,7 +68,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
 
     @Override
     protected RecyclerView.ViewHolder onCreateFooterView(ViewGroup parent) {
-        VHFooter vhFooter = new VHFooter(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_form_action, parent, false));
+        VHFooter vhFooter = new VHFooter(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_action_panel, parent, false));
         vhFooter.itemView.findViewById(R.id.btn_save).setOnClickListener(saveClickListener);
         vhFooter.itemView.findViewById(R.id.btn_complete).setOnClickListener(completeClickListener);
         return vhFooter;
