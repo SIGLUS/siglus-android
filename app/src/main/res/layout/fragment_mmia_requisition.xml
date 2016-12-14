@@ -108,9 +108,10 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <include
+            <org.openlmis.core.view.widget.ActionPanelView
                 android:id="@+id/action_panel"
-                layout="@layout/view_action_panel" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
     </ScrollView>
 

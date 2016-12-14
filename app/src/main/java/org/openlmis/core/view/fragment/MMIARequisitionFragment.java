@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -28,7 +29,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -46,6 +46,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
+import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
@@ -87,14 +88,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @InjectView(R.id.mmia_rnr_items_header_freeze_right)
     protected ViewGroup rnrItemsHeaderFreezeRight;
 
-    @InjectView(R.id.btn_save)
-    protected View btnSave;
-
-    @InjectView(R.id.btn_complete)
-    protected Button btnComplete;
-
     @InjectView(R.id.action_panel)
-    protected View bottomView;
+    protected ActionPanelView actionPanel;
 
     @Inject
     MMIARequisitionPresenter presenter;
@@ -152,11 +147,11 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         scrollView.setVisibility(View.INVISIBLE);
         if (isHistoryForm()) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            bottomView.setVisibility(View.GONE);
+            actionPanel.setVisibility(View.GONE);
             etComment.setEnabled(false);
         } else {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-            bottomView.setVisibility(View.VISIBLE);
+            actionPanel.setVisibility(View.VISIBLE);
             etComment.setEnabled(true);
         }
         disableFreezeHeaderScroll();
@@ -241,8 +236,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             }
         });
 
-        btnSave.setOnClickListener(this);
-        btnComplete.setOnClickListener(this);
+        actionPanel.setListener(getOnCompleteListener(),getOnSaveListener());
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -253,6 +247,28 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         });
 
         bindFreezeHeaderListener();
+    }
+
+    @NonNull
+    private View.OnClickListener getOnSaveListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.saveMMIAForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener getOnCompleteListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
+                    presenter.processRequisition(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+                }
+            }
+        };
     }
 
     private void bindFreezeHeaderListener() {
@@ -358,7 +374,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     @Override
     public void setProcessButtonName(int resId) {
-        btnComplete.setText(resId);
+        actionPanel.setPositiveButtonText(resId);
     }
 
     @Override
