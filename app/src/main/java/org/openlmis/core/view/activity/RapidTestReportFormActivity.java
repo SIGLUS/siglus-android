@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
@@ -20,6 +19,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
+import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SignatureDialog;
 
 import roboguice.inject.ContentView;
@@ -32,14 +32,8 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
 
-    @InjectView(R.id.btn_complete)
-    Button btnComplete;
-
-    @InjectView(R.id.btn_save)
-    View btnSave;
-
     @InjectView(R.id.action_panel)
-    View actionPanel;
+    ActionPanelView actionPanelView;
 
     @InjectPresenter(RapidTestReportFormPresenter.class)
     RapidTestReportFormPresenter presenter;
@@ -81,9 +75,24 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     private void setUpButtonPanel() {
-        actionPanel.setVisibility(presenter.getViewModel().getStatus().isEditable() ? View.VISIBLE : View.GONE);
+        actionPanelView.setVisibility(presenter.getViewModel().getStatus().isEditable() ? View.VISIBLE : View.GONE);
         updateButtonName();
-        btnComplete.setOnClickListener(new View.OnClickListener() {
+        actionPanelView.setListener(getOnCompleteClickListener(), getOnSaveClickListener());
+    }
+
+    @NonNull
+    private View.OnClickListener getOnSaveClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSaveForm();
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener getOnCompleteClickListener() {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (presenter.getViewModel().isFormEmpty()) {
@@ -94,14 +103,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
                     showSignDialog();
                 }
             }
-        });
-
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSaveForm();
-            }
-        });
+        };
     }
 
     public void onSaveForm() {
@@ -111,11 +113,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     private void updateButtonName() {
-        if (presenter.getViewModel().isDraft()) {
-            btnComplete.setText(getResources().getString(R.string.btn_submit));
-        } else {
-            btnComplete.setText(getResources().getString(R.string.btn_complete));
-        }
+        actionPanelView.setPositiveButtonText(presenter.getViewModel().isDraft() ? getResources().getString(R.string.btn_submit) : getResources().getString(R.string.btn_complete));
     }
 
     private void showSignDialog() {

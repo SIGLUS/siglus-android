@@ -228,9 +228,8 @@
         android:background="@drawable/border_top_black_right_black_bold"
         android:overScrollMode="never" />
 
-    <include
+    <org.openlmis.core.view.widget.ActionPanelView
         android:id="@+id/action_panel"
-        layout="@layout/view_action_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
