@@ -126,48 +126,6 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         return rnrFormRepository.initNormalRnrForm(periodEndDate);
     }
 
-    protected void saveRequisition() {
-        view.loading();
-        Subscription saveSubscription = getSaveFormObservable().subscribe(getSaveFormSubscriber());
-        subscriptions.add(saveSubscription);
-    }
-
-    protected Observable<Void> getSaveFormObservable() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    protected Subscriber<Void> getSaveFormSubscriber() {
-        return new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-                view.loaded();
-                view.saveSuccess();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.loaded();
-                ToastUtil.show(getSaveErrorMessage());
-            }
-
-            @Override
-            public void onNext(Void o) {
-
-            }
-        };
-    }
-
     protected void submitRequisition(final RnRForm rnRForm) {
         view.loading();
         Subscription submitSubscription = createOrUpdateRnrForm(rnRForm).subscribe(getSubmitRequisitionSubscriber());
@@ -291,8 +249,6 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected abstract Observable<RnRForm> getRnrFormObservable(long formId);
 
-    protected abstract int getSaveErrorMessage();
-
     protected abstract int getCompleteErrorMessage();
 
     public boolean isFormProductEditable() {
@@ -310,7 +266,5 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         void completeSuccess();
 
         void showMessageNotifyDialog();
-
-        void saveSuccess();
     }
 }

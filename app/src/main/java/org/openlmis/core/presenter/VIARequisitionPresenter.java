@@ -220,11 +220,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected int getSaveErrorMessage() {
-        return R.string.hint_save_requisition_failed;
-    }
-
-    @Override
     protected int getCompleteErrorMessage() {
         return R.string.hint_requisition_complete_failed;
     }

@@ -104,11 +104,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected int getSaveErrorMessage() {
-        return R.string.hint_save_mmia_failed;
-    }
-
-    @Override
     protected int getCompleteErrorMessage() {
         return R.string.hint_mmia_complete_failed;
     }
@@ -141,13 +136,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     private boolean validateTotalsMatch(RnRForm form) {
         return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
-    }
-
-    public void saveMMIAForm(List<RegimenItem> regimenItemList, List<BaseInfoItem> baseInfoItemList, String comments) {
-        rnRForm.setRegimenItemListWrapper(regimenItemList);
-        rnRForm.setBaseInfoItemListWrapper(baseInfoItemList);
-        rnRForm.setComments(comments);
-        saveRequisition();
     }
 
     public void setComments(String comments) {
@@ -201,6 +189,24 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onError(e);
                 }
                 subscriber.onCompleted();
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Void> getSaveFormObservable(final List<RegimenItem> regimenItems, final List<BaseInfoItem> baseInfoItems, final String comment) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    rnRForm.setRegimenItemListWrapper(regimenItems);
+                    rnRForm.setBaseInfoItemListWrapper(baseInfoItems);
+                    rnRForm.setComments(comment);
+                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }

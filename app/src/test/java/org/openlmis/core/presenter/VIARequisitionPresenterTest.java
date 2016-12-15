@@ -65,11 +65,9 @@ import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
-import rx.Observer;
 import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.util.Lists.newArrayList;
@@ -286,36 +284,6 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldSaveRnRFrom() throws Exception {
-        TestSubscriber<Void> subscriber = new TestSubscriber<>();
-        presenter.getSaveFormObservable().subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        verify(mockRnrFormRepository).createOrUpdateWithItems(presenter.getRnRForm());
-    }
-
-    @Test
-    public void shouldGoToHomePageAfterSaveRequisitionComplete() {
-        Observer<Void> subscriber = presenter.getSaveFormSubscriber();
-
-        subscriber.onCompleted();
-
-        subscriber.onNext(null);
-        verify(VIARequisitionFragment).loaded();
-        verify(VIARequisitionFragment).saveSuccess();
-    }
-
-    @Test
-    public void shouldGoToHomePageAfterSaveRequisitionCompleteOnError() {
-        Observer<Void> subscriber = presenter.getSaveFormSubscriber();
-
-        subscriber.onError(new Throwable("msg"));
-        verify(VIARequisitionFragment).loaded();
-
-        assertNotNull(ShadowToast.getLatestToast());
-    }
-
-    @Test
     public void shouldNotGetConsultantNumberWhenRnRFormIsNullOrInfoItemsIsNull() {
         presenter.rnRForm = null;
         assertNull(presenter.getConsultationNumbers());
@@ -412,7 +380,7 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldIncludeKitItemsWhenSaving() throws Exception {
+    public void shouldSaveForm() throws Exception {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
         presenter.rnRForm = rnRForm;

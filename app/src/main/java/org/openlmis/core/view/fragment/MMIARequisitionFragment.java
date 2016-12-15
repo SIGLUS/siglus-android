@@ -56,6 +56,8 @@ import org.openlmis.core.view.widget.SignatureDialog;
 import java.util.Date;
 
 import roboguice.inject.InjectView;
+import rx.Subscriber;
+import rx.Subscription;
 
 public class MMIARequisitionFragment extends BaseFragment implements MMIARequisitionPresenter.MMIARequisitionView, SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.rnr_form_list)
@@ -236,7 +238,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             }
         });
 
-        actionPanel.setListener(getOnCompleteListener(),getOnSaveListener());
+        actionPanel.setListener(getOnCompleteListener(), getOnSaveListener());
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -254,7 +256,32 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.saveMMIAForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+                loading();
+                Subscription subscription = presenter.getSaveFormObservable(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString())
+                        .subscribe(getOnSavedSubscriber());
+                subscriptions.add(subscription);
+            }
+        };
+    }
+
+    @NonNull
+    public Subscriber<Void> getOnSavedSubscriber() {
+        return new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                loaded();
+                finish();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                loaded();
+                ToastUtil.show(getString(R.string.hint_save_mmia_failed));
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
             }
         };
     }
@@ -380,11 +407,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void completeSuccess() {
         ToastUtil.showForLongTime(R.string.msg_mmia_submit_tip);
-        finish();
-    }
-
-    @Override
-    public void saveSuccess() {
         finish();
     }
 

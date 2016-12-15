@@ -299,7 +299,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             @Override
             public void onCompleted() {
                 loaded();
-                saveSuccess();
+                finish();
             }
 
             @Override
@@ -347,11 +347,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
                 getString(R.string.msg_requisition_signature_message_notify_via), getString(R.string.btn_continue), null, TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
 
         dialogFragment.show(getActivity().getFragmentManager(), TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
-    }
-
-    @Override
-    public void saveSuccess() {
-        finish();
     }
 
     @Override
