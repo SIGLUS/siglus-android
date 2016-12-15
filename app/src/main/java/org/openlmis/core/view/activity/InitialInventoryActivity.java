@@ -37,10 +37,13 @@ public class InitialInventoryActivity extends InventoryActivity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnDone.setEnabled(false);
                 if (validateInventory()) {
                     loading();
                     Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
                     subscriptions.add(subscription);
+                } else {
+                    btnDone.setEnabled(true);
                 }
             }
         });
