@@ -200,9 +200,10 @@ public class VIARequisitionPresenterTest {
     public void shouldSubmitAfterSignedAndStatusIsDraft() throws LMISException {
         //given
         RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.DRAFT);
+        presenter.rnRForm = form;
 
         //when
-        presenter.processSign("userSignature", form);
+        presenter.processSign("userSignature");
         waitObservableToExecute();
 
         //then
@@ -214,9 +215,10 @@ public class VIARequisitionPresenterTest {
     public void shouldCompleteAfterSignedAndStatusIsSubmit() throws LMISException {
         //given
         RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.SUBMITTED);
-
+        presenter.rnRForm = form;
         //when
-        presenter.processSign("userSignature", form);
+
+        presenter.processSign("userSignature");
         waitObservableToExecute();
 
         //then
@@ -532,12 +534,13 @@ public class VIARequisitionPresenterTest {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.DRAFT);
         rnRForm.setEmergency(true);
+        presenter.rnRForm = rnRForm;
 
-        presenter.processSign("sign", rnRForm);
+        presenter.processSign("sign");
         verify(presenter).updateUIAfterSubmit();
 
         reset(presenter);
-        presenter.processSign("sign", rnRForm);
+        presenter.processSign("sign");
         verify(presenter, never()).updateUIAfterSubmit();
     }
 
@@ -545,8 +548,9 @@ public class VIARequisitionPresenterTest {
     public void shouldCreateAndUpdateRnrFormWhenAuthoriseEmergencyViaForm() throws Exception {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setEmergency(true);
+        presenter.rnRForm = rnRForm;
         TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-        presenter.createOrUpdateRnrForm(rnRForm).subscribe(testSubscriber);
+        presenter.createOrUpdateRnrForm().subscribe(testSubscriber);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
@@ -556,9 +560,10 @@ public class VIARequisitionPresenterTest {
     @Test
     public void shouldNotCreateAndUpdateRnrFormWhenAuthoriseNormalViaForm() throws Exception {
         RnRForm rnRForm = new RnRForm();
+        presenter.rnRForm = rnRForm;
         rnRForm.setEmergency(false);
         TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-        presenter.createOrUpdateRnrForm(rnRForm).subscribe(testSubscriber);
+        presenter.createOrUpdateRnrForm().subscribe(testSubscriber);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
@@ -571,13 +576,14 @@ public class VIARequisitionPresenterTest {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
         rnRForm.setRnrFormItemListWrapper(newArrayList(createRnrFormItem(1)));
+        presenter.rnRForm = rnRForm;
 
         RnrFormItem item1 = createRnrFormItem(2);
         RnrFormItem item2 = createRnrFormItem(3);
         RnrFormItem item3 = createRnrFormItem(4);
         when(mockRnrFormItemRepository.listAllNewRnrItems()).thenReturn(newArrayList(item1, item2, item3));
 
-        presenter.createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(rnRForm);
+        presenter.createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems();
 
         ArgumentCaptor<StockCard> captor = ArgumentCaptor.forClass(StockCard.class);
         verify(mockStockRepository, times(3)).createOrUpdateStockCardWithStockMovement(captor.capture());

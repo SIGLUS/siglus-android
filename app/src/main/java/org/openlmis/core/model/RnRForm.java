@@ -31,7 +31,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,6 +41,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Getter
 @Setter
@@ -179,37 +179,36 @@ public class RnRForm extends BaseModel {
         rnrFormItemListWrapper = ListUtil.wrapOrEmpty(rnrFormItemList, rnrFormItemListWrapper);
 
         if (isAuthorized()) {
-            return sortRnrItemsListBasedOnProductCode(rnrFormItemListWrapper);
-
+            sortRnrItemsListBasedOnProductCode(rnrFormItemListWrapper);
+            return rnrFormItemListWrapper;
         } else {
             return sortProductList(rnrFormItemListWrapper);
         }
     }
 
     private List<RnrFormItem> sortProductList(List<RnrFormItem> rnrFormItems) {
-        List<RnrFormItem> existingList = from(rnrFormItems).filter(new Predicate<RnrFormItem>() {
+        List<RnrFormItem> existingList = newArrayList(from(rnrFormItems).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
                 return !rnrFormItem.isManualAdd();
             }
-        }).toList();
+        }).toList());
 
-        List<RnrFormItem> newlyAddedList = from(rnrFormItems).filter(new Predicate<RnrFormItem>() {
+        List<RnrFormItem> newlyAddedList = newArrayList(from(rnrFormItems).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
                 return rnrFormItem.isManualAdd();
             }
-        }).toList();
-        existingList = sortRnrItemsListBasedOnProductCode(existingList);
-        newlyAddedList = sortRnrItemsListBasedOnProductCode(newlyAddedList);
+        }).toList());
+        sortRnrItemsListBasedOnProductCode(existingList);
+        sortRnrItemsListBasedOnProductCode(newlyAddedList);
         rnrFormItems = existingList;
         rnrFormItems.addAll(newlyAddedList);
         return rnrFormItems;
     }
 
-    private List<RnrFormItem> sortRnrItemsListBasedOnProductCode(List<RnrFormItem> rnrFormItems) {
-        List<RnrFormItem> sortedList = new ArrayList<>(rnrFormItems);
-        Collections.sort(sortedList, new Comparator<RnrFormItem>() {
+    private void sortRnrItemsListBasedOnProductCode(List<RnrFormItem> rnrFormItems) {
+        Collections.sort(rnrFormItems, new Comparator<RnrFormItem>() {
             @Override
             public int compare(RnrFormItem r1, RnrFormItem r2) {
                 if (r1.getProduct() != null && r2.getProduct() != null) {
@@ -221,7 +220,6 @@ public class RnRForm extends BaseModel {
                 }
             }
         });
-        return sortedList;
     }
 
     public List<BaseInfoItem> getBaseInfoItemListWrapper() {

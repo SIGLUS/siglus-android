@@ -324,27 +324,26 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected void submitRequisition(RnRForm rnRForm) {
+    protected void submitRequisition() {
         if (rnRForm.isEmergency()) {
             updateUIAfterSubmit();
             return;
         }
-        super.submitRequisition(rnRForm);
+        super.submitRequisition();
     }
 
-    public void processRequisition(String consultationNumbers) {
+    public boolean processRequisition(String consultationNumbers) {
         if (!validateForm()) {
-            return;
+            return false;
         }
 
-        if (!rnrFormRepository.isPeriodUnique(rnRForm)) {
+        if (!validateFormPeriod()) {
             ToastUtil.show(R.string.msg_requisition_not_unique);
-            return;
+            return false;
         }
 
         dataViewToModel(consultationNumbers);
-
-        view.showSignDialog(rnRForm.isDraft());
+        return true;
     }
 
     private void dataViewToModel(String consultationNumbers) {
@@ -399,7 +398,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected Observable<Void> createOrUpdateRnrForm(final RnRForm rnRForm) {
+    protected Observable<Void> createOrUpdateRnrForm() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
@@ -417,10 +416,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    protected void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(RnRForm form) {
+    @Override
+    protected void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems() {
         try {
-            List<RnrFormItem> rnrFormItems = new ArrayList<>();
-            rnrFormItems.addAll(form.getRnrFormItemListWrapper());
             for (RnrFormItem rnrFormItem : rnrFormItemRepository.listAllNewRnrItems()) {
                 if (rnrFormItem.getProduct().isArchived()) {
                     rnrFormItem.getProduct().setArchived(false);
@@ -430,10 +428,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     newStockCard.setProduct(rnrFormItem.getProduct());
                     stockRepository.createOrUpdateStockCardWithStockMovement(newStockCard);
                 }
-                rnrFormItem.setForm(form);
-                rnrFormItems.add(rnrFormItem);
+                rnrFormItem.setForm(rnRForm);
+                rnRForm.getRnrFormItemListWrapper().add(rnrFormItem);
             }
-            form.setRnrFormItemListWrapper(rnrFormItems);
         } catch (LMISException e) {
             e.reportToFabric();
         }

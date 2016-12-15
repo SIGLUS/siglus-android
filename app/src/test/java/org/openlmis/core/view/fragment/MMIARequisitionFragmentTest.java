@@ -351,7 +351,8 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldShowSubmitSignatureDialog() {
-        mmiaRequisitionFragment.showSignDialog(true);
+        when(mmiaFormPresenter.isDraft()).thenReturn(true);
+        mmiaRequisitionFragment.showSignDialog();
 
         DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
 
@@ -367,7 +368,9 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldShowApproveSignatureDialog() {
-        mmiaRequisitionFragment.showSignDialog(false);
+        when(mmiaFormPresenter.isDraft()).thenReturn(false);
+
+        mmiaRequisitionFragment.showSignDialog();
 
         DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
 

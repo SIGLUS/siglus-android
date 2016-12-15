@@ -31,7 +31,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
 import java.util.Date;
@@ -77,11 +76,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(RnRForm rnRForm) {
-        //do nothing
-    }
-
-    @Override
     public void updateUIAfterSubmit() {
         view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
     }
@@ -116,22 +110,14 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public void processRequisition(List<RegimenItem> regimenItemList, List<BaseInfoItem> baseInfoItemList, String comments) {
+    public boolean validateForm() {
+        return validateTotalsMatch(rnRForm) || rnRForm.getComments().length() >= 5;
+    }
+
+    public void setViewModels(List<RegimenItem> regimenItemList, List<BaseInfoItem> baseInfoItemList, String comments) {
         rnRForm.setRegimenItemListWrapper(regimenItemList);
         rnRForm.setBaseInfoItemListWrapper(baseInfoItemList);
         rnRForm.setComments(comments);
-
-        if (!validateTotalsMatch(rnRForm) && comments.length() < 5) {
-            view.showValidationAlert();
-            return;
-        }
-
-        if (!rnrFormRepository.isPeriodUnique(rnRForm)) {
-            ToastUtil.show(R.string.msg_requisition_not_unique);
-            return;
-        }
-
-        view.showSignDialog(rnRForm.isDraft());
     }
 
     private boolean validateTotalsMatch(RnRForm form) {
@@ -198,9 +184,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    rnRForm.setRegimenItemListWrapper(regimenItems);
-                    rnRForm.setBaseInfoItemListWrapper(baseInfoItems);
-                    rnRForm.setComments(comment);
+                    setViewModels(regimenItems, baseInfoItems, comment);
                     rnrFormRepository.createOrUpdateWithItems(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

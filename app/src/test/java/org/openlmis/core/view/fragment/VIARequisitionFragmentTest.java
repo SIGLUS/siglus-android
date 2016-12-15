@@ -178,7 +178,9 @@ public class VIARequisitionFragmentTest {
 
     @Test
     public void shouldShowSubmitSignatureDialog() {
-        VIARequisitionFragment.showSignDialog(true);
+        when(presenter.isDraft()).thenReturn(true);
+
+        VIARequisitionFragment.showSignDialog();
 
         DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
@@ -194,7 +196,9 @@ public class VIARequisitionFragmentTest {
 
     @Test
     public void shouldShowApproveSignatureDialog() {
-        VIARequisitionFragment.showSignDialog(false);
+        when(presenter.isDraft()).thenReturn(false);
+
+        VIARequisitionFragment.showSignDialog();
 
         DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 

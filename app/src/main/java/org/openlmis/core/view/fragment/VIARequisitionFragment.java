@@ -276,7 +276,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.processRequisition(consultationView.getValue());
+                if (presenter.processRequisition(consultationView.getValue())) {
+                    showSignDialog();
+                }
             }
         };
     }
@@ -325,9 +327,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     @Override
-    public void showSignDialog(boolean isFormStatusDraft) {
+    public void showSignDialog() {
         SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_via_submit_signature) : getResources().getString(R.string.msg_approve_signature_via);
+        String signatureDialogTitle = presenter.isDraft() ? getResources().getString(R.string.msg_via_submit_signature) : getResources().getString(R.string.msg_approve_signature_via);
 
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
         signatureDialog.setDelegate(signatureDialogDelegate);
@@ -337,7 +339,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
-            presenter.processSign(sign, presenter.getRnRForm());
+            presenter.processSign(sign);
         }
     };
 

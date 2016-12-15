@@ -30,22 +30,23 @@ public class BaseRequisitionPresenterTest {
     public void shouldSetRightSubmittedTypeWhenStatusIsMissed() throws Exception {
         presenter = spy(presenter);
         RnRForm form = new RnRForm();
-        doNothing().when(presenter).submitRequisition(form);
-        doNothing().when(presenter).authoriseRequisition(form);
+        presenter.rnRForm = form;
+        doNothing().when(presenter).submitRequisition();
+        doNothing().when(presenter).authoriseRequisition();
 
         form.setStatus(RnRForm.STATUS.DRAFT_MISSED);
 
-        presenter.processSign("Sign", form);
+        presenter.processSign("Sign");
 
         assertTrue(form.isMissed());
         assertTrue(form.isSubmitted());
 
         form.setStatus(RnRForm.STATUS.DRAFT);
-        presenter.processSign("Sign", form);
+        presenter.processSign("Sign");
         assertTrue(form.isSubmitted());
 
         form.setStatus(RnRForm.STATUS.SUBMITTED);
-        presenter.processSign("Sign", form);
+        presenter.processSign("Sign");
         assertTrue(form.isAuthorized());
     }
 }

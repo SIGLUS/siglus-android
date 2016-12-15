@@ -292,7 +292,14 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             @Override
             public void onClick(View v) {
                 if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
-                    presenter.processRequisition(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+                    presenter.setViewModels(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+                    if (!presenter.validateForm()) {
+                        showValidationAlert();
+                    } else if (!presenter.validateFormPeriod()) {
+                        ToastUtil.show(R.string.msg_requisition_not_unique);
+                    } else {
+                        showSignDialog();
+                    }
                 }
             }
         };
@@ -411,10 +418,9 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     @Override
-    public void showSignDialog(boolean isFormStatusDraft) {
+    public void showSignDialog() {
         SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_mmia_submit_signature) : getResources().getString(R.string.msg_approve_signature_mmia);
-
+        String signatureDialogTitle = presenter.isDraft() ? getResources().getString(R.string.msg_mmia_submit_signature) : getResources().getString(R.string.msg_approve_signature_mmia);
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
         signatureDialog.setDelegate(signatureDialogDelegate);
 
@@ -424,7 +430,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         @Override
         public void onSign(String sign) {
-            presenter.processSign(sign, presenter.getRnRForm());
+            presenter.processSign(sign);
         }
     };
 

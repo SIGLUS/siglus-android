@@ -21,8 +21,6 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,13 +47,12 @@ import java.util.List;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -113,7 +110,7 @@ public class MMIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldCompleteMMIAIfTotalsMatch() throws Exception {
+    public void shouldValidateForm() throws Exception {
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
 
@@ -122,49 +119,16 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
+        presenter.setViewModels(regimenItems,baseInfoItems,"bla");
 
-        presenter.processRequisition(regimenItems, baseInfoItems, "");
-        verify(mockMMIAformView, never()).showValidationAlert();
-    }
+        assertTrue(presenter.validateForm());
 
-    @Test
-    public void shouldShowSignDialogIfTotalsMatch() throws Exception {
-        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
-        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+        presenter.setViewModels(regimenItems,baseInfoItems,"bla");
+        regimenItems.get(0).setAmount(90L);
+        assertFalse(presenter.validateForm());
 
-        when(mmiaRepository.isPeriodUnique(rnRForm)).thenReturn(true);
-
-        presenter.processRequisition(regimenItems, baseInfoItems, "");
-
-        verify(mockMMIAformView).showSignDialog(true);
-    }
-
-    @Test
-    public void shouldCompleteFormAfterSignSuccess() throws Exception {
-        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
-        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
-
-        RnRForm rnRForm = new RnRForm();
-
-        when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
-        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
-        presenter.getRnrForm(0);
-
-        presenter.processRequisition(regimenItems, baseInfoItems, "");
-    }
-
-    @Test
-    public void shouldNotCompleteMMIAIfTotalsMismatchAndCommentInvalid() throws Exception {
-        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
-        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
-        RnRForm rnRForm = new RnRForm();
-        presenter.rnRForm = rnRForm;
-
-        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(99L);
-        presenter.getRnrForm(0);
-
-        presenter.processRequisition(regimenItems, baseInfoItems, "1234");
-        verify(mockMMIAformView).showValidationAlert();
+        presenter.setViewModels(regimenItems,baseInfoItems,"dkdkdkdk");
+        assertTrue(presenter.validateForm());
     }
 
     @Test
@@ -206,7 +170,8 @@ public class MMIARequisitionPresenterTest {
         form.setStatus(RnRForm.STATUS.DRAFT);
 
         String signature = "signature";
-        presenter.processSign(signature, form);
+        presenter.rnRForm = form;
+        presenter.processSign(signature);
         waitObservableToExecute();
 
         assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
@@ -221,45 +186,13 @@ public class MMIARequisitionPresenterTest {
         form.setStatus(RnRForm.STATUS.SUBMITTED);
 
         String signature = "signature";
-        presenter.processSign(signature, form);
+        presenter.rnRForm = form;
+        presenter.processSign(signature);
 
         waitObservableToExecute();
 
         assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
         verify(mmiaRepository).createOrUpdateWithItems(form);
-    }
-
-    @Test
-    public void shouldShowErrorMSGWhenThereWasARequisitionInTheSamePeriod() throws Exception {
-        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
-        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
-
-        RnRForm rnRForm = new RnRForm();
-
-        when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
-        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
-        when(mmiaRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
-
-        presenter.processRequisition(regimenItems, baseInfoItems, anyString());
-
-        Assert.assertEquals(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique),
-                ShadowToast.getTextOfLatestToast());
-    }
-
-    @Test
-    public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() throws Exception {
-        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
-        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
-
-        RnRForm rnRForm = new RnRForm();
-
-        when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
-        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
-        when(mmiaRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
-
-        presenter.processRequisition(regimenItems, baseInfoItems, anyString());
-
-        assertNull(ShadowToast.getLatestToast());
     }
 
     @Test

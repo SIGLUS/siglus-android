@@ -126,9 +126,9 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         return rnrFormRepository.initNormalRnrForm(periodEndDate);
     }
 
-    protected void submitRequisition(final RnRForm rnRForm) {
+    protected void submitRequisition() {
         view.loading();
-        Subscription submitSubscription = createOrUpdateRnrForm(rnRForm).subscribe(getSubmitRequisitionSubscriber());
+        Subscription submitSubscription = createOrUpdateRnrForm().subscribe(getSubmitRequisitionSubscriber());
         subscriptions.add(submitSubscription);
     }
 
@@ -155,9 +155,9 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         };
     }
 
-    protected void authoriseRequisition(final RnRForm rnRForm) {
+    protected void authoriseRequisition() {
         view.loading();
-        Subscription authoriseSubscription = createOrUpdateRnrForm(rnRForm).subscribe(getAuthoriseRequisitionSubscriber());
+        Subscription authoriseSubscription = createOrUpdateRnrForm().subscribe(getAuthoriseRequisitionSubscriber());
         subscriptions.add(authoriseSubscription);
     }
 
@@ -184,7 +184,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         };
     }
 
-    protected Observable<Void> createOrUpdateRnrForm(final RnRForm rnRForm) {
+    protected Observable<Void> createOrUpdateRnrForm() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
@@ -217,23 +217,25 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         return isHistoryForm;
     }
 
-    public void processSign(String signName, RnRForm rnRForm) {
+    public void processSign(String signature) {
         // Main Thread!!
         if (rnRForm.isDraft()) {
-            rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signName, RnRFormSignature.TYPE.SUBMITTER));
+            rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signature, RnRFormSignature.TYPE.SUBMITTER));
             rnRForm.setStatus(rnRForm.isMissed() ? RnRForm.STATUS.SUBMITTED_MISSED : RnRForm.STATUS.SUBMITTED);
-            submitRequisition(rnRForm);
+            submitRequisition();
             view.showMessageNotifyDialog();
         } else {
-            rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signName, RnRFormSignature.TYPE.APPROVER));
+            rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signature, RnRFormSignature.TYPE.APPROVER));
             rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
             rnRForm.setSubmittedTime(DateUtil.today());
-            createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(rnRForm);
-            authoriseRequisition(rnRForm);
+            createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems();
+            authoriseRequisition();
         }
     }
 
-    protected abstract void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(RnRForm rnRForm);
+    protected void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems() {
+
+    }
 
     public RnRForm.STATUS getRnrFormStatus() {
         if (rnRForm != null) {
@@ -241,6 +243,10 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         } else {
             return RnRForm.STATUS.DRAFT;
         }
+    }
+
+    public boolean validateFormPeriod() {
+        return rnrFormRepository.isPeriodUnique(rnRForm);
     }
 
     public abstract void updateUIAfterSubmit();
@@ -257,11 +263,15 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                 && !(getRnRForm() != null && getRnRForm().isEmergency());
     }
 
+    public boolean isDraft() {
+        return rnRForm.isDraft();
+    }
+
     public interface BaseRequisitionView extends BaseView {
 
         void refreshRequisitionForm(RnRForm rnRForm);
 
-        void showSignDialog(boolean isFormStatusDraft);
+        void showSignDialog();
 
         void completeSuccess();
 
