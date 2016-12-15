@@ -27,13 +27,18 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.activity.BaseActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import roboguice.fragment.provided.RoboFragment;
+import rx.Subscription;
 
 
 public abstract class BaseFragment extends RoboFragment implements BaseView {
 
     protected boolean isSavedInstanceState;
     protected Presenter presenter;
+    protected List<Subscription> subscriptions = new ArrayList<>();
 
     /*
     * Life cycle of Fragment: onAttach -> onCreate -> onCreateView -> onViewCreated -> onActivityCreated -> onPause -> onStop
@@ -108,7 +113,21 @@ public abstract class BaseFragment extends RoboFragment implements BaseView {
 
     protected void hideImm() {
         if (getActivity() instanceof BaseActivity) {
-            ((BaseActivity)getActivity()).hideImm();
+            ((BaseActivity) getActivity()).hideImm();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        unSubscribeSubscriptions();
+        super.onDestroy();
+    }
+
+    private void unSubscribeSubscriptions() {
+        for (Subscription subscription : subscriptions) {
+            if (subscription != null) {
+                subscription.unsubscribe();
+            }
         }
     }
 }
