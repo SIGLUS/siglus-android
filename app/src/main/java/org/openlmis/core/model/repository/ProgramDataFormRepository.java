@@ -1,6 +1,7 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
@@ -48,6 +49,7 @@ public class ProgramDataFormRepository {
             @Override
             public Void call() throws Exception {
                 genericDao.createOrUpdate(form);
+                Log.d("---|show items size|---", "" + form.getProgramDataFormItemListWrapper().size());
                 saveFormItems(form);
                 saveSignatures(form.getSignaturesWrapper());
                 return null;

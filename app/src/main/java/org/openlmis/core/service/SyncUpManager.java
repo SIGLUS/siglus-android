@@ -394,7 +394,6 @@ public class SyncUpManager {
             e.reportToFabric();
             return;
         }
-
         Observable.from(forms).filter(new Func1<ProgramDataForm, Boolean>() {
             @Override
             public Boolean call(ProgramDataForm programDataForm) {
@@ -406,6 +405,30 @@ public class SyncUpManager {
                 markProgramDataFormsSynced(programDataForm);
             }
         });
+    }
+
+    public void fakeSyncRapidTestForms() {
+        List<ProgramDataForm> forms;
+        try {
+            Log.d(TAG, "===> Preparing RapidTestForms for Syncing");
+            forms = FluentIterable.from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).filter(new Predicate<ProgramDataForm>() {
+                @Override
+                public boolean apply(ProgramDataForm programDataForm) {
+                    return !programDataForm.isSynced() && programDataForm.getStatus().equals(ProgramDataForm.STATUS.AUTHORIZED);
+                }
+            }).toList();
+
+            Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");
+
+        } catch (LMISException e) {
+            e.reportToFabric();
+            return;
+        }
+
+
+        for (ProgramDataForm form : forms) {
+            markProgramDataFormsSynced(form);
+        }
     }
 
     private void markProgramDataFormsSynced(ProgramDataForm programDataForm) {

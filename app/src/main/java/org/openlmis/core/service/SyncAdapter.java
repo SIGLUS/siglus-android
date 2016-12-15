@@ -94,6 +94,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             sharedPreferenceMgr.setSyncedVersion(true);
         }
         syncUpManager.fakeSyncUpCmms();
+        syncUpManager.fakeSyncRapidTestForms();
         sendSyncFinishedBroadcast();
     }
 
