@@ -427,7 +427,13 @@ public class VIARequisitionPresenterTest {
         presenter.setViaKitsViewModel(viaKitsViewModel);
         presenter.requisitionFormItemViewModels = list;
 
-        presenter.saveVIAForm("100");
+        TestSubscriber<RnRForm> subscriber = new TestSubscriber<>();
+        presenter.getSaveFormObservable("100").subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        verify(mockRnrFormRepository).createOrUpdateWithItems(rnRForm);
+        subscriber.assertNoErrors();
+
         assertEquals(5, presenter.getRnRForm().getRnrFormItemListWrapper().size());
     }
 

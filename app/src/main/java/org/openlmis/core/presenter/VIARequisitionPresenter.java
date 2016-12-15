@@ -221,7 +221,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Override
     protected int getSaveErrorMessage() {
-        return R.string.hint_save_mmia_failed;
+        return R.string.hint_save_requisition_failed;
     }
 
     @Override
@@ -364,11 +364,21 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public void saveVIAForm(String consultationNumbers) {
-        view.loading();
-
-        dataViewToModel(consultationNumbers);
-        saveRequisition();
+    public Observable<RnRForm> getSaveFormObservable(final String consultationNumbers) {
+        return Observable.create(new Observable.OnSubscribe<RnRForm>() {
+            @Override
+            public void call(Subscriber<? super RnRForm> subscriber) {
+                try {
+                    dataViewToModel(consultationNumbers);
+                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
+                    subscriber.onNext(rnRForm);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     private ImmutableList<RnrFormItem> convertRnrItemViewModelsToRnrItems() {

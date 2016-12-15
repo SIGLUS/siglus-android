@@ -58,6 +58,8 @@ import java.util.Date;
 import java.util.List;
 
 import roboguice.inject.InjectView;
+import rx.Subscriber;
+import rx.Subscription;
 
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
 
@@ -284,7 +286,30 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.saveVIAForm(consultationView.getValue());
+                loading();
+                Subscription subscription = presenter.getSaveFormObservable(consultationView.getValue()).subscribe(getOnSavedSubscriber());
+                subscriptions.add(subscription);
+            }
+        };
+    }
+
+    @NonNull
+    public Subscriber<RnRForm> getOnSavedSubscriber() {
+        return new Subscriber<RnRForm>() {
+            @Override
+            public void onCompleted() {
+                loaded();
+                saveSuccess();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                loaded();
+                ToastUtil.show(getString(R.string.hint_save_requisition_failed));
+            }
+
+            @Override
+            public void onNext(RnRForm rnRForm) {
             }
         };
     }
