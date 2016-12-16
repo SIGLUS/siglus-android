@@ -34,7 +34,6 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -130,7 +129,7 @@ public class StockRepository {
         stockMovementItem.setUpdatedAt(new Date());
     }
 
-    public void saveStockCardAndBatchUpdateMovements(final StockCard stockCard) {
+    void saveStockCardAndBatchUpdateMovements(final StockCard stockCard) {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
@@ -229,11 +228,11 @@ public class StockRepository {
         List<StockCard> list = list();
         if (hasStockData()) {
             for (StockCard stockCard : list) {
-              for(StockMovementItem stockMovementItem: stockCard.getStockMovementItemsWrapper()){
-                  if (stockMovementItem.getMovementDate().before(dueDateShouldDataLivedInDB)) {
-                      return true;
-                  }
-              }
+                for (StockMovementItem stockMovementItem : stockCard.getStockMovementItemsWrapper()) {
+                    if (stockMovementItem.getMovementDate().before(dueDateShouldDataLivedInDB)) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -324,7 +323,7 @@ public class StockRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return Lists.reverse(dao.queryBuilder().offset(startIndex).limit(maxRows).orderBy("movementDate", false).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
+                return dao.queryBuilder().offset(startIndex).limit(maxRows).orderBy("movementDate", true).orderBy("createdTime", true).orderBy("id", true).where().eq("stockCard_id", stockCardId).query();
             }
         });
     }
@@ -352,7 +351,6 @@ public class StockRepository {
                 return null;
             }
         });
-
     }
 
     public Date queryEarliestStockMovementDateByProgram(final String programCode) {
@@ -462,12 +460,12 @@ public class StockRepository {
         });
     }
 
-    public void batchCreateSyncDownStockCardsAndMovements(final SyncDownStockCardResponse syncDownStockCardResponse) {
+    public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards) {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    for (StockCard stockCard : syncDownStockCardResponse.getStockCards()) {
+                    for (StockCard stockCard : stockCards) {
                         if (stockCard.getId() <= 0) {
                             saveStockCardAndBatchUpdateMovements(stockCard);
                         } else {

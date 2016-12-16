@@ -132,7 +132,7 @@ public class RnRFormListPresenter extends Presenter {
 
             if (isAllRnrFormInDBCompletedOrNoRnrFormInDB()) {
                 if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-                    rnRFormViewModels.add(fakeGenerateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
+                    rnRFormViewModels.add(generateRnrFormViewModelForTrainingWithoutRnrForm(nextPeriodInSchedule));
                 } else {
                     rnRFormViewModels.add(generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
                 }
@@ -155,7 +155,7 @@ public class RnRFormListPresenter extends Presenter {
         }
     }
 
-    private RnRFormViewModel fakeGenerateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
+    private RnRFormViewModel generateRnrFormViewModelForTrainingWithoutRnrForm(Period currentPeriod) throws LMISException {
         if (stockRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
             return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
         }

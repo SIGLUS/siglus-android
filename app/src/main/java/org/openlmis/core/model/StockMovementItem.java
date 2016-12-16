@@ -153,7 +153,7 @@ public class StockMovementItem extends BaseModel {
             }).toList());
 
             long movementQuantity = 0;
-            for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
+            for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
                 movementQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
             }
             setMovementQuantity(movementQuantity);
