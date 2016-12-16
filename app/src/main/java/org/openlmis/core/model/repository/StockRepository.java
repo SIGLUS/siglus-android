@@ -27,7 +27,6 @@ import com.j256.ormlite.misc.TransactionManager;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
@@ -68,13 +67,11 @@ public class StockRepository {
 
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
-    GenericDao<DraftInventory> draftInventoryGenericDao;
 
     @Inject
     public StockRepository(Context context) {
         genericDao = new GenericDao<>(StockCard.class, context);
         stockItemGenericDao = new GenericDao<>(StockMovementItem.class, context);
-        draftInventoryGenericDao = new GenericDao<>(DraftInventory.class, context);
     }
 
     public void batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(final List<StockCard> stockCards) {
