@@ -319,6 +319,4 @@ public class LoginPresenterTest {
             bind(ProgramRepository.class).toInstance(programRepository);
         }
     }
-
-
 }

@@ -19,6 +19,8 @@
 package org.openlmis.core.presenter;
 
 
+import android.content.res.AssetManager;
+import android.os.Environment;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -42,9 +44,13 @@ import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import retrofit.Callback;
@@ -97,7 +103,7 @@ public class LoginPresenter extends Presenter {
         view.loading();
 
         User user = new User(userName.trim(), password);
-        if (LMISApp.getInstance().isConnectionAvailable()) {
+        if (LMISApp.getInstance().isConnectionAvailable() && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             authorizeAndLoginUserRemote(user);
         } else {
             authorizeAndLoginUserLocal(user);
@@ -105,6 +111,14 @@ public class LoginPresenter extends Presenter {
     }
 
     private void authorizeAndLoginUserLocal(User user) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            if (userRepository.getLocalUser() == null) {
+                setUpDataForTrainingEnvironment();
+                SharedPreferenceMgr.getInstance().setLastSyncProductTime(String.valueOf(LMISApp.getInstance().getCurrentTimeMillis()));
+                SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
+                SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
+            }
+        }
         User localUser = userRepository.mapUserFromLocal(user);
 
         if (localUser == null) {
@@ -133,6 +147,17 @@ public class LoginPresenter extends Presenter {
         }
 
         goToNextPage();
+    }
+
+    private void setUpDataForTrainingEnvironment() {
+        File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
+        try {
+            AssetManager assetManager = LMISApp.getContext().getAssets();
+            InputStream inputStream = assetManager.open("lmis_training.db");
+            FileUtil.copyInputStreamToFile(inputStream, currentDB);
+        } catch (IOException e) {
+            new LMISException(e).reportToFabric();
+        }
     }
 
     private void authorizeAndLoginUserRemote(final User user) {
@@ -193,11 +218,11 @@ public class LoginPresenter extends Presenter {
     }
 
     private void ArchiveOldData() {
-        if(stockRepository.hasOldDate()){
+        if (stockRepository.hasOldDate()) {
             stockRepository.deleteOldData();
             SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
         }
-        if(rnrFormRepository.hasOldDate()){
+        if (rnrFormRepository.hasOldDate()) {
             rnrFormRepository.deleteOldData();
             SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
         }
