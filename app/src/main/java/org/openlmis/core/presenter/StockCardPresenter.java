@@ -26,7 +26,7 @@ import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -58,7 +58,7 @@ public class StockCardPresenter extends Presenter {
     @Inject
     StockService stockService;
     @Inject
-    PeriodService periodService;
+    RequisitionPeriodService requisitionPeriodService;
 
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 

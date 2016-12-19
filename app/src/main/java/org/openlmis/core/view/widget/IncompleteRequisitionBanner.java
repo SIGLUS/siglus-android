@@ -17,7 +17,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.Constants;
 
 import roboguice.RoboGuice;
@@ -29,7 +29,7 @@ public class IncompleteRequisitionBanner extends LinearLayout {
     TextView txMissedRequisition;
 
     @Inject
-    PeriodService periodService;
+    RequisitionPeriodService requisitionPeriodService;
 
     protected Context context;
 
@@ -53,8 +53,8 @@ public class IncompleteRequisitionBanner extends LinearLayout {
 
     public void setIncompleteRequisitionBanner() {
         try {
-            int periodOffsetMonthMmia = periodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
-            int periodOffsetMonthVia = periodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
+            int periodOffsetMonthMmia = requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
+            int periodOffsetMonthVia = requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
                 this.setVisibility(View.GONE);
             } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0) {
@@ -82,7 +82,7 @@ public class IncompleteRequisitionBanner extends LinearLayout {
 
     @NonNull
     private String getPeriodRangeForIncompleteRequisition(String programCode) throws LMISException {
-        Period period = periodService.generateNextPeriod(programCode, null);
+        Period period = requisitionPeriodService.generateNextPeriod(programCode, null);
         DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM yyyy");
         return getResources().getString(R.string.missed_requisition_time_range, fmt.print(period.getBegin()), fmt.print(period.getEnd()));
     }

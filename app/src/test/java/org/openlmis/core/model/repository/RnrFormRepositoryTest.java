@@ -51,7 +51,7 @@ import org.openlmis.core.model.builder.RnRFormBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -90,14 +90,14 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     private ProductProgramRepository mockProductProgramRepository;
 
-    private PeriodService mockPeriodService;
+    private RequisitionPeriodService mockRequisitionPeriodService;
 
     @Before
     public void setup() throws LMISException {
         mockProgramRepository = mock(ProgramRepository.class);
         mockStockRepository = mock(StockRepository.class);
         mockRnrFormItemRepository = mock(RnrFormItemRepository.class);
-        mockPeriodService = mock(PeriodService.class);
+        mockRequisitionPeriodService = mock(RequisitionPeriodService.class);
         mockProductProgramRepository = mock(ProductProgramRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -447,11 +447,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldInitRnrUsingPeriodReturnedByPeriodService() throws Exception {
-        when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime(), new DateTime()));
+        when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime(), new DateTime()));
         rnrFormRepository.programCode = "MMIA";
 
         rnrFormRepository.initNormalRnrForm(null);
-        verify(mockPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
+        verify(mockRequisitionPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
     }
 
     @Test
@@ -562,7 +562,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(RnrFormItemRepository.class).toInstance(mockRnrFormItemRepository);
-            bind(PeriodService.class).toInstance(mockPeriodService);
+            bind(RequisitionPeriodService.class).toInstance(mockRequisitionPeriodService);
             bind(ProductProgramRepository.class).toInstance(mockProductProgramRepository);
         }
     }

@@ -13,7 +13,7 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.RuntimeEnvironment;
 
@@ -30,22 +30,22 @@ import static org.mockito.Mockito.when;
 public class IncompleteRequisitionBannerTest {
 
     protected IncompleteRequisitionBanner incompleteRequisitionBanner;
-    PeriodService periodService;
+    RequisitionPeriodService requisitionPeriodService;
 
     @Before
     public void setUp() throws Exception {
-        periodService = mock(PeriodService.class);
+        requisitionPeriodService = mock(RequisitionPeriodService.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {
-                binder.bind(PeriodService.class).toInstance(periodService);
+                binder.bind(RequisitionPeriodService.class).toInstance(requisitionPeriodService);
             }
         });
     }
 
     @Test
     public void shouldNotShowBannerWhenThereIsMissedRequisition() throws LMISException {
-        when(periodService.hasMissedPeriod(anyString())).thenReturn(false);
+        when(requisitionPeriodService.hasMissedPeriod(anyString())).thenReturn(false);
         incompleteRequisitionBanner = new IncompleteRequisitionBanner(LMISTestApp.getContext());
 
         assertEquals(incompleteRequisitionBanner.getVisibility(), View.GONE);
@@ -54,9 +54,9 @@ public class IncompleteRequisitionBannerTest {
 
     @Test
     public void shouldShowMultipleMissedMmiaAndViaRequisitionBanner() throws LMISException {
-        when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(2);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(2);
+        when(requisitionPeriodService.hasMissedPeriod(anyString())).thenReturn(true);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(2);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(2);
         incompleteRequisitionBanner = new IncompleteRequisitionBanner(LMISTestApp.getContext());
 
         assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA and VIA requisitions for multiple periods have not been completed"));
@@ -64,9 +64,9 @@ public class IncompleteRequisitionBannerTest {
 
     @Test
     public void shouldShowMultipleMissedViaRequisitionBanner() throws LMISException {
-        when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(2);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(0);
+        when(requisitionPeriodService.hasMissedPeriod(anyString())).thenReturn(true);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(2);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(0);
         incompleteRequisitionBanner = new IncompleteRequisitionBanner(LMISTestApp.getContext());
 
         assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your VIA requisitions for multiple periods have not been completed"));
@@ -74,9 +74,9 @@ public class IncompleteRequisitionBannerTest {
 
     @Test
     public void shouldShowMultipleMissedMmiaRequisitionBanner() throws LMISException {
-        when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(0);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(2);
+        when(requisitionPeriodService.hasMissedPeriod(anyString())).thenReturn(true);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(0);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(2);
         incompleteRequisitionBanner = new IncompleteRequisitionBanner(LMISTestApp.getContext());
 
         assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA for multiple periods have not been completed"));
@@ -85,10 +85,10 @@ public class IncompleteRequisitionBannerTest {
     @Test
     public void shouldShowSingleMissedViaRequisitionBanner() throws LMISException {
         Period period = new Period(new DateTime(DateTime.parse("2016-05-18")));
-        when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(1);
-        when(periodService.getMissedPeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(0);
-        when(periodService.generateNextPeriod(Constants.VIA_PROGRAM_CODE, null)).thenReturn(period);
+        when(requisitionPeriodService.hasMissedPeriod(anyString())).thenReturn(true);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(1);
+        when(requisitionPeriodService.getMissedPeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(0);
+        when(requisitionPeriodService.generateNextPeriod(Constants.VIA_PROGRAM_CODE, null)).thenReturn(period);
         incompleteRequisitionBanner = new IncompleteRequisitionBanner(LMISTestApp.getContext());
 
         assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your VIA requisition for April 2016 to May 2016 has not been completed"));
@@ -97,10 +97,10 @@ public class IncompleteRequisitionBannerTest {
     @Test
     public void shouldShowSingleMissedMmiaRequisitionBanner() throws LMISException {
         Period period = new Period(new DateTime(DateTime.parse("2016-05-18")));
-        when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(0);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(1);
-        when(periodService.generateNextPeriod(Constants.MMIA_PROGRAM_CODE, null)).thenReturn(period);
+        when(requisitionPeriodService.hasMissedPeriod(anyString())).thenReturn(true);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(0);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(1);
+        when(requisitionPeriodService.generateNextPeriod(Constants.MMIA_PROGRAM_CODE, null)).thenReturn(period);
         incompleteRequisitionBanner = new IncompleteRequisitionBanner(LMISTestApp.getContext());
 
         assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA for April 2016 to May 2016 has not been completed"));
@@ -109,10 +109,10 @@ public class IncompleteRequisitionBannerTest {
     @Test
     public void shouldShowSingleMissedViaAndMmiaRequisitionBanner() throws LMISException {
         Period period = new Period(new DateTime(DateTime.parse("2016-05-18")));
-        when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(1);
-        when(periodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(1);
-        when(periodService.generateNextPeriod(Constants.VIA_PROGRAM_CODE, null)).thenReturn(period);
+        when(requisitionPeriodService.hasMissedPeriod(anyString())).thenReturn(true);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE)).thenReturn(1);
+        when(requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(1);
+        when(requisitionPeriodService.generateNextPeriod(Constants.VIA_PROGRAM_CODE, null)).thenReturn(period);
         incompleteRequisitionBanner = new IncompleteRequisitionBanner(LMISTestApp.getContext());
 
         assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA and VIA requisitions for April 2016 to May 2016 have not been completed"));

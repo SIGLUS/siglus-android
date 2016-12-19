@@ -38,7 +38,7 @@ import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -78,7 +78,7 @@ public class RnRFormListPresenter extends Presenter {
     SharedPreferenceMgr sharedPreferenceMgr;
 
     @Inject
-    PeriodService periodService;
+    RequisitionPeriodService requisitionPeriodService;
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
@@ -125,10 +125,10 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     private void generateViewModelsByCurrentDate(List<RnRFormViewModel> rnRFormViewModels) throws LMISException {
-        if (periodService.hasMissedPeriod(programCode)) {
+        if (requisitionPeriodService.hasMissedPeriod(programCode)) {
             addPreviousPeriodMissedViewModels(rnRFormViewModels);
         } else {
-            Period nextPeriodInSchedule = periodService.generateNextPeriod(programCode, null);
+            Period nextPeriodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
 
             if (isAllRnrFormInDBCompletedOrNoRnrFormInDB()) {
                 if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
@@ -195,9 +195,9 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels) throws LMISException {
-        int offsetMonth = periodService.getMissedPeriodOffsetMonth(this.programCode);
+        int offsetMonth = requisitionPeriodService.getMissedPeriodOffsetMonth(this.programCode);
 
-        DateTime inventoryBeginDate = periodService.getCurrentMonthInventoryBeginDate();
+        DateTime inventoryBeginDate = requisitionPeriodService.getCurrentMonthInventoryBeginDate();
         for (int i = 0; i < offsetMonth; i++) {
             viewModels.add(RnRFormViewModel.buildMissedPeriod(inventoryBeginDate.toDate(), inventoryBeginDate.plusMonths(1).toDate()));
             inventoryBeginDate = inventoryBeginDate.minusMonths(1);
@@ -214,7 +214,7 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     private void addFirstMissedAndNotPendingRnrForm(List<RnRFormViewModel> viewModels) throws LMISException {
-        Period nextPeriodInSchedule = periodService.generateNextPeriod(programCode, null);
+        Period nextPeriodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
 
         List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(nextPeriodInSchedule);
         if (physicalInventories.isEmpty()) {
@@ -239,7 +239,7 @@ public class RnRFormListPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    subscriber.onNext(periodService.hasMissedPeriod(programCode));
+                    subscriber.onNext(requisitionPeriodService.hasMissedPeriod(programCode));
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();

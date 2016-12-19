@@ -37,7 +37,7 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.helper.RnrFormHelper;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -90,7 +90,7 @@ public class RnrFormRepository {
     protected String programCode;
 
     @Inject
-    private PeriodService periodService;
+    private RequisitionPeriodService requisitionPeriodService;
 
     @Inject
     public RnrFormRepository(Context context) {
@@ -309,7 +309,7 @@ public class RnrFormRepository {
             throw new LMISException("Program cannot be null !");
         }
 
-        Period period = periodService.generateNextPeriod(programCode, periodEndDate);
+        Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);
         return RnRForm.init(program, period, emergency.Emergency());
     }
 

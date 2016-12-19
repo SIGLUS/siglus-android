@@ -11,7 +11,7 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.InventoryRepository;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -34,7 +34,7 @@ public class SelectPeriodPresenter extends Presenter {
     InventoryRepository inventoryRepository;
 
     @Inject
-    private PeriodService periodService;
+    private RequisitionPeriodService requisitionPeriodService;
 
     private SelectPeriodView view;
 
@@ -49,7 +49,7 @@ public class SelectPeriodPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<SelectInventoryViewModel>> subscriber) {
                 try {
-                    Period periodInSchedule = periodService.generateNextPeriod(programCode, null);
+                    Period periodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
                     List<Inventory> inventories = inventoryRepository.queryPeriodInventory(periodInSchedule);
                     boolean isDefaultInventoryDate = false;
                     if (inventories.isEmpty()) {

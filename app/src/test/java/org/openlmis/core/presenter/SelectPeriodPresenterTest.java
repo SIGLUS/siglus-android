@@ -11,7 +11,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.InventoryRepository;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -40,20 +40,20 @@ public class SelectPeriodPresenterTest {
     private InventoryRepository inventoryRepository;
 
     private SelectPeriodPresenter selectPeriodPresenter;
-    private PeriodService mockPeriodService;
+    private RequisitionPeriodService mockRequisitionPeriodService;
 
 
     @Before
     public void setUp() throws Exception {
         view = mock(SelectPeriodPresenter.SelectPeriodView.class);
         inventoryRepository = mock(InventoryRepository.class);
-        mockPeriodService = mock(PeriodService.class);
+        mockRequisitionPeriodService = mock(RequisitionPeriodService.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
                 bind(InventoryRepository.class).toInstance(inventoryRepository);
-                bind(PeriodService.class).toInstance(mockPeriodService);
+                bind(RequisitionPeriodService.class).toInstance(mockRequisitionPeriodService);
             }
         });
         selectPeriodPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SelectPeriodPresenter.class);
@@ -76,7 +76,7 @@ public class SelectPeriodPresenterTest {
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
-        verify(mockPeriodService).generateNextPeriod("MMIA", null);
+        verify(mockRequisitionPeriodService).generateNextPeriod("MMIA", null);
         verify(inventoryRepository).queryPeriodInventory(any(Period.class));
         assertThat(testSubscriber.getOnNextEvents().get(0).size(), is(3));
         assertTrue(testSubscriber.getOnNextEvents().get(0).get(0).isShowTime());
@@ -96,7 +96,7 @@ public class SelectPeriodPresenterTest {
     public void shouldGenerateDefaultInventoryViewModelsWhenThereIsNoInventoryDone() throws Exception {
         when(inventoryRepository.queryPeriodInventory(any(Period.class))).thenReturn(new ArrayList<Inventory>());
         Period period = new Period(new DateTime("2015-06-18"), new DateTime("2015-07-20"));
-        when(mockPeriodService.generateNextPeriod("MMIA", null)).thenReturn(period);
+        when(mockRequisitionPeriodService.generateNextPeriod("MMIA", null)).thenReturn(period);
 
 
         TestSubscriber<List<SelectInventoryViewModel>> testSubscriber = new TestSubscriber<>();
@@ -107,7 +107,7 @@ public class SelectPeriodPresenterTest {
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
-        verify(mockPeriodService).generateNextPeriod("MMIA", null);
+        verify(mockRequisitionPeriodService).generateNextPeriod("MMIA", null);
         verify(inventoryRepository).queryPeriodInventory(any(Period.class));
 
         List<SelectInventoryViewModel> inventoryViewModels = testSubscriber.getOnNextEvents().get(0);

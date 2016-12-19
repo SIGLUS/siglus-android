@@ -7,7 +7,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
@@ -16,7 +15,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class PeriodService {
+public class RequisitionPeriodService {
 
     @Inject
     RnrFormRepository rnrFormRepository;
@@ -141,35 +140,5 @@ public class PeriodService {
             }
         }
         return currentMonthInventoryBeginDate;
-    }
-
-    public Period getFirstStandardPeriod() throws LMISException {
-        StockMovementItem firstStockMovement = stockRepository.getFirstStockMovement();
-        if (firstStockMovement != null) {
-            Period firstPeriod = firstStockMovement.getMovementPeriod();
-
-            if (firstPeriod != null && todayEligibleForNewPeriod(firstPeriod)) {
-                return firstPeriod;
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-
-    private boolean todayEligibleForNewPeriod(Period period) {
-        DateTime periodBeginEligibleDate = period.getEnd().minusDays(Period.END_DAY - Period.INVENTORY_BEGIN_DAY);
-        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
-        return periodBeginEligibleDate.isBefore(today) || periodBeginEligibleDate.equals(today);
-    }
-
-    public Period generateNextPeriod(Period period) {
-        Period nextPeriod = period.next();
-        if (todayEligibleForNewPeriod(nextPeriod)) {
-            return nextPeriod;
-        } else {
-            return null;
-        }
     }
 }

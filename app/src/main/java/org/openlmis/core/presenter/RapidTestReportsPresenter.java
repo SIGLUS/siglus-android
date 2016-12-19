@@ -8,7 +8,7 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.ProgramDataFormPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
@@ -40,7 +40,7 @@ public class RapidTestReportsPresenter extends Presenter {
     private ProgramRepository programRepository;
 
     @Inject
-    private PeriodService periodService;
+    private ProgramDataFormPeriodService periodService;
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {

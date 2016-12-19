@@ -14,7 +14,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
-import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.ProgramDataFormPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
@@ -34,7 +34,7 @@ public class RapidTestReportsPresenterTest {
 
     private ProgramDataFormRepository programDataFormRepository;
 
-    private PeriodService periodService;
+    private ProgramDataFormPeriodService periodService;
 
     @InjectMocks
     private RapidTestReportsPresenter presenter;
@@ -43,13 +43,13 @@ public class RapidTestReportsPresenterTest {
     public void setUp() {
 
         programDataFormRepository = mock(ProgramDataFormRepository.class);
-        periodService = mock(PeriodService.class);
+        periodService = mock(ProgramDataFormPeriodService.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
                 bind(ProgramDataFormRepository.class).toInstance(programDataFormRepository);
-                bind(PeriodService.class).toInstance(periodService);
+                bind(ProgramDataFormPeriodService.class).toInstance(periodService);
             }
         });
 
