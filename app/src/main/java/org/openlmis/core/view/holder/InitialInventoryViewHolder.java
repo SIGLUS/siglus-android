@@ -70,9 +70,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private InventoryViewModel viewModel;
 
-    private static final int MIN_CLICK_DELAY_TIME = 750;
-    private long lastClickTime = 0;
-
     public InitialInventoryViewHolder(View itemView) {
         super(itemView);
         initView();
@@ -165,7 +162,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         if (isChecked && !viewModel.getProduct().isArchived()) {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
-                    triggerAddLotDialog();
+                    lotListView.showAddLotDialogFragment();
                 }
                 showAddNewLotPanel(View.VISIBLE);
             } else {
@@ -185,14 +182,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             viewModel.getExpiryDates().clear();
         }
         viewModel.setChecked(isChecked);
-    }
-
-    private void triggerAddLotDialog() {
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-        if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
-            lastClickTime = currentTime;
-            lotListView.showAddLotDialogFragment();
-        }
     }
 
     private void initHistoryView(final ViewHistoryListener listener) {

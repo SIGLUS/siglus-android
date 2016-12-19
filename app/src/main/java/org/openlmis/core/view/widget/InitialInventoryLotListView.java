@@ -14,6 +14,8 @@ public class InitialInventoryLotListView extends BaseLotListView {
     @Setter
     private UpdateCheckBoxListener updateCheckBoxListener;
 
+    private boolean existing;
+
     public InitialInventoryLotListView(Context context) {
         super(context);
     }
@@ -34,15 +36,25 @@ public class InitialInventoryLotListView extends BaseLotListView {
                             addLotDialogFragment.dismiss();
                         }
                         setActionAddNewEnabled(true);
+                        existing = false;
                         break;
                     case R.id.btn_cancel:
                         addLotDialogFragment.dismiss();
                         updateCheckBoxListener.updateCheckBox();
                         lyAddNewLot.setEnabled(true);
+                        existing = false;
                         break;
                 }
             }
         };
+    }
+
+    @Override
+    public void showAddLotDialogFragment() {
+        if (!existing) {
+            super.showAddLotDialogFragment();
+        }
+        existing = true;
     }
 
     public interface UpdateCheckBoxListener {
