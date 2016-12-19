@@ -114,9 +114,7 @@ public class LoginPresenter extends Presenter {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             if (userRepository.getLocalUser() == null) {
                 setUpDataForTrainingEnvironment();
-                SharedPreferenceMgr.getInstance().setLastSyncProductTime(String.valueOf(LMISApp.getInstance().getCurrentTimeMillis()));
-                SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
-                SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
+                setSyncedForTrainingEnvironment();
             }
         }
         User localUser = userRepository.mapUserFromLocal(user);
@@ -147,6 +145,15 @@ public class LoginPresenter extends Presenter {
         }
 
         goToNextPage();
+    }
+
+    private void setSyncedForTrainingEnvironment() {
+        SharedPreferenceMgr.getInstance().setLastSyncProductTime(String.valueOf(LMISApp.getInstance().getCurrentTimeMillis()));
+        SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
+        SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
+        SharedPreferenceMgr.getInstance().setRapidTestsDataSynced(true);
+        SharedPreferenceMgr.getInstance().setRnrLastSyncTime();
+        SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
     }
 
     private void setUpDataForTrainingEnvironment() {
