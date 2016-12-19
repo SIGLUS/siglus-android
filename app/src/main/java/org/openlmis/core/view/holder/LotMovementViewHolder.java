@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -57,7 +56,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
     public void populate(final LotMovementViewModel viewModel, final LotMovementAdapter lotMovementAdapter) {
         populateLotInfo(viewModel);
         populateLotSOHBanner(viewModel);
-        updateDeleteIcon(viewModel.isNewAdded(),getOnClickListenerForDeleteIcon(viewModel, lotMovementAdapter));
+        updateDeleteIcon(viewModel.isNewAdded(), getOnClickListenerForDeleteIcon(viewModel, lotMovementAdapter));
         populateAmountField(viewModel);
     }
 
@@ -87,12 +86,10 @@ public class LotMovementViewHolder extends BaseViewHolder {
     private void populateAmountField(LotMovementViewModel viewModel) {
         final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
         etLotAmount.removeTextChangedListener(textWatcher);
+        etLotAmount.setText(viewModel.getQuantity());
         etLotAmount.addTextChangedListener(textWatcher);
         etLotAmount.setHint(LMISApp.getInstance().getString(R.string.hint_lot_amount));
         lyLotAmount.setErrorEnabled(false);
-        if (!StringUtils.isEmpty(viewModel.getQuantity())) {
-            etLotAmount.setText(viewModel.getQuantity());
-        }
 
         if (!viewModel.isValid()) {
             setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
@@ -128,7 +125,6 @@ public class LotMovementViewHolder extends BaseViewHolder {
                 dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
                     @Override
                     public void positiveClick(String tag) {
-                        etLotAmount.setText("");
                         lotMovementAdapter.remove(viewModel);
                         if (context instanceof InventoryActivity) {
                             ((InventoryActivity) context).productListRecycleView.getAdapter().notifyDataSetChanged();
