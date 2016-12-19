@@ -122,9 +122,10 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     public void setUpLotListView() {
         lotListView.setUpdateCheckBoxListener(new InitialInventoryLotListView.UpdateCheckBoxListener() {
             @Override
-            public void updateCheckBox() {
+            public void updateCheckBox(boolean checked) {
                 if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
-                    checkBox.setChecked(false);
+                    checkBox.setChecked(checked);
+                    checkBox.setEnabled(true);
                 }
             }
         });
@@ -151,6 +152,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkBox.setEnabled(false);
                 checkedChangeAction(isChecked);
             }
         });
@@ -169,6 +171,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                 showEditPanel(View.VISIBLE);
             }
         } else {
+            checkBox.setEnabled(true);
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 showAddNewLotPanel(View.GONE);
                 viewModel.getNewLotMovementViewModelList().clear();

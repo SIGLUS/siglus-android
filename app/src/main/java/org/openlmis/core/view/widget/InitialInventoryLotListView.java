@@ -14,8 +14,6 @@ public class InitialInventoryLotListView extends BaseLotListView {
     @Setter
     private UpdateCheckBoxListener updateCheckBoxListener;
 
-    private boolean existing;
-
     public InitialInventoryLotListView(Context context) {
         super(context);
     }
@@ -31,18 +29,17 @@ public class InitialInventoryLotListView extends BaseLotListView {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_complete:
+                        updateCheckBoxListener.updateCheckBox(true);
                         if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
                             addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), viewModel.getMovementType()));
                             addLotDialogFragment.dismiss();
                         }
                         setActionAddNewEnabled(true);
-                        existing = false;
                         break;
                     case R.id.btn_cancel:
                         addLotDialogFragment.dismiss();
-                        updateCheckBoxListener.updateCheckBox();
+                        updateCheckBoxListener.updateCheckBox(false);
                         lyAddNewLot.setEnabled(true);
-                        existing = false;
                         break;
                 }
             }
@@ -51,13 +48,10 @@ public class InitialInventoryLotListView extends BaseLotListView {
 
     @Override
     public void showAddLotDialogFragment() {
-        if (!existing) {
-            super.showAddLotDialogFragment();
-        }
-        existing = true;
+        super.showAddLotDialogFragment();
     }
 
     public interface UpdateCheckBoxListener {
-        void updateCheckBox();
+        void updateCheckBox(boolean checked);
     }
 }
