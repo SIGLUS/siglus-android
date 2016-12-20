@@ -69,4 +69,5 @@
     <color name="color_add_lot_page_expire_date_warning_text">#7B602E</color>
 
     <color name="color_rapid_test_form_row_header">#CCFFCC</color>
+    <color name="color_rapid_test_form_total_header">#D9D9D9</color>
 </resources>
