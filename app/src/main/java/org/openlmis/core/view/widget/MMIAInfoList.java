@@ -99,7 +99,7 @@ public class MMIAInfoList extends LinearLayout {
 
         if (isHeaderView) {
             tvName.setText(R.string.label_mmia_info_header_name);
-            etValue.setText(getResources().getString(R.string.label_total_mmia).toUpperCase());
+            etValue.setText(getResources().getString(R.string.total).toUpperCase());
             etValue.setEnabled(false);
             etValue.setGravity(Gravity.CENTER);
             view.setBackgroundResource(R.color.color_mmia_info_name);

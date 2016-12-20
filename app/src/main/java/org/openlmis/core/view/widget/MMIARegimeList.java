@@ -181,7 +181,7 @@ public class MMIARegimeList extends LinearLayout {
             view.setBackgroundResource(R.color.color_mmia_speed_list_header);
 
             tvName.setText(R.string.label_regime_header_name);
-            etTotal.setText(getResources().getString(R.string.label_total_mmia).toUpperCase());
+            etTotal.setText(getResources().getString(R.string.total).toUpperCase());
         } else {
             editTexts.add(etTotal);
             Regimen regimen = item.getRegimen();

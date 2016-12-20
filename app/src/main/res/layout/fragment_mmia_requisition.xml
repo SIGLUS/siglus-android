@@ -53,7 +53,7 @@
                             android:layout_height="match_parent"
                             android:labelFor="@+id/tv_regime_total"
                             android:minHeight="30dp"
-                            android:text="@string/label_total_mmia" />
+                            android:text="@string/total" />
 
                         <TextView
                             android:id="@+id/tv_regime_total"
