@@ -1,6 +1,8 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
 
@@ -11,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Data
 public class RapidTestFormItemViewModel {
@@ -48,6 +52,10 @@ public class RapidTestFormItemViewModel {
     public static final String POSITIVE_MALARIA = "POSITIVE_MALARIA";
 
     public List<ProgramDataFormItem> convertToDataModel() {
+        if (issueReason.equals(LMISApp.getInstance().getString(R.string.total))) {
+            return newArrayList();
+        }
+
         List<ProgramDataFormItem> programDataFormItems = new ArrayList<>();
         for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
             programDataFormItems.addAll(gridViewModel.convertFormGridViewModelToDataModel(issueReason));
@@ -71,5 +79,9 @@ public class RapidTestFormItemViewModel {
             }
         }
         return true;
+    }
+
+    public void clearValue(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume) {
+        rapidTestFormGridViewModelMap.get(StringUtils.upperCase(columnCode.name())).clear(isConsume);
     }
 }

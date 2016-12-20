@@ -73,11 +73,24 @@ public class RapidTestFormGridViewModel {
         return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue);
     }
 
+    public void clear(boolean isConsume) {
+        if (isConsume) {
+            consumptionValue = "";
+        } else {
+            positiveValue = "";
+        }
+    }
+
     public enum ColumnCode {
         HIVDetermine,
         HIVUnigold,
         Syphillis,
-        Malaria
+        Malaria;
+
+        @Override
+        public String toString() {
+            return StringUtils.upperCase(name());
+        }
     }
 
 }

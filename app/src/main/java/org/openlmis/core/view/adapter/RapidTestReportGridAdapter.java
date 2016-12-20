@@ -17,11 +17,13 @@ public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestRe
     Context context;
     private Boolean editable;
     List<RapidTestFormGridViewModel> viewModels;
+    private RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener;
 
-    public RapidTestReportGridAdapter(List<RapidTestFormGridViewModel> viewModels, Context context, Boolean editable) {
+    public RapidTestReportGridAdapter(List<RapidTestFormGridViewModel> viewModels, Context context, Boolean editable, RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
         this.viewModels = viewModels;
         this.context = context;
         this.editable = editable;
+        this.quantityChangeListener = quantityChangeListener;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestRe
     @Override
     public void onBindViewHolder(RapidTestReportGridViewHolder holder, int position) {
         RapidTestFormGridViewModel viewModel = viewModels.get(position);
-        holder.populate(viewModel, editable);
+        holder.populate(viewModel, editable, quantityChangeListener);
     }
 
     @Override

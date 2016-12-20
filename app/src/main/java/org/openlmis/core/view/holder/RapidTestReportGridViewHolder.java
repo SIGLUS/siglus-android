@@ -18,13 +18,17 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     EditText etPositive;
 
     RapidTestFormGridViewModel viewModel;
+    private Boolean editable;
+    private QuantityChangeListener quantityChangeListener;
 
     public RapidTestReportGridViewHolder(View itemView) {
         super(itemView);
     }
 
-    public void populate(RapidTestFormGridViewModel viewModel, Boolean editable) {
+    public void populate(RapidTestFormGridViewModel viewModel, Boolean editable, QuantityChangeListener quantityChangeListener) {
         this.viewModel = viewModel;
+        this.editable = editable;
+        this.quantityChangeListener = quantityChangeListener;
         populateData(viewModel);
         setEditable(editable);
         setTextWatcher();
@@ -46,17 +50,19 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         TextWatcher textWatcherPositive = new TextWatcher(etPositive);
         etPositive.removeTextChangedListener(textWatcherPositive);
         etConsume.removeTextChangedListener(textWatcherConsume);
-        etConsume.addTextChangedListener(textWatcherConsume);
-        etPositive.addTextChangedListener(textWatcherPositive);
+        if (editable) {
+            etConsume.addTextChangedListener(textWatcherConsume);
+            etPositive.addTextChangedListener(textWatcherPositive);
+        }
     }
 
     private void updateAlert() {
-        if (viewModel.validate()) {
-            etPositive.setTextColor(context.getResources().getColor(R.color.color_black));
-            etConsume.setTextColor(context.getResources().getColor(R.color.color_black));
-        } else {
+        if (editable && !viewModel.validate()) {
             etPositive.setTextColor(context.getResources().getColor(R.color.color_red));
             etConsume.setTextColor(context.getResources().getColor(R.color.color_red));
+        } else {
+            etPositive.setTextColor(context.getResources().getColor(R.color.color_black));
+            etConsume.setTextColor(context.getResources().getColor(R.color.color_black));
         }
     }
 
@@ -71,11 +77,16 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         public void afterTextChanged(Editable s) {
             if (editText.getId() == R.id.et_positive_rapid_test_report_grid) {
                 viewModel.setPositiveValue(s.toString());
+                quantityChangeListener.updateTotal(viewModel.getColumnCode(), false);
             } else {
                 viewModel.setConsumptionValue(s.toString());
+                quantityChangeListener.updateTotal(viewModel.getColumnCode(), true);
             }
             updateAlert();
         }
     }
 
+    public interface QuantityChangeListener {
+        void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume);
+    }
 }

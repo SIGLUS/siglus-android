@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
+import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.holder.RapidTestReportRowViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
 
@@ -19,8 +20,10 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestRep
 
     @Setter
     private Boolean editable = true;
+    private RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener;
 
-    public RapidTestReportRowAdapter() {
+    public RapidTestReportRowAdapter(RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
+        this.quantityChangeListener = quantityChangeListener;
         this.viewModels = new ArrayList<>();
     }
 
@@ -32,7 +35,7 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestRep
     @Override
     public void onBindViewHolder(RapidTestReportRowViewHolder holder, int position) {
         final RapidTestFormItemViewModel viewModel = viewModels.get(position);
-        holder.populate(viewModel,editable);
+        holder.populate(viewModel,editable, quantityChangeListener);
     }
 
     @Override

@@ -18,6 +18,8 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SignatureDialog;
@@ -39,7 +41,6 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     RapidTestReportFormPresenter presenter;
 
     RapidTestReportRowAdapter adapter;
-    private SignatureDialog signatureDialog;
     private SimpleDialogFragment notifyDialog;
 
     @Override
@@ -69,9 +70,19 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     private void setUpRowItems() {
-        adapter = new RapidTestReportRowAdapter();
+        adapter = new RapidTestReportRowAdapter(getQuantityChangeListener());
         rvReportRowItemListView.setLayoutManager(new LinearLayoutManager(this));
         rvReportRowItemListView.setAdapter(adapter);
+    }
+
+    private RapidTestReportGridViewHolder.QuantityChangeListener getQuantityChangeListener() {
+        return new RapidTestReportGridViewHolder.QuantityChangeListener() {
+            @Override
+            public void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume) {
+                presenter.getViewModel().updateTotal(columnCode, isConsume);
+                adapter.notifyDataSetChanged();
+            }
+        };
     }
 
     private void setUpButtonPanel() {
@@ -117,7 +128,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     private void showSignDialog() {
-        signatureDialog = new SignatureDialog();
+        SignatureDialog signatureDialog = new SignatureDialog();
         String signatureDialogTitle = presenter.getViewModel().isDraft() ? getResources().getString(R.string.msg_rapid_test_submit_signature) : getResources().getString(R.string.msg_approve_signature_rapid_test);
 
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));

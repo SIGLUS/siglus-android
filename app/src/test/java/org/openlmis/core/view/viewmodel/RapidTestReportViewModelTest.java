@@ -129,12 +129,24 @@ public class RapidTestReportViewModelTest {
         assertNull(viewModel.getRapidTestForm().getStatus());
 
         viewModel.setSignature("submit");
-        assertEquals(Signature.TYPE.SUBMITTER,viewModel.getRapidTestForm().getSignaturesWrapper().get(0).getType());
+        assertEquals(Signature.TYPE.SUBMITTER, viewModel.getRapidTestForm().getSignaturesWrapper().get(0).getType());
         assertEquals("submit", viewModel.getRapidTestForm().getSignaturesWrapper().get(0).getSignature());
 
         viewModel.setSignature("authorize");
-        assertEquals(Signature.TYPE.APPROVER,viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getType());
+        assertEquals(Signature.TYPE.APPROVER, viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getType());
         assertEquals("authorize", viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getSignature());
         assertNotNull(viewModel.getRapidTestForm().getSubmittedTime());
+    }
+
+    @Test
+    public void shouldUpdateTotal() throws Exception {
+        viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        viewModel.getItem_PNCTL().getGridHIVDetermine().setConsumptionValue("100");
+        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, true);
+        assertEquals("100", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
+
+        viewModel.getItem_ACC_EMERGENCY().getGridHIVDetermine().setConsumptionValue("2333");
+        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, true);
+        assertEquals("2433", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
     }
 }

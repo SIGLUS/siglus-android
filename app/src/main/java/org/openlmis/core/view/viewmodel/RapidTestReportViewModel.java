@@ -1,5 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
@@ -34,7 +36,9 @@ public class RapidTestReportViewModel implements Serializable {
     RapidTestFormItemViewModel item_PAV = new RapidTestFormItemViewModel(PAV);
     RapidTestFormItemViewModel item_DENTAL_WARD = new RapidTestFormItemViewModel(DENTAL_WARD);
 
-    List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(item_PUB_PHARMACY, item_MATERNITY, item_GENERAL_WARD, item_ACC_EMERGENCY, item_MOBILE_UNIT, item_LABORATORY, item_UATS, item_PNCTL, item_PAV, item_DENTAL_WARD);
+    RapidTestFormItemViewModel itemTotal = new RapidTestFormItemViewModel(LMISApp.getInstance().getString(R.string.total));
+
+    List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(item_PUB_PHARMACY, item_MATERNITY, item_GENERAL_WARD, item_ACC_EMERGENCY, item_MOBILE_UNIT, item_LABORATORY, item_UATS, item_PNCTL, item_PAV, item_DENTAL_WARD, itemTotal);
 
     Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
 
@@ -64,6 +68,10 @@ public class RapidTestReportViewModel implements Serializable {
     private void setFormItemViewModels(List<ProgramDataFormItem> programDataFormItemList) {
         for (ProgramDataFormItem item : programDataFormItemList) {
             itemViewModelMap.get(item.getName()).setColumnValue(item.getProgramDataColumn(), item.getValue());
+        }
+        for (RapidTestFormGridViewModel.ColumnCode columnCode : RapidTestFormGridViewModel.ColumnCode.values()) {
+            updateTotal(columnCode, true);
+            updateTotal(columnCode, false);
         }
     }
 
@@ -154,6 +162,24 @@ public class RapidTestReportViewModel implements Serializable {
 
     public boolean isSubmitted() {
         return rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
+    }
+
+    public void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume) {
+        itemTotal.clearValue(columnCode, isConsume);
+        int total = 0;
+        for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+            RapidTestFormGridViewModel gridViewModel = itemViewModel.getRapidTestFormGridViewModelMap().get(columnCode.toString());
+            if (isConsume && !gridViewModel.getConsumptionValue().equals("")) {
+                total += Integer.parseInt(gridViewModel.getConsumptionValue());
+            } else if (!isConsume && !gridViewModel.getPositiveValue().equals("")) {
+                total += Integer.parseInt(gridViewModel.getPositiveValue());
+            }
+        }
+        if (isConsume) {
+            itemTotal.getRapidTestFormGridViewModelMap().get(columnCode.toString()).setConsumptionValue(String.valueOf(total));
+        } else {
+            itemTotal.getRapidTestFormGridViewModelMap().get(columnCode.toString()).setPositiveValue(String.valueOf(total));
+        }
     }
 
     public enum Status {
