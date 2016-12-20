@@ -42,9 +42,7 @@ public class RequisitionPeriodService {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             int offsetMonth = DateUtil.calculateMonthOffset(new DateTime(LMISApp.getInstance().getCurrentTimeMillis()), periodBeginDate);
             if (offsetMonth == 1) {
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-                    return Period.generateForTraining(Calendar.getInstance().getTime());
-                }
+                return Period.generateForTraining(Calendar.getInstance().getTime());
             } else if (offsetMonth == 0) {
                 periodBeginDate = periodBeginDate.plusDays(1);
             }
@@ -61,6 +59,9 @@ public class RequisitionPeriodService {
     }
 
     private Period generatePeriodBasedOnDefaultDates(Date physicalInventoryDate, String programCode) throws LMISException {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            return Period.generateForTraining(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+        }
         DateTime periodBeginDate = calculatePeriodBeginDate(programCode);
         DateTime periodEndDate;
         if (physicalInventoryDate == null) {
