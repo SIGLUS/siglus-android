@@ -147,8 +147,19 @@ public class BaseLotListView extends FrameLayout {
         addLotDialogFragment = new AddLotDialogFragment();
         addLotDialogFragment.setArguments(bundle);
         addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
+        addLotDialogFragment.setOnDismissListener(getOnAddNewLotDialogDismissListener());
         addLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
         addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
+    }
+
+    @NonNull
+    public OnDismissListener getOnAddNewLotDialogDismissListener() {
+        return new OnDismissListener() {
+            @Override
+            public void onDismissAction() {
+                setActionAddNewEnabled(true);
+            }
+        };
     }
 
     @NonNull
@@ -162,14 +173,16 @@ public class BaseLotListView extends FrameLayout {
                             addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), viewModel.getMovementType()));
                             addLotDialogFragment.dismiss();
                         }
-                        setActionAddNewEnabled(true);
                         break;
                     case R.id.btn_cancel:
                         addLotDialogFragment.dismiss();
-                        setActionAddNewEnabled(true);
                         break;
                 }
             }
         };
+    }
+
+    public interface OnDismissListener {
+        void onDismissAction();
     }
 }

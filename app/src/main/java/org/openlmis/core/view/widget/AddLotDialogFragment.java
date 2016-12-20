@@ -1,6 +1,7 @@
 package org.openlmis.core.view.widget;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -63,6 +64,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     @Setter
     private View.OnClickListener listener;
     private AddLotWithoutNumberListener addLotWithoutNumberListener;
+    private BaseLotListView.OnDismissListener onDismissListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -172,7 +174,19 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         this.addLotWithoutNumberListener = addLotWithoutNumberListener;
     }
 
+    public void setOnDismissListener(BaseLotListView.OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
+
     public interface AddLotWithoutNumberListener {
         void addLotWithoutNumber(String expiryDate);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if (onDismissListener != null) {
+            onDismissListener.onDismissAction();
+        }
+        super.onDismiss(dialog);
     }
 }
