@@ -123,9 +123,9 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         lotListView.setUpdateCheckBoxListener(new InitialInventoryLotListView.UpdateCheckBoxListener() {
             @Override
             public void updateCheckBox(boolean checked) {
+                checkBox.setEnabled(true);
                 if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
                     checkBox.setChecked(checked);
-                    checkBox.setEnabled(true);
                 }
             }
         });

@@ -46,11 +46,6 @@ public class InitialInventoryLotListView extends BaseLotListView {
         };
     }
 
-    @Override
-    public void showAddLotDialogFragment() {
-        super.showAddLotDialogFragment();
-    }
-
     public interface UpdateCheckBoxListener {
         void updateCheckBox(boolean checked);
     }
