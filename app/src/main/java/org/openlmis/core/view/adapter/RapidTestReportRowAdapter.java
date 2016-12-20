@@ -35,7 +35,7 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestRep
     @Override
     public void onBindViewHolder(RapidTestReportRowViewHolder holder, int position) {
         final RapidTestFormItemViewModel viewModel = viewModels.get(position);
-        holder.populate(viewModel,editable, quantityChangeListener);
+        holder.populate(viewModel, editable, quantityChangeListener);
     }
 
     @Override
@@ -47,5 +47,9 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestRep
         viewModels = itemViewModelList;
         this.editable = editable;
         notifyDataSetChanged();
+    }
+
+    public void updateTotal() {
+        notifyItemChanged(getItemCount() - 1);
     }
 }

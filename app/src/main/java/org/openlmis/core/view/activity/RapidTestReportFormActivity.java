@@ -80,7 +80,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
             @Override
             public void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume) {
                 presenter.getViewModel().updateTotal(columnCode, isConsume);
-                adapter.notifyDataSetChanged();
+                adapter.updateTotal();
             }
         };
     }
