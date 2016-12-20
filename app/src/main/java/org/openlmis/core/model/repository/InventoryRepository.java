@@ -47,14 +47,10 @@ public class InventoryRepository {
         }
     }
 
-
     public List<Inventory> queryPeriodInventory(final Period period) throws LMISException {
         return dbUtil.withDao(Inventory.class, new DbUtil.Operation<Inventory, List<Inventory>>() {
             @Override
             public List<Inventory> operate(Dao<Inventory, String> dao) throws SQLException {
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-                    return dao.queryBuilder().orderBy("updatedAt", false).where().between("updatedAt", period.getBegin().toDate(), period.getEnd().toDate()).query();
-                }
                 return dao.queryBuilder().orderBy("updatedAt", false).where().between("updatedAt", period.getInventoryBegin().toDate(), period.getInventoryEnd().toDate()).query();
             }
         });

@@ -34,6 +34,13 @@ public class Period {
         return new Period(new DateTime(date));
     }
 
+    public static Period generateForTraining(Date date) {
+        Period period = new Period(new DateTime(date));
+        period.inventoryBegin = period.getBegin();
+        period.inventoryEnd = period.getEnd();
+        return period;
+    }
+
     public Period(DateTime begin, DateTime end) {
         this.periodBegin = begin;
         this.periodEnd = end;

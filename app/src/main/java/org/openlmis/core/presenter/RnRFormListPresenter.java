@@ -129,14 +129,8 @@ public class RnRFormListPresenter extends Presenter {
             addPreviousPeriodMissedViewModels(rnRFormViewModels);
         } else {
             Period nextPeriodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
-
             if (isAllRnrFormInDBCompletedOrNoRnrFormInDB()) {
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-                    rnRFormViewModels.add(generateRnrFormViewModelForTrainingWithoutRnrForm(nextPeriodInSchedule));
-                } else {
-                    rnRFormViewModels.add(generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
-                }
-
+                rnRFormViewModels.add(generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
             }
         }
     }
@@ -146,19 +140,6 @@ public class RnRFormListPresenter extends Presenter {
             return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
         }
 
-        List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
-        if (physicalInventories == null || physicalInventories.size() == 0) {
-
-            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
-        } else {
-            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE);
-        }
-    }
-
-    private RnRFormViewModel generateRnrFormViewModelForTrainingWithoutRnrForm(Period currentPeriod) throws LMISException {
-        if (stockRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
-            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
-        }
         List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
         if (physicalInventories == null || physicalInventories.size() == 0) {
             return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
