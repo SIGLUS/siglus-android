@@ -82,6 +82,6 @@ public class RapidTestFormItemViewModel {
     }
 
     public void clearValue(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume) {
-        rapidTestFormGridViewModelMap.get(StringUtils.upperCase(columnCode.name())).clear(isConsume);
+        rapidTestFormGridViewModelMap.get(columnCode.toString()).clear(isConsume);
     }
 }
