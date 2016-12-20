@@ -55,21 +55,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 setupButtonColor();
                 break;
             case RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY:
-                boolean isTraining = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
-                if (isOfMmia(model)) {
-                    if (isTraining) {
-                        configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_training_can_not_create_mmia_rnr)), R.drawable.ic_description, R.color.color_draft_title);
-                    }
-                    else {
-                        configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_mmia_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
-                    }
-                } else {
-                    if (isTraining) {
-                        configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_training_can_not_create_via_rnr)), R.drawable.ic_description, R.color.color_draft_title);
-                    } else {
-                        configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_via_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
-                    }
-                }
+                showCannotDoMonthlyInventory(model);
                 break;
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
                 if (isOfMmia(model)) {
@@ -93,6 +79,24 @@ public class RnRFormViewHolder extends BaseViewHolder {
             case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
                 populateSyncedHistorical(model);
                 break;
+        }
+    }
+
+    private void showCannotDoMonthlyInventory(RnRFormViewModel model) {
+        boolean isTraining = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
+        if (isOfMmia(model)) {
+            if (isTraining) {
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_training_can_not_create_mmia_rnr)), R.drawable.ic_description, R.color.color_draft_title);
+            }
+            else {
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_mmia_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
+            }
+        } else {
+            if (isTraining) {
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_training_can_not_create_via_rnr)), R.drawable.ic_description, R.color.color_draft_title);
+            } else {
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_via_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
+            }
         }
     }
 
