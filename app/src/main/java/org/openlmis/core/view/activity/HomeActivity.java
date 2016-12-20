@@ -280,7 +280,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void alertWipeData() {
-        if (!LMISApp.getInstance().isConnectionAvailable()) {
+        if (!LMISApp.getInstance().isConnectionAvailable() && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             ToastUtil.show(R.string.message_wipe_no_connection);
             return;
         }
