@@ -46,8 +46,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:inputType="text"
                     android:text="Consumo"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -59,8 +61,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:inputType="text"
                     android:text="Positivo"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_small" />
 
             </LinearLayout>
 
@@ -96,8 +100,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:inputType="text"
                     android:text="Consumo"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -109,8 +115,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:inputType="text"
                     android:text="Positivo"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_small" />
 
             </LinearLayout>
 
@@ -146,8 +154,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:inputType="text"
                     android:text="Consumo"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_small" />
 
 
                 <View
@@ -160,8 +170,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:inputType="text"
                     android:text="Positivo"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_small" />
 
             </LinearLayout>
 
@@ -197,8 +209,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:inputType="text"
                     android:text="Consumo"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -210,8 +224,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:inputType="text"
                     android:text="Positivo"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_small" />
 
             </LinearLayout>
 
