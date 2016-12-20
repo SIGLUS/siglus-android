@@ -46,10 +46,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="text"
+                    android:maxLines="1"
                     android:text="Consumo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_small" />
+                    android:textSize="@dimen/font_size_tiny" />
 
                 <View
                     android:layout_width="1dp"
@@ -61,10 +61,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="text"
+                    android:maxLines="1"
                     android:text="Positivo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_small" />
+                    android:textSize="@dimen/font_size_tiny" />
 
             </LinearLayout>
 
@@ -100,10 +100,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="text"
+                    android:maxLines="1"
                     android:text="Consumo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_small" />
+                    android:textSize="@dimen/font_size_tiny" />
 
                 <View
                     android:layout_width="1dp"
@@ -115,10 +115,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="text"
+                    android:maxLines="1"
                     android:text="Positivo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_small" />
+                    android:textSize="@dimen/font_size_tiny" />
 
             </LinearLayout>
 
@@ -154,10 +154,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="text"
+                    android:maxLines="1"
                     android:text="Consumo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_small" />
+                    android:textSize="@dimen/font_size_tiny" />
 
 
                 <View
@@ -170,10 +170,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="text"
+                    android:maxLines="1"
                     android:text="Positivo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_small" />
+                    android:textSize="@dimen/font_size_tiny" />
 
             </LinearLayout>
 
@@ -209,10 +209,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="text"
+                    android:maxLines="1"
                     android:text="Consumo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_small" />
+                    android:textSize="@dimen/font_size_tiny" />
 
                 <View
                     android:layout_width="1dp"
@@ -224,10 +224,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="text"
+                    android:maxLines="1"
                     android:text="Positivo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_small" />
+                    android:textSize="@dimen/font_size_tiny" />
 
             </LinearLayout>
 
