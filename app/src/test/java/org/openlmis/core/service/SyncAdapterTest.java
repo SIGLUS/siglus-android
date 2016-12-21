@@ -138,31 +138,6 @@ public class SyncAdapterTest {
         verify(mockSyncUpManager).syncUpCmms();
     }
 
-    @Test
-    public void shouldTriggerFakeSyncWhenTrainingFeatureIsOn() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_training, true);
-        syncAdapter.onPerformSync(null, null, null, null, null);
-
-        verify(mockSyncUpManager).fakeSyncRnr();
-        verify(mockSyncUpManager).fakeSyncStockCards();
-        verify(mockSyncUpManager).fakeSyncUpCmms();
-
-
-        when(mockSyncUpManager.fakeSyncRnr()).thenReturn(true);
-        when(mockSyncUpManager.fakeSyncStockCards()).thenReturn(true);
-        syncAdapter.onPerformSync(null, null, null, null, null);
-        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getRnrLastSyncTime();
-        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getStockLastSyncTime();
-        Date rnrFormDate = new Date(lastRnrFormSyncedTimestamp);
-        Date stockCardDate = new Date(lastStockCardSyncedTimestamp);
-
-        Date expectDate = new Date();
-        assertThat(rnrFormDate.getDay(), is(expectDate.getDay()));
-        assertThat(rnrFormDate.getHours(), is(expectDate.getHours()));
-        assertThat(stockCardDate.getDay(), is(expectDate.getDay()));
-        assertThat(stockCardDate.getHours(), is(expectDate.getHours()));
-    }
-
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
