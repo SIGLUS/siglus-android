@@ -75,14 +75,16 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (editText.getId() == R.id.et_positive_rapid_test_report_grid) {
-                viewModel.setPositiveValue(s.toString());
-                quantityChangeListener.updateTotal(viewModel.getColumnCode(), false);
-            } else {
-                viewModel.setConsumptionValue(s.toString());
-                quantityChangeListener.updateTotal(viewModel.getColumnCode(), true);
-            }
+            boolean isConsume = editText.getId() == R.id.et_consume_rapid_test_report_grid;
+            viewModel.setValue(isConsume, s.toString());
+            updateTotal(isConsume);
             updateAlert();
+        }
+    }
+
+    public void updateTotal(boolean isConsume) {
+        if (quantityChangeListener != null) {
+            quantityChangeListener.updateTotal(viewModel.getColumnCode(), isConsume);
         }
     }
 

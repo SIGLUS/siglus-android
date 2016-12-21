@@ -81,6 +81,14 @@ public class RapidTestFormGridViewModel {
         }
     }
 
+    public void setValue(boolean isConsume, String value) {
+        if (isConsume) {
+            consumptionValue = value;
+        } else {
+            positiveValue = value;
+        }
+    }
+
     public enum ColumnCode {
         HIVDetermine,
         HIVUnigold,
