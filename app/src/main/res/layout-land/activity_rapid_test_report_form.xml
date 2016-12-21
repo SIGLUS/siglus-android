@@ -12,9 +12,10 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/vg_rapid_test_report_empty_header"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:orientation="horizontal" />
 
         <LinearLayout
             android:layout_width="0dp"

@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
@@ -34,6 +36,9 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
 
+    @InjectView(R.id.vg_rapid_test_report_empty_header)
+    ViewGroup emptyHeaderView;
+
     @InjectView(R.id.action_panel)
     ActionPanelView actionPanelView;
 
@@ -41,7 +46,11 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     RapidTestReportFormPresenter presenter;
 
     RapidTestReportRowAdapter adapter;
+
     private SimpleDialogFragment notifyDialog;
+
+    public static int ROW_HEADER_WIDTH = -1;
+    public static int GRID_SIZE = -1;
 
     @Override
     protected ScreenName getScreenName() {
@@ -53,9 +62,23 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
         super.onCreate(savedInstanceState);
         long formId = getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
+        updateHeaderSize();
 
         setUpRowItems();
         loadForm(formId, periodBegin);
+    }
+
+    private void updateHeaderSize() {
+        calculateRowHeaderAndGridSize();
+        emptyHeaderView.getLayoutParams().width = ROW_HEADER_WIDTH;
+    }
+
+    private void calculateRowHeaderAndGridSize() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int totalWidthWithoutBorders = metrics.widthPixels - 2;
+        GRID_SIZE = totalWidthWithoutBorders / 5;
+        ROW_HEADER_WIDTH = GRID_SIZE + totalWidthWithoutBorders % 5;
     }
 
     private void loadForm(long formId, DateTime periodBegin) {
