@@ -1,6 +1,7 @@
 package org.openlmis.core.view.holder;
 
 import android.text.Editable;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
 
@@ -11,6 +12,8 @@ import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import roboguice.inject.InjectView;
 
 public class RapidTestReportGridViewHolder extends BaseViewHolder {
+    public static final int MAX_INPUT_LENGTH = 9;
+    public static final int MAX_TOTAL_LENGTH = 11;
     @InjectView(R.id.et_consume_rapid_test_report_grid)
     EditText etConsume;
 
@@ -31,8 +34,19 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         this.quantityChangeListener = quantityChangeListener;
         populateData(viewModel);
         setEditable(editable);
+        updateEditTextMaxLength();
         setTextWatcher();
         updateAlert();
+    }
+
+    private void updateEditTextMaxLength() {
+        if (isInTotalRow()) {
+            etConsume.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_TOTAL_LENGTH)});
+            etPositive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_TOTAL_LENGTH)});
+        } else {
+            etConsume.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_INPUT_LENGTH)});
+            etPositive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_INPUT_LENGTH)});
+        }
     }
 
     public void setEditable(Boolean editable) {
@@ -83,9 +97,13 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     public void updateTotal(boolean isConsume) {
-        if (quantityChangeListener != null) {
+        if (!isInTotalRow()) {
             quantityChangeListener.updateTotal(viewModel.getColumnCode(), isConsume);
         }
+    }
+
+    public boolean isInTotalRow() {
+        return quantityChangeListener == null;
     }
 
     public interface QuantityChangeListener {

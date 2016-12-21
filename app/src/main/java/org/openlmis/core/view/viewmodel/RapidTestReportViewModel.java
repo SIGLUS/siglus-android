@@ -166,13 +166,13 @@ public class RapidTestReportViewModel implements Serializable {
 
     public void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume) {
         itemTotal.clearValue(columnCode, isConsume);
-        int total = 0;
+        long total = 0;
         for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
             RapidTestFormGridViewModel gridViewModel = itemViewModel.getRapidTestFormGridViewModelMap().get(columnCode.toString());
             if (isConsume && !gridViewModel.getConsumptionValue().equals("")) {
-                total += Integer.parseInt(gridViewModel.getConsumptionValue());
+                total += Long.parseLong(gridViewModel.getConsumptionValue());
             } else if (!isConsume && !gridViewModel.getPositiveValue().equals("")) {
-                total += Integer.parseInt(gridViewModel.getPositiveValue());
+                total += Long.parseLong(gridViewModel.getPositiveValue());
             }
         }
         if (isConsume) {
