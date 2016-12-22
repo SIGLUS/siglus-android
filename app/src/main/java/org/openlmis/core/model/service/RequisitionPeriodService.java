@@ -40,12 +40,7 @@ public class RequisitionPeriodService {
         periodBeginDate = new DateTime(lastRnR.getPeriodEnd());
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            int offsetMonth = DateUtil.calculateMonthOffset(new DateTime(LMISApp.getInstance().getCurrentTimeMillis()), periodBeginDate);
-            if (offsetMonth == 1) {
-                return Period.generateForTraining(Calendar.getInstance().getTime());
-            } else if (offsetMonth == 0) {
-                periodBeginDate = periodBeginDate.plusDays(1);
-            }
+            return Period.generateForTraining(periodBeginDate.plusDays(1).toDate());
         }
 
         if (physicalInventoryDate == null) {
@@ -120,6 +115,11 @@ public class RequisitionPeriodService {
 
         DateTime currentMonthInventoryBeginDate;
         currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            if (stockRepository.queryEarliestStockMovementDateByProgram(programCode) != null) {
+                return DateUtil.calculateMonthOffset(new DateTime(), nextPeriodInScheduleBegin) + 1;
+            }
+        }
 
         return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(), currentMonthInventoryBeginDate.toDate());
     }

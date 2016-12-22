@@ -13,7 +13,6 @@ import com.google.inject.Inject;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
@@ -55,10 +54,9 @@ public class IncompleteRequisitionBanner extends LinearLayout {
         try {
             int periodOffsetMonthMmia = requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
             int periodOffsetMonthVia = requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0) {
                 this.setVisibility(View.GONE);
-            } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0) {
-                this.setVisibility(View.GONE);
+                return;
             } else if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 1) {
                 String periodRange = getPeriodRangeForIncompleteRequisition(Constants.VIA_PROGRAM_CODE);
                 txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.via_and_mmia_requisition_alert, periodRange)));
@@ -75,6 +73,7 @@ public class IncompleteRequisitionBanner extends LinearLayout {
             } else {
                 txMissedRequisition.setText(getResources().getString(R.string.via_and_mmia_requisitions_for_multiple_periods_alert));
             }
+            this.setVisibility(VISIBLE);
         } catch (LMISException e) {
             e.printStackTrace();
         }
