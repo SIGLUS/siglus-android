@@ -358,7 +358,7 @@
     <string name="label_add_lot_expire">Quando é que o lote expira?</string>
     <string name="msg_empty_lot_number">Número do lote não pode estar em branco</string>
     <string name="wrong_expire_date_warning">O prazo de validade que você digitou está no passado. Por favor, verifique a data antes de adicionar o lote.</string>
-    <string name="btn_add_new_lot">+ Adicionar novo lote</string>
+    <string name="btn_add_new_lot">Adicionar novo lote</string>
     <string name="title_add_new_lot">Adicionar novo lote para</string>
     <string name="hint_lot_info"><![CDATA[Número de lote & prazo de validade]]></string>
     <string name="hint_lot_amount">Quantidade</string>
