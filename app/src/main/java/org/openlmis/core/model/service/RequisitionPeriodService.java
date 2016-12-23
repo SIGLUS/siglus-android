@@ -120,7 +120,7 @@ public class RequisitionPeriodService {
         DateTime currentMonthInventoryBeginDate;
         currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            if (stockRepository.queryEarliestStockMovementDateByProgram(programCode) != null) {
+            if (stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode) != null) {
                 return DateUtil.calculateMonthOffset(new DateTime(), nextPeriodInScheduleBegin) + 1;
             }
         }
