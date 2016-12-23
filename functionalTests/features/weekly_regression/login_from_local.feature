@@ -21,5 +21,3 @@ Feature: Log in from local
     Then I try to log in with "superuser" "password1"
     And I wait up to 180 seconds for "Stock Card Overview" to appear
     And I enable wifi
-
-    #TODO to be moved to weekly test

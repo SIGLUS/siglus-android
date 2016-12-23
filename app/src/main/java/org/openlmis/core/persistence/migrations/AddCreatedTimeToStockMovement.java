@@ -53,7 +53,7 @@ public class AddCreatedTimeToStockMovement extends Migration {
         try {
             initCreatedTime();
         }catch (LMISException e){
-            //TODO
+            e.reportToFabric();
         }
     }
 
