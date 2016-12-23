@@ -30,9 +30,4 @@ public class ProgramDataFormItem extends BaseModel {
         this.programDataColumn = programDataColumn;
         this.value = value;
     }
-
-    @Override
-    public String toString() {
-        return "ProgramDataFormItem";
-    }
 }

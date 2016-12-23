@@ -17,9 +17,4 @@ public class ProgramDataFormSignature extends Signature {
         super(signature, type);
         this.form = form;
     }
-
-    @Override
-    public String toString() {
-        return "ProgramDataFormSignature";
-    }
 }
