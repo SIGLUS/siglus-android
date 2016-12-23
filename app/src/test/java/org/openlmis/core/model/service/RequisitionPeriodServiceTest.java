@@ -15,6 +15,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -42,6 +43,7 @@ public class RequisitionPeriodServiceTest {
     private RequisitionPeriodService requisitionPeriodService;
     private Program programMMIA;
     private InventoryRepository mockInventoryRepository;
+    private StockMovementRepository mockStockMovementRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -49,6 +51,7 @@ public class RequisitionPeriodServiceTest {
         mockRnrFormRepository = mock(RnrFormRepository.class);
         mockStockRepository = mock(StockRepository.class);
         mockInventoryRepository = mock(InventoryRepository.class);
+        mockStockMovementRepository = mock(StockMovementRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         requisitionPeriodService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RequisitionPeriodService.class);
 
@@ -75,7 +78,7 @@ public class RequisitionPeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodOfJan21ToFebWhenRnrNotExists() throws Exception {
-        when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-02-17").toDate());
+        when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-02-17").toDate());
 
         Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2016-01-21")));
@@ -84,7 +87,7 @@ public class RequisitionPeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodOfFeb18ToMarWhenRnrNotExists() throws Exception {
-        when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(DateUtil.parseString("2016-02-18 13:00:00", DateUtil.DATE_TIME_FORMAT));
+        when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(DateUtil.parseString("2016-02-18 13:00:00", DateUtil.DATE_TIME_FORMAT));
 
         Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
 
@@ -94,7 +97,7 @@ public class RequisitionPeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodOfFeb21ToMarWhenRnrNotExists() throws Exception {
-        when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-02-26").toDate());
+        when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-02-26").toDate());
 
         Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2016-02-21")));
@@ -169,7 +172,7 @@ public class RequisitionPeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodOfDes21ToJanWhenRnrNotExists() throws Exception {
-        when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-01-06").toDate());
+        when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-01-06").toDate());
 
         Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2015-12-21")));
@@ -180,7 +183,7 @@ public class RequisitionPeriodServiceTest {
     public void shouldGeneratePeriodOfDes19ToJanWhenRnrNotExists() throws Exception {
         DateTime dateTime = new DateTime("2015-12-19").plusMonths(1);
         DateTime expectedPeriodEnd = DateUtil.cutTimeStamp(dateTime.withDate(dateTime.getYear(), dateTime.getMonthOfYear(), Period.END_DAY));
-        when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2015-12-19").toDate());
+        when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2015-12-19").toDate());
 
         Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2015-12-19")));
@@ -214,6 +217,7 @@ public class RequisitionPeriodServiceTest {
             bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(InventoryRepository.class).toInstance(mockInventoryRepository);
+            bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
         }
     }
 }

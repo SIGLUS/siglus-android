@@ -37,6 +37,7 @@ import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
@@ -70,6 +71,9 @@ public class SyncUpManager {
 
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    StockMovementRepository stockMovementRepository;
 
     @Inject
     ProductRepository productRepository;
@@ -169,7 +173,7 @@ public class SyncUpManager {
 
     public boolean syncStockCards() {
         try {
-            List<StockMovementItem> stockMovementItems = stockRepository.listUnSynced();
+            List<StockMovementItem> stockMovementItems = stockMovementRepository.listUnSynced();
             if (stockMovementItems.isEmpty()) {
                 return false;
             }
@@ -192,7 +196,7 @@ public class SyncUpManager {
 
     public boolean fakeSyncStockCards() {
         try {
-            List<StockMovementItem> stockMovementItems = stockRepository.listUnSynced();
+            List<StockMovementItem> stockMovementItems = stockMovementRepository.listUnSynced();
             if (stockMovementItems.isEmpty()) {
                 return false;
             }
@@ -213,7 +217,7 @@ public class SyncUpManager {
             return;
         }
         try {
-            List<String> unSyncedStockCardCodes = FluentIterable.from(stockRepository.listUnSynced()).transform(new Function<StockMovementItem, String>() {
+            List<String> unSyncedStockCardCodes = FluentIterable.from(stockMovementRepository.listUnSynced()).transform(new Function<StockMovementItem, String>() {
                 @Override
                 public String apply(StockMovementItem stockMovementItem) {
                     return stockMovementItem.getStockCard().getProduct().getCode();
@@ -237,7 +241,7 @@ public class SyncUpManager {
             return;
         }
         try {
-            List<String> unSyncedStockCardCodes = FluentIterable.from(stockRepository.listUnSynced()).transform(new Function<StockMovementItem, String>() {
+            List<String> unSyncedStockCardCodes = FluentIterable.from(stockMovementRepository.listUnSynced()).transform(new Function<StockMovementItem, String>() {
                 @Override
                 public String apply(StockMovementItem stockMovementItem) {
                     return stockMovementItem.getStockCard().getProduct().getCode();
@@ -361,7 +365,7 @@ public class SyncUpManager {
             }
         });
 
-        stockRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockMovementItems);
+        stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockMovementItems);
     }
 
     private void markRnrFormSynced(RnRForm rnRForm) {

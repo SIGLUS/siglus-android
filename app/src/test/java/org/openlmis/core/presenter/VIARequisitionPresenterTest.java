@@ -50,6 +50,7 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.DateUtil;
@@ -95,6 +96,7 @@ public class VIARequisitionPresenterTest {
     private ProductRepository mockProductRepository;
     private StockRepository mockStockRepository;
     private RnrFormItemRepository mockRnrFormItemRepository;
+    private StockMovementRepository mockStockMovementRepository;
 
     @Before
     public void setup() throws ViewNotMatchException {
@@ -102,6 +104,7 @@ public class VIARequisitionPresenterTest {
         mockProductRepository = mock(ProductRepository.class);
         mockStockRepository = mock(StockRepository.class);
         mockRnrFormItemRepository = mock(RnrFormItemRepository.class);
+        mockStockMovementRepository = mock(StockMovementRepository.class);
 
         VIARequisitionFragment = mock(org.openlmis.core.view.fragment.VIARequisitionFragment.class);
 
@@ -649,7 +652,7 @@ public class VIARequisitionPresenterTest {
         StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().build();
 
         when(mockStockRepository.queryStockCardByProductId(product1.getId())).thenReturn(stockCard);
-        when(mockStockRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd)).thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+        when(mockStockMovementRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd)).thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
 
         presenter.requisitionFormItemViewModels = new ArrayList<>();
         presenter.periodEndDate = periodEnd;
@@ -699,6 +702,7 @@ public class VIARequisitionPresenterTest {
             bind(ProductRepository.class).toInstance(mockProductRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(RnrFormItemRepository.class).toInstance(mockRnrFormItemRepository);
+            bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
         }
     }
 }

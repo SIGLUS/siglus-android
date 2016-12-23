@@ -8,19 +8,23 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
+
 import java.util.Date;
 
 public class ProgramDataFormPeriodService {
     @Inject
     StockRepository stockRepository;
+    @Inject
+    private StockMovementRepository stockMovementRepository;
 
     public Period getFirstStandardPeriod() throws LMISException {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             return Period.generateForTraining(new Date());
         }
 
-        StockMovementItem firstStockMovement = stockRepository.getFirstStockMovement();
+        StockMovementItem firstStockMovement = stockMovementRepository.getFirstStockMovement();
         if (firstStockMovement != null) {
             Period firstPeriod = firstStockMovement.getMovementPeriod();
 

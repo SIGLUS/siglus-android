@@ -61,6 +61,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -80,6 +81,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     RequisitionPeriodService mockRequisitionPeriodService;
     private Program program;
     RegimenItemRepository regimenItemRepository;
+    private StockMovementRepository mockStockMovementRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -89,6 +91,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         mockRequisitionPeriodService = mock(RequisitionPeriodService.class);
         productProgramRepository = mock(ProductProgramRepository.class);
         regimenItemRepository = mock(RegimenItemRepository.class);
+        mockStockMovementRepository = mock(StockMovementRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         mmiaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
@@ -116,7 +119,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem stockMovementItem3 = createMovementItem(MovementReasonManager.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
 
         when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
-        when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
+        when(mockStockMovementRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
                 .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
         when(mockStockRepository.getStockCardsBeforePeriodEnd(any(RnRForm.class))).thenReturn(stockCards);
 
@@ -217,7 +220,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         Lot lot = new Lot();
         lot.setExpirationDate(DateUtil.parseString("Feb 2015", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
-        when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+        when(mockStockMovementRepository.queryStockMovementsByTimeRange(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
 
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         RnrFormItem rnrFormItemByPeriod = mmiaRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
@@ -262,6 +265,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             bind(RequisitionPeriodService.class).toInstance(mockRequisitionPeriodService);
             bind(ProductProgramRepository.class).toInstance(productProgramRepository);
             bind(RegimenItemRepository.class).toInstance(regimenItemRepository);
+            bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
         }
     }
 }

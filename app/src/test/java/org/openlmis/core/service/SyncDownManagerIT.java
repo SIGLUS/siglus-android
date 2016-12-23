@@ -19,6 +19,7 @@ import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.LMISRestManagerMock;
@@ -48,6 +49,7 @@ public class SyncDownManagerIT {
     private User defaultUser;
     private SharedPreferenceMgr sharedPreferenceMgr;
     private ProgramDataFormRepository programDataFormRepository;
+    private StockMovementRepository stockMovementRepository;
 
     @Before
     public void setup() {
@@ -56,6 +58,8 @@ public class SyncDownManagerIT {
         productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductProgramRepository.class);
         stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
         lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LotRepository.class);
+        programDataFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramDataFormRepository.class);
+        stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementRepository.class);
         syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncDownManager.class);
         sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
 
@@ -128,7 +132,7 @@ public class SyncDownManagerIT {
 
         List<StockCard> stockCards = stockRepository.list();
         assertEquals(1, stockCards.size());
-        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsHistory(stockCards.get(0).getId(), 0, 1000);
+        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsHistory(stockCards.get(0).getId(), (long) 0, (long) 1000);
         assertEquals(1, stockMovementItems.size());
 
         Product product = productRepository.getByCode("01A01");

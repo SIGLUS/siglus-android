@@ -31,6 +31,7 @@ import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -70,6 +71,9 @@ public class StockMovementsPresenter extends Presenter {
 
     @Inject
     private ProductRepository productRepository;
+
+    @Inject
+    private StockMovementRepository stockMovementRepository;
 
     public StockMovementsPresenter() {
     }
@@ -121,7 +125,7 @@ public class StockMovementsPresenter extends Presenter {
             @Override
             public void call(final Subscriber<? super List<StockMovementViewModel>> subscriber) {
                 try {
-                    List<StockMovementViewModel> list = from(stockRepository.listLastFive(stockCard.getId())).transform(new Function<StockMovementItem, StockMovementViewModel>() {
+                    List<StockMovementViewModel> list = from(stockMovementRepository.listLastFiveStockMovements(stockCard.getId())).transform(new Function<StockMovementItem, StockMovementViewModel>() {
                         @Override
                         public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
                             return new StockMovementViewModel(stockMovementItem);

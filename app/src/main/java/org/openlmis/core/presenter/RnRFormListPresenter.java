@@ -36,6 +36,7 @@ import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
@@ -79,6 +80,9 @@ public class RnRFormListPresenter extends Presenter {
 
     @Inject
     RequisitionPeriodService requisitionPeriodService;
+
+    @Inject
+    private StockMovementRepository stockMovementRepository;
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
@@ -141,7 +145,7 @@ public class RnRFormListPresenter extends Presenter {
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            if (stockRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
+            if (stockMovementRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
                 return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
             }
         }

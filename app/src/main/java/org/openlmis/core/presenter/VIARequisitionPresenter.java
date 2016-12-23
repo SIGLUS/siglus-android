@@ -37,6 +37,7 @@ import org.openlmis.core.model.helper.RnrFormHelper;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.ToastUtil;
@@ -93,6 +94,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Inject
     private RnrFormHelper rnrFormHelper;
+
+    @Inject
+    private StockMovementRepository stockMovementRepository;
 
     public VIARequisitionPresenter() {
         requisitionFormItemViewModels = new ArrayList<>();
@@ -277,7 +281,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     private void populateRnrItemWithQuantities(RnrFormItem rnrFormItem, Date periodBegin, Date periodEnd) throws LMISException {
         StockCard stockCard = stockRepository.queryStockCardByProductId(rnrFormItem.getProduct().getId());
-        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd);
+        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd);
         if (stockMovementItems.size() > 0) {
             rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
             rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);

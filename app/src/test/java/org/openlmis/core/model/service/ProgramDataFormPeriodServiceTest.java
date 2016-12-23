@@ -11,6 +11,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -29,10 +30,12 @@ public class ProgramDataFormPeriodServiceTest {
     private StockRepository mockStockRepository;
 
     ProgramDataFormPeriodService periodService;
+    private StockMovementRepository mockStockMovementRepository;
 
     @Before
     public void setup() throws LMISException {
         mockStockRepository = mock(StockRepository.class);
+        mockStockMovementRepository = mock(StockMovementRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         periodService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramDataFormPeriodService.class);
     }
@@ -44,7 +47,7 @@ public class ProgramDataFormPeriodServiceTest {
 
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementDate(DateUtil.parseString("2016-10-10", DateUtil.DB_DATE_FORMAT));
-        when(mockStockRepository.getFirstStockMovement()).thenReturn(stockMovementItem);
+        when(mockStockMovementRepository.getFirstStockMovement()).thenReturn(stockMovementItem);
 
         assertThat(periodService.getFirstStandardPeriod().getBegin(), is(new DateTime(DateUtil.parseString("2016-09-21", DateUtil.DB_DATE_FORMAT))));
         assertThat(periodService.getFirstStandardPeriod().getEnd(), is(new DateTime(DateUtil.parseString("2016-10-20", DateUtil.DB_DATE_FORMAT))));
@@ -52,7 +55,7 @@ public class ProgramDataFormPeriodServiceTest {
 
     @Test
     public void shouldNotGenerateFirstPeriodIfNoMovement() throws Exception {
-        when(mockStockRepository.getFirstStockMovement()).thenReturn(null);
+        when(mockStockMovementRepository.getFirstStockMovement()).thenReturn(null);
 
         assertNull(periodService.getFirstStandardPeriod());
     }
@@ -64,7 +67,7 @@ public class ProgramDataFormPeriodServiceTest {
 
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementDate(DateUtil.parseString("2016-10-10", DateUtil.DB_DATE_FORMAT));
-        when(mockStockRepository.getFirstStockMovement()).thenReturn(stockMovementItem);
+        when(mockStockMovementRepository.getFirstStockMovement()).thenReturn(stockMovementItem);
 
         assertNull(periodService.getFirstStandardPeriod());
     }
@@ -95,6 +98,7 @@ public class ProgramDataFormPeriodServiceTest {
         @Override
         protected void configure() {
             bind(StockRepository.class).toInstance(mockStockRepository);
+            bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
         }
     }
 }

@@ -9,6 +9,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 
@@ -23,6 +24,9 @@ public class RequisitionPeriodService {
 
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    private StockMovementRepository stockMovementRepository;
 
     public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
         List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode);
@@ -68,7 +72,7 @@ public class RequisitionPeriodService {
     }
 
     private DateTime calculatePeriodBeginDate(String programCode) throws LMISException {
-        DateTime initializeDateTime = new DateTime(stockRepository.queryEarliestStockMovementDateByProgram(programCode));
+        DateTime initializeDateTime = new DateTime(stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode));
         int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 
         Calendar currentBeginDate = Calendar.getInstance();

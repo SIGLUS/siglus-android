@@ -26,7 +26,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.internal.matchers.NotNull;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
@@ -59,11 +58,9 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
-import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
 import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
@@ -80,6 +77,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     private ProgramRepository programRepository;
     private ProductProgramRepository productProgramRepository;
     private StockCard stockCard;
+    private StockMovementRepository stockMovementRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -89,6 +87,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
         productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductProgramRepository.class);
         lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LotRepository.class);
+        stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementRepository.class);
 
         saveTestProduct();
 
@@ -96,40 +95,20 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldSaveStockCardsSuccessful() throws LMISException {
+    public void shouldCreateOrUpdateStockCard() throws LMISException {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(1);
         stockCard.setProduct(product);
 
         stockRepository.createOrUpdate(stockCard);
+        assertEquals(stockCard, stockRepository.list().get(0));
 
-        assertThat(stockRepository.list().size(), is(1));
-        assertThat(stockRepository.list().get(0).getProduct(), is(NotNull.NOT_NULL));
+        stockCard.setStockOnHand(10000);
+        stockRepository.createOrUpdate(stockCard);
+        assertEquals(stockCard, stockRepository.list().get(0));
     }
 
-    @Test
-    public void shouldBatchSaveStockCardAndMovementSuccessful() throws LMISException {
-        ArrayList<StockCard> stockCards = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            StockCard stockCard = new StockCard();
-            stockCard.setStockOnHand(i);
-            product.setArchived(true);
-            stockCard.setProduct(product);
-            stockCard.setStockMovementItemsWrapper(Arrays.asList(stockCard.generateInitialStockMovementItem()));
-
-            stockCards.add(stockCard);
-        }
-
-        stockRepository.batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(stockCards);
-
-        List<StockCard> stockCardList = stockRepository.list();
-
-        assertThat(stockCardList.size(), is(10));
-        assertThat(stockCardList.get(0).getProduct(), is(NotNull.NOT_NULL));
-        assertThat(stockCardList.get(0).getForeignStockMovementItems().size(), is(1));
-        assertTrue(stockCardList.get(0).getProduct().isArchived());
-    }
-
+    //Todo to be moved
     @Test
     public void shouldGetCorrectDataAfterSavedStockMovementItem() throws Exception {
         //given saved
@@ -137,7 +116,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem savedMovementItem = savedStockCard.getForeignStockMovementItems().iterator().next();
 
         //when retrieve
-        List<StockMovementItem> retrievedStockMovementItems = stockRepository.listLastFive(savedStockCard.getId());
+        List<StockMovementItem> retrievedStockMovementItems = stockMovementRepository.listLastFiveStockMovements(savedStockCard.getId());
         StockMovementItem retrievedMovementItem = retrievedStockMovementItems.get(retrievedStockMovementItems.size() - 1);
 
         //then
@@ -149,22 +128,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertEquals(savedMovementItem.getReason(), retrievedMovementItem.getReason());
     }
 
-    @Test
-    public void shouldListUnsyncedStockMovementItems() throws LMISException, ParseException {
-        //given one movement was saved but NOT SYNCED
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
-        assertThat(stockCard.getForeignStockMovementItems().size(), is(1));
-        assertThat(stockRepository.listUnSynced().size(), is(1));
 
-        //when save another SYNCED movement
-        createMovementItem(RECEIVE, 100, stockCard, new Date(), DateUtil.today(), true);
-
-        //then
-        assertThat(stockCard.getForeignStockMovementItems().size(), is(2));
-        assertThat(stockRepository.listUnSynced(), notNullValue());
-        assertThat(stockRepository.listUnSynced().size(), is(1));
-    }
-
+    //// TODO: to be moved
     @Test
     public void shouldBatchUpdateStockMovements() throws LMISException, ParseException {
         //given
@@ -183,7 +148,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         for (StockMovementItem entry : items) {
             entry.setSynced(true);
         }
-        stockRepository.batchCreateOrUpdateStockMovementsAndLotInfo(items);
+        stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotInfo(items);
 
         //then
         stockCard = stockRepository.list().get(0);
@@ -250,6 +215,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository.refresh(stockCard);
     }
 
+    //TODO to be moved
     @Test
     public void shouldGetFirstItemWhenMovementDateDiff() throws Exception {
         //given
@@ -264,15 +230,16 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         DateTime earlierTime = dateTime.minusMonths(1);
         StockMovementItem movementEarlierItem = getStockMovementItem(dateTime, earlierTime);
         stockMovementItems.add(movementEarlierItem);
-        stockRepository.batchCreateOrUpdateStockMovementsAndLotInfo(stockMovementItems);
+        stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotInfo(stockMovementItems);
 
         //when
-        StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
+        StockMovementItem stockMovementItem = stockMovementRepository.queryFirstStockMovementItem(stockCard);
 
         //then
         assertThat(stockMovementItem.getId(), is(movementEarlierItem.getId()));
     }
 
+    //TODO to be moved
     @Test
     public void shouldGetFirstItemWhenCreatedTimeDiff() throws Exception {
         //given
@@ -287,15 +254,16 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem createdEarlierMovementItem = getStockMovementItem(earlierTime, dateTime);
         stockMovementItems.add(createdEarlierMovementItem);
 
-        stockRepository.batchCreateOrUpdateStockMovementsAndLotInfo(stockMovementItems);
+        stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotInfo(stockMovementItems);
 
         //when
-        StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
+        StockMovementItem stockMovementItem = stockMovementRepository.queryFirstStockMovementItem(stockCard);
 
         //then
         assertThat(stockMovementItem.getId(), is(createdEarlierMovementItem.getId()));
     }
 
+    //TODO to be moved
     @Test
     public void shouldGetStockMovementsCreatedBetweenTwoDatesExclusiveOfBeginDate() throws LMISException {
         stockCard.setStockOnHand(100);
@@ -305,8 +273,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         createMovementItem(ISSUE, 3, stockCard, DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT), false);
         createMovementItem(ISSUE, 4, stockCard, DateUtil.parseString("2020-02-25 13:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-02-25 13:00:00", DATE_TIME_FORMAT), false);
 
-        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard,
-                movementItem.getCreatedTime(), DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT));
+        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsByPeriodDates(stockCard, movementItem.getCreatedTime(), DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT));
 
         Assert.assertThat(stockMovementItems.size(), is(2));
     }
@@ -384,6 +351,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(stockCard.getProduct().isArchived(), is(false));
     }
 
+
+    //TODO to be moved
     @Test
     public void shouldQueryEarliestStockMovementItemCreatedTimeByProgram() throws Exception {
         Program mmia = new ProgramBuilder().setProgramCode("MMIA").build();
@@ -423,7 +392,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         Date expectedDate = new DateTime().withDate(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()).toDate();
         createMovementItem(ISSUE, 100, stockCard2, new DateTime("2018-03-02").toDate(), new DateTime("2018-03-02").toDate(), false);
 
-        Date earliestDate = stockRepository.queryEarliestStockMovementDateByProgram(via.getProgramCode());
+        Date earliestDate = stockMovementRepository.queryEarliestStockMovementDateByProgram(via.getProgramCode());
         Assert.assertThat(DateUtil.cutTimeStamp(new DateTime(earliestDate)), is(DateUtil.cutTimeStamp(new DateTime(expectedDate))));
     }
 
@@ -550,6 +519,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertEquals(1, stockCardQueried.getStockMovementItemsWrapper().get(0).getLotMovementItemListWrapper().size());
     }
 
+
+    //TODO to be moved
     @Test
     public void shouldGetFirstStockMovementItem() throws Exception {
         StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
@@ -557,7 +528,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         Date firstMovementDate = DateUtil.parseString("10/09/2014", DateUtil.SIMPLE_DATE_FORMAT);
         createMovementItem(ISSUE, 100, stockCard, new Date(), firstMovementDate, false);
 
-        StockMovementItem stockMovementItem = stockRepository.getFirstStockMovement();
+        StockMovementItem stockMovementItem = stockMovementRepository.getFirstStockMovement();
         assertThat(stockMovementItem.getMovementDate(), is(firstMovementDate));
     }
 }

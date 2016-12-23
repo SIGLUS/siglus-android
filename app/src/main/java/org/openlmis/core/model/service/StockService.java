@@ -12,6 +12,7 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Optional;
@@ -34,12 +35,14 @@ public class StockService {
     StockRepository stockRepository;
     @Inject
     CmmRepository cmmRepository;
+    @Inject
+    StockMovementRepository stockMovementRepository;
 
     public StockService() {
     }
 
     protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
-        StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
+        StockMovementItem stockMovementItem = stockMovementRepository.queryFirstStockMovementItem(stockCard);
         if (stockMovementItem == null) {
             throw new StockMovementIsNullException(stockCard);
         }
@@ -117,8 +120,7 @@ public class StockService {
     private Long calculateTotalIssuesPerPeriod(StockCard stockCard, Period period) {
         long totalIssued = 0;
         try {
-            List<StockMovementItem> stockMovementItems = stockRepository
-                    .queryStockItems(stockCard, period.getBegin().toDate(), period.getEnd().toDate());
+            List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockMovementsByTimeRange(stockCard.getId(), period.getBegin().toDate(), period.getEnd().toDate());
             //the query above is actually wasteful, the movement items have already been queried and associated to the stock card
 
             if (periodHasStockOut(stockCard, stockMovementItems, period)) {

@@ -70,6 +70,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -91,6 +92,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     private ProductProgramRepository mockProductProgramRepository;
 
     private RequisitionPeriodService mockRequisitionPeriodService;
+    private StockMovementRepository mockStockMovementRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -99,6 +101,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         mockRnrFormItemRepository = mock(RnrFormItemRepository.class);
         mockRequisitionPeriodService = mock(RequisitionPeriodService.class);
         mockProductProgramRepository = mock(ProductProgramRepository.class);
+        mockStockMovementRepository = mock(StockMovementRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
@@ -293,8 +296,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementDate(dateTime.toDate());
         stockMovementItem.setCreatedTime(new Date());
-        when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
-        when(mockStockRepository.queryStockItemsByPeriodDates(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
+        when(mockStockMovementRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
+        when(mockStockMovementRepository.queryStockItemsByPeriodDates(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
 
         ProductProgram productProgram = new ProductProgram();
         productProgram.setCategory("Adult");
@@ -400,7 +403,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         Lot lot = new Lot();
         lot.setExpirationDate(DateUtil.parseString("Feb 2015", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
-        when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+        when(mockStockMovementRepository.queryStockMovementsByTimeRange(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
 
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
@@ -420,7 +423,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldInitRnrFormItemWithoutMovementAndMovementIsNull() throws Exception {
         rnrFormRepository = spy(rnrFormRepository);
         StockCard stockCard = new StockCard();
-        when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+        when(mockStockMovementRepository.queryStockMovementsByTimeRange(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
         doReturn(new ArrayList<>()).when(rnrFormRepository).listInclude(any(RnRForm.Emergency.class), anyString());
 
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
@@ -564,6 +567,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             bind(RnrFormItemRepository.class).toInstance(mockRnrFormItemRepository);
             bind(RequisitionPeriodService.class).toInstance(mockRequisitionPeriodService);
             bind(ProductProgramRepository.class).toInstance(mockProductProgramRepository);
+            bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
         }
     }
 

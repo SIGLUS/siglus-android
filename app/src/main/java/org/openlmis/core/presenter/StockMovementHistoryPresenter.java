@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -59,6 +60,9 @@ public class StockMovementHistoryPresenter extends Presenter {
     public static final long MAXROWS = 30L;
     private long stockCardId;
 
+    @Inject
+    private StockMovementRepository stockMovementRepository;
+
     @Override
     public void attachView(BaseView v) {
         this.view = (StockMovementHistoryView) v;
@@ -69,7 +73,7 @@ public class StockMovementHistoryPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
                 try {
-                    List<StockMovementViewModel> list = from(stockRepository.queryStockItemsHistory(stockCardId, startIndex, MAXROWS)).transform(new Function<StockMovementItem, StockMovementViewModel>() {
+                    List<StockMovementViewModel> list = from(stockMovementRepository.queryStockItemsHistory(stockCardId, startIndex, MAXROWS)).transform(new Function<StockMovementItem, StockMovementViewModel>() {
                         @Override
                         public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
                             return new StockMovementViewModel(stockMovementItem);
