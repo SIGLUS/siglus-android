@@ -77,6 +77,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -619,7 +620,9 @@ public class VIARequisitionPresenterTest {
 
         when(mockProductRepository.getByCode("P1")).thenReturn(new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(false).build());
         when(mockProductRepository.getByCode("P2")).thenReturn(new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(true).build());
-
+        StockCard stockCard = new StockCard();
+        stockCard.setId(1L);
+        when(mockStockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
         presenter.populateAdditionalDrugsViewModels(newArrayList(rnrFormItem1, rnrFormItem2), new Date());
 
         assertThat(presenter.requisitionFormItemViewModels.size(), is(2));
