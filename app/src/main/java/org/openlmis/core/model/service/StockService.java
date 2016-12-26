@@ -42,7 +42,7 @@ public class StockService {
     }
 
     protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
-        StockMovementItem stockMovementItem = stockMovementRepository.queryFirstStockMovementItem(stockCard);
+        StockMovementItem stockMovementItem = stockMovementRepository.queryFirstStockMovementByStockCardId(stockCard.getId());
         if (stockMovementItem == null) {
             throw new StockMovementIsNullException(stockCard);
         }
@@ -120,7 +120,7 @@ public class StockService {
     private Long calculateTotalIssuesPerPeriod(StockCard stockCard, Period period) {
         long totalIssued = 0;
         try {
-            List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockMovementsByTimeRange(stockCard.getId(), period.getBegin().toDate(), period.getEnd().toDate());
+            List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockMovementsByMovementDate(stockCard.getId(), period.getBegin().toDate(), period.getEnd().toDate());
             //the query above is actually wasteful, the movement items have already been queried and associated to the stock card
 
             if (periodHasStockOut(stockCard, stockMovementItems, period)) {

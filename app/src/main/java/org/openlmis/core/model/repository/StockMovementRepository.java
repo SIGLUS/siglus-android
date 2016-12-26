@@ -9,7 +9,6 @@ import com.j256.ormlite.dao.Dao;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.LotMovementItem;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
@@ -72,7 +71,6 @@ public class StockMovementRepository {
         stockMovementItem.setCreatedAt(new Date());
         stockMovementItem.setUpdatedAt(new Date());
     }
-
 
     public void batchCreateStockMovementItemAndLotItems(final StockMovementItem stockMovementItem) throws LMISException {
         stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
@@ -144,7 +142,7 @@ public class StockMovementRepository {
         return earliestDate;
     }
 
-    public StockMovementItem queryFirstStockMovementItem(final StockCard stockCard) throws LMISException {
+    public StockMovementItem queryFirstStockMovementByStockCardId(final long stockCardId) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
             @Override
             public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
@@ -152,13 +150,13 @@ public class StockMovementRepository {
                         .orderBy("movementDate", true)
                         .orderBy("createdTime", true)
                         .where()
-                        .eq("stockCard_id", stockCard.getId())
+                        .eq("stockCard_id", stockCardId)
                         .queryForFirst();
             }
         });
     }
 
-    public List<StockMovementItem> queryStockItemsHistory(final long stockCardId, final long startIndex, final long maxRows) throws LMISException {
+    public List<StockMovementItem> queryStockMovementHistory(final long stockCardId, final long startIndex, final long maxRows) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
@@ -167,7 +165,7 @@ public class StockMovementRepository {
         });
     }
 
-    public List<StockMovementItem> queryStockItemsByPeriodDates(final StockCard stockCard, final Date periodBeginDate, final Date periodEndDate) throws LMISException {
+    public List<StockMovementItem> queryStockItemsByCreatedDate(final long stockCardId, final Date periodBeginDate, final Date periodEndDate) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
@@ -175,7 +173,7 @@ public class StockMovementRepository {
                         .orderBy("movementDate", true)
                         .orderBy("createdTime", true)
                         .where()
-                        .eq("stockCard_id", stockCard.getId())
+                        .eq("stockCard_id", stockCardId)
                         .and().gt("createdTime", periodBeginDate)//difference from the api above
                         .and().le("createdTime", periodEndDate)
                         .query();
@@ -183,7 +181,7 @@ public class StockMovementRepository {
         });
     }
 
-    public List<StockMovementItem> queryStockMovementsByTimeRange(final long stockCardId, final Date startDate, final Date endDate) throws LMISException {
+    public List<StockMovementItem> queryStockMovementsByMovementDate(final long stockCardId, final Date startDate, final Date endDate) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {

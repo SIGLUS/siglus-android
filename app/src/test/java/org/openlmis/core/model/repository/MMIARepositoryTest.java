@@ -119,7 +119,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem stockMovementItem3 = createMovementItem(MovementReasonManager.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
 
         when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
-        when(mockStockMovementRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
+        when(mockStockMovementRepository.queryStockItemsByCreatedDate(anyLong(), any(Date.class), any(Date.class)))
                 .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
         when(mockStockRepository.getStockCardsBeforePeriodEnd(any(RnRForm.class))).thenReturn(stockCards);
 
@@ -220,7 +220,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         Lot lot = new Lot();
         lot.setExpirationDate(DateUtil.parseString("Feb 2015", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
-        when(mockStockMovementRepository.queryStockMovementsByTimeRange(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+        when(mockStockMovementRepository.queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
 
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         RnrFormItem rnrFormItemByPeriod = mmiaRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());

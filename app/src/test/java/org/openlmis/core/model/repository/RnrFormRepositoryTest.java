@@ -296,8 +296,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementDate(dateTime.toDate());
         stockMovementItem.setCreatedTime(new Date());
-        when(mockStockMovementRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
-        when(mockStockMovementRepository.queryStockItemsByPeriodDates(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
+        when(mockStockMovementRepository.queryFirstStockMovementByStockCardId(anyLong())).thenReturn(stockMovementItem);
+        when(mockStockMovementRepository.queryStockItemsByCreatedDate(stockCard.getId(), form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
 
         ProductProgram productProgram = new ProductProgram();
         productProgram.setCategory("Adult");
@@ -403,7 +403,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         Lot lot = new Lot();
         lot.setExpirationDate(DateUtil.parseString("Feb 2015", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
-        when(mockStockMovementRepository.queryStockMovementsByTimeRange(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+        when(mockStockMovementRepository.queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
 
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
@@ -423,7 +423,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldInitRnrFormItemWithoutMovementAndMovementIsNull() throws Exception {
         rnrFormRepository = spy(rnrFormRepository);
         StockCard stockCard = new StockCard();
-        when(mockStockMovementRepository.queryStockMovementsByTimeRange(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+        when(mockStockMovementRepository.queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
         doReturn(new ArrayList<>()).when(rnrFormRepository).listInclude(any(RnRForm.Emergency.class), anyString());
 
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());

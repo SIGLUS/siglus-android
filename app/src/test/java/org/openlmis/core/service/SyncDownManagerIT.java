@@ -132,7 +132,7 @@ public class SyncDownManagerIT {
 
         List<StockCard> stockCards = stockRepository.list();
         assertEquals(1, stockCards.size());
-        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsHistory(stockCards.get(0).getId(), (long) 0, (long) 1000);
+        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockMovementHistory(stockCards.get(0).getId(), 0L, 1000L);
         assertEquals(1, stockMovementItems.size());
 
         Product product = productRepository.getByCode("01A01");

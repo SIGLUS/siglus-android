@@ -73,7 +73,7 @@ public class StockMovementHistoryPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
                 try {
-                    List<StockMovementViewModel> list = from(stockMovementRepository.queryStockItemsHistory(stockCardId, startIndex, MAXROWS)).transform(new Function<StockMovementItem, StockMovementViewModel>() {
+                    List<StockMovementViewModel> list = from(stockMovementRepository.queryStockMovementHistory(stockCardId, startIndex, MAXROWS)).transform(new Function<StockMovementItem, StockMovementViewModel>() {
                         @Override
                         public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
                             return new StockMovementViewModel(stockMovementItem);

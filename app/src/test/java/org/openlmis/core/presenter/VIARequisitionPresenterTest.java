@@ -652,7 +652,7 @@ public class VIARequisitionPresenterTest {
         StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().build();
 
         when(mockStockRepository.queryStockCardByProductId(product1.getId())).thenReturn(stockCard);
-        when(mockStockMovementRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd)).thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+        when(mockStockMovementRepository.queryStockItemsByCreatedDate(stockCard.getId(), periodBegin, periodEnd)).thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
 
         presenter.requisitionFormItemViewModels = new ArrayList<>();
         presenter.periodEndDate = periodEnd;
