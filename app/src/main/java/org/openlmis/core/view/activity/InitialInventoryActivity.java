@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.jakewharton.rxbinding.view.RxView;
+
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InitialInventoryPresenter;
@@ -16,6 +18,8 @@ import org.openlmis.core.view.holder.InitialInventoryViewHolder;
 
 import roboguice.inject.ContentView;
 import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 @ContentView(R.layout.activity_inventory)
 public class InitialInventoryActivity extends InventoryActivity {
@@ -34,19 +38,7 @@ public class InitialInventoryActivity extends InventoryActivity {
     public void initUI() {
         super.initUI();
         btnSave.setVisibility(View.GONE);
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btnDone.setEnabled(false);
-                if (validateInventory()) {
-                    loading();
-                    Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
-                    subscriptions.add(subscription);
-                } else {
-                    btnDone.setEnabled(true);
-                }
-            }
-        });
+        bindButtonDoneEvent();
         if (isAddNewDrug) {
             setTitle(getResources().getString(R.string.title_add_new_drug));
         } else if (getSupportActionBar() != null) {
@@ -55,6 +47,26 @@ public class InitialInventoryActivity extends InventoryActivity {
 
         initRecyclerView();
         Subscription subscription = presenter.loadInventory().subscribe(populateInventorySubscriber);
+        subscriptions.add(subscription);
+    }
+
+    private void bindButtonDoneEvent() {
+        RxView.clicks(btnDone).first(new Func1<Void, Boolean>() {
+            @Override
+            public Boolean call(Void aVoid) {
+                return validateInventory();
+            }
+        }).subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                goToNextMainPage();
+            }
+        });
+    }
+
+    private void goToNextMainPage() {
+        loading();
+        Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
         subscriptions.add(subscription);
     }
 
