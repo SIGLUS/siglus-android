@@ -3,7 +3,7 @@ Feature: Old version set up before upgrade
 
   Scenario: Install an older version of the app on tablet and have data available from the old version
     When I try to log in with "marracuene" "password1"
-    And I wait up to 180 seconds for "Stock Card Overview" to appear
+    And I wait up to 300 seconds for "Stock Card Overview" to appear
 
     And I press "Stock Card Overview"
     And I wait for 1 second
