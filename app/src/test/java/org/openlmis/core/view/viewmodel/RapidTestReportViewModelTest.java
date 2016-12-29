@@ -3,6 +3,7 @@ package org.openlmis.core.view.viewmodel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
@@ -72,7 +73,9 @@ public class RapidTestReportViewModelTest {
     @Test
     public void shouldConvertViewModelAndUpdateDataModel() throws Exception {
         viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
-        RapidTestFormItemViewModel itemViewModel = new RapidTestFormItemViewModel(RapidTestReportViewModel.ACC_EMERGENCY);
+        MovementReasonManager.MovementReason reason1 = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ACC_EMERGENCY", "Acc emergency");
+
+        RapidTestFormItemViewModel itemViewModel = new RapidTestFormItemViewModel(reason1);
         RapidTestFormGridViewModel gridViewModel = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVDetermine);
         gridViewModel.setPositiveValue("100");
         gridViewModel.setConsumptionValue("1200");
@@ -141,11 +144,11 @@ public class RapidTestReportViewModelTest {
     @Test
     public void shouldUpdateTotal() throws Exception {
         viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
-        viewModel.getItem_PNCTL().getGridHIVDetermine().setConsumptionValue("100");
+        viewModel.getItemViewModelList().get(0).getGridHIVDetermine().setConsumptionValue("100");
         viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, true);
         assertEquals("100", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
 
-        viewModel.getItem_ACC_EMERGENCY().getGridHIVDetermine().setConsumptionValue("2333");
+        viewModel.getItemViewModelList().get(1).getGridHIVDetermine().setConsumptionValue("2333");
         viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, true);
         assertEquals("2433", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
     }

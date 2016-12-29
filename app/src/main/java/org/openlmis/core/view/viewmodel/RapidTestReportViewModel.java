@@ -2,6 +2,7 @@ package org.openlmis.core.view.viewmodel;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
@@ -10,7 +11,7 @@ import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.Signature;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,21 +26,10 @@ public class RapidTestReportViewModel implements Serializable {
     Status status;
     private Date syncedTime;
 
-    RapidTestFormItemViewModel item_PUB_PHARMACY = new RapidTestFormItemViewModel(PUB_PHARMACY);
-    RapidTestFormItemViewModel item_MATERNITY = new RapidTestFormItemViewModel(MATERNITY);
-    RapidTestFormItemViewModel item_GENERAL_WARD = new RapidTestFormItemViewModel(GENERAL_WARD);
-    RapidTestFormItemViewModel item_ACC_EMERGENCY = new RapidTestFormItemViewModel(ACC_EMERGENCY);
-    RapidTestFormItemViewModel item_MOBILE_UNIT = new RapidTestFormItemViewModel(MOBILE_UNIT);
-    RapidTestFormItemViewModel item_LABORATORY = new RapidTestFormItemViewModel(LABORATORY);
-    RapidTestFormItemViewModel item_UATS = new RapidTestFormItemViewModel(UATS);
-    RapidTestFormItemViewModel item_PNCTL = new RapidTestFormItemViewModel(PNCTL);
-    RapidTestFormItemViewModel item_PAV = new RapidTestFormItemViewModel(PAV);
-    RapidTestFormItemViewModel item_DENTAL_WARD = new RapidTestFormItemViewModel(DENTAL_WARD);
+    MovementReasonManager movementReasonManager;
 
-    RapidTestFormItemViewModel itemTotal = new RapidTestFormItemViewModel(LMISApp.getInstance().getString(R.string.total));
-
-    List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(item_PUB_PHARMACY, item_MATERNITY, item_GENERAL_WARD, item_ACC_EMERGENCY, item_MOBILE_UNIT, item_LABORATORY, item_UATS, item_PNCTL, item_PAV, item_DENTAL_WARD, itemTotal);
-
+    RapidTestFormItemViewModel itemTotal;
+    List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
     Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
 
     private ProgramDataForm rapidTestForm = new ProgramDataForm();
@@ -49,18 +39,35 @@ public class RapidTestReportViewModel implements Serializable {
     public RapidTestReportViewModel(Period period) {
         this.period = period;
         status = Status.MISSING;
+        setupCategories();
         setItemViewModelMap();
+    }
+
+    private void setupCategories() {
+        movementReasonManager = MovementReasonManager.getInstance();
+        List<MovementReasonManager.MovementReason> issueReasons = movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE);
+
+        for (MovementReasonManager.MovementReason movementReason: issueReasons) {
+            RapidTestFormItemViewModel item = new RapidTestFormItemViewModel(movementReason);
+            itemViewModelList.add(item);
+        }
+
+        MovementReasonManager.MovementReason totalCategory = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "TOTAL", LMISApp.getInstance().getString(R.string.total));
+
+        itemTotal = new RapidTestFormItemViewModel(totalCategory);
+        itemViewModelList.add(itemTotal);
     }
 
     private void setItemViewModelMap() {
         for (RapidTestFormItemViewModel viewModel : itemViewModelList) {
-            itemViewModelMap.put(viewModel.getIssueReason(), viewModel);
+            itemViewModelMap.put(viewModel.getIssueReason().getCode(), viewModel);
         }
     }
 
     public RapidTestReportViewModel(ProgramDataForm programDataForm) {
         setRapidTestForm(programDataForm);
         period = Period.of(programDataForm.getPeriodBegin());
+        setupCategories();
         setItemViewModelMap();
         setFormItemViewModels(programDataForm.getProgramDataFormItemListWrapper());
     }
@@ -201,16 +208,5 @@ public class RapidTestReportViewModel implements Serializable {
             return viewType;
         }
     }
-
-    public static final String PUB_PHARMACY = "PUB_PHARMACY";
-    public static final String MATERNITY = "MATERNITY";
-    public static final String GENERAL_WARD = "GENERAL_WARD";
-    public static final String ACC_EMERGENCY = "ACC_EMERGENCY";
-    public static final String MOBILE_UNIT = "MOBILE_UNIT";
-    public static final String LABORATORY = "LABORATORY";
-    public static final String UATS = "UATS";
-    public static final String PNCTL = "PNCTL";
-    public static final String PAV = "PAV";
-    public static final String DENTAL_WARD = "DENTAL_WARD";
 }
 

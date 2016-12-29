@@ -1,6 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
 
@@ -44,14 +45,14 @@ public class RapidTestFormGridViewModel {
         }
     }
 
-    public List<ProgramDataFormItem> convertFormGridViewModelToDataModel(String issueReason) {
+    public List<ProgramDataFormItem> convertFormGridViewModelToDataModel(MovementReasonManager.MovementReason issueReason) {
         List<ProgramDataFormItem> programDataFormItems = new ArrayList<>();
         if (!StringUtils.isEmpty(getConsumptionValue())) {
             if (consumeColumn == null) {
                 consumeColumn = new ProgramDataColumn();
                 consumeColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_CONSUME));
             }
-            ProgramDataFormItem consumeDataFormItem = new ProgramDataFormItem(issueReason, consumeColumn, Integer.parseInt(getConsumptionValue()));
+            ProgramDataFormItem consumeDataFormItem = new ProgramDataFormItem(issueReason.getCode(), consumeColumn, Integer.parseInt(getConsumptionValue()));
             programDataFormItems.add(consumeDataFormItem);
         }
         if (!StringUtils.isEmpty(getPositiveValue())) {
@@ -59,7 +60,7 @@ public class RapidTestFormGridViewModel {
                 positiveColumn = new ProgramDataColumn();
                 positiveColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_POSITIVE));
             }
-            ProgramDataFormItem positiveDataFormItem = new ProgramDataFormItem(issueReason, positiveColumn, Integer.parseInt(getPositiveValue()));
+            ProgramDataFormItem positiveDataFormItem = new ProgramDataFormItem(issueReason.getCode(), positiveColumn, Integer.parseInt(getPositiveValue()));
             programDataFormItems.add(positiveDataFormItem);
         }
         return programDataFormItems;

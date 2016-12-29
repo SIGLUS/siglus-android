@@ -3,6 +3,7 @@ package org.openlmis.core.view.viewmodel;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
 
@@ -18,7 +19,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Data
 public class RapidTestFormItemViewModel {
-    String issueReason;
+    MovementReasonManager.MovementReason issueReason;
 
     RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVDetermine);
     RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVUnigold);
@@ -29,7 +30,7 @@ public class RapidTestFormItemViewModel {
 
     Map<String, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
 
-    public RapidTestFormItemViewModel(String issueReason) {
+    public RapidTestFormItemViewModel(MovementReasonManager.MovementReason issueReason) {
         this.issueReason = issueReason;
         for (RapidTestFormGridViewModel viewModel : rapidTestFormGridViewModelList) {
             rapidTestFormGridViewModelMap.put(StringUtils.upperCase(viewModel.getColumnCode().name()), viewModel);
@@ -52,7 +53,7 @@ public class RapidTestFormItemViewModel {
     public static final String POSITIVE_MALARIA = "POSITIVE_MALARIA";
 
     public List<ProgramDataFormItem> convertToDataModel() {
-        if (issueReason.equals(LMISApp.getInstance().getString(R.string.total))) {
+        if (issueReason.getDescription().equals(LMISApp.getInstance().getString(R.string.total))) {
             return newArrayList();
         }
 

@@ -3,6 +3,7 @@ package org.openlmis.core.view.viewmodel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.manager.MovementReasonManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,16 +21,18 @@ public class RapidTestFormItemViewModelTest {
 
     @Test
     public void shouldConvertFormItemViewModelToDataModel() throws Exception {
-        itemViewModel = new RapidTestFormItemViewModel(RapidTestReportViewModel.PUB_PHARMACY);
+        MovementReasonManager.MovementReason reason1 = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "PUB_PHARMACY", "Pub pharmacy");
+        itemViewModel = new RapidTestFormItemViewModel(reason1);
         RapidTestFormGridViewModel formGridViewModel = mock(RapidTestFormGridViewModel.class);
         itemViewModel.setRapidTestFormGridViewModelList(Arrays.asList(formGridViewModel));
         itemViewModel.convertToDataModel();
-        verify(formGridViewModel).convertFormGridViewModelToDataModel(RapidTestReportViewModel.PUB_PHARMACY);
+        verify(formGridViewModel).convertFormGridViewModelToDataModel(reason1);
     }
 
     @Test
     public void shouldValidateRowViewModel() throws Exception {
-        itemViewModel = new RapidTestFormItemViewModel(RapidTestReportViewModel.ACC_EMERGENCY);
+        MovementReasonManager.MovementReason reason1 = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ACC_EMERGENCY", "Acc emergency");
+        itemViewModel = new RapidTestFormItemViewModel(reason1);
         RapidTestFormGridViewModel formGridViewModel1 = mock(RapidTestFormGridViewModel.class);
         RapidTestFormGridViewModel formGridViewModel2 = mock(RapidTestFormGridViewModel.class);
         when(formGridViewModel1.validate()).thenReturn(true);

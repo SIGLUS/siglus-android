@@ -74,11 +74,11 @@ public class RapidTestReportFormPresenterTest {
         //convert db model to view model
         ProgramDataForm form = new ProgramDataForm();
         ProgramDataFormItem programDataFormItem1 = new ProgramDataFormItem();
-        programDataFormItem1.setName(RapidTestReportViewModel.MOBILE_UNIT);
+        programDataFormItem1.setName("MOBILE_UNIT");
         programDataFormItem1.setProgramDataColumn(new ProgramDataColumnBuilder().setCode("CONSUME_" + StringUtils.upperCase(RapidTestFormGridViewModel.ColumnCode.Syphillis.name())).build());
         programDataFormItem1.setValue(100);
         ProgramDataFormItem programDataFormItem2 = new ProgramDataFormItem();
-        programDataFormItem2.setName(RapidTestReportViewModel.PNCTL);
+        programDataFormItem2.setName("PNCTL");
         programDataFormItem2.setProgramDataColumn(new ProgramDataColumnBuilder().setCode("POSITIVE_" + StringUtils.upperCase(RapidTestFormGridViewModel.ColumnCode.Syphillis.name())).build());
         programDataFormItem2.setValue(300);
         form.getProgramDataFormItemListWrapper().add(programDataFormItem1);
@@ -97,8 +97,8 @@ public class RapidTestReportFormPresenterTest {
         subscriber2.assertNoErrors();
         RapidTestReportViewModel viewModel2 = subscriber2.getOnNextEvents().get(0);
 
-        assertEquals(viewModel2.getItemViewModelMap().get(RapidTestReportViewModel.MOBILE_UNIT).getGridSyphillis().getConsumptionValue(), "100");
-        assertEquals(viewModel2.getItemViewModelMap().get(RapidTestReportViewModel.PNCTL).getGridSyphillis().getPositiveValue(), "300");
+        assertEquals(viewModel2.getItemViewModelMap().get("MOBILE_UNIT").getGridSyphillis().getConsumptionValue(), "100");
+        assertEquals(viewModel2.getItemViewModelMap().get("PNCTL").getGridSyphillis().getPositiveValue(), "300");
         assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel2.getStatus());
     }
 
