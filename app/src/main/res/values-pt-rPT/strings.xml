@@ -248,7 +248,7 @@
 .</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
-    <string name="label_training_select_close_of_period"><![CDATA[Selecione um inventário da lista abaixo. A data de hoje é <b>%2$s</b>]]></string>
+    <string name="label_training_select_close_of_period"><![CDATA[Por favor, selecione um inventário da lista abaixo. A data de hoje é <b>%2$s</b>]]></string>
     <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]></string>
     <string name="label_completed_physical_inventory_message"><![CDATA[<b>Nenhuma %1$s Foi criado.</b>]]></string>
     <string name="btn_view_completed_physical_inventory">Criar %1$s</string>
@@ -266,9 +266,9 @@
     <string name="label_period_date">%1$s  a  %2$s</string>
     <string name="label_emergency_date">Requisição de Emergencia – %s</string>
     <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA a partir do dia 18 de %1$s</b>]]></string>
-    <string name="label_training_can_not_create_mmia_rnr"><![CDATA[<b>You will be able to create a MMIA in the next period</b>]]></string>
+    <string name="label_training_can_not_create_mmia_rnr"><![CDATA[<b>Você poderá criar um MMIA no próximo período</b>]]></string>
     <string name="label_can_not_create_via_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
-    <string name="label_training_can_not_create_via_rnr"><![CDATA[<b>You will be able to create a requisition in the next period</b>]]> </string>
+    <string name="label_training_can_not_create_via_rnr"><![CDATA[<b>Você poderá criar uma requisição no próximo período</b>]]></string>
     <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
     <string name="btn_select_close_period">Seleccione o fecho do período</string>
