@@ -37,17 +37,25 @@ public class InitialInventoryActivity extends InventoryActivity {
     @Override
     public void initUI() {
         super.initUI();
-        btnSave.setVisibility(View.GONE);
-        bindButtonDoneEvent();
+        initTitle();
+        initButtonPanel();
+
+        initRecyclerView();
+        Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
+        subscriptions.add(subscription);
+    }
+
+    private void initTitle() {
         if (isAddNewDrug) {
             setTitle(getResources().getString(R.string.title_add_new_drug));
         } else if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
+    }
 
-        initRecyclerView();
-        Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
-        subscriptions.add(subscription);
+    private void initButtonPanel() {
+        btnSave.setVisibility(View.GONE);
+        bindButtonDoneEvent();
     }
 
     private void bindButtonDoneEvent() {
