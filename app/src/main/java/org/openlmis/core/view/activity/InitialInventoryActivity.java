@@ -37,8 +37,8 @@ public class InitialInventoryActivity extends InventoryActivity {
     @Override
     public void initUI() {
         super.initUI();
-        initTitle();
         initButtonPanel();
+        initTitle();
 
         initRecyclerView();
         Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());

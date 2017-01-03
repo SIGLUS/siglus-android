@@ -41,6 +41,7 @@ import java.util.Comparator;
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -80,12 +81,13 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     public void saveStockMovement() {
-        getSaveMovementObservable().subscribe(new Action1<StockMovementViewModel>() {
+        Subscription subscription = getSaveMovementObservable().subscribe(new Action1<StockMovementViewModel>() {
             @Override
             public void call(StockMovementViewModel viewModel) {
                 view.goToStockCard();
             }
         });
+        subscriptions.add(subscription);
     }
 
     protected Observable<StockMovementViewModel> getSaveMovementObservable() {
