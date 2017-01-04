@@ -1,4 +1,4 @@
-@upgrade_setup @change_date @wei
+@upgrade_setup @change_date
 Feature: Old version set up before upgrade
 
   Scenario: Install an older version of the app on tablet and have data available from the old version

@@ -1,10 +1,10 @@
-@core @dev @weitest
+@core @dev
 Feature: Rapidtest
 
   Scenario: Create rapidtest and sync it
 
 
-    Given I try to log in with "training" "password1"
+    Given I try to log in with "core" "password1"
     And I wait for "Stock Card Overview" to appear
 
     And I press "Rapid Test"
