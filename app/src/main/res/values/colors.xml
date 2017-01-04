@@ -70,4 +70,9 @@
 
     <color name="color_rapid_test_form_row_header">#CCFFCC</color>
     <color name="color_rapid_test_form_total_header">#D9D9D9</color>
+
+    <color name="alphabet_text_selected_color">#3F51B5</color>
+    <color name="alphabet_text_color">#009500</color>
+    <color name="alphabet_background_color">#FAFAFA</color>
+    <color name="alphabet_background_border_color">#B6B6B6</color>
 </resources>

@@ -23,6 +23,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.viethoa.RecyclerViewFastScroller;
+
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.PhysicalInventoryViewHolder;
@@ -31,9 +33,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
 
-
-public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn implements FilterableAdapter {
-
+public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn implements FilterableAdapter, RecyclerViewFastScroller.BubbleTextGetter {
     private final View.OnClickListener saveClickListener;
     private final View.OnClickListener completeClickListener;
 
@@ -72,6 +72,18 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
         vhFooter.itemView.findViewById(R.id.btn_save).setOnClickListener(saveClickListener);
         vhFooter.itemView.findViewById(R.id.btn_complete).setOnClickListener(completeClickListener);
         return vhFooter;
+    }
+
+    @Override
+    public String getTextToShowInBubble(int position) {
+        if (position < 0 || position >= data.size())
+            return null;
+
+        String name = data.get(position).getProductName();
+        if (name == null || name.length() < 1)
+            return null;
+
+        return data.get(position).getProductName().substring(0, 1);
     }
 
     public boolean isHasDataChanged() {

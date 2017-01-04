@@ -46,7 +46,7 @@ public class InitialInventoryActivity extends InventoryActivity {
         }
 
         initRecyclerView();
-        Subscription subscription = presenter.loadInventory().subscribe(populateInventorySubscriber);
+        Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
         subscriptions.add(subscription);
     }
 

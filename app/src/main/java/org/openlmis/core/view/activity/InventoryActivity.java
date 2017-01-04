@@ -63,24 +63,27 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
     protected InventoryListAdapter mAdapter;
 
-    protected Subscriber<List<InventoryViewModel>> populateInventorySubscriber = new Subscriber<List<InventoryViewModel>>() {
-        @Override
-        public void onCompleted() {
-        }
+    @NonNull
+    protected Subscriber<List<InventoryViewModel>> getOnViewModelsLoadedSubscriber() {
+        return new Subscriber<List<InventoryViewModel>>() {
+            @Override
+            public void onCompleted() {
+            }
 
-        @Override
-        public void onError(Throwable e) {
-            ToastUtil.show(e.getMessage());
-            loaded();
-        }
+            @Override
+            public void onError(Throwable e) {
+                ToastUtil.show(e.getMessage());
+                loaded();
+            }
 
-        @Override
-        public void onNext(List<InventoryViewModel> inventoryViewModels) {
-            mAdapter.refresh();
-            setTotal(inventoryViewModels.size());
-            loaded();
-        }
-    };
+            @Override
+            public void onNext(List<InventoryViewModel> inventoryViewModels) {
+                mAdapter.refresh();
+                setTotal(inventoryViewModels.size());
+                loaded();
+            }
+        };
+    }
 
     protected Action1<Object> onNextMainPageAction = getOnNextMainPageAction();
 
