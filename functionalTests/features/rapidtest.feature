@@ -1,8 +1,7 @@
 @core @dev
-Feature: Rapidtest
+Feature: Rapid Test
 
-  Scenario: Create rapidtest and sync it
-
+  Scenario: Create Rapid Test Report and sync
 
     Given I try to log in with "core" "password1"
     And I wait for "Stock Card Overview" to appear

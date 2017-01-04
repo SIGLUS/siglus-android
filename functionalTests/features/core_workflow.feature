@@ -1,5 +1,5 @@
 @core @dev @change_date
-Feature: Requisition
+Feature: Core Workflow
 
   Scenario: Initial inventory, movements, physical inventory, mmia and via
     Given I change device date to "20160216.130000"
