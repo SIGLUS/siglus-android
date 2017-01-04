@@ -69,6 +69,7 @@ Feature: Core Workflow
 
     Then I wait up to 120 seconds to see "successfully submitted"
 
+    Then I wait for 1 second
     Then I navigate back
     Then I wait for "Stock Card Overview" to appear
 
