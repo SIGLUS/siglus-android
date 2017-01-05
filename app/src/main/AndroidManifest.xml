@@ -81,10 +81,6 @@
             android:name=".view.activity.VIARequisitionActivity"
             android:label="@string/title_requisition"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name=".view.activity.StockMovementsActivity"
-            android:label="@string/title_stock_movement"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".view.activity.StockMovementHistoryActivity" />
         <activity
             android:name=".view.activity.StockMovementsWithLotActivity"
