@@ -8,9 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.KitProduct;
@@ -88,8 +86,6 @@ public class UnpackKitPresenterTest {
     @Test
     public void shouldLoadKitProductList() throws Exception {
         Product kit = prepareKit();
-
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_auto_quantities_in_kit, true);
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         presenter.subscriptions.add(presenter.getKitProductsObservable("KIT_Code", 3).subscribe(subscriber));
