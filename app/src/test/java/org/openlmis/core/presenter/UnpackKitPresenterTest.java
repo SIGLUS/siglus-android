@@ -7,6 +7,7 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
@@ -36,10 +37,13 @@ import roboguice.RoboGuice;
 import rx.Subscription;
 import rx.observers.TestSubscriber;
 
-import static junit.framework.Assert.assertTrue;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyList;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,7 +72,7 @@ public class UnpackKitPresenterTest {
         documentNumber = "test";
 
         product = new ProductBuilder().setIsKit(false).setCode("productCode1").setPrimaryName("name1").setProductId(200L).build();
-        viewModel = new InventoryViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300).setQuantity("200").setExpiryDates(expireDates).build();
+        viewModel = new InventoryViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300).build();
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
@@ -94,16 +98,15 @@ public class UnpackKitPresenterTest {
         verify(productRepository).queryKitProductByKitCode(kit.getCode());
 
         List<InventoryViewModel> resultProducts = presenter.getInventoryViewModels();
-        assertThat(resultProducts.size()).isEqualTo(2);
+        assertThat(resultProducts.size(), is(2));
 
         InventoryViewModel viewModel1 = resultProducts.get(0);
         InventoryViewModel viewModel2 = resultProducts.get(1);
 
-        assertThat(viewModel1.getProduct().getCode()).isEqualTo("P1_Code");
-        assertThat(viewModel2.getProduct().getCode()).isEqualTo("P2_Code");
-        assertThat(viewModel1.getKitExpectQuantity()).isEqualTo(300);
-        assertThat(viewModel2.getKitExpectQuantity()).isEqualTo(600);
-        assertThat(viewModel2.getQuantity()).isEqualTo("600");
+        assertThat(viewModel1.getProduct().getCode(), is("P1_Code"));
+        assertThat(viewModel2.getProduct().getCode(), is("P2_Code"));
+        assertThat(viewModel1.getKitExpectQuantity(), is(300L));
+        assertThat(viewModel2.getKitExpectQuantity(), is(600L));
         assertTrue(viewModel1.isChecked());
         assertTrue(viewModel2.isChecked());
     }
@@ -126,97 +129,51 @@ public class UnpackKitPresenterTest {
         return kit;
     }
 
-    public void shouldNotSetQuantityWhenToggleOff() throws LMISException {
-        //given
-        Product kit = prepareKit();
-
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_auto_quantities_in_kit, false);
-
-        presenter.getKitProductsObservable("KIT_Code", 3);
-
-        verify(productRepository).queryKitProductByKitCode(kit.getCode());
-
-        List<InventoryViewModel> resultProducts = presenter.getInventoryViewModels();
-        assertThat(resultProducts.size()).isEqualTo(2);
-
-        InventoryViewModel viewModel1 = resultProducts.get(0);
-        InventoryViewModel viewModel2 = resultProducts.get(1);
-
-        assertNull(viewModel1.getQuantity());
-        assertNull(viewModel2.getQuantity());
-    }
-
     @Test
     public void shouldSaveStockCardAndStockMovementAndUpdateProductAsNotArchived() throws Exception {
-        Product product2 = new ProductBuilder().setIsKit(false).setCode("productCode2").setPrimaryName("name2").setProductId(333L).setIsArchived(true).build();
-        InventoryViewModel viewModel2 = new InventoryViewModelBuilder(product2).setChecked(true).setKitExpectQuantity(300).setQuantity("200").build();
+        //product without stock card
+        Product product1 = new ProductBuilder().setIsKit(false).setCode("p1").setPrimaryName("name1").setProductId(1L).setIsArchived(false).build();
+        when(stockRepository.queryStockCardByProductId(1L)).thenReturn(null);
 
-        StockCard productStockCard = new StockCardBuilder().setStockCardId(111)
-                .setStockOnHand(100)
-                .setCreateDate(new Date())
-                .setProduct(product)
-                .setExpireDates("20/1/2026,15/2/2026")
-                .build();
+        //product with stock card but archived
+        Product product2 = new ProductBuilder().setIsKit(false).setCode("p2").setPrimaryName("name2").setProductId(2L).setIsArchived(true).build();
+        StockCard stockCard = new StockCardBuilder().setProduct(product2).setStockOnHand(10L).setCreateDate(new Date()).build();
+        when(stockRepository.queryStockCardByProductId(2L)).thenReturn(stockCard);
 
-        StockCard productStockCard2 = new StockCardBuilder().setStockCardId(222)
-                .setStockOnHand(100)
-                .setCreateDate(new Date())
-                .setProduct(product2)
-                .build();
+        //kit product
+        Product kit = new ProductBuilder().setIsKit(true).setProductId(3L).setCode("SD1112").setPrimaryName("primary name").build();
+        when(productRepository.getByCode(anyString())).thenReturn(kit);
+        StockCard kitStockCard = new StockCardBuilder().setStockCardId(112).setStockOnHand(1000).setCreateDate(new Date()).setProduct(kit).build();
+        when(stockRepository.queryStockCardByProductId(3L)).thenReturn(kitStockCard);
 
-        Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
-                .setCode("SD1112").setPrimaryName("primary name").build();
+        InventoryViewModel product1VM = new InventoryViewModelBuilder(product1).setChecked(true).setKitExpectQuantity(300).build();
+        product1VM.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setLotNumber("some lot").setExpiryDate("Feb 2022").setQuantity("200").build());
+        InventoryViewModel product2VM = new InventoryViewModelBuilder(product2).setChecked(true).setKitExpectQuantity(100).build();
+        product2VM.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setLotNumber("some lot").setExpiryDate("Feb 2022").setQuantity("100").build());
 
-        StockCard kitStockCard = new StockCardBuilder().setStockCardId(112)
-                .setStockOnHand(1000)
-                .setCreateDate(new Date())
-                .setProduct(kit)
-                .build();
-
-
-        presenter.getInventoryViewModels().addAll(Arrays.asList(viewModel, viewModel2));
+        presenter.getInventoryViewModels().addAll(Arrays.asList(product1VM, product2VM));
         presenter.kitCode = "SD1112";
-
-        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(productStockCard);
-        when(stockRepository.queryStockCardByProductId(333L)).thenReturn(productStockCard2);
-
-        when(productRepository.getByCode("SD1112")).thenReturn(kit);
-        when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
 
         TestSubscriber subscriber = new TestSubscriber();
         Subscription subscription = presenter.saveUnpackProductsObservable(2, documentNumber, signature).subscribe(subscriber);
         presenter.subscriptions.add(subscription);
 
         subscriber.awaitTerminalEvent();
-        verify(stockRepository).batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(anyList());
 
-        assertThat(productStockCard.getStockOnHand()).isEqualTo(300);
-        assertThat(productStockCard.getExpireDates()).isEqualTo("20/1/2026,15/2/2026,30/5/2026");
-        assertThat(kitStockCard.getStockOnHand()).isEqualTo(998);
-        assertThat(product2.isArchived());
-    }
-
-    @Test
-    public void shouldCreateStockCardWithMovementItemsWhenStockCardNotExists() throws Exception {
-        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(null);
-        viewModel.setQuantity("10");
-
-        StockCard stockCard = presenter.createStockCardForProduct(viewModel, documentNumber, signature);
-        List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();
-
-        assertThat(stockCard.getStockOnHand()).isEqualTo(10);
-        assertThat(movementItems.size()).isEqualTo(2);
-        assertThat(movementItems.get(0).getStockOnHand()).isEqualTo(0);
-        assertThat(movementItems.get(0).getSignature()).isEqualTo(null);
-        assertThat(movementItems.get(1).getStockOnHand()).isEqualTo(10);
-        assertThat(movementItems.get(1).getSignature()).isEqualTo(signature);
-        assertThat(movementItems.get(1).getDocumentNumber()).isEqualTo(documentNumber);
+        ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
+        verify(stockRepository).batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(argument.capture());
+        List<List> stockCardsArguments = argument.getAllValues();
+        assertEquals(200L, ((StockCard) stockCardsArguments.get(0).get(0)).getStockOnHand(), 0L);
+        assertFalse(((StockCard) stockCardsArguments.get(0).get(0)).getStockMovementItemsWrapper().isEmpty());
+        assertEquals(110L, ((StockCard) stockCardsArguments.get(0).get(1)).getStockOnHand(), 0L);
+        assertFalse(((StockCard) stockCardsArguments.get(0).get(1)).getProduct().isArchived());
+        assertFalse(((StockCard) stockCardsArguments.get(0).get(1)).getStockMovementItemsWrapper().isEmpty());
+        assertEquals(998L, ((StockCard) stockCardsArguments.get(0).get(2)).getStockOnHand(), 0L);
     }
 
     @Test
     public void shouldCreateStockCardForProductWithLot() throws Exception {
         when(stockRepository.queryStockCardByProductId(200L)).thenReturn(null);
-        viewModel.setQuantity("10");
         LotMovementViewModel lot = new LotMovementViewModelBuilder()
                 .setLotNumber("test")
                 .setLotSOH("100")
@@ -230,62 +187,18 @@ public class UnpackKitPresenterTest {
         StockCard stockCard = presenter.createStockCardForProductWithLot(viewModel, documentNumber, signature);
         List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();
 
-        assertThat(stockCard.getStockOnHand()).isEqualTo(200L);
-        assertThat(movementItems.size()).isEqualTo(2);
-        assertThat(movementItems.get(0).getStockOnHand()).isEqualTo(0);
-        assertThat(movementItems.get(0).getSignature()).isEqualTo(null);
-        assertThat(movementItems.get(1).getStockOnHand()).isEqualTo(200L);
-        assertThat(movementItems.get(1).getSignature()).isEqualTo(signature);
-        assertThat(movementItems.get(1).getDocumentNumber()).isEqualTo(documentNumber);
-        assertThat(movementItems.get(1).getLotMovementItemListWrapper().size()).isEqualTo(2);
-        assertThat(movementItems.get(1).getLotMovementItemListWrapper().get(0).getMovementQuantity()).isEqualTo(100L);
-        assertThat(movementItems.get(1).getLotMovementItemListWrapper().get(0).getLot().getLotNumber()).isEqualTo("test");
+        assertThat(stockCard.getStockOnHand(), is(200L));
+        assertThat(movementItems.size(), is(2));
+        assertThat(movementItems.get(0).getStockOnHand(), is(0L));
+        assertNull(movementItems.get(0).getSignature());
+        assertThat(movementItems.get(1).getStockOnHand(), is(200L));
+        assertThat(movementItems.get(1).getSignature(), is(signature));
+        assertThat(movementItems.get(1).getDocumentNumber(), is(documentNumber));
+        assertThat(movementItems.get(1).getLotMovementItemListWrapper().size(), is(2));
+        assertThat(movementItems.get(1).getLotMovementItemListWrapper().get(0).getMovementQuantity(), is(100L));
+        assertThat(movementItems.get(1).getLotMovementItemListWrapper().get(0).getLot().getLotNumber(), is("test"));
     }
 
-    @Test
-    public void shouldGetStockCardWithMovementItemsWhenStockCardExists() throws Exception {
-        StockCard productStockCard = new StockCardBuilder().setStockCardId(111)
-                .setStockOnHand(100)
-                .setCreateDate(new Date())
-                .setProduct(product)
-                .setExpireDates("20/1/2026,15/2/2026")
-                .build();
-        viewModel.setQuantity("10");
-
-        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(productStockCard);
-
-        StockCard stockCard = presenter.createStockCardForProduct(viewModel, documentNumber, signature);
-        List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();
-
-        assertThat(stockCard.getStockOnHand()).isEqualTo(110);
-        assertThat(movementItems.size()).isEqualTo(1);
-        assertThat(movementItems.get(0).getStockOnHand()).isEqualTo(110);
-        assertThat(movementItems.get(0).getSignature()).isEqualTo(signature);
-        assertThat(movementItems.get(0).getDocumentNumber()).isEqualTo(documentNumber);
-        assertThat(stockCard.getExpireDates()).isEqualTo("20/1/2026,15/2/2026,30/5/2026");
-    }
-
-    @Test
-    public void shouldRemoveExpiryDateWhenSOHIsZero() throws Exception {
-        Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
-                .setCode("SD1112").setPrimaryName("primary name").build();
-
-        StockCard kitStockCard = new StockCardBuilder().setStockCardId(112)
-                .setStockOnHand(1000)
-                .setCreateDate(new Date())
-                .setProduct(kit)
-                .setExpireDates("2015-11-11")
-                .build();
-
-        presenter.kitCode = kit.getCode();
-
-        when(productRepository.getByCode(kit.getCode())).thenReturn(kit);
-        when(stockRepository.queryStockCardByProductId(888)).thenReturn(kitStockCard);
-
-        StockCard stockCardForKit = presenter.getStockCardForKit(1000, documentNumber, signature);
-
-        assertThat(stockCardForKit.getExpireDates()).isEqualTo("");
-    }
 
     @Test
     public void shouldGetKitStockCardWithUnpackMovementItem() throws Exception {
@@ -304,11 +217,11 @@ public class UnpackKitPresenterTest {
 
         StockCard stockCardWithMovementItems = presenter.getStockCardForKit(1, documentNumber, signature);
 
-        assertThat(stockCardWithMovementItems.getStockOnHand()).isEqualTo(999);
-        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().size()).isEqualTo(1);
-        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getMovementQuantity()).isEqualTo(1);
-        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getStockOnHand()).isEqualTo(999);
-        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getSignature()).isEqualTo(signature);
-        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getDocumentNumber()).isEqualTo(documentNumber);
+        assertThat(stockCardWithMovementItems.getStockOnHand(), is(999L));
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().size(), is(1));
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getMovementQuantity(), is(1L));
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getStockOnHand(), is(999L));
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getSignature(), is(signature));
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getDocumentNumber(), is(documentNumber));
     }
 }

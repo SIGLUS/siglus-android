@@ -2,7 +2,6 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +21,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
+import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -37,8 +37,6 @@ import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
 import static org.assertj.core.util.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
@@ -56,7 +54,6 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
     ProductRepository productRepositoryMock;
     InventoryPresenter.InventoryView view;
     private Product product;
-    private StockCard stockCard;
     private SharedPreferenceMgr sharedPreferenceMgr;
     private InventoryRepository mockInventoryRepository;
 
@@ -77,8 +74,6 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         product.setPrimaryName("Test Product");
         product.setCode("ABC");
 
-        stockCard = buildDefaultStockCard();
-
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
             @Override
@@ -86,14 +81,6 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
                 return Schedulers.immediate();
             }
         });
-    }
-
-    private StockCard buildDefaultStockCard() {
-        StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(100);
-        stockCard.setProduct(product);
-        stockCard.setExpireDates(StringUtils.EMPTY);
-        return stockCard;
     }
 
     @After
@@ -153,64 +140,27 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldInitStockCardAndCreateAInitInventoryMovementItem() throws LMISException {
-        InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true)
-                .setQuantity("100").build();
-        InventoryViewModel model2 = new InventoryViewModelBuilder(product).setChecked(false)
-                .setQuantity("200").build();
+        StockCard stockcard = new StockCard();
+        stockcard.setProduct(product);
+        InventoryViewModel model = new InventoryViewModelBuilder(stockcard).setChecked(true).build();
+        InventoryViewModel model2 = new InventoryViewModelBuilder(product).setChecked(true).build();
+
+        model2.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2016").setQuantity("20").build());
+        model.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Feb 2015").setQuantity("2020").build());
+        model.getProduct().setArchived(true);
 
         initialInventoryPresenter.getInventoryViewModelList().add(model);
         initialInventoryPresenter.getInventoryViewModelList().add(model2);
         initialInventoryPresenter.initOrArchiveBackStockCards();
 
-        verify(stockRepositoryMock, times(1)).createOrUpdateStockCardWithStockMovement(any(StockCard.class));
+        verify(stockRepositoryMock, times(1)).updateStockCardWithProduct(any(StockCard.class));
+        verify(stockRepositoryMock, times(1)).addStockMovementAndUpdateStockCard(any(StockMovementItem.class));
     }
-
-    @Test
-    public void shouldNotClearExpiryDateWhenSohIsNotZeroAndIsArchivedDrug() throws LMISException {
-        stockCard.setExpireDates("01/01/2016");
-        product.setArchived(true);
-
-        InventoryViewModel model = new InventoryViewModelBuilder(stockCard).setChecked(true)
-                .setQuantity("10").build();
-
-        initialInventoryPresenter.initOrArchiveBackStockCards();
-
-        assertThat(model.getStockCard().getExpireDates(), is("01/01/2016"));
-
-    }
-
-    @Test
-    public void shouldClearExpiryDateWhenSohIsZeroAndIsNewDrug() throws LMISException {
-        InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true)
-                .setQuantity("0").setExpiryDates(newArrayList("01/01/2016")).build();
-
-        initialInventoryPresenter.getInventoryViewModelList().add(model);
-        initialInventoryPresenter.initOrArchiveBackStockCards();
-
-        ArgumentCaptor<StockCard> argument = ArgumentCaptor.forClass(StockCard.class);
-        verify(stockRepositoryMock).createOrUpdateStockCardWithStockMovement(argument.capture());
-        assertThat(argument.getValue().getExpireDates(), is(""));
-    }
-
-    @Test
-    public void shouldNotClearExpiryDateWhenSohIsNotZeroAndIsNewDrug() throws LMISException {
-        InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true)
-                .setQuantity("10").setExpiryDates(newArrayList("01/01/2016")).build();
-
-        initialInventoryPresenter.getInventoryViewModelList().add(model);
-        initialInventoryPresenter.initOrArchiveBackStockCards();
-
-        ArgumentCaptor<StockCard> argument = ArgumentCaptor.forClass(StockCard.class);
-        verify(stockRepositoryMock).createOrUpdateStockCardWithStockMovement(argument.capture());
-        assertThat(argument.getValue().getExpireDates(), is("01/01/2016"));
-    }
-
 
     @Test
     public void shouldReInventoryArchivedStockCard() throws LMISException {
         InventoryViewModel uncheckedModel = new InventoryViewModelBuilder(product)
                 .setChecked(false)
-                .setQuantity("100")
                 .build();
 
         Product archivedProduct = new ProductBuilder().setPrimaryName("Archived product").setCode("BBC")
@@ -218,7 +168,6 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         StockCard archivedStockCard = new StockCardBuilder().setStockOnHand(0).setProduct(archivedProduct).build();
         InventoryViewModel archivedViewModel = new InventoryViewModelBuilder(archivedStockCard)
                 .setChecked(true)
-                .setQuantity("200")
                 .build();
 
         List<InventoryViewModel> inventoryViewModelList = newArrayList(uncheckedModel, archivedViewModel);
@@ -234,8 +183,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
     public void shouldInitStockCardAndCreateAInitInventoryMovementItemWithLot() throws Exception {
         product.setArchived(false);
 
-        InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true)
-                .setQuantity("10").setExpiryDates(newArrayList("01/01/2016")).build();
+        InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true).build();
 
         initialInventoryPresenter.getInventoryViewModelList().add(model);
         initialInventoryPresenter.initOrArchiveBackStockCards();

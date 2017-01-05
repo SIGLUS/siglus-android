@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.StockCardBuilder;
@@ -49,7 +51,10 @@ public class StockCardViewHolderTest {
     @Test
     public void shouldShowIconWhenExpireDateInCurrentMonth() throws Exception {
         StockCard stockCard = StockCardBuilder.buildStockCard();
-        stockCard.setExpireDates("28/02/2016, 11/10/2016, 12/10/2017");
+        Lot lot = new Lot();
+        lot.setExpirationDate(DateUtil.parseString("2016-02-16", DateUtil.DB_DATE_FORMAT));
+        LotOnHand lotOnHand = new LotOnHand(lot, stockCard, 100L);
+        stockCard.getLotOnHandListWrapper().add(lotOnHand);
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
         Date mockCurrentDate = DateUtil.parseString("15/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
         LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
@@ -62,7 +67,10 @@ public class StockCardViewHolderTest {
     @Test
     public void shouldShowIconWhenExpireDateBeforeCurrentTime() throws Exception {
         StockCard stockCard = StockCardBuilder.buildStockCard();
-        stockCard.setExpireDates("14/02/2016, 11/10/2016, 12/10/2017");
+        Lot lot = new Lot();
+        lot.setExpirationDate(DateUtil.parseString("2016-01-14", DateUtil.DB_DATE_FORMAT));
+        LotOnHand lotOnHand = new LotOnHand(lot, stockCard, 100L);
+        stockCard.getLotOnHandListWrapper().add(lotOnHand);
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
         Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
         LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
@@ -75,7 +83,10 @@ public class StockCardViewHolderTest {
     @Test
     public void shouldHideIconWhenExpireDateAfterThreeMonthsWithCurrentTime() throws Exception {
         StockCard stockCard = StockCardBuilder.buildStockCard();
-        stockCard.setExpireDates("31/06/2016, 31/10/2016, 31/12/2017");
+        Lot lot = new Lot();
+        lot.setExpirationDate(DateUtil.parseString("2016-06-17", DateUtil.DB_DATE_FORMAT));
+        LotOnHand lotOnHand = new LotOnHand(lot, stockCard, 100L);
+        stockCard.getLotOnHandListWrapper().add(lotOnHand);
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
         Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
         LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
@@ -92,12 +103,10 @@ public class StockCardViewHolderTest {
         StockCard stockCard = StockCardBuilder.buildStockCard();
 
         // The expiry date icon shows in the previous view
-        stockCard.setExpireDates("14/02/2016, 11/10/2016, 12/10/2017");
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
         viewHolder.populate(inventoryViewModel, "");
 
         // Reuse the view with the empty expiry dates
-        stockCard.setExpireDates("");
         InventoryViewModel secondInventoryViewModel = new InventoryViewModel(stockCard);
         viewHolder.populate(secondInventoryViewModel, "");
 
@@ -110,7 +119,6 @@ public class StockCardViewHolderTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
         StockCard stockCard = StockCardBuilder.buildStockCard();
         stockCard.setStockOnHand(0);
-        stockCard.setExpireDates("");
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
 
         viewHolder.inflateData(inventoryViewModel, "");

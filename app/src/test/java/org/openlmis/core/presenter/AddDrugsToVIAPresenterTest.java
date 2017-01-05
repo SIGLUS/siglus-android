@@ -118,7 +118,7 @@ public class AddDrugsToVIAPresenterTest {
     @NonNull
     private InventoryViewModel buildInventoryViewModel(String productCode, String quantity) {
         Product product1 = new ProductBuilder().setCode(productCode).setPrimaryName("product 1").setIsActive(true).build();
-        InventoryViewModel inventoryViewModel1 = new AddDrugsToViaInventoryViewModel(product1);
+        AddDrugsToViaInventoryViewModel inventoryViewModel1 = new AddDrugsToViaInventoryViewModel(product1);
         inventoryViewModel1.setQuantity(quantity);
         return inventoryViewModel1;
     }

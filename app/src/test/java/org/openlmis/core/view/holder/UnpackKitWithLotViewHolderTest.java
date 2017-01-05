@@ -44,7 +44,6 @@ public class UnpackKitWithLotViewHolderTest {
     public void shouldPopulate() {
         InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
         inventoryViewModel.setKitExpectQuantity(20);
-        inventoryViewModel.setQuantity("20");
         inventoryViewModel.setChecked(false);
         inventoryViewModel.setType("Embalagem");
         inventoryViewModel.setStockOnHand(123L);
@@ -59,7 +58,6 @@ public class UnpackKitWithLotViewHolderTest {
     public void shouldSetAdapter() {
         InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
         inventoryViewModel.setKitExpectQuantity(20);
-        inventoryViewModel.setQuantity("20");
         inventoryViewModel.setChecked(false);
         inventoryViewModel.setType("Embalagem");
         inventoryViewModel.setStockOnHand(123L);

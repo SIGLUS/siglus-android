@@ -33,7 +33,6 @@ public class ArchivedDrugsViewHolderTest {
 
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setIsActive(true).setStrength("10mg").setType("VIA").build();
         viewModel = new InventoryViewModelBuilder(product)
-                .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
                 .setSOH(123L)
@@ -72,7 +71,6 @@ public class ArchivedDrugsViewHolderTest {
 
         Product deactivatedProduct = new ProductBuilder().setPrimaryName("Lamivudina 300mg").setCode("08S41").setIsActive(false).setStrength("10mg").setType("VIA").build();
         viewModel = new InventoryViewModelBuilder(deactivatedProduct)
-                .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
                 .setSOH(123L)

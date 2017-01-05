@@ -28,14 +28,11 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -51,6 +48,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
     public static final String DIVIDER = ",";
 
+    @Deprecated
     @DatabaseField
     String expireDates;
 
@@ -80,15 +78,6 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
     @DatabaseField
     private float avgMonthlyConsumption = -1;
-
-    public String getEarliestExpireDate() {
-        if (!StringUtils.isEmpty(expireDates)) {
-            List<String> expireDateList = Arrays.asList(expireDates.split(DIVIDER));
-            DateUtil.sortByDate(expireDateList);
-            return expireDateList.get(0);
-        }
-        return null;
-    }
 
     @Override
     public int compareTo(@NonNull StockCard another) {

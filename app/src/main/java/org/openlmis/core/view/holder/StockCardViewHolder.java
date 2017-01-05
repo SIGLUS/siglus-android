@@ -75,11 +75,11 @@ public class StockCardViewHolder extends BaseViewHolder {
         Date earliestLotExpiryDate = inventoryViewModel.getStockCard().getEarliestLotExpiryDate();
 
         if (earliestLotExpiryDate != null) {
-            if (earliestLotExpiryDate.before(new Date())) {
+            if (earliestLotExpiryDate.before(new Date(LMISApp.getInstance().getCurrentTimeMillis()))) {
                 showExpiryDateWithMessage(R.string.msg_expired_date, earliestLotExpiryDate);
                 return;
             }
-            if (DateUtil.calculateDateMonthOffset(new Date(), earliestLotExpiryDate) <= 3) {
+            if (DateUtil.calculateDateMonthOffset(new Date(LMISApp.getInstance().getCurrentTimeMillis()), earliestLotExpiryDate) <= 3) {
                 showExpiryDateWithMessage(R.string.msg_expiring_date, earliestLotExpiryDate);
                 return;
             }

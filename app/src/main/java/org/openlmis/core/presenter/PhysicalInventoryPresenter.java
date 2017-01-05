@@ -80,8 +80,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             for (DraftInventory draftInventory : draftList) {
                 if (viewModel.getStockCardId() == draftInventory.getStockCard().getId()) {
                     ((PhysicalInventoryViewModel) viewModel).setDraftInventory(draftInventory);
-                    viewModel.initExpiryDates(draftInventory.getExpireDates());
-                    viewModel.setQuantity(formatQuantity(draftInventory.getQuantity()));
                     populateLotMovementModelWithDraftLotItem(viewModel, draftInventory);
                 }
             }

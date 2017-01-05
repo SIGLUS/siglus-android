@@ -32,7 +32,6 @@ public class PhysicalInventoryWithLotViewHolderTest {
         viewHolder = new PhysicalInventoryWithLotViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_physical_inventory_with_lots, null, false));
         product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
         viewModel = new InventoryViewModelBuilder(product)
-                .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
                 .setSOH(123L)
@@ -51,7 +50,6 @@ public class PhysicalInventoryWithLotViewHolderTest {
     public void shouldSetAdapter() {
         InventoryViewModel inventoryViewModel = new InventoryViewModelBuilder(product)
                 .setKitExpectQuantity(20)
-                .setQuantity("20")
                 .setChecked(false)
                 .setType("Embalagem")
                 .setSOH(123L)

@@ -79,7 +79,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
                         try {
                             Product product = productRepository.getByCode(inventoryViewModel.getFnm());
                             rnrFormItem.setProduct(product);
-                            rnrFormItem.setRequestAmount(Long.valueOf(inventoryViewModel.getQuantity()));
+                            rnrFormItem.setRequestAmount(Long.valueOf(((AddDrugsToViaInventoryViewModel) inventoryViewModel).getQuantity()));
                         } catch (LMISException e) {
                             e.reportToFabric();
                         }

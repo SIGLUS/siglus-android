@@ -173,10 +173,6 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
     }
 
     @Override
-    public void showSignDialog() {
-    }
-
-    @Override
     public void updateArchiveMenus(boolean isArchivable) {
         isStockCardArchivable = isArchivable;
         invalidateOptionsMenu();
@@ -196,11 +192,6 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
     }
 
     @Override
-    public void showErrorAlert(String msg) {
-        ToastUtil.show(msg);
-    }
-
-    @Override
     public void onBackPressed() {
         setResult(Activity.RESULT_OK);
         finish();
@@ -209,11 +200,6 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
     @Override
     public void refreshStockMovement() {
         stockMovementAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void deactivatedStockDraft() {
-
     }
 
     @Override

@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
@@ -39,12 +38,9 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,12 +49,8 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -90,121 +82,6 @@ public class StockMovementsPresenterTest extends LMISRepositoryUnitTest {
         stockMovementsPresenter.attachView(view);
         stockMovementsPresenter.stockCard = StockCardBuilder.buildStockCard();
         stockMovementsPresenter.sharedPreferenceMgr = sharedPreferenceMgr;
-    }
-
-    @Test
-    public void shouldValidateStockMovementViewModelBeforeSaveAndReturnErrorIfInvalid() {
-        StockMovementViewModel stockMovementViewModelMock = mock(StockMovementViewModel.class);
-        when(stockMovementViewModelMock.validateEmpty()).thenReturn(false);
-
-        stockMovementsPresenter.submitStockMovement(stockMovementViewModelMock);
-        verify(stockMovementViewModelMock, times(2)).validateEmpty();
-        verify(view).showErrorAlert(anyString());
-    }
-
-    @Test
-    public void shouldSaveStockMovement() throws LMISException {
-        StockCard stockCard = new StockCard();
-        stockCard.setProduct(new Product());
-        when(mockStockRepository.queryStockCardById(123)).thenReturn(stockCard);
-        stockMovementsPresenter.setStockCard(123);
-
-        StockMovementItem item = new StockMovementItem();
-
-        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.validateInputValid()).thenReturn(true);
-        when(viewModel.validateEmpty()).thenReturn(true);
-        when(viewModel.validateQuantitiesNotZero()).thenReturn(true);
-        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
-
-        stockMovementsPresenter.submitStockMovement(viewModel);
-
-        verify(view).showSignDialog();
-    }
-
-    @Test
-    public void shouldSaveAndRefresh() throws Exception {
-        //given
-        StockCard stockCard = createStockCard(1, false);
-        stockCard.setExpireDates("2016-01-01,2017-02-01");
-
-        StockMovementItem item = new StockMovementItem();
-        item.setStockOnHand(0L);
-
-        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
-        when(mockStockRepository.queryStockCardById(123)).thenReturn(stockCard);
-        stockMovementsPresenter.setStockCard(123);
-        reset(view);
-
-        //when
-        stockMovementsPresenter.saveAndRefresh(viewModel);
-
-        //then
-        assertThat(stockMovementsPresenter.getStockCard().getStockOnHand()).isEqualTo(item.getStockOnHand());
-        assertThat(stockCard.getExpireDates()).isEqualTo("");
-        verify(mockStockRepository).addStockMovementAndUpdateStockCard(item);
-        verify(view).updateArchiveMenus(true);
-        verify(view).updateExpiryDateViewGroup();
-    }
-
-    @Test
-    public void shouldNotEnableArchiveMenuForKitsEvenIfSOHIsZero() throws Exception {
-        //given
-        StockCard stockCard = createStockCard(0, true);
-        StockMovementItem item = new StockMovementItem();
-        item.setStockOnHand(0L);
-
-        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
-
-        //when
-        stockMovementsPresenter.stockCard = stockCard;
-        stockMovementsPresenter.saveAndRefresh(viewModel);
-
-        //then
-        verify(view).updateArchiveMenus(false);
-    }
-
-    @Test
-    public void shouldNotEnableUnpackMenuForKitsIfMovementItemSOHIsZero() throws Exception {
-        //given
-        StockCard stockCard = createStockCard(100, true);
-        StockMovementItem item = new StockMovementItem();
-        item.setStockOnHand(0L);
-
-        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
-
-        //when
-        stockMovementsPresenter.stockCard = stockCard;
-        stockMovementsPresenter.saveAndRefresh(viewModel);
-
-        //then
-        verify(view).updateUnpackKitMenu(false);
-    }
-
-    @Test
-    public void shouldNotEnableUnpackMenuForKitsIfKitsProductSizeIsZero() throws Exception {
-        //given
-        Product kit = ProductBuilder.buildAdultProduct();
-
-        StockCard stockCard = createStockCard(100, true);
-        StockMovementItem item = new StockMovementItem();
-        item.setStockOnHand(1L);
-        stockCard.getProduct().setKitProductList(new ArrayList<KitProduct>());
-
-        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
-
-        when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(new ArrayList<KitProduct>());
-
-        //when
-        stockMovementsPresenter.stockCard = stockCard;
-        stockMovementsPresenter.saveAndRefresh(viewModel);
-
-        //then
-        verify(view).updateUnpackKitMenu(false);
     }
 
     @Test
@@ -268,18 +145,6 @@ public class StockMovementsPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldAddStockMovementViewModelWhenSubscriberOnNext() throws ParseException {
-        Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
-        InventoryViewModel viewModel = new InventoryViewModelBuilder(product).build();
-
-        stockMovementsPresenter.loadStockMovementViewModelSubscriber().onNext((List) newArrayList(viewModel, viewModel));
-
-        assertThat(stockMovementsPresenter.stockMovementModelList.size()).isEqualTo(3);
-        verify(view).refreshStockMovement();
-        verify(view).loaded();
-    }
-
-    @Test
     public void shouldArchiveStockCard() throws Exception {
         //given
         StockCard stockCard = stockMovementsPresenter.stockCard;
@@ -293,28 +158,6 @@ public class StockMovementsPresenterTest extends LMISRepositoryUnitTest {
         verify(mockStockRepository).updateProductOfStockCard(stockCard.getProduct());
     }
 
-    @Test
-    public void shouldUpdateNotifyDeactivatedProductList() throws LMISException {
-        //given
-        StockCard stockCard = stockMovementsPresenter.stockCard;
-        stockCard.setStockOnHand(0);
-        stockCard.getProduct().setActive(false);
-        stockCard.getProduct().setPrimaryName("name");
-        StockMovementItem item = new StockMovementItem();
-
-
-        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
-        when(mockStockRepository.queryStockCardById(123)).thenReturn(stockCard);
-        stockMovementsPresenter.setStockCard(123);
-
-        //when
-        stockMovementsPresenter.saveAndRefresh(viewModel);
-
-        //then
-        verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, "name");
-        verify(mockStockRepository).addStockMovementAndUpdateStockCard(item);
-    }
 
     public class MyTestModule extends AbstractModule {
         @Override

@@ -159,26 +159,26 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     public void shouldMakePositiveAdjustment() throws LMISException {
 
         InventoryViewModel model = new InventoryViewModel(stockCard);
-        model.setQuantity("120");
+        model.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2015").setQuantity("120").build());
 
         StockMovementItem item = physicalInventoryPresenter.calculateAdjustment(model, stockCard);
 
         assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.POSITIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
-        assertThat(item.getStockOnHand(), is(Long.parseLong(model.getQuantity())));
+        assertThat(item.getStockOnHand(), is(120L));
         assertThat(item.getStockCard(), is(stockCard));
     }
 
     @Test
     public void shouldMakeNegativeAdjustment() throws LMISException {
         InventoryViewModel model = new InventoryViewModel(stockCard);
-        model.setQuantity("80");
+        model.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2015").setQuantity("80").build());
 
         StockMovementItem item = physicalInventoryPresenter.calculateAdjustment(model, stockCard);
 
         assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.NEGATIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
-        assertThat(item.getStockOnHand(), is(Long.parseLong(model.getQuantity())));
+        assertThat(item.getStockOnHand(), is(80L));
         assertThat(item.getStockCard(), is(stockCard));
     }
 
@@ -186,35 +186,14 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldCalculateStockAdjustment() throws LMISException {
         InventoryViewModel model = new InventoryViewModel(stockCard);
-        model.setQuantity("100");
+        model.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2015").setQuantity("100").build());
 
         StockMovementItem item = physicalInventoryPresenter.calculateAdjustment(model, stockCard);
 
         assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
         assertThat(item.getMovementQuantity(), is(0L));
-        assertThat(item.getStockOnHand(), is(Long.parseLong(model.getQuantity())));
+        assertThat(item.getStockOnHand(), is(100L));
         assertThat(item.getStockCard(), is(stockCard));
-    }
-
-    @Test
-    public void shouldRestoreDraftInventory() throws Exception {
-
-        physicalInventoryPresenter.getInventoryViewModelList().addAll(getStockCardViewModels());
-
-        ArrayList<DraftInventory> draftInventories = new ArrayList<>();
-        DraftInventory draftInventory = new DraftInventory();
-        stockCard.setId(9);
-        draftInventory.setStockCard(stockCard);
-        draftInventory.setQuantity(20L);
-        draftInventory.setExpireDates("11/10/2015");
-        draftInventories.add(draftInventory);
-        when(mockInventoryRepository.queryAllDraft()).thenReturn(draftInventories);
-
-        physicalInventoryPresenter.restoreDraftInventory();
-        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(0).getQuantity(), is("20"));
-        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(0).getExpiryDates().get(0), is("11/10/2015"));
-        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(1).getQuantity(), is("15"));
-        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(1).getExpiryDates().get(0), is("11/02/2015"));
     }
 
     @Test
@@ -226,7 +205,6 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         stockCard.setId(9);
         draftInventory.setStockCard(stockCard);
         draftInventory.setQuantity(20L);
-        draftInventory.setExpireDates("11/10/2015");
         LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder().setLotNumber("test").setExpiryDate("Sep 2016").setQuantity("10").build();
         LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder().setLotNumber("testNew").setExpiryDate("Sep 2016").setQuantity("10").build();
         inventoryViewModels.get(0).setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
@@ -238,27 +216,8 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
         physicalInventoryPresenter.getInventoryViewModelList().addAll(inventoryViewModels);
         physicalInventoryPresenter.restoreDraftInventory();
-        assertThat(inventoryViewModels.get(0).getQuantity(), is("20"));
-        assertThat(inventoryViewModels.get(0).getExpiryDates().get(0), is("11/10/2015"));
         assertThat(inventoryViewModels.get(0).getNewLotMovementViewModelList().get(0).getLotNumber(), is("testNew"));
         assertThat(inventoryViewModels.get(0).getExistingLotMovementViewModelList().get(0).getLotNumber(), is("test"));
-    }
-
-    @Test
-    public void shouldRestoreDraftInventoryWithEmptyQuantity() throws Exception {
-        ArrayList<DraftInventory> draftInventories = new ArrayList<>();
-        DraftInventory draftInventory = new DraftInventory();
-        stockCard.setId(9);
-        draftInventory.setStockCard(stockCard);
-        draftInventory.setQuantity(null);
-        draftInventory.setExpireDates("11/10/2015");
-        draftInventories.add(draftInventory);
-
-        when(mockInventoryRepository.queryAllDraft()).thenReturn(draftInventories);
-
-        physicalInventoryPresenter.getInventoryViewModelList().addAll(getStockCardViewModels());
-        physicalInventoryPresenter.restoreDraftInventory();
-        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(0).getQuantity(), is(""));
     }
 
     private ArrayList<InventoryViewModel> getStockCardViewModels() {
@@ -273,8 +232,6 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     private InventoryViewModel buildInventoryViewModelWithOutDraft(int stockCardId, String quantity, String expireDate) {
         InventoryViewModel inventoryViewModelWithOutDraft = new PhysicalInventoryViewModel(buildDefaultStockCard());
         inventoryViewModelWithOutDraft.setStockCardId(stockCardId);
-        inventoryViewModelWithOutDraft.setQuantity(quantity);
-        inventoryViewModelWithOutDraft.getExpiryDates().add(expireDate);
         return inventoryViewModelWithOutDraft;
     }
 
@@ -321,24 +278,6 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         subscriber.awaitTerminalEvent();
 
         verify(mockInventoryRepository).save(any(Inventory.class));
-    }
-
-    @Test
-    public void shouldClearExpiryDatesWhenSaveStockCardWithEmptySOH() throws Exception {
-        List<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
-        InventoryViewModel firstStockCardViewModel = inventoryViewModels.get(0);
-        firstStockCardViewModel.getExpiryDates().clear();
-        firstStockCardViewModel.getExpiryDates().addAll(Arrays.asList("01/01/2016", "02/01/2016"));
-        firstStockCardViewModel.setQuantity("0");
-
-        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        String sign = "test";
-        Observable observable = physicalInventoryPresenter.doInventory(sign);
-        observable.subscribe(subscriber);
-
-        subscriber.awaitTerminalEvent();
-
-        assertThat(firstStockCardViewModel.getStockCard().getExpireDates(), is(""));
     }
 
     public class MyTestModule extends AbstractModule {

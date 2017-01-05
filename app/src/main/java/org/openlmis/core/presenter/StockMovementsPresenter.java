@@ -23,7 +23,6 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
@@ -58,6 +57,7 @@ public class StockMovementsPresenter extends Presenter {
     @Inject
     StockRepository stockRepository;
 
+    @Getter
     StockCard stockCard;
 
     StockMovementView view;
@@ -95,7 +95,7 @@ public class StockMovementsPresenter extends Presenter {
         subscriptions.add(subscription);
     }
 
-    public Observer<List<StockMovementViewModel>> loadStockMovementViewModelSubscriber() {
+    private Observer<List<StockMovementViewModel>> loadStockMovementViewModelSubscriber() {
         return new Observer<List<StockMovementViewModel>>() {
             @Override
             public void onCompleted() {
@@ -116,7 +116,7 @@ public class StockMovementsPresenter extends Presenter {
         };
     }
 
-    public Observable<List<StockMovementViewModel>> loadStockMovementViewModelsObserver() {
+    protected Observable<List<StockMovementViewModel>> loadStockMovementViewModelsObserver() {
         return Observable.create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
             @Override
             public void call(final Subscriber<? super List<StockMovementViewModel>> subscriber) {
@@ -137,47 +137,6 @@ public class StockMovementsPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
-        if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
-            sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
-        }
-
-        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-    }
-
-    public void submitStockMovement(StockMovementViewModel viewModel) {
-        if (viewModel.validateEmpty() && viewModel.validateInputValid() && viewModel.validateQuantitiesNotZero()) {
-            view.showSignDialog();
-        } else if (!viewModel.validateEmpty()) {
-            view.showErrorAlert(context.getResources().getString(R.string.msg_validation_empty_error));
-        } else if (!viewModel.validateInputValid()) {
-            view.showErrorAlert(context.getResources().getString(R.string.msg_validation_error));
-        } else if (!viewModel.validateQuantitiesNotZero()) {
-            view.showErrorAlert(context.getResources().getString(R.string.msg_entries_error));
-        }
-    }
-
-    public void saveAndRefresh(StockMovementViewModel viewModel) {
-        try {
-            StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
-            stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
-            if (stockCard.getStockOnHand() == 0) {
-                stockCard.setExpireDates("");
-            }
-            saveStockMovement(stockMovementItem);
-
-            viewModel.setDraft(false);
-            stockMovementModelList.add(new StockMovementViewModel());
-
-            updateMenus();
-            view.refreshStockMovement();
-            view.deactivatedStockDraft();
-            view.updateExpiryDateViewGroup();
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-    }
-
     private void updateMenus() {
         boolean isArchivable = !stockCard.getProduct().isKit() && stockCard.getStockOnHand() == 0;
         view.updateArchiveMenus(isArchivable);
@@ -192,23 +151,14 @@ public class StockMovementsPresenter extends Presenter {
         }
     }
 
-    public StockCard getStockCard() {
-        return stockCard;
-    }
-
     public void archiveStockCard() {
         stockCard.getProduct().setArchived(true);
         stockRepository.updateProductOfStockCard(stockCard.getProduct());
     }
 
     public interface StockMovementView extends BaseView {
-        void showErrorAlert(String msg);
 
         void refreshStockMovement();
-
-        void deactivatedStockDraft();
-
-        void showSignDialog();
 
         void updateArchiveMenus(boolean isArchivable);
 

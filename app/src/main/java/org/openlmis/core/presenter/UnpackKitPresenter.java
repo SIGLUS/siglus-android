@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -67,9 +65,6 @@ public class UnpackKitPresenter extends Presenter {
                         InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
                         setExistingLotViewModels(inventoryViewModel);
                         inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity() * kitNum);
-                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_quantities_in_kit)) {
-                            inventoryViewModel.setQuantity(String.valueOf(kitProduct.getQuantity() * kitNum));
-                        }
                         inventoryViewModel.setChecked(true);
                         inventoryViewModels.add(inventoryViewModel);
                     }
@@ -151,17 +146,6 @@ public class UnpackKitPresenter extends Presenter {
             stockMovementItems.add(stockCard.generateInitialStockMovementItem());
         }
 
-        if (inventoryViewModel.getNewLotMovementViewModelList().isEmpty()) {
-            inventoryViewModel.setQuantity("0");
-        } else {
-            long receiveQuantity = 0;
-            for (LotMovementViewModel lotMovementViewModel : inventoryViewModel.getNewLotMovementViewModelList()) {
-                receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
-            }
-            inventoryViewModel.setQuantity(String.valueOf(receiveQuantity));
-        }
-
-        stockCard.setExpireDates(DateUtil.uniqueExpiryDates(inventoryViewModel.getExpiryDates(), stockCard.getExpireDates()));
         stockCard.getProduct().setArchived(false);
 
         List<LotMovementViewModel> totalLotMovementViewModelList = new ArrayList<>();
@@ -183,30 +167,6 @@ public class UnpackKitPresenter extends Presenter {
     }
 
     @NonNull
-    protected StockCard createStockCardForProduct(InventoryViewModel inventoryViewModel, String documentNumber, String signature) throws LMISException {
-        List<StockMovementItem> stockMovementItems = new ArrayList<>();
-
-        StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
-        if (stockCard == null) {
-            stockCard = new StockCard();
-            stockCard.setProduct(inventoryViewModel.getProduct());
-
-            stockMovementItems.add(stockCard.generateInitialStockMovementItem());
-        }
-
-        long movementQuantity = Long.parseLong(inventoryViewModel.getQuantity());
-
-        stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
-        stockCard.setExpireDates(DateUtil.uniqueExpiryDates(inventoryViewModel.getExpiryDates(), stockCard.getExpireDates()));
-        stockCard.getProduct().setArchived(false);
-
-        stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity, documentNumber, signature));
-        stockCard.setStockMovementItemsWrapper(stockMovementItems);
-
-        return stockCard;
-    }
-
-    @NonNull
     private StockMovementItem createUnpackMovementItemAndLotMovement(StockCard stockCard, String documentNumber, String signature, List<LotMovementViewModel> lotMovementViewModelList) {
         StockMovementItem unpackMovementItem = new StockMovementItem(stockCard);
         unpackMovementItem.setReason(MovementReasonManager.DDM);
@@ -214,17 +174,6 @@ public class UnpackKitPresenter extends Presenter {
         unpackMovementItem.setDocumentNumber(documentNumber);
         unpackMovementItem.setSignature(signature);
         unpackMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList, unpackMovementItem.getMovementType());
-        return unpackMovementItem;
-    }
-
-    @NonNull
-    private StockMovementItem createUnpackMovementItem(StockCard stockCard, long movementQuantity, String documentNumber, String signature) {
-        StockMovementItem unpackMovementItem = new StockMovementItem(stockCard);
-        unpackMovementItem.setReason(MovementReasonManager.DDM);
-        unpackMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
-        unpackMovementItem.setMovementQuantity(movementQuantity);
-        unpackMovementItem.setDocumentNumber(documentNumber);
-        unpackMovementItem.setSignature(signature);
         return unpackMovementItem;
     }
 

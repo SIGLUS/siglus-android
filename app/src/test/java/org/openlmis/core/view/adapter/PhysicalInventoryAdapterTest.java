@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.adapter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,24 +49,7 @@ public class PhysicalInventoryAdapterTest {
         product.setStrength("200");
 
         stockCard = new StockCard();
-        stockCard.setExpireDates(StringUtils.EMPTY);
         stockCard.setProduct(product);
-    }
-
-    @Test
-    public void shouldReturnFirstInvalidItemPosition() {
-        List<InventoryViewModel> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            InventoryViewModel model = new PhysicalInventoryViewModel(stockCard);
-            model.setChecked(true);
-            list.add(model);
-            if (i != 5) {
-                model.setQuantity(i + "");
-            }
-        }
-
-        adapter.refreshList(list);
-        assertThat(adapter.validateAll(), is(5));
     }
 
     @Test

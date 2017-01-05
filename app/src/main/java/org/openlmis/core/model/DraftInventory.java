@@ -24,7 +24,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -43,6 +42,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DraftInventory extends BaseModel {
 
+    @Deprecated
     @DatabaseField
     String expireDates;
 
@@ -59,7 +59,6 @@ public class DraftInventory extends BaseModel {
 
     public DraftInventory(InventoryViewModel viewModel) {
         this.stockCard = viewModel.getStockCard();
-        this.expireDates = DateUtil.formatExpiryDateString(viewModel.getExpiryDates());
         this.quantity = viewModel.getLotListQuantityTotalAmount();
         setupDraftLotList(viewModel.getExistingLotMovementViewModelList(), viewModel.getNewLotMovementViewModelList());
     }

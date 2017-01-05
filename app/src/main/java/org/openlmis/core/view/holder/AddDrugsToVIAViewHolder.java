@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.AddDrugsToViaInventoryViewModel;
 
 import roboguice.inject.InjectView;
 
@@ -55,7 +55,7 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
         });
     }
 
-    public void populate(String queryKeyWord, final InventoryViewModel viewModel) {
+    public void populate(String queryKeyWord, final AddDrugsToViaInventoryViewModel viewModel) {
         setItemViewListener(viewModel);
         checkBox.setChecked(viewModel.isChecked());
 
@@ -71,7 +71,7 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
 
     }
 
-    protected void setItemViewListener(final InventoryViewModel viewModel) {
+    protected void setItemViewListener(final AddDrugsToViaInventoryViewModel viewModel) {
 
         final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
         txQuantity.removeTextChangedListener(textWatcher);
@@ -113,9 +113,9 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
 
     class EditTextWatcher extends SingleTextWatcher {
 
-        private final InventoryViewModel viewModel;
+        private final AddDrugsToViaInventoryViewModel viewModel;
 
-        public EditTextWatcher(InventoryViewModel viewModel) {
+        public EditTextWatcher(AddDrugsToViaInventoryViewModel viewModel) {
             this.viewModel = viewModel;
         }
 

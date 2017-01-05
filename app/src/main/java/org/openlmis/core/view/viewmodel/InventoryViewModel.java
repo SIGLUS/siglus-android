@@ -20,21 +20,14 @@ package org.openlmis.core.view.viewmodel;
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.holder.StockCardViewHolder;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import lombok.Data;
 
@@ -47,9 +40,8 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
 
     String strength;
     String type;
-    String quantity;
+
     boolean isDataChanged;
-    final List<String> expiryDates = new ArrayList<>();
 
     long stockCardId;
 
@@ -74,8 +66,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         this.stockCardId = stockCard.getId();
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
-
-        initExpiryDates(stockCard.getExpireDates());
     }
 
     public InventoryViewModel(Product product) {
@@ -84,16 +74,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
 
         setProductAttributes(product);
         formatProductDisplay(product);
-    }
-
-
-    public void initExpiryDates(String expireDates) {
-        if (!TextUtils.isEmpty(expireDates)) {
-            this.expiryDates.clear();
-            this.expiryDates.addAll(Arrays.asList(expireDates.split(StockCard.DIVIDER)));
-        } else {
-            this.expiryDates.clear();
-        }
     }
 
     public SpannableStringBuilder getStyledName() {
@@ -135,15 +115,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         }
         styledUnit.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
                 length, unit.length(), Spannable.SPAN_POINT_MARK);
-    }
-
-    public String optFirstExpiryDate() {
-        try {
-            return DateUtil.convertDate(expiryDates.get(0), DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-        } catch (Exception e) {
-            new LMISException(e).reportToFabric();
-            return StringUtils.EMPTY;
-        }
     }
 
     public boolean validate() {

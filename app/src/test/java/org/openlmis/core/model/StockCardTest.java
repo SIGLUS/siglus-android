@@ -63,12 +63,6 @@ public class StockCardTest {
     }
 
     @Test
-    public void shouldGetEarliestExpireDate() throws Exception {
-        stockCard.setExpireDates("18/10/2015,18/10/2016,18/10/2017,18/10/2018");
-        assertThat(stockCard.getEarliestExpireDate(),is("18/10/2015"));
-    }
-
-    @Test
     public void shouldInitStockMovementFromStockCard() throws Exception {
         StockCard stockCard = StockCardBuilder.buildStockCard();
         stockCard.setStockOnHand(200);

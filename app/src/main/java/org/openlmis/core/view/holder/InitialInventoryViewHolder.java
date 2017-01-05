@@ -26,9 +26,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.checkbox)
     CheckBox checkBox;
 
-    @InjectView(R.id.action_panel)
-    View actionPanel;
-
     @InjectView(R.id.action_view_history)
     TextView tvHistoryAction;
 

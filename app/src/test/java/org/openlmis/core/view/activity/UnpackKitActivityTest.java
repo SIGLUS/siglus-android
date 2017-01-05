@@ -14,6 +14,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -46,7 +47,6 @@ public class UnpackKitActivityTest {
         viewModel = new UnpackKitInventoryViewModel(product);
         viewModel.setChecked(true);
         viewModel.setKitExpectQuantity(300);
-        viewModel.setQuantity("200");
 
         mockedPresenter = mock(UnpackKitPresenter.class);
         when(mockedPresenter.getKitProductsObservable(anyString(), anyByte())).thenReturn(Observable.<List<InventoryViewModel>>empty());
@@ -69,24 +69,24 @@ public class UnpackKitActivityTest {
     }
 
     @Test
-    public void shouldShowDialogWhenQuantityIsValid() throws Exception {
-        unpackKitActivity.mAdapter.getData().clear();
-        unpackKitActivity.mAdapter.getData().add(viewModel);
-        unpackKitActivity.mAdapter.refresh();
-
-        unpackKitActivity.mAdapter.onCreateViewHolder(unpackKitActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
-
-        assertNotNull(unpackKitActivity.getFragmentManager().findFragmentByTag("signature_dialog_for_unpack_kit"));
-    }
-
-    @Test
     public void shouldNotShowDialogWhenQuantityIsNotValid() throws Exception {
-        viewModel.setQuantity("");
+        viewModel.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2033").setQuantity("").build());
+
         unpackKitActivity.mAdapter.getData().clear();
         unpackKitActivity.mAdapter.getData().add(viewModel);
 
         unpackKitActivity.mAdapter.onCreateViewHolder(unpackKitActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
 
         assertNull(unpackKitActivity.getFragmentManager().findFragmentByTag("signature_dialog_for_unpack_kit"));
+    }
+
+    @Test
+    public void shouldShowSignatureDialogIfIsValid() throws Exception {
+        viewModel.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2033").setQuantity("100").setLotNumber("some lot").build());
+        unpackKitActivity.mAdapter.getData().clear();
+        unpackKitActivity.mAdapter.getData().add(viewModel);
+
+        unpackKitActivity.mAdapter.onCreateViewHolder(unpackKitActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
+        assertNotNull(unpackKitActivity.getFragmentManager().findFragmentByTag("signature_dialog_for_unpack_kit"));
     }
 }

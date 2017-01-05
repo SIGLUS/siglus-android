@@ -106,9 +106,6 @@ public class NewStockMovementPresenter extends Presenter {
         StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel(stockCard);
         stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
 
-        if (stockCard.getStockOnHand() == 0) {
-            stockCard.setExpireDates("");
-        }
         stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
         if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
             sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());

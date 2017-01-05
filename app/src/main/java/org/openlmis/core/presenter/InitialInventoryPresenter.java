@@ -7,7 +7,6 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
@@ -106,17 +105,4 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         stockRepository.addStockMovementAndUpdateStockCard(movementItem);
     }
 
-    private StockCard createStockCardAndInventoryMovement(InventoryViewModel model) throws LMISException {
-        StockCard stockCard = new StockCard();
-        stockCard.setProduct(model.getProduct());
-        stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
-        if (stockCard.getStockOnHand() != 0) {
-            stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
-        } else {
-            stockCard.setExpireDates("");
-        }
-
-        stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
-        return stockCard;
-    }
 }

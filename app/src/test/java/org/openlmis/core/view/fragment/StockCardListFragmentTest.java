@@ -29,22 +29,17 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.StockCardListActivity;
-import org.openlmis.core.view.activity.StockMovementsActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
 import org.robolectric.Robolectric;
-import org.robolectric.shadows.ShadowApplication;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
@@ -151,27 +146,5 @@ public class StockCardListFragmentTest {
         fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
         verify(productUpdateBanner).refreshBannerText();
-    }
-
-
-    public void shouldStartStockMovementWhenItemClicked() {
-        Product product = new Product();
-        product.setPrimaryName("Product primary name");
-        product.setCode("08S42");
-        product.setActive(true);
-        StockCard stockCard = new StockCardBuilder()
-                .setStockCardId(20)
-                .setStockOnHand(100)
-                .setProduct(product).build();
-
-        fragment.onItemViewClickListener.onItemViewClick(new InventoryViewModel(stockCard));
-
-        Intent intent = ShadowApplication.getInstance().getNextStartedActivity();
-
-        assertEquals(intent.getComponent().getClassName(), StockMovementsActivity.class.getName());
-        assertEquals("Product primary name [08S42]", intent.getStringExtra(Constants.PARAM_STOCK_NAME));
-        assertEquals(20L, intent.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0));
-        assertTrue(intent.getBooleanExtra(Constants.PARAM_IS_ACTIVATED, false));
-
     }
 }

@@ -6,8 +6,6 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 
-import java.util.ArrayList;
-
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
@@ -24,20 +22,9 @@ public class DraftInventoryTest {
         Product product = new Product();
         product.setPrimaryName("Product");
         stockCard.setProduct(product);
-        stockCard.setExpireDates("");
         PhysicalInventoryViewModel viewModel = new PhysicalInventoryViewModel(stockCard);
-        ArrayList<String> list = new ArrayList<>();
-        list.add("18/10/2016");
-        list.add("18/10/2017");
-        list.add("18/10/2018");
-        list.add("18/10/2015");
-        viewModel.getExpiryDates().addAll(list);
-        viewModel.setQuantity("10");
 
         draftInventory = new DraftInventory(viewModel);
-
-        assertThat(draftInventory.getQuantity(), is(10L));
-        assertThat(draftInventory.getExpireDates(), is("18/10/2015,18/10/2016,18/10/2017,18/10/2018"));
 
         LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModel();
         lotMovementViewModel1.setQuantity("10");

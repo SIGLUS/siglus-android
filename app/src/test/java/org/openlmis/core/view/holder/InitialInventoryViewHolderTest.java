@@ -40,65 +40,16 @@ public class InitialInventoryViewHolderTest {
     @Test
     public void shouldInitialViewHolder() throws ParseException {
         InventoryViewModel viewModel = new InventoryViewModelBuilder(product)
-                .setQuantity("10")
-                .setChecked(true)
+                .setChecked(false)
                 .setType("Embalagem")
                 .build();
 
         viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
-        assertThat(viewHolder.checkBox.isChecked()).isTrue();
         assertThat(viewHolder.productName.getText().toString()).isEqualTo("Lamivudina 150mg [08S40]");
         assertThat(viewHolder.productUnit.getText().toString()).isEqualTo("Embalagem");
 
-        assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.VISIBLE);
         assertThat(viewHolder.tvHistoryAction.getVisibility()).isEqualTo(View.GONE);
-    }
-
-    @Test
-    public void shouldShowEditPanelIfCheckboxIsChecked() {
-
-        InventoryViewModel viewModel = new InventoryViewModelBuilder(product)
-                .setQuantity("10")
-                .setChecked(false)
-                .setType("Embalagem")
-                .build();
-
-        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
-
-        assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.GONE);
-
-        viewHolder.taCheckbox.performClick();
-
-        assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.VISIBLE);
-    }
-
-    @Test
-    public void shouldClearQuantityAndExpiryDate() {
-        InventoryViewModel viewModel = new InventoryViewModelBuilder(product)
-                .setQuantity("10")
-                .setChecked(true)
-                .setType("Embalagem")
-                .build();
-
-        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
-
-        viewHolder.taCheckbox.performClick();
-
-        assertThat(viewModel.getQuantity()).isEmpty();
-    }
-
-    @Test
-    public void shouldUpdateViewModelQuantityWhenInputFinished() {
-        InventoryViewModel viewModel = new InventoryViewModelBuilder(product)
-                .setChecked(false)
-                .setType("Embalagem")
-                .build();
-
-        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
-        viewHolder.itemView.performClick();
-
-        assertThat(viewModel.getQuantity()).isEqualTo("120");
     }
 
     @Test
@@ -106,7 +57,6 @@ public class InitialInventoryViewHolderTest {
         ViewHistoryListener mockedListener = mock(ViewHistoryListener.class);
         product.setArchived(true);
         InventoryViewModel viewModel = new InventoryViewModelBuilder(product)
-                .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
                 .build();
@@ -114,11 +64,9 @@ public class InitialInventoryViewHolderTest {
         viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
         assertThat(viewHolder.tvHistoryAction.getVisibility()).isEqualTo(View.VISIBLE);
-        assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.GONE);
 
         viewHolder.tvHistoryAction.performClick();
 
         verify(mockedListener).viewHistory(viewModel.getStockCard());
     }
-
 }

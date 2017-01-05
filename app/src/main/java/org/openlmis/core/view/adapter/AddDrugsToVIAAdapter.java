@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.AddDrugsToVIAViewHolder;
+import org.openlmis.core.view.viewmodel.AddDrugsToViaInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
@@ -22,6 +23,6 @@ public class AddDrugsToVIAAdapter extends InventoryListAdapter<AddDrugsToVIAView
 
     @Override
     public void onBindViewHolder(AddDrugsToVIAViewHolder holder, int position) {
-        holder.populate(queryKeyWord, filteredList.get(position));
+        holder.populate(queryKeyWord, (AddDrugsToViaInventoryViewModel) filteredList.get(position));
     }
 }

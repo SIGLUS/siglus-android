@@ -3,8 +3,6 @@ package org.openlmis.core.view.viewmodel;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 
-import java.util.List;
-
 public class InventoryViewModelBuilder {
 
     private InventoryViewModel viewModel;
@@ -29,18 +27,6 @@ public class InventoryViewModelBuilder {
 
     public InventoryViewModelBuilder setType(String type) {
         viewModel.setType(type);
-        return this;
-    }
-
-
-    public InventoryViewModelBuilder setQuantity(String quantity) {
-        viewModel.setQuantity(quantity);
-        return this;
-    }
-
-    public InventoryViewModelBuilder setExpiryDates(List<String> dates) {
-        viewModel.expiryDates.clear();
-        viewModel.expiryDates.addAll(dates);
         return this;
     }
 

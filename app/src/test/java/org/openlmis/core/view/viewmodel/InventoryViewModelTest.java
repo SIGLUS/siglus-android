@@ -61,19 +61,13 @@ public class InventoryViewModelTest {
 
     @Test
     public void shouldValidate() throws Exception {
-        assertFalse(viewModel.validate());
-
-        viewModel.setChecked(false);
-        assertTrue(viewModel.validate());
-
-        viewModel.setChecked(true);
-        viewModel.setQuantity("dk");
-        assertFalse(viewModel.validate());
-
         LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lot1", "Feb 2017", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         lotMovementViewModel.setQuantity("10");
         viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel));
         assertTrue(viewModel.validate());
+
+        lotMovementViewModel.setQuantity("number");
+        assertFalse(viewModel.validate());
     }
 
     @Test
@@ -200,7 +194,6 @@ public class InventoryViewModelTest {
 
         viewModel.setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
         viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel2));
-        viewModel.setQuantity("10");
 
         DraftInventory draftInventory = new DraftInventory(viewModel);
         assertThat(draftInventory.getDraftLotItemListWrapper().get(0).isNewAdded(), is(false));

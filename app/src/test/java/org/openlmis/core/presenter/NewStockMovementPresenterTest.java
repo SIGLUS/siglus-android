@@ -34,6 +34,8 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 
@@ -78,6 +80,9 @@ public class NewStockMovementPresenterTest {
         stockMovementViewModel.getTypeQuantityMap().put(MovementReasonManager.MovementType.RECEIVE, "10");
         stockMovementViewModel.setReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "code", "desc"));
         stockMovementViewModel.setMovementDate("10/02/2016");
+        LotMovementViewModel lotMovementViewModel = new LotMovementViewModelBuilder().setExpiryDate("Jan 2016").setQuantity("50").build();
+        stockMovementViewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
+
         TestSubscriber<StockMovementViewModel> subscriber = new TestSubscriber<>();
         newStockMovementPresenter.getSaveMovementObservable().subscribe(subscriber);
 
@@ -87,7 +92,7 @@ public class NewStockMovementPresenterTest {
         ArgumentCaptor<StockMovementItem> captor = ArgumentCaptor.forClass(StockMovementItem.class);
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(captor.capture());
         StockMovementItem stockMovementItemSaved = captor.getAllValues().get(0);
-        assertThat(stockMovementItemSaved.getStockOnHand(), is(10L));
+        assertThat(stockMovementItemSaved.getStockOnHand(), is(50L));
         assertThat(stockMovementItemSaved.getStockCard(), is(stockCard));
 
         verify(sharedPreferenceMgr, never()).setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
