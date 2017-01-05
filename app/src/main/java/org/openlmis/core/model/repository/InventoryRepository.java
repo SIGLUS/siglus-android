@@ -7,7 +7,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
 
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
@@ -61,10 +60,8 @@ public class InventoryRepository {
             @Override
             public Object operate(Dao<DraftInventory, String> dao) throws SQLException, LMISException {
                 draftInventoryGenericDao.create(draftInventory);
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                    for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
-                        draftLotItemGenericDao.createOrUpdate(draftLotItem);
-                    }
+                for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
+                    draftLotItemGenericDao.createOrUpdate(draftLotItem);
                 }
                 return null;
             }
@@ -80,9 +77,7 @@ public class InventoryRepository {
             @Override
             public Object operate(Dao<DraftInventory, String> dao) throws SQLException, LMISException {
                 TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftInventory.class);
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                    TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftLotItem.class);
-                }
+                TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftLotItem.class);
                 return null;
             }
         });

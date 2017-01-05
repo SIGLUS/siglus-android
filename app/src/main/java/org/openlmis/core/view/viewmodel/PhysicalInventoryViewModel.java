@@ -1,8 +1,5 @@
 package org.openlmis.core.view.viewmodel;
 
-import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.StockCard;
@@ -23,23 +20,16 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
 
     @Override
     public boolean validate() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            valid = !checked || (validateLotList() && validateExistingLot()) || product.isArchived();
-        } else {
-            valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
-        }
+        valid = !checked || (validateLotList() && validateExistingLot()) || product.isArchived();
         return valid;
     }
 
     @Override
     public boolean isDataChanged() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            if (draftInventory == null) {
-                return hasLotInInventoryModelChanged();
-            }
-            return !draftInventory.getDraftLotItemListWrapper().isEmpty() && isDifferentFromDraft();
+        if (draftInventory == null) {
+            return hasLotInInventoryModelChanged();
         }
-        return isDataChanged;
+        return !draftInventory.getDraftLotItemListWrapper().isEmpty() && isDifferentFromDraft();
     }
 
     private boolean isDifferentFromDraft() {
@@ -55,8 +45,8 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
                 return !draftLotItem.isNewAdded();
             }
         }).toList();
-        for (DraftLotItem draftLotItem: existingDraftLotItems) {
-            for (LotMovementViewModel existingLotMovementViewModel: existingLotMovementViewModelList) {
+        for (DraftLotItem draftLotItem : existingDraftLotItems) {
+            for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
                 if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
                     if (!String.valueOf(draftLotItem.getQuantity() == null ? "" : draftLotItem.getQuantity()).equals(existingLotMovementViewModel.getQuantity())) {
                         return true;
@@ -64,11 +54,11 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
                 }
             }
         }
-        for (DraftLotItem draftLotItem: newAddedDraftLotItems) {
+        for (DraftLotItem draftLotItem : newAddedDraftLotItems) {
             if (newAddedDraftLotItems.size() != newLotMovementViewModelList.size()) {
                 return true;
             }
-            for (LotMovementViewModel lotMovementViewModel: newLotMovementViewModelList) {
+            for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
                 if (draftLotItem.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
                     if (!String.valueOf(draftLotItem.getQuantity() == null ? "" : draftLotItem.getQuantity()).equals(lotMovementViewModel.getQuantity())) {
                         return true;

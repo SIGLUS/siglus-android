@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.view.holder.UnpackKitViewHolder;
 import org.openlmis.core.view.holder.UnpackKitWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
@@ -36,11 +34,7 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
     @Override
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
         final InventoryViewModel viewModel = filteredList.get(position);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            ((UnpackKitWithLotViewHolder) viewHolder).populate(viewModel, setConfirmNoStockReceivedAction);
-        } else {
-            ((UnpackKitViewHolder) viewHolder).populate(viewModel);
-        }
+        ((UnpackKitWithLotViewHolder) viewHolder).populate(viewModel, setConfirmNoStockReceivedAction);
     }
 
     @Override
@@ -52,12 +46,7 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
 
     @Override
     public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_unpack_kit_with_lots, parent, false);
-            return new UnpackKitWithLotViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false);
-            return new UnpackKitViewHolder(view);
-        }
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_unpack_kit_with_lots, parent, false);
+        return new UnpackKitWithLotViewHolder(view);
     }
 }

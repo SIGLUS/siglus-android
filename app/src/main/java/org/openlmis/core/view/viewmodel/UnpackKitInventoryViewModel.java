@@ -1,8 +1,6 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 
 import lombok.Data;
@@ -36,12 +34,10 @@ public class UnpackKitInventoryViewModel extends InventoryViewModel {
 
     @Override
     public boolean validate() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            if (!confirmedNoStockReceived && (!validateLotList() || getLotListQuantityTotalAmount() <= 0)) {
-                shouldShowEmptyLotWarning = true;
-                return false;
-            }
-            return true;
-        } else return super.validate();
+        if (!confirmedNoStockReceived && (!validateLotList() || getLotListQuantityTotalAmount() <= 0)) {
+            shouldShowEmptyLotWarning = true;
+            return false;
+        }
+        return true;
     }
 }

@@ -20,8 +20,6 @@ package org.openlmis.core.view.viewmodel;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
@@ -118,7 +116,7 @@ public class StockMovementViewModel extends BaseStockMovementViewModel{
         stockMovementItem.setDocumentNumber(getDocumentNo());
         stockMovementItem.setMovementType(reason.getMovementType());
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) || isKit) {
+        if (isKit) {
             Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
             stockMovementItem.setMovementQuantity(movementQuantity);
         }
@@ -185,7 +183,7 @@ public class StockMovementViewModel extends BaseStockMovementViewModel{
 
 
     public void populateStockExistence(long previousStockOnHand) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit) {
+        if (!isKit) {
             this.stockExistence = "" + previousStockOnHand;
         } else {
             MovementReasonManager.MovementType movementType = typeQuantityMap.keySet().iterator().next();

@@ -8,9 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
@@ -78,8 +76,6 @@ public class InventoryRepositoryTest {
 
     @Test
     public void shouldSaveDraftInventoryAndDraftLotItem() throws LMISException, ParseException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
-
         Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true).setIsKit(false).build();
         StockCard stockCard = createNewStockCard("code", null, product, true);
 

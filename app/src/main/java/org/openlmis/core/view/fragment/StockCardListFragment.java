@@ -34,13 +34,11 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.activity.StockMovementsActivity;
 import org.openlmis.core.view.activity.StockMovementsWithLotActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
@@ -169,11 +167,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     };
 
     protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
-        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
-        } else {
-            return StockMovementsActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
-        }
+        return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
     }
 
     private void initSortSpinner() {

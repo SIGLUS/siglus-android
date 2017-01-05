@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
@@ -97,11 +96,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord, ViewHistoryListener listener) {
         this.viewModel = inventoryViewModel;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            setUpLotListView();
-        } else {
-            populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
-        }
+        setUpLotListView();
         resetCheckBox();
         setItemViewListener();
 
@@ -162,23 +157,15 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private void checkedChangeAction(boolean isChecked) {
         if (isChecked && !viewModel.getProduct().isArchived()) {
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
-                    lotListView.showAddLotDialogFragment();
-                }
-                showAddNewLotPanel(View.VISIBLE);
-            } else {
-                showEditPanel(View.VISIBLE);
+            if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
+                lotListView.showAddLotDialogFragment();
             }
+            showAddNewLotPanel(View.VISIBLE);
         } else {
             checkBox.setEnabled(true);
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                showAddNewLotPanel(View.GONE);
-                viewModel.getNewLotMovementViewModelList().clear();
-                lotListView.refreshNewLotList();
-            } else {
-                showEditPanel(View.GONE);
-            }
+            showAddNewLotPanel(View.GONE);
+            viewModel.getNewLotMovementViewModelList().clear();
+            lotListView.refreshNewLotList();
             populateEditPanel(StringUtils.EMPTY, StringUtils.EMPTY);
 
             viewModel.setQuantity(StringUtils.EMPTY);

@@ -23,7 +23,6 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
@@ -127,13 +126,9 @@ public class MMIARepository extends RnrFormRepository {
         RnrFormItem rnrFormItem = super.createRnrFormItemByPeriod(stockCard, startDate, endDate);
 
         rnrFormItem.setProduct(stockCard.getProduct());
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
-            if (earliestLotExpiryDate != null) {
-                rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
-            }
-        } else {
-            rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
+        Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
+        if (earliestLotExpiryDate != null) {
+            rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
         }
 
         return rnrFormItem;

@@ -24,8 +24,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -43,7 +41,7 @@ import lombok.Setter;
 @Setter
 @DatabaseTable(tableName = "draft_inventory")
 @NoArgsConstructor
-public class DraftInventory extends BaseModel{
+public class DraftInventory extends BaseModel {
 
     @DatabaseField
     String expireDates;
@@ -62,16 +60,8 @@ public class DraftInventory extends BaseModel{
     public DraftInventory(InventoryViewModel viewModel) {
         this.stockCard = viewModel.getStockCard();
         this.expireDates = DateUtil.formatExpiryDateString(viewModel.getExpiryDates());
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            this.quantity = viewModel.getLotListQuantityTotalAmount();
-            setupDraftLotList(viewModel.getExistingLotMovementViewModelList(),viewModel.getNewLotMovementViewModelList());
-        } else {
-            try {
-                this.quantity = Long.parseLong(viewModel.getQuantity());
-            } catch (NumberFormatException e) {
-                this.quantity = null;
-            }
-        }
+        this.quantity = viewModel.getLotListQuantityTotalAmount();
+        setupDraftLotList(viewModel.getExistingLotMovementViewModelList(), viewModel.getNewLotMovementViewModelList());
     }
 
     public List<DraftLotItem> getDraftLotItemListWrapper() {

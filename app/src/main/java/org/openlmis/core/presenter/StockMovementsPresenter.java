@@ -23,7 +23,6 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -111,9 +110,6 @@ public class StockMovementsPresenter extends Presenter {
             public void onNext(List<StockMovementViewModel> stockMovementViewModels) {
                 stockMovementModelList.clear();
                 stockMovementModelList.addAll(stockMovementViewModels);
-                if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                    stockMovementModelList.add(new StockMovementViewModel());
-                }
                 view.refreshStockMovement();
                 view.loaded();
             }

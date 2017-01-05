@@ -3,9 +3,7 @@ package org.openlmis.core.network.model;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
@@ -27,7 +25,6 @@ public class StockMovementEntryTest {
 
     @Test
     public void shouldCreateStockMovementEntryForSyncUp() throws ParseException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         StockCard stockCard = StockCardBuilder.buildStockCard();
 
         StockMovementItem stockMovementItem = new StockMovementItemBuilder()

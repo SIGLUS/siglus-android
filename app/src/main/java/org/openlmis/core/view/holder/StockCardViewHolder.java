@@ -1,7 +1,6 @@
 package org.openlmis.core.view.holder;
 
 import android.graphics.Typeface;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -73,42 +72,20 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     private void initExpiryDateWarning(InventoryViewModel inventoryViewModel) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            Date earliestLotExpiryDate = inventoryViewModel.getStockCard().getEarliestLotExpiryDate();
+        Date earliestLotExpiryDate = inventoryViewModel.getStockCard().getEarliestLotExpiryDate();
 
-            if (earliestLotExpiryDate != null) {
-                if (earliestLotExpiryDate.before(new Date())) {
-                    showExpiryDateWithMessage(R.string.msg_expired_date, earliestLotExpiryDate);
-                    return;
-                }
-                if (DateUtil.calculateDateMonthOffset(new Date(), earliestLotExpiryDate) <= 3) {
-                    showExpiryDateWithMessage(R.string.msg_expiring_date, earliestLotExpiryDate);
-                    return;
-                }
-            }
-            hideExpiryDate();
-        } else {
-            String earliestExpiryDateString = inventoryViewModel.getStockCard().getEarliestExpireDate();
-            if (TextUtils.isEmpty(earliestExpiryDateString)) {
-                hideExpiryDate();
+        if (earliestLotExpiryDate != null) {
+            if (earliestLotExpiryDate.before(new Date())) {
+                showExpiryDateWithMessage(R.string.msg_expired_date, earliestLotExpiryDate);
                 return;
             }
-
-            Date earliestExpiryDate = DateUtil.parseString(earliestExpiryDateString, DateUtil.SIMPLE_DATE_FORMAT);
-            Date currentDate = new Date(LMISApp.getInstance().getCurrentTimeMillis());
-
-            if (DateUtil.calculateDateMonthOffset(earliestExpiryDate, currentDate) > 0) {
-                showExpiryDateWithMessage(R.string.msg_expired_date, earliestExpiryDate);
+            if (DateUtil.calculateDateMonthOffset(new Date(), earliestLotExpiryDate) <= 3) {
+                showExpiryDateWithMessage(R.string.msg_expiring_date, earliestLotExpiryDate);
                 return;
             }
-
-            if (DateUtil.calculateDateMonthOffset(currentDate, earliestExpiryDate) <= 3) {
-                showExpiryDateWithMessage(R.string.msg_expiring_date, earliestExpiryDate);
-                return;
-            }
-
-            hideExpiryDate();
         }
+        hideExpiryDate();
+
         hideStockStatus();
     }
 

@@ -27,9 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
@@ -405,7 +403,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
         when(mockStockMovementRepository.queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
 
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 
         assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
@@ -414,7 +411,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnrFormItemByPeriod.getInitialAmount(), is(100L));
 
         stockCard.setLotOnHandListWrapper(Lists.<LotOnHand>newArrayList());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
         assertNull(rnrFormItemByPeriod.getValidate());
     }

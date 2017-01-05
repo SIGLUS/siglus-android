@@ -10,9 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -221,7 +219,6 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldRestoreDraftInventoryWithLDraftLotItems() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management,true);
         ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
 
         ArrayList<DraftInventory> draftInventories = new ArrayList<>();

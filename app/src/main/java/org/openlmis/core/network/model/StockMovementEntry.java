@@ -20,8 +20,6 @@ package org.openlmis.core.network.model;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
@@ -64,17 +62,13 @@ public class StockMovementEntry {
         this.getCustomProps().put("signature", stockMovementItem.getSignature());
         this.getCustomProps().put("SOH", String.valueOf(stockMovementItem.getStockOnHand()));
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)
-            && stockMovementItem.getLotMovementItemListWrapper() != null) {
+        if (stockMovementItem.getLotMovementItemListWrapper() != null) {
             lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper()).transform(new Function<LotMovementItem, LotMovementEntry>() {
                 @Override
                 public LotMovementEntry apply(LotMovementItem lotMovementItem) {
                     return new LotMovementEntry(lotMovementItem);
                 }
             }).toList());
-
-        } else {
-            this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
         }
     }
 }

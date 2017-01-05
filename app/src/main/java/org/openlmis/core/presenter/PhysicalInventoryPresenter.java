@@ -3,7 +3,6 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
@@ -59,9 +58,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             @Override
             public InventoryViewModel apply(StockCard stockCard) {
                 InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard);
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                    setExistingLotViewModels(inventoryViewModel);
-                }
+                setExistingLotViewModels(inventoryViewModel);
                 return inventoryViewModel;
             }
         }).toList();
@@ -85,9 +82,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                     ((PhysicalInventoryViewModel) viewModel).setDraftInventory(draftInventory);
                     viewModel.initExpiryDates(draftInventory.getExpireDates());
                     viewModel.setQuantity(formatQuantity(draftInventory.getQuantity()));
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                        populateLotMovementModelWithDraftLotItem(viewModel, draftInventory);
-                    }
+                    populateLotMovementModelWithDraftLotItem(viewModel, draftInventory);
                 }
             }
 
@@ -147,11 +142,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
 
     protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
         Long inventory;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            inventory = model.getLotListQuantityTotalAmount();
-        } else {
-            inventory = Long.parseLong(model.getQuantity());
-        }
+        inventory = model.getLotListQuantityTotalAmount();
         long stockOnHand = model.getStockOnHand();
         StockMovementItem item = new StockMovementItem();
         item.setSignature(model.getSignature());
@@ -171,9 +162,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             item.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            item.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(model.getExistingLotMovementViewModelList(), model.getNewLotMovementViewModelList());
-        }
+        item.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(model.getExistingLotMovementViewModelList(), model.getNewLotMovementViewModelList());
 
         return item;
     }
@@ -205,11 +194,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                     for (InventoryViewModel viewModel : inventoryViewModelList) {
                         viewModel.setSignature(sign);
                         StockCard stockCard = viewModel.getStockCard();
-                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                            stockCard.setStockOnHand(viewModel.getLotListQuantityTotalAmount());
-                        } else {
-                            stockCard.setStockOnHand(Long.parseLong(viewModel.getQuantity()));
-                        }
+                        stockCard.setStockOnHand(viewModel.getLotListQuantityTotalAmount());
 
                         if (stockCard.getStockOnHand() == 0) {
                             stockCard.setExpireDates("");

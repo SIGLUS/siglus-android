@@ -295,7 +295,7 @@ public class LoginPresenter extends Presenter {
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !SharedPreferenceMgr.getInstance().hasLotInfo()) {
+            if (!SharedPreferenceMgr.getInstance().hasLotInfo()) {
                 if (existLotInfo() || hasNoStockOnHand()) {
                     SharedPreferenceMgr.getInstance().setHasLotInfo(true);
                     view.goToHomePage();

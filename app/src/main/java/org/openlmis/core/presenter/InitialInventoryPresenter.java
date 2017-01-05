@@ -2,8 +2,6 @@ package org.openlmis.core.presenter;
 
 import android.support.annotation.Nullable;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
@@ -94,11 +92,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
                 stockRepository.updateStockCardWithProduct(stockCard);
                 return;
             }
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                createStockCardAndInventoryMovementWithLot(inventoryViewModel);
-            } else {
-                createStockCardAndInventoryMovement(inventoryViewModel);
-            }
+            createStockCardAndInventoryMovementWithLot(inventoryViewModel);
         } catch (LMISException e) {
             e.reportToFabric();
         }

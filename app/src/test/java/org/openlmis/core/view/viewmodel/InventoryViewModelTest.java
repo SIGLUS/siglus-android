@@ -4,9 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
@@ -72,7 +70,6 @@ public class InventoryViewModelTest {
         viewModel.setQuantity("dk");
         assertFalse(viewModel.validate());
 
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lot1", "Feb 2017", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         lotMovementViewModel.setQuantity("10");
         viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel));
@@ -160,8 +157,6 @@ public class InventoryViewModelTest {
 
     @Test
     public void shouldReturnFalseWhenLotListIsInvalidate() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
-
         StockCard stockCard = new StockCard();
         stockCard.setId(1);
 
@@ -181,8 +176,6 @@ public class InventoryViewModelTest {
 
     @Test
     public void shouldReturnTrueWhenLotListIsValid() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
-
         StockCard stockCard = new StockCard();
         stockCard.setId(1);
 
@@ -202,7 +195,6 @@ public class InventoryViewModelTest {
 
     @Test
     public void shouldParseDraftInventory() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder().setLotNumber("lot1").setExpiryDate("Feb 2015").build();
         LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder().setLotNumber("lot2").setExpiryDate("Feb 2015").build();
 

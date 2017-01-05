@@ -65,9 +65,7 @@ public class UnpackKitPresenter extends Presenter {
                     for (KitProduct kitProduct : kitProducts) {
                         final Product product = productRepository.getByCode(kitProduct.getProductCode());
                         InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
-                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                            setExistingLotViewModels(inventoryViewModel);
-                        }
+                        setExistingLotViewModels(inventoryViewModel);
                         inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity() * kitNum);
                         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_quantities_in_kit)) {
                             inventoryViewModel.setQuantity(String.valueOf(kitProduct.getQuantity() * kitNum));
@@ -95,11 +93,7 @@ public class UnpackKitPresenter extends Presenter {
                         @Override
                         public StockCard apply(InventoryViewModel inventoryViewModel) {
                             try {
-                                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                                    return createStockCardForProductWithLot(inventoryViewModel, documentNumber, signature);
-                                } else {
-                                    return createStockCardForProduct(inventoryViewModel, documentNumber, signature);
-                                }
+                                return createStockCardForProductWithLot(inventoryViewModel, documentNumber, signature);
                             } catch (LMISException e) {
                                 subscriber.onError(e);
                             }

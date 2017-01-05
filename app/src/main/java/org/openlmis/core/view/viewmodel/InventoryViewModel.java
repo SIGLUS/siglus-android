@@ -147,11 +147,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     }
 
     public boolean validate() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            valid = !checked || validateLotList() || product.isArchived();
-        } else {
-            valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
-        }
+        valid = !checked || validateLotList() || product.isArchived();
         return valid;
     }
 

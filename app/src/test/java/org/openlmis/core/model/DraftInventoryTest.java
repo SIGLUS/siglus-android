@@ -2,9 +2,7 @@ package org.openlmis.core.model;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 
@@ -51,7 +49,6 @@ public class DraftInventoryTest {
         lotMovementViewModel2.setExpiryDate("Aug 2016");
         viewModel.setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel2));
 
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management,true);
         draftInventory = new DraftInventory(viewModel);
 
         assertThat(draftInventory.getQuantity(), is(20L));

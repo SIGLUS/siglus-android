@@ -9,9 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISRepositoryUnitTest;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
@@ -234,8 +232,6 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldInitStockCardAndCreateAInitInventoryMovementItemWithLot() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management,true);
-
         product.setArchived(false);
 
         InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true)
