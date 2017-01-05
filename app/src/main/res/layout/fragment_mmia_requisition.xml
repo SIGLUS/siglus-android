@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -89,12 +88,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small">
+
                         <EditText
                             android:id="@+id/et_comment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:maxLength="500"
                             android:hint="@string/hint_mmia_comment"
+                            android:maxLength="500"
                             android:minHeight="50dp" />
 
                         <TextView
@@ -111,7 +111,7 @@
             <org.openlmis.core.view.widget.ActionPanelView
                 android:id="@+id/action_panel"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
 

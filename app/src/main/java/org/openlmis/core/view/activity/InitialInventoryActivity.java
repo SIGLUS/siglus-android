@@ -21,7 +21,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-@ContentView(R.layout.activity_inventory)
+@ContentView(R.layout.activity_initial_inventory)
 public class InitialInventoryActivity extends InventoryActivity {
     @InjectPresenter(InitialInventoryPresenter.class)
     InitialInventoryPresenter presenter;

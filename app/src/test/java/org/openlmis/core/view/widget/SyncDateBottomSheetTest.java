@@ -40,7 +40,7 @@ public class SyncDateBottomSheetTest {
         });
 
         fragment = new SyncDateBottomSheet();
-        fragment.setArguments(fragment.getArgumentsToMe(1, 1));
+        fragment.setArguments(SyncDateBottomSheet.getArgumentsToMe(1, 1));
         FragmentTestUtil.startFragment(fragment);
     }
 

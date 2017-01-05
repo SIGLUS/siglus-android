@@ -30,7 +30,7 @@ import lombok.Getter;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
-@ContentView(R.layout.activity_stock_card_new_movement)
+@ContentView(R.layout.activity_new_stock_movement)
 public class NewStockMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener {
 
     @InjectView(R.id.view_movement_details)

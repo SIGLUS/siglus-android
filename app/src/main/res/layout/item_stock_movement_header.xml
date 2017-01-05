@@ -25,7 +25,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/et_document_no"
+            android:id="@+id/et_document_number"
             style="@style/ItemMovement.SheetText"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"

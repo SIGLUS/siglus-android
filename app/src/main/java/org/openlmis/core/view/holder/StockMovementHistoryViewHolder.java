@@ -30,7 +30,7 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.tx_date)TextView txMovementDate;
     @InjectView(R.id.tx_reason)TextView txReason;
-    @InjectView(R.id.et_document_no)TextView etDocumentNo;
+    @InjectView(R.id.et_document_number)TextView etDocumentNo;
     @InjectView(R.id.et_received)TextView etReceived;
     @InjectView(R.id.et_negative_adjustment)TextView etNegativeAdjustment;
     @InjectView(R.id.et_positive_adjustment)TextView etPositiveAdjustment;

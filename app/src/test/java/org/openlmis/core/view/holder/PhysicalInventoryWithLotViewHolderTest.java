@@ -29,7 +29,7 @@ public class PhysicalInventoryWithLotViewHolderTest {
 
     @Before
     public void setUp() throws Exception {
-        viewHolder = new PhysicalInventoryWithLotViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_physical_inventory_with_lots, null, false));
+        viewHolder = new PhysicalInventoryWithLotViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_physical_inventory, null, false));
         product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
         viewModel = new InventoryViewModelBuilder(product)
                 .setChecked(false)

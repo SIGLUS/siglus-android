@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/kit_docnumber_container"
+        android:id="@+id/vg_kit_document_number"
         android:layout_width="match_parent"
         android:layout_height="@dimen/actionbar_height"
         android:background="@color/color_teal"
@@ -14,7 +14,7 @@
         android:paddingRight="@dimen/actionbar_height">
 
         <EditText
-            android:id="@+id/et_document_no"
+            android:id="@+id/et_document_number"
             style="@style/Unpack.EditText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

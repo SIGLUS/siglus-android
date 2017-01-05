@@ -19,7 +19,7 @@
             android:visibility="invisible" />
 
         <TextView
-            android:id="@+id/tx_last_synced_rnrform"
+            android:id="@+id/tv_last_synced_rnr_form"
             style="@style/Home.SyncText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

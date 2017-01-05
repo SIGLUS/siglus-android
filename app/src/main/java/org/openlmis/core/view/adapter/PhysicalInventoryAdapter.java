@@ -43,7 +43,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
 
     @Override
     public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory_with_lots, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false);
         return new PhysicalInventoryWithLotViewHolder(view);
     }
 

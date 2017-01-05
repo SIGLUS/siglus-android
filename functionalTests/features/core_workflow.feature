@@ -1,4 +1,4 @@
-@core @dev @change_date
+@core @dev @change_date @1
 Feature: Core Workflow
 
   Scenario: Initial inventory, movements, physical inventory, mmia and via

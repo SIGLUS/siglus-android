@@ -9,7 +9,6 @@ import android.widget.DatePicker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -21,7 +20,6 @@ import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.builder.StockMovementViewModelBuilder;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
@@ -41,14 +39,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class StockMovementViewHolderTest {
 
     private StockMovementViewHolder viewHolder;
-    private StockMovementAdapter.MovementChangedListener mockedListener;
     private StockMovementViewModel viewModel;
     private StockCard stockCard;
     private View itemView;
@@ -56,8 +52,7 @@ public class StockMovementViewHolderTest {
     @Before
     public void setUp() throws LMISException, ParseException {
         itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stock_movement, null, false);
-        mockedListener = mock(StockMovementAdapter.MovementChangedListener.class);
-        viewHolder = new StockMovementViewHolder(itemView, mockedListener);
+        viewHolder = new StockMovementViewHolder(itemView);
 
         viewModel = new StockMovementViewModelBuilder()
                 .withMovementDate("2015-11-11")
@@ -157,26 +152,6 @@ public class StockMovementViewHolderTest {
     }
 
     @Test
-    public void shouldSetReasonAndDateOnComplete() {
-        MovementReasonManager.MovementReason reason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "DON", "Donations");
-        String today = DateUtil.formatDate(new Date());
-        viewHolder.populate(viewModel, stockCard);
-        viewHolder.txMovementDate.setText("");
-        viewHolder.etIssued.setText("100");
-
-        StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
-        listener.onComplete(reason);
-
-        assertEquals(reason.getDescription(), viewHolder.txReason.getText().toString());
-        assertEquals(reason.getDescription(), viewModel.getReason().getDescription());
-        assertEquals(today, viewHolder.txMovementDate.getText().toString());
-        assertEquals(today, viewModel.getMovementDate());
-        assertTrue(viewHolder.etReceived.isEnabled());
-        assertEquals(viewHolder.etIssued.getText().toString(), "");
-        verify(mockedListener).movementChange();
-    }
-
-    @Test
     public void shouldShowMovementDateDialogOnClick() {
         viewModel.setDraft(true);
         viewHolder.populate(viewModel, stockCard);
@@ -235,7 +210,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldEnableIssueAndRequestedEditTextWhenChoseIssueMovementTypeWhenToggleIsOn() throws ParseException, LMISException {
-        StockMovementViewHolder stockMovementViewHolder = new StockMovementViewHolder(itemView, mockedListener);
+        StockMovementViewHolder stockMovementViewHolder = new StockMovementViewHolder(itemView);
 
         viewModel.setDraft(true);
         stockMovementViewHolder.populate(viewModel, stockCard);

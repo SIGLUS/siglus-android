@@ -24,7 +24,7 @@
         style="@style/ItemMovement.Container">
 
         <TextView
-            android:id="@+id/et_document_no"
+            android:id="@+id/et_document_number"
             android:minWidth="@dimen/stock_movement_item_common_width"
             android:layout_width="0dp"
             android:layout_weight="1"

@@ -123,8 +123,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         }
     }
 
-    ;
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted() && !isLoginActivityActive()) {

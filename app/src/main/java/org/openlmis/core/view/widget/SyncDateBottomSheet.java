@@ -26,7 +26,7 @@ import roboguice.inject.InjectView;
 
 public class SyncDateBottomSheet extends BaseDialogFragment {
 
-    @InjectView(R.id.tx_last_synced_rnrform)
+    @InjectView(R.id.tv_last_synced_rnr_form)
     private TextView txRnrFormSyncTime;
 
     @InjectView(R.id.tx_last_synced_stockcard)

@@ -55,7 +55,7 @@ import java.util.List;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
-@ContentView(R.layout.activity_stock_movement_new)
+@ContentView(R.layout.activity_stock_movements)
 public class StockMovementsWithLotActivity extends BaseActivity implements StockMovementsPresenter.StockMovementView, View.OnClickListener {
 
     @InjectView(R.id.list_stock_movement)

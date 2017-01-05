@@ -37,7 +37,6 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.MovementTypeDialog;
@@ -64,7 +63,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_reason)
     TextView txReason;
 
-    @InjectView(R.id.et_document_no)
+    @InjectView(R.id.et_document_number)
     EditText etDocumentNo;
 
     @InjectView(R.id.et_received)
@@ -88,13 +87,10 @@ public class StockMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_signature)
     TextView txSignature;
 
-    private StockMovementAdapter.MovementChangedListener movementChangeListener;
     private Map<MovementReasonManager.MovementType, List> movementViewMap;
 
-    public StockMovementViewHolder(View itemView, StockMovementAdapter.MovementChangedListener movementChangeListener) {
+    public StockMovementViewHolder(View itemView) {
         super(itemView);
-        this.movementChangeListener = movementChangeListener;
-
         InputFilter[] filters = new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)};
         etReceived.setFilters(filters);
         etNegativeAdjustment.setFilters(filters);
@@ -179,10 +175,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
     public void highLightAndShowBottomBtn() {
         itemView.setBackgroundResource(R.color.color_primary_50);
-
-        if (movementChangeListener != null) {
-            movementChangeListener.movementChange();
-        }
     }
 
     private void enableAndUnderlineEditText(EditText editText) {
@@ -288,22 +280,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etRequested.setEnabled(false);
         txMovementDate.setEnabled(false);
         txReason.setEnabled(false);
-    }
-
-    public void resetLine() {
-        txMovementDate.setText(StringUtils.EMPTY);
-        txReason.setText(StringUtils.EMPTY);
-        txStockExistence.setText(StringUtils.EMPTY);
-
-        etDocumentNo.setText(StringUtils.EMPTY);
-        etReceived.setText(StringUtils.EMPTY);
-        etNegativeAdjustment.setText(StringUtils.EMPTY);
-        etPositiveAdjustment.setText(StringUtils.EMPTY);
-        etIssued.setText(StringUtils.EMPTY);
-        etRequested.setText(StringUtils.EMPTY);
-
-        disableLine();
-        hideUnderline();
     }
 
     protected Date getPreviousMovementDate(StockCard stockCard) {

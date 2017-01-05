@@ -40,10 +40,10 @@ public class UnpackKitActivity extends BaseActivity {
     @InjectView(R.id.tv_total_kit)
     protected TextView tvTotalKit;
 
-    @InjectView(R.id.et_document_no)
+    @InjectView(R.id.et_document_number)
     protected EditText etDocumentNumber;
 
-    @InjectView(R.id.kit_docnumber_container)
+    @InjectView(R.id.vg_kit_document_number)
     protected View documentNumberContainer;
 
     @InjectPresenter(UnpackKitPresenter.class)

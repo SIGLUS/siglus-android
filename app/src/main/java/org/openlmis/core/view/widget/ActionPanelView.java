@@ -3,7 +3,6 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
@@ -18,9 +17,6 @@ public class ActionPanelView extends FrameLayout {
 
     @InjectView(R.id.btn_complete)
     Button btnComplete;
-
-    @InjectView(R.id.vg_action_panel)
-    ViewGroup actionPanel;
 
     public ActionPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);

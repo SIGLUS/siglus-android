@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +34,6 @@ public class StockMovementAdapter extends BaseAdapter {
 
     private final StockCard stockCard;
     List<StockMovementViewModel> stockMovementViewModels;
-
-    private MovementChangedListener movementChangeListener;
 
     public StockMovementAdapter(List<StockMovementViewModel> stockMovementViewModels, StockCard stockCard) {
         this.stockMovementViewModels = stockMovementViewModels;
@@ -64,7 +61,7 @@ public class StockMovementAdapter extends BaseAdapter {
 
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stock_movement, parent, false);
-            holder = new StockMovementViewHolder(convertView, movementChangeListener);
+            holder = new StockMovementViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (StockMovementViewHolder) convertView.getTag();
@@ -72,30 +69,5 @@ public class StockMovementAdapter extends BaseAdapter {
 
         holder.populate(getItem(position), stockCard);
         return convertView;
-    }
-
-
-    public StockMovementViewModel getEditableStockMovement() {
-        return stockMovementViewModels.get(stockMovementViewModels.size() - 1);
-    }
-
-    public void cancelStockMovement(StockMovementViewHolder viewHolder) {
-        viewHolder.resetLine();
-
-        stockMovementViewModels.remove(getItem(getCount() - 1));
-        stockMovementViewModels.add(new StockMovementViewModel());
-        notifyDataSetChanged();
-    }
-
-    public void cleanHighLight(StockMovementViewHolder viewHolder) {
-        viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT);
-    }
-
-    public void setMovementChangeListener(MovementChangedListener movementChangeListener) {
-        this.movementChangeListener = movementChangeListener;
-    }
-
-    public interface MovementChangedListener {
-        void movementChange();
     }
 }
