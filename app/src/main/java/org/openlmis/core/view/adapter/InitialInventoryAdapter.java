@@ -45,6 +45,6 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
 
     @Override
     public InitialInventoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new InitialInventoryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_inventory, parent, false));
+        return new InitialInventoryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_initial_inventory, parent, false));
     }
 }
