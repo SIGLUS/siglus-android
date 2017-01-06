@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -31,8 +32,11 @@ import roboguice.inject.InjectView;
 public class BaseLotListView extends FrameLayout {
     protected Context context;
 
-    @InjectView(R.id.ly_add_new_lot)
-    protected View lyAddNewLot;
+    @InjectView(R.id.ly_action_panel)
+    protected View actionPanel;
+
+    @InjectView(R.id.btn_add_new_lot)
+    protected TextView btnAddNewLot;
 
     @InjectView(R.id.rv_new_lot_list)
     protected RecyclerView newLotListView;
@@ -59,16 +63,20 @@ public class BaseLotListView extends FrameLayout {
 
     protected void init(Context context) {
         this.context = context;
-        inflate(context, R.layout.view_lot_list, this);
+        inflateLayout(context);
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
+    }
+
+    protected void inflateLayout(Context context) {
+        inflate(context, R.layout.view_lot_list, this);
     }
 
     public void initLotListView(BaseStockMovementViewModel viewModel) {
         this.viewModel = viewModel;
         initExistingLotListView();
         initNewLotListView();
-        lyAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
+        btnAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
     }
 
     public void initExistingLotListView() {
@@ -84,7 +92,7 @@ public class BaseLotListView extends FrameLayout {
     }
 
     public void setActionAddNewEnabled(boolean actionAddNewEnabled) {
-        lyAddNewLot.setEnabled(actionAddNewEnabled);
+        btnAddNewLot.setEnabled(actionAddNewEnabled);
     }
 
 
@@ -101,7 +109,7 @@ public class BaseLotListView extends FrameLayout {
         return new AddLotDialogFragment.AddLotWithoutNumberListener() {
             @Override
             public void addLotWithoutNumber(String expiryDate) {
-                lyAddNewLot.setEnabled(true);
+                btnAddNewLot.setEnabled(true);
                 String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getProduct().getCode(), expiryDate);
                 if (getLotNumbers().contains(lotNumber)) {
                     ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));

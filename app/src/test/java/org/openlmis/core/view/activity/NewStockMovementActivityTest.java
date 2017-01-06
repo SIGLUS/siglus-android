@@ -88,7 +88,7 @@ public class NewStockMovementActivityTest {
 
     @Test
     public void shouldNotShowActionAddNewLotWhenMovementTypeIsIssue() {
-        assertEquals(View.GONE, newStockMovementActivity.newMovementLotListView.findViewById(R.id.ly_add_new_lot).getVisibility());
+        assertEquals(View.GONE, newStockMovementActivity.newMovementLotListView.findViewById(R.id.ly_action_panel).getVisibility());
     }
 
     @Test

@@ -76,11 +76,11 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     }
 
     public void setActionAddNewLotVisibility(int visibility) {
-        lyAddNewLot.setVisibility(visibility);
+        actionPanel.setVisibility(visibility);
     }
 
     public void setActionAddNewLotListener(OnClickListener addNewLotOnClickListener) {
-        lyAddNewLot.setOnClickListener(addNewLotOnClickListener);
+        btnAddNewLot.setOnClickListener(addNewLotOnClickListener);
     }
 
     public void initLotErrorBanner() {
