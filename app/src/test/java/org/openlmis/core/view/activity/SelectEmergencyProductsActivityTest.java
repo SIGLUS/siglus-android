@@ -103,7 +103,7 @@ public class SelectEmergencyProductsActivityTest {
         SelectEmergencyProductsViewHolder viewHolder = activity.mAdapter.onCreateViewHolder(new LinearLayout(activity), 0);
         activity.mAdapter.onBindViewHolder(viewHolder, 0);
 
-        String actualValue = ((TextView) viewHolder.itemView.findViewById(R.id.product_name)).getText().toString();
+        String actualValue = ((TextView) viewHolder.itemView.findViewById(R.id.tv_product_name)).getText().toString();
         assertThat(actualValue, is(activity.mAdapter.getFilteredList().get(0).getStyledName().toString()));
     }
 

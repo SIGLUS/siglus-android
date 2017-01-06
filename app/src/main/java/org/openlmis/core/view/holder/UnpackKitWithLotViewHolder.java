@@ -33,10 +33,10 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder{
     @InjectView(R.id.vg_soh_pop)
     ViewGroup vg_soh_pop;
 
-    @InjectView(R.id.product_name)
+    @InjectView(R.id.tv_product_name)
     TextView tvProductName;
 
-    @InjectView(R.id.product_unit)
+    @InjectView(R.id.tv_product_unit)
     TextView tvProductUnit;
 
     @InjectView(R.id.view_lot_list)

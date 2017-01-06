@@ -233,6 +233,7 @@
 
     <!-- Physical Inventory Page -->
     <string name="label_physical_inventory_stock_on_hand">Current stock on hand:</string>
+    <string name="label_physical_inventory_title_stock_on_hand">Stock on hand</string>
 
     <!-- Unpack Kit -->
     <string name="kit_number">Unpacking: %1$s %2$s kit</string>

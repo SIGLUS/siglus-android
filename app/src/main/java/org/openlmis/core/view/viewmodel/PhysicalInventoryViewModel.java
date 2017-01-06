@@ -1,5 +1,11 @@
 package org.openlmis.core.view.viewmodel;
 
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.StockCard;
@@ -92,5 +98,25 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
             }
         }
         return true;
+    }
+
+    public String getFormattedProductName() {
+        return product.getFormattedProductNameWithoutStrengthAndType();
+    }
+
+    public String getFormattedProductUnit() {
+        return product.getStrength() + " " + product.getType();
+    }
+
+    public SpannableStringBuilder getGreenName() {
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(getFormattedProductName());
+        spannableStringBuilder.setSpan(new ForegroundColorSpan(LMISApp.getInstance().getResources().getColor(R.color.color_primary)), 0, getFormattedProductName().length(), Spanned.SPAN_POINT_MARK);
+        return spannableStringBuilder;
+    }
+
+    public SpannableStringBuilder getGreenUnit() {
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(getFormattedProductUnit());
+        spannableStringBuilder.setSpan(new ForegroundColorSpan(LMISApp.getInstance().getResources().getColor(R.color.color_primary)), 0, getFormattedProductUnit().length(), Spanned.SPAN_POINT_MARK);
+        return spannableStringBuilder;
     }
 }

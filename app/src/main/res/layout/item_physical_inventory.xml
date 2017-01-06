@@ -15,29 +15,57 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bottom_border_gray_bg"
-            android:orientation="horizontal"
             android:padding="@dimen/padding_normal">
+
+            <ImageView
+                android:id="@+id/ic_done"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingEnd="@dimen/padding_small"
+                android:src="@drawable/ic_done_green" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/product_name"
-                    style="@style/Text.Black.Medium"
+                    android:id="@+id/tv_product_name"
+                    style="@style/Text.Black.Normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="@string/label_dummy_product" />
 
                 <TextView
-                    android:id="@+id/product_unit"
-                    style="@style/Text.Gray.Normal"
+                    android:id="@+id/tv_product_unit"
+                    style="@style/Text.Gray.Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="@string/label_dummy_unit" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/vg_inventory_item_soh"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_inventory_item_soh"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@string/label_physical_inventory_title_stock_on_hand"
+                    android:textSize="@dimen/font_size_tiny" />
+
             </LinearLayout>
         </LinearLayout>
 

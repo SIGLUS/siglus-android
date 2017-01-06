@@ -13,13 +13,13 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/product_name"
+            android:id="@+id/tv_product_name"
             style="@style/Text.Black.Normal.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/product_unit"
+            android:id="@+id/tv_product_unit"
             style="@style/Text.Black.Normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

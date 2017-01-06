@@ -170,4 +170,12 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         }
         return lotTotalQuantity;
     }
+
+    public String getFormattedProductName() {
+        return product.getFormattedProductNameWithoutStrengthAndType();
+    }
+
+    public String getFormattedProductUnit() {
+        return product.getStrength() + " " + product.getType();
+    }
 }

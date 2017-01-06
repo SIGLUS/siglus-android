@@ -17,10 +17,10 @@ import roboguice.inject.InjectView;
 
 public class InitialInventoryViewHolder extends BaseViewHolder {
 
-    @InjectView(R.id.product_name)
+    @InjectView(R.id.tv_product_name)
     TextView productName;
 
-    @InjectView(R.id.product_unit)
+    @InjectView(R.id.tv_product_unit)
     TextView productUnit;
 
     @InjectView(R.id.checkbox)

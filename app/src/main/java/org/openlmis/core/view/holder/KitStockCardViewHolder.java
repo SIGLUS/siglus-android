@@ -11,9 +11,9 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import roboguice.inject.InjectView;
 
 public class KitStockCardViewHolder extends StockCardViewHolder {
-    @InjectView(R.id.product_name)
+    @InjectView(R.id.tv_product_name)
     TextView tvProductName;
-    @InjectView(R.id.product_unit)
+    @InjectView(R.id.tv_product_unit)
     TextView tvProductUnit;
     @InjectView(R.id.tv_stock_on_hand)
     TextView tvStockOnHand;

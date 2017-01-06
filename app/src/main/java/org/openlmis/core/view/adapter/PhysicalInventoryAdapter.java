@@ -28,6 +28,7 @@ import com.viethoa.RecyclerViewFastScroller;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
         final InventoryViewModel viewModel = filteredList.get(position);
         PhysicalInventoryWithLotViewHolder holder = (PhysicalInventoryWithLotViewHolder) viewHolder;
-        holder.populate(viewModel, queryKeyWord);
+        holder.populate((PhysicalInventoryViewModel) viewModel, queryKeyWord);
     }
 
     @Override

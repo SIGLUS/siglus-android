@@ -31,14 +31,14 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/product_name"
+                        android:id="@+id/tv_product_name"
                         style="@style/Text.Black.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="@string/label_dummy_product" />
 
                     <TextView
-                        android:id="@+id/product_unit"
+                        android:id="@+id/tv_product_unit"
                         style="@style/Text.Gray.Normal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

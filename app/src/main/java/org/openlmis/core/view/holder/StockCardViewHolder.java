@@ -21,9 +21,9 @@ import roboguice.inject.InjectView;
 
 public class StockCardViewHolder extends BaseViewHolder {
 
-    @InjectView(R.id.product_name)
+    @InjectView(R.id.tv_product_name)
     TextView tvProductName;
-    @InjectView(R.id.product_unit)
+    @InjectView(R.id.tv_product_unit)
     TextView tvProductUnit;
     @InjectView(R.id.tv_stock_on_hand)
     TextView tvStockOnHand;

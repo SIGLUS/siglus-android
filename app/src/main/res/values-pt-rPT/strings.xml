@@ -218,6 +218,7 @@
     <string name="msg_low_stock">Estoque em risco</string>
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Estoque existente actual</string>
+    <string name="label_physical_inventory_title_stock_on_hand">Stock on hand</string>
     <!--Unpack Kit-->
     <string name="kit_number">Desembalando: %1$s %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantidade recebida</string>
