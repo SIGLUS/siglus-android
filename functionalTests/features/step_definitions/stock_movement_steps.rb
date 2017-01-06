@@ -2,7 +2,7 @@ require 'calabash-android/calabash_steps'
 require 'pry'
 
 Then(/^I select stock card code called "(.*?)"$/) do |name|
-      q = query("android.widget.TextView id:'product_name' {text CONTAINS '#{name}'}")
+      q = query("android.widget.TextView id:'tv_product_name' {text CONTAINS '#{name}'}")
       hide_soft_keyboard();
       touch(q.last);
 end
