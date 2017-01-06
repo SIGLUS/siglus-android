@@ -50,7 +50,7 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
         return lotList.size();
     }
 
-    public int validateExisting() {
+    public int validateLotQuantityNotGreaterThanSOH() {
         int position = -1;
         for (LotMovementViewModel lotMovementViewModel : lotList) {
             lotMovementViewModel.setQuantityLessThanSoh(true);
@@ -66,7 +66,7 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
         return position;
     }
 
-    public int validateAll() {
+    public int validateLotPositiveQuantity() {
         int position = -1;
         for (LotMovementViewModel lotMovementViewModel : lotList) {
             lotMovementViewModel.setValid(true);
@@ -74,6 +74,23 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
         }
         for (int i = 0; i < lotList.size(); i++) {
             if (!lotList.get(i).validateLotWithPositiveQuantity()) {
+                position = i;
+                break;
+            }
+        }
+
+        this.notifyDataSetChanged();
+        return position;
+    }
+
+    public int validateLotNonEmptyQuantity() {
+        int position = -1;
+        for (LotMovementViewModel lotMovementViewModel : lotList) {
+            lotMovementViewModel.setValid(true);
+            lotMovementViewModel.setQuantityLessThanSoh(true);
+        }
+        for (int i = 0; i < lotList.size(); i++) {
+            if (!lotList.get(i).validateLotWithNoEmptyFields()) {
                 position = i;
                 break;
             }

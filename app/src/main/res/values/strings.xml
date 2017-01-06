@@ -435,4 +435,8 @@
     <string name="title_rapid_test">Rapid Test</string>
     <string name="error_positive_larger_than_consumption">The number of positive tests cannot be more than the number of tests consumed. Please input the correct data</string>
     <string name="error_empty_rapid_test">Rapid test report cannot be empty.</string>
+    <string name="btn_edit">EDIT</string>
+    <string name="msg_physical_inventory_lot_review_no_adjustment">Lot <![CDATA[<b>%1$s</b>]]> - No adjustment will be made</string>
+    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lot <![CDATA[<b>%1$s</b>]]> - Positive adjustment of <![CDATA[<b>%2$s</b>]]> will be made</string>
+    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lot <![CDATA[<b>%1$s</b>]]> - Negative adjustment of <![CDATA[<b>%2$s</b>]]> will be made</string>
 </resources>

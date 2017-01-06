@@ -99,12 +99,12 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     }
 
     public boolean validateLotList() {
-        int position1 = existingLotMovementAdapter.validateExisting();
+        int position1 = existingLotMovementAdapter.validateLotQuantityNotGreaterThanSOH();
         if (position1 >= 0) {
             existingLotListView.scrollToPosition(position1);
             return true;
         }
-        int position2 = newLotMovementAdapter.validateAll();
+        int position2 = newLotMovementAdapter.validateLotPositiveQuantity();
         if (position2 >= 0) {
             newLotListView.scrollToPosition(position2);
             return true;

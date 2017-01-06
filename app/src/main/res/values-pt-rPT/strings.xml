@@ -393,4 +393,8 @@
     <string name="title_rapid_test">Teste Rápido</string>
     <string name="error_positive_larger_than_consumption">O número de testes positivos não pode ser superior ao número de testes consumidos. Introduza os dados correctos</string>
     <string name="error_empty_rapid_test">O relatório de teste rápido não pode estar vazio.</string>
+    <string name="btn_edit">EDIT</string>
+    <string name="msg_physical_inventory_lot_review_no_adjustment">Lot <![CDATA[<b>%1$s</b>]]> - No adjustment will be made</string>
+    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lot <![CDATA[<b>%1$s</b>]]> - Positive adjustment of <![CDATA[<b>%2$s</b>]]> will be made</string>
+    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lot <![CDATA[<b>%1$s</b>]]> - Negative adjustment of <![CDATA[<b>%2$s</b>]]> will be made</string>
 </resources>

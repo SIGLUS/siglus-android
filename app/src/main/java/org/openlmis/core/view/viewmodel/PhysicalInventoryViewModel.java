@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 public class PhysicalInventoryViewModel extends InventoryViewModel {
     private DraftInventory draftInventory;
+    private boolean done;
 
     public PhysicalInventoryViewModel(StockCard stockCard) {
         super(stockCard);
@@ -92,5 +93,4 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
         }
         return true;
     }
-
 }

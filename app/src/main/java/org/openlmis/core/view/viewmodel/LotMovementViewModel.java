@@ -107,4 +107,11 @@ public class LotMovementViewModel implements Serializable {
         }
         return null;
     }
+
+    public int getAdjustmentQuantity() {
+        if (StringUtils.isBlank(lotSoh)) {
+            return Integer.parseInt(quantity);
+        }
+        return (Integer.parseInt(this.getQuantity()) - Integer.parseInt(this.getLotSoh()));
+    }
 }

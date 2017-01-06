@@ -78,6 +78,19 @@ public class LotMovementViewModelTest {
         String productCode = "02F49";
         String expiryDate = "Nov 2017";
 
-        assertThat(LotMovementViewModel.generateLotNumberForProductWithoutLot(productCode,expiryDate),is("SEM-LOTE-02F49-112017"));
+        assertThat(LotMovementViewModel.generateLotNumberForProductWithoutLot(productCode, expiryDate), is("SEM-LOTE-02F49-112017"));
+    }
+
+    @Test
+    public void shouldGetAdjustmentQuantity() throws Exception {
+        viewModel.setQuantity("1");
+        viewModel.setLotSoh(null);
+        assertEquals(1, viewModel.getAdjustmentQuantity());
+
+        viewModel.setLotSoh("1");
+        assertEquals(0, viewModel.getAdjustmentQuantity());
+
+        viewModel.setQuantity("10");
+        assertEquals(9, viewModel.getAdjustmentQuantity());
     }
 }

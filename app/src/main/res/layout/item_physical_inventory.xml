@@ -8,14 +8,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/color_white">
+        android:background="@color/color_white"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:background="@drawable/bottom_border_gray_bg"
+            android:orientation="horizontal"
             android:padding="@dimen/padding_normal">
 
             <LinearLayout
@@ -41,7 +41,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <org.openlmis.core.view.widget.BaseLotListView
+        <org.openlmis.core.view.widget.PhysicalInventoryLotListView
             android:id="@+id/view_lot_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
