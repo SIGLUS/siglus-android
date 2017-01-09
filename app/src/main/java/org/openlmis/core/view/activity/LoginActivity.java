@@ -165,11 +165,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         launchActivity(HomeActivity.getIntentToMe(this));
     }
 
-    @Override
-    public void goToParticularPhysicalInventory() {
-        launchActivity(ParticularPhysicalInventoryActivity.getIntentToMe(this));
-    }
-
     public void launchActivity(Intent intent) {
         startActivity(intent);
         finish();

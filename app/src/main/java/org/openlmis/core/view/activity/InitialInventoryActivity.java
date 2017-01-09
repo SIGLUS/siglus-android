@@ -87,7 +87,6 @@ public class InitialInventoryActivity extends InventoryActivity {
     @Override
     public void goToNextPage() {
         preferencesMgr.setIsNeedsInventory(false);
-        preferencesMgr.setHasLotInfo(true);
         startActivity(isAddNewDrug ? StockCardListActivity.getIntentToMe(this) : HomeActivity.getIntentToMe(this));
         this.finish();
     }

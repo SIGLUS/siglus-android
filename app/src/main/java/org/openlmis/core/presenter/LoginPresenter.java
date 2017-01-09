@@ -33,7 +33,6 @@ import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -51,7 +50,6 @@ import org.openlmis.core.view.BaseView;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -295,32 +293,9 @@ public class LoginPresenter extends Presenter {
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
-            if (!SharedPreferenceMgr.getInstance().hasLotInfo()) {
-                if (existLotInfo() || hasNoStockOnHand()) {
-                    SharedPreferenceMgr.getInstance().setHasLotInfo(true);
-                    view.goToHomePage();
-                } else {
-                    view.goToParticularPhysicalInventory();
-                }
-            } else {
-                view.goToHomePage();
-            }
+            view.goToHomePage();
         }
         hasGoneToNextPage = true;
-    }
-
-    private boolean hasNoStockOnHand() {
-        List<StockCard> stockCardList = stockRepository.list();
-        for (StockCard stockCard : stockCardList) {
-            if (!stockCard.getProduct().isKit() && stockCard.getStockOnHand() != 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean existLotInfo() {
-        return !lotRepository.queryAllLot().isEmpty();
     }
 
     public interface LoginView extends BaseView {
@@ -342,7 +317,5 @@ public class LoginPresenter extends Presenter {
         void clearErrorAlerts();
 
         void sendScreenToGoogleAnalyticsAfterLogin();
-
-        void goToParticularPhysicalInventory();
     }
 }

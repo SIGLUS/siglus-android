@@ -49,10 +49,6 @@
             android:label="@string/title_rapid_test_form"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".view.activity.ParticularPhysicalInventoryActivity"
-            android:label="@string/title_physical_inventory"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".view.activity.UnpackKitActivity"
             android:label="@string/title_unpack_kit"
             android:screenOrientation="portrait" />

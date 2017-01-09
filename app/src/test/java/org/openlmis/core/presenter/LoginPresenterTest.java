@@ -215,7 +215,6 @@ public class LoginPresenterTest {
         SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
         SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
         SharedPreferenceMgr.getInstance().setLastSyncProductTime("time");
-        SharedPreferenceMgr.getInstance().setHasLotInfo(true);
 
         presenter.startLogin("user", "password");
 

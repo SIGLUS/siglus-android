@@ -111,10 +111,6 @@ public class SharedPreferenceMgr {
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, rnrFormRepository.hasRequisitionData());
     }
 
-    public boolean hasLotInfo() {
-        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_LOT_INFO, false);
-    }
-
     public boolean hasDeletedOldStockMovement() {
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_DELETED_OLD_STOCK_MOVEMENT, false);
     }
@@ -242,10 +238,6 @@ public class SharedPreferenceMgr {
 
     public void updateLatestLowStockAvgTime() {
         sharedPreferences.edit().putLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME, LMISApp.getInstance().getCurrentTimeMillis()).apply();
-    }
-
-    public void setHasLotInfo(boolean hasLotInfo) {
-        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_LOT_INFO, hasLotInfo).apply();
     }
 
     public void setHasDeletedOldStockMovement(boolean hasDeletedOldStockMovement) {
