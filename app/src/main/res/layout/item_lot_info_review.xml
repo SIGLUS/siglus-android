@@ -7,5 +7,7 @@
     <TextView
         android:id="@+id/tv_lot_info_review"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_tiny"
+        android:textSize="@dimen/font_size_regular" />
 </LinearLayout>

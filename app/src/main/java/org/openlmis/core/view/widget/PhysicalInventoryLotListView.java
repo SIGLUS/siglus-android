@@ -18,7 +18,7 @@ import roboguice.inject.InjectView;
 
 public class PhysicalInventoryLotListView extends BaseLotListView {
     @InjectView(R.id.btn_done)
-    TextView btnDone;
+    ViewGroup btnDone;
 
     @InjectView(R.id.btn_edit)
     TextView btnEdit;
@@ -75,7 +75,6 @@ public class PhysicalInventoryLotListView extends BaseLotListView {
 
     public void markDone(boolean done) {
         ((PhysicalInventoryViewModel) viewModel).setDone(done);
-        btnDone.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_done, 0, 0, 0);
         vgEditLotArea.setVisibility(done ? GONE : VISIBLE);
         vgLotInfoReview.setVisibility(done ? VISIBLE : GONE);
         statusChangeListener.onStatusChange(done);
