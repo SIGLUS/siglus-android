@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.utils.Constants;
@@ -125,12 +124,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
 
         if (StringUtils.isBlank(etLotNumber.getText().toString())) {
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_empty_lot_number)) {
-                showConfirmNoLotNumberDialog();
-            } else {
-                lyLotNumber.setError(getResources().getString(R.string.msg_empty_lot_number));
-                etLotNumber.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
-            }
+            showConfirmNoLotNumberDialog();
             return false;
         }
 
@@ -151,9 +145,8 @@ public class AddLotDialogFragment extends BaseDialogFragment {
                 AddLotDialogFragment.this.dismiss();
             }
         });
-        confirmDialog.show(getFragmentManager(),"confirm generate lot number");
+        confirmDialog.show(getFragmentManager(), "confirm generate lot number");
     }
-
 
 
     private void clearErrorMessage() {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="feature_archive_old_data">true</bool>
-    <bool name="feature_empty_lot_number">true</bool>
     <bool name="feature_training">false</bool>
     <bool name="feature_rapid_test">true</bool>
 </resources>
