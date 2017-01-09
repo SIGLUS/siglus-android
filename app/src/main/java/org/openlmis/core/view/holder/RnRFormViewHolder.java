@@ -88,8 +88,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         if (isOfMmia(model)) {
             if (isTraining) {
                 configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_training_can_not_create_mmia_rnr)), R.drawable.ic_description, R.color.color_draft_title);
-            }
-            else {
+            } else {
                 configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_mmia_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
             }
         } else {
@@ -221,6 +220,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         @Override
         public void onClick(View v) {
             if (itemClickListener != null) {
+                v.setEnabled(false);
                 itemClickListener.clickBtnView(model);
             }
         }
