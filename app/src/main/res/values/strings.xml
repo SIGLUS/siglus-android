@@ -440,4 +440,5 @@
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - No adjustment will be made</string>
     <string name="msg_physical_inventory_lot_review_positive_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Positive adjustment</font>]]> of <![CDATA[<font color="#000">%2$s</font>]]> will be made</string>
     <string name="msg_physical_inventory_lot_review_negative_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Negative adjustment</font>]]> of <![CDATA[<font color="#000">%2$s</font>]]> will be made</string>
+    <string name="label_total_complete_counts">Completed %1$s / %2$s</string>
 </resources>

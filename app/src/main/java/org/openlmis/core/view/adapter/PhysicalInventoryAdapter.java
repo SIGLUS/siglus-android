@@ -35,11 +35,13 @@ import java.util.List;
 public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn implements FilterableAdapter, RecyclerViewFastScroller.BubbleTextGetter {
     private final View.OnClickListener saveClickListener;
     private final View.OnClickListener completeClickListener;
+    private PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener;
 
-    public PhysicalInventoryAdapter(List<InventoryViewModel> data, View.OnClickListener saveClickListener, View.OnClickListener completeClickListener) {
+    public PhysicalInventoryAdapter(List<InventoryViewModel> data, View.OnClickListener saveClickListener, View.OnClickListener completeClickListener, PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener) {
         super(data);
         this.saveClickListener = saveClickListener;
         this.completeClickListener = completeClickListener;
+        this.refreshCompleteCountListener = refreshCompleteCountListener;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
         final InventoryViewModel viewModel = filteredList.get(position);
         PhysicalInventoryWithLotViewHolder holder = (PhysicalInventoryWithLotViewHolder) viewHolder;
-        holder.populate((PhysicalInventoryViewModel) viewModel, queryKeyWord);
+        holder.populate((PhysicalInventoryViewModel) viewModel, queryKeyWord, refreshCompleteCountListener);
     }
 
     @Override

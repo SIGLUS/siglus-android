@@ -36,12 +36,13 @@ public class PhysicalInventoryWithLotViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void populate(final PhysicalInventoryViewModel viewModel, final String queryKeyWord) {
+    public void populate(final PhysicalInventoryViewModel viewModel, final String queryKeyWord, final InventoryItemStatusChangeListener refreshCompleteCountListener) {
         this.viewModel = viewModel;
         lotListView.initLotListView(viewModel, new InventoryItemStatusChangeListener() {
             @Override
             public void onStatusChange(boolean done) {
                 updateTitle(done, queryKeyWord);
+                refreshCompleteCountListener.onStatusChange(done);
             }
         });
         updateTitle(viewModel.isDone(), queryKeyWord);

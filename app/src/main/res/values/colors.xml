@@ -75,4 +75,6 @@
     <color name="alphabet_text_color">#009500</color>
     <color name="alphabet_background_color">#FAFAFA</color>
     <color name="alphabet_background_border_color">#B6B6B6</color>
+
+    <color name="physical_inventory_complete_count_background_color">#E4E4E4</color>
 </resources>

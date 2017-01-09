@@ -195,4 +195,13 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     public void updateAvgMonthlyConsumption() {
         stockService.immediatelyUpdateAvgMonthlyConsumption();
     }
+
+    public int getCompleteCount() {
+        return FluentIterable.from(inventoryViewModelList).filter(new Predicate<InventoryViewModel>() {
+            @Override
+            public boolean apply(InventoryViewModel inventoryViewModel) {
+                return ((PhysicalInventoryViewModel) inventoryViewModel).isDone();
+            }
+        }).toList().size();
+    }
 }

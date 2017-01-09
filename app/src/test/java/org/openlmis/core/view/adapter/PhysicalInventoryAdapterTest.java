@@ -42,7 +42,7 @@ public class PhysicalInventoryAdapterTest {
 
     @Before
     public void setup() {
-        adapter = new PhysicalInventoryAdapter(new ArrayList<InventoryViewModel>(), null, null);
+        adapter = new PhysicalInventoryAdapter(new ArrayList<InventoryViewModel>(), null, null, null);
 
         product = new Product();
         product.setPrimaryName("Test Product");

@@ -16,6 +16,7 @@ import org.openlmis.core.presenter.PhysicalInventoryPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 
@@ -103,8 +104,17 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     @Override
     protected void initRecyclerView() {
-        mAdapter = new PhysicalInventoryAdapter(presenter.getInventoryViewModelList(), getSaveOnClickListener(), completeClickListener);
+        mAdapter = new PhysicalInventoryAdapter(presenter.getInventoryViewModelList(), getSaveOnClickListener(), completeClickListener, getRefreshCompleteCountListener());
         productListRecycleView.setAdapter(mAdapter);
+    }
+
+    private PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener getRefreshCompleteCountListener() {
+        return new PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener() {
+            @Override
+            public void onStatusChange(boolean done) {
+                setTotal(presenter.getInventoryViewModelList().size());
+            }
+        };
     }
 
     protected View.OnClickListener getSaveOnClickListener() {
@@ -200,4 +210,9 @@ public class PhysicalInventoryActivity extends InventoryActivity {
             trackInventoryEvent(TrackerActions.ApproveInventory);
         }
     };
+
+    @Override
+    protected void setTotal(int total) {
+        tvTotal.setText(getString(R.string.label_total_complete_counts, presenter.getCompleteCount(), total));
+    }
 }

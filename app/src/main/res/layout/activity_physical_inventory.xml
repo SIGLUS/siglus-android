@@ -10,6 +10,7 @@
         style="@style/Inventory.TextTotal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/border_bottom_green_bg_gray"
         tools:text="Total: 136" />
 
     <RelativeLayout
