@@ -9,11 +9,13 @@ import com.google.inject.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowActivity;
@@ -70,6 +72,9 @@ public class SelectRegimeProductsActivityTest {
 
     @Test
     public void shouldShowToastWhenHasNotChecked() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(100000);
+        SingleClickButtonListener.isViewClicked = false;
+
         selectProductsActivity.viewModels = getInventoryViewModels();
         selectProductsActivity.btnNext.performClick();
 
@@ -78,6 +83,9 @@ public class SelectRegimeProductsActivityTest {
 
     @Test
     public void shouldShowToastWhenMoreThanLimitChecked() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(100000);
+        SingleClickButtonListener.isViewClicked = false;
+
         selectProductsActivity.viewModels = getInventoryViewModels();
         for (RegimeProductViewModel model : selectProductsActivity.viewModels) {
             model.setChecked(true);
@@ -89,6 +97,9 @@ public class SelectRegimeProductsActivityTest {
 
     @Test
     public void shouldSaveRegimeWhenOneProductHasChecked() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(100000);
+        SingleClickButtonListener.isViewClicked = false;
+
         Observable<Regimen> value = Observable.create(new Observable.OnSubscribe<Regimen>() {
             @Override
             public void call(Subscriber<? super Regimen> subscriber) {

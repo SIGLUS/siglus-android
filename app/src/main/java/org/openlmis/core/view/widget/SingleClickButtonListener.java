@@ -1,30 +1,31 @@
 package org.openlmis.core.view.widget;
 
 import android.os.Handler;
-import android.os.SystemClock;
 import android.view.View;
+
+import org.openlmis.core.LMISApp;
 
 public abstract class SingleClickButtonListener implements View.OnClickListener {
 
-    private static final long MIN_CLICK_INTERVAL = 5000;
-
-    private long lastClickTime;
+    public static long MIN_CLICK_INTERVAL = 5000;
 
     public static boolean isViewClicked = false;
+
+    private long lastClickTime;
 
     public abstract void onSingleClick(View v);
 
     @Override
     public final void onClick(View v) {
-        long currentClickTime= SystemClock.uptimeMillis();
-        long elapsedTime=currentClickTime- lastClickTime;
+        long currentClickTime = LMISApp.getInstance().getCurrentTimeMillis();
+        long elapsedTime = currentClickTime - lastClickTime;
 
-        lastClickTime =currentClickTime;
+        lastClickTime = currentClickTime;
 
         if(elapsedTime <= MIN_CLICK_INTERVAL) {
             return;
         }
-        if(!isViewClicked){
+        if (!isViewClicked) {
             isViewClicked = true;
             startTimer();
         } else {
@@ -41,7 +42,6 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
             public void run() {
                 isViewClicked = false;
             }
-        }, 5000);
+        }, MIN_CLICK_INTERVAL);
     }
-
 }

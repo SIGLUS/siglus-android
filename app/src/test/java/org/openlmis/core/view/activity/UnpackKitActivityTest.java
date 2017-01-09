@@ -7,6 +7,7 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -16,6 +17,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
@@ -82,6 +84,9 @@ public class UnpackKitActivityTest {
 
     @Test
     public void shouldShowSignatureDialogIfIsValid() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(100000);
+        SingleClickButtonListener.isViewClicked = false;
+
         viewModel.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2033").setQuantity("100").setLotNumber("some lot").build());
         unpackKitActivity.mAdapter.getData().clear();
         unpackKitActivity.mAdapter.getData().add(viewModel);

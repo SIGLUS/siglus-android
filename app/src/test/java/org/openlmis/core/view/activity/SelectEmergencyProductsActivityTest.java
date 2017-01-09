@@ -12,6 +12,7 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -21,6 +22,7 @@ import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.holder.SelectEmergencyProductsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -71,6 +73,9 @@ public class SelectEmergencyProductsActivityTest {
 
     @Test
     public void shouldShowToastWhenHasNotChecked() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(100000);
+        SingleClickButtonListener.isViewClicked = false;
+
         activity.mAdapter.refreshList(getInventoryViewModels());
         activity.btnNext.performClick();
 
@@ -109,6 +114,9 @@ public class SelectEmergencyProductsActivityTest {
 
     @Test
     public void shouldGoToNextPage() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(100000);
+        SingleClickButtonListener.isViewClicked = false;
+
         ArrayList<InventoryViewModel> inventoryViewModels = getInventoryViewModels();
         activity.mAdapter.refreshList(inventoryViewModels);
         inventoryViewModels.get(0).setChecked(true);

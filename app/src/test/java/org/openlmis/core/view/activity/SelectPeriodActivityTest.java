@@ -19,6 +19,7 @@ import org.openlmis.core.model.Inventory;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
@@ -85,6 +86,9 @@ public class SelectPeriodActivityTest {
 
     @Test
     public void shouldInVisibleWarningWhenUserChoseTheInventory() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(100000);
+        SingleClickButtonListener.isViewClicked = false;
+        
         selectPeriodActivity.refreshDate(inventoryList);
 
         shadowOf(selectPeriodActivity.vgContainer).performItemClick(2);
