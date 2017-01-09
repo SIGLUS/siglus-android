@@ -15,6 +15,7 @@ import org.openlmis.core.network.SyncErrorsMap;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
 
@@ -185,9 +186,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
         ivDelete.setVisibility(View.VISIBLE);
 
         if (itemClickListener != null) {
-            ivDelete.setOnClickListener(new View.OnClickListener() {
+            ivDelete.setOnClickListener(new SingleClickButtonListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     PopupMenu popup = new PopupMenu(v.getContext(), v);
                     popup.inflate(R.menu.menu_rnr_list_item);
                     popup.show();

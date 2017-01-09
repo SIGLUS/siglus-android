@@ -17,6 +17,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectEmergencyProductAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
@@ -65,9 +66,9 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
         Subscription subscription = presenter.loadEmergencyProducts().subscribe(subscriber);
         subscriptions.add(subscription);
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
+        btnNext.setOnClickListener(new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 validateAndGotoRnrPage();
             }
         });

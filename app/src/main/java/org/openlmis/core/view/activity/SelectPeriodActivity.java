@@ -21,6 +21,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.adapter.SelectPeriodAdapter;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.List;
 
@@ -104,9 +105,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
             }
         });
 
-        nextBtn.setOnClickListener(new View.OnClickListener() {
+        nextBtn.setOnClickListener(new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 if (selectedInventory == null) {
                     tvSelectPeriodWarning.setVisibility(View.VISIBLE);
                     return;

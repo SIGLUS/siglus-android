@@ -21,6 +21,7 @@ import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.MovementDetailsView;
 import org.openlmis.core.view.widget.NewMovementLotListView;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -31,7 +32,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_new_stock_movement)
-public class NewStockMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener {
+public class NewStockMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView {
 
     @InjectView(R.id.view_movement_details)
     MovementDetailsView movementDetailsView;
@@ -108,8 +109,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     private void setUpButtonPanel() {
-        btnComplete.setOnClickListener(this);
-        tvCancel.setOnClickListener(this);
+        SingleClickButtonListener singleClickButtonListener = getSingleClickButtonListener();
+        btnComplete.setOnClickListener(singleClickButtonListener);
+        tvCancel.setOnClickListener(singleClickButtonListener);
     }
 
     private void setUpMovementDetailsView() {
@@ -157,28 +159,32 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         return intent;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_complete:
-                loading();
-                btnComplete.setEnabled(false);
-                movementDetailsView.setMovementModelValue();
+    public SingleClickButtonListener getSingleClickButtonListener() {
+        return new SingleClickButtonListener() {
+            @Override
+            public void onSingleClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btn_complete:
+                        loading();
+                        btnComplete.setEnabled(false);
+                        movementDetailsView.setMovementModelValue();
 
-                if (showErrors()) {
-                    if (!isKit) {
-                        newMovementLotListView.notifyDataChanged();
-                    }
-                    btnComplete.setEnabled(true);
-                    loaded();
-                    return;
+                        if (showErrors()) {
+                            if (!isKit) {
+                                newMovementLotListView.notifyDataChanged();
+                            }
+                            btnComplete.setEnabled(true);
+                            loaded();
+                            return;
+                        }
+                        presenter.saveStockMovement();
+                        break;
+                    case R.id.btn_cancel:
+                        finish();
+                        break;
                 }
-                presenter.saveStockMovement();
-                break;
-            case R.id.btn_cancel:
-                finish();
-                break;
-        }
+            }
+        };
     }
 
     public void clearErrorAlerts() {

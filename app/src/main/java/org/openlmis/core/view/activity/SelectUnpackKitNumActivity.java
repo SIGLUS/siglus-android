@@ -12,6 +12,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.UnpackNumAdapter;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -64,9 +65,9 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
             }
         });
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
+        btnNext.setOnClickListener(new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 if (gridView.getCheckedItemPosition() == GridView.INVALID_POSITION) {
                     tvSelectNumWarning.setVisibility(View.VISIBLE);
                     return;

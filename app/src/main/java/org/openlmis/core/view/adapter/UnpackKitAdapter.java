@@ -9,6 +9,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.view.holder.UnpackKitWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import rx.functions.Action1;
 
 public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implements FilterableAdapter {
 
-    private final View.OnClickListener onClickListener;
+    private final SingleClickButtonListener onClickListener;
     private Action1 setConfirmNoStockReceivedAction = new Action1<UnpackKitInventoryViewModel>() {
         @Override
         public void call(UnpackKitInventoryViewModel unpackKitInventoryViewModel) {
@@ -26,7 +27,7 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
         }
     };
 
-    public UnpackKitAdapter(List<InventoryViewModel> data, View.OnClickListener onClickListener) {
+    public UnpackKitAdapter(List<InventoryViewModel> data, SingleClickButtonListener onClickListener) {
         super(data);
         this.onClickListener = onClickListener;
     }

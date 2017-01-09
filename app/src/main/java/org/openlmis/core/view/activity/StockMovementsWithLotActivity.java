@@ -47,6 +47,7 @@ import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.LotInfoGroup;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -56,7 +57,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stock_movements)
-public class StockMovementsWithLotActivity extends BaseActivity implements StockMovementsPresenter.StockMovementView, View.OnClickListener {
+public class StockMovementsWithLotActivity extends BaseActivity implements StockMovementsPresenter.StockMovementView {
 
     @InjectView(R.id.list_stock_movement)
     ListView stockMovementList;
@@ -145,8 +146,9 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
 
         initRecyclerView();
 
-        btnUnpack.setOnClickListener(this);
-        btnNewMovement.setOnClickListener(this);
+        SingleClickButtonListener singleClickButtonListener = getSingleClickButtonListener();
+        btnUnpack.setOnClickListener(singleClickButtonListener);
+        btnNewMovement.setOnClickListener(singleClickButtonListener);
 
         if (isKit) {
             tvLabelStockCardInfo.setText(getString(R.string.label_validate_period));
@@ -257,23 +259,28 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
         return intent;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_unpack:
-                unpackKit();
-                break;
-            case R.id.btn_new_movement:
-                String[] selections = FluentIterable.from(movementTypes).transform(new Function<MovementReasonManager.MovementType, String>() {
-                    @Override
-                    public String apply(MovementReasonManager.MovementType movementType) {
-                        return movementType.getDescription();
-                    }
-                }).toArray(String.class);
-                newMovementDialog = new SimpleSelectDialogFragment(this, new MovementTypeOnClickListener(), selections);
-                newMovementDialog.show(getFragmentManager(), "");
-                break;
-        }
+    public SingleClickButtonListener getSingleClickButtonListener() {
+        final Context context = this;
+        return new SingleClickButtonListener() {
+            @Override
+            public void onSingleClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btn_unpack:
+                        unpackKit();
+                        break;
+                    case R.id.btn_new_movement:
+                        String[] selections = FluentIterable.from(movementTypes).transform(new Function<MovementReasonManager.MovementType, String>() {
+                            @Override
+                            public String apply(MovementReasonManager.MovementType movementType) {
+                                return movementType.getDescription();
+                            }
+                        }).toArray(String.class);
+                        newMovementDialog = new SimpleSelectDialogFragment(context, new MovementTypeOnClickListener(), selections);
+                        newMovementDialog.show(getFragmentManager(), "");
+                        break;
+                }
+            }
+        };
     }
 
     class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {

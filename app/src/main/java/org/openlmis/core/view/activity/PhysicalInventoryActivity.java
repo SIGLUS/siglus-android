@@ -19,6 +19,7 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,10 +118,10 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         };
     }
 
-    protected View.OnClickListener getSaveOnClickListener() {
-        return new View.OnClickListener() {
+    protected SingleClickButtonListener getSaveOnClickListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 loading();
                 Subscription subscription = presenter.saveDraftInventoryObservable().subscribe(onNextMainPageAction, errorAction);
                 subscriptions.add(subscription);
@@ -128,9 +129,9 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         };
     }
 
-    private View.OnClickListener completeClickListener = new View.OnClickListener() {
+    private SingleClickButtonListener completeClickListener = new SingleClickButtonListener() {
         @Override
-        public void onClick(View v) {
+        public void onSingleClick(View v) {
             signPhysicalInventory();
             trackInventoryEvent(TrackerActions.CompleteInventory);
         }

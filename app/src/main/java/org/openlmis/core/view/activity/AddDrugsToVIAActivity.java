@@ -15,6 +15,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddDrugsToVIAAdapter;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,9 +64,9 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
         Subscription subscription = presenter.loadActiveProductsNotInVIAForm(existingAdditionalProductList).subscribe(subscriber);
         subscriptions.add(subscription);
 
-        btnComplete.setOnClickListener(new View.OnClickListener() {
+        btnComplete.setOnClickListener(new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 getRnrFormItemsAndPassToViaForm();
             }
         });

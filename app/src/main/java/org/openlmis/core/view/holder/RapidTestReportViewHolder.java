@@ -11,6 +11,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
 
@@ -94,10 +95,10 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
     }
 
     @NonNull
-    public View.OnClickListener goToRapidTestReportActivityListener() {
-        return new View.OnClickListener() {
+    public SingleClickButtonListener goToRapidTestReportActivityListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 if (viewModel.getRapidTestForm() == null) {
                     ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, RapidTestReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
                 } else {

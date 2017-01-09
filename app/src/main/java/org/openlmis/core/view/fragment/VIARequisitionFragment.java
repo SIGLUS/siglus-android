@@ -47,6 +47,7 @@ import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SignatureDialog;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
 import org.openlmis.core.view.widget.ViaRequisitionBodyView;
@@ -272,10 +273,10 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     @NonNull
-    private View.OnClickListener getOnCompleteClickListener() {
-        return new View.OnClickListener() {
+    private SingleClickButtonListener getOnCompleteClickListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 if (presenter.processRequisition(consultationView.getValue())) {
                     showSignDialog();
                 }
@@ -284,10 +285,10 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     @NonNull
-    private View.OnClickListener getOnSaveClickListener() {
-        return new View.OnClickListener() {
+    private SingleClickButtonListener getOnSaveClickListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 loading();
                 Subscription subscription = presenter.getSaveFormObservable(consultationView.getValue()).subscribe(getOnSavedSubscriber());
                 subscriptions.add(subscription);

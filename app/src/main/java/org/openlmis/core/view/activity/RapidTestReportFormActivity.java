@@ -25,6 +25,7 @@ import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SignatureDialog;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -115,20 +116,20 @@ public class RapidTestReportFormActivity extends BaseActivity implements SimpleD
     }
 
     @NonNull
-    private View.OnClickListener getOnSaveClickListener() {
-        return new View.OnClickListener() {
+    private SingleClickButtonListener getOnSaveClickListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 onSaveForm();
             }
         };
     }
 
     @NonNull
-    private View.OnClickListener getOnCompleteClickListener() {
-        return new View.OnClickListener() {
+    private SingleClickButtonListener getOnCompleteClickListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 if (presenter.getViewModel().isFormEmpty()) {
                     ToastUtil.show(getString(R.string.error_empty_rapid_test));
                 } else if (!presenter.getViewModel().validate()) {

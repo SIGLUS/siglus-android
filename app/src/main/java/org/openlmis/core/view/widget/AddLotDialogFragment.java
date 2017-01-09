@@ -62,7 +62,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     private String expiryDate;
 
     @Setter
-    private View.OnClickListener listener;
+    private SingleClickButtonListener listener;
     private AddLotWithoutNumberListener addLotWithoutNumberListener;
     private BaseLotListView.OnDismissListener onDismissListener;
 
@@ -143,9 +143,9 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         bundle.putString(Constants.PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER, getString(R.string.msg_confirm_empty_lot_number, drugName.getText()));
         final ConfirmGenerateLotNumberDialogFragment confirmDialog = new ConfirmGenerateLotNumberDialogFragment();
         confirmDialog.setArguments(bundle);
-        confirmDialog.setPositiveClickListener(new View.OnClickListener() {
+        confirmDialog.setPositiveClickListener(new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 confirmDialog.dismiss();
                 addLotWithoutNumberListener.addLotWithoutNumber(expiryDate);
                 AddLotDialogFragment.this.dismiss();

@@ -29,15 +29,17 @@ import org.openlmis.core.R;
 import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.List;
 
 public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn implements FilterableAdapter, RecyclerViewFastScroller.BubbleTextGetter {
-    private final View.OnClickListener saveClickListener;
-    private final View.OnClickListener completeClickListener;
+
+    private final SingleClickButtonListener saveClickListener;
+    private final SingleClickButtonListener completeClickListener;
     private PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener;
 
-    public PhysicalInventoryAdapter(List<InventoryViewModel> data, View.OnClickListener saveClickListener, View.OnClickListener completeClickListener, PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener) {
+    public PhysicalInventoryAdapter(List<InventoryViewModel> data, SingleClickButtonListener saveClickListener, SingleClickButtonListener completeClickListener, PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener) {
         super(data);
         this.saveClickListener = saveClickListener;
         this.completeClickListener = completeClickListener;

@@ -52,6 +52,7 @@ import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.openlmis.core.view.widget.SignatureDialog;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
 
@@ -252,10 +253,10 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     @NonNull
-    private View.OnClickListener getOnSaveListener() {
-        return new View.OnClickListener() {
+    private SingleClickButtonListener getOnSaveListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 loading();
                 Subscription subscription = presenter.getSaveFormObservable(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString())
                         .subscribe(getOnSavedSubscriber());
@@ -287,10 +288,10 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     @NonNull
-    private View.OnClickListener getOnCompleteListener() {
-        return new View.OnClickListener() {
+    private SingleClickButtonListener getOnCompleteListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
                     presenter.setViewModels(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
                     if (!presenter.validateForm()) {

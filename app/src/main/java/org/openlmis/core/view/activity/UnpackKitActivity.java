@@ -21,6 +21,7 @@ import org.openlmis.core.view.adapter.UnpackKitAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.List;
 
@@ -114,9 +115,9 @@ public class UnpackKitActivity extends BaseActivity {
     };
 
 
-    private View.OnClickListener signDialogListener = new View.OnClickListener() {
+    private SingleClickButtonListener signDialogListener = new SingleClickButtonListener() {
         @Override
-        public void onClick(View v) {
+        public void onSingleClick(View v) {
             if (validateAll()) {
                 showSignDialog();
             }

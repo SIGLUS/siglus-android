@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
 
@@ -27,7 +28,7 @@ public class ConfirmGenerateLotNumberDialogFragment extends BaseDialogFragment {
     @InjectView(R.id.btn_cancel)
     Button btnCancel;
 
-    private View.OnClickListener positiveClickListener;
+    private SingleClickButtonListener positiveClickListener;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class ConfirmGenerateLotNumberDialogFragment extends BaseDialogFragment {
         return dialog;
     }
 
-    public void setPositiveClickListener(View.OnClickListener listener) {
+    public void setPositiveClickListener(SingleClickButtonListener listener) {
         positiveClickListener = listener;
     }
 }

@@ -12,6 +12,7 @@ import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -46,9 +47,9 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
     private void setDeleteIconForNewAddedProducts(final RequisitionFormItemViewModel entry) {
         if (!hideDeleteIconInVIAPage() && isNewAddedProduct(entry)) {
             ivDelete.setVisibility(View.VISIBLE);
-            ivDelete.setOnClickListener(new View.OnClickListener() {
+            ivDelete.setOnClickListener(new SingleClickButtonListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     showDelConfirmDialog(entry.getItem());
                 }
             });

@@ -39,9 +39,6 @@ import roboguice.RoboGuice;
 
 public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout implements View.OnClickListener {
 
-    private Context context;
-    protected List<String> expireDates;
-
     LayoutInflater inflater;
 
 
@@ -51,7 +48,6 @@ public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout implements 
     }
 
     private void init(Context context) {
-        this.context = context;
         inflater = LayoutInflater.from(context);
 
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
@@ -86,14 +82,6 @@ public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout implements 
         TextView txLotInfo = (TextView) lotInfoView.findViewById(R.id.tx_lot_info);
         txLotInfo.setText(lotInfo);
         addView(lotInfoView, getChildCount());
-
-        lotInfoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //will add pop up action in another story
-            }
-        });
-
         return lotInfoView;
     }
 

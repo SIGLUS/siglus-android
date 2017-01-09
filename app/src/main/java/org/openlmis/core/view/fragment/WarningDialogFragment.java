@@ -14,10 +14,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import lombok.Setter;
 
-public class WarningDialogFragment extends DialogFragment implements View.OnClickListener {
+public class WarningDialogFragment extends DialogFragment {
 
     private static final String PARAM_MESSAGE_RES = "messageResId";
     private static final String PARAM_POSITIVE_TEXT_RES = "positiveTextResId";
@@ -67,8 +68,9 @@ public class WarningDialogFragment extends DialogFragment implements View.OnClic
         Button btnNegative = (Button) contentView.findViewById(R.id.btn_cancel);
         Button btnPositive = (Button) contentView.findViewById(R.id.btn_del);
 
-        btnNegative.setOnClickListener(this);
-        btnPositive.setOnClickListener(this);
+        SingleClickButtonListener singleClickButtonListener = getSingleClickButtonListener();
+        btnNegative.setOnClickListener(singleClickButtonListener);
+        btnPositive.setOnClickListener(singleClickButtonListener);
 
         tvMessage.setText(messageResId);
         btnPositive.setText(positiveResId);
@@ -82,13 +84,16 @@ public class WarningDialogFragment extends DialogFragment implements View.OnClic
         getDialog().getWindow().setAttributes(params);
     }
 
-
-    @Override
-    public void onClick(View v) {
-        if (delegate != null && v.getId() == R.id.btn_del) {
-            delegate.onPositiveClick();
-        }
-        dismiss();
+    public SingleClickButtonListener getSingleClickButtonListener() {
+        return new SingleClickButtonListener() {
+            @Override
+            public void onSingleClick(View v) {
+                if (delegate != null && v.getId() == R.id.btn_del) {
+                    delegate.onPositiveClick();
+                }
+                dismiss();
+            }
+        };
     }
 
     public interface DialogDelegate {

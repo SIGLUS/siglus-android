@@ -139,10 +139,10 @@ public class BaseLotListView extends FrameLayout {
     }
 
     @NonNull
-    public View.OnClickListener getAddNewLotOnClickListener() {
-        return new View.OnClickListener() {
+    public SingleClickButtonListener getAddNewLotOnClickListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 showAddLotDialogFragment();
             }
         };
@@ -171,10 +171,10 @@ public class BaseLotListView extends FrameLayout {
     }
 
     @NonNull
-    protected View.OnClickListener getAddNewLotDialogOnClickListener() {
-        return new View.OnClickListener() {
+    protected SingleClickButtonListener getAddNewLotDialogOnClickListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_complete:
                         if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {

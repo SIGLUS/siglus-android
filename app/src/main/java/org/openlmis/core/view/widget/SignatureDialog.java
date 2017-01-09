@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import roboguice.inject.InjectView;
 
-public class SignatureDialog extends BaseDialogFragment implements View.OnClickListener {
+public class SignatureDialog extends BaseDialogFragment {
 
     @Getter
     @Setter
@@ -84,8 +84,10 @@ public class SignatureDialog extends BaseDialogFragment implements View.OnClickL
         if (arguments != null) {
             tvSignatureTitle.setText(arguments.getString("title"));
         }
-        btnCancel.setOnClickListener(this);
-        btnSign.setOnClickListener(this);
+
+        SingleClickButtonListener singleClickButtonListener = getSingleClickButtonListener();
+        btnCancel.setOnClickListener(singleClickButtonListener);
+        btnSign.setOnClickListener(singleClickButtonListener);
     }
 
     private void setDialogAttributes() {
@@ -99,18 +101,22 @@ public class SignatureDialog extends BaseDialogFragment implements View.OnClickL
         return signature.length() >= 2 && signature.length() <= 5 && signature.matches("\\D+");
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_done:
-                onDone();
-                break;
-            case R.id.btn_cancel:
-                onCancel();
-                break;
-            default:
-                break;
-        }
+    public SingleClickButtonListener getSingleClickButtonListener() {
+        return new SingleClickButtonListener() {
+            @Override
+            public void onSingleClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btn_done:
+                        onDone();
+                        break;
+                    case R.id.btn_cancel:
+                        onCancel();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
     }
 
     private void onDone() {

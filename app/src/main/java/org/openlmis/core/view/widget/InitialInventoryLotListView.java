@@ -23,10 +23,10 @@ public class InitialInventoryLotListView extends BaseLotListView {
     }
     @NonNull
     @Override
-    protected OnClickListener getAddNewLotDialogOnClickListener() {
-        return new View.OnClickListener() {
+    protected SingleClickButtonListener getAddNewLotDialogOnClickListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_complete:
                         if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {

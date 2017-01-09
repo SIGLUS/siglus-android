@@ -16,6 +16,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectRegimeProductAdapter;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
@@ -75,9 +76,9 @@ public class SelectRegimeProductsActivity extends BaseActivity {
         Subscription subscription = presenter.loadRegimeProducts().subscribe(subscriber);
         subscriptions.add(subscription);
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
+        btnNext.setOnClickListener(new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 validateAndSaveRegime(regimeType);
             }
         });

@@ -258,7 +258,6 @@ public class StockRepository {
         if (cursor.moveToFirst()) {
             do {
                 StockCard stockCard = new StockCard();
-                stockCard.setExpireDates(cursor.getString(cursor.getColumnIndexOrThrow("expireDates")));
                 stockCard.setProduct(productRepository.getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
                 stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
                 stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
