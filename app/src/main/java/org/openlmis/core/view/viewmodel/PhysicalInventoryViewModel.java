@@ -9,6 +9,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -118,5 +119,50 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(getFormattedProductUnit());
         spannableStringBuilder.setSpan(new ForegroundColorSpan(LMISApp.getInstance().getResources().getColor(R.color.color_primary)), 0, getFormattedProductUnit().length(), Spanned.SPAN_POINT_MARK);
         return spannableStringBuilder;
+    }
+
+    public void setDraftInventory(DraftInventory draftInventory) {
+        this.draftInventory = draftInventory;
+        done = draftInventory.isDone();
+        populateLotMovementModelWithDraftLotItem();
+    }
+
+    private void populateLotMovementModelWithDraftLotItem() {
+        for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
+            if (draftLotItem.isNewAdded()) {
+                if (isNotInExistingLots(draftLotItem)) {
+                    LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
+                    newLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
+                    newLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
+                    newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                    getNewLotMovementViewModelList().add(newLotMovementViewModel);
+                }
+            } else {
+                for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
+                    if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
+                        existingLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isNotInExistingLots(DraftLotItem draftLotItem) {
+        for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
+            if (draftLotItem.getLotNumber().toUpperCase().equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
+                return false;
+            }
+        }
+
+        for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
+            if (draftLotItem.getLotNumber().toUpperCase().equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String formatQuantity(Long quantity) {
+        return quantity == null ? "" : quantity.toString();
     }
 }

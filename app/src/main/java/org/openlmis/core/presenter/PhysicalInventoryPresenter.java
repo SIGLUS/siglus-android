@@ -6,7 +6,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
-import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
@@ -80,7 +79,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             for (DraftInventory draftInventory : draftList) {
                 if (viewModel.getStockCardId() == draftInventory.getStockCard().getId()) {
                     ((PhysicalInventoryViewModel) viewModel).setDraftInventory(draftInventory);
-                    populateLotMovementModelWithDraftLotItem(viewModel, draftInventory);
                 }
             }
 
@@ -95,47 +93,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         for (LotMovementViewModel lotMovementViewModel : viewModel.getExistingLotMovementViewModelList()) {
             lotMovementViewModel.setQuantity(lotMovementViewModel.getLotSoh());
         }
-    }
-
-    private void populateLotMovementModelWithDraftLotItem(InventoryViewModel inventoryViewModel, DraftInventory draftInventory) {
-        List<LotMovementViewModel> existingLotMovementViewModelList = inventoryViewModel.getExistingLotMovementViewModelList();
-        List<LotMovementViewModel> newAddedLotMovementVieModelList = inventoryViewModel.getNewLotMovementViewModelList();
-        for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
-            if (draftLotItem.isNewAdded()) {
-                if (isNotInExistingLots(draftLotItem, existingLotMovementViewModelList, newAddedLotMovementVieModelList)) {
-                    LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
-                    newLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
-                    newLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
-                    newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                    newAddedLotMovementVieModelList.add(newLotMovementViewModel);
-                }
-            } else {
-                for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
-                    if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
-                        existingLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean isNotInExistingLots(DraftLotItem draftLotItem, List<LotMovementViewModel> existingLotMovementViewModelList, List<LotMovementViewModel> newAddedLotMovementVieModelList) {
-        for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-            if (draftLotItem.getLotNumber().toUpperCase().equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
-                return false;
-            }
-        }
-
-        for (LotMovementViewModel lotMovementViewModel : newAddedLotMovementVieModelList) {
-            if (draftLotItem.getLotNumber().toUpperCase().equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private String formatQuantity(Long quantity) {
-        return quantity == null ? "" : quantity.toString();
     }
 
     protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
@@ -172,7 +129,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                 try {
                     inventoryRepository.clearDraft();
                     for (InventoryViewModel model : inventoryViewModelList) {
-                        inventoryRepository.createDraft(new DraftInventory(model));
+                        inventoryRepository.createDraft(new DraftInventory((PhysicalInventoryViewModel) model));
                     }
                     subscriber.onNext(null);
                     subscriber.onCompleted();

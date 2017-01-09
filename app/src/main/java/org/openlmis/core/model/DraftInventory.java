@@ -25,8 +25,8 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.utils.ListUtil;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -49,6 +49,9 @@ public class DraftInventory extends BaseModel {
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     StockCard stockCard;
 
+    @DatabaseField(defaultValue = "false")
+    boolean done;
+
     @DatabaseField
     Long quantity;
 
@@ -57,9 +60,10 @@ public class DraftInventory extends BaseModel {
 
     private List<DraftLotItem> draftLotItemListWrapper;
 
-    public DraftInventory(InventoryViewModel viewModel) {
+    public DraftInventory(PhysicalInventoryViewModel viewModel) {
         this.stockCard = viewModel.getStockCard();
         this.quantity = viewModel.getLotListQuantityTotalAmount();
+        done = viewModel.isDone();
         setupDraftLotList(viewModel.getExistingLotMovementViewModelList(), viewModel.getNewLotMovementViewModelList());
     }
 

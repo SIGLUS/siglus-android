@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
@@ -185,21 +184,5 @@ public class InventoryViewModelTest {
         inventoryViewModel.newLotMovementViewModelList.add(lotMovementViewModel);
 
         assertTrue(inventoryViewModel.validate());
-    }
-
-    @Test
-    public void shouldParseDraftInventory() {
-        LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder().setLotNumber("lot1").setExpiryDate("Feb 2015").build();
-        LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder().setLotNumber("lot2").setExpiryDate("Feb 2015").build();
-
-        viewModel.setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
-        viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel2));
-
-        DraftInventory draftInventory = new DraftInventory(viewModel);
-        assertThat(draftInventory.getDraftLotItemListWrapper().get(0).isNewAdded(), is(false));
-        assertThat(draftInventory.getDraftLotItemListWrapper().get(0).getLotNumber(), is("lot1"));
-        assertThat(draftInventory.getDraftLotItemListWrapper().get(1).isNewAdded(), is(true));
-        assertThat(draftInventory.getDraftLotItemListWrapper().get(1).getLotNumber(), is("lot2"));
-
     }
 }
