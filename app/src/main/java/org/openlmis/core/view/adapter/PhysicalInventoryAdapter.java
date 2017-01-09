@@ -86,4 +86,19 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
         }
         return false;
     }
+
+    @Override
+    public int validateAll() {
+        int position = -1;
+        for (int i = 0; i < data.size(); i++) {
+            if (!data.get(i).validate()) {
+                if (position == -1 || i < position) {
+                    position = i;
+                }
+            }
+        }
+
+        this.notifyDataSetChanged();
+        return position;
+    }
 }
