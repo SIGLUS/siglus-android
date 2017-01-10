@@ -159,6 +159,7 @@ public class VIARequisitionFragmentTest {
 
     @Test
     public void shouldShowAlertDialogWhenPressedBack() {
+        when(presenter.isDraft()).thenReturn(true);
         VIARequisitionFragment.onBackPressed();
 
         DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("back_confirm_dialog"));
