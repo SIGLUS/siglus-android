@@ -20,7 +20,6 @@ import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
-import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.RoboGuice;
@@ -164,24 +163,12 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         actionPanelView.setPositiveButtonText(presenter.getViewModel().isDraft() ? getResources().getString(R.string.btn_submit) : getResources().getString(R.string.btn_complete));
     }
 
-    private void showSignDialog() {
-        SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = presenter.getViewModel().isDraft() ? getResources().getString(R.string.msg_rapid_test_submit_signature) : getResources().getString(R.string.msg_approve_signature_rapid_test);
-
-        signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
-        signatureDialog.setDelegate(signatureDialogDelegate);
-
-        signatureDialog.show(getFragmentManager());
+    @Override
+    protected String getSignatureDialogTitle() {
+        return presenter.getViewModel().isDraft() ? getResources().getString(R.string.msg_rapid_test_submit_signature) : getResources().getString(R.string.msg_approve_signature_rapid_test);
     }
 
-    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-        public void onSign(String sign) {
-            Subscription subscription = presenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
-            subscriptions.add(subscription);
-        }
-    };
-
-    private Action1<? super Void> getOnSignedAction() {
+    protected Action1<? super Void> getOnSignedAction() {
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
@@ -200,8 +187,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         updateButtonName();
     }
 
-    public void showMessageNotifyDialog() {
-        super.showMessageNotifyDialog(getString(R.string.msg_requisition_signature_message_notify_rapid_test));
+    @Override
+    protected String getNotifyDialogMsg() {
+        return getString(R.string.msg_requisition_signature_message_notify_rapid_test);
     }
 
     private Action1<? super RapidTestReportViewModel> getOnSavedAction() {

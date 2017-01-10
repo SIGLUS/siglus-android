@@ -45,7 +45,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
-import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
@@ -324,25 +323,14 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
         return consultationView.validate();
     }
 
+    @NonNull
     @Override
-    public void showSignDialog() {
-        SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_via_submit_signature) : getResources().getString(R.string.msg_approve_signature_via);
-
-        signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
-        signatureDialog.setDelegate(signatureDialogDelegate);
-
-        signatureDialog.show(getActivity().getFragmentManager());
+    public String getSignatureDialogTitle() {
+        return presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_via_submit_signature) : getResources().getString(R.string.msg_approve_signature_via);
     }
 
-    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-        public void onSign(String sign) {
-            Subscription subscription = presenter.getOnSignObservable(sign).subscribe(getOnSignedSubscriber());
-            subscriptions.add(subscription);
-        }
-    };
-
-    private Action1<? super Void> getOnSignedSubscriber() {
+    @Override
+    protected Action1<? super Void> getOnSignedAction() {
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
@@ -358,8 +346,8 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     }
 
     @Override
-    public void showMessageNotifyDialog() {
-        showMessageNotifyDialog(getString(R.string.msg_requisition_signature_message_notify_via));
+    protected String getNotifyDialogMsg() {
+        return getString(R.string.msg_requisition_signature_message_notify_via);
     }
 
     @Override

@@ -269,10 +269,10 @@ public class RnRForm extends BaseModel {
 
     public void addSignature(String signature) {
         if (isDraft()) {
-            signaturesWrapper.add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.SUBMITTER));
+            getSignaturesWrapper().add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.SUBMITTER));
             status = isMissed() ? RnRForm.STATUS.SUBMITTED_MISSED : RnRForm.STATUS.SUBMITTED;
         } else {
-            signaturesWrapper.add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.APPROVER));
+            getSignaturesWrapper().add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.APPROVER));
             status = RnRForm.STATUS.AUTHORIZED;
             submittedTime = DateUtil.today();
         }

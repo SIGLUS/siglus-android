@@ -6,8 +6,11 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.widget.ActionPanelView;
+import org.openlmis.core.view.widget.SignatureDialog;
 
 import roboguice.inject.InjectView;
+import rx.Subscription;
+import rx.functions.Action1;
 
 public abstract class BaseReportFragment extends BaseFragment {
     @InjectView(R.id.action_panel)
@@ -40,7 +43,7 @@ public abstract class BaseReportFragment extends BaseFragment {
         }
     }
 
-    protected void showConfirmDialog() {
+    private void showConfirmDialog() {
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
                 null,
                 getString(R.string.msg_back_confirm),
@@ -61,10 +64,32 @@ public abstract class BaseReportFragment extends BaseFragment {
         });
     }
 
-    protected void showMessageNotifyDialog(String title) {
+    public void showSignDialog() {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        String signatureDialogTitle = getSignatureDialogTitle();
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
+        signatureDialog.setDelegate(signatureDialogDelegate);
+
+        signatureDialog.show(this.getFragmentManager());
+    }
+
+    protected abstract String getSignatureDialogTitle();
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        public void onSign(String sign) {
+            Subscription subscription = presenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
+            subscriptions.add(subscription);
+        }
+    };
+
+    protected abstract Action1<? super Void> getOnSignedAction();
+
+    public void showMessageNotifyDialog() {
         SimpleDialogFragment notifyDialog = SimpleDialogFragment.newInstance(null,
-                title, null, getString(R.string.btn_continue), "showMessageNotifyDialog");
+                getNotifyDialogMsg(), null, getString(R.string.btn_continue), "showMessageNotifyDialog");
 
         notifyDialog.show(getActivity().getFragmentManager(), "showMessageNotifyDialog");
     }
+
+    protected abstract String getNotifyDialogMsg();
 }

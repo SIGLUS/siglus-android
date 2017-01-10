@@ -131,11 +131,11 @@ public class RapidTestReportViewModelTest {
 
         assertNull(viewModel.getRapidTestForm().getStatus());
 
-        viewModel.setSignature("submit");
+        viewModel.addSignature("submit");
         assertEquals(Signature.TYPE.SUBMITTER, viewModel.getRapidTestForm().getSignaturesWrapper().get(0).getType());
         assertEquals("submit", viewModel.getRapidTestForm().getSignaturesWrapper().get(0).getSignature());
 
-        viewModel.setSignature("authorize");
+        viewModel.addSignature("authorize");
         assertEquals(Signature.TYPE.APPROVER, viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getType());
         assertEquals("authorize", viewModel.getRapidTestForm().getSignaturesWrapper().get(1).getSignature());
         assertNotNull(viewModel.getRapidTestForm().getSubmittedTime());

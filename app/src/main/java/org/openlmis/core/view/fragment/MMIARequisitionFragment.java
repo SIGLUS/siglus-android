@@ -48,7 +48,6 @@ import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
-import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
@@ -402,25 +401,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         finish();
     }
 
-    @Override
-    public void showSignDialog() {
-        SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_mmia_submit_signature) : getResources().getString(R.string.msg_approve_signature_mmia);
-        signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
-        signatureDialog.setDelegate(signatureDialogDelegate);
-
-        signatureDialog.show(this.getFragmentManager());
+    @NonNull
+    public String getSignatureDialogTitle() {
+        return presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_mmia_submit_signature) : getResources().getString(R.string.msg_approve_signature_mmia);
     }
 
-    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-        @Override
-        public void onSign(String sign) {
-            Subscription subscription = presenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
-            subscriptions.add(subscription);
-        }
-    };
-
-    private Action1<? super Void> getOnSignedAction() {
+    protected Action1<? super Void> getOnSignedAction() {
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
@@ -435,8 +421,8 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     }
 
     @Override
-    public void showMessageNotifyDialog() {
-        showMessageNotifyDialog(getString(R.string.msg_requisition_signature_message_notify_mmia));
+    protected String getNotifyDialogMsg() {
+        return getString(R.string.msg_requisition_signature_message_notify_mmia);
     }
 
     private boolean isTotalEqual() {

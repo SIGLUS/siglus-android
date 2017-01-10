@@ -98,19 +98,7 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
         return viewModel.isSubmitted();
     }
 
-    public Observable<Void> getOnSignObservable(final String sign) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    viewModel.setSignature(sign);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                    new LMISException(e).reportToFabric();
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    public void addSignature(String sign) {
+        viewModel.addSignature(sign);
     }
 }

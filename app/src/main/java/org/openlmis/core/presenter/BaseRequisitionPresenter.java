@@ -217,7 +217,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     }
 
     public void processSign(String signature) {
-        rnRForm.addSignature(signature);
+        addSignature(signature);
         if (rnRForm.isSubmitted()) {
             submitRequisition();
             view.showMessageNotifyDialog();
@@ -226,20 +226,8 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         }
     }
 
-    public Observable<Void> getOnSignObservable(final String signature) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnRForm.addSignature(signature);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                    new LMISException(e).reportToFabric();
-                }
-            }
-        });
+    public void addSignature(String signature) {
+        rnRForm.addSignature(signature);
     }
 
     public RnRForm.STATUS getRnrFormStatus() {
@@ -279,8 +267,6 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     public interface BaseRequisitionView extends BaseView {
 
         void refreshRequisitionForm(RnRForm rnRForm);
-
-        void showSignDialog();
 
         void completeSuccess();
 

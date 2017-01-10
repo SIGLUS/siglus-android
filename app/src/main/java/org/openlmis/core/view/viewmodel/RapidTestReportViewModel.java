@@ -142,7 +142,7 @@ public class RapidTestReportViewModel implements Serializable {
         return true;
     }
 
-    public void setSignature(String signature) {
+    public void addSignature(String signature) {
         if (rapidTestForm.getSignaturesWrapper().size() == 0) {
             rapidTestForm.getSignaturesWrapper().add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
             rapidTestForm.setStatus(ProgramDataForm.STATUS.SUBMITTED);
