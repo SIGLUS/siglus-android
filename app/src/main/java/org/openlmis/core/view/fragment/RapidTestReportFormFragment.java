@@ -28,7 +28,7 @@ import roboguice.inject.InjectView;
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class RapidTestReportFormFragment extends BaseReportFragment implements RapidTestReportFormPresenter.RapidTestReportView {
+public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
 
@@ -38,8 +38,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment implements R
     RapidTestReportFormPresenter presenter;
 
     RapidTestReportRowAdapter adapter;
-
-    private SimpleDialogFragment notifyDialog;
 
     public static int ROW_HEADER_WIDTH = -1;
 
@@ -59,7 +57,11 @@ public class RapidTestReportFormFragment extends BaseReportFragment implements R
 
         updateHeaderSize();
         setUpRowItems();
-        loadForm(formId, periodBegin);
+        if (isSavedInstanceState && presenter.getViewModel() != null) {
+            updateUI();
+        } else {
+            loadForm(formId, periodBegin);
+        }
     }
 
     @Nullable
@@ -83,7 +85,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment implements R
 
     private void loadForm(long formId, DateTime periodBegin) {
         loading();
-        Subscription subscription = presenter.loadViewModel(formId, periodBegin).subscribe(getPopulateFormDataAction());
+        Subscription subscription = presenter.loadViewModel(formId, periodBegin).subscribe(getOnViewModelLoadedAction());
         subscriptions.add(subscription);
     }
 
@@ -157,19 +159,24 @@ public class RapidTestReportFormFragment extends BaseReportFragment implements R
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
-            presenter.processSign(sign);
+            Subscription subscription = presenter.onSignObservable(sign).subscribe(getOnSignedAction());
+            subscriptions.add(subscription);
         }
     };
 
-    @Override
-    public void onFormSigned() {
-        if (presenter.getViewModel().isAuthorized()) {
-            onSaveForm();
-        } else {
-            showMessageNotifyDialog();
-            presenter.saveForm();
-            updateUIAfterSubmit();
-        }
+    private Action1<? super Void> getOnSignedAction() {
+        return new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                if (presenter.getViewModel().isAuthorized()) {
+                    onSaveForm();
+                } else {
+                    showMessageNotifyDialog();
+                    presenter.saveForm();
+                    updateUIAfterSubmit();
+                }
+            }
+        };
     }
 
     public void updateUIAfterSubmit() {
@@ -179,10 +186,10 @@ public class RapidTestReportFormFragment extends BaseReportFragment implements R
     }
 
     public void showMessageNotifyDialog() {
-        notifyDialog = SimpleDialogFragment.newInstance(null,
+        SimpleDialogFragment notifyDialog = SimpleDialogFragment.newInstance(null,
                 getString(R.string.msg_requisition_signature_message_notify_rapid_test), null, getString(R.string.btn_continue), "showMessageNotifyDialog");
 
-        notifyDialog.show(getFragmentManager(), "showMessageNotifyDialog");
+        notifyDialog.show(getActivity().getFragmentManager(), "showMessageNotifyDialog");
     }
 
     private Action1<? super RapidTestReportViewModel> getSavedSubscriber() {
@@ -196,16 +203,20 @@ public class RapidTestReportFormFragment extends BaseReportFragment implements R
     }
 
     @NonNull
-    private Action1<RapidTestReportViewModel> getPopulateFormDataAction() {
+    private Action1<RapidTestReportViewModel> getOnViewModelLoadedAction() {
         return new Action1<RapidTestReportViewModel>() {
             @Override
             public void call(RapidTestReportViewModel viewModel) {
-                populateFormData(viewModel);
-                setUpButtonPanel();
+                updateUI();
                 loadMessageDialogIfIsDraft();
                 loaded();
             }
         };
+    }
+
+    public void updateUI() {
+        populateFormData(presenter.getViewModel());
+        setUpButtonPanel();
     }
 
     private void loadMessageDialogIfIsDraft() {
@@ -216,13 +227,5 @@ public class RapidTestReportFormFragment extends BaseReportFragment implements R
 
     private void populateFormData(RapidTestReportViewModel viewModel) {
         adapter.refresh(viewModel.getItemViewModelList(), viewModel.isEditable());
-    }
-
-    @Override
-    public void onPause() {
-        if (notifyDialog != null) {
-            notifyDialog.dismiss();
-        }
-        super.onPause();
     }
 }
