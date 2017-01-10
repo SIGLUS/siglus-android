@@ -95,10 +95,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     protected View containerView;
     private Date periodEndDate;
 
-    protected static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_MISMATCH = "mismatch";
-    private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
-
     public static final int REQUEST_FOR_CUSTOM_REGIME = 100;
 
     protected int actionBarHeight;
@@ -423,12 +420,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
 
     @Override
     public void showMessageNotifyDialog() {
-        DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                getString(R.string.msg_requisition_signature_message_notify_mmia),
-                getString(R.string.btn_continue),
-                null,
-                TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
-        dialogFragment.show(this.getFragmentManager(), TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
+        showMessageNotifyDialog(getString(R.string.msg_requisition_signature_message_notify_mmia));
     }
 
     private boolean isTotalEqual() {

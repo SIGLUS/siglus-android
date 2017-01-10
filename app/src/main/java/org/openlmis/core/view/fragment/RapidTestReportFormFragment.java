@@ -186,10 +186,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     public void showMessageNotifyDialog() {
-        SimpleDialogFragment notifyDialog = SimpleDialogFragment.newInstance(null,
-                getString(R.string.msg_requisition_signature_message_notify_rapid_test), null, getString(R.string.btn_continue), "showMessageNotifyDialog");
-
-        notifyDialog.show(getActivity().getFragmentManager(), "showMessageNotifyDialog");
+        super.showMessageNotifyDialog(getString(R.string.msg_requisition_signature_message_notify_rapid_test));
     }
 
     private Action1<? super RapidTestReportViewModel> getSavedSubscriber() {

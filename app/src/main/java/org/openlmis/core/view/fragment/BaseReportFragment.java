@@ -60,4 +60,11 @@ public abstract class BaseReportFragment extends BaseFragment {
             }
         });
     }
+
+    protected void showMessageNotifyDialog(String title) {
+        SimpleDialogFragment notifyDialog = SimpleDialogFragment.newInstance(null,
+                title, null, getString(R.string.btn_continue), "showMessageNotifyDialog");
+
+        notifyDialog.show(getActivity().getFragmentManager(), "showMessageNotifyDialog");
+    }
 }
