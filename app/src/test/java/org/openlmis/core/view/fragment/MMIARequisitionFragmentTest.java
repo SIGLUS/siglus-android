@@ -204,7 +204,7 @@ public class MMIARequisitionFragmentTest {
     public void shouldShowSaveAndCompleteButtonWhenFormIsEditable() {
         mmiaRequisitionFragment.initUI();
 
-        assertThat(mmiaRequisitionFragment.actionPanel.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mmiaRequisitionFragment.actionPanelView.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
@@ -214,7 +214,7 @@ public class MMIARequisitionFragmentTest {
 
         mmiaRequisitionFragment.initUI();
 
-        assertThat(mmiaRequisitionFragment.actionPanel.getVisibility()).isEqualTo(View.GONE);
+        assertThat(mmiaRequisitionFragment.actionPanelView.getVisibility()).isEqualTo(View.GONE);
     }
 
     @Test

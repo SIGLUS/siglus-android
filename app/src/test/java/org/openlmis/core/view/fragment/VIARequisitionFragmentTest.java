@@ -139,11 +139,11 @@ public class VIARequisitionFragmentTest {
         rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
 
         VIARequisitionFragment.refreshRequisitionForm(rnRForm);
-        assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanel.getVisibility());
+        assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanelView.getVisibility());
 
         rnRForm.setEmergency(true);
         VIARequisitionFragment.refreshRequisitionForm(rnRForm);
-        assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanel.getVisibility());
+        assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanelView.getVisibility());
         assertFalse(VIARequisitionFragment.containerView.findViewById(R.id.edit_text).hasOnClickListeners());
         assertFalse(VIARequisitionFragment.kitView.findViewById(R.id.et_via_kit_opened_chw).hasOnClickListeners());
     }

@@ -45,7 +45,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
-import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.ViaKitView;
@@ -78,13 +77,9 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     @InjectView(R.id.vg_container)
     ViewGroup vgContainer;
 
-    @InjectView(R.id.action_panel)
-    ActionPanelView actionPanel;
-
     @Inject
     VIARequisitionPresenter presenter;
 
-    private static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
     protected View containerView;
 
@@ -194,7 +189,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
     private void refreshNormalRnr(RnRForm rnRForm) {
         consultationView.refreshNormalRnrConsultationView(presenter);
-        actionPanel.setNegativeButtonVisibility(View.VISIBLE);
+        actionPanelView.setNegativeButtonVisibility(View.VISIBLE);
         setTitleWithPeriod(rnRForm);
         setKitValues();
     }
@@ -216,7 +211,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
         getActivity().setTitle(getString(R.string.label_emergency_requisition_title,
                 DateUtil.formatDateWithoutYear(new Date(LMISApp.getInstance().getCurrentTimeMillis()))));
-        actionPanel.setNegativeButtonVisibility(View.GONE);
+        actionPanelView.setNegativeButtonVisibility(View.GONE);
     }
 
     public void setTitleWithPeriod(RnRForm rnRForm) {
@@ -242,10 +237,10 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     public void setEditable() {
         if (presenter.getRnRForm().isAuthorized()) {
             vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            actionPanel.setVisibility(View.GONE);
+            actionPanelView.setVisibility(View.GONE);
         } else {
             vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-            actionPanel.setVisibility(View.VISIBLE);
+            actionPanelView.setVisibility(View.VISIBLE);
         }
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             bodyView.setEditable(false);
@@ -270,7 +265,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     }
 
     private void bindListeners() {
-        actionPanel.setListener(getOnCompleteClickListener(), getOnSaveClickListener());
+        actionPanelView.setListener(getOnCompleteClickListener(), getOnSaveClickListener());
         bodyView.setHideImmOnTouchListener();
     }
 
@@ -321,7 +316,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
     @Override
     public void setProcessButtonName(String buttonName) {
-        actionPanel.setPositiveButtonText(buttonName);
+        actionPanelView.setPositiveButtonText(buttonName);
     }
 
     @Override

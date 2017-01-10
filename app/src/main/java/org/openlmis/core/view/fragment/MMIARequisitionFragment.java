@@ -44,7 +44,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
-import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
@@ -89,9 +88,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
 
     @InjectView(R.id.mmia_rnr_items_header_freeze_right)
     protected ViewGroup rnrItemsHeaderFreezeRight;
-
-    @InjectView(R.id.action_panel)
-    protected ActionPanelView actionPanel;
 
     MMIARequisitionPresenter presenter;
 
@@ -149,11 +145,11 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         scrollView.setVisibility(View.INVISIBLE);
         if (isHistoryForm()) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            actionPanel.setVisibility(View.GONE);
+            actionPanelView.setVisibility(View.GONE);
             etComment.setEnabled(false);
         } else {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-            actionPanel.setVisibility(View.VISIBLE);
+            actionPanelView.setVisibility(View.VISIBLE);
             etComment.setEnabled(true);
         }
         disableFreezeHeaderScroll();
@@ -238,7 +234,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
             }
         });
 
-        actionPanel.setListener(getOnCompleteListener(), getOnSaveListener());
+        actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -399,7 +395,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
 
     @Override
     public void setProcessButtonName(String buttonName) {
-        actionPanel.setPositiveButtonText(buttonName);
+        actionPanelView.setPositiveButtonText(buttonName);
     }
 
     @Override
