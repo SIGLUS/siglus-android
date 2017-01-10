@@ -95,6 +95,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
             ToastUtil.show(getString(R.string.hint_more_than_limit_product_has_checked));
             return;
         }
+        btnNext.setEnabled(false);
         loading();
         Subscription subscription = presenter.saveRegimes(checkedViewModels, regimeType).subscribe(saveSubscriber);
         subscriptions.add(subscription);

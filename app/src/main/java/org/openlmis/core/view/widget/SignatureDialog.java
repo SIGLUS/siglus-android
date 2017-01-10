@@ -126,6 +126,8 @@ public class SignatureDialog extends BaseDialogFragment {
 
         String signature = etSignature.getText().toString().trim();
         if (checkSignature(signature)) {
+            btnSign.setEnabled(false);
+            btnCancel.setEnabled(false);
             delegate.onSign(signature);
             dismiss();
         } else {

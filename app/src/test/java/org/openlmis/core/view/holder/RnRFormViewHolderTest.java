@@ -4,6 +4,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -77,6 +78,8 @@ public class RnRFormViewHolderTest {
         RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
 
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
+        viewHolder.btnView = mock(TextView.class);
+
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
@@ -160,6 +163,7 @@ public class RnRFormViewHolderTest {
     public void shouldShowCanNotDoPhysicalInventoryType() {
         RnRFormViewModel viewModel = new RnRFormViewModel(Period.of(DateUtil.today()), program.getProgramCode(), RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+        viewHolder.btnView = mock(TextView.class);
 
         viewHolder.populate(viewModel);
 

@@ -72,7 +72,7 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
                     tvSelectNumWarning.setVisibility(View.VISIBLE);
                     return;
                 }
-
+                btnNext.setEnabled(false);
                 int unpackNum = gridView.getCheckedItemPosition() + 1;
                 startActivityForResult(UnpackKitActivity.getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName), Constants.REQUEST_UNPACK_KIT);
             }

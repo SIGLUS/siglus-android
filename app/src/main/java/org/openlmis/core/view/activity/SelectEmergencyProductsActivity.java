@@ -80,6 +80,7 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
             ToastUtil.show(R.string.hint_no_product_has_checked);
             return;
         }
+        btnNext.setEnabled(false);
 
         ImmutableList<StockCard> immutableList = from(checkedViewModels).transform(new Function<InventoryViewModel, StockCard>() {
             @Override

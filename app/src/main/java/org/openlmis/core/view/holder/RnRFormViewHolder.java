@@ -168,6 +168,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     private void setupButton(RnRFormViewModel model, String buttonText) {
         btnView.setText(buttonText);
         btnView.setOnClickListener(new BtnViewClickListener(model));
+        btnView.setEnabled(true);
     }
 
     private void configHolder(String period, Spanned text, int icDescription, int colorDraftTitle) {
@@ -209,18 +210,19 @@ public class RnRFormViewHolder extends BaseViewHolder {
         void clickBtnView(RnRFormViewModel model);
     }
 
-    private class BtnViewClickListener implements View.OnClickListener {
+    private class BtnViewClickListener extends SingleClickButtonListener {
 
         private final RnRFormViewModel model;
 
         public BtnViewClickListener(final RnRFormViewModel model) {
+            this.minClickInterval = 1000;
             this.model = model;
         }
 
         @Override
-        public void onClick(View v) {
+        public void onSingleClick(View v) {
             if (itemClickListener != null) {
-                v.setEnabled(false);
+                btnView.setEnabled(false);
                 itemClickListener.clickBtnView(model);
             }
         }

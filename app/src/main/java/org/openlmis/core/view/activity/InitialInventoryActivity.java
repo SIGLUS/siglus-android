@@ -13,6 +13,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.ContentView;
 import rx.Subscription;
@@ -43,9 +44,9 @@ public class InitialInventoryActivity extends InventoryActivity {
 
     private void initTitle() {
         btnSave.setVisibility(View.GONE);
-        btnDone.setOnClickListener(new View.OnClickListener() {
+        btnDone.setOnClickListener(new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 btnDone.setEnabled(false);
                 if (validateInventory()) {
                     loading();

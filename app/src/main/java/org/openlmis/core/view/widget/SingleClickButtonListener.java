@@ -7,7 +7,7 @@ import org.openlmis.core.LMISApp;
 
 public abstract class SingleClickButtonListener implements View.OnClickListener {
 
-    public static long MIN_CLICK_INTERVAL = 500;
+    public long minClickInterval = 500;
 
     public static boolean isViewClicked = false;
 
@@ -22,7 +22,7 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
 
         lastClickTime = currentClickTime;
 
-        if(elapsedTime <= MIN_CLICK_INTERVAL) {
+        if(elapsedTime <= minClickInterval) {
             return;
         }
         if (!isViewClicked) {
@@ -42,6 +42,6 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
             public void run() {
                 isViewClicked = false;
             }
-        }, MIN_CLICK_INTERVAL);
+        }, minClickInterval);
     }
 }

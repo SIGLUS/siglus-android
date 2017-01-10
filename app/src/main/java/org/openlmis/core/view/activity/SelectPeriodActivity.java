@@ -112,6 +112,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                     tvSelectPeriodWarning.setVisibility(View.VISIBLE);
                     return;
                 }
+                nextBtn.setEnabled(false);
                 Intent intent = new Intent();
                 intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getInventoryDate());
                 intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);

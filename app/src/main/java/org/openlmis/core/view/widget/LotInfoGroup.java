@@ -21,7 +21,6 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -37,7 +36,7 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
-public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout implements View.OnClickListener {
+public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout {
 
     LayoutInflater inflater;
 
@@ -64,11 +63,6 @@ public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout implements 
         for (LotOnHand lotOnHand: sortedLotOnHandList) {
             addLotInfoView(lotOnHand);
         }
-    }
-
-
-    @Override
-    public void onClick(View v) {
     }
 
     private ViewGroup addLotInfoView(LotOnHand lotOnHand) {
