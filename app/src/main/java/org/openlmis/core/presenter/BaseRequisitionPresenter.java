@@ -202,7 +202,8 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public void removeRequisition() {
+    @Override
+    public void deleteDraft() {
         if (!isHistoryForm()) {
             try {
                 rnrFormRepository.removeRnrForm(rnRForm);
@@ -264,6 +265,10 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     }
 
     public boolean isDraft() {
+        return getRnrFormStatus() == RnRForm.STATUS.DRAFT;
+    }
+
+    public boolean isDraftOrDraftMissed() {
         return rnRForm.isDraft();
     }
 

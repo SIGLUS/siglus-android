@@ -1,10 +1,7 @@
 package org.openlmis.core.presenter;
 
-import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.view.BaseView;
+public abstract class BaseReportPresenter extends Presenter{
+    public abstract void deleteDraft();
 
-public class BaseReportPresenter extends Presenter{
-    @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {
-    }
+    public abstract boolean isDraft();
 }

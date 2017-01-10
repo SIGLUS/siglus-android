@@ -382,28 +382,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         return regimeListView.hasEmptyField() || mmiaInfoListView.hasEmptyField();
     }
 
-    public void onBackPressed() {
-        if (presenter.getRnrFormStatus() == RnRForm.STATUS.DRAFT) {
-            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null, getString(R.string.msg_back_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), TAG_BACK_PRESSED);
-            dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
-            dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
-                @Override
-                public void positiveClick(String tag) {
-                    if (tag.equals(TAG_BACK_PRESSED)) {
-                        presenter.removeRequisition();
-                        finish();
-                    }
-                }
-
-                @Override
-                public void negativeClick(String tag) {
-                }
-            });
-        } else {
-            finish();
-        }
-    }
-
     @Override
     protected void finish() {
         getActivity().setResult(Activity.RESULT_OK);
@@ -433,7 +411,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     @Override
     public void showSignDialog() {
         SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = presenter.isDraft() ? getResources().getString(R.string.msg_mmia_submit_signature) : getResources().getString(R.string.msg_approve_signature_mmia);
+        String signatureDialogTitle = presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_mmia_submit_signature) : getResources().getString(R.string.msg_approve_signature_mmia);
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
         signatureDialog.setDelegate(signatureDialogDelegate);
 

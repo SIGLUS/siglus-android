@@ -173,12 +173,12 @@ public class VIARequisitionFragmentTest {
     @Test
     public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
         VIARequisitionFragment.onBackPressed();
-        verify(presenter, never()).removeRequisition();
+        verify(presenter, never()).deleteDraft();
     }
 
     @Test
     public void shouldShowSubmitSignatureDialog() {
-        when(presenter.isDraft()).thenReturn(true);
+        when(presenter.isDraftOrDraftMissed()).thenReturn(true);
 
         VIARequisitionFragment.showSignDialog();
 
@@ -196,7 +196,7 @@ public class VIARequisitionFragmentTest {
 
     @Test
     public void shouldShowApproveSignatureDialog() {
-        when(presenter.isDraft()).thenReturn(false);
+        when(presenter.isDraftOrDraftMissed()).thenReturn(false);
 
         VIARequisitionFragment.showSignDialog();
 

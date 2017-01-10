@@ -36,7 +36,6 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
         view = (RapidTestReportView) v;
     }
 
-
     public Observable<RapidTestReportViewModel> loadViewModel(final long formId, final DateTime periodBegin) {
         return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
             @Override
@@ -88,6 +87,7 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
         }
     }
 
+    @Override
     public void deleteDraft() {
         if (viewModel.getRapidTestForm().getId() != 0L) {
             try {
@@ -96,6 +96,11 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
                 new LMISException(e).reportToFabric();
             }
         }
+    }
+
+    @Override
+    public boolean isDraft() {
+        return viewModel.isDraft();
     }
 
     public boolean isSubmitted() {

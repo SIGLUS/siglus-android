@@ -218,35 +218,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment implements R
         adapter.refresh(viewModel.getItemViewModelList(), viewModel.isEditable());
     }
 
-    private void showConfirmDialog() {
-        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-                null,
-                getString(R.string.msg_back_confirm),
-                getString(R.string.btn_positive),
-                getString(R.string.btn_negative),
-                "onBackPressed");
-        dialogFragment.show(getActivity().getFragmentManager(), "");
-        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
-            @Override
-            public void positiveClick(String tag) {
-                presenter.deleteDraft();
-                finish();
-            }
-
-            @Override
-            public void negativeClick(String tag) {
-            }
-        });
-    }
-
-    public void onBackPressed() {
-        if (presenter.getViewModel().isEditable()) {
-            showConfirmDialog();
-        } else {
-            finish();
-        }
-    }
-
     @Override
     public void onPause() {
         if (notifyDialog != null) {

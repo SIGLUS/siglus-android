@@ -195,16 +195,9 @@ public class MMIARequisitionFragmentTest {
     }
 
     @Test
-    public void shouldRemoveRnrFormWhenPositiveButtonClicked() throws LMISException {
-        mmiaRequisitionFragment.positiveClick(MMIARequisitionFragment.TAG_BACK_PRESSED);
-
-        verify(mmiaFormPresenter).removeRequisition();
-    }
-
-    @Test
     public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
         mmiaRequisitionFragment.onBackPressed();
-        verify(mmiaFormPresenter, never()).removeRequisition();
+        verify(mmiaFormPresenter, never()).deleteDraft();
     }
 
     @Test
@@ -351,7 +344,7 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldShowSubmitSignatureDialog() {
-        when(mmiaFormPresenter.isDraft()).thenReturn(true);
+        when(mmiaFormPresenter.isDraftOrDraftMissed()).thenReturn(true);
         mmiaRequisitionFragment.showSignDialog();
 
         DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
@@ -368,7 +361,7 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldShowApproveSignatureDialog() {
-        when(mmiaFormPresenter.isDraft()).thenReturn(false);
+        when(mmiaFormPresenter.isDraftOrDraftMissed()).thenReturn(false);
 
         mmiaRequisitionFragment.showSignDialog();
 

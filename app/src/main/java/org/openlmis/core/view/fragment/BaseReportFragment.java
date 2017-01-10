@@ -24,13 +24,40 @@ public abstract class BaseReportFragment extends BaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         presenter = injectPresenter();
+        super.onCreate(savedInstanceState);
     }
 
     protected void finish() {
         getActivity().finish();
     }
 
+    public void onBackPressed() {
+        if (presenter.isDraft()) {
+            showConfirmDialog();
+        } else {
+            finish();
+        }
+    }
 
+    protected void showConfirmDialog() {
+        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+                null,
+                getString(R.string.msg_back_confirm),
+                getString(R.string.btn_positive),
+                getString(R.string.btn_negative),
+                "back_confirm_dialog");
+        dialogFragment.show(getActivity().getFragmentManager(), "");
+        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+            @Override
+            public void positiveClick(String tag) {
+                presenter.deleteDraft();
+                finish();
+            }
+
+            @Override
+            public void negativeClick(String tag) {
+            }
+        });
+    }
 }
