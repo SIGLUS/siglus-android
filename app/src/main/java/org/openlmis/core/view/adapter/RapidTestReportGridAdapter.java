@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.activity.RapidTestReportFormActivity;
+import org.openlmis.core.view.fragment.RapidTestReportFormFragment;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 
@@ -29,7 +29,7 @@ public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestRe
     @Override
     public RapidTestReportGridViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report_grid, parent, false);
-        itemView.getLayoutParams().width = RapidTestReportFormActivity.GRID_SIZE;
+        itemView.getLayoutParams().width = RapidTestReportFormFragment.GRID_SIZE;
         return new RapidTestReportGridViewHolder(itemView);
     }
 
