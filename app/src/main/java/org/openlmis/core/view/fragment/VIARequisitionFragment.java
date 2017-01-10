@@ -61,6 +61,7 @@ import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
 
@@ -336,9 +337,25 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
-            presenter.processSign(sign);
+            Subscription subscription = presenter.getOnSignObservable(sign).subscribe(getOnSignedSubscriber());
+            subscriptions.add(subscription);
         }
     };
+
+    private Action1<? super Void> getOnSignedSubscriber() {
+        return new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                if (presenter.getRnRForm().isSubmitted()) {
+                    presenter.submitRequisition();
+                    showMessageNotifyDialog();
+                } else {
+                    presenter.createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems();
+                    presenter.authoriseRequisition();
+                }
+            }
+        };
+    }
 
     @Override
     public void showMessageNotifyDialog() {

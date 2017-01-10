@@ -57,6 +57,7 @@ import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 
 public class MMIARequisitionFragment extends BaseReportFragment implements MMIARequisitionPresenter.MMIARequisitionView {
     @InjectView(R.id.rnr_form_list)
@@ -414,9 +415,24 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         @Override
         public void onSign(String sign) {
-            presenter.processSign(sign);
+            Subscription subscription = presenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
+            subscriptions.add(subscription);
         }
     };
+
+    private Action1<? super Void> getOnSignedAction() {
+        return new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                if (presenter.getRnRForm().isSubmitted()) {
+                    presenter.submitRequisition();
+                    showMessageNotifyDialog();
+                } else {
+                    presenter.authoriseRequisition();
+                }
+            }
+        };
+    }
 
     @Override
     public void showMessageNotifyDialog() {

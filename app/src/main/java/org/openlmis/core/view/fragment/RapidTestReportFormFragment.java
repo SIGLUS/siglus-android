@@ -139,8 +139,25 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     public void onSaveForm() {
         loading();
-        Subscription subscription = presenter.onSaveDraftForm().subscribe(getSavedSubscriber());
+        Subscription subscription = presenter.onSaveDraftForm().subscribe(getOnSavedAction());
         subscriptions.add(subscription);
+    }
+
+    public void onSubmitForm() {
+        loading();
+        Subscription subscription = presenter.onSaveDraftForm().subscribe(getOnSubmittedAction());
+        subscriptions.add(subscription);
+    }
+
+    private Action1<? super RapidTestReportViewModel> getOnSubmittedAction() {
+        return new Action1<RapidTestReportViewModel>() {
+            @Override
+            public void call(RapidTestReportViewModel viewModel) {
+                showMessageNotifyDialog();
+                updateUIAfterSubmit();
+                loaded();
+            }
+        };
     }
 
     private void updateButtonName() {
@@ -159,7 +176,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
-            Subscription subscription = presenter.onSignObservable(sign).subscribe(getOnSignedAction());
+            Subscription subscription = presenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
             subscriptions.add(subscription);
         }
     };
@@ -171,9 +188,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
                 if (presenter.getViewModel().isAuthorized()) {
                     onSaveForm();
                 } else {
-                    showMessageNotifyDialog();
-                    presenter.saveForm();
-                    updateUIAfterSubmit();
+                    onSubmitForm();
                 }
             }
         };
@@ -189,7 +204,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         super.showMessageNotifyDialog(getString(R.string.msg_requisition_signature_message_notify_rapid_test));
     }
 
-    private Action1<? super RapidTestReportViewModel> getSavedSubscriber() {
+    private Action1<? super RapidTestReportViewModel> getOnSavedAction() {
         return new Action1<RapidTestReportViewModel>() {
             @Override
             public void call(RapidTestReportViewModel viewModel) {

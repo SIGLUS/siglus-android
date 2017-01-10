@@ -98,7 +98,7 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
         return viewModel.isSubmitted();
     }
 
-    public Observable<Void> onSignObservable(final String sign) {
+    public Observable<Void> getOnSignObservable(final String sign) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {

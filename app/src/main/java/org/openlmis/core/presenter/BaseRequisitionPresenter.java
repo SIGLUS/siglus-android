@@ -27,11 +27,9 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.service.SyncService;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
@@ -126,7 +124,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         return rnrFormRepository.initNormalRnrForm(periodEndDate);
     }
 
-    protected void submitRequisition() {
+    public void submitRequisition() {
         view.loading();
         Subscription submitSubscription = createOrUpdateRnrForm().subscribe(getSubmitRequisitionSubscriber());
         subscriptions.add(submitSubscription);
@@ -155,7 +153,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         };
     }
 
-    protected void authoriseRequisition() {
+    public void authoriseRequisition() {
         view.loading();
         Subscription authoriseSubscription = createOrUpdateRnrForm().subscribe(getAuthoriseRequisitionSubscriber());
         subscriptions.add(authoriseSubscription);
@@ -219,23 +217,29 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     }
 
     public void processSign(String signature) {
-        // Main Thread!!
-        if (rnRForm.isDraft()) {
-            rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signature, RnRFormSignature.TYPE.SUBMITTER));
-            rnRForm.setStatus(rnRForm.isMissed() ? RnRForm.STATUS.SUBMITTED_MISSED : RnRForm.STATUS.SUBMITTED);
+        rnRForm.addSignature(signature);
+        if (rnRForm.isSubmitted()) {
             submitRequisition();
             view.showMessageNotifyDialog();
         } else {
-            rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signature, RnRFormSignature.TYPE.APPROVER));
-            rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
-            rnRForm.setSubmittedTime(DateUtil.today());
-            createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems();
             authoriseRequisition();
         }
     }
 
-    protected void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems() {
-
+    public Observable<Void> getOnSignObservable(final String signature) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    rnRForm.addSignature(signature);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                    new LMISException(e).reportToFabric();
+                }
+            }
+        });
     }
 
     public RnRForm.STATUS getRnrFormStatus() {

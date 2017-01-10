@@ -328,7 +328,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected void submitRequisition() {
+    public void submitRequisition() {
         if (rnRForm.isEmergency()) {
             updateUIAfterSubmit();
             return;
@@ -420,8 +420,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    @Override
-    protected void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems() {
+    public void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems() {
         try {
             for (RnrFormItem rnrFormItem : rnrFormItemRepository.listAllNewRnrItems()) {
                 if (rnrFormItem.getProduct().isArchived()) {

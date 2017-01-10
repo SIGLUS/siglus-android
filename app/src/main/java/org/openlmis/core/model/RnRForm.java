@@ -78,6 +78,7 @@ public class RnRForm extends BaseModel {
 
     @ForeignCollectionField()
     private ForeignCollection<RnRFormSignature> signatures;
+
     private List<RnRFormSignature> signaturesWrapper;
 
     @Expose
@@ -264,6 +265,17 @@ public class RnRForm extends BaseModel {
                 return isKit.isKit() == rnrFormItem.getProduct().isKit();
             }
         }).toList();
+    }
+
+    public void addSignature(String signature) {
+        if (isDraft()) {
+            signaturesWrapper.add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.SUBMITTER));
+            status = isMissed() ? RnRForm.STATUS.SUBMITTED_MISSED : RnRForm.STATUS.SUBMITTED;
+        } else {
+            signaturesWrapper.add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.APPROVER));
+            status = RnRForm.STATUS.AUTHORIZED;
+            submittedTime = DateUtil.today();
+        }
     }
 
     public enum Emergency {
