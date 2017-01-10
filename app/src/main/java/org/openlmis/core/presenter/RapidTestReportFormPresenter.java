@@ -19,7 +19,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RapidTestReportFormPresenter extends Presenter {
+public class RapidTestReportFormPresenter extends BaseReportPresenter {
     @Inject
     ProgramDataFormRepository programDataFormRepository;
 

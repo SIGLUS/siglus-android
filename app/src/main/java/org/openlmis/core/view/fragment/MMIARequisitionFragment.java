@@ -33,14 +33,12 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.inject.Inject;
-
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
-import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
@@ -56,11 +54,12 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
 
+import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
 
-public class MMIARequisitionFragment extends BaseFragment implements MMIARequisitionPresenter.MMIARequisitionView, SimpleDialogFragment.MsgDialogCallBack {
+public class MMIARequisitionFragment extends BaseReportFragment implements MMIARequisitionPresenter.MMIARequisitionView {
     @InjectView(R.id.rnr_form_list)
     protected MMIARnrForm rnrFormList;
 
@@ -94,7 +93,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @InjectView(R.id.action_panel)
     protected ActionPanelView actionPanel;
 
-    @Inject
     MMIARequisitionPresenter presenter;
 
     private long formId;
@@ -118,7 +116,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     @Override
-    public Presenter initPresenter() {
+    protected BaseReportPresenter injectPresenter() {
+        presenter = RoboGuice.getInjector(getActivity()).getInstance(MMIARequisitionPresenter.class);
         return presenter;
     }
 
@@ -387,15 +386,28 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         if (presenter.getRnrFormStatus() == RnRForm.STATUS.DRAFT) {
             SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null, getString(R.string.msg_back_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), TAG_BACK_PRESSED);
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
-            dialogFragment.setCallBackListener(this);
+            dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+                @Override
+                public void positiveClick(String tag) {
+                    if (tag.equals(TAG_BACK_PRESSED)) {
+                        presenter.removeRequisition();
+                        finish();
+                    }
+                }
+
+                @Override
+                public void negativeClick(String tag) {
+                }
+            });
         } else {
             finish();
         }
     }
 
-    private void finish() {
+    @Override
+    protected void finish() {
         getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+        super.finish();
     }
 
     @Override
@@ -447,18 +459,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     private boolean isTotalEqual() {
         return regimeListView.getTotal() == mmiaInfoListView.getTotal();
-    }
-
-    @Override
-    public void positiveClick(String tag) {
-        if (tag.equals(TAG_BACK_PRESSED)) {
-            presenter.removeRequisition();
-            finish();
-        }
-    }
-
-    @Override
-    public void negativeClick(String tag) {
     }
 
     @Override

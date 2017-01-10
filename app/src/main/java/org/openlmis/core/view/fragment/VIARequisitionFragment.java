@@ -37,7 +37,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.presenter.VIARequisitionView;
 import org.openlmis.core.utils.Constants;
@@ -58,13 +58,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
 
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
 
-public class VIARequisitionFragment extends BaseFragment implements VIARequisitionView, SimpleDialogFragment.MsgDialogCallBack {
+public class VIARequisitionFragment extends BaseReportFragment implements VIARequisitionView {
     @InjectView(R.id.view_consultation)
     ViaReportConsultationNumberView consultationView;
 
@@ -107,7 +108,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     @Override
-    public Presenter initPresenter() {
+    protected BaseReportPresenter injectPresenter() {
+        presenter = RoboGuice.getInjector(getActivity()).getInstance(VIARequisitionPresenter.class);
         return presenter;
     }
 
@@ -358,7 +360,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         finish();
     }
 
-    private void finish() {
+    @Override
+    protected void finish() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -368,22 +371,23 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
                     getString(R.string.msg_back_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), TAG_BACK_PRESSED);
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
-            dialogFragment.setCallBackListener(this);
+            dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+                @Override
+                public void positiveClick(String tag) {
+                    if (tag.equals(TAG_BACK_PRESSED)) {
+                        presenter.removeRequisition();
+                        finish();
+                    }
+                }
+
+                @Override
+                public void negativeClick(String tag) {
+
+                }
+            });
         } else {
             finish();
         }
-    }
-
-    @Override
-    public void positiveClick(String tag) {
-        if (tag.equals(TAG_BACK_PRESSED)) {
-            presenter.removeRequisition();
-            finish();
-        }
-    }
-
-    @Override
-    public void negativeClick(String tag) {
     }
 
     @Override

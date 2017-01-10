@@ -10,11 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.inject.Inject;
-
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
-import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.RapidTestReportFormPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
@@ -22,25 +20,21 @@ import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
-import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
+import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class RapidTestReportFormFragment extends BaseFragment implements RapidTestReportFormPresenter.RapidTestReportView {
+public class RapidTestReportFormFragment extends BaseReportFragment implements RapidTestReportFormPresenter.RapidTestReportView {
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
 
     @InjectView(R.id.vg_rapid_test_report_empty_header)
     ViewGroup emptyHeaderView;
 
-    @InjectView(R.id.action_panel)
-    ActionPanelView actionPanelView;
-
-    @Inject
     RapidTestReportFormPresenter presenter;
 
     RapidTestReportRowAdapter adapter;
@@ -52,7 +46,8 @@ public class RapidTestReportFormFragment extends BaseFragment implements RapidTe
     public static int GRID_SIZE = -1;
 
     @Override
-    public Presenter initPresenter() {
+    protected BaseReportPresenter injectPresenter() {
+        presenter = RoboGuice.getInjector(getActivity()).getInstance(RapidTestReportFormPresenter.class);
         return presenter;
     }
 
@@ -250,10 +245,6 @@ public class RapidTestReportFormFragment extends BaseFragment implements RapidTe
         } else {
             finish();
         }
-    }
-
-    private void finish() {
-        getActivity().finish();
     }
 
     @Override

@@ -46,7 +46,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public abstract class BaseRequisitionPresenter extends Presenter {
+public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
     RnrFormRepository rnrFormRepository;
 
