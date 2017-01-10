@@ -47,7 +47,7 @@ public abstract class BaseReportFragment extends BaseFragment {
                 getString(R.string.btn_positive),
                 getString(R.string.btn_negative),
                 "back_confirm_dialog");
-        dialogFragment.show(getActivity().getFragmentManager(), "");
+        dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
             @Override
             public void positiveClick(String tag) {
