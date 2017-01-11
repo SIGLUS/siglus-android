@@ -218,7 +218,7 @@
     <string name="msg_low_stock">Estoque em risco</string>
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Estoque existente actual</string>
-    <string name="label_physical_inventory_title_stock_on_hand">Stock on hand</string>
+    <string name="label_physical_inventory_title_stock_on_hand">Estoque Existente</string>
     <!--Unpack Kit-->
     <string name="kit_number">Desembalando: %1$s %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantidade recebida</string>
@@ -394,9 +394,9 @@
     <string name="title_rapid_test">Teste Rápido</string>
     <string name="error_positive_larger_than_consumption">O número de testes positivos não pode ser superior ao número de testes consumidos. Introduza os dados correctos</string>
     <string name="error_empty_rapid_test">O relatório de teste rápido não pode estar vazio.</string>
-    <string name="btn_edit">EDIT</string>
-    <string name="msg_physical_inventory_lot_review_no_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - No adjustment will be made</string>
-    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Positive adjustment</font>]]> of <![CDATA[<font color="#000">%2$s</font>]]> will be made</string>
-    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Negative adjustment</font>]]> of <![CDATA[<font color="#000">%2$s</font>]]> will be made</string>
-    <string name="label_total_complete_counts">Completed %1$s / %2$s</string>
+    <string name="btn_edit">EDITAR</string>
+    <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
+    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste positivo</font>]]> of <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
+    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> of <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
+    <string name="label_total_complete_counts">Completado %1$s / %2$s</string>
 </resources>
