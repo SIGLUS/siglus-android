@@ -207,7 +207,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     public interface RnRFormItemClickListener {
         void deleteForm(RnRForm form);
 
-        void clickBtnView(RnRFormViewModel model);
+        void clickBtnView(RnRFormViewModel model, View view);
     }
 
     private class BtnViewClickListener extends SingleClickButtonListener {
@@ -215,7 +215,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         private final RnRFormViewModel model;
 
         public BtnViewClickListener(final RnRFormViewModel model) {
-            this.minClickInterval = 1000;
+            setMinClickInterval(1000);
             this.model = model;
         }
 
@@ -223,7 +223,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         public void onSingleClick(View v) {
             if (itemClickListener != null) {
                 btnView.setEnabled(false);
-                itemClickListener.clickBtnView(model);
+                itemClickListener.clickBtnView(model, v);
             }
         }
     }

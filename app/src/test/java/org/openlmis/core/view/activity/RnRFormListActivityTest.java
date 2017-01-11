@@ -4,6 +4,8 @@ package org.openlmis.core.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.inject.AbstractModule;
 
@@ -120,8 +122,10 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldStartPhysicalInventoryWhenBtnClickedWithUncompleteInventory() throws Exception {
+        View view = mock(View.class);
+
         RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
-        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
@@ -131,8 +135,10 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldSelectPeriodWhenBtnClickedWithSelectClosePeriod() throws Exception {
+        View view = mock(View.class);
+
         RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_INVENTORY_DONE);
-        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
@@ -143,8 +149,10 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldStartSelectPeriodPageWhenBtnClickedWithTypeMissedPeriod() throws Exception {
+        View view = mock(View.class);
+
         RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD);
-        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
@@ -155,9 +163,11 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldStartMMIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
+        View view = mock(View.class);
+
         RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
         viewModel.setId(999L);
-        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
@@ -168,12 +178,14 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldStartVIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
+        View view = mock(View.class);
+
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
 
         RnRFormViewModel viewModel = generateRnRFormViewModel("ESS_MEDS", RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
         viewModel.setId(999L);
-        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
@@ -184,8 +196,10 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldStartMMIAEditPageWhenBtnClickedWithTypeUnauthorized() throws Exception {
+        View view = mock(View.class);
+
         RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
-        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
@@ -196,9 +210,11 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldNotLoadSameFormIdAfterLoadedViaHistoryForm() throws Exception {
+        View view = mock(View.class);
+
         RnRFormViewModel historyViewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
         historyViewModel.setId(1L);
-        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(historyViewModel);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(historyViewModel, view);
 
         Intent startedIntentWhenIsHistory = ShadowApplication.getInstance().getNextStartedActivity();
 
@@ -207,7 +223,7 @@ public class RnRFormListActivityTest {
         assertEquals(1L, startedIntentWhenIsHistory.getLongExtra(Constants.PARAM_FORM_ID, 0));
 
         RnRFormViewModel defaultViewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
-        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(defaultViewModel);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(defaultViewModel, view);
 
         Intent startedIntentWhenIsDefault = ShadowApplication.getInstance().getNextStartedActivity();
 

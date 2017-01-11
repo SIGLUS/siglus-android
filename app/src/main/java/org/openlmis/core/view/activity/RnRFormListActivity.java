@@ -167,7 +167,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         }
 
         @Override
-        public void clickBtnView(RnRFormViewModel model) {
+        public void clickBtnView(RnRFormViewModel model, View view) {
             switch (model.getType()) {
                 case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
                     startActivityForResult(PhysicalInventoryActivity.getIntentToMe(RnRFormListActivity.this), Constants.REQUEST_FROM_RNR_LIST_PAGE);
@@ -188,6 +188,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                     goToRequisitionPage(rnrFormId);
                     break;
             }
+            view.setEnabled(true);
         }
     };
 

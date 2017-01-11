@@ -7,7 +7,7 @@ import org.openlmis.core.LMISApp;
 
 public abstract class SingleClickButtonListener implements View.OnClickListener {
 
-    public long minClickInterval = 500;
+    private long minClickInterval = 500;
 
     public static boolean isViewClicked = false;
 
@@ -32,6 +32,10 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
             return;
         }
         onSingleClick(v);
+    }
+
+    public void setMinClickInterval(long minClickInterval) {
+        this.minClickInterval = minClickInterval;
     }
 
     private void startTimer() {
