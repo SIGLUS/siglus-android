@@ -80,8 +80,6 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     @Inject
     VIARequisitionPresenter presenter;
 
-    protected View containerView;
-
     private long formId;
 
     private Date periodEndDate;
@@ -109,8 +107,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        containerView = inflater.inflate(R.layout.fragment_via_requisition, container, false);
-        return containerView;
+        return inflater.inflate(R.layout.fragment_via_requisition, container, false);
     }
 
     @Override
