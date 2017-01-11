@@ -94,7 +94,7 @@ Then(/^I should see kit receive number and open number is "(.*?)"$/) do |number|
 end
 
 And(/^I enter document number for unpack kit$/) do
-    h = query("android.widget.EditText id:'et_document_no'").first
+    h = query("android.widget.EditText id:'et_document_number'").first
     clear_text_in(h)
     touch(h)
     keyboard_enter_text('1111')

@@ -38,6 +38,7 @@ Feature: Unpack Kit
 
     Then I press "NEW MOVEMENT"
     Then I select a new movement reason "Entries" "District( DDM)"
+    Then I wait for 1 second
     Then I select movement date
     Then I enter quantity number "3"
     Then I enter signature "super"

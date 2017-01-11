@@ -22,7 +22,7 @@ end
 
 
 And(/^I enter document number "(.*?)"$/) do |number|
-    touch(query("android.widget.EditText id:'et_document_no'").last);
+    touch(query("android.widget.EditText id:'et_document_number'").last);
     keyboard_enter_text(number)
     hide_soft_keyboard
 end
@@ -226,7 +226,7 @@ Then(/^I see "(.*?)" in signature field$/) do |text|
 end
 
 And(/^I enter "(.*?)" into documentNo$/) do |documentNo|
-    touch(query("android.widget.EditText id:'et_document_no'").last)
+    touch(query("android.widget.EditText id:'et_document_number'").last)
     keyboard_enter_text(documentNo)
     hide_soft_keyboard
 end
@@ -302,7 +302,7 @@ Then(/^I should see lowStock "(\d+)" and warning on product "(.*?)"$/) do |low_s
 end
 
 Then(/^I should see last document number "(\d+)"$/) do |documentNo|
-    actual = query("android.widget.EditText id:'et_document_no'", :text)[-2]
+    actual = query("android.widget.EditText id:'et_document_number'", :text)[-2]
     unless actual == documentNo
         fail "Document Number Does not perform correctly"
     end
