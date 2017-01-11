@@ -191,4 +191,26 @@ public class RnRFormTest {
     private RnrFormItem generateRnrFormItem(String productCode, boolean manualAdd) {
         return new RnrFormItemBuilder().setProduct(new ProductBuilder().setCode(productCode).build()).setManualAdd(manualAdd).build();
     }
+
+    @Test
+    public void shouldAddSignature() throws Exception {
+        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+        rnRForm.addSignature("signature1");
+        assertEquals(RnRForm.STATUS.SUBMITTED, rnRForm.getStatus());
+        assertEquals(rnRForm.getSignaturesWrapper().get(0).getSignature(), "signature1");
+
+        rnRForm.addSignature("signature2");
+        assertEquals(RnRForm.STATUS.AUTHORIZED, rnRForm.getStatus());
+        assertEquals(rnRForm.getSignaturesWrapper().get(1).getSignature(), "signature2");
+
+        rnRForm = new RnRForm();
+        rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
+        rnRForm.addSignature("signature1");
+        assertEquals(RnRForm.STATUS.SUBMITTED_MISSED, rnRForm.getStatus());
+        assertEquals(rnRForm.getSignaturesWrapper().get(0).getSignature(), "signature1");
+
+        rnRForm.addSignature("signature2");
+        assertEquals(RnRForm.STATUS.AUTHORIZED, rnRForm.getStatus());
+        assertEquals(rnRForm.getSignaturesWrapper().get(1).getSignature(), "signature2");
+    }
 }
