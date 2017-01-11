@@ -29,7 +29,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -211,25 +210,9 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
 
 
     protected void bindListeners() {
-        etComment.post(new Runnable() {
-            @Override
-            public void run() {
-                etComment.addTextChangedListener(commentTextWatcher);
-            }
-        });
-        tvRegimeTotal.post(new Runnable() {
-            @Override
-            public void run() {
-                tvRegimeTotal.addTextChangedListener(totalTextWatcher);
-            }
-        });
-        final EditText patientTotalView = mmiaInfoListView.getPatientTotalView();
-        patientTotalView.post(new Runnable() {
-            @Override
-            public void run() {
-                patientTotalView.addTextChangedListener(totalTextWatcher);
-            }
-        });
+        etComment.addTextChangedListener(commentTextWatcher);
+        tvRegimeTotal.addTextChangedListener(totalTextWatcher);
+        mmiaInfoListView.addPatientTotalViewTextChangedListener(totalTextWatcher);
 
         actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
         scrollView.setOnTouchListener(new View.OnTouchListener() {

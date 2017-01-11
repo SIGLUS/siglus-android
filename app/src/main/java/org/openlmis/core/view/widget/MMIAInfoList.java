@@ -21,6 +21,7 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -164,6 +165,10 @@ public class MMIAInfoList extends LinearLayout {
             }
         }
         return false;
+    }
+
+    public void addPatientTotalViewTextChangedListener(TextWatcher totalTextWatcher) {
+        totalPatientsView.addTextChangedListener(totalTextWatcher);
     }
 
     class EditTextWatcher implements android.text.TextWatcher {
