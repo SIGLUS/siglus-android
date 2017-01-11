@@ -51,6 +51,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loading();
         long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
 
@@ -104,7 +105,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         };
     }
 
-    private void setUpButtonPanel() {
+    private void updateActionPanel() {
         actionPanelView.setVisibility(presenter.getViewModel().getStatus().isEditable() ? View.VISIBLE : View.GONE);
         updateButtonName();
         actionPanelView.setListener(getOnCompleteClickListener(), getOnSaveClickListener());
@@ -208,21 +209,17 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
             @Override
             public void call(RapidTestReportViewModel viewModel) {
                 updateUI();
-                loadMessageDialogIfIsDraft();
-                loaded();
+                if (presenter.isSubmitted()) {
+                    showMessageNotifyDialog();
+                }
             }
         };
     }
 
     public void updateUI() {
         populateFormData(presenter.getViewModel());
-        setUpButtonPanel();
-    }
-
-    private void loadMessageDialogIfIsDraft() {
-        if (presenter.isSubmitted()) {
-            showMessageNotifyDialog();
-        }
+        updateActionPanel();
+        loaded();
     }
 
     private void populateFormData(RapidTestReportViewModel viewModel) {

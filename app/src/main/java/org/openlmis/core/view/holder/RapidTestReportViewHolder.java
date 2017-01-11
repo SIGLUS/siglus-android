@@ -9,6 +9,7 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -99,11 +100,13 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
+                ((BaseActivity) context).loading();
                 if (viewModel.getRapidTestForm() == null) {
                     ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, RapidTestReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
                 } else {
                     ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, viewModel.getRapidTestForm().getId(), viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
                 }
+                ((BaseActivity) context).loaded();
             }
         };
     }
