@@ -396,7 +396,7 @@
     <string name="error_empty_rapid_test">O relatório de teste rápido não pode estar vazio.</string>
     <string name="btn_edit">EDITAR</string>
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
-    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste positivo</font>]]> of <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
-    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> of <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
+    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
+    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
     <string name="label_total_complete_counts">Completado %1$s / %2$s</string>
 </resources>
