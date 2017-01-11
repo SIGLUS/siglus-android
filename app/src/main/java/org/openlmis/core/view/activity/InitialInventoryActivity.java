@@ -43,6 +43,14 @@ public class InitialInventoryActivity extends InventoryActivity {
     }
 
     private void initTitle() {
+        if (isAddNewDrug) {
+            setTitle(getResources().getString(R.string.title_add_new_drug));
+        } else if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+    }
+
+    private void initButtonPanel() {
         btnSave.setVisibility(View.GONE);
         btnDone.setOnClickListener(new SingleClickButtonListener() {
             @Override
@@ -57,15 +65,6 @@ public class InitialInventoryActivity extends InventoryActivity {
                 }
             }
         });
-        if (isAddNewDrug) {
-            setTitle(getResources().getString(R.string.title_add_new_drug));
-        } else if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
-    }
-
-    private void initButtonPanel() {
-        btnSave.setVisibility(View.GONE);
     }
 
     @Override
