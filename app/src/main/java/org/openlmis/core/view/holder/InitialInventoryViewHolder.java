@@ -11,6 +11,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.InitialInventoryLotListView;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
 
@@ -43,9 +44,9 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     private void initView() {
-        taCheckbox.setOnClickListener(new View.OnClickListener() {
+        taCheckbox.setOnClickListener(new SingleClickButtonListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 checkBox.setChecked(!checkBox.isChecked());
             }
         });

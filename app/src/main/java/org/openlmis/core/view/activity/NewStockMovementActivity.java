@@ -133,9 +133,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     @NonNull
     private View.OnClickListener getMovementReasonOnClickListener() {
-        return new View.OnClickListener() {
+        return new SingleClickButtonListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
                 movementDetailsView.setMovementReasonEnable(false);
                 reasonListStr = FluentIterable.from(movementReasons).transform(new Function<MovementReasonManager.MovementReason, String>() {
                     @Override
