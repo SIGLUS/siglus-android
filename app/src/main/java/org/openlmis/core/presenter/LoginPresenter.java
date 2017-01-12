@@ -122,8 +122,7 @@ public class LoginPresenter extends Presenter {
             return;
         }
 
-        user = localUser;
-        UserInfoMgr.getInstance().setUser(user);
+        UserInfoMgr.getInstance().setUser(localUser);
 
         if (SharedPreferenceMgr.getInstance().getLastSyncProductTime() == null) {
             view.loaded();

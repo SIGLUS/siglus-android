@@ -1,11 +1,17 @@
 package org.openlmis.core.presenter;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.service.SyncService;
 
 import rx.Observable;
 import rx.Subscriber;
 
 public abstract class BaseReportPresenter extends Presenter{
+
+    @Inject
+    SyncService syncService;
 
     public abstract void deleteDraft();
 

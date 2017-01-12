@@ -29,7 +29,6 @@ import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.service.StockService;
-import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
@@ -50,9 +49,6 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
     @Inject
     Context context;
-
-    @Inject
-    SyncService syncService;
 
     @Inject
     StockService stockService;

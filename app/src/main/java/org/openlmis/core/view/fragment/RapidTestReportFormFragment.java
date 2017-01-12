@@ -139,7 +139,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     public void onSaveForm() {
         loading();
-        Subscription subscription = presenter.onSaveDraftForm().subscribe(getOnSavedAction());
+        Subscription subscription = presenter.onAuthoriseDraftForm().subscribe(getOnSavedAction());
         subscriptions.add(subscription);
     }
 

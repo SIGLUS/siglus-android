@@ -62,8 +62,29 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
         return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
             @Override
             public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
-                saveForm();
-                subscriber.onNext(viewModel);
+                try {
+                    saveForm();
+                    subscriber.onNext(viewModel);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<RapidTestReportViewModel> onAuthoriseDraftForm() {
+        return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
+            @Override
+            public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
+                try {
+                    saveForm();
+                    syncService.requestSyncImmediately();
+                    subscriber.onNext(viewModel);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
