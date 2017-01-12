@@ -63,6 +63,8 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
     @Getter
     protected RnRForm rnRForm;
+
+    @Getter
     protected boolean isHistoryForm = false;
 
     public BaseRequisitionPresenter() {
@@ -210,10 +212,6 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
                 e.reportToFabric();
             }
         }
-    }
-
-    public boolean isHistoryForm() {
-        return isHistoryForm;
     }
 
     public void processSign(String signature) {

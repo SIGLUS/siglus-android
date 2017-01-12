@@ -7,12 +7,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.MMIARepository;
 import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -21,11 +20,11 @@ public class BaseRequisitionPresenterTest {
 
     private BaseRequisitionPresenter presenter;
 
-    private RnrFormRepository mockRnrFormRepository;
+    private MMIARepository mockRnrFormRepository;
 
     @Before
     public void setUp() throws Exception {
-        mockRnrFormRepository = mock(RnrFormRepository.class);
+        mockRnrFormRepository = mock(MMIARepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MMIARequisitionPresenter.MMIARequisitionView mock = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARequisitionPresenter.class);
@@ -35,14 +34,15 @@ public class BaseRequisitionPresenterTest {
     @Test
     public void shouldDeleteDraft() throws Exception {
         presenter.isHistoryForm = false;
+        presenter.rnRForm = new RnRForm();
         presenter.deleteDraft();
-        verify(mockRnrFormRepository).removeRnrForm(any(RnRForm.class));
+        verify(mockRnrFormRepository).removeRnrForm(presenter.rnRForm);
     }
 
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
-            bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
+            bind(MMIARepository.class).toInstance(mockRnrFormRepository);
         }
     }
 }
