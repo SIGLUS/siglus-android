@@ -22,6 +22,8 @@ package org.openlmis.core.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.openlmis.core.utils.HashUtil;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,7 +32,7 @@ import lombok.Setter;
 @Setter
 @DatabaseTable(tableName = "users")
 @NoArgsConstructor
-public class User extends BaseModel{
+public class User extends BaseModel {
 
     @DatabaseField
     String username;
@@ -41,8 +43,10 @@ public class User extends BaseModel{
     @DatabaseField
     String userLastName;
 
-    @DatabaseField
     String password;
+
+    @DatabaseField(columnName = "password")
+    String passwordMD5;
 
     @DatabaseField
     String facilityCode;
@@ -53,8 +57,25 @@ public class User extends BaseModel{
     @DatabaseField
     String facilityId;
 
-    public User(String username, String password){
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
+        calculatePasswordMD5();
+    }
+
+    public void calculatePasswordMD5() {
+        this.passwordMD5 = HashUtil.md5(password);
+    }
+
+    public String getPasswordMD5() {
+        if (passwordMD5 == null && password != null) {
+            calculatePasswordMD5();
+        }
+        return passwordMD5;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+        calculatePasswordMD5();
     }
 }

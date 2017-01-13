@@ -45,23 +45,21 @@ public class UserRepository {
     }
 
     public User mapUserFromLocal(final User user) {
-        List<User> users = null;
         try {
-            users = dbUtil.withDao(User.class, new DbUtil.Operation<User, List<User>>() {
+            User userQueried = dbUtil.withDao(User.class, new DbUtil.Operation<User, User>() {
                 @Override
-                public List<User> operate(Dao<User, String> dao) throws SQLException {
-                    return dao.queryBuilder().where().eq("username", user.getUsername()).and().eq("password", user.getPassword()).query();
+                public User operate(Dao<User, String> dao) throws SQLException {
+                    return dao.queryBuilder().where().eq("username", user.getUsername()).and().eq("password", user.getPasswordMD5()).queryForFirst();
                 }
             });
+            if (userQueried != null) {
+                userQueried.setPassword(user.getPassword());
+            }
+            return userQueried;
         } catch (LMISException e) {
             e.reportToFabric();
         }
-
-        if (users != null && users.size() > 0) {
-            return users.get(users.size() - 1);
-        } else {
-            return null;
-        }
+        return null;
     }
 
     public void createOrUpdate(final User user) {
