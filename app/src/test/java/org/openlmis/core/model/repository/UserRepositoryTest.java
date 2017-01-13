@@ -25,6 +25,7 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.User;
+import org.openlmis.core.utils.HashUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
@@ -75,7 +76,7 @@ public class UserRepositoryTest extends LMISRepositoryUnitTest {
         userRepository.createOrUpdate(newUserWithSameUserName);
 
         assertThat(userRepository.getUserByUsername("user").size(), is(1));
-        assertThat(userRepository.getUserByUsername("user").get(0).getPassword(), is("456"));
+        assertThat(userRepository.getUserByUsername("user").get(0).getPasswordMD5(), is(HashUtil.md5("456")));
     }
 
 }
