@@ -34,7 +34,7 @@
         <item name="colorPrimaryDark">@color/color_blue_dark</item>
     </style>
 
-    <style name="AppTheme_BlueGray">
+    <style name="AppTheme.BlueGray">
         <item name="colorPrimary">@color/color_material_blue_gray</item>
         <!--   darker variant for the status bar and contextual app bars -->
         <item name="colorPrimaryDark">@color/color_material_blue_gray_dark</item>
