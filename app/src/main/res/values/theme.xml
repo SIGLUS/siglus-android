@@ -134,6 +134,10 @@
         <item name="android:textColor">@color/color_text_secondary</item>
     </style>
 
+    <style name="Text.Gray.Small">
+        <item name="android:textSize">@dimen/font_size_small</item>
+    </style>
+
     <style name="Text.Gray.Regular">
         <item name="android:textSize">@dimen/font_size_regular</item>
     </style>

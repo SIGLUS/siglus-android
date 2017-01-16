@@ -17,6 +17,7 @@
     <color name="color_red">#F44336</color>
     <color name="color_red_dark">#D32F2F</color>
     <color name="color_material_blue_gray">#607D8B</color>
+    <color name="color_material_blue_gray_dark">#455A64</color>
 
     <color name="color_lime">#CDDC39</color>
 

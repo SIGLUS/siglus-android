@@ -51,14 +51,10 @@ public class PhysicalInventoryWithLotViewHolder extends BaseViewHolder {
     private void highlightQueryKeyWord(PhysicalInventoryViewModel inventoryViewModel, String queryKeyWord, boolean done) {
         if (done) {
             tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getGreenName()));
-            tvProductName.setTextSize(context.getResources().getDimension(R.dimen.font_size_regular));
             tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getGreenUnit()));
-            tvProductUnit.setTextSize(context.getResources().getDimension(R.dimen.font_size_small));
         } else {
             tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
-            tvProductName.setTextSize(context.getResources().getDimension(R.dimen.font_size_normal));
             tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
-            tvProductUnit.setTextSize(context.getResources().getDimension(R.dimen.font_size_regular));
         }
     }
 
