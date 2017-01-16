@@ -19,10 +19,8 @@
 package org.openlmis.core.view.activity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -60,7 +58,7 @@ import rx.Subscriber;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_rnr_list)
-public class RnRFormListActivity extends BaseActivity implements RnRFormListPresenter.RnRFormListView {
+public class RnRFormListActivity extends BaseReportListActivity {
 
     public static final int DEFAULT_FORM_ID_OF_NOT_AUTHORIZED = 0;
     long rnrFormId = DEFAULT_FORM_ID_OF_NOT_AUTHORIZED;
@@ -109,9 +107,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         adapter = new RnRFormListAdapter(this, data, rnRFormItemClickListener);
         listView.setAdapter(adapter);
 
-        loadRnRFrom();
-
-        registerRnrSyncReceiver();
+        loadForms();
     }
 
     private String getProgramCode() {
@@ -134,7 +130,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
         switch (requestCode) {
             case Constants.REQUEST_FROM_RNR_LIST_PAGE:
-                loadRnRFrom();
+                loadForms();
                 break;
             case Constants.REQUEST_SELECT_PERIOD_END:
                 Date periodEndDate = (Date) data.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
@@ -144,10 +140,11 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         }
     }
 
-    private void loadRnRFrom() {
+    protected void loadForms() {
         if (!isLoading) {
             loading();
-            presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
+            Subscription subscription = presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
+            subscriptions.add(subscription);
         }
     }
 
@@ -238,25 +235,6 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                 adapter.notifyDataSetChanged();
             }
         };
-    }
-
-    private void registerRnrSyncReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        registerReceiver(rnrSyncReceiver, filter);
-    }
-
-    BroadcastReceiver rnrSyncReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            loadRnRFrom();
-        }
-    };
-
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(rnrSyncReceiver);
-        super.onDestroy();
     }
 
     @Override

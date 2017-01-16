@@ -57,9 +57,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class RnRFormListPresenter extends Presenter {
-
-    RnRFormListView view;
-
     @Inject
     RnrFormRepository repository;
 
@@ -86,11 +83,6 @@ public class RnRFormListPresenter extends Presenter {
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
-        if (v instanceof RnRFormListView) {
-            view = (RnRFormListView) v;
-        } else {
-            throw new ViewNotMatchException("Need RnRFormListView");
-        }
     }
 
     public Observable<List<RnRFormViewModel>> loadRnRFormList() {
@@ -238,9 +230,5 @@ public class RnRFormListPresenter extends Presenter {
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    public interface RnRFormListView extends BaseView {
-
     }
 }

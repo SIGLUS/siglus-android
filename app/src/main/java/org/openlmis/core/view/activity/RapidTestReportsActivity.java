@@ -21,7 +21,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 @ContentView(R.layout.activity_rapid_test_reports)
-public class RapidTestReportsActivity extends BaseActivity {
+public class RapidTestReportsActivity extends BaseReportListActivity {
     @InjectView(R.id.rv_rapid_test_list)
     RecyclerView rapidTestListView;
 
@@ -43,7 +43,7 @@ public class RapidTestReportsActivity extends BaseActivity {
         loadForms();
     }
 
-    private void loadForms() {
+    protected void loadForms() {
         Subscription subscription = presenter.loadViewModels().subscribe(getRefreshReportListSubscriber());
         subscriptions.add(subscription);
     }
