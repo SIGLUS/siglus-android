@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.holder.StockMovementHistoryViewHolder;
+import org.openlmis.core.view.holder.StockMovementItemHistoryViewHolder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import java.util.List;
@@ -55,15 +55,15 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        StockMovementHistoryViewHolder holder;
+        StockMovementItemHistoryViewHolder holder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stock_movement, parent, false);
-            holder = new StockMovementHistoryViewHolder(convertView);
+            holder = new StockMovementItemHistoryViewHolder(convertView);
 
             convertView.setTag(holder);
         } else {
-            holder = (StockMovementHistoryViewHolder) convertView.getTag();
+            holder = (StockMovementItemHistoryViewHolder) convertView.getTag();
         }
         final StockMovementViewModel model = getItem(position);
 

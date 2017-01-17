@@ -26,7 +26,7 @@ import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import roboguice.inject.InjectView;
 
-public class StockMovementHistoryViewHolder extends BaseViewHolder {
+public class StockMovementItemHistoryViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.tx_date)TextView txMovementDate;
     @InjectView(R.id.tx_reason)TextView txReason;
@@ -41,7 +41,7 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
     private final int blackColor;
     private final int redColor;
 
-    public StockMovementHistoryViewHolder(View itemView) {
+    public StockMovementItemHistoryViewHolder(View itemView) {
         super(itemView);
 
         disableLine();

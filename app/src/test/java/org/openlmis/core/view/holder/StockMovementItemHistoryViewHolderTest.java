@@ -6,7 +6,6 @@ import android.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -20,15 +19,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 @RunWith(LMISTestRunner.class)
-public class StockMovementHistoryViewHolderTest {
+public class StockMovementItemHistoryViewHolderTest {
 
-    private StockMovementHistoryViewHolder viewHolder;
+    private StockMovementItemHistoryViewHolder viewHolder;
     private StockMovementViewModel viewModel;
 
     @Before
     public void setUp() {
         View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stock_movement, null, false);
-        viewHolder = new StockMovementHistoryViewHolder(itemView);
+        viewHolder = new StockMovementItemHistoryViewHolder(itemView);
 
         viewModel = new StockMovementViewModelBuilder().withIssued("100")
                 .withMovementDate("2011-11-11")
