@@ -442,4 +442,15 @@
     <string name="msg_physical_inventory_lot_review_negative_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Negative adjustment</font>]]> of <![CDATA[<font color="#000">%2$s</font>]]> will be made</string>
     <string name="label_total_complete_counts">Completed %1$s / %2$s</string>
     <string name="title_movement_history">Movement History</string>
+    <string name="msg_products_with_movement_count">%1$s products with movements</string>
+    <string name="msg_movement_count">%1$s movements</string>
+
+    <string-array name="movement_date_items_array">
+        <item>Last 7 days</item>
+        <item>Last 14 days</item>
+        <item>Last 30 days</item>
+        <item>Last 90 days</item>
+        <item>Last 180 days</item>
+        <item>Last 365 days</item>
+    </string-array>
 </resources>

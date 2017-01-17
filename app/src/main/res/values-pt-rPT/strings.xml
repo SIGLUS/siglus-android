@@ -400,4 +400,6 @@
     <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
     <string name="label_total_complete_counts">Completado %1$s / %2$s</string>
     <string name="title_movement_history">Movement History</string>
+    <string name="msg_products_with_movement_count">%1$s products with movements</string>
+    <string name="msg_movement_count">%1$s movements</string>
 </resources>
