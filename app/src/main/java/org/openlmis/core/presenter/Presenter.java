@@ -43,6 +43,5 @@ public abstract class Presenter {
         }
     }
 
-    public void attachView(BaseView v) throws ViewNotMatchException {
-    }
+    public abstract void attachView(BaseView v) throws ViewNotMatchException;
 }

@@ -4,11 +4,13 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 
 import lombok.Getter;
@@ -28,6 +30,11 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
 
     @Getter
     protected RapidTestReportViewModel viewModel;
+
+    @Override
+    public void attachView(BaseView v) throws ViewNotMatchException {
+
+    }
 
     public Observable<RapidTestReportViewModel> loadViewModel(final long formId, final DateTime periodBegin) {
         return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {

@@ -20,7 +20,8 @@ public enum ScreenName {
     SelectRegimeProductScreen("Select Regime Products Screen"),
     SelectEmergencyProductsScreen("Select Emergency Products Screen"),
     AddDrugsToVIAScreen("Add Drugs to VIA Classica Screen"),
-    RapidTestReportFormScreen("Rapid Test Report Form");
+    RapidTestReportFormScreen("Rapid Test Report Form"),
+    AllDrugsMovementHistoryScreen("All Drugs Movement History Screen");
 
     private final String screenName;
 

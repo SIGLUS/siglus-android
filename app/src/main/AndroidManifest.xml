@@ -112,6 +112,10 @@
             android:screenOrientation="portrait"
             android:label="@string/title_add_drugs_to_form" />
 
+        <activity
+            android:name=".view.activity.AllDrugsMovementHistoryActivity"
+            android:label="@string/title_movement_history" />
+
         <service
             android:name=".service.SyncService"
             android:exported="true" >
