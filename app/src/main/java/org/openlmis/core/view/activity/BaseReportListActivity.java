@@ -4,15 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
-import android.os.PersistableBundle;
 
 import org.openlmis.core.utils.Constants;
 
 public abstract class BaseReportListActivity extends BaseActivity {
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onStart() {
+        super.onStart();
         registerRnrSyncReceiver();
     }
 
@@ -32,8 +30,8 @@ public abstract class BaseReportListActivity extends BaseActivity {
     protected abstract void loadForms();
 
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
         unregisterReceiver(syncReceiver);
-        super.onDestroy();
+        super.onStop();
     }
 }
