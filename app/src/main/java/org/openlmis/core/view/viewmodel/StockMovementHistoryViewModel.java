@@ -22,7 +22,16 @@ public class StockMovementHistoryViewModel {
 
     }
 
-    public List<StockMovementItem> getFilteredMovementList() {
+    public List<StockMovementItem> getFilteredMovementItemList() {
         return filteredMovementList;
+    }
+
+    public String getProductName() {
+        return stockCard.getProduct().getFormattedProductNameWithoutStrengthAndType();
+    }
+
+
+    public String getProductUnit() {
+        return stockCard.getProduct().getUnit();
     }
 }

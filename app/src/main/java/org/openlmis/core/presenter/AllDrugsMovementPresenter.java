@@ -78,7 +78,7 @@ public class AllDrugsMovementPresenter extends Presenter {
     private int getMovementCount() {
         int movementCount = 0;
         for (StockMovementHistoryViewModel viewModel : filteredViewModelList) {
-            movementCount += viewModel.getFilteredMovementList().size();
+            movementCount += viewModel.getFilteredMovementItemList().size();
         }
         return movementCount;
     }
@@ -89,7 +89,7 @@ public class AllDrugsMovementPresenter extends Presenter {
             @Override
             public boolean apply(StockMovementHistoryViewModel stockMovementHistoryViewModel) {
                 stockMovementHistoryViewModel.filter(days);
-                return !stockMovementHistoryViewModel.getFilteredMovementList().isEmpty();
+                return !stockMovementHistoryViewModel.getFilteredMovementItemList().isEmpty();
             }
         }).toList());
     }

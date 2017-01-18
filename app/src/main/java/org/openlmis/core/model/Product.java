@@ -117,6 +117,10 @@ public class Product extends BaseModel implements Comparable<Product> {
         return primaryName == null ? 0 : primaryName.compareTo(another.getPrimaryName());
     }
 
+    public String getUnit() {
+        return strength + " " + getType();
+    }
+
     public enum IsKit {
         Yes(true),
         No(false);

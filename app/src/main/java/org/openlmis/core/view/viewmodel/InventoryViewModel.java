@@ -107,7 +107,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         styledName.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
                 product.getProductNameWithoutStrengthAndType().length(), productName.length(), Spannable.SPAN_POINT_MARK);
 
-        String unit = product.getStrength() + " " + product.getType();
+        String unit = product.getUnit();
         styledUnit = new SpannableStringBuilder(unit);
         int length = 0;
         if (product.getStrength() != null) {
