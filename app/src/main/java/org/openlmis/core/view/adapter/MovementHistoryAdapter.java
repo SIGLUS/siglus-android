@@ -5,13 +5,13 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.holder.StockMovementHistoryViewHolder;
+import org.openlmis.core.view.holder.StockHistoryViewHolder;
 import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovementHistoryAdapter extends RecyclerView.Adapter<StockMovementHistoryViewHolder> {
+public class MovementHistoryAdapter extends RecyclerView.Adapter<StockHistoryViewHolder> {
 
     private List<StockMovementHistoryViewModel> viewModels;
 
@@ -25,12 +25,12 @@ public class MovementHistoryAdapter extends RecyclerView.Adapter<StockMovementHi
     }
 
     @Override
-    public StockMovementHistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new StockMovementHistoryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stock_movement_history, parent, false));
+    public StockHistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new StockHistoryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stock_history, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(StockMovementHistoryViewHolder holder, int position) {
+    public void onBindViewHolder(StockHistoryViewHolder holder, int position) {
         holder.populate(viewModels.get(position));
     }
 

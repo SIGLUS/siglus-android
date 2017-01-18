@@ -4,8 +4,8 @@ import android.view.View;
 
 import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
 
-public class StockMovementHistoryViewHolder extends BaseViewHolder{
-    public StockMovementHistoryViewHolder(View itemView) {
+public class StockHistoryViewHolder extends BaseViewHolder{
+    public StockHistoryViewHolder(View itemView) {
         super(itemView);
     }
 
