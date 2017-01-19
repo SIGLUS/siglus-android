@@ -98,7 +98,11 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private void checkedChangeAction(boolean isChecked) {
         if (isChecked && !viewModel.getProduct().isArchived()) {
-            if (!viewModel.getNewLotMovementViewModelList().isEmpty() || lotListView.showAddLotDialogFragment()) {
+            if (!viewModel.getNewLotMovementViewModelList().isEmpty()) {
+                showAddNewLotPanel(View.VISIBLE);
+                checkBox.setEnabled(true);
+                viewModel.setChecked(true);
+            } else if (lotListView.showAddLotDialogFragment()) {
                 showAddNewLotPanel(View.VISIBLE);
                 viewModel.setChecked(true);
             } else {
