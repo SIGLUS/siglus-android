@@ -21,6 +21,7 @@ public class InitialInventoryLotListView extends BaseLotListView {
     public InitialInventoryLotListView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
     @NonNull
     @Override
     protected SingleClickButtonListener getAddNewLotDialogOnClickListener() {
@@ -49,10 +50,20 @@ public class InitialInventoryLotListView extends BaseLotListView {
         return new OnDismissListener() {
             @Override
             public void onDismissAction() {
-                updateCheckBoxListener.updateCheckBox();
                 setActionAddNewEnabled(true);
+                updateCheckBoxListener.updateCheckBox();
             }
         };
+    }
+
+    @Override
+    public boolean showAddLotDialogFragment() {
+        if (super.showAddLotDialogFragment()) {
+            return true;
+        } else {
+            getOnAddNewLotDialogDismissListener().onDismissAction();
+            return false;
+        }
     }
 
     public interface UpdateCheckBoxListener {

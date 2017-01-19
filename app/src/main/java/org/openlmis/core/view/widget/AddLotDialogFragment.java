@@ -32,6 +32,7 @@ import lombok.Setter;
 import roboguice.inject.InjectView;
 
 public class AddLotDialogFragment extends BaseDialogFragment {
+    public static boolean IS_OCCUPIED = false;
 
     @InjectView(R.id.ly_lot_number)
     private TextInputLayout lyLotNumber;
@@ -180,6 +181,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         if (onDismissListener != null) {
             onDismissListener.onDismissAction();
         }
+        IS_OCCUPIED = false;
         super.onDismiss(dialog);
     }
 }

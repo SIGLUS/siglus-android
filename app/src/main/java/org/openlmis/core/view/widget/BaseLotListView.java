@@ -30,6 +30,7 @@ import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
 public class BaseLotListView extends FrameLayout {
+    public static final String ADD_LOT = "add_new_lot";
     protected Context context;
 
     @InjectView(R.id.ly_action_panel)
@@ -148,16 +149,20 @@ public class BaseLotListView extends FrameLayout {
         };
     }
 
-    public void showAddLotDialogFragment() {
-        setActionAddNewEnabled(false);
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.PARAM_STOCK_NAME, viewModel.getProduct().getFormattedProductName());
-        addLotDialogFragment = new AddLotDialogFragment();
-        addLotDialogFragment.setArguments(bundle);
-        addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
-        addLotDialogFragment.setOnDismissListener(getOnAddNewLotDialogDismissListener());
-        addLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
-        addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
+    public boolean showAddLotDialogFragment() {
+        if (!AddLotDialogFragment.IS_OCCUPIED) {
+            AddLotDialogFragment.IS_OCCUPIED = true;
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.PARAM_STOCK_NAME, viewModel.getProduct().getFormattedProductName());
+            addLotDialogFragment = new AddLotDialogFragment();
+            addLotDialogFragment.setArguments(bundle);
+            addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
+            addLotDialogFragment.setOnDismissListener(getOnAddNewLotDialogDismissListener());
+            addLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
+            addLotDialogFragment.show(((Activity) context).getFragmentManager(), ADD_LOT);
+            return true;
+        }
+        return false;
     }
 
     @NonNull
