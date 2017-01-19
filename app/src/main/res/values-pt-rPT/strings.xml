@@ -402,4 +402,5 @@
     <string name="title_movement_history">Movement History</string>
     <string name="msg_products_with_movement_count">%1$s products with movements</string>
     <string name="msg_movement_count">%1$s movements</string>
+    <string name="label_column_syphillis">Sifilis</string>
 </resources>

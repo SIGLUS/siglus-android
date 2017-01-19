@@ -138,7 +138,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/border_top_black"
                 android:gravity="center"
-                android:text="Syphillis"
+                android:text="@string/label_column_syphillis"
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/font_size_normal"
                 android:textStyle="bold" />
