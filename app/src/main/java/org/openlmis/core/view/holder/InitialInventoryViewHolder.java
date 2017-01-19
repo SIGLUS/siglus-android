@@ -80,6 +80,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     private void resetCheckBox() {
+        checkBox.setEnabled(true);
         checkBox.setOnCheckedChangeListener(null);
         checkBox.setChecked(false);
         lotListView.setVisibility(View.GONE);
@@ -99,14 +100,18 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         if (isChecked && !viewModel.getProduct().isArchived()) {
             if (!viewModel.getNewLotMovementViewModelList().isEmpty() || lotListView.showAddLotDialogFragment()) {
                 showAddNewLotPanel(View.VISIBLE);
+                viewModel.setChecked(true);
+            } else {
+                checkBox.setEnabled(true);
+                checkBox.setChecked(false);
             }
         } else {
             checkBox.setEnabled(true);
             showAddNewLotPanel(View.GONE);
             viewModel.getNewLotMovementViewModelList().clear();
             lotListView.refreshNewLotList();
+            viewModel.setChecked(isChecked);
         }
-        viewModel.setChecked(isChecked);
     }
 
     private void initHistoryView(final ViewHistoryListener listener) {

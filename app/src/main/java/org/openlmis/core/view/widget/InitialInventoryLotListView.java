@@ -56,16 +56,6 @@ public class InitialInventoryLotListView extends BaseLotListView {
         };
     }
 
-    @Override
-    public boolean showAddLotDialogFragment() {
-        if (super.showAddLotDialogFragment()) {
-            return true;
-        } else {
-            getOnAddNewLotDialogDismissListener().onDismissAction();
-            return false;
-        }
-    }
-
     public interface UpdateCheckBoxListener {
         void updateCheckBox();
     }
