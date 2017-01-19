@@ -6,48 +6,56 @@
 
     <TextView
         android:id="@+id/tv_movement_date"
+        style="@style/StockHistoryItemTable.Grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tv_movement_reason"
+        style="@style/StockHistoryItemTable.Grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tv_document_number"
+        style="@style/StockHistoryItemTable.Grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tv_entry_amount"
+        style="@style/StockHistoryItemTable.Grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tv_negative_adjustment_amount"
+        style="@style/StockHistoryItemTable.Grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tv_positive_adjustment_amount"
+        style="@style/StockHistoryItemTable.Grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tv_issue_amount"
+        style="@style/StockHistoryItemTable.Grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <TextView
         android:id="@+id/tv_stock_existence"
+        style="@style/StockHistoryItemTable.Grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />

@@ -44,8 +44,6 @@ import java.util.Map;
 
 import lombok.Data;
 
-
-
 @Singleton
 public final class MovementReasonManager {
 

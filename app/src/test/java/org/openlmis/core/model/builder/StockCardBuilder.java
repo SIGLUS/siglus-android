@@ -40,11 +40,6 @@ public class StockCardBuilder {
         return stockCard;
     }
 
-    public StockCardBuilder setExpireDates(String expireDates) {
-        stockCard.setExpireDates(expireDates);
-        return this;
-    }
-
     public StockCardBuilder setProduct(Product product) {
         stockCard.setProduct(product);
         return this;
@@ -61,7 +56,6 @@ public class StockCardBuilder {
 
     public static StockCard buildStockCard() {
         return new StockCardBuilder()
-                .setExpireDates("2020-10-01")
                 .setProduct(ProductBuilder.buildAdultProduct())
                 .setStockOnHand(200)
                 .build();

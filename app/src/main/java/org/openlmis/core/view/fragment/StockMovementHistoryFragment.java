@@ -113,7 +113,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        if(!SharedPreferenceMgr.getInstance().hasDeletedOldStockMovement()) {
+        if (!SharedPreferenceMgr.getInstance().hasDeletedOldStockMovement()) {
             tvArchivedOldData.setVisibility(View.GONE);
         }
     }

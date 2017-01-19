@@ -52,7 +52,6 @@ public class ArchivedDrugsListActivityTest {
                 .setProduct(product)
                 .setStockCardId(200L)
                 .setStockOnHand(100)
-                .setExpireDates("11/11/2011")
                 .build();
     }
 

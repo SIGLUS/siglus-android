@@ -279,7 +279,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         StockCard stockCard = new StockCardBuilder()
                 .setCreateDate(new Date())
                 .setProduct(product)
-                .setExpireDates("10/10/2016, 11/10/2016, 12/10/2017")
                 .build();
         stockCard.setCreatedAt(DateUtil.parseString("10/10/2015", DateUtil.SIMPLE_DATE_FORMAT));
         stockCards.add(stockCard);

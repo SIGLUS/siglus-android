@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.adapter.MovementItemListAdapter;
-import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
+import org.openlmis.core.view.viewmodel.StockHistoryViewModel;
 
 import roboguice.inject.InjectView;
 
@@ -19,16 +19,16 @@ public class StockHistoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.tv_product_unit)
     TextView tvProductUnit;
 
-    @InjectView(R.id.rv_movement_history)
+    @InjectView(R.id.rv_stock_movement_item_list)
     RecyclerView movementHistoryListView;
 
-    private StockMovementHistoryViewModel viewModel;
+    private StockHistoryViewModel viewModel;
 
     public StockHistoryViewHolder(View itemView) {
         super(itemView);
     }
 
-    public void populate(StockMovementHistoryViewModel viewModel) {
+    public void populate(StockHistoryViewModel viewModel) {
         this.viewModel = viewModel;
         populateProductInfo();
         initRecyclerView();
@@ -36,7 +36,7 @@ public class StockHistoryViewHolder extends BaseViewHolder {
 
     private void initRecyclerView() {
         movementHistoryListView.setLayoutManager(new LinearLayoutManager(context));
-        movementHistoryListView.setAdapter(new MovementItemListAdapter(viewModel.getFilteredMovementItemList()));
+        movementHistoryListView.setAdapter(new MovementItemListAdapter(viewModel.getFilteredMovementItemViewModelList()));
     }
 
     private void populateProductInfo() {

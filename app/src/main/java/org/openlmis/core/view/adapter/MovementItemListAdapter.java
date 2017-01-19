@@ -5,16 +5,16 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.view.holder.StockHistoryMovementItemViewHolder;
+import org.openlmis.core.view.viewmodel.StockHistoryMovementItemViewModel;
 
 import java.util.List;
 
 public class MovementItemListAdapter extends RecyclerView.Adapter<StockHistoryMovementItemViewHolder> {
-    private List<StockMovementItem> movementItemList;
+    private List<StockHistoryMovementItemViewModel> viewModels;
 
-    public MovementItemListAdapter(List<StockMovementItem> movementItemList) {
-        this.movementItemList = movementItemList;
+    public MovementItemListAdapter(List<StockHistoryMovementItemViewModel> viewModels) {
+        this.viewModels = viewModels;
     }
 
     @Override
@@ -24,11 +24,11 @@ public class MovementItemListAdapter extends RecyclerView.Adapter<StockHistoryMo
 
     @Override
     public void onBindViewHolder(StockHistoryMovementItemViewHolder holder, int position) {
-        holder.populate(movementItemList.get(position));
+        holder.populate(viewModels.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return movementItemList.size();
+        return viewModels.size();
     }
 }

@@ -18,7 +18,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.AllDrugsMovementPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.adapter.MovementHistoryAdapter;
-import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
+import org.openlmis.core.view.viewmodel.StockHistoryViewModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -88,8 +88,8 @@ public class AllDrugsMovementHistoryFragment extends BaseFragment implements All
     }
 
     @Override
-    public void refreshRecyclerView(List<StockMovementHistoryViewModel> stockMovementHistoryViewModels) {
-        adapter.refresh(stockMovementHistoryViewModels);
+    public void refreshRecyclerView(List<StockHistoryViewModel> stockHistoryViewModels) {
+        adapter.refresh(stockHistoryViewModels);
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
+import org.openlmis.core.view.viewmodel.StockHistoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -30,9 +30,9 @@ public class AllDrugsMovementPresenter extends Presenter {
 
     AllDrugsMovementView view;
 
-    List<StockMovementHistoryViewModel> viewModelList = new ArrayList<>();
+    List<StockHistoryViewModel> viewModelList = new ArrayList<>();
 
-    List<StockMovementHistoryViewModel> filteredViewModelList = new ArrayList<>();
+    List<StockHistoryViewModel> filteredViewModelList = new ArrayList<>();
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
@@ -41,9 +41,9 @@ public class AllDrugsMovementPresenter extends Presenter {
 
     public void loadMovementHistory(final int days) {
         view.loading();
-        Subscription subscription = Observable.create(new Observable.OnSubscribe<List<StockMovementHistoryViewModel>>() {
+        Subscription subscription = Observable.create(new Observable.OnSubscribe<List<StockHistoryViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<StockMovementHistoryViewModel>> subscriber) {
+            public void call(Subscriber<? super List<StockHistoryViewModel>> subscriber) {
                 try {
                     loadAllMovementHistory();
                     filterViewModels(days);
@@ -53,7 +53,7 @@ public class AllDrugsMovementPresenter extends Presenter {
                     subscriber.onError(e);
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Observer<List<StockMovementHistoryViewModel>>() {
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Observer<List<StockHistoryViewModel>>() {
             @Override
             public void onCompleted() {
                 view.loaded();
@@ -67,7 +67,7 @@ public class AllDrugsMovementPresenter extends Presenter {
             }
 
             @Override
-            public void onNext(List<StockMovementHistoryViewModel> stockMovementHistoryViewModels) {
+            public void onNext(List<StockHistoryViewModel> stockMovementHistoryViewModels) {
                 view.refreshRecyclerView(stockMovementHistoryViewModels);
                 view.updateHistoryCount(filteredViewModelList.size(), getMovementCount());
             }
@@ -77,41 +77,35 @@ public class AllDrugsMovementPresenter extends Presenter {
 
     private int getMovementCount() {
         int movementCount = 0;
-        for (StockMovementHistoryViewModel viewModel : filteredViewModelList) {
-            movementCount += viewModel.getFilteredMovementItemList().size();
+        for (StockHistoryViewModel viewModel : filteredViewModelList) {
+            movementCount += viewModel.getFilteredMovementItemViewModelList().size();
         }
         return movementCount;
     }
 
-    private void filterViewModels(final int days) {
+    protected void filterViewModels(final int days) {
         filteredViewModelList.clear();
-        filteredViewModelList.addAll(FluentIterable.from(viewModelList).filter(new Predicate<StockMovementHistoryViewModel>() {
+        filteredViewModelList.addAll(FluentIterable.from(viewModelList).filter(new Predicate<StockHistoryViewModel>() {
             @Override
-            public boolean apply(StockMovementHistoryViewModel stockMovementHistoryViewModel) {
-                stockMovementHistoryViewModel.filter(days);
-                return !stockMovementHistoryViewModel.getFilteredMovementItemList().isEmpty();
+            public boolean apply(StockHistoryViewModel stockHistoryViewModel) {
+                return !stockHistoryViewModel.filter(days).isEmpty();
             }
         }).toList());
     }
 
-    private void loadAllMovementHistory() {
+    protected void loadAllMovementHistory() {
         if (viewModelList.isEmpty()) {
-            viewModelList.addAll(FluentIterable.from(stockRepository.list()).filter(new Predicate<StockCard>() {
+            viewModelList.addAll(FluentIterable.from(stockRepository.list()).transform(new Function<StockCard, StockHistoryViewModel>() {
                 @Override
-                public boolean apply(StockCard stockCard) {
-                    return !stockCard.getStockMovementItemsWrapper().isEmpty();
-                }
-            }).transform(new Function<StockCard, StockMovementHistoryViewModel>() {
-                @Override
-                public StockMovementHistoryViewModel apply(StockCard stockCard) {
-                    return new StockMovementHistoryViewModel(stockCard);
+                public StockHistoryViewModel apply(StockCard stockCard) {
+                    return new StockHistoryViewModel(stockCard);
                 }
             }).toList());
         }
     }
 
     public interface AllDrugsMovementView extends BaseView {
-        void refreshRecyclerView(List<StockMovementHistoryViewModel> stockMovementHistoryViewModels);
+        void refreshRecyclerView(List<StockHistoryViewModel> stockHistoryViewModels);
 
         void updateHistoryCount(int productCount, int movementCount);
     }

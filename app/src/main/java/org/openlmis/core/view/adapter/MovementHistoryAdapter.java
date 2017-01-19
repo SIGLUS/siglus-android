@@ -6,21 +6,21 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.StockHistoryViewHolder;
-import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
+import org.openlmis.core.view.viewmodel.StockHistoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MovementHistoryAdapter extends RecyclerView.Adapter<StockHistoryViewHolder> {
 
-    private List<StockMovementHistoryViewModel> viewModels;
+    private List<StockHistoryViewModel> viewModels;
 
     public MovementHistoryAdapter() {
         viewModels = new ArrayList<>();
     }
 
-    public void refresh(List<StockMovementHistoryViewModel> stockMovementHistoryViewModels) {
-        this.viewModels = stockMovementHistoryViewModels;
+    public void refresh(List<StockHistoryViewModel> stockHistoryViewModels) {
+        this.viewModels = stockHistoryViewModels;
         notifyDataSetChanged();
     }
 
