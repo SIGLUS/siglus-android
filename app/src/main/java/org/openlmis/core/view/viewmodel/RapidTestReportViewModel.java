@@ -9,6 +9,8 @@ import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.Signature;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,7 +47,13 @@ public class RapidTestReportViewModel implements Serializable {
 
     private void setupCategories() {
         movementReasonManager = MovementReasonManager.getInstance();
-        List<MovementReasonManager.MovementReason> issueReasons = movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE);
+        List<MovementReasonManager.MovementReason> issueReasons = FluentIterable.from(movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
+                .filter(new Predicate<MovementReasonManager.MovementReason>() {
+                    @Override
+                    public boolean apply(MovementReasonManager.MovementReason movementReason) {
+                        return !movementReason.getCode().equals("PUB_PHARMACY");
+                    }
+                }).toList();
 
         for (MovementReasonManager.MovementReason movementReason: issueReasons) {
             RapidTestFormItemViewModel item = new RapidTestFormItemViewModel(movementReason);
