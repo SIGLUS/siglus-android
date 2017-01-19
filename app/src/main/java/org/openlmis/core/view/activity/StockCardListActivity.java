@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
@@ -101,6 +102,8 @@ public class StockCardListActivity extends SearchBarActivity {
     protected void addMenus(Menu menu) {
         menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         menu.add(Menu.NONE, MENU_ID_ARCHIVE_LIST, 200, getString(R.string.action_navigate_archive)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.add(Menu.NONE, MENU_ID_MOVEMENT_HISTORY, 300, getString(R.string.menu_item_stock_movement_history)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_all_drugs_movements_history)) {
+            menu.add(Menu.NONE, MENU_ID_MOVEMENT_HISTORY, 300, getString(R.string.menu_item_stock_movement_history)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
     }
 }
