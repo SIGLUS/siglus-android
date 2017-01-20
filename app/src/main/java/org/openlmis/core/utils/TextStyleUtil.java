@@ -25,6 +25,7 @@ import android.text.style.ForegroundColorSpan;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Product;
 
 public final class TextStyleUtil {
     private TextStyleUtil() {
@@ -40,5 +41,26 @@ public final class TextStyleUtil {
         spannableStringBuilder.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_accent)),
                 startIndex, startIndex + queryKeyWord.length(), Spannable.SPAN_POINT_MARK);
         return spannableStringBuilder;
+    }
+
+    public static SpannableStringBuilder formatStyledProductName(Product product) {
+        String productName = product.getFormattedProductNameWithoutStrengthAndType();
+        SpannableStringBuilder styledNameBuilder = new SpannableStringBuilder(productName);
+        styledNameBuilder.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
+                product.getProductNameWithoutStrengthAndType().length(), productName.length(), Spannable.SPAN_POINT_MARK);
+        return styledNameBuilder;
+    }
+
+
+    public static SpannableStringBuilder formatStyledProductUnit(Product product) {
+        String unit = product.getUnit();
+        SpannableStringBuilder styledUnitBuilder = new SpannableStringBuilder(unit);
+        int length = 0;
+        if (product.getStrength() != null) {
+            length = product.getStrength().length();
+        }
+        styledUnitBuilder.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
+                length, unit.length(), Spannable.SPAN_POINT_MARK);
+        return styledUnitBuilder;
     }
 }

@@ -1,9 +1,12 @@
 package org.openlmis.core.view.viewmodel;
 
+import android.text.SpannableStringBuilder;
+
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -21,6 +24,8 @@ public class StockHistoryViewModel {
     List<StockHistoryMovementItemViewModel> filteredMovementItemViewModelList = new ArrayList<>();
 
     List<StockHistoryMovementItemViewModel> allMovementItemViewModelList = new ArrayList<>();
+    private SpannableStringBuilder styledProductName;
+    private SpannableStringBuilder styledProductUnit;
 
 
     public StockHistoryViewModel(StockCard stockCard) {
@@ -44,12 +49,18 @@ public class StockHistoryViewModel {
         return filteredMovementItemViewModelList;
     }
 
-    public String getProductName() {
-        return stockCard.getProduct().getFormattedProductNameWithoutStrengthAndType();
+    public SpannableStringBuilder getStyledProductName() {
+        if (styledProductName == null) {
+            styledProductName = TextStyleUtil.formatStyledProductName(stockCard.getProduct());
+        }
+        return styledProductName;
     }
 
 
-    public String getProductUnit() {
-        return stockCard.getProduct().getUnit();
+    public SpannableStringBuilder getStyledProductUnit() {
+        if (styledProductUnit == null) {
+            styledProductUnit = TextStyleUtil.formatStyledProductUnit(stockCard.getProduct());
+        }
+        return styledProductUnit;
     }
 }

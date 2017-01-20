@@ -37,10 +37,11 @@ public class StockHistoryViewHolder extends BaseViewHolder {
     private void initRecyclerView() {
         movementHistoryListView.setLayoutManager(new LinearLayoutManager(context));
         movementHistoryListView.setAdapter(new MovementItemListAdapter(viewModel.getFilteredMovementItemViewModelList()));
+        movementHistoryListView.setNestedScrollingEnabled(false);
     }
 
     private void populateProductInfo() {
-        tvProductName.setText(viewModel.getProductName());
-        tvProductUnit.setText(viewModel.getProductUnit());
+        tvProductName.setText(viewModel.getStyledProductName());
+        tvProductUnit.setText(viewModel.getStyledProductUnit());
     }
 }

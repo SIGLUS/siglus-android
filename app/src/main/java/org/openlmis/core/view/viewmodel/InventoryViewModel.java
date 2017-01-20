@@ -18,15 +18,12 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 
 import lombok.Data;
@@ -73,11 +70,12 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         this.type = product.getType();
 
         setProductAttributes(product);
-        formatProductDisplay(product);
     }
 
     public SpannableStringBuilder getStyledName() {
-        formatProductDisplay(product);
+        if (styledName == null) {
+            styledName = TextStyleUtil.formatStyledProductName(product);
+        }
         return styledName;
     }
 
@@ -90,7 +88,9 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     }
 
     public SpannableStringBuilder getStyledUnit() {
-        formatProductDisplay(product);
+        if (styledUnit == null) {
+            styledUnit = TextStyleUtil.formatStyledProductUnit(product);
+        }
         return styledUnit;
     }
 
@@ -99,22 +99,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         this.fnm = product.getCode();
         this.strength = product.getStrength();
         this.productId = product.getId();
-    }
-
-    private void formatProductDisplay(Product product) {
-        String productName = product.getFormattedProductNameWithoutStrengthAndType();
-        styledName = new SpannableStringBuilder(productName);
-        styledName.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
-                product.getProductNameWithoutStrengthAndType().length(), productName.length(), Spannable.SPAN_POINT_MARK);
-
-        String unit = product.getUnit();
-        styledUnit = new SpannableStringBuilder(unit);
-        int length = 0;
-        if (product.getStrength() != null) {
-            length = product.getStrength().length();
-        }
-        styledUnit.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
-                length, unit.length(), Spannable.SPAN_POINT_MARK);
     }
 
     public boolean validate() {
