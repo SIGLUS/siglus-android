@@ -15,7 +15,7 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -46,7 +46,7 @@ public class ChangeMovementReasonToCodeTest extends LMISRepositoryUnitTest{
                 "UATS",
                 "PNCTL",
                 "PAV",
-                "Estomalogia",
+                "Estomatologia",
                 "Devolução de Expirados Quarentena (ou Depósito fornecedor)",
                 "Danificados no Depósito",
                 "Empréstimo (de todos os Níveis) que dão saída do Depósito",

@@ -42,7 +42,7 @@ public class MovementReasonManagerTest {
                 "UATS",
                 "PNCTL",
                 "PAV",
-                "Estomalogia",
+                "Estomatologia",
                 "Devolução de Expirados Quarentena (ou Depósito fornecedor)",
                 "Danificados no Depósito",
                 "Empréstimo (de todos os Níveis) que dão saída do Depósito",
