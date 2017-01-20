@@ -60,7 +60,6 @@ public class AllDrugsMovementHistoryFragment extends BaseFragment implements All
         super.onViewCreated(view, savedInstanceState);
         innitSpinner();
         initRecyclerView();
-        presenter.loadMovementHistory(DATE_ITEMS.get(0));
     }
 
     private void initRecyclerView() {
