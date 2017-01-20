@@ -6,31 +6,53 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/abc_action_bar_progress_bar_size">
+        android:layout_height="@dimen/notification_banner_height"
+        android:background="@drawable/border_bottom_green_bg_gray"
+        android:paddingBottom="@dimen/padding_small">
 
-        <Spinner
-            android:id="@+id/date_spinner"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/padding_small">
+
+            <TextView
+                style="@style/Text.Black.Normal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/label_view_movements" />
+
+            <Spinner
+                android:id="@+id/date_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_tiny">
 
             <TextView
                 android:id="@+id/tv_product_count"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:gravity="end"
+                android:maxLines="1" />
 
             <TextView
                 android:id="@+id/tv_movement_count"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:gravity="end"
+                android:maxLines="1" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -39,6 +61,7 @@
         android:id="@+id/rv_movement_history"
         style="@style/StockHistoryItemTable"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

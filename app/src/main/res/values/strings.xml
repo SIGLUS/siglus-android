@@ -445,6 +445,7 @@
     <string name="msg_products_with_movement_count">%1$s products with movements</string>
     <string name="msg_movement_count">%1$s movements</string>
     <string name="label_column_syphillis">Syphillis</string>
+    <string name="label_view_movements">View movements:</string>
 
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>

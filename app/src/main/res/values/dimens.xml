@@ -10,6 +10,7 @@
 
     <dimen name="button_height_default">36dp</dimen>
     <dimen name="button_height_medium">48dp</dimen>
+    <dimen name="notification_banner_height">48dp</dimen>
     <dimen name="button_bar_height_default">52dp</dimen>
     <dimen name="actionbar_height">56dp</dimen>
 
