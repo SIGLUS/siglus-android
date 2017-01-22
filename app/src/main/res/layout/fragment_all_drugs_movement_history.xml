@@ -59,7 +59,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movement_history"
-        style="@style/StockHistoryItemTable"
+        style="@style/AllStockHistory.List"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical" />

@@ -762,14 +762,28 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="StockHistoryItemTable">
-        <item name="android:paddingStart">@dimen/padding_small</item>
+    <style name="AllStockHistory" />
+
+    <style name="AllStockHistory.List">
+        <item name="android:background">@color/color_page_gray</item>
         <item name="android:paddingEnd">@dimen/padding_small</item>
-        <item name="android:background">@drawable/border_bottom_left_bg_gray</item>
+        <item name="android:paddingStart">@dimen/padding_small</item>
+        <item name="android:paddingBottom">@dimen/padding_small</item>
     </style>
 
-    <style name="StockHistoryItemTable.Grid">
+    <style name="AllStockHistory.ItemTable">
+        <item name="android:background">@drawable/border_bottom_left_bg_white</item>
+    </style>
+
+    <style name="AllStockHistory.ItemTable.Grid">
         <item name="android:background">@drawable/border_top_right</item>
+        <item name="android:textColor">@color/color_black</item>
+        <item name="android:gravity">center</item>
     </style>
 
+    <style name="AllStockHistory.ItemTable.Header">
+        <item name="android:textColor">@color/color_black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>

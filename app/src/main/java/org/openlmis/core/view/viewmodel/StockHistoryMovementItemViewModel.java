@@ -31,6 +31,9 @@ public class StockHistoryMovementItemViewModel {
     }
 
     public String getDocumentNumber() {
+        if (StringUtils.isEmpty(stockMovementItem.getDocumentNumber())) {
+            return EMPTY_FIELD;
+        }
         return stockMovementItem.getDocumentNumber();
     }
 

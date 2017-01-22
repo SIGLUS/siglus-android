@@ -13,7 +13,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_small">
 
             <TextView
                 android:id="@+id/tv_product_name"
@@ -29,10 +30,80 @@
                 android:textSize="@dimen/font_size_normal" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_right_black">
+
+            <TextView
+                style="@style/AllStockHistory.ItemTable.Header"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/border_top_left_black"
+                android:text="@string/label_movement_date" />
+
+            <TextView
+                style="@style/AllStockHistory.ItemTable.Header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:background="@drawable/border_top_left_black"
+                android:text="@string/label_reason" />
+
+            <TextView
+                style="@style/AllStockHistory.ItemTable.Header"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/border_top_left_black"
+                android:text="@string/document_number" />
+
+            <TextView
+                style="@style/AllStockHistory.ItemTable.Header"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_top_left_black"
+                android:text="@string/RECEIVE" />
+
+            <TextView
+                style="@style/AllStockHistory.ItemTable.Header"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/border_top_left_black"
+                android:text="@string/NEGATIVE_ADJUST" />
+
+            <TextView
+                style="@style/AllStockHistory.ItemTable.Header"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/border_top_left_black"
+                android:text="@string/POSITIVE_ADJUST" />
+
+            <TextView
+                style="@style/AllStockHistory.ItemTable.Header"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_top_left_black"
+                android:text="@string/ISSUE" />
+
+            <TextView
+                style="@style/AllStockHistory.ItemTable.Header"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/border_top_left_black"
+                android:text="@string/label_stock_existence" />
+        </LinearLayout>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_stock_movement_item_list"
+            style="@style/AllStockHistory.ItemTable"
             android:layout_width="match_parent"
-            android:background="@drawable/border_bottom_left_bg_white"
             android:layout_height="wrap_content"
             android:overScrollMode="never" />
 

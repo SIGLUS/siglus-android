@@ -3,16 +3,16 @@
     <item>
         <shape>
             <padding
-                android:bottom="1dp"
+                android:bottom="0dp"
                 android:left="1dp"
                 android:right="0dp"
-                android:top="0dp" />
-            <solid android:color="@color/color_divider" />
+                android:top="1dp" />
+            <solid android:color="@color/color_black" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/color_page_gray" />
+            <solid android:color="@color/color_white" />
         </shape>
     </item>
 
