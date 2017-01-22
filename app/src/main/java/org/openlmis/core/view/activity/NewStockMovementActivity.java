@@ -8,26 +8,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
-import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.MovementDetailsView;
 import org.openlmis.core.view.widget.NewMovementLotListView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.List;
-
-import lombok.Getter;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -52,60 +44,38 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 
-    @Getter
-    private String stockName;
-    public MovementReasonManager.MovementType movementType;
-
-    private Long stockCardId;
-
-    private List<MovementReasonManager.MovementReason> movementReasons;
-
-    private MovementReasonManager movementReasonManager;
-
-    SimpleSelectDialogFragment reasonsDialog;
-
-    private StockMovementViewModel viewModel;
-
-    private String[] reasonListStr;
-
-    public boolean isKit;
-
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.StockCardNewMovementScreen;
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (isKit && SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
-            ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
-            finish();
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        movementReasonManager = MovementReasonManager.getInstance();
-        stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
-        movementType = (MovementReasonManager.MovementType) getIntent().getSerializableExtra(Constants.PARAM_MOVEMENT_TYPE);
-        stockCardId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0L);
-        isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
-        movementReasons = movementReasonManager.buildReasonListForMovementType(movementType);
+        String stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
+        MovementReasonManager.MovementType movementType = (MovementReasonManager.MovementType) getIntent().getSerializableExtra(Constants.PARAM_MOVEMENT_TYPE);
+        Long stockCardId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0L);
+        boolean isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
 
-        presenter.loadData(stockCardId, movementType);
-        viewModel = presenter.getStockMovementViewModel();
-        viewModel.setKit(isKit);
+        presenter.loadData(stockCardId, movementType, isKit);
 
+        setTitle(movementType.getDescription() + " " + stockName);
         initView();
     }
 
     private void initView() {
-        setTitle(movementType.getDescription() + " " + stockName);
         setUpMovementDetailsView();
         setUpLostListView();
         setUpButtonPanel();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!presenter.shouldLoadKitMovementPage()) {
+            ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
+            finish();
+        }
     }
 
     private void setUpButtonPanel() {
@@ -115,21 +85,20 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     private void setUpMovementDetailsView() {
-        movementDetailsView.initMovementDetailsView(presenter, movementType);
+        movementDetailsView.initMovementDetailsView(presenter);
         movementDetailsView.setMovementReasonClickListener(getMovementReasonOnClickListener());
-        if (isKit) {
+        if (presenter.isKit()) {
             movementDetailsView.setMovementQuantityVisibility(View.VISIBLE);
         }
     }
 
     private void setUpLostListView() {
-        if (!isKit) {
-            newMovementLotListView.initLotListView(viewModel);
+        if (!presenter.isKit()) {
+            newMovementLotListView.initLotListView(presenter.getViewModel());
         } else {
             lyLotArea.setVisibility(View.GONE);
         }
     }
-
 
     @NonNull
     private View.OnClickListener getMovementReasonOnClickListener() {
@@ -137,15 +106,13 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
             @Override
             public void onSingleClick(View view) {
                 movementDetailsView.setMovementReasonEnable(false);
-                reasonListStr = FluentIterable.from(movementReasons).transform(new Function<MovementReasonManager.MovementReason, String>() {
-                    @Override
-                    public String apply(MovementReasonManager.MovementReason movementReason) {
-                        return movementReason.getDescription();
-                    }
-                }).toArray(String.class);
-                reasonsDialog = new SimpleSelectDialogFragment(NewStockMovementActivity.this, new MovementTypeOnClickListener(viewModel), reasonListStr);
+                Bundle bundle = new Bundle();
+                bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, presenter.getMovementReasonDescriptionList());
+                SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
+                reasonsDialog.setArguments(bundle);
+                reasonsDialog.setMovementTypeOnClickListener(new MovementTypeOnClickListener(reasonsDialog));
                 reasonsDialog.setCancelable(false);
-                reasonsDialog.show(getFragmentManager(), "");
+                reasonsDialog.show(getFragmentManager(), "SELECT_REASONS");
             }
         };
     }
@@ -169,15 +136,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                         btnComplete.setEnabled(false);
                         movementDetailsView.setMovementModelValue();
 
-                        if (showErrors()) {
-                            if (!isKit) {
-                                newMovementLotListView.notifyDataChanged();
-                            }
+                        if (!presenter.onComplete()) {
                             btnComplete.setEnabled(true);
-                            loaded();
-                            return;
                         }
-                        presenter.saveStockMovement();
                         break;
                     case R.id.btn_cancel:
                         finish();
@@ -187,78 +148,24 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         };
     }
 
+    @Override
+    public void refreshLotListView() {
+        newMovementLotListView.refresh();
+    }
+
+    @Override
     public void clearErrorAlerts() {
         newMovementLotListView.setAlertAddPositiveLotAmountVisibility(View.GONE);
         movementDetailsView.clearTextInputLayoutError();
     }
 
-    protected boolean showErrors() {
-        if (StringUtils.isBlank(viewModel.getMovementDate())) {
-            showMovementDateEmpty();
-            return true;
-        }
-        if (viewModel.getReason() == null) {
-            showMovementReasonEmpty();
-            return true;
-        }
-
-        if (isKit && checkKitQuantityError()) return true;
-
-        if (StringUtils.isBlank(viewModel.getSignature())) {
-            showSignatureErrors(getResources().getString(R.string.msg_empty_signature));
-            return true;
-        }
-        if (!viewModel.validateQuantitiesNotZero()) {
-            showQuantityErrors(getResources().getString(R.string.msg_entries_error));
-            return true;
-        }
-        if (!checkSignature(viewModel.getSignature())) {
-            showSignatureErrors(getString(R.string.hint_signature_error_message));
-            return true;
-        }
-
-        return !isKit && (showLotListError() || lotListEmptyError());
-    }
-
-    private boolean checkKitQuantityError() {
-        MovementReasonManager.MovementType movementType = viewModel.getTypeQuantityMap().keySet().iterator().next();
-        if (StringUtils.isBlank(viewModel.getTypeQuantityMap().get(movementType))) {
-            showQuantityErrors(getResources().getString(R.string.msg_empty_quantity));
-            return true;
-        }
-        if (quantityIsLargerThanSoh(viewModel.getTypeQuantityMap().get(movementType), movementType)) {
-            showQuantityErrors(getResources().getString(R.string.msg_invalid_quantity));
-            return true;
-        }
-        return false;
-    }
-
-    private boolean lotListEmptyError() {
-        clearErrorAlerts();
-        if (this.viewModel.isLotEmpty()) {
-            showEmptyLotError();
-            return true;
-        }
-        if (!this.viewModel.movementQuantitiesExist()) {
-            showLotQuantityError();
-            return true;
-        }
-        return false;
-    }
-
-    private void showLotQuantityError() {
+    @Override
+    public void showLotQuantityError() {
         newMovementLotListView.setAlertAddPositiveLotAmountVisibility(View.VISIBLE);
     }
 
-    private boolean checkSignature(String signature) {
-        return signature.length() >= 2 && signature.length() <= 5 && signature.matches("\\D+");
-    }
-
-    private boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
-        return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > presenter.getStockCard().getStockOnHand();
-    }
-
-    private void showEmptyLotError() {
+    @Override
+    public void showEmptyLotError() {
         ToastUtil.show(getResources().getString(R.string.empty_lot_warning));
     }
 
@@ -280,7 +187,8 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         movementDetailsView.showMovementQuantityError(errorMsg);
     }
 
-    private void showSignatureErrors(String errorMsg) {
+    @Override
+    public void showSignatureErrors(String errorMsg) {
         clearErrorAlerts();
         movementDetailsView.showSignatureError(errorMsg);
     }
@@ -299,16 +207,16 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
-        StockMovementViewModel movementViewModel;
+        private SimpleSelectDialogFragment reasonsDialog;
 
-        public MovementTypeOnClickListener(StockMovementViewModel movementViewModel) {
-            this.movementViewModel = movementViewModel;
+        public MovementTypeOnClickListener(SimpleSelectDialogFragment reasonsDialog) {
+            this.reasonsDialog = reasonsDialog;
         }
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            movementDetailsView.setMovementReasonText(reasonListStr[position]);
-            viewModel.setReason(movementReasons.get(position));
+            movementDetailsView.setMovementReasonText(presenter.getMovementReasonDescriptionList()[position]);
+            presenter.getViewModel().setReason(presenter.getMovementReasons().get(position));
             reasonsDialog.dismiss();
             movementDetailsView.setMovementReasonEnable(true);
         }

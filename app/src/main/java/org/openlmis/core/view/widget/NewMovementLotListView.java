@@ -89,7 +89,7 @@ public class NewMovementLotListView extends MovementChangeLotListView {
         }
     }
 
-    public void notifyDataChanged() {
+    public void refresh() {
         existingLotMovementAdapter.notifyDataSetChanged();
         newLotMovementAdapter.notifyDataSetChanged();
     }

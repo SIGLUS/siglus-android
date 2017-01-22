@@ -14,7 +14,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.view.listener.MovementDateListener;
-import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -60,9 +59,7 @@ public class MovementDetailsView extends LinearLayout {
     @InjectView(R.id.ly_movement_signature)
     TextInputLayout lyMovementSignature;
 
-    private NewStockMovementPresenter newStockMovementPresenter;
-    private StockMovementViewModel stockMovementViewModel;
-    private MovementReasonManager.MovementType movementType;
+    private NewStockMovementPresenter presenter;
 
     public MovementDetailsView(Context context) {
         super(context);
@@ -80,20 +77,18 @@ public class MovementDetailsView extends LinearLayout {
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
     }
 
-    public void initMovementDetailsView(NewStockMovementPresenter presenter, MovementReasonManager.MovementType movementType) {
-        this.newStockMovementPresenter = presenter;
-        this.stockMovementViewModel = presenter.getStockMovementViewModel();
-        this.movementType = movementType;
+    public void initMovementDetailsView(NewStockMovementPresenter presenter) {
+        this.presenter = presenter;
         initView();
     }
 
     private void initView() {
-        if (movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
+        if (presenter.getMovementType().equals(MovementReasonManager.MovementType.ISSUE)) {
             lyRequestedQuantity.setVisibility(View.VISIBLE);
         }
 
-        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
-                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+        if (MovementReasonManager.MovementType.RECEIVE.equals(presenter.getMovementType())
+                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(presenter.getMovementType())) {
             lyMovementReason.setHint(getResources().getString(R.string.hint_movement_reason_receive));
         } else {
             lyMovementReason.setHint(getResources().getString(R.string.hint_movement_reason_negative));
@@ -107,7 +102,7 @@ public class MovementDetailsView extends LinearLayout {
             @Override
             public void onClick(View view) {
                 etMovementDate.setEnabled(false);
-                showDatePickerDialog(newStockMovementPresenter.getStockCard().getLastStockMovementDate());
+                showDatePickerDialog(presenter.getStockCard().getLastStockMovementDate());
             }
         });
         etMovementDate.setKeyListener(null);
@@ -122,7 +117,7 @@ public class MovementDetailsView extends LinearLayout {
         final Calendar today = GregorianCalendar.getInstance();
 
         DatePickerDialog dialog = new DatePickerDialog(getContext(), DatePickerDialog.BUTTON_NEUTRAL,
-                new MovementDateListener(newStockMovementPresenter.getStockMovementViewModel(), previousMovementDate, etMovementDate),
+                new MovementDateListener(presenter.getViewModel(), previousMovementDate, etMovementDate),
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -142,13 +137,13 @@ public class MovementDetailsView extends LinearLayout {
     }
 
     public void setMovementModelValue() {
-        stockMovementViewModel.setMovementDate(etMovementDate.getText().toString());
-        stockMovementViewModel.setDocumentNo(etDocumentNumber.getText().toString());
-        stockMovementViewModel.setRequested(etRequestedQuantity.getText().toString());
+        presenter.getViewModel().setMovementDate(etMovementDate.getText().toString());
+        presenter.getViewModel().setDocumentNo(etDocumentNumber.getText().toString());
+        presenter.getViewModel().setRequested(etRequestedQuantity.getText().toString());
         HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-        quantityMap.put(movementType, etMovementQuantity.getText().toString());
-        stockMovementViewModel.setTypeQuantityMap(quantityMap);
-        stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
+        quantityMap.put(presenter.getMovementType(), etMovementQuantity.getText().toString());
+        presenter.getViewModel().setTypeQuantityMap(quantityMap);
+        presenter.getViewModel().setSignature(etMovementSignature.getText().toString());
     }
 
     public void clearTextInputLayoutError() {

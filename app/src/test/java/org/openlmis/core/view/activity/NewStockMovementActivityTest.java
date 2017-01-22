@@ -58,8 +58,9 @@ public class NewStockMovementActivityTest {
         StockCard stockcard = new StockCardBuilder().setProduct(ProductBuilder.buildAdultProduct()).build();
 
         stockMovementViewModel.setProduct(stockcard.getProduct());
-        when(mockedPresenter.getStockMovementViewModel()).thenReturn(stockMovementViewModel);
+        when(mockedPresenter.getViewModel()).thenReturn(stockMovementViewModel);
         when(mockedPresenter.getStockCard()).thenReturn(stockcard);
+        when(mockedPresenter.getMovementType()).thenReturn(MovementReasonManager.MovementType.ISSUE);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override

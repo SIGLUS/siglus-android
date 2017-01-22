@@ -74,9 +74,9 @@ public class NewStockMovementPresenterTest {
     @Test
     public void shouldSaveStockItemWhenSaving() throws Exception {
         StockCard stockCard = createStockCard(0, true);
-        StockMovementViewModel stockMovementViewModel = newStockMovementPresenter.getStockMovementViewModel();
+        StockMovementViewModel stockMovementViewModel = newStockMovementPresenter.getViewModel();
         when(stockRepositoryMock.queryStockCardById(anyLong())).thenReturn(stockCard);
-        newStockMovementPresenter.loadData(1L, MovementReasonManager.MovementType.RECEIVE);
+        newStockMovementPresenter.loadData(1L, MovementReasonManager.MovementType.RECEIVE, false);
         stockMovementViewModel.getTypeQuantityMap().put(MovementReasonManager.MovementType.RECEIVE, "10");
         stockMovementViewModel.setReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "code", "desc"));
         stockMovementViewModel.setMovementDate("10/02/2016");
@@ -104,8 +104,8 @@ public class NewStockMovementPresenterTest {
         stockCard.getProduct().setActive(false);
         when(stockRepositoryMock.queryStockCardById(anyLong())).thenReturn(stockCard);
 
-        StockMovementViewModel stockMovementViewModel = newStockMovementPresenter.getStockMovementViewModel();
-        newStockMovementPresenter.loadData(1L, MovementReasonManager.MovementType.RECEIVE);
+        StockMovementViewModel stockMovementViewModel = newStockMovementPresenter.getViewModel();
+        newStockMovementPresenter.loadData(1L, MovementReasonManager.MovementType.RECEIVE, false);
         stockMovementViewModel.getTypeQuantityMap().put(MovementReasonManager.MovementType.RECEIVE, "0");
         stockMovementViewModel.setReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "code", "desc"));
         stockMovementViewModel.setMovementDate("10/02/2016");

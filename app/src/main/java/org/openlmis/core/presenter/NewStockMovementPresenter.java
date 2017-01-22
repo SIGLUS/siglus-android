@@ -20,6 +20,10 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -34,9 +38,9 @@ import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.Comparator;
+import java.util.List;
 
 import lombok.Getter;
 import rx.Observable;
@@ -47,33 +51,33 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class NewStockMovementPresenter extends Presenter {
-    @Getter
-    final StockMovementViewModel stockMovementViewModel = new StockMovementViewModel();
-
     @Inject
     StockRepository stockRepository;
 
-    NewStockMovementView view;
-
-    @Inject
-    SharedPreferenceMgr sharedPreferenceMgr;
+    @Getter
+    final StockMovementViewModel viewModel = new StockMovementViewModel();
 
     @Getter
     private StockCard stockCard;
 
-    public NewStockMovementPresenter() {
-    }
+    @Getter
+    private List<MovementReasonManager.MovementReason> movementReasons;
+    private String[] reasonDescriptionList;
+
+    NewStockMovementView view;
 
     @Override
     public void attachView(BaseView v) {
         this.view = (NewStockMovementView) v;
     }
 
-    public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType) {
+    public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType, boolean isKit) {
         try {
+            movementReasons = MovementReasonManager.getInstance().buildReasonListForMovementType(movementType);
             stockCard = stockRepository.queryStockCardById(stockCardId);
-            stockMovementViewModel.setProduct(stockCard.getProduct());
-            stockMovementViewModel.setMovementType(movementType);
+            viewModel.setProduct(stockCard.getProduct());
+            viewModel.setMovementType(movementType);
+            viewModel.setKit(isKit);
         } catch (LMISException e) {
             e.reportToFabric();
         }
@@ -95,25 +99,25 @@ public class NewStockMovementPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super StockMovementViewModel> subscriber) {
                 convertViewModelToDataModelAndSave();
-                subscriber.onNext(stockMovementViewModel);
+                subscriber.onNext(viewModel);
                 subscriber.onCompleted();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     private void convertViewModelToDataModelAndSave() {
-        stockMovementViewModel.populateStockExistence(stockCard.getStockOnHand());
-        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel(stockCard);
+        viewModel.populateStockExistence(stockCard.getStockOnHand());
+        StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
         stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
 
         stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
         if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
-            sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+            SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
         }
     }
 
     private void loadExistingLotMovementViewModels(final MovementReasonManager.MovementType movementType) {
-        ImmutableList<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(stockCard.getNonEmptyLotOnHandList()).transform(new Function<LotOnHand, LotMovementViewModel>() {
+        List<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(stockCard.getNonEmptyLotOnHandList()).transform(new Function<LotOnHand, LotMovementViewModel>() {
             @Override
             public LotMovementViewModel apply(LotOnHand lotOnHand) {
                 return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
@@ -123,7 +127,7 @@ public class NewStockMovementPresenter extends Presenter {
         }).filter(new Predicate<LotMovementViewModel>() {
             @Override
             public boolean apply(LotMovementViewModel lotMovementViewModel) {
-                for (LotMovementViewModel existingLot : stockMovementViewModel.getExistingLotMovementViewModelList()) {
+                for (LotMovementViewModel existingLot : viewModel.getExistingLotMovementViewModelList()) {
                     if (existingLot.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
                         return false;
                     }
@@ -137,15 +141,124 @@ public class NewStockMovementPresenter extends Presenter {
             }
         });
 
-        stockMovementViewModel.getExistingLotMovementViewModelList().addAll(lotMovementViewModels);
+        viewModel.getExistingLotMovementViewModelList().addAll(lotMovementViewModels);
+    }
+
+    public MovementReasonManager.MovementType getMovementType() {
+        return viewModel.getMovementType();
+    }
+
+    public boolean isKit() {
+        return viewModel.isKit();
+    }
+
+    public String[] getMovementReasonDescriptionList() {
+        if (ArrayUtils.isEmpty(reasonDescriptionList)) {
+            reasonDescriptionList = FluentIterable.from(movementReasons).transform(new Function<MovementReasonManager.MovementReason, String>() {
+                @Override
+                public String apply(MovementReasonManager.MovementReason movementReason) {
+                    return movementReason.getDescription();
+                }
+            }).toArray(String.class);
+        }
+        return reasonDescriptionList;
+    }
+
+    public boolean validate() {
+        if (StringUtils.isBlank(viewModel.getMovementDate())) {
+            view.showMovementDateEmpty();
+            return false;
+        }
+        if (viewModel.getReason() == null) {
+            view.showMovementReasonEmpty();
+            return false;
+        }
+
+        if (isKit() && checkKitQuantityError()) return false;
+
+        if (StringUtils.isBlank(viewModel.getSignature())) {
+            view.showSignatureErrors(LMISApp.getContext().getString(R.string.msg_empty_signature));
+            return false;
+        }
+        if (!viewModel.validateQuantitiesNotZero()) {
+            view.showQuantityErrors(LMISApp.getContext().getString(R.string.msg_entries_error));
+            return false;
+        }
+        if (!checkSignature()) {
+            view.showSignatureErrors(LMISApp.getContext().getString(R.string.hint_signature_error_message));
+            return false;
+        }
+
+        return isKit() || !view.showLotListError() && !lotListEmptyError();
+    }
+
+    private boolean checkSignature() {
+        return viewModel.getSignature().length() >= 2 && viewModel.getSignature().length() <= 5 && viewModel.getSignature().matches("\\D+");
+    }
+
+    public boolean shouldLoadKitMovementPage() {
+        return !(isKit() && SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData());
+    }
+
+    public boolean checkKitQuantityError() {
+        MovementReasonManager.MovementType movementType = viewModel.getTypeQuantityMap().keySet().iterator().next();
+        if (StringUtils.isBlank(viewModel.getTypeQuantityMap().get(movementType))) {
+            view.showQuantityErrors(LMISApp.getContext().getString(R.string.msg_empty_quantity));
+            return true;
+        }
+        if (quantityIsLargerThanSoh(viewModel.getTypeQuantityMap().get(movementType), movementType)) {
+            view.showQuantityErrors(LMISApp.getContext().getString(R.string.msg_invalid_quantity));
+            return true;
+        }
+        return false;
+    }
+
+    public boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
+        return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > stockCard.getStockOnHand();
+    }
+
+    public boolean lotListEmptyError() {
+        view.clearErrorAlerts();
+        if (viewModel.isLotEmpty()) {
+            view.showEmptyLotError();
+            return true;
+        }
+        if (!viewModel.movementQuantitiesExist()) {
+            view.showLotQuantityError();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean onComplete() {
+        if (!validate()) {
+            if (!isKit()) {
+                view.refreshLotListView();
+            }
+            view.loaded();
+            return false;
+        }
+        saveStockMovement();
+        return true;
     }
 
     public interface NewStockMovementView extends BaseView {
+
+        void refreshLotListView();
+
+        void clearErrorAlerts();
+
+        void showLotQuantityError();
+
+        void showEmptyLotError();
+
         void showMovementDateEmpty();
 
         void showQuantityErrors(String errorMsg);
 
         void showMovementReasonEmpty();
+
+        void showSignatureErrors(String errorMsg);
 
         boolean showLotListError();
 
