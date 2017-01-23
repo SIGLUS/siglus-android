@@ -236,8 +236,9 @@ public class MovementDetailsView extends LinearLayout {
     private boolean validateMovementReason() {
         if (!presenter.getViewModel().validateMovementReason()) {
             showMovementReasonEmptyError();
+            return false;
         }
-        return false;
+        return true;
     }
 
     public boolean validateSignature() {
