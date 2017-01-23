@@ -136,7 +136,10 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                         btnComplete.setEnabled(false);
                         movementDetailsView.setMovementModelValue();
 
-                        if (!presenter.onComplete()) {
+                        if (validate()) {
+                            presenter.saveStockMovement();
+                        } else {
+                            loaded();
                             btnComplete.setEnabled(true);
                         }
                         break;
@@ -148,9 +151,10 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         };
     }
 
-    @Override
-    public void refreshLotListView() {
-        newMovementLotListView.refresh();
+    private boolean validate() {
+        boolean isValid = presenter.isKit() || newMovementLotListView.validate();
+        isValid = movementDetailsView.validate() && isValid;
+        return isValid;
     }
 
     @Override
@@ -160,43 +164,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     @Override
-    public void showLotQuantityError() {
-        newMovementLotListView.setAlertAddPositiveLotAmountVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showEmptyLotError() {
-        ToastUtil.show(getResources().getString(R.string.empty_lot_warning));
-    }
-
-    @Override
-    public void showMovementDateEmpty() {
-        clearErrorAlerts();
-        movementDetailsView.showMovementDateEmptyError();
-    }
-
-    @Override
-    public void showMovementReasonEmpty() {
-        clearErrorAlerts();
-        movementDetailsView.showMovementReasonEmptyError();
-    }
-
-    @Override
     public void showQuantityErrors(String errorMsg) {
         clearErrorAlerts();
         movementDetailsView.showMovementQuantityError(errorMsg);
-    }
-
-    @Override
-    public void showSignatureErrors(String errorMsg) {
-        clearErrorAlerts();
-        movementDetailsView.showSignatureError(errorMsg);
-    }
-
-    @Override
-    public boolean showLotListError() {
-        clearErrorAlerts();
-        return newMovementLotListView.validateLotList();
     }
 
     @Override

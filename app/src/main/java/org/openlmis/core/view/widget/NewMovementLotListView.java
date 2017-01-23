@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.BaseStockMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -98,17 +99,37 @@ public class NewMovementLotListView extends MovementChangeLotListView {
         alertAddPositiveLotAmount.setVisibility(visibility);
     }
 
-    public boolean validateLotList() {
+    public boolean validateLotListWithValidValues() {
         int position1 = existingLotMovementAdapter.validateLotQuantityNotGreaterThanSOH();
         if (position1 >= 0) {
             existingLotListView.scrollToPosition(position1);
-            return true;
+            return false;
         }
         int position2 = newLotMovementAdapter.validateLotPositiveQuantity();
         if (position2 >= 0) {
             newLotListView.scrollToPosition(position2);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validate() {
+        if (validateLotListNotEmpty() && validateLotListWithValidValues()) {
             return true;
         }
+        refresh();
         return false;
+    }
+
+    public boolean validateLotListNotEmpty() {
+        if (((StockMovementViewModel)viewModel).isLotEmpty()) {
+            ToastUtil.show(getResources().getString(R.string.empty_lot_warning));
+            return false;
+        }
+        if (!((StockMovementViewModel)viewModel).movementQuantitiesExist()) {
+            setAlertAddPositiveLotAmountVisibility(View.VISIBLE);
+            return false;
+        }
+        return true;
     }
 }

@@ -37,7 +37,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class StockMovementViewModel extends BaseStockMovementViewModel{
+public class StockMovementViewModel extends BaseStockMovementViewModel {
 
     MovementReasonManager.MovementReason reason;
 
@@ -230,5 +230,13 @@ public class StockMovementViewModel extends BaseStockMovementViewModel{
             }
         }
         return !newLotMovementViewModelList.isEmpty();
+    }
+
+    public boolean validateSignature() {
+        return signature.length() >= 2 && signature.matches("\\D+");
+    }
+
+    public boolean validateMovementReason() {
+        return reason != null;
     }
 }

@@ -21,7 +21,6 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -164,103 +163,28 @@ public class NewStockMovementPresenter extends Presenter {
         return reasonDescriptionList;
     }
 
-    public boolean validate() {
-        if (StringUtils.isBlank(viewModel.getMovementDate())) {
-            view.showMovementDateEmpty();
-            return false;
-        }
-        if (viewModel.getReason() == null) {
-            view.showMovementReasonEmpty();
-            return false;
-        }
-
-        if (isKit() && checkKitQuantityError()) return false;
-
-        if (StringUtils.isBlank(viewModel.getSignature())) {
-            view.showSignatureErrors(LMISApp.getContext().getString(R.string.msg_empty_signature));
-            return false;
-        }
-        if (isKit() && !viewModel.validateQuantitiesNotZero()) {
-            view.showQuantityErrors(LMISApp.getContext().getString(R.string.msg_entries_error));
-            return false;
-        }
-        if (!checkSignature()) {
-            view.showSignatureErrors(LMISApp.getContext().getString(R.string.hint_signature_error_message));
-            return false;
-        }
-
-        return isKit() || !view.showLotListError() && !lotListEmptyError();
-    }
-
-    private boolean checkSignature() {
-        return viewModel.getSignature().length() >= 2 && viewModel.getSignature().length() <= 5 && viewModel.getSignature().matches("\\D+");
-    }
-
     public boolean shouldLoadKitMovementPage() {
         return !(isKit() && SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData());
     }
 
-    public boolean checkKitQuantityError() {
+    public boolean validateKitQuantity() {
         MovementReasonManager.MovementType movementType = viewModel.getTypeQuantityMap().keySet().iterator().next();
-        if (StringUtils.isBlank(viewModel.getTypeQuantityMap().get(movementType))) {
-            view.showQuantityErrors(LMISApp.getContext().getString(R.string.msg_empty_quantity));
-            return true;
-        }
         if (quantityIsLargerThanSoh(viewModel.getTypeQuantityMap().get(movementType), movementType)) {
             view.showQuantityErrors(LMISApp.getContext().getString(R.string.msg_invalid_quantity));
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
         return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > stockCard.getStockOnHand();
     }
 
-    public boolean lotListEmptyError() {
-        view.clearErrorAlerts();
-        if (viewModel.isLotEmpty()) {
-            view.showEmptyLotError();
-            return true;
-        }
-        if (!viewModel.movementQuantitiesExist()) {
-            view.showLotQuantityError();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean onComplete() {
-        if (!validate()) {
-            if (!isKit()) {
-                view.refreshLotListView();
-            }
-            view.loaded();
-            return false;
-        }
-        saveStockMovement();
-        return true;
-    }
-
     public interface NewStockMovementView extends BaseView {
-
-        void refreshLotListView();
 
         void clearErrorAlerts();
 
-        void showLotQuantityError();
-
-        void showEmptyLotError();
-
-        void showMovementDateEmpty();
-
         void showQuantityErrors(String errorMsg);
-
-        void showMovementReasonEmpty();
-
-        void showSignatureErrors(String errorMsg);
-
-        boolean showLotListError();
 
         void goToStockCard();
     }

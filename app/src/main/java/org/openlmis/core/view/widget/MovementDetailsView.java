@@ -184,14 +184,70 @@ public class MovementDetailsView extends LinearLayout {
     public void showMovementQuantityError(String errorMsg) {
         lyMovementQuantity.setError(errorMsg);
         etMovementQuantity.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+        etMovementQuantity.requestFocus();
     }
 
     public void showSignatureError(String errorMsg) {
         lyMovementSignature.setError(errorMsg);
         etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+        etMovementSignature.requestFocus();
     }
 
     public void setMovementReasonText(String movementReasonText) {
         etMovementReason.setText(movementReasonText);
+    }
+
+    public boolean validate() {
+        clearTextInputLayoutError();
+        boolean isValid = validateSignature();
+        isValid = validateQuantity() && isValid;
+        isValid = validateMovementReason() && isValid;
+        isValid = validateMovementDate() && isValid;
+        return isValid;
+    }
+
+    private boolean validateQuantity() {
+        if (!presenter.isKit()) {
+            return true;
+        }
+        if (StringUtils.isEmpty(etMovementQuantity.getText().toString())) {
+            showMovementQuantityError(getContext().getString(R.string.msg_empty_quantity));
+            return false;
+        }
+        if (Long.parseLong(etMovementQuantity.getText().toString()) <= 0) {
+            showMovementQuantityError(getContext().getString(R.string.msg_entries_error));
+            return false;
+        }
+        if (!presenter.validateKitQuantity()) {
+            showMovementQuantityError(getContext().getString(R.string.msg_invalid_quantity));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateMovementDate() {
+        if (StringUtils.isEmpty(etMovementDate.getText().toString())) {
+            showMovementDateEmptyError();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateMovementReason() {
+        if (!presenter.getViewModel().validateMovementReason()) {
+            showMovementReasonEmptyError();
+        }
+        return false;
+    }
+
+    public boolean validateSignature() {
+        if (StringUtils.isBlank(etMovementSignature.getText())) {
+            showSignatureError(getContext().getString(R.string.msg_empty_signature));
+            return false;
+        } else if (!presenter.getViewModel().validateSignature()) {
+            showSignatureError(getContext().getString(R.string.hint_signature_error_message));
+            return false;
+        }
+        return true;
     }
 }

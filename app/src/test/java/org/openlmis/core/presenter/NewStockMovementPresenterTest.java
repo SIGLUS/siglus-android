@@ -45,10 +45,11 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,12 +59,10 @@ public class NewStockMovementPresenterTest {
     private NewStockMovementPresenter newStockMovementPresenter;
     private StockRepository stockRepositoryMock;
     NewStockMovementPresenter.NewStockMovementView view;
-    private SharedPreferenceMgr sharedPreferenceMgr;
 
     @Before
     public void setup() throws Exception {
         stockRepositoryMock = mock(StockRepository.class);
-        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         view = mock(NewStockMovementPresenter.NewStockMovementView.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
@@ -94,8 +93,7 @@ public class NewStockMovementPresenterTest {
         StockMovementItem stockMovementItemSaved = captor.getAllValues().get(0);
         assertThat(stockMovementItemSaved.getStockOnHand(), is(50L));
         assertThat(stockMovementItemSaved.getStockCard(), is(stockCard));
-
-        verify(sharedPreferenceMgr, never()).setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+        assertFalse(SharedPreferenceMgr.getInstance().isNeedShowProductsUpdateBanner());
     }
 
     @Test
@@ -114,8 +112,7 @@ public class NewStockMovementPresenterTest {
 
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
-
-        verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+        assertTrue(SharedPreferenceMgr.getInstance().isNeedShowProductsUpdateBanner());
     }
 
     @NonNull
@@ -136,7 +133,6 @@ public class NewStockMovementPresenterTest {
         @Override
         protected void configure() {
             bind(StockRepository.class).toInstance(stockRepositoryMock);
-            bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
         }
     }
 }
