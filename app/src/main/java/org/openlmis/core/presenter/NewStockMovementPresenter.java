@@ -180,7 +180,7 @@ public class NewStockMovementPresenter extends Presenter {
             view.showSignatureErrors(LMISApp.getContext().getString(R.string.msg_empty_signature));
             return false;
         }
-        if (!viewModel.validateQuantitiesNotZero()) {
+        if (isKit() && !viewModel.validateQuantitiesNotZero()) {
             view.showQuantityErrors(LMISApp.getContext().getString(R.string.msg_entries_error));
             return false;
         }

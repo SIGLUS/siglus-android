@@ -63,9 +63,9 @@
                         android:id="@+id/et_document_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_document_number"
                         android:drawableLeft="@drawable/ic_document"
                         android:drawablePadding="5dp"
+                        android:hint="@string/hint_document_number"
                         android:inputType="textShortMessage"
                         android:maxLength="9" />
                 </android.support.design.widget.TextInputLayout>
@@ -143,7 +143,9 @@
                     android:id="@+id/et_movement_signature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_movement_signature" />
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:hint="@string/hint_movement_signature"
+                    android:maxLength="5" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

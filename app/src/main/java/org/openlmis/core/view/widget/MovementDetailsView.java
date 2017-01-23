@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
@@ -95,6 +96,22 @@ public class MovementDetailsView extends LinearLayout {
         }
 
         setMovementDateClickListener();
+        setSignatureListener();
+    }
+
+    private void setSignatureListener() {
+        etMovementSignature.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (!StringUtils.isEmpty(etMovementSignature.getText()) && etMovementSignature.getText().length() < 2) {
+                        showSignatureError(getContext().getString(R.string.hint_signature_error_message));
+                    } else {
+                        lyMovementSignature.setErrorEnabled(false);
+                    }
+                }
+            }
+        });
     }
 
     public void setMovementDateClickListener() {

@@ -287,7 +287,7 @@
     <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_request_signature_sign">Validar</string>
     <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
-    <string name="hint_signature_error_message">Por favor, insira suas iniciais (mínimo 2 caracteres, máximo 5 caracteres)</string>
+    <string name="hint_signature_error_message">Enter more than 2 characters as your initials (maximum 5 characters)</string>
     <string name="dialog_unpack_kit_signature">Por favor, insira suas iniciais para confirmar os montantes inseridos &amp; desembalar o kit</string>
     <!--Archived Drugs-->
     <string name="menu_archive_drug">Arquivar produtos</string>
