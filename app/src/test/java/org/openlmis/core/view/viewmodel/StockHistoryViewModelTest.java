@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 public class StockHistoryViewModelTest {
 
     StockHistoryViewModel viewModel;
+    private StockCard stockCard;
 
     @Before
     public void setUp() throws Exception {
@@ -27,7 +28,7 @@ public class StockHistoryViewModelTest {
     }
 
     private void setUpViewModel() throws ParseException {
-        StockCard stockCard = StockCardBuilder.buildStockCard();
+        stockCard = StockCardBuilder.buildStockCard();
         StockMovementItem stockMovementItem1 = new StockMovementItemBuilder()
                 .withDocumentNo("1")
                 .withMovementDate("2015-11-01")
@@ -35,7 +36,7 @@ public class StockHistoryViewModelTest {
                 .withQuantity(100)
                 .withMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST)
                 .build();
-        stockCard.getStockMovementItemsWrapper().add(stockMovementItem1);
+        stockMovementItem1.setId(1);
 
         StockMovementItem stockMovementItem2 = new StockMovementItemBuilder()
                 .withDocumentNo("2")
@@ -44,7 +45,7 @@ public class StockHistoryViewModelTest {
                 .withQuantity(100)
                 .withMovementType(MovementReasonManager.MovementType.ISSUE)
                 .build();
-        stockCard.getStockMovementItemsWrapper().add(stockMovementItem2);
+        stockMovementItem2.setId(2);
 
         StockMovementItem stockMovementItem3 = new StockMovementItemBuilder()
                 .withDocumentNo("3")
@@ -53,8 +54,37 @@ public class StockHistoryViewModelTest {
                 .withQuantity(100)
                 .withMovementType(MovementReasonManager.MovementType.RECEIVE)
                 .build();
+        stockMovementItem3.setId(3);
+
         stockCard.getStockMovementItemsWrapper().add(stockMovementItem3);
+        stockCard.getStockMovementItemsWrapper().add(stockMovementItem2);
+        stockCard.getStockMovementItemsWrapper().add(stockMovementItem1);
         viewModel = new StockHistoryViewModel(stockCard);
+    }
+
+    @Test
+    public void shouldConstructStockHistoryViewModelWithMovementItemsInAscendingOderByMovementDate() throws Exception {
+        assertEquals("1", viewModel.getAllMovementItemViewModelList().get(0).getDocumentNumber());
+        assertEquals("2", viewModel.getAllMovementItemViewModelList().get(1).getDocumentNumber());
+        assertEquals("3", viewModel.getAllMovementItemViewModelList().get(2).getDocumentNumber());
+
+
+        StockMovementItem stockMovementItem4 = new StockMovementItemBuilder()
+                .withDocumentNo("4")
+                .withMovementDate("2016-12-31")
+                .withStockOnHand(0)
+                .withQuantity(300)
+                .withMovementType(MovementReasonManager.MovementType.ISSUE)
+                .build();
+        stockMovementItem4.setId(4);
+
+        stockCard.getStockMovementItemsWrapper().add(0, stockMovementItem4);
+        viewModel = new StockHistoryViewModel(stockCard);
+
+        assertEquals("1", viewModel.getAllMovementItemViewModelList().get(0).getDocumentNumber());
+        assertEquals("2", viewModel.getAllMovementItemViewModelList().get(1).getDocumentNumber());
+        assertEquals("3", viewModel.getAllMovementItemViewModelList().get(2).getDocumentNumber());
+        assertEquals("4", viewModel.getAllMovementItemViewModelList().get(3).getDocumentNumber());
     }
 
     @Test

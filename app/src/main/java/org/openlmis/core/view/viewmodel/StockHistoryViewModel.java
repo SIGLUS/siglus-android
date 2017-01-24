@@ -12,6 +12,7 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,16 @@ public class StockHistoryViewModel {
             public StockHistoryMovementItemViewModel apply(StockMovementItem stockMovementItem) {
                 return new StockHistoryMovementItemViewModel(stockMovementItem);
             }
-        }).toList());
+        }).toSortedList(new Comparator<StockHistoryMovementItemViewModel>() {
+            @Override
+            public int compare(StockHistoryMovementItemViewModel lhs, StockHistoryMovementItemViewModel rhs) {
+                int compareResult = lhs.getStockMovementItem().getMovementDate().compareTo(rhs.getStockMovementItem().getMovementDate());
+                if (compareResult == 0) {
+                    return lhs.getStockMovementItem().getId() < rhs.getStockMovementItem().getId() ? -1 : 1;
+                }
+                return compareResult;
+            }
+        }).asList());
     }
 
     public List<StockHistoryMovementItemViewModel> filter(final int days) {
