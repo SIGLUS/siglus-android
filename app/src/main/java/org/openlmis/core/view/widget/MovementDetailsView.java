@@ -104,7 +104,9 @@ public class MovementDetailsView extends LinearLayout {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (!StringUtils.isEmpty(etMovementSignature.getText()) && etMovementSignature.getText().length() < 2) {
+                    if (StringUtils.isEmpty(etMovementSignature.getText())) {
+                        showSignatureError(getContext().getString(R.string.msg_empty_signature));
+                    } else if (etMovementSignature.getText().length() < 2) {
                         showSignatureError(getContext().getString(R.string.hint_signature_error_message));
                     } else {
                         lyMovementSignature.setErrorEnabled(false);
@@ -174,23 +176,33 @@ public class MovementDetailsView extends LinearLayout {
     public void showMovementDateEmptyError() {
         lyMovementDate.setError(getResources().getString(R.string.msg_empty_movement_date));
         etMovementDate.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+        requestFocus(etMovementDate);
     }
 
     public void showMovementReasonEmptyError() {
         lyMovementReason.setError(getResources().getString(R.string.msg_empty_movement_reason));
         etMovementReason.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+        requestFocus(etMovementReason);
+    }
+
+    public void requestFocus(final View view) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                view.getParent().requestChildFocus(view, view);
+            }
+        });
     }
 
     public void showMovementQuantityError(String errorMsg) {
         lyMovementQuantity.setError(errorMsg);
         etMovementQuantity.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
-        etMovementQuantity.requestFocus();
+        requestFocus(lyMovementQuantity);
     }
 
     public void showSignatureError(String errorMsg) {
         lyMovementSignature.setError(errorMsg);
         etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
-        etMovementSignature.requestFocus();
     }
 
     public void setMovementReasonText(String movementReasonText) {
@@ -244,9 +256,11 @@ public class MovementDetailsView extends LinearLayout {
     public boolean validateSignature() {
         if (StringUtils.isBlank(etMovementSignature.getText())) {
             showSignatureError(getContext().getString(R.string.msg_empty_signature));
+            requestFocus(lyMovementSignature);
             return false;
         } else if (!presenter.getViewModel().validateSignature()) {
             showSignatureError(getContext().getString(R.string.hint_signature_error_message));
+            requestFocus(lyMovementSignature);
             return false;
         }
         return true;

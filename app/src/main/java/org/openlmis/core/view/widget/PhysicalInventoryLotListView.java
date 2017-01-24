@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.adapter.LotInfoReviewListAdapter;
+import org.openlmis.core.view.adapter.PhysicalInventoryLotMovementAdapter;
 import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
@@ -66,6 +67,20 @@ public class PhysicalInventoryLotListView extends BaseLotListView {
         markDone(((PhysicalInventoryViewModel) viewModel).isDone());
     }
 
+    @Override
+    public void initExistingLotListView() {
+        existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        existingLotMovementAdapter = new PhysicalInventoryLotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
+        existingLotListView.setAdapter(existingLotMovementAdapter);
+    }
+
+    @Override
+    public void initNewLotListView() {
+        newLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        newLotMovementAdapter = new PhysicalInventoryLotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+        newLotListView.setAdapter(newLotMovementAdapter);
+    }
+
     private void initLotInfoReviewList() {
         LotInfoReviewListAdapter adapter = new LotInfoReviewListAdapter(viewModel);
         rvLotInfoReview.setLayoutManager(new LinearLayoutManager(context));
@@ -84,12 +99,12 @@ public class PhysicalInventoryLotListView extends BaseLotListView {
     }
 
     public boolean validateLotList() {
-        int position1 = existingLotMovementAdapter.validateLotNonEmptyQuantity();
+        int position1 = ((PhysicalInventoryLotMovementAdapter) existingLotMovementAdapter).validateLotNonEmptyQuantity();
         if (position1 >= 0) {
             existingLotListView.scrollToPosition(position1);
             return false;
         }
-        int position2 = newLotMovementAdapter.validateLotPositiveQuantity();
+        int position2 = ((PhysicalInventoryLotMovementAdapter) newLotMovementAdapter).validateLotPositiveQuantity();
         if (position2 >= 0) {
             newLotListView.scrollToPosition(position2);
             return false;

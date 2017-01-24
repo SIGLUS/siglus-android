@@ -16,7 +16,7 @@ import lombok.Getter;
 public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHolder> {
 
     @Getter
-    private final List<LotMovementViewModel> lotList;
+    protected final List<LotMovementViewModel> lotList;
 
     @Getter
     private final String productName;
@@ -48,56 +48,6 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     @Override
     public int getItemCount() {
         return lotList.size();
-    }
-
-    public int validateLotQuantityNotGreaterThanSOH() {
-        int position = -1;
-        for (LotMovementViewModel lotMovementViewModel : lotList) {
-            lotMovementViewModel.setQuantityLessThanSoh(true);
-        }
-        for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).validateQuantityNotGreaterThanSOH()) {
-                position = i;
-                break;
-            }
-        }
-
-        this.notifyDataSetChanged();
-        return position;
-    }
-
-    public int validateLotPositiveQuantity() {
-        int position = -1;
-        for (LotMovementViewModel lotMovementViewModel : lotList) {
-            lotMovementViewModel.setValid(true);
-            lotMovementViewModel.setQuantityLessThanSoh(true);
-        }
-        for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).validateLotWithPositiveQuantity()) {
-                position = i;
-                break;
-            }
-        }
-
-        this.notifyDataSetChanged();
-        return position;
-    }
-
-    public int validateLotNonEmptyQuantity() {
-        int position = -1;
-        for (LotMovementViewModel lotMovementViewModel : lotList) {
-            lotMovementViewModel.setValid(true);
-            lotMovementViewModel.setQuantityLessThanSoh(true);
-        }
-        for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).validateLotWithNoEmptyFields()) {
-                position = i;
-                break;
-            }
-        }
-
-        this.notifyDataSetChanged();
-        return position;
     }
 
     public void remove(LotMovementViewModel viewModel) {

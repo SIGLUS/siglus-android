@@ -2,6 +2,7 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
+import org.openlmis.core.view.adapter.NewMovementLotMovementAdapter;
 import org.openlmis.core.view.viewmodel.BaseStockMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -64,6 +66,22 @@ public class NewMovementLotListView extends MovementChangeLotListView {
         };
     }
 
+    @Override
+    public void initExistingLotListView() {
+        existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        existingLotMovementAdapter = new NewMovementLotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
+        existingLotListView.setAdapter(existingLotMovementAdapter);
+        existingLotMovementAdapter.setMovementChangeListener(movementChangedListener);
+    }
+
+    @Override
+    public void initNewLotListView() {
+        newLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        newLotMovementAdapter = new NewMovementLotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+        newLotListView.setAdapter(newLotMovementAdapter);
+        newLotMovementAdapter.setMovementChangeListener(movementChangedListener);
+    }
+
     private void updateAddPositiveLotAmountAlert() {
         if (!((StockMovementViewModel) viewModel).movementQuantitiesExist()) {
             alertAddPositiveLotAmount.setVisibility(View.VISIBLE);
@@ -100,12 +118,12 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     }
 
     public boolean validateLotListWithValidValues() {
-        int position1 = existingLotMovementAdapter.validateLotQuantityNotGreaterThanSOH();
+        int position1 = ((NewMovementLotMovementAdapter) existingLotMovementAdapter).validateLotQuantityNotGreaterThanSOH();
         if (position1 >= 0) {
             existingLotListView.scrollToPosition(position1);
             return false;
         }
-        int position2 = newLotMovementAdapter.validateLotPositiveQuantity();
+        int position2 = ((NewMovementLotMovementAdapter) newLotMovementAdapter).validateLotPositiveQuantity();
         if (position2 >= 0) {
             newLotListView.scrollToPosition(position2);
             return false;
@@ -122,11 +140,11 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     }
 
     public boolean validateLotListNotEmpty() {
-        if (((StockMovementViewModel)viewModel).isLotEmpty()) {
+        if (((StockMovementViewModel) viewModel).isLotEmpty()) {
             ToastUtil.show(getResources().getString(R.string.empty_lot_warning));
             return false;
         }
-        if (!((StockMovementViewModel)viewModel).movementQuantitiesExist()) {
+        if (!((StockMovementViewModel) viewModel).movementQuantitiesExist()) {
             setAlertAddPositiveLotAmountVisibility(View.VISIBLE);
             return false;
         }
