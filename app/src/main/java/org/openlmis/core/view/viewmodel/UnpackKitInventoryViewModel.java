@@ -25,7 +25,7 @@ public class UnpackKitInventoryViewModel extends InventoryViewModel {
             }
         }
         for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-            if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+            if (!StringUtils.isBlank(lotMovementViewModel.getQuantity()) && Long.parseLong(lotMovementViewModel.getQuantity()) > 0) {
                 return true;
             }
         }

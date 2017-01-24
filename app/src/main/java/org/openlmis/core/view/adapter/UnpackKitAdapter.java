@@ -50,4 +50,19 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_unpack_kit_with_lots, parent, false);
         return new UnpackKitWithLotViewHolder(view);
     }
+
+    @Override
+    public int validateAll() {
+        int position = -1;
+        for (int i = 0; i < data.size(); i++) {
+            if (!data.get(i).validate()) {
+                if (position == -1 || position > i) {
+                    position = i;
+                }
+            }
+        }
+
+        this.notifyDataSetChanged();
+        return position;
+    }
 }
