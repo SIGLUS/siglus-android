@@ -3,8 +3,7 @@ require 'pry'
 
 When /^I enter username "([^\"]+)"$/ do |username|
   element = "android.widget.EditText id:'tx_username'"
-  query(element, setText: '')
-  enter_text(element, username)
+  query(element, setText: "#{username}")
   hide_soft_keyboard
 end
 

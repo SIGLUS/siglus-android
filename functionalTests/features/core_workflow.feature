@@ -1,4 +1,4 @@
-@core @dev @change_date @1
+@core @dev @change_date
 Feature: Core Workflow
 
   Scenario: Initial inventory, movements, physical inventory, mmia and via
@@ -33,6 +33,7 @@ Feature: Core Workflow
     Then I wait for "Requisitions" to appear
     And I press "Create Requisition Balancete"
     And I press "Thursday"
+    Then I wait for 1 second
     And I press "Next"
 
     Then I enter consultationsNub "888"
