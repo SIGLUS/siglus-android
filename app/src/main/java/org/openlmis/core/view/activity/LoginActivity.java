@@ -134,8 +134,10 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         btnLogin.setOnClickListener(this);
 
         String lastLoginUser = SharedPreferenceMgr.getInstance().getLastLoginUser();
+        etUsername.setEnabled(true);
         if (StringUtils.isNotBlank(lastLoginUser)) {
             etUsername.setText(lastLoginUser);
+            etUsername.setEnabled(false);
             etPassword.requestFocus();
         }
 
