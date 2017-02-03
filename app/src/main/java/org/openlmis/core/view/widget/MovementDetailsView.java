@@ -147,10 +147,6 @@ public class MovementDetailsView extends LinearLayout {
         dialog.show();
     }
 
-    public void setMovementReasonEnable(boolean movementReasonEnable) {
-        etMovementReason.setEnabled(movementReasonEnable);
-    }
-
     public void setMovementQuantityVisibility(int movementQuantityVisibility) {
         lyMovementQuantity.setVisibility(movementQuantityVisibility);
     }

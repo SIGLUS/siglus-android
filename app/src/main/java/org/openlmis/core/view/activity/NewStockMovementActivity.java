@@ -105,13 +105,11 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View view) {
-                movementDetailsView.setMovementReasonEnable(false);
                 Bundle bundle = new Bundle();
                 bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, presenter.getMovementReasonDescriptionList());
                 SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
                 reasonsDialog.setArguments(bundle);
                 reasonsDialog.setMovementTypeOnClickListener(new MovementTypeOnClickListener(reasonsDialog));
-                reasonsDialog.setCancelable(false);
                 reasonsDialog.show(getFragmentManager(), "SELECT_REASONS");
             }
         };
@@ -188,7 +186,6 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
             movementDetailsView.setMovementReasonText(presenter.getMovementReasonDescriptionList()[position]);
             presenter.getViewModel().setReason(presenter.getMovementReasons().get(position));
             reasonsDialog.dismiss();
-            movementDetailsView.setMovementReasonEnable(true);
         }
     }
 }
