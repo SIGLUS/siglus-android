@@ -102,11 +102,11 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     }
 
     public boolean validate() {
-        valid = !checked || validateLotList() || product.isArchived();
+        valid = !checked || validateNewLotList() || product.isArchived();
         return valid;
     }
 
-    boolean validateLotList() {
+    boolean validateNewLotList() {
         for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
             if (!lotMovementViewModel.validateLotWithPositiveQuantity()) {
                 return false;

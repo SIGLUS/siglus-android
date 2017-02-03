@@ -25,7 +25,7 @@ public class UnpackKitInventoryViewModel extends InventoryViewModel {
             }
         }
         for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-            if (!StringUtils.isBlank(lotMovementViewModel.getQuantity()) && Long.parseLong(lotMovementViewModel.getQuantity()) > 0) {
+            if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
                 return true;
             }
         }
@@ -34,10 +34,10 @@ public class UnpackKitInventoryViewModel extends InventoryViewModel {
 
     @Override
     public boolean validate() {
-        if (!confirmedNoStockReceived && (!validateLotList() || getLotListQuantityTotalAmount() <= 0)) {
+        boolean valid = confirmedNoStockReceived || hasLotChanged() && validateNewLotList();
+        if (!valid) {
             shouldShowEmptyLotWarning = true;
-            return false;
         }
-        return true;
+        return valid;
     }
 }

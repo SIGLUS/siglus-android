@@ -28,7 +28,7 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
 
     @Override
     public boolean validate() {
-        valid = !checked || (validateLotList() && validateExistingLot()) || product.isArchived();
+        valid = !checked || (validateNewLotList() && validateExistingLot()) || product.isArchived();
         done = valid;
         return valid;
     }
