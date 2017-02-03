@@ -62,4 +62,8 @@ public class StockHistoryMovementItemViewModel {
             return EMPTY_FIELD;
         } else return s;
     }
+
+    public boolean isIssueAdjustment() {
+        return stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.ISSUE);
+    }
 }

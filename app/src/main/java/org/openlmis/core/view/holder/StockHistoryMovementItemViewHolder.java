@@ -34,8 +34,14 @@ public class StockHistoryMovementItemViewHolder extends BaseViewHolder {
     @InjectView(R.id.tv_stock_existence)
     TextView tvStockExistence;
 
+    private final int blackColor;
+    private final int redColor;
+
     public StockHistoryMovementItemViewHolder(View itemView) {
         super(itemView);
+
+        blackColor = context.getResources().getColor(R.color.color_black);
+        redColor = context.getResources().getColor(R.color.color_red);
     }
 
     public void populate(StockHistoryMovementItemViewModel viewModel) {
@@ -47,5 +53,18 @@ public class StockHistoryMovementItemViewHolder extends BaseViewHolder {
         tvPositiveAdjustmentAmount.setText(viewModel.getPositiveAdjustmentAmount());
         tvIssueAmount.setText(viewModel.getIssueAmount());
         tvStockExistence.setText(viewModel.getStockExistence());
+
+        setTextColor(viewModel.isIssueAdjustment() ? blackColor : redColor);
+    }
+
+    private void setTextColor(int color) {
+        tvMovementDate.setTextColor(color);
+        tvMovementReason.setTextColor(color);
+        tvDocumentNumber.setTextColor(color);
+        tvEntryAmount.setTextColor(color);
+        tvNegativeAdjustmentAmount.setTextColor(color);
+        tvPositiveAdjustmentAmount.setTextColor(color);
+        tvIssueAmount.setTextColor(color);
+        tvStockExistence.setTextColor(color);
     }
 }
