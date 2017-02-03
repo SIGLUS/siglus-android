@@ -167,7 +167,7 @@
     <string name="msg_invalid_stock_movement_date">Dados Inválidos</string>
     <string name="msg_db_error">Ocorreu um erro inesperado. Por favor contacte o administrador.</string>
     <string name="msg_entries_error">Deve introduzir um número positivo. 0 não é permitido.</string>
-    <string name="label_cmm">CMM</string>
+    <string name="label_cmm">C.M.M.</string>
     <string name="label_validate_period">Prazos de Validade</string>
     <string name="label_lot_info">Informações de lote</string>
     <string name="btn_add_expiry_date">+ Data de expiração</string>
