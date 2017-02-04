@@ -21,6 +21,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -78,13 +79,13 @@ public class StockCardTest {
     @Test
     public void shouldGetCMM() throws Exception {
         stockCard.setAvgMonthlyConsumption(0.7777777f);
-        assertThat(stockCard.getCMM(),is(0.78f));
+        assertThat(stockCard.getCMM(), is(0.78f));
 
         stockCard.setAvgMonthlyConsumption(12.3849f);
-        assertThat(stockCard.getCMM(),is(12.38f));
+        assertThat(stockCard.getCMM(), is(12.38f));
 
         stockCard.setAvgMonthlyConsumption(2234f);
-        assertThat(stockCard.getCMM(),is(2234f));
+        assertThat(stockCard.getCMM(), is(2234f));
     }
 
     @Test
@@ -104,25 +105,25 @@ public class StockCardTest {
     @Test
     public void shouldGetNonEmptyLotOnHandList() throws Exception {
         Lot lot1 = new Lot();
-        lot1.setExpirationDate(DateUtil.parseString("Sep 2014",DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        lot1.setExpirationDate(DateUtil.parseString("Sep 2014", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         LotOnHand lotOnHand1 = new LotOnHand();
         lotOnHand1.setLot(lot1);
         lotOnHand1.setQuantityOnHand(1L);
         Lot lot2 = new Lot();
-        lot2.setExpirationDate(DateUtil.parseString("Jan 2013",DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        lot2.setExpirationDate(DateUtil.parseString("Jan 2013", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         LotOnHand lotOnHand2 = new LotOnHand();
         lotOnHand2.setLot(lot2);
         lotOnHand2.setQuantityOnHand(0L);
         Lot lot3 = new Lot();
-        lot3.setExpirationDate(DateUtil.parseString("Feb 2014",DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        lot3.setExpirationDate(DateUtil.parseString("Feb 2014", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         LotOnHand lotOnHand3 = new LotOnHand();
         lotOnHand3.setLot(lot3);
         lotOnHand3.setQuantityOnHand(1L);
-        stockCard.setLotOnHandListWrapper(Arrays.asList(lotOnHand1,lotOnHand2,lotOnHand3));
+        stockCard.setLotOnHandListWrapper(Arrays.asList(lotOnHand1, lotOnHand2, lotOnHand3));
 
-        assertThat(stockCard.getNonEmptyLotOnHandList().size(),is(2));
-        assertThat(stockCard.getNonEmptyLotOnHandList().get(0),is(lotOnHand1));
-        assertThat(stockCard.getNonEmptyLotOnHandList().get(1),is(lotOnHand3));
+        assertThat(stockCard.getNonEmptyLotOnHandList().size(), is(2));
+        assertThat(stockCard.getNonEmptyLotOnHandList().get(0), is(lotOnHand1));
+        assertThat(stockCard.getNonEmptyLotOnHandList().get(1), is(lotOnHand3));
     }
 
     public class MyTestModule extends AbstractModule {
@@ -139,21 +140,30 @@ public class StockCardTest {
 
         assertNull(stockCard.getEarliestLotExpiryDate());
         Lot lot1 = new Lot();
-        lot1.setExpirationDate(DateUtil.parseString("Sep 2014",DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        lot1.setExpirationDate(DateUtil.parseString("Sep 2014", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         LotOnHand lotOnHand1 = new LotOnHand();
         lotOnHand1.setLot(lot1);
         lotOnHand1.setQuantityOnHand(1L);
         Lot lot2 = new Lot();
-        lot2.setExpirationDate(DateUtil.parseString("Jan 2013",DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        lot2.setExpirationDate(DateUtil.parseString("Jan 2013", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         LotOnHand lotOnHand2 = new LotOnHand();
         lotOnHand2.setLot(lot2);
         lotOnHand2.setQuantityOnHand(0L);
         Lot lot3 = new Lot();
-        lot3.setExpirationDate(DateUtil.parseString("Feb 2014",DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        lot3.setExpirationDate(DateUtil.parseString("Feb 2014", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         LotOnHand lotOnHand3 = new LotOnHand();
         lotOnHand3.setLot(lot3);
         lotOnHand3.setQuantityOnHand(1L);
-        stockCard.setLotOnHandListWrapper(Arrays.asList(lotOnHand1,lotOnHand2,lotOnHand3));
+        stockCard.setLotOnHandListWrapper(Arrays.asList(lotOnHand1, lotOnHand2, lotOnHand3));
         assertThat(DateUtil.formatDate(stockCard.getEarliestLotExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR), is("Feb 2014"));
+    }
+
+    @Test
+    public void shouldGetLatestMovementDate() throws Exception {
+        item1.setMovementDate(DateUtil.parseString("2016-02-19", DateUtil.DB_DATE_FORMAT));
+        item2.setMovementDate(DateUtil.parseString("2016-03-19", DateUtil.DB_DATE_FORMAT));
+        item3.setMovementDate(DateUtil.parseString("2016-03-18", DateUtil.DB_DATE_FORMAT));
+
+        assertEquals(item2.getMovementDate(), stockCard.getLastStockMovementDate());
     }
 }

@@ -98,7 +98,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     }
 
     public float getCMM() {
-        return (int)(this.avgMonthlyConsumption*100+0.5)/100f;
+        return (int) (this.avgMonthlyConsumption * 100 + 0.5) / 100f;
     }
 
     public boolean isOverStock() {
@@ -136,14 +136,19 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
         if (getStockMovementItemsWrapper().isEmpty()) {
             return null;
         }
-        return getStockMovementItemsWrapper().get(getStockMovementItemsWrapper().size()-1).getMovementDate();
+        return Collections.max(getStockMovementItemsWrapper(), new Comparator<StockMovementItem>() {
+            @Override
+            public int compare(StockMovementItem lhs, StockMovementItem rhs) {
+                return lhs.getMovementDate().compareTo(rhs.getMovementDate());
+            }
+        }).getMovementDate();
     }
 
     public List<LotOnHand> getNonEmptyLotOnHandList() {
         return FluentIterable.from(getLotOnHandListWrapper()).filter(new Predicate<LotOnHand>() {
             @Override
             public boolean apply(LotOnHand lotOnHand) {
-                return lotOnHand.getQuantityOnHand()>0;
+                return lotOnHand.getQuantityOnHand() > 0;
             }
         }).toList();
     }

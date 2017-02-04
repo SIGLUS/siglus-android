@@ -17,7 +17,6 @@ import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.view.listener.MovementDateListener;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -121,7 +120,7 @@ public class MovementDetailsView extends LinearLayout {
             @Override
             public void onClick(View view) {
                 etMovementDate.setEnabled(false);
-                showDatePickerDialog(presenter.getStockCard().getLastStockMovementDate());
+                showDatePickerDialog();
             }
         });
         etMovementDate.setKeyListener(null);
@@ -132,11 +131,11 @@ public class MovementDetailsView extends LinearLayout {
         etMovementReason.setKeyListener(null);
     }
 
-    private void showDatePickerDialog(Date previousMovementDate) {
+    private void showDatePickerDialog() {
         final Calendar today = GregorianCalendar.getInstance();
 
         DatePickerDialog dialog = new DatePickerDialog(getContext(), DatePickerDialog.BUTTON_NEUTRAL,
-                new MovementDateListener(presenter.getViewModel(), previousMovementDate, etMovementDate),
+                new MovementDateListener(presenter.getViewModel(), presenter.getLastMovementDate(), etMovementDate),
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override

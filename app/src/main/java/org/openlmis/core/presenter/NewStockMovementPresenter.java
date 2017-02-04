@@ -39,6 +39,7 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -178,6 +179,10 @@ public class NewStockMovementPresenter extends Presenter {
 
     public boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
         return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > stockCard.getStockOnHand();
+    }
+
+    public Date getLastMovementDate() {
+        return stockCard.getLastStockMovementDate();
     }
 
     public interface NewStockMovementView extends BaseView {
