@@ -85,24 +85,6 @@ public class StockCardListFragmentTest {
     }
 
     @Test
-    public void shouldSortListWhenSelectSortSpinner() {
-        fragment.mAdapter = mock(StockCardListAdapter.class);
-
-        when(fragment.presenter.getInventoryViewModels()).thenReturn(inventoryViewModels);
-        fragment.sortSpinner.setSelection(0);
-        verify(fragment.mAdapter).sortByName(true);
-
-        fragment.sortSpinner.setSelection(1);
-        verify(fragment.mAdapter).sortByName(false);
-
-        fragment.sortSpinner.setSelection(2);
-        verify(fragment.mAdapter).sortByName(false);
-
-        fragment.sortSpinner.setSelection(3);
-        verify(fragment.mAdapter).sortBySOH(true);
-    }
-
-    @Test
     public void shouldSortListByProductName() {
         when(fragment.presenter.getInventoryViewModels()).thenReturn(this.inventoryViewModels);
         List<InventoryViewModel> inventoryViewModels = fragment.presenter.getInventoryViewModels();
