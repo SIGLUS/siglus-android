@@ -35,6 +35,7 @@ public class StockHistoryViewModelTest {
                 .withStockOnHand(300)
                 .withQuantity(100)
                 .withMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST)
+                .withMovementReason("INVENTORY")
                 .build();
         stockMovementItem1.setId(1);
 
@@ -44,6 +45,7 @@ public class StockHistoryViewModelTest {
                 .withStockOnHand(300)
                 .withQuantity(100)
                 .withMovementType(MovementReasonManager.MovementType.ISSUE)
+                .withMovementReason("INVENTORY")
                 .build();
         stockMovementItem2.setId(2);
 
@@ -53,6 +55,7 @@ public class StockHistoryViewModelTest {
                 .withStockOnHand(300)
                 .withQuantity(100)
                 .withMovementType(MovementReasonManager.MovementType.RECEIVE)
+                .withMovementReason("INVENTORY")
                 .build();
         stockMovementItem3.setId(3);
 
@@ -75,6 +78,7 @@ public class StockHistoryViewModelTest {
                 .withStockOnHand(0)
                 .withQuantity(300)
                 .withMovementType(MovementReasonManager.MovementType.ISSUE)
+                .withMovementReason("INVENTORY")
                 .build();
         stockMovementItem4.setId(4);
 

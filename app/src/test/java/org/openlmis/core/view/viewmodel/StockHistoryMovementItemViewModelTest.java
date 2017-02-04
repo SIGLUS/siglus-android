@@ -22,6 +22,7 @@ public class StockHistoryMovementItemViewModelTest {
                 .withStockOnHand(300)
                 .withQuantity(100)
                 .withMovementType(MovementReasonManager.MovementType.ISSUE)
+                .withMovementReason("INVENTORY")
                 .build();
         viewModel = new StockHistoryMovementItemViewModel(stockMovementItem);
     }

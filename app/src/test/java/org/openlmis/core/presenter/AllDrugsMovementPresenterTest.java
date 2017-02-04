@@ -42,7 +42,9 @@ public class AllDrugsMovementPresenterTest {
     @Test
     public void shouldLoadAllStockCardsWithMovement() throws Exception {
         StockCard stockcard1 = StockCardBuilder.buildStockCard();
-        stockcard1.getStockMovementItemsWrapper().add(new StockMovementItem(stockcard1));
+        StockMovementItem stockMovementItem = new StockMovementItem(stockcard1);
+        stockMovementItem.setReason("INVENTORY");
+        stockcard1.getStockMovementItemsWrapper().add(stockMovementItem);
 
         StockCard stockcard2 = StockCardBuilder.buildStockCard();
         List<StockCard> stockCards = Arrays.asList(stockcard1, stockcard2);
@@ -58,6 +60,7 @@ public class AllDrugsMovementPresenterTest {
         StockCard stockcard1 = StockCardBuilder.buildStockCard();
         StockMovementItem stockMovementItem1 = new StockMovementItem(stockcard1);
         stockMovementItem1.setMovementDate(DateUtil.parseString("2016-08-26", DateUtil.DB_DATE_FORMAT));
+        stockMovementItem1.setReason("INVENTORY");
         stockcard1.getStockMovementItemsWrapper().add(stockMovementItem1);
 
         mPresenter.viewModelList.add(new StockHistoryViewModel(stockcard1));
