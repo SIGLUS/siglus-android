@@ -32,16 +32,12 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.User;
+import org.openlmis.core.training.TrainingSyncAdapter;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
 
 import roboguice.inject.InjectResource;
-import rx.Single;
-import rx.SingleSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 import static android.content.ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY;
 import static android.content.ContentResolver.SYNC_EXTRAS_EXPEDITED;
@@ -102,7 +98,7 @@ public class SyncService extends Service {
 
     public void requestSyncImmediately() {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            requestTrainingSync();
+            trainingSyncAdapter.requestSync();
         } else {
             Log.d(tag, "immediate sync up requested");
             Account account = findFirstLmisAccount();
@@ -115,20 +111,6 @@ public class SyncService extends Service {
                 requestSync(account, syncContentAuthority, bundle);
             }
         }
-    }
-
-    private void requestTrainingSync() {
-        Single.create(new Single.OnSubscribe<String>() {
-            @Override
-            public void call(SingleSubscriber<? super String> singleSubscriber) {
-                singleSubscriber.onSuccess(trainingSyncAdapter.onPerformSync());
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<String>() {
-            @Override
-            public void call(String message) {
-                Log.d(tag, message);
-            }
-        });
     }
 
     public void shutDown() {

@@ -1,4 +1,4 @@
-package org.openlmis.core.service;
+package org.openlmis.core.training;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -10,6 +10,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
+import org.openlmis.core.service.SyncUpManager;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Date;

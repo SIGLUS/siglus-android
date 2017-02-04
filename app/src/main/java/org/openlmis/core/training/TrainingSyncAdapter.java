@@ -1,13 +1,21 @@
-package org.openlmis.core.service;
+package org.openlmis.core.training;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.service.SyncUpManager;
 import org.openlmis.core.utils.Constants;
+
+import rx.Single;
+import rx.SingleSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class TrainingSyncAdapter {
     @Inject
@@ -18,7 +26,7 @@ public class TrainingSyncAdapter {
 
     Context context;
 
-    public String onPerformSync() {
+    protected String onPerformSync() {
         context = LMISApp.getContext();
         triggerFakeSync();
         return "immediate sync up requested";
@@ -56,5 +64,19 @@ public class TrainingSyncAdapter {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
         context.sendBroadcast(intent);
+    }
+
+    public void requestSync() {
+        Single.create(new Single.OnSubscribe<String>() {
+            @Override
+            public void call(SingleSubscriber<? super String> singleSubscriber) {
+                singleSubscriber.onSuccess(onPerformSync());
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<String>() {
+            @Override
+            public void call(String message) {
+                Log.d("training sync", message);
+            }
+        });
     }
 }
