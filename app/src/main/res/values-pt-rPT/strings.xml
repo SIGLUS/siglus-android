@@ -36,7 +36,7 @@
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantidade não pode estar em branco</string>
     <string name="msg_invalid_date">Não pode selecionar data passada</string>
-    <string name="btn_done">COMPLETO</string>
+    <string name="btn_done">VERIFICADO</string>
     <string name="msg_remove_expire_date">Tem certeza que quer remover esta data de expiração?</string>
     <string name="msg_save_before_exit">Por favor, grave o inventário inicial, antes de sair da aplicação</string>
     <!--Home Page-->

@@ -40,7 +40,7 @@
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantity cannot be blank!</string>
     <string name="msg_invalid_date">Cannot select past month</string>
-    <string name="btn_done">DONE</string>
+    <string name="btn_done">VERIFIED</string>
     <string name="msg_remove_expire_date">Are you sure you want to remove this expiry date?</string>
     <string name="msg_save_before_exit">Please save initial inventory before exiting the app</string>
 
