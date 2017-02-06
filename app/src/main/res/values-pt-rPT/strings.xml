@@ -287,7 +287,7 @@
     <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_request_signature_sign">Validar</string>
     <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
-    <string name="hint_signature_error_message">Enter more than 2 characters as your initials (maximum 5 characters)</string>
+    <string name="hint_signature_error_message">Digite mais de 2 caracteres como suas iniciais (máximo de 5 caracteres)</string>
     <string name="dialog_unpack_kit_signature">Por favor, insira suas iniciais para confirmar os montantes inseridos &amp; desembalar o kit</string>
     <!--Archived Drugs-->
     <string name="menu_archive_drug">Arquivar produtos</string>
@@ -396,21 +396,20 @@
     <string name="error_empty_rapid_test">O relatório de teste rápido não pode estar vazio.</string>
     <string name="btn_edit">EDITAR</string>
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
-    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
+    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\"> Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
     <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
     <string name="label_total_complete_counts">Completado %1$s / %2$s</string>
-    <string name="title_movement_history">Movement History</string>
-    <string name="msg_products_with_movement_count">%1$s products with movements</string>
-    <string name="msg_movement_count">%1$s movements</string>
-    <string name="label_column_syphillis">Sifilis</string>
-    <string name="label_view_movements">View movements:</string>
-
+    <string name="title_movement_history">Historicos de Movimentos</string>
+    <string name="msg_products_with_movement_count">%1$s Produtos com movimentos</string>
+    <string name="msg_movement_count">%1$s movimentos</string>
+    <string name="label_column_syphillis">Sífilis</string>
+    <string name="label_view_movements">Visualizar movimentos:</string>
     <string-array name="movement_date_items_array">
-        <item>Last 7 days</item>
-        <item>Last 14 days</item>
-        <item>Last 30 days</item>
-        <item>Last 90 days</item>
-        <item>Last 180 days</item>
-        <item>Last 365 days</item>
+        <item>Últimos 7 dias</item>
+        <item>Últimos 14 dias</item>
+        <item>Últimos 30 dias</item>
+        <item>Últimos 90 dias</item>
+        <item>Últimos 180 dias</item>
+        <item>Últimos 365 dias</item>
     </string-array>
 </resources>
