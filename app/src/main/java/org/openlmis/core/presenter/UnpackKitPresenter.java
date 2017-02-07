@@ -84,7 +84,12 @@ public class UnpackKitPresenter extends Presenter {
             public void call(final Subscriber<? super Void> subscriber) {
                 try {
                     List<StockCard> stockCards = new ArrayList<>();
-                    stockCards.addAll(FluentIterable.from(inventoryViewModels).transform(new Function<InventoryViewModel, StockCard>() {
+                    stockCards.addAll(FluentIterable.from(inventoryViewModels).filter(new Predicate<InventoryViewModel>() {
+                        @Override
+                        public boolean apply(InventoryViewModel inventoryViewModel) {
+                            return inventoryViewModel.getLotListQuantityTotalAmount() > 0;
+                        }
+                    }).transform(new Function<InventoryViewModel, StockCard>() {
                         @Override
                         public StockCard apply(InventoryViewModel inventoryViewModel) {
                             try {
