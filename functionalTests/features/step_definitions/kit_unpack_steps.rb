@@ -48,8 +48,9 @@ And(/^I enter quantity for lots of all products in kit$/) do
 
 
         while !query("android.widget.TextView id:'tv_confirm_no_stock'").empty?
-            confirm_no_stock = query("android.widget.TextView id:'tv_confirm_no_stock'").first
-            touch(confirm_no_stock)
+            for element in query("android.widget.TextView id:'tv_confirm_no_stock'")
+                touch(element)
+            end
             q = query("* marked:'Complete'")
             while q.empty?
                 scroll('recyclerView', :down)

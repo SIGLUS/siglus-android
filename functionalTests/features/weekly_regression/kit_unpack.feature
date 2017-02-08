@@ -79,13 +79,10 @@ Feature: Unpack Kit
 
     Then I wait for "MMIA" to appear
     And I press "Stock Card Overview"
-    Then I should see "Total:44"
+    Then I should see "Total:8"
     When I search "02E02"
     Then I should see "889"
-    And I clean search bar
-    When I search "15C0ZY"
-    Then I should see "[15C0ZY]"
-    Then I select stock card code called "[15C0ZY]"
+    Then I select stock card code called "[02E02]"
     Then I should see "District( DDM)"
     And I swipe right
     And I swipe right
@@ -109,8 +106,8 @@ Feature: Unpack Kit
     And I wait for "inventory" to appear
 
     And I wait for 1 second
-    When I search "15C0ZY"
-    Then I should see "[15C0ZY]"
+    When I search "02E02"
+    Then I should see "[02E02]"
     Then I navigate back
     And I wait for 1 second
     Then I do physical inventory with lot for all items
