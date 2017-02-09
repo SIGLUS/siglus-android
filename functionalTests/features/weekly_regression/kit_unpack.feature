@@ -79,7 +79,6 @@ Feature: Unpack Kit
 
     Then I wait for "MMIA" to appear
     And I press "Stock Card Overview"
-    Then I should see "Total:8"
     When I search "02E02"
     Then I should see "889"
     Then I select stock card code called "[02E02]"
