@@ -2,7 +2,7 @@
 Feature: Archive drug
 
   Scenario: update product as server(update product & add new product)
-    Given I see "ESMS"
+    Given I see "SIGLUS"
     Given I try to log in with "initial_inventory" "password1"
     And I wait up to 180 seconds for "Initial Inventory" to appear
 

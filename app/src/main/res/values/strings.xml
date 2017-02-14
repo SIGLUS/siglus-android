@@ -356,14 +356,14 @@
     <string name="document_number">Document number</string>
 
     <!--App Name In Different Environment-->
-    <string name="app_name_in_local">ESMS LOCAL</string>
-    <string name="app_name_in_prodsim">ESMS PRODSIM</string>
-    <string name="app_name_in_prd">LMIS</string>
-    <string name="app_name_in_qa">ESMS QA</string>
-    <string name="app_name_in_regression">ESMS REGRESSION</string>
-    <string name="app_name_in_showcase">ESMS SHOWCASE</string>
-    <string name="app_name_in_demo">ESMS DEMO</string>
-    <string name="app_name_in_upgrade">ESMS UPGRADE</string>
+    <string name="app_name_in_local">SIGLUS LOCAL</string>
+    <string name="app_name_in_prodsim">SIGLUS PRODSIM</string>
+    <string name="app_name_in_prd">SIGLUS</string>
+    <string name="app_name_in_qa">SIGLUS QA</string>
+    <string name="app_name_in_regression">SIGLUS REGRESSION</string>
+    <string name="app_name_in_showcase">SIGLUS TREINO</string>
+    <string name="app_name_in_demo">SIGLUS DEMO</string>
+    <string name="app_name_in_upgrade">SIGLUS UPGRADE</string>
     <!--Incomplete Requisition Banner-->
     <string name="via_and_mmia_requisition_alert">Your MMIA and VIA requisitions for <![CDATA[<b>%1$s</b>]]> have not been completed</string>
     <string name="via_requisition_alert">Your VIA requisition for <![CDATA[<b>%1$s</b>]]> has not been completed</string>
