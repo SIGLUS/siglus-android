@@ -2,6 +2,8 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Period;
@@ -18,6 +20,7 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -69,6 +72,9 @@ public class RapidTestReportsPresenter extends Presenter {
         while (period != null) {
             addViewModel(period, rapidTestForms);
             period = periodService.generateNextPeriod(period);
+        }
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            addViewModel(Period.of(new Date()), rapidTestForms);
         }
         Collections.sort(viewModelList, new Comparator<RapidTestReportViewModel>() {
             @Override
