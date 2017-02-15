@@ -238,11 +238,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
             vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
             actionPanelView.setVisibility(View.VISIBLE);
         }
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            bodyView.setEditable(false);
-        } else {
-            bodyView.setEditable(isMissedPeriod || presenter.getRnRForm().isMissed());
-        }
+        bodyView.setEditable(isMissedPeriod || presenter.getRnRForm().isMissed());
     }
 
     private void setKitValues() {

@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
@@ -43,10 +42,6 @@ public class RequisitionPeriodService {
         DateTime periodBeginDate, periodEndDate;
         periodBeginDate = new DateTime(lastRnR.getPeriodEnd());
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            return Period.generateForTraining(periodBeginDate.plusDays(1).toDate());
-        }
-
         if (physicalInventoryDate == null) {
             Calendar date = Calendar.getInstance();
             date.set(periodBeginDate.getYear(), periodBeginDate.getMonthOfYear(), Period.END_DAY);
@@ -58,9 +53,6 @@ public class RequisitionPeriodService {
     }
 
     private Period generatePeriodBasedOnDefaultDates(Date physicalInventoryDate, String programCode) throws LMISException {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            return Period.generateForTraining(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
-        }
         DateTime periodBeginDate = calculatePeriodBeginDate(programCode);
         DateTime periodEndDate;
         if (physicalInventoryDate == null) {
