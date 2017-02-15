@@ -27,7 +27,9 @@ public class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         super(context, "lmis_db", null, LmisSqliteOpenHelper.getDBVersion());
         monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(trainingAnchorDate, new Date());
         if (LMISApp.getInstance().getString(R.string.sync_account_type).equals(APP_ENVIRONMENT)) {
-            monthOffsetFromAnchor += 1;
+            if (monthOffsetFromAnchor >= 1) {
+                monthOffsetFromAnchor -= 1;
+            }
         }
     }
 
