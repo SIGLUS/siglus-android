@@ -8,6 +8,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.support.DatabaseConnection;
 
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 
@@ -17,13 +18,17 @@ import java.util.Date;
 public class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private static final Date trainingAnchorDate = DateUtil.parseString("2017-02-14", DateUtil.DB_DATE_FORMAT);
     public static final String DATE_TIME_SUFFIX = ".000000";
-    private final int monthOffsetFromAnchor;
+    public static final String APP_ENVIRONMENT = "org.clintonhealthaccess.lmismoz.training";
+    private int monthOffsetFromAnchor;
 
     private DatabaseConnection dbConnection;
 
     private TrainingSqliteOpenHelper(Context context) {
         super(context, "lmis_db", null, LmisSqliteOpenHelper.getDBVersion());
         monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(trainingAnchorDate, new Date());
+        if (LMISApp.getInstance().getString(R.string.sync_account_type).equals(APP_ENVIRONMENT)) {
+            monthOffsetFromAnchor += 1;
+        }
     }
 
     @Override
