@@ -361,7 +361,8 @@
     <string name="app_name_in_prd">SIGLUS</string>
     <string name="app_name_in_qa">SIGLUS QA</string>
     <string name="app_name_in_regression">SIGLUS REGRESSION</string>
-    <string name="app_name_in_showcase">SIGLUS TREINO</string>
+    <string name="app_name_in_showcase">SIGLUS TREINO I</string>
+    <string name="app_name_in_training">SIGLUS TREINO II</string>
     <string name="app_name_in_demo">SIGLUS DEMO</string>
     <string name="app_name_in_upgrade">SIGLUS UPGRADE</string>
     <!--Incomplete Requisition Banner-->

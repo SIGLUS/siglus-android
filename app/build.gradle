@@ -59,6 +59,9 @@ android {
         showcase {
             applicationId 'org.openlmis.core.showcase'
         }
+        training {
+            applicationId 'org.openlmis.core.training'
+        }
         staging {
             applicationId 'org.openlmis.core.staging'
         }
