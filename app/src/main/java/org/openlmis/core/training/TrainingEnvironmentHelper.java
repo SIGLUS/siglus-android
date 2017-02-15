@@ -11,6 +11,7 @@ import org.openlmis.core.utils.FileUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 
 public class TrainingEnvironmentHelper {
     private static TrainingEnvironmentHelper helper;
@@ -43,7 +44,8 @@ public class TrainingEnvironmentHelper {
             AssetManager assetManager = LMISApp.getContext().getAssets();
             InputStream inputStream = assetManager.open("lmis_training.db");
             FileUtil.copyInputStreamToFile(inputStream, currentDB);
-        } catch (IOException e) {
+            TrainingSqliteOpenHelper.getInstance(LMISApp.getContext()).updateTimeInDB();
+        } catch (IOException | SQLException e) {
             new LMISException(e).reportToFabric();
         }
     }
