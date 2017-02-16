@@ -46,7 +46,8 @@
                 android:id="@+id/btn_done"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingStart="@dimen/padding_normal">
+                android:background="@drawable/border_round_blue"
+                android:layout_marginLeft="@dimen/margin_medium">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -57,9 +58,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:textColor="@color/color_accent"
                     android:paddingStart="@dimen/padding_tiny"
-                    android:text="@string/btn_done" />
+                    android:text="@string/btn_done"
+                    android:textColor="@color/color_accent" />
             </LinearLayout>
 
         </LinearLayout>
@@ -84,6 +85,7 @@
             android:id="@+id/btn_edit"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/border_round_blue"
             android:gravity="center"
             android:text="@string/btn_edit"
             android:textColor="@color/color_accent"
