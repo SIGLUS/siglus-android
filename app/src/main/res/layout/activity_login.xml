@@ -21,8 +21,8 @@
 
                 <ImageView
                     android:id="@+id/iv_logo"
-                    android:layout_width="350dp"
-                    android:layout_height="350dp"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
                     android:src="@mipmap/logo" />
 
                 <LinearLayout
