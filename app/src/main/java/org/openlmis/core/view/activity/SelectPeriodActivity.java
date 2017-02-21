@@ -83,7 +83,11 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         invalidateNextBtn();
 
         DateTime date = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
-        tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_select_close_of_period, date.monthOfYear().getAsShortText(), date.toString("dd MMM"))));
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_training_select_close_of_period, date.monthOfYear().getAsShortText(), date.toString("dd MMM"))));
+        } else {
+            tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_select_close_of_period, date.monthOfYear().getAsShortText(), date.toString("dd MMM"))));
+        }
 
         presenter.loadData(programCode);
         adapter = new SelectPeriodAdapter();

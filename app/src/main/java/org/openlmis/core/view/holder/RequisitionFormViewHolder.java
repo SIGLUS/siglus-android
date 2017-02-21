@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -74,7 +75,12 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
 
         populateAdjustmentTheoreticalIcon(entry);
 
-        populateRequestApprovedAmount(entry, status);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            fakePopulateRequestApprovedAmount(entry, status);
+        } else {
+            populateRequestApprovedAmount(entry, status);
+        }
+
     }
 
     private void populateAdjustmentTheoreticalIcon(final RequisitionFormItemViewModel itemViewModel) {
@@ -88,7 +94,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
                     DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
                             Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
                             context.getString(R.string.btn_ok));
-                    dialogFragment.show(((Activity) context).getFragmentManager(), "adjustmentTheoreticalDialog");
+                    dialogFragment.show(((Activity)context).getFragmentManager(), "adjustmentTheoreticalDialog");
                 }
             });
         }
@@ -109,6 +115,34 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
             approvedAmount.addTextChangedListener(mySimpleTextWatcher);
 
         } else if (status == RnRForm.STATUS.DRAFT) {
+            showEnabledAmount(requestAmount);
+            showDisabledAmount(approvedAmount);
+            requestAmount.addTextChangedListener(mySimpleTextWatcher);
+        }
+    }
+
+    private void fakePopulateRequestApprovedAmount(RequisitionFormItemViewModel entry, RnRForm.STATUS status) {
+        if (status == RnRForm.STATUS.SUBMITTED_MISSED) {
+            status = RnRForm.STATUS.SUBMITTED;
+        } else if (status == RnRForm.STATUS.DRAFT_MISSED)  {
+            status = RnRForm.STATUS.DRAFT;
+        }
+
+        MyTextWatcher mySimpleTextWatcher = new MyTextWatcher(entry, status);
+        requestAmount.removeTextChangedListener(mySimpleTextWatcher);
+        approvedAmount.removeTextChangedListener(mySimpleTextWatcher);
+
+        requestAmount.setText(entry.getRequestAmount());
+        requestAmount.setError(null);
+        approvedAmount.setText(entry.getApprovedAmount());
+
+        if (status == RnRForm.STATUS.SUBMITTED) {
+            showDisabledAmount(requestAmount);
+            showEnabledAmount(approvedAmount);
+            approvedAmount.addTextChangedListener(mySimpleTextWatcher);
+
+        } else if (status == RnRForm.STATUS.DRAFT) {
+            requestAmount.setEnabled(true);
             showEnabledAmount(requestAmount);
             showDisabledAmount(approvedAmount);
             requestAmount.addTextChangedListener(mySimpleTextWatcher);

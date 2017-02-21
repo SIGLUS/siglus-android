@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -133,6 +134,12 @@ public class RnRFormListPresenter extends Presenter {
     private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
         if (isCanNotCreateRnr(currentPeriod)) {
             return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+        }
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            if (stockMovementRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
+                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+            }
         }
 
         List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);

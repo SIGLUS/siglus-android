@@ -18,7 +18,7 @@ import java.util.Date;
 public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2017-02-14", DateUtil.DB_DATE_FORMAT);
     public static final String DATE_TIME_SUFFIX = ".000000";
-    public static final String APP_ENVIRONMENT = "org.clintonhealthaccess.lmismoz.training";
+    public static final String APP_ENVIRONMENT_TRAINING = "org.clintonhealthaccess.lmismoz.training";
     private int monthOffsetFromAnchor;
 
     private DatabaseConnection dbConnection;
@@ -26,7 +26,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private TrainingSqliteOpenHelper(Context context) {
         super(context, "lmis_db", null, LmisSqliteOpenHelper.getDBVersion());
         monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(TRAINING_ANCHOR_DATE, new Date());
-        if (LMISApp.getInstance().getString(R.string.sync_account_type).equals(APP_ENVIRONMENT)) {
+        if (LMISApp.getInstance().getString(R.string.sync_account_type).equals(APP_ENVIRONMENT_TRAINING)) {
             if (monthOffsetFromAnchor >= 1) {
                 monthOffsetFromAnchor -= 1;
             }
