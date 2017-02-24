@@ -8,6 +8,7 @@ import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
@@ -88,6 +89,8 @@ public class StockMovementRepository {
                     updateDateTimeIfEmpty(stockMovementItem);
                     dao.createOrUpdate(stockMovementItem);
                     for (LotMovementItem lotMovementItem : stockMovementItem.getLotMovementItemListWrapper()) {
+                        Lot existingLot = lotRepository.getLotByLotNumberAndProductId(lotMovementItem.getLot().getLotNumber(), lotMovementItem.getLot().getProduct().getId());
+                        lotMovementItem.setLot(existingLot);
                         lotRepository.createLotMovementItem(lotMovementItem);
                     }
                 }
