@@ -3,7 +3,7 @@ Mozambique OpenLMIS Mobile
 
 Unit Tests
 --------------
-run `./gradlew test` to run the Robolectric tests
+run `./gradlew testLocalDebug` to run the Robolectric tests for local debug apk
 
 Contract Tests
 --------------
@@ -35,5 +35,21 @@ Run all tests except specific tag
 ```
 ./gradlew assembleDevDebug
 cd functionalTests
-calabash-android run ../app/build/outputs/apk/app-dev-debug.apk --tags ~@Mmia
+calabash-android run ../app/build/outputs/apk/app-dev-debug.apk --tags ~@MMIA
 ```
+
+Running the training app
+--------------
+
+Run `./gradlew assembleShowCaseDebug` to package the showcase app
+Run `./gradlew assembleTrainingDebug` to package the training app
+You can find the generated apks under app/build/outputs/apk/.
+Install them to Genymotion or your tablet and run.
+
+If you want to package a signed release of the app:
+
+You need to set environment variables for KSTOREPWD and KEYPWD.
+
+After you have these environment variables set, run `./gradlew assembleShowCaseRelease` or `./gradlew assembleTrainingRelease`.
+
+
