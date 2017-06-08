@@ -37,7 +37,7 @@ public class Period {
     public static Period generateForTraining(Date date) {
         Period period = new Period(new DateTime(date));
         period.inventoryBegin = period.getBegin();
-        period.inventoryEnd = period.getEnd();
+        period.inventoryEnd = period.getEnd().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
         return period;
     }
 
