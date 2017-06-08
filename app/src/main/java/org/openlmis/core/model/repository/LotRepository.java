@@ -52,13 +52,16 @@ public class LotRepository {
             lotMovementItem.setStockOnHand(lotMovementItem.getMovementQuantity());
         } else {
             lotOnHand = getLotOnHandByLot(existingLot);
+            if(lotOnHand.getQuantityOnHand() == 0) {
+                existingLot.setExpirationDate(lot.getExpirationDate());
+                createOrUpdateLot(existingLot);
+            }
             if (lotMovementItem.isStockOnHandReset()) {
                 lotOnHand.setQuantityOnHand(lotMovementItem.getStockOnHand());
             } else {
                 lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() + lotMovementItem.getMovementQuantity());
             }
             createOrUpdateLotOnHand(lotOnHand);
-
             lotMovementItem.setLot(existingLot);
             lotMovementItem.setStockOnHand(lotOnHand.getQuantityOnHand());
         }
