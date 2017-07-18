@@ -62,9 +62,6 @@ describe "Sync stock card data" do
     expect(response_body['programDataForms'].length).to be 1
     program_form = response_body['programDataForms'][0]
     expect(program_form['programCode']).to eq 'RAPID_TEST'
-    expect(program_form['periodBegin']).to eq 1455984000000
-    expect(program_form['periodEnd']).to eq 1458403200000
-    expect(program_form['submittedTime']).to eq 1480046580000
     expect(program_form['programDataFormSignatures'][0]['text']).to eq 'mystique'
 
     item1 = program_form['programDataFormItems'].detect do |item|

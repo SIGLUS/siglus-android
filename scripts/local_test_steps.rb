@@ -1,3 +1,4 @@
+OPENLMIS_DIR="#{Dir.pwd}/open-lmis"
 LMIS_MOZ_DIR="#{Dir.pwd}/lmis-moz"
 
 p LMIS_MOZ_DIR
