@@ -41,6 +41,7 @@ calabash-android run ../app/build/outputs/apk/app-dev-debug.apk --tags ~@MMIA
 Running the training app
 --------------
 
+
 Run `./gradlew assembleShowCaseDebug` to package the showcase app
 Run `./gradlew assembleTrainingDebug` to package the training app
 You can find the generated apks under app/build/outputs/apk/.
