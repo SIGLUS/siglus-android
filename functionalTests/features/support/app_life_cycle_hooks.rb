@@ -32,7 +32,7 @@ end
 
 def update_lmis_moz_code
   if !Dir.exists?(LMIS_MOZ_DIR)
-    system("git clone --depth 1 --branch master https://github.com/clintonhealthaccess/lmis-moz.git --single-branch #{LMIS_MOZ_DIR}")
+    system("git clone --depth 1 --branch master https://github.com/SIGLUS/lmis-moz.git --single-branch #{LMIS_MOZ_DIR}")
   else
     system("cd #{LMIS_MOZ_DIR} && git checkout . && git pull -f origin master")
   end
