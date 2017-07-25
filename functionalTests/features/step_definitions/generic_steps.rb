@@ -25,8 +25,3 @@ Given(/^I enable wifi/) do
         system("adb -s $ADB_DEVICE_ARG shell svc wifi enable")
     end
 end
-
-Then /^I wait for "([^\"]*)" to appear$/ do |text|
-  wait_for_text(text)
-  sleep 1
-end
