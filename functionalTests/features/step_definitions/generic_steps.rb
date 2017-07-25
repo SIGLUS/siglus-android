@@ -26,3 +26,7 @@ Given(/^I enable wifi/) do
     end
 end
 
+Then /^I wait for "([^\"]*)" to appear$/ do |text|
+  wait_for_text(text)
+  sleep 1
+end

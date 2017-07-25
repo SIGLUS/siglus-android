@@ -171,6 +171,7 @@ When(/^I search "(.*?)"$/) do |keyword|
     touch(search_bar)
     clear_text_in(search_bar)
     enter_text("android.support.v7.widget.SearchView id:'action_search'", keyword)
+    sleep 1
 end
 
 When(/^I search "(.*?)" without clearing text$/) do |keyword|
