@@ -190,6 +190,7 @@ Feature: Log in and initialize Inventory
     Then I should see "Select inventory to close period"
     And I press "Thursday"
     And I press "Next"
+    And I wait for 1 second
     Then I wait for "MMIA -" to appear
     Then I should see "to 18 Feb"
 
