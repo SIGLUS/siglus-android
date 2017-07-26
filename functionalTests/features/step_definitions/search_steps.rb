@@ -123,6 +123,7 @@ end
 
 And(/^I clear quantity for the last lot$/) do
     h = query("android.widget.EditText id:'et_lot_amount' text:''").last
+    touch(h)
     clear_text_in(h)
 end
 
