@@ -211,6 +211,7 @@ Then(/^I make a new movement "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_c
         Then I wait for 1 second
         Then I enter signature "super"
         When I enter quantity "#{number}" for the last lot
+        Then I wait for "Complete" to appear
         And I press "Complete"
         Then I wait for 2 seconds
         Then I navigate back

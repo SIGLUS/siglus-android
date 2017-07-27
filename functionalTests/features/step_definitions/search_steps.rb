@@ -64,6 +64,7 @@ When(/^I search lot product by primary name "(.*?)" and select this item with qu
             Then I wait for "lot number" to appear
             Then I enter lot number "#{lot_number}" on add lot page
             Then I set date to next year
+            Then I wait for "Complete" to appear
             And I press "Complete"
             Then I should see "#{lot_number}"
             Then I enter quantity "#{quantity}" for the last lot
@@ -85,6 +86,7 @@ When(/^I search lot product by fnm "(.*?)" and select this item with quantity "(
             Then I wait for "lot number" to appear
             Then I enter lot number "#{lot_number}" on add lot page
             Then I set date to next year
+            Then I wait for "Complete" to appear
             And I press "Complete"
             Then I should see "#{lot_number}"
             Then I enter quantity "#{quantity}" for the last lot
