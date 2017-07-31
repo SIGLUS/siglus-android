@@ -3,7 +3,9 @@ package org.openlmis.core.view.widget;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 import android.view.View;
@@ -144,6 +146,7 @@ public class MovementDetailsView extends LinearLayout {
                 etMovementDate.setEnabled(true);
             }
         });
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
         dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setVisibility(View.GONE);
         dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setVisibility(View.GONE);
