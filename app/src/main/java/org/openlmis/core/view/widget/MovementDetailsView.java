@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 import android.view.View;
@@ -22,6 +23,8 @@ import java.util.HashMap;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
+
+import static android.graphics.Color.TRANSPARENT;
 
 public class MovementDetailsView extends LinearLayout {
     protected Context context;
@@ -134,16 +137,19 @@ public class MovementDetailsView extends LinearLayout {
     private void showDatePickerDialog() {
         final Calendar today = GregorianCalendar.getInstance();
 
-        DatePickerDialog dialog = new DatePickerDialog(getContext(), DatePickerDialog.BUTTON_NEUTRAL,
+        DatePickerDialog dialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Light_Dialog,
                 new MovementDateListener(presenter.getViewModel(), presenter.getLastMovementDate(), etMovementDate),
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        dialog.setButton(DatePickerDialog.BUTTON_POSITIVE,"Done",dialog);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 etMovementDate.setEnabled(true);
             }
         });
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(TRANSPARENT));
         dialog.show();
+        dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setVisibility(GONE);
     }
 
     public void setMovementQuantityVisibility(int movementQuantityVisibility) {
