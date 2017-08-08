@@ -101,12 +101,6 @@ android {
         unitTests.returnDefaultValues = true
     }
 
-    sourceSets {
-        androidTest {
-            setRoot('src/test')
-        }
-    }
-
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
