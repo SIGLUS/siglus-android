@@ -180,7 +180,6 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
             refreshNormalRnr(rnRForm);
         }
         setEditable();
-        hideOrShowAddProductMenuInVIAPage();
     }
 
     private void refreshNormalRnr(RnRForm rnRForm) {
