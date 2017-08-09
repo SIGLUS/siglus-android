@@ -670,6 +670,7 @@
     <style name="FormAction.CancelBtn" parent="Text.Blue.Regular">
         <item name="android:layout_marginEnd">@dimen/margin_small</item>
         <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/cancel_button_background</item>
     </style>
 
     <style name="FormAction.CompleteBtn.StockMovement" parent="Text.White.Regular">
