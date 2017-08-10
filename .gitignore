@@ -58,3 +58,6 @@ lmis-moz
 # Test reports
 functionalTests/*.html
 functionalTests/*.json
+
+#Test Apk calabash
+test_servers/
