@@ -30,6 +30,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -70,6 +71,9 @@ public class Product extends BaseModel implements Comparable<Product> {
 
     @DatabaseField
     boolean isKit;
+
+    @DatabaseField
+    boolean isBasic;
 
     @ForeignCollectionField()
     private ForeignCollection<Lot> lotList;
