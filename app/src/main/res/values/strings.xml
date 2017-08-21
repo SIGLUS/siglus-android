@@ -43,6 +43,9 @@
     <string name="btn_done">VERIFIED</string>
     <string name="msg_remove_expire_date">Are you sure you want to remove this expiry date?</string>
     <string name="msg_save_before_exit">Please save initial inventory before exiting the app</string>
+    <string name="btn_no_stock">No stock</string>
+    <string name="btn_add_product">Add Products</string>
+    <string name="title_basic_products">Basic Products</string>
 
     <!-- Home Page -->
     <string name="label_stock_cards">Stock Card Overview</string>

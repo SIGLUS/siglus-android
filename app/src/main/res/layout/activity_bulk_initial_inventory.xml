@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/btn_add_product"
+        android:layout_margin="@dimen/margin_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_round_blue"
+        android:text="@string/btn_add_product"
+        android:textColor="@color/color_accent"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/alphabet_background_border_color">
+    </View>
+
+    <TextView
+        android:id="@+id/tv_total"
+        style="@style/Inventory.TextTotal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Total: 136" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Text.Black.Large.Bold"
+        android:layout_margin="@dimen/margin_normal"
+        android:text="@string/title_basic_products"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/products_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
+
+    <include
+        android:id="@+id/action_panel"
+        layout="@layout/view_action_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

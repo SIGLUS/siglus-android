@@ -61,3 +61,6 @@ functionalTests/*.json
 
 #Test Apk calabash
 test_servers/
+
+node_modules/
+package-lock.json
