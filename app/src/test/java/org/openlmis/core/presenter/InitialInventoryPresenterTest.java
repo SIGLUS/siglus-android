@@ -139,6 +139,25 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldLoadBasicProductsForInventory() throws LMISException {
+        Product basicProduct1 = ProductBuilder.create().setPrimaryName("product").setCode("P1").setIsBasic(true).build();
+        Product basicProduct2 = ProductBuilder.create().setPrimaryName("product").setCode("P2").setIsBasic(true).build();
+
+        when(productRepositoryMock.listBasicProducts()).thenReturn(Arrays.asList(basicProduct1, basicProduct2));
+
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<InventoryViewModel>> observable = initialInventoryPresenter.loadInventoryWithBasicProducts();
+        observable.subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        subscriber.assertNoErrors();
+        List<InventoryViewModel> receivedInventoryViewModels = subscriber.getOnNextEvents().get(0);
+
+        assertEquals(2, receivedInventoryViewModels.size());
+    }
+
+    @Test
     public void shouldInitStockCardAndCreateAInitInventoryMovementItem() throws LMISException {
         StockCard stockcard = new StockCard();
         stockcard.setProduct(product);

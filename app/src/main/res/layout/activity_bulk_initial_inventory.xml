@@ -15,18 +15,17 @@
         android:textColor="@color/color_accent"
         android:textSize="16sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.1dp"
-        android:background="@color/alphabet_background_border_color">
-    </View>
-
     <TextView
         android:id="@+id/tv_total"
         style="@style/Inventory.TextTotal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Total: 136" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/alphabet_background_border_color"></View>
 
     <TextView
         android:layout_width="wrap_content"

@@ -45,6 +45,30 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
+    public Observable<List<InventoryViewModel>> loadInventoryWithBasicProducts() {
+        return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
+            @Override
+            public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
+
+                try {
+                    List<Product> basicProducts = productRepository.listBasicProducts();
+                    inventoryViewModelList.addAll(
+                            from(basicProducts).transform(new Function<Product, InventoryViewModel>() {
+                                @Override
+                                public InventoryViewModel apply(Product product) {
+                                    return convertProductToStockCardViewModel(product);
+                                }
+                            }).toList());
+                    subscriber.onNext(inventoryViewModelList);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
     @Nullable
     private InventoryViewModel convertProductToStockCardViewModel(Product product) {
         try {

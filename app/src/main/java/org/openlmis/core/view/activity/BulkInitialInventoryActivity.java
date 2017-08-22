@@ -31,7 +31,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     public void initUI() {
         super.initUI();
         initRecyclerView();
-        Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
+        Subscription subscription = presenter.loadInventoryWithBasicProducts().subscribe(getOnViewModelsLoadedSubscriber());
         subscriptions.add(subscription);
     }
 
