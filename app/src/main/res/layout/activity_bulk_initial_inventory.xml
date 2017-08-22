@@ -52,14 +52,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/headerRL">
 
-        <TextView
-            android:id="@+id/basicTitle"
-            style="@style/Text.Black.Large.Bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_normal"
-            android:text="@string/title_basic_products" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
