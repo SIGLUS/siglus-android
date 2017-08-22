@@ -21,6 +21,8 @@ package org.openlmis.core.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 
+import com.viethoa.RecyclerViewFastScroller;
+
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
@@ -31,7 +33,7 @@ import lombok.Getter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements FilterableAdapter {
+public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements FilterableAdapter, RecyclerViewFastScroller.BubbleTextGetter {
 
     @Getter
     List<InventoryViewModel> data;
@@ -92,5 +94,16 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
 
     public void refresh() {
         filter(queryKeyWord);
+    }
+
+    public String getTextToShowInBubble(int position) {
+        if (position < 0 || position >= data.size())
+            return null;
+
+        String name = data.get(position).getProductName();
+        if (name == null || name.length() < 1)
+            return null;
+
+        return data.get(position).getProductName().substring(0, 1);
     }
 }
