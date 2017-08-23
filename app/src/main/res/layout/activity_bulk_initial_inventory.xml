@@ -12,10 +12,10 @@
         android:layout_alignParentTop="true">
 
         <RelativeLayout
+            android:id="@+id/containerRL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/containerRL">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/btn_add_product"
@@ -32,30 +32,30 @@
                 style="@style/Inventory.TextTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Total: 136"
-                android:layout_marginEnd="@dimen/margin_normal"
                 android:layout_alignBottom="@+id/btn_add_product"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/margin_normal"
+                tools:text="Total: 136" />
 
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
-            android:background="@color/alphabet_background_border_color"
-            android:layout_below="@+id/containerRL" />
+            android:layout_below="@+id/containerRL"
+            android:background="@color/alphabet_background_border_color" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/action_panel"
         android:layout_below="@+id/headerRL">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/basicTitle">
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/products_list"

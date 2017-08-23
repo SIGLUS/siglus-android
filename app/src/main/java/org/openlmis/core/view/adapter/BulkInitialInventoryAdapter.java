@@ -42,13 +42,13 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         if (holder instanceof BulkInitialInventoryViewHolder) {
-            final InventoryViewModel viewModel = filteredList.get(position - 1);
+            final InventoryViewModel viewModel = filteredList.get(position);
             ((BulkInitialInventoryViewHolder) holder).populate(viewModel, queryKeyWord);
         }
     }
 
     @Override
     public int getItemCount() {
-        return super.getItemCount() + 1;
+        return super.getItemCount();
     }
 }
