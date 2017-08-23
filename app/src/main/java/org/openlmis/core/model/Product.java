@@ -138,4 +138,13 @@ public class Product extends BaseModel implements Comparable<Product> {
             this.isKit = isKit;
         }
     }
+
+    public static Product dummyProduct() {
+        Product dummyProduct = new Product();
+        dummyProduct.setCode("");
+        dummyProduct.setPrimaryName("");
+        dummyProduct.setStrength("");
+        dummyProduct.setType("");
+        return dummyProduct;
+    }
 }

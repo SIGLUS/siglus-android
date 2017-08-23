@@ -61,7 +61,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
             @Override
             public void onNext(List<InventoryViewModel> inventoryViewModels) {
-                inventoryViewModels.add(FIRST_ELEMENT_POSITION_OF_THE_LIST, new InventoryViewModel(new Product()));
+                inventoryViewModels.add(FIRST_ELEMENT_POSITION_OF_THE_LIST, new InventoryViewModel(Product.dummyProduct()));
                 setUpFastScroller(inventoryViewModels);
                 mAdapter.refresh();
                 setTotal(inventoryViewModels.size() - ELEMENTS_ADDED_TO_HEADER);
@@ -75,5 +75,15 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         preferencesMgr.setIsNeedsInventory(false);
         startActivity(HomeActivity.getIntentToMe(this));
         this.finish();
+    }
+
+    @Override
+    public boolean onSearchStart(String query) {
+        mAdapter.filter(query);
+        if (!query.isEmpty()) {
+            mAdapter.getFilteredList().add(FIRST_ELEMENT_POSITION_OF_THE_LIST, new InventoryViewModel(Product.dummyProduct()));
+        }
+        setUpFastScroller(mAdapter.getFilteredList());
+        return false;
     }
 }
