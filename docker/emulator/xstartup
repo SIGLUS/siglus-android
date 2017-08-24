@@ -1,0 +1,5 @@
+#!/bin/sh
+
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+exec /bin/sh /etc/xdg/xfce4/xinitrc
