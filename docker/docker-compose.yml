@@ -22,7 +22,6 @@ services:
     environment:
       - KSTOREPWD=!EBus&tre46A
       - KEYPWD=!EBus&tre46A
-    # command: /bin/bash -c './gradlew functionalTest'
 
   open-lmis:
     image: open-lmis
@@ -35,5 +34,5 @@ services:
       - POSTGRES_DB=open_lmis
       - APP_URL=http://localhost:8080
     ports:
-      - 8080:8080
+      - 8081:8080
 
