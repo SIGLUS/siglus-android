@@ -11,7 +11,7 @@ services:
       - 5432:5432
 
   test-runner:
-    image: test-runner:latest
+    image: siglus/test-runner
     container_name: test-runner
     volumes:
       - type: volume
@@ -24,7 +24,7 @@ services:
       - KEYPWD=!EBus&tre46A
 
   open-lmis:
-    image: open-lmis
+    image: siglus/open-lmis-portal
     container_name: open-lmis-portal
     command: sh -c '/scripts/run/wait-for-postgres.sh open-lmis-db sh /scripts/run/start.sh'
     environment:
