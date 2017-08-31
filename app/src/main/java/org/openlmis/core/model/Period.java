@@ -11,6 +11,8 @@ public class Period {
 
     public static final int BEGIN_DAY = 21;
     public static final int END_DAY = 20;
+    public static final int INVENTORY_TRAINING_BEGIN_DAY = 26;
+    public static final int INVENTORY_TRAINING_END_DAY_NEXT = 26;
     public static final int INVENTORY_BEGIN_DAY = 18;
     public static final int INVENTORY_END_DAY_NEXT = 26;
     public static final int DEFAULT_INVENTORY_DAY = 20;
@@ -36,8 +38,8 @@ public class Period {
 
     public static Period generateForTraining(Date date) {
         Period period = new Period(new DateTime(date));
-        period.inventoryBegin = period.getBegin();
-        period.inventoryEnd = period.getEnd().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
+        period.inventoryBegin = DateUtil.cutTimeStamp(period.getBegin().withDayOfMonth(INVENTORY_TRAINING_BEGIN_DAY));
+        period.inventoryEnd = DateUtil.cutTimeStamp(period.getEnd().withDayOfMonth(INVENTORY_TRAINING_END_DAY_NEXT));
         return period;
     }
 
