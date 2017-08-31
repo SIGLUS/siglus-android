@@ -43,4 +43,5 @@ Feature: low stock
   And I wait for "Stock Overview" to appear
   Then I select stock card code called "01A01"
   Then I wait for "Stock Card" to appear
+  And I wait for 1 second
   Then I should see CMM "144.33"

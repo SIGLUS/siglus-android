@@ -101,12 +101,6 @@ android {
         unitTests.returnDefaultValues = true
     }
 
-    sourceSets {
-        androidTest {
-            setRoot('src/test')
-        }
-    }
-
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
@@ -233,7 +227,7 @@ task upgradeTestSetup(type: Exec, dependsOn: ['bundleInstall']) {
     workingDir "$projectDir/../functionalTests"
 
     executable 'calabash-android'
-    args "run", "$projectDir/../functionalTests/oldVersionApk/app-upgrade-v1.9.74-debug.apk", "--tags @upgrade_setup --format html --out upgrade_test_setup_reports.html"
+    args "run", "$projectDir/../functionalTests/oldVersionApk/app-upgrade-v1.11.82-debug.apk", "--tags @upgrade_setup --format html --out upgrade_test_setup_reports.html"
 }
 
 task upgradeTests(type: Exec, dependsOn: ['bundleInstall', 'upgradeTestSetup', 'assembleUpgradeDebug']) {

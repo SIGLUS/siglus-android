@@ -67,6 +67,17 @@ public class ProductRepository {
         return activeProducts;
     }
 
+    public List<Product> listBasicProducts() throws LMISException {
+        List<Product> activeProducts = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
+            @Override
+            public List<Product> operate(Dao<Product, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("isActive", true).and().eq("isBasic", true).query();
+            }
+        });
+        Collections.sort(activeProducts);
+        return activeProducts;
+    }
+
     public List<Product> listProductsArchivedOrNotInStockCard() throws LMISException {
         String rawSql = "SELECT * FROM products "
                 + "WHERE isactive = '1' "

@@ -39,7 +39,7 @@ end
 
 Given(/^I have initialized inventory with MMIA and VIA products with lot$/) do
   steps %Q{
-        Then I wait up to 60 seconds for "Initial Inventory" to appear
+        Then I wait up to 180 seconds for "Initial Inventory" to appear
         Then I wait for "Initial inventory" to appear
         When I Select VIA Item with lot
         When I Select MMIA Item with lot

@@ -64,6 +64,7 @@ When(/^I search lot product by primary name "(.*?)" and select this item with qu
             Then I wait for "lot number" to appear
             Then I enter lot number "#{lot_number}" on add lot page
             Then I set date to next year
+            Then I wait for "Complete" to appear
             And I press "Complete"
             Then I should see "#{lot_number}"
             Then I enter quantity "#{quantity}" for the last lot
@@ -85,6 +86,7 @@ When(/^I search lot product by fnm "(.*?)" and select this item with quantity "(
             Then I wait for "lot number" to appear
             Then I enter lot number "#{lot_number}" on add lot page
             Then I set date to next year
+            Then I wait for "Complete" to appear
             And I press "Complete"
             Then I should see "#{lot_number}"
             Then I enter quantity "#{quantity}" for the last lot
@@ -122,7 +124,8 @@ Then(/^I should see lot number and expired date "(.*?)"$/) do |arg1|
 end
 
 And(/^I clear quantity for the last lot$/) do
-    h = query("android.widget.EditText id:'et_lot_amount' text:''").last
+    h = query("android.widget.EditText id:'et_lot_amount'").last
+    touch(h)
     clear_text_in(h)
 end
 
@@ -171,6 +174,7 @@ When(/^I search "(.*?)"$/) do |keyword|
     touch(search_bar)
     clear_text_in(search_bar)
     enter_text("android.support.v7.widget.SearchView id:'action_search'", keyword)
+    sleep 1
 end
 
 When(/^I search "(.*?)" without clearing text$/) do |keyword|

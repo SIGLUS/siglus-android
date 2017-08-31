@@ -27,6 +27,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.viethoa.RecyclerViewFastScroller;
+import com.viethoa.models.AlphabetItem;
+
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
@@ -38,6 +41,7 @@ import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.InjectView;
@@ -45,6 +49,9 @@ import rx.Subscriber;
 import rx.functions.Action1;
 
 public abstract class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView, SimpleDialogFragment.MsgDialogCallBack {
+
+    @InjectView(R.id.fast_scroller)
+    RecyclerViewFastScroller fastScroller;
 
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
@@ -78,6 +85,7 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
             @Override
             public void onNext(List<InventoryViewModel> inventoryViewModels) {
+                setUpFastScroller(inventoryViewModels);
                 mAdapter.refresh();
                 setTotal(inventoryViewModels.size());
                 loaded();
@@ -136,6 +144,7 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
     @Override
     public boolean onSearchStart(String query) {
         mAdapter.filter(query);
+        setUpFastScroller(mAdapter.getFilteredList());
         return false;
     }
 
@@ -167,5 +176,24 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
     @Override
     public void negativeClick(String tag) {
 
+    }
+
+    public void setUpFastScroller(List<InventoryViewModel> viewModels) {
+        List<AlphabetItem> mAlphabetItems = new ArrayList<>();
+        List<String> strAlphabets = new ArrayList<>();
+        for (int i = 0; i < viewModels.size(); i++) {
+            String name = viewModels.get(i).getProductName();
+            if (name == null || name.trim().isEmpty())
+                continue;
+
+            String word = name.substring(0, 1);
+            if (!strAlphabets.contains(word)) {
+                strAlphabets.add(word);
+                mAlphabetItems.add(new AlphabetItem(i, word, false));
+            }
+        }
+
+        fastScroller.setRecyclerView(productListRecycleView);
+        fastScroller.setUpAlphabet(mAlphabetItems);
     }
 }

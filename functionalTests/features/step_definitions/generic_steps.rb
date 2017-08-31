@@ -25,4 +25,3 @@ Given(/^I enable wifi/) do
         system("adb -s $ADB_DEVICE_ARG shell svc wifi enable")
     end
 end
-

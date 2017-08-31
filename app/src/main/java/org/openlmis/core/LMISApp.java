@@ -61,7 +61,9 @@ public class LMISApp extends Application {
         JodaTimeAndroid.init(this);
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
-        setupFabric();
+        if(!BuildConfig.DEBUG) {
+            setupFabric();
+        }
         setupGoogleAnalytics();
 
         instance = this;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,19 +10,35 @@
         style="@style/Inventory.TextTotal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Total: 136" />
+        tools:text="Total: 136"
+        android:layout_alignParentTop="true" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/products_list"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_total"
+        android:layout_above="@+id/action_panel">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/products_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/fast_scroller"
+            android:scrollbars="vertical" />
+
+        <com.viethoa.RecyclerViewFastScroller
+            android:id="@+id/fast_scroller"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
     <include
         android:id="@+id/action_panel"
         layout="@layout/view_action_panel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 
-</LinearLayout>
+</RelativeLayout>

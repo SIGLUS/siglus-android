@@ -190,6 +190,7 @@ Feature: Log in and initialize Inventory
     Then I should see "Select inventory to close period"
     And I press "Thursday"
     And I press "Next"
+    And I wait for 1 second
     Then I wait for "MMIA -" to appear
     Then I should see "to 18 Feb"
 
@@ -269,6 +270,7 @@ Feature: Log in and initialize Inventory
     Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press the menu key
     And I wait for "Sign Out" to appear
+    And I wait for 1 second
     # note: sometimes the wait for sign out to appear fails, reason unknown
     And I press "Sign Out"
     Then I wait for the "LoginActivity" screen to appear

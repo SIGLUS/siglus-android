@@ -160,7 +160,12 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void goToInitInventory() {
-        launchActivity(InitialInventoryActivity.getIntentToMe(this));
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_basic_products_in_inventory)) {
+            startActivity(new Intent(this, BulkInitialInventoryActivity.class));
+            finish();
+        } else {
+            launchActivity(InitialInventoryActivity.getIntentToMe(this));
+        }
     }
 
     public void goToHomePage() {

@@ -22,9 +22,9 @@ $ mkdir /app/appstore/repo
 $ keytool -genkey -v -keystore appstore.jks -alias clintonhealthaccess -keyalg RSA -keysize 2048 -validity 10000
 
 ## 6. set up appstore
-$ sudo wget https://raw.githubusercontent.com/clintonhealthaccess/lmis-moz-mobile/master/appstore/appstore.jks
-$ sudo wget https://raw.githubusercontent.com/clintonhealthaccess/lmis-moz-mobile/master/appstore/logo.png
-$ sudo wget https://raw.githubusercontent.com/clintonhealthaccess/lmis-moz-mobile/master/appstore/config.py
+$ sudo wget https://raw.githubusercontent.com/SIGLUS/lmis-moz-mobile/master/appstore/appstore.jks
+$ sudo wget https://raw.githubusercontent.com/SIGLUS/lmis-moz-mobile/master/appstore/logo.png
+$ sudo wget https://raw.githubusercontent.com/SIGLUS/lmis-moz-mobile/master/appstore/config.py
 
 ## 7. put apks into repo directory
 $ sudo cp /var/lib/jenkins/jobs/android-build/builds/lastSuccessfulBuild/archive/app/build/outputs/apk/app-qa-release.apk /app/appstore/repo/

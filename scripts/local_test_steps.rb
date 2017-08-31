@@ -1,3 +1,4 @@
+OPENLMIS_DIR="#{Dir.pwd}/open-lmis"
 LMIS_MOZ_DIR="#{Dir.pwd}/lmis-moz"
 
 p LMIS_MOZ_DIR
@@ -11,7 +12,7 @@ def update_mis_moz
 end
 
 def setup_git_repo
-  system("git clone https://github.com/clintonhealthaccess/lmis-moz.git #{LMIS_MOZ_DIR} && cd #{OPENLMIS_DIR} && git checkout 2.0-moz")
+  system("git clone https://github.com/SIGLUS/lmis-moz.git #{LMIS_MOZ_DIR} && cd #{OPENLMIS_DIR} && git checkout 2.0-moz")
 end
 
 def start_jetty

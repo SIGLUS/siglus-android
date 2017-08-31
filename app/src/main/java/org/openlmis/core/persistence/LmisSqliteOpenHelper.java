@@ -34,6 +34,7 @@ import org.openlmis.core.persistence.migrations.AddEmergencyColumnToRnr;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
 import org.openlmis.core.persistence.migrations.AddInventoryTable;
 import org.openlmis.core.persistence.migrations.AddIsArchivedToProduct;
+import org.openlmis.core.persistence.migrations.AddIsBasicColumnToProductsTable;
 import org.openlmis.core.persistence.migrations.AddIsCustomColumnToRegime;
 import org.openlmis.core.persistence.migrations.AddIsEmergencyColumnToProgram;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
@@ -127,6 +128,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateProgramDataItemsTable());
             add(new CreateProgramDataFormSignatureTable());
             add(new AddDoneColumnToDraftInventoryTable());
+            add(new AddIsBasicColumnToProductsTable());
         }
     };
     private static int instanceCount = 0;

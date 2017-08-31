@@ -71,6 +71,9 @@ public class Product extends BaseModel implements Comparable<Product> {
     @DatabaseField
     boolean isKit;
 
+    @DatabaseField
+    boolean isBasic;
+
     @ForeignCollectionField()
     private ForeignCollection<Lot> lotList;
 
@@ -134,5 +137,14 @@ public class Product extends BaseModel implements Comparable<Product> {
         IsKit(boolean isKit) {
             this.isKit = isKit;
         }
+    }
+
+    public static Product dummyProduct() {
+        Product dummyProduct = new Product();
+        dummyProduct.setCode("");
+        dummyProduct.setPrimaryName("");
+        dummyProduct.setStrength("");
+        dummyProduct.setType("");
+        return dummyProduct;
     }
 }

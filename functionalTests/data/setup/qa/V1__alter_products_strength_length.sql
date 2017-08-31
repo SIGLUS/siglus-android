@@ -1,0 +1,1 @@
+ALTER TABLE products ALTER COLUMN strength TYPE varchar(50);

@@ -222,10 +222,10 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     private void createSeveralProducts() throws LMISException {
-        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A01").setIsActive(true).setIsKit(true).build());
-        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A02").setIsActive(true).setIsKit(false).build());
-        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A03").setIsActive(false).setIsKit(true).build());
-        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A04").setIsActive(true).setIsKit(false).build());
+        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A01").setIsActive(true).setIsKit(true).setIsBasic(true).build());
+        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A02").setIsActive(true).setIsKit(false).setIsBasic(false).build());
+        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A03").setIsActive(false).setIsKit(true).setIsBasic(true).build());
+        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A04").setIsActive(true).setIsKit(false).setIsBasic(false).build());
     }
 
     @Test
@@ -314,6 +314,17 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(products.get(1).isArchived(), is(true));
         assertThat(products.get(1).getId(), is(archivedVIAProductNotInForm.getId()));
 
+    }
+
+    @Test
+    public void shouldReturnAListOfBasicProducts() throws LMISException {
+
+        createSeveralProducts();
+
+        List<Product> basicProducts = productRepository.listBasicProducts();
+
+        assertEquals(1, basicProducts.size());
+        assertEquals("08A01", basicProducts.get(0).getCode());
     }
 
     private Product createProduct(String code, boolean archived, boolean isKit, boolean active) throws LMISException {
