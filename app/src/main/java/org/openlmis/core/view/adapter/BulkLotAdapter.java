@@ -19,6 +19,8 @@ import lombok.Getter;
 public class BulkLotAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private List<LotMovementViewModel> lots;
+
+    @Getter
     private InventoryViewModel inventoryViewModel;
 
     @Getter

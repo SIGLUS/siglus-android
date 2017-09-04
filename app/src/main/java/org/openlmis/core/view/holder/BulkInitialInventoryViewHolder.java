@@ -65,48 +65,45 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
     private InventoryViewModel viewModel;
 
     protected AddBulkLotDialogFragment addBulkLotDialogFragment;
-    protected AddLotDialogFragment addLotDialogFragment;
     protected BulkLotAdapter bulkLotAdapter;
-    protected int lotQuantity;
-    protected int lotQuantityBeforeSum;
 
     public BulkInitialInventoryViewHolder(View itemView) {
         super(itemView);
     }
 
     public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord) {
-        this.viewModel = inventoryViewModel;
         rvLots.setLayoutManager(new LinearLayoutManager(context));
         bulkLotAdapter = new BulkLotAdapter(inventoryViewModel, deleteLotListener(), this);
+        this.viewModel = bulkLotAdapter.getInventoryViewModel();
         rvLots.setAdapter(bulkLotAdapter);
 
         productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
         productUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyleType()));
 
         showLotInformation();
+        sumLotQuantities();
 
-        btnAddNewLot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showNewLotDialog();
-            }
-        });
-
+        btnAddNewLot.setOnClickListener(showNewLotDialogListener());
         btnNoStock.setOnClickListener(noStockListener());
     }
 
-    public void showNewLotDialog() {
-        if (!AddBulkLotDialogFragment.IS_OCCUPIED) {
-            AddBulkLotDialogFragment.IS_OCCUPIED = true;
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.PARAM_STOCK_NAME, viewModel.getProduct().getFormattedProductName());
-            addBulkLotDialogFragment = new AddBulkLotDialogFragment();
-            addBulkLotDialogFragment.setArguments(bundle);
-            addBulkLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
-            addBulkLotDialogFragment.setOnDismissListener(getOnAddNewLotDialogDismissListener());
-            addBulkLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
-            addBulkLotDialogFragment.show(((Activity) context).getFragmentManager(), ADD_LOT);
-        }
+    public View.OnClickListener showNewLotDialogListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!AddBulkLotDialogFragment.IS_OCCUPIED) {
+                    AddBulkLotDialogFragment.IS_OCCUPIED = true;
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.PARAM_STOCK_NAME, viewModel.getProduct().getFormattedProductName());
+                    addBulkLotDialogFragment = new AddBulkLotDialogFragment();
+                    addBulkLotDialogFragment.setArguments(bundle);
+                    addBulkLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
+                    addBulkLotDialogFragment.setOnDismissListener(getOnAddNewLotDialogDismissListener());
+                    addBulkLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
+                    addBulkLotDialogFragment.show(((Activity) context).getFragmentManager(), ADD_LOT);
+                }
+            }
+        };
     }
 
     @NonNull
