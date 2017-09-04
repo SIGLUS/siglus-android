@@ -79,4 +79,5 @@
 
     <color name="physical_inventory_complete_count_background_color">#E4E4E4</color>
     <color name="general_background_color">#EEEEEE</color>
+    <color name="white_transparent_color">#00FFFFFF</color>
 </resources>

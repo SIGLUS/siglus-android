@@ -12,52 +12,107 @@
 
         <LinearLayout
             style="@style/InventoryCard.ProductContainer"
-            android:layout_marginLeft="@dimen/margin_normal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_product_name"
+                    style="@style/Text.Black.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/label_dummy_product" />
+
+                <TextView
+                    android:id="@+id/tv_product_unit"
+                    style="@style/Text.Gray.Normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/label_dummy_unit" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_soh_information"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/margin_large">
+
+                <TextView
+                    android:id="@+id/tv_sho_amount"
+                    style="@style/Text.Black.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/label_dummy_sho_amount" />
+
+                <TextView
+                    android:id="@+id/tv_soh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:text="@string/sho"
+                    style="@style/Text.Gray.Normal"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_lot_information"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_normal">
 
             <TextView
-                android:id="@+id/tv_product_name"
-                style="@style/Text.Black.Medium"
-                android:layout_width="wrap_content"
+                android:id = "@+id/tv_batch"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="@string/label_dummy_product" />
+                android:text="@string/tv_batch"
+                android:textSize="10sp"
+                />
 
-            <TextView
-                android:id="@+id/tv_product_unit"
-                style="@style/Text.Gray.Normal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="@string/label_dummy_unit" />
-
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_lots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
-            android:background="@color/alphabet_background_border_color">
-        </View>
+            android:background="@color/alphabet_background_border_color"></View>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_normal"
             android:layout_marginBottom="@dimen/margin_normal"
-            >
+            android:layout_marginTop="@dimen/margin_normal">
+
             <TextView
                 android:id="@+id/btn_add_new_lot"
-                android:layout_marginLeft="@dimen/margin_normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_normal"
                 android:background="@drawable/border_round_blue"
                 android:text="@string/btn_add_new_lot"
                 android:textColor="@color/color_accent"
                 android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/btn_no_stock"
-                android:layout_marginLeft="@dimen/margin_normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_normal"
                 android:background="@drawable/border_round_blue"
                 android:text="@string/btn_no_stock"
                 android:textColor="@color/color_accent"

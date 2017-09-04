@@ -162,4 +162,17 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     public String getFormattedProductUnit() {
         return product.getStrength() + " " + product.getType();
     }
+
+    @Override
+    public boolean equals(Object object) {
+        return this.productId == ((InventoryViewModel) object).productId && this.productName.equals(((InventoryViewModel) object).productName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) (productId ^ (productId >>> 32));
+        result = 31 * result + (productName != null ? productName.hashCode() : 0);
+        return result;
+    }
 }

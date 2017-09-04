@@ -55,6 +55,9 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     @InjectView(R.id.drug_name)
     private TextView drugName;
 
+    @InjectView(R.id.et_soh_amount)
+    private EditText etSOHAmount;
+
     @Getter
     private String lotNumber;
 

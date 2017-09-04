@@ -68,6 +68,10 @@
     <string name="initial_rnr_sync_failed">Sincronização inicial da requisição falhou, por favor tente novamente.</string>
     <string name="initial_stock_movement_sync_failed">Sincronização Inicial  das fichas de estoque falhou, por favor tente novamente.</string>
     <string name="initial_sync_failed">Sincronização inicial falhou</string>
+    <!-- Bulk Movements -->
+    <string name="label_soh_amount">Stock on Hand</string>
+    <string name="hint_soh_amount">Quantidade</string>
+    <string name="tv_batch">Lote &amp; data de validade</string>
     <!--MMIA-->
     <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
     <string name="label_rnrfrom_left_header">Medicamento</string>

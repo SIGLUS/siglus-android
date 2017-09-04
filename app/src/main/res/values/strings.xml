@@ -47,6 +47,11 @@
     <string name="btn_add_product">Add Products</string>
     <string name="title_basic_products">Basic Products</string>
 
+    <!-- Bulk Movements -->
+    <string name="label_soh_amount">Stock on Hand</string>
+    <string name="hint_soh_amount">Amount</string>
+    <string name="tv_batch">Batch &amp; expiry date</string>
+
     <!-- Home Page -->
     <string name="label_stock_cards">Stock Card Overview</string>
     <string name="label_kits_stock_cards">KITS</string>
@@ -450,6 +455,9 @@
     <string name="msg_movement_count">%1$s movements</string>
     <string name="label_column_syphillis">Syphillis</string>
     <string name="label_view_movements">View movements:</string>
+    <string name="batch_dummy">16B283S - Jul 2018</string>
+    <string name="label_dummy_sho_amount">80</string>
+    <string name="sho">Stock on Hand</string>
 
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
