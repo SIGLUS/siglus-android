@@ -121,18 +121,4 @@ public class LotMovementViewModel implements Serializable {
         }
         return (Integer.parseInt(this.getQuantity()) - Integer.parseInt(this.getLotSoh()));
     }
-
-    @Override
-    public String toString() {
-        return "LotMovementViewModel{" +
-                "lotNumber='" + lotNumber + '\'' +
-                ", expiryDate='" + expiryDate + '\'' +
-                ", quantity='" + quantity + '\'' +
-                ", lotSoh='" + lotSoh + '\'' +
-                ", movementType=" + movementType +
-                ", valid=" + valid +
-                ", quantityLessThanSoh=" + quantityLessThanSoh +
-                ", isDataChanged=" + isDataChanged +
-                '}';
-    }
 }
