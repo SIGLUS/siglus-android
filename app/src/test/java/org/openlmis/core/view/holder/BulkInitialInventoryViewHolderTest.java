@@ -40,9 +40,12 @@ public class BulkInitialInventoryViewHolderTest {
         when(viewModel.getNewLotMovementViewModelList()).thenReturn(lotsMovementViewModel);
         bulkInitialInventoryViewHolder.populate(viewModel, "");
         LotMovementViewModel lot = new LotMovementViewModel();
+        int initialPosition = 0;
+        String quantity = "100";
+        lot.setQuantity(quantity);
 
         bulkInitialInventoryViewHolder.addNewLot(lot);
-        bulkInitialInventoryViewHolder.removeLot(lot);
+        bulkInitialInventoryViewHolder.removeLot(initialPosition);
 
         assertTrue(bulkInitialInventoryViewHolder.getViewModel().getNewLotMovementViewModelList().isEmpty());
     }
