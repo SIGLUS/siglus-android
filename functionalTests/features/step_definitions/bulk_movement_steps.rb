@@ -1,5 +1,4 @@
 require 'calabash-android/calabash_steps'
-require 'pry'
 
 Then (/^I press image button with id "([^\"]*)"$/) do |id|
   tap_when_element_exists("* id:'#{id}'")
