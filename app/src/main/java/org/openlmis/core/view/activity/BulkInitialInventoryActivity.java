@@ -2,6 +2,8 @@ package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.Toast;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -10,12 +12,14 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.List;
 
 import roboguice.inject.ContentView;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 
 @ContentView(R.layout.activity_bulk_initial_inventory)
 public class BulkInitialInventoryActivity extends InventoryActivity {
@@ -43,6 +47,35 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         initRecyclerView();
         Subscription subscription = presenter.loadInventoryWithBasicProducts().subscribe(getOnViewModelsLoadedSubscriber());
         subscriptions.add(subscription);
+        btnDone.setOnClickListener(new SingleClickButtonListener() {
+            @Override
+            public void onSingleClick(View v) {
+                btnDone.setEnabled(false);
+                if (validateInventory()) {
+                    loading();
+                    Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
+                    subscriptions.add(subscription);
+                } else {
+                    btnDone.setEnabled(true);
+                }
+            }
+        });
+        btnSave.setOnClickListener(new SingleClickButtonListener() {
+            @Override
+            public void onSingleClick(View v) {
+                btnSave.setEnabled(false);
+                    loading();
+                    Subscription subscription = presenter.initStockCardObservable().subscribe(new Action1<Object>() {
+                        @Override
+                        public void call(Object o) {
+                            Toast.makeText(getApplicationContext(), R.string.succesfully_saved,Toast.LENGTH_LONG).show();
+                            loaded();
+                            btnSave.setEnabled(true);
+                        }
+                    });
+                    subscriptions.add(subscription);
+            }
+        });
     }
 
     @NonNull

@@ -133,7 +133,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         return true;
     }
 
-    private void showConfirmNoLotNumberDialog() {
+    protected void showConfirmNoLotNumberDialog() {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER, getString(R.string.msg_confirm_empty_lot_number, drugName.getText()));
         final ConfirmGenerateLotNumberDialogFragment confirmDialog = new ConfirmGenerateLotNumberDialogFragment();

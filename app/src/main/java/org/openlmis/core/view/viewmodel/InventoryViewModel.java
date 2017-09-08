@@ -175,4 +175,34 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         result = 31 * result + (productName != null ? productName.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "InventoryViewModel{" +
+                "productId=" + productId +
+                ", productName='" + productName + '\'' +
+                ", fnm='" + fnm + '\'' +
+                ", strength='" + strength + '\'' +
+                ", type='" + type + '\'' +
+                ", isDataChanged=" + isDataChanged +
+                ", stockCardId=" + stockCardId +
+                ", stockOnHand=" + stockOnHand +
+                ", kitExpectQuantity=" + kitExpectQuantity +
+                ", styledName=" + styledName +
+                ", styledUnit=" + styledUnit +
+                ", valid=" + valid +
+                ", checked=" + checked +
+                ", signature='" + signature + '\'' +
+                ", stockCard=" + stockCard +
+                ", new movement=" + getNewMovementString() +
+                '}';
+    }
+
+    private String getNewMovementString(){
+        String list = "";
+        for(LotMovementViewModel model:newLotMovementViewModelList){
+            list+= " "+ model.toString();
+        }
+        return list;
+    }
 }

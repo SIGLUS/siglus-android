@@ -121,7 +121,7 @@ public class StockRepository {
         }
     }
 
-    public void updateProductOfStockCard(Product product) {
+    public void   updateProductOfStockCard(Product product) {
         try {
             productRepository.updateProduct(product);
         } catch (LMISException e) {

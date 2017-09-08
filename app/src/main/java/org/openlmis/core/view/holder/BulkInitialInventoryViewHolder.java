@@ -150,6 +150,7 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
         viewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
         sumLotQuantities();
         showLotInformation();
+        viewModel.setChecked(true);
         bulkLotAdapter.notifyDataSetChanged();
     }
 
@@ -157,15 +158,26 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
         viewModel.getNewLotMovementViewModelList().remove(position);
         showLotInformation();
         sumLotQuantities();
+        if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
+            viewModel.setChecked(false);
+        }
         bulkLotAdapter.notifyDataSetChanged();
     }
 
     public void sumLotQuantities() {
         int totalQuantityLot = 0;
-        for (LotMovementViewModel lot : viewModel.getNewLotMovementViewModelList()) {
-            totalQuantityLot += Integer.parseInt(lot.getQuantity());
+        if (viewModel.getNewLotMovementViewModelList().isEmpty() && viewModel.isChecked()) {
+            tvSOHAmount.setText(String.valueOf(totalQuantityLot));
+            btnNoStock.setVisibility(View.INVISIBLE);
+        } else if (!viewModel.getNewLotMovementViewModelList().isEmpty()) {
+            for (LotMovementViewModel lot : viewModel.getNewLotMovementViewModelList()) {
+                totalQuantityLot += Integer.parseInt(lot.getQuantity());
+            }
+            tvSOHAmount.setText(String.valueOf(totalQuantityLot));
+            viewModel.setStockOnHand(totalQuantityLot);
+        } else {
+            tvSOHAmount.setText("");
         }
-        tvSOHAmount.setText(String.valueOf(totalQuantityLot));
     }
 
     public View.OnClickListener deleteLotListener() {
@@ -178,12 +190,15 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
     }
 
     public void showLotInformation() {
-        if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
+        if (viewModel.getNewLotMovementViewModelList().isEmpty() && viewModel.isChecked() ) {
+            llLotInformation.setVisibility(View.INVISIBLE);
+            llSOHInformation.setVisibility(View.VISIBLE);
+            btnNoStock.setVisibility(View.INVISIBLE);
+        }else if (viewModel.getNewLotMovementViewModelList().isEmpty() ) {
             llLotInformation.setVisibility(View.INVISIBLE);
             llSOHInformation.setVisibility(View.INVISIBLE);
             btnNoStock.setVisibility(View.VISIBLE);
-        }
-        else {
+        }  else {
             llLotInformation.setVisibility(View.VISIBLE);
             llSOHInformation.setVisibility(View.VISIBLE);
             btnNoStock.setVisibility(View.INVISIBLE);
@@ -219,13 +234,14 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
         };
     }
 
-    public View.OnClickListener noStockListener(){
+    public View.OnClickListener noStockListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 llSOHInformation.setVisibility(View.VISIBLE);
                 tvSOHAmount.setText(QUANTITY_ZERO);
                 btnNoStock.setVisibility(View.INVISIBLE);
+                viewModel.setChecked(Boolean.TRUE);
             }
         };
     }
