@@ -3,14 +3,8 @@ require 'pry'
 require 'date'
 require File.dirname(__FILE__) + '/env_config'
 
-username = EnvConfig.getConfig()[:username]
-password = EnvConfig.getConfig()[:password]
-
-index = 0
-pre_name = ""
-
 Then /^I navigate back/ do
-    tap_when_element_exists("* contentDescription:'Navigate up'")
+  tap_when_element_exists("* contentDescription:'Navigate up'")
 end
 
 Then /^I scroll down until I see "([^\"]*)"/ do |text|
@@ -19,166 +13,174 @@ Then /^I scroll down until I see "([^\"]*)"/ do |text|
   end
 end
 
-When(/^I search product by fnm "(.*?)" and select this item with quantity "(.*?)"/) do |fnm,quantity|
-    steps %Q{
+When(/^I search product by fnm "(.*?)" and select this item with quantity "(.*?)"/) do |fnm, quantity|
+  steps %Q{
         When I search "#{fnm}"
     }
-    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
-    if !q.empty?
-        touch(q)
-        steps %Q{
+  q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+  if !q.empty?
+    touch(q)
+    steps %Q{
             When I select the item called "#{fnm}"
             Then I enter quantity "#{quantity}" on inventory page
         }
-    end
-    steps %Q{
+  end
+  steps %Q{
         And I clean search bar
     }
 end
 
-When(/^I search product by primary name "(.*?)" and select this item with quantity "(.*?)"/) do |primary,quantity|
-    steps %Q{
+When(/^I search product by primary name "(.*?)" and select this item with quantity "(.*?)"/) do |primary, quantity|
+  steps %Q{
         When I search "#{primary}"
     }
-    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
-    if !q.empty?
-        touch(q)
-        steps %Q{
+  q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+  if !q.empty?
+    touch(q)
+    steps %Q{
             When I select the item called "#{primary}"
             Then I enter quantity "#{quantity}" on inventory page
         }
-    end
-    steps %Q{
+  end
+  steps %Q{
         And I clean search bar
     }
 end
 
-When(/^I search lot product by primary name "(.*?)" and select this item with quantity "(.*?)" and lot number "(.*?)"$/) do |primary,quantity,lot_number|
-    steps %Q{
+When(/^I search lot product by primary name "(.*?)" and select this item with quantity "(.*?)" and lot number "(.*?)"$/) do |primary, quantity, lot_number|
+  steps %Q{
         When I search "#{primary}"
     }
-    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
-    if !q.empty?
-        touch(q)
-        steps %Q{
+  q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+  if !q.empty?
+    touch(q)
+    steps %Q{
             Then I wait for "lot number" to appear
             Then I enter lot number "#{lot_number}" on add lot page
             Then I set date to next year
-            Then I wait for "Complete" to appear
-            And I press "Complete"
+            Then I press complete lot button
             Then I should see "#{lot_number}"
-            Then I enter quantity "#{quantity}" for the last lot
+            Then I enter quantity "#{quantity}" for the new lot
         }
-    end
-    steps %Q{
+  end
+  steps %Q{
         And I clean search bar
     }
 end
 
-When(/^I search lot product by fnm "(.*?)" and select this item with quantity "(.*?)" and lot number "(.*?)"$/) do |fnm,quantity,lot_number|
-   steps %Q{
+When(/^I search lot product by fnm "(.*?)" and select this item with quantity "(.*?)" and lot number "(.*?)"$/) do |fnm, quantity, lot_number|
+  steps %Q{
         When I search "#{fnm}"
     }
-    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
-    if !q.empty?
-        touch(q)
-        steps %Q{
+  q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+  if !q.empty?
+    touch(q)
+    steps %Q{
             Then I wait for "lot number" to appear
             Then I enter lot number "#{lot_number}" on add lot page
             Then I set date to next year
             Then I wait for "Complete" to appear
             And I press "Complete"
             Then I should see "#{lot_number}"
-            Then I enter quantity "#{quantity}" for the last lot
+            Then I enter quantity "#{quantity}" for the new lot
         }
-    end
-    steps %Q{
+  end
+  steps %Q{
         And I clean search bar
     }
 end
 
 Then(/^I set date to next year$/) do
-    dp = query("android.widget.DatePicker").first
-    touch(dp, :offset => {:x => 100, :y => 100})
+  dp = query("android.widget.DatePicker").first
+  touch(dp, :offset => {:x => 100, :y => 100})
 end
 
 And(/^I enter lot number "(.*?)" on add lot page$/) do |lot_number|
-    h = query("android.widget.EditText id:'et_lot_number' text:''").first
-    touch(h)
-    keyboard_enter_text(lot_number)
-    hide_soft_keyboard
+  h = query("android.widget.EditText id:'et_lot_number' text:''").first
+  touch(h)
+  keyboard_enter_text(lot_number)
+  hide_soft_keyboard
 end
 
 And(/^I enter lot quantity "(.*?)"$/) do |quantity|
-    h = query("android.widget.EditText id:'et_lot_amount' text:''").first
-    touch(h)
-    keyboard_enter_text(quantity)
-    hide_soft_keyboard
+  h = query("android.widget.EditText id:'et_lot_amount' text:''").first
+  touch(h)
+  keyboard_enter_text(quantity)
+  hide_soft_keyboard
 end
 
 Then(/^I should see lot number and expired date "(.*?)"$/) do |arg1|
- info = query("android.widget.TextView id:'et_lot_info'" , :text)
- unless info.at(0).to_i == arg1.to_i
-     fail "Lot info is not correct"
- end
+  info = query("android.widget.TextView id:'et_lot_info'", :text)
+  unless info.at(0).to_i == arg1.to_i
+    fail "Lot info is not correct"
+  end
 end
 
 And(/^I clear quantity for the last lot$/) do
-    h = query("android.widget.EditText id:'et_lot_amount'").last
-    touch(h)
-    clear_text_in(h)
+  h = query("android.widget.EditText id:'et_lot_amount'").last
+  touch(h)
+  clear_text_in(h)
 end
 
 
-And(/^I enter quantity "(\d+)" for the last lot$/) do |quantity|
-    h = query("android.widget.EditText id:'et_lot_amount' text:''").last
-    touch(h)
-    keyboard_enter_text(quantity)
-    hide_soft_keyboard
+And(/^I enter quantity "(\d+)" for the new lot/) do |quantity|
+  lot_amount_edit_text = query("android.widget.EditText id:'et_lot_amount'").first
+  touch(lot_amount_edit_text)
+  keyboard_enter_text(quantity)
+end
+
+And(/^I press complete lot button$/) do
+  btn_lot_complete = query("android.widget.Button id:'btn_complete' tag:'btn_lot_complete'").first
+  touch(btn_lot_complete)
+end
+
+And(/^I press the complete action button/) do
+  btn_action_complete = query("android.widget.Button id:'btn_complete' tag:'btn_action_complete'").first
+  touch(btn_action_complete)
 end
 
 Then(/^I shouldn't see product "(.*?)" in this page$/) do |productProperty|
-    steps %Q{
+  steps %Q{
        When I search "#{productProperty}"
     }
-    list = query("android.widget.TextView id:'product_name'")
-    if list.empty?
-        steps %Q{
+  list = query("android.widget.TextView id:'product_name'")
+  if list.empty?
+    steps %Q{
           And I clean search bar
       }
-    else
-       fail "#{productProperty}" "should not see in this page"
-   end
+  else
+    fail "#{productProperty}" "should not see in this page"
+  end
 
 end
 
 Then(/^I should see product "(.*?)" in this page$/) do |productProperty|
-    steps %Q{
+  steps %Q{
        When I search "#{productProperty}"
     }
-    list = query("android.widget.RecyclerView id:'products_list'")
-    if !list.empty?
-        steps %Q{
+  list = query("android.widget.RecyclerView id:'products_list'")
+  if !list.empty?
+    steps %Q{
             And I clean search bar
         }
-    end
+  end
 end
 
 And(/^I clean search bar/) do
-    search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
-    clear_text_in(search_bar)
+  search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
+  clear_text_in(search_bar)
 end
 
 When(/^I search "(.*?)"$/) do |keyword|
-    search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
-    touch(search_bar)
-    clear_text_in(search_bar)
-    enter_text("android.support.v7.widget.SearchView id:'action_search'", keyword)
-    sleep 1
+  search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
+  touch(search_bar)
+  clear_text_in(search_bar)
+  enter_text("android.support.v7.widget.SearchView id:'action_search'", keyword)
+  sleep 1
 end
 
 When(/^I search "(.*?)" without clearing text$/) do |keyword|
-    search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
-    touch(search_bar)
-    enter_text("android.support.v7.widget.SearchView id:'action_search'", keyword)
+  search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
+  touch(search_bar)
+  enter_text("android.support.v7.widget.SearchView id:'action_search'", keyword)
 end

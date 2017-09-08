@@ -26,7 +26,7 @@ After('@change_date') do
 end
 
 def reset_local_server_data
-  puts "reset local server data..."
-  system("cd #{LMIS_MOZ_DIR} && ./build/setup-data.sh")
+ puts "reset local server data..."
+ system("cd #{LMIS_MOZ_DIR} && ./build/setup-data.sh")
 end
 

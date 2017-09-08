@@ -42,8 +42,7 @@ Given(/^I have initialized inventory with MMIA and VIA products with lot$/) do
         Then I wait for "Initial inventory" to appear
         When I Select VIA Item with lot
         When I Select MMIA Item with lot
-        Then I wait for "Complete" to appear
-        And I press "Complete"
+        And I press the complete action button
         Then I wait for "STOCK CARD OVERVIEW" to appear
 	}
 end

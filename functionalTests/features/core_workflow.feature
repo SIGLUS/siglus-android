@@ -8,7 +8,6 @@ Feature: Core Workflow
 
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
-    Then I wait for 1 second
     And I make a new movement "[01A01]" "Issues" "PAV" "10"
     And I make a new movement "[08S18Y]" "Issues" "PAV" "2"
     And I make a new movement "[01A04Z]" "Entries" "District( DDM)" "2"
@@ -16,7 +15,6 @@ Feature: Core Workflow
     And I make a new movement "[01A05]" "Negative Adjustments" "Return to DDM" "2"
 
     Given I change device date to "20160218.140000"
-    And I wait for 2 seconds
     And I press "Stock Overview"
     And I try to log in with "core" "password1"
     And I wait for "Stock Card Overview" to appear
@@ -32,8 +30,9 @@ Feature: Core Workflow
 
     Then I wait for "Requisitions" to appear
     And I press "Create Requisition Balancete"
+    And I wait for "Thursday" to appear
     And I press "Thursday"
-    Then I wait for 1 second
+    Then I wait for a second
     And I press "Next"
 
     Then I enter consultationsNub "888"
@@ -53,7 +52,6 @@ Feature: Core Workflow
     Then I swipe right
     Then I should see "123" in the requisition form
     Then I enter QuantityRequested "345"
-    Then I wait for 1 second
     Then I press "Save"
     Then I wait for "Requisitions" to appear
 
@@ -66,11 +64,9 @@ Feature: Core Workflow
 
     And I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
-    Then I wait for "Requisitions" to appear
 
     Then I wait up to 120 seconds to see "successfully submitted"
 
-    Then I wait for 1 second
     Then I navigate back
     Then I wait for "Stock Card Overview" to appear
 
@@ -83,13 +79,13 @@ Feature: Core Workflow
 
     Then I press "Create MMIA"
     Then I should see "Select inventory to close period"
+    Then I wait for "Thursday" to appear
     And I press "Thursday"
+    And I wait for a second
     And I press "Next"
     Then I wait for "MMIA -" to appear
-    Then I wait for 1 second
     Then I should see text containing "Tenofovir/Lamivudina/Efavirenz; 300mg + 300mg + 600mg 30Comp; Embalagem"
     Then I swipe right
-    Then I wait for 1 second
     Then I should see issued movement "2"
     Then I should see inventory "121"
     Then I swipe left
@@ -104,11 +100,9 @@ Feature: Core Workflow
     Then I should see text containing "Are you sure you want to quit without saving your work?"
     Then I press "No"
     Then I press "Save"
-    Then I wait for 1 second
     Then I should see text containing "Continue Working on MMIA"
     And I press "Continue Working on MMIA"
     Then I wait for "MMIA -" to appear
-    Then I wait for 1 second
     Then I scroll "scrollView" down to "Therapeutic Regime"
     And I enter regimen totals
     And I add custom regimens and enter total

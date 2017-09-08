@@ -59,7 +59,6 @@ Then(/^I do physical inventory for via items without archived drugs$/) do
         And I do physical inventory with lots with "123" by fnm "01A04Z"
         And I do physical inventory with lots with "123" by fnm "01A05"
         Then I scroll "recyclerView" down to "Complete"
-        And I wait for 1 second
         And I press "Complete"
         And I wait for "Enter your initials" to appear
         And I sign with "sign"
@@ -81,7 +80,6 @@ Then(/^I do physical inventory for via and mmia items$/) do
         And I do physical inventory with lots with "123" by fnm "08S32Z"
 
         Then I scroll "recyclerView" down to "Complete"
-        And I wait for 1 second
         And I press "Complete"
         And I wait for "Enter your initials" to appear
         And I sign with "sign"

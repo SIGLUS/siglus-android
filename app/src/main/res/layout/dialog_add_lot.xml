@@ -109,7 +109,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height_default"
                 android:layout_marginStart="16dp"
-                android:text="@string/btn_complete" />
+                android:text="@string/btn_complete"
+                android:tag="btn_lot_complete"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

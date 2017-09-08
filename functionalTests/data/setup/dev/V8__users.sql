@@ -6,7 +6,6 @@ INSERT INTO roles
 
 INSERT INTO role_rights
 (roleId, rightName) VALUES
-((SELECT id FROM roles WHERE name = 'Admin'), 'MANAGE_PRODUCT'),
 ((SELECT id FROM roles WHERE name = 'FacilityHead'), 'AUTHORIZE_REQUISITION'),
 ((SELECT id FROM roles WHERE name = 'FacilityHead'), 'VIEW_REQUISITION'),
 ((SELECT id FROM roles WHERE name = 'FacilityHead'), 'CREATE_REQUISITION'),

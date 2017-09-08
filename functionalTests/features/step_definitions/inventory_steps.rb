@@ -178,7 +178,6 @@ Then(/^I do physical inventory for mmia items$/) do
         And I do physical inventory with "123" by fnm "08S36"
         And I do physical inventory with "123" by fnm "08S32Z"
         Then I scroll "recyclerView" down to "Complete"
-        And I wait for 1 second
         And I press "Complete"
         And I wait for "Enter your initials" to appear
         And I sign with "sign"
@@ -193,7 +192,6 @@ Then(/^I do physical inventory with lot for mmia items$/) do
         And I do physical inventory with lots with "123" by fnm "08S36"
         And I do physical inventory with lots with "123" by fnm "08S32Z"
         Then I scroll "recyclerView" down to "Complete"
-        And I wait for 1 second
         And I press "Complete"
         And I wait for "Enter your initials" to appear
         And I sign with "sign"
@@ -203,7 +201,7 @@ end
 And(/^I do physical inventory with lots with "(\d+)" by fnm "(.*?)"$/) do |quantity,fnm|
     steps %Q{
         When I search "#{fnm}"
-        And I enter quantity "#{quantity}" for the last lot
+        And I enter quantity "#{quantity}" for the new lot
         And I clean search bar
         And I go back
     }
