@@ -124,15 +124,15 @@ public class LotMovementViewModel implements Serializable {
 
     @Override
     public String toString() {
-        return "LotMovementViewModel{" +
-                "lotNumber='" + lotNumber + '\'' +
-                ", expiryDate='" + expiryDate + '\'' +
-                ", quantity='" + quantity + '\'' +
-                ", lotSoh='" + lotSoh + '\'' +
-                ", movementType=" + movementType +
-                ", valid=" + valid +
-                ", quantityLessThanSoh=" + quantityLessThanSoh +
-                ", isDataChanged=" + isDataChanged +
-                '}';
+        return "LotMovementViewModel{"
+                + "lotNumber='" + lotNumber + '\''
+                + ", expiryDate='" + expiryDate + '\''
+                + ", quantity='" + quantity + '\''
+                + ", lotSoh='" + lotSoh + '\''
+                + ", movementType=" + movementType
+                + ", valid=" + valid
+                + ", quantityLessThanSoh=" + quantityLessThanSoh
+                + ", isDataChanged=" + isDataChanged
+                + '}';
     }
 }

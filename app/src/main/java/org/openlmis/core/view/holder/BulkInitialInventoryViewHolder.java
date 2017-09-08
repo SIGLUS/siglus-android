@@ -190,15 +190,15 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
     }
 
     public void showLotInformation() {
-        if (viewModel.getNewLotMovementViewModelList().isEmpty() && viewModel.isChecked() ) {
+        if (viewModel.getNewLotMovementViewModelList().isEmpty() && viewModel.isChecked()) {
             llLotInformation.setVisibility(View.INVISIBLE);
             llSOHInformation.setVisibility(View.VISIBLE);
             btnNoStock.setVisibility(View.INVISIBLE);
-        }else if (viewModel.getNewLotMovementViewModelList().isEmpty() ) {
+        } else if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
             llLotInformation.setVisibility(View.INVISIBLE);
             llSOHInformation.setVisibility(View.INVISIBLE);
             btnNoStock.setVisibility(View.VISIBLE);
-        }  else {
+        } else {
             llLotInformation.setVisibility(View.VISIBLE);
             llSOHInformation.setVisibility(View.VISIBLE);
             btnNoStock.setVisibility(View.INVISIBLE);
