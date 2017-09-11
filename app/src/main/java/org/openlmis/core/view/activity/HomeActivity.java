@@ -85,6 +85,9 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_rapid_test)
     Button btnRapidTestReport;
 
+    @InjectView(R.id.btn_patient_data)
+    Button btnPatientData;
+
     @InjectResource(R.integer.back_twice_interval)
     int BACK_TWICE_INTERVAL;
 
@@ -171,6 +174,10 @@ public class HomeActivity extends BaseActivity {
     public void onClickInventory(View view) {
         Intent intent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
         startActivity(intent);
+    }
+
+    public void onClickPatientDataReport(View view) {
+        startActivity(new Intent(this, PatientDataReportActivity.class));
     }
 
     public void onClickRapidTestHistory(View view) {

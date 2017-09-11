@@ -9,6 +9,7 @@ Before('@clear_app_data') do
 end
 
 Before('@reinstall_app') do
+  system("pwd")
   uninstall_apps
   install_app(ENV["TEST_APP_PATH"])
   install_app(ENV["APP_PATH"])

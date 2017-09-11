@@ -4,18 +4,30 @@ MAINTAINER ThoughtWorks
 RUN echo 'gem: --no-document' > /etc/gemrc
 
 RUN yum update && yum -y install \
+                device-mapper-persistent-data \
                 epel-release \
                 git \
                 glibc.i686 \
                 java-1.8.0-openjdk-devel \
                 libstdc++.i686 \
+                lvm2 \
                 make \
                 mesa-libGL \
                 ruby \
                 ruby-devel \
                 unzip \
                 wget \
+                yum-config-manager \
+                yum-utils \
                 zlib.i686
+
+# install docker
+RUN yum-config-manager --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo && \
+    yum makecache fast -y && \
+    yum install docker-ce -y
+
+
 
 RUN yum groupinstall "Development Tools" -y
 

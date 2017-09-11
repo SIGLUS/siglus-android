@@ -11,8 +11,9 @@ services:
       - 5432:5432
 
   test-runner:
-    image: siglus/test-runner
+    image: test-runner
     container_name: test-runner
+    privileged: true
     volumes:
       - type: volume
         source: ../
@@ -35,4 +36,3 @@ services:
       - APP_URL=http://localhost:8080
     ports:
       - 8081:8080
-

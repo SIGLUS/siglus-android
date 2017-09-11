@@ -49,6 +49,11 @@
         <item name="background">@color/color_purple</item>
     </style>
 
+    <style name="MyActionBar.PINK">
+        <item name="android:background">@color/color_pink</item>
+        <item name="background">@color/color_pink</item>
+    </style>
+
     <style name="AppTheme.TEAL">
         <item name="android:actionBarStyle">@style/MyActionBar.TEAL</item>
         <item name="actionBarStyle">@style/MyActionBar.TEAL</item>
@@ -77,6 +82,11 @@
     <style name="AppTheme.BlueGray">
         <item name="android:actionBarStyle">@style/MyActionBar.BlueGray</item>
         <item name="actionBarStyle">@style/MyActionBar.BlueGray</item>
+    </style>
+
+    <style name="AppTheme.OrangeRed">
+        <item name="android:actionBarStyle">@style/MyActionBar.PINK</item>
+        <item name="actionBarStyle">@style/MyActionBar.PINK</item>
     </style>
 
     <style name="MyActionBar.BlueGray">

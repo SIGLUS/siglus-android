@@ -463,7 +463,7 @@
     <string name="amount_cannot_be_less_or_equal_to_zero">The amount cannot be less or equal than zero</string>
     <string name="succesfully_saved">Successfully Saved</string>
     <string name="btn_bulk_add_new_lot">ADD LOT</string>
-
+    <string name="title_patient_data_report">VIA PATIENT DATA</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>
