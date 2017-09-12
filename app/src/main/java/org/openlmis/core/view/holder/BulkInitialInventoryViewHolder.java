@@ -228,7 +228,7 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
                 if (getLotNumbers().contains(lotNumber)) {
                     ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
                 } else {
-                    addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
+                    addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY, addBulkLotDialogFragment.getQuantity()));
                 }
             }
         };

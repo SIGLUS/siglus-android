@@ -32,7 +32,8 @@
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_height_medium"
-            android:text="@string/btn_confirm_generate_lot_number" />
+            android:text="@string/btn_confirm_generate_lot_number"
+            android:tag="@string/btn_confirm_generate_lot_number"/>
 
         <Button
             android:id="@+id/btn_cancel"

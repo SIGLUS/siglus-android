@@ -30,7 +30,10 @@ public class AddBulkLotDialogFragment extends AddLotDialogFragment {
 
     @Override
     public boolean validate() {
-        super.validate();
+        return validateAmount() && super.validate();
+    }
+
+    private boolean validateAmount() {
         quantity = etSOHAmount.getText().toString();
         if (quantity.isEmpty()) {
             lySohAmount.setError(getString(R.string.amount_field_cannot_be_empty));
@@ -41,6 +44,5 @@ public class AddBulkLotDialogFragment extends AddLotDialogFragment {
         }
         return Boolean.TRUE;
     }
-
 
 }

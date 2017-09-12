@@ -15,7 +15,8 @@
             style="@style/FormAction.SaveContainer"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height_default"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:tag="btn_save_bottom">
 
             <Button
                 style="@style/FormAction.SaveBtn"

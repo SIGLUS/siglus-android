@@ -52,7 +52,8 @@
                     style="@style/Text.Black.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@string/label_dummy_sho_amount" />
+                    tools:text="@string/label_dummy_sho_amount"
+                    android:tag="@string/sho"/>
 
                 <TextView
                     android:id="@+id/tv_soh"

@@ -38,10 +38,10 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     private TextInputLayout lyLotNumber;
 
     @InjectView(R.id.et_lot_number)
-    private EditText etLotNumber;
+    protected EditText etLotNumber;
 
     @InjectView(R.id.dp_add_new_lot)
-    private DatePicker datePicker;
+    protected DatePicker datePicker;
 
     @InjectView(R.id.btn_cancel)
     private TextView btnCancel;

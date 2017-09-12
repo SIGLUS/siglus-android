@@ -56,7 +56,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/font_size_medium"
-                    android:hint="@string/hint_lot_number" />
+                    android:hint="@string/hint_lot_number"
+                    android:tag="@string/hint_lot_number" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
@@ -78,7 +79,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/font_size_medium"
-                    android:hint="@string/hint_soh_amount" />
+                    android:hint="@string/hint_soh_amount"
+                    android:tag="@string/hint_soh_amount"
+                    android:inputType="number"/>
             </android.support.design.widget.TextInputLayout>
 
             <TextView
@@ -123,6 +126,7 @@
                 style="@style/Dialog.Btn.TextBlue"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height_default"
+                android:tag="btn_bulk_complete"
                 android:text="@string/btn_cancel" />
 
             <Button
@@ -131,6 +135,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height_default"
                 android:layout_marginStart="16dp"
+                android:tag="@string/btn_complete"
                 android:text="@string/btn_complete" />
         </LinearLayout>
     </LinearLayout>
