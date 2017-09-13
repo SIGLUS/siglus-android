@@ -1,14 +1,32 @@
 package org.openlmis.core.model;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
+import org.openlmis.core.LMISTestRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(LMISTestRunner.class)
 public class PeriodTest {
+    private static final int INVENTORY_DAY = 18;
+    private static final int PERIOD_END_DAY = 20;
+    public static final int ONE_DAY = 1;
+
+    private Period period;
+
+    @Before
+    public void setup() {
+        period = new Period(DateTime.parse("2017-09-12"));
+    }
+
     @Test
     public void shouldDetermineItsOwnBeginAndEnd() throws Exception {
         testPeriodBeginEnd("2015-02-03", "2015-01-21", "2015-02-20");//normal date
@@ -19,13 +37,8 @@ public class PeriodTest {
 
     @Test
     public void shouldTellPreviousPeriod() throws Exception {
-        //given
         Period period = new Period(DateTime.parse("2015-06-07"));
-
-        //when
         Period prevPeriod = period.previous();
-
-        //then
         assertThat(prevPeriod.getBegin(), is(DateTime.parse("2015-04-21")));
         assertThat(prevPeriod.getEnd(), is(DateTime.parse("2015-05-20")));
     }
@@ -63,20 +76,64 @@ public class PeriodTest {
 
     @Test
     public void shouldGetNextPeriod() throws Exception {
-        Period period = new Period(DateTime.parse("2016-09-12"));
+        assertThat(period.next().getBegin(), is(DateTime.parse("2017-09-21")));
+        assertThat(period.next().getEnd(), is(DateTime.parse("2017-10-20")));
+    }
 
-        assertThat(period.next().getBegin(), is(DateTime.parse("2016-09-21")));
-        assertThat(period.next().getEnd(), is(DateTime.parse("2016-10-20")));
+    @Test
+    public void shouldCalculateOpeningRequisitionDate() throws Exception {
+        Period period = new Period(DateTime.now());
+        DateTime expectedDate = period.getEnd().minusDays(PERIOD_END_DAY - INVENTORY_DAY);
+        assertThat(period.getOpeningRequisitionDate(), is(expectedDate));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenPeriodIsBeforeCurrent() {
+        Period periodBefore = new Period(DateTime.parse("2017-08-12"));
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2017-09-12").getMillis());
+        assertThat(periodBefore.isOpenToRequisitions(), is(true));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenPeriodIsCurrentAndTodayIsBeforeRequisitionDate() {
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2017-09-17").getMillis());
+        assertThat(period.isOpenToRequisitions(), is(false));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenCurrentDateIsBetweenOpeningRequisitionIntervalOnCurrentPeriod() {
+        DateTime testedDate = DateTime.parse("2017-09-18");
+        Interval validInterval = new Interval(testedDate, DateTime.parse("2017-09-26"));
+        while (validInterval.contains(testedDate)) {
+            LMISTestApp.getInstance().setCurrentTimeMillis(testedDate.getMillis());
+            assertThat(period.isOpenToRequisitions(), is(true));
+            testedDate = testedDate.plusDays(ONE_DAY);
+        }
+    }
+
+    @Test
+    public void shouldReturnFalseWhenPeriodIsAfterCurrentOne() {
+        Period period = new Period(DateTime.parse("2017-09-26"));
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2017-09-17").getMillis());
+        assertThat(period.isOpenToRequisitions(), is(false));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenPeriodIsGreaterThanCurrentOne() {
+        Period period = new Period(DateTime.parse("2017-09-21"));
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2017-09-12").getMillis());
+        assertThat(period.isOpenToRequisitions(), is(false));
+    }
+
+    @Test
+    public void shouldReturnAValidPeriodWhenNextPeriodIsAvailableForTheCurrentDate() {
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2017-10-18").getMillis());
+        assertThat(period.generateNextAvailablePeriod().get(), is(new Period(DateTime.parse("2017-10-12"))));
     }
 
     private void testPeriodBeginEnd(String anyDayInPeriod, String begin, String end) {
-        //given
         DateTime anyDay = DateTime.parse(anyDayInPeriod);
-
-        //when
         Period period = new Period(anyDay);
-
-        //then
         assertThat(period.getBegin(), is(DateTime.parse(begin)));
         assertThat(period.getEnd(), is(DateTime.parse(end)));
     }

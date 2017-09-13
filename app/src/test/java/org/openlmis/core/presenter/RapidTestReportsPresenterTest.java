@@ -18,6 +18,7 @@ import org.openlmis.core.model.service.ProgramDataFormPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
+import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
@@ -27,6 +28,7 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
@@ -61,20 +63,21 @@ public class RapidTestReportsPresenterTest {
         //today period is 2016-12-21 to 2017-01-20
         LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2017-3-18", DateUtil.DB_DATE_FORMAT).getTime());
         //first period is 2016-09-21 to 2016-10-20
-        Period firstPeriod = new Period(new DateTime(DateUtil.parseString("2016-09-21", DateUtil.DB_DATE_FORMAT)));
-        Period secondPeriod = new Period(new DateTime(DateUtil.parseString("2016-10-21", DateUtil.DB_DATE_FORMAT)));
-        Period thirdPeriod = new Period(new DateTime(DateUtil.parseString("2016-11-21", DateUtil.DB_DATE_FORMAT)));
-        Period fourthPeriod = new Period(new DateTime(DateUtil.parseString("2016-12-21", DateUtil.DB_DATE_FORMAT)));
-        Period fifthPeriod = new Period(new DateTime(DateUtil.parseString("2017-01-21", DateUtil.DB_DATE_FORMAT)));
-        Period sixthPeriod = new Period(new DateTime(DateUtil.parseString("2017-02-21", DateUtil.DB_DATE_FORMAT)));
+        Period firstPeriod = spy(new Period(new DateTime(DateUtil.parseString("2016-09-21", DateUtil.DB_DATE_FORMAT))));
+        Period secondPeriod = spy(new Period(new DateTime(DateUtil.parseString("2016-10-21", DateUtil.DB_DATE_FORMAT))));
+        Period thirdPeriod = spy(new Period(new DateTime(DateUtil.parseString("2016-11-21", DateUtil.DB_DATE_FORMAT))));
+        Period fourthPeriod = spy(new Period(new DateTime(DateUtil.parseString("2016-12-21", DateUtil.DB_DATE_FORMAT))));
+        Period fifthPeriod = spy(new Period(new DateTime(DateUtil.parseString("2017-01-21", DateUtil.DB_DATE_FORMAT))));
+        Period sixthPeriod = spy(new Period(new DateTime(DateUtil.parseString("2017-02-21", DateUtil.DB_DATE_FORMAT))));
 
-        when(periodService.getFirstStandardPeriod()).thenReturn(firstPeriod);
-        when(periodService.generateNextPeriod(firstPeriod)).thenReturn(secondPeriod);
-        when(periodService.generateNextPeriod(secondPeriod)).thenReturn(thirdPeriod);
-        when(periodService.generateNextPeriod(thirdPeriod)).thenReturn(fourthPeriod);
-        when(periodService.generateNextPeriod(fourthPeriod)).thenReturn(fifthPeriod);
-        when(periodService.generateNextPeriod(fifthPeriod)).thenReturn(sixthPeriod);
-        when(periodService.generateNextPeriod(sixthPeriod)).thenReturn(null);
+        Optional<Period> emptyOptional = Optional.absent();
+        when(periodService.getFirstStandardPeriod()).thenReturn(Optional.of(firstPeriod));
+        when(firstPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(secondPeriod));
+        when(secondPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(thirdPeriod));
+        when(thirdPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(fourthPeriod));
+        when(fourthPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(fifthPeriod));
+        when(fifthPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(sixthPeriod));
+        when(sixthPeriod.generateNextAvailablePeriod()).thenReturn(emptyOptional);
 
         Program programRapidTest = new Program("RapidTest", "Rapid Test", null, false, null);
         ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()

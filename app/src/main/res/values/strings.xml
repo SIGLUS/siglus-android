@@ -464,6 +464,7 @@
     <string name="succesfully_saved">Successfully Saved</string>
     <string name="btn_bulk_add_new_lot">ADD LOT</string>
     <string name="title_patient_data_report">VIA PATIENT DATA</string>
+    <string name="btn_create_patient_data_report">CREATE PATIENT DATA REPORT</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>

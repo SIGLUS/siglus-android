@@ -49,15 +49,16 @@ public class ProgramDataFormPeriodServiceTest {
         stockMovementItem.setMovementDate(DateUtil.parseString("2016-10-10", DateUtil.DB_DATE_FORMAT));
         when(mockStockMovementRepository.getFirstStockMovement()).thenReturn(stockMovementItem);
 
-        assertThat(periodService.getFirstStandardPeriod().getBegin(), is(new DateTime(DateUtil.parseString("2016-09-21", DateUtil.DB_DATE_FORMAT))));
-        assertThat(periodService.getFirstStandardPeriod().getEnd(), is(new DateTime(DateUtil.parseString("2016-10-20", DateUtil.DB_DATE_FORMAT))));
+        Period period = periodService.getFirstStandardPeriod().get();
+        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2016-09-21", DateUtil.DB_DATE_FORMAT))));
+        assertThat(period.getEnd(), is(new DateTime(DateUtil.parseString("2016-10-20", DateUtil.DB_DATE_FORMAT))));
     }
 
     @Test
     public void shouldNotGenerateFirstPeriodIfNoMovement() throws Exception {
         when(mockStockMovementRepository.getFirstStockMovement()).thenReturn(null);
 
-        assertNull(periodService.getFirstStandardPeriod());
+        assertThat(periodService.getFirstStandardPeriod().isPresent(), is(false));
     }
 
 
@@ -69,7 +70,7 @@ public class ProgramDataFormPeriodServiceTest {
         stockMovementItem.setMovementDate(DateUtil.parseString("2016-10-10", DateUtil.DB_DATE_FORMAT));
         when(mockStockMovementRepository.getFirstStockMovement()).thenReturn(stockMovementItem);
 
-        assertNull(periodService.getFirstStandardPeriod());
+        assertThat(periodService.getFirstStandardPeriod().isPresent(), is(false));
     }
 
     @Test
@@ -79,7 +80,7 @@ public class ProgramDataFormPeriodServiceTest {
         //2016-7-21 to 2016-8-20
         Period period = Period.of(DateUtil.parseString("2016-08-12",DateUtil.DB_DATE_FORMAT));
 
-        assertNull(periodService.generateNextPeriod(period));
+        assertThat(period.generateNextAvailablePeriod().isPresent(), is(false));
     }
 
     @Test
@@ -89,8 +90,9 @@ public class ProgramDataFormPeriodServiceTest {
         //2016-7-21 to 2016-8-20
         Period period = Period.of(DateUtil.parseString("2016-08-12",DateUtil.DB_DATE_FORMAT));
 
-        assertThat(periodService.generateNextPeriod(period).getBegin(), is(new DateTime(DateUtil.parseString("2016-08-21", DateUtil.DB_DATE_FORMAT))));
-        assertThat(periodService.generateNextPeriod(period).getEnd(), is(new DateTime(DateUtil.parseString("2016-09-20", DateUtil.DB_DATE_FORMAT))));
+        Period nextPeriod = period.generateNextAvailablePeriod().get();
+        assertThat(nextPeriod.getBegin(), is(new DateTime(DateUtil.parseString("2016-08-21", DateUtil.DB_DATE_FORMAT))));
+        assertThat(nextPeriod.getEnd(), is(new DateTime(DateUtil.parseString("2016-09-20", DateUtil.DB_DATE_FORMAT))));
     }
 
 

@@ -2,13 +2,12 @@ package org.openlmis.core.model.service;
 
 import com.google.inject.Inject;
 
-import org.joda.time.DateTime;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.roboguice.shaded.goole.common.base.Optional;
 
 public class ProgramDataFormPeriodService {
     @Inject
@@ -16,33 +15,15 @@ public class ProgramDataFormPeriodService {
     @Inject
     private StockMovementRepository stockMovementRepository;
 
-    public Period getFirstStandardPeriod() throws LMISException {
+    public Optional<Period> getFirstStandardPeriod() throws LMISException {
         StockMovementItem firstStockMovement = stockMovementRepository.getFirstStockMovement();
         if (firstStockMovement != null) {
             Period firstPeriod = firstStockMovement.getMovementPeriod();
 
-            if (firstPeriod != null && todayEligibleForNewPeriod(firstPeriod)) {
-                return firstPeriod;
-            } else {
-                return null;
+            if (firstPeriod != null && firstPeriod.isOpenToRequisitions()) {
+                return Optional.of(firstPeriod);
             }
-        } else {
-            return null;
         }
-    }
-
-    private boolean todayEligibleForNewPeriod(Period period) {
-        DateTime periodBeginEligibleDate = period.getEnd().minusDays(Period.END_DAY - Period.INVENTORY_BEGIN_DAY);
-        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
-        return periodBeginEligibleDate.isBefore(today) || periodBeginEligibleDate.equals(today);
-    }
-
-    public Period generateNextPeriod(Period period) {
-        Period nextPeriod = period.next();
-        if (todayEligibleForNewPeriod(nextPeriod)) {
-            return nextPeriod;
-        } else {
-            return null;
-        }
+        return Optional.absent();
     }
 }

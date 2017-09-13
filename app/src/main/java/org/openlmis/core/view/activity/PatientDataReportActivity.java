@@ -8,7 +8,7 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_patient_data_report)
-public class PatientDataReportActivity extends BaseActivity {
+public class PatientDataReportActivity extends BaseReportListActivity {
 
     @Override
     protected ScreenName getScreenName() {
@@ -24,4 +24,10 @@ public class PatientDataReportActivity extends BaseActivity {
     protected int getThemeRes() {
         return R.style.AppTheme_OrangeRed;
     }
+
+    @Override
+    protected void loadForms() {
+
+    }
+
 }

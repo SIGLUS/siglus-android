@@ -66,12 +66,12 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     protected void generateViewModelsForAllPeriods() throws LMISException {
-        Period period = periodService.getFirstStandardPeriod();
+        Optional<Period> period = periodService.getFirstStandardPeriod();
 
         List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
-        while (period != null) {
-            addViewModel(period, rapidTestForms);
-            period = periodService.generateNextPeriod(period);
+        while (period.isPresent()) {
+            addViewModel(period.get(), rapidTestForms);
+            period = period.get().generateNextAvailablePeriod();
         }
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             addViewModel(Period.of(new Date()), rapidTestForms);

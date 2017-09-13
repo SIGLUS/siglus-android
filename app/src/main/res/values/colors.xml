@@ -81,6 +81,6 @@
     <color name="general_background_color">#EEEEEE</color>
     <color name="white_transparent_color">#00FFFFFF</color>
 
-    <color name="color_pink">#FF1744</color>
+    <color name="color_pink">#fd726f</color>
     <color name="color_pink_dark">#D32F2F</color>
 </resources>

@@ -1,9 +1,11 @@
 package org.openlmis.core.model;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Optional;
 
 import java.util.Date;
 
@@ -70,7 +72,7 @@ public class Period {
         return new Period(lastMonth(periodBegin), lastMonth(periodEnd));
     }
 
-    public static Boolean isWithinSubmissionWindow(DateTime date) {
+    public static boolean isWithinSubmissionWindow(DateTime date) {
         int day = date.dayOfMonth().get();
         return day >= INVENTORY_BEGIN_DAY && day < INVENTORY_END_DAY_NEXT;
     }
@@ -89,5 +91,55 @@ public class Period {
 
     public Period next() {
         return new Period(nextMonth(periodBegin), nextMonth(periodEnd));
+    }
+
+    public Optional<Period> generateNextAvailablePeriod() {
+        Period nextPeriod = this.next();
+        if (nextPeriod.isOpenToRequisitions()) {
+            return Optional.of(nextPeriod);
+        }
+        return Optional.absent();
+    }
+
+    public boolean isOpenToRequisitions() {
+        if (isOpenForCurrentDate() || isBeforeCurrent()) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isOpenForCurrentDate() {
+        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        Interval requisitionInterval = new Interval(getOpeningRequisitionDate(), getClosingRequisitionDate());
+        return requisitionInterval.contains(today);
+    }
+
+    private boolean isBeforeCurrent() {
+        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        Period currentPeriod = new Period(today);
+        return periodEnd.isBefore(currentPeriod.getBegin());
+    }
+
+    public DateTime getOpeningRequisitionDate() {
+        return periodEnd.minusDays(END_DAY - INVENTORY_BEGIN_DAY);
+    }
+
+    private DateTime getClosingRequisitionDate() {
+        return periodEnd.plusDays(INVENTORY_END_DAY_NEXT - END_DAY);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        Period period = (Period) object;
+        return this.toString().equals(period.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = periodBegin != null ? periodBegin.hashCode() : 0;
+        result = 31 * result + (periodEnd != null ? periodEnd.hashCode() : 0);
+        result = 31 * result + (inventoryBegin != null ? inventoryBegin.hashCode() : 0);
+        result = 31 * result + (inventoryEnd != null ? inventoryEnd.hashCode() : 0);
+        return result;
     }
 }
