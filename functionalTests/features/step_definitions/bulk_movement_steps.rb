@@ -12,8 +12,8 @@ Then /^text should be "(\d*)" in edit text "([^\"]*)"$/ do |expected_text, id|
   end
 end
 
-Then /^I do not see field with id "(.*?)"$/ do |args1|
-     check_element_does_not_exist("view marked:'#{args1}'")
+Then /^I do not see button "(.*?)"$/ do |text|
+     check_element_does_not_exist("view marked:'#{text}'")
 end
 
 Then(/^I press the button with id "(.*?)" and tag "(.*?)"$/) do |id, tag|

@@ -414,6 +414,7 @@
     <string name="amount_field_cannot_be_empty">O campo de quantidade não pode estar vazio</string>
     <string name="amount_cannot_be_less_or_equal_to_zero">O valor não pode ser inferior ou igual a zero</string>
     <string name="succesfully_saved">Salvo com sucesso</string>
+    <string name="btn_bulk_add_new_lot">Adicionar lote</string>
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
         <item>Últimos 14 dias</item>

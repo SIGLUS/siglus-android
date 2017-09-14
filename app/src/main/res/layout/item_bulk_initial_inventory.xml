@@ -43,25 +43,25 @@
                 android:id="@+id/ll_soh_information"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_large"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginLeft="@dimen/margin_large">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_sho_amount"
                     style="@style/Text.Black.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@string/label_dummy_sho_amount"
-                    android:tag="@string/sho"/>
+                    android:tag="@string/sho"
+                    tools:text="@string/label_dummy_sho_amount" />
 
                 <TextView
                     android:id="@+id/tv_soh"
+                    style="@style/Text.Gray.Normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="10sp"
                     android:text="@string/sho"
-                    style="@style/Text.Gray.Normal"/>
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
@@ -69,23 +69,22 @@
 
         <LinearLayout
             android:id="@+id/ll_lot_information"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_normal">
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:orientation="vertical">
 
             <TextView
-                android:id = "@+id/tv_batch"
+                android:id="@+id/tv_batch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/tv_batch"
-                android:textSize="10sp"
-                />
+                android:textSize="10sp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_lots"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <View
@@ -105,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_normal"
                 android:background="@drawable/border_round_blue"
-                android:text="@string/btn_add_new_lot"
+                android:text="@string/btn_bulk_add_new_lot"
                 android:textColor="@color/color_accent"
                 android:textSize="16sp" />
 
@@ -119,7 +118,5 @@
                 android:textColor="@color/color_accent"
                 android:textSize="16sp" />
         </LinearLayout>
-
-
     </LinearLayout>
 </android.support.v7.widget.CardView>

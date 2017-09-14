@@ -8,7 +8,7 @@
 #    And I wait up to 180 seconds for "Initial Inventory" to appear
 #    When I press the menu key
 #    And I select new drug enter requested "123" by product name "Digoxina 0,25mg Comp"
-#    Then I press "Add New Lot"
+#    Then I press "ADD LOT"
 #    Then I wait for 1 seconds
 #    Then I write in "Amount" field the text "100"
 #    Then I press the button with text "Complete"
@@ -22,7 +22,7 @@
 #    And I wait up to 180 seconds for "Initial Inventory" to appear
 #    When I press the menu key
 #    And I select new drug enter requested "123" by product name "Digoxina 0,25mg Comp"
-#    Then I press "Add New Lot"
+#    Then I press "ADD LOT"
 #    Then I wait for 2 seconds
 #    Then I write in "Lot number" field the text "AAA"
 #    Then I press the button with text "Complete"
