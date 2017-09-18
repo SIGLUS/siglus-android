@@ -39,6 +39,7 @@ public class GenericDao<Model> {
 
     private Context context;
 
+    @Inject
     public GenericDao(Class<Model> type, Context context) {
         this.type = type;
         this.context = context;

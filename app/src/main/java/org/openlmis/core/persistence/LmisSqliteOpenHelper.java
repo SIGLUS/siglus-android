@@ -60,6 +60,7 @@ import org.openlmis.core.persistence.migrations.CreateDraftLotMovementTable;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 import org.openlmis.core.persistence.migrations.CreateKitProductsTable;
+import org.openlmis.core.persistence.migrations.CreatePatientDataReportTable;
 import org.openlmis.core.persistence.migrations.CreateProductProgramsTable;
 import org.openlmis.core.persistence.migrations.CreateProgramDataColumnsTable;
 import org.openlmis.core.persistence.migrations.CreateProgramDataFormSignatureTable;
@@ -129,6 +130,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateProgramDataFormSignatureTable());
             add(new AddDoneColumnToDraftInventoryTable());
             add(new AddIsBasicColumnToProductsTable());
+            add(new CreatePatientDataReportTable());
         }
     };
     private static int instanceCount = 0;
