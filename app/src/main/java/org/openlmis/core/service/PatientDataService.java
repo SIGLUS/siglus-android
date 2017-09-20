@@ -8,7 +8,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PatientDataReport;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.PatientDataRepository;
-import org.openlmis.core.persistence.GenericDao;
 import org.roboguice.shaded.goole.common.base.Optional;
 
 import java.util.ArrayList;

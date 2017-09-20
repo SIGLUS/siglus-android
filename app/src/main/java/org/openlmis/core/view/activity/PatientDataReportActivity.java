@@ -5,9 +5,6 @@ import android.support.v7.widget.RecyclerView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
-import org.openlmis.core.model.PatientDataReport;
-import org.openlmis.core.persistence.GenericDao;
-import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.PatientDataAdapter;
 import org.openlmis.core.view.presenter.PatientDataReportPresenter;
