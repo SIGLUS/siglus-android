@@ -82,5 +82,6 @@
     <color name="white_transparent_color">#00FFFFFF</color>
 
     <color name="color_pink">#fd726f</color>
-    <color name="color_pink_dark">#D32F2F</color>
+    <color name="color_pink_dark">#c54144</color>
+    <color name="color_patient_data_form_row_header">#ce93d8</color>
 </resources>

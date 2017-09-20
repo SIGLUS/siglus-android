@@ -417,6 +417,14 @@
     <string name="succesfully_saved">Salvo com sucesso</string>
     <string name="btn_bulk_add_new_lot">Adicionar lote</string>
     <string name="btn_create_patient_data_report">CREATE PATIENT DATA REPORT</string>
+    <string name="msg_us_ape">US/APE</string>
+    <string name="msg_total_sum_us_ape">Total US/APE</string>
+    <string name="msg_arthemeter_lumefantrina">ARTEMÉTER-LUMEFANTRINA (AL)</string>
+    <string name="msg_treatments_month">Nº Tratamentos  Aviados no Mês</string>
+    <string name="msg_existing_stock_month">Stock Existente no Fim do Mês</string>
+    <string name="msg_product_code_6x1">6x1</string>
+    <string name="msg_product_code_6x3">6x3</string>
+    <string name="msg_product_code_6x4">6x4</string>
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
         <item>Últimos 14 dias</item>

@@ -34,7 +34,10 @@ public class PatientDataRepository {
                 return patientDataReport;
             }
         });
-        return Optional.of(patientDataReport);
+        if (patientDataReport != null) {
+            return Optional.of(patientDataReport);
+        }
+        return Optional.absent();
     }
 
     public Optional<PatientDataReport> saveMovement(PatientDataReport patientDataReport) throws LMISException {

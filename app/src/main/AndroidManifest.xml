@@ -57,6 +57,10 @@
             android:label="@string/title_patient_data_report"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".view.activity.PatientDataReportFormActivity"
+            android:label="@string/title_patient_data_report"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".view.activity.UnpackKitActivity"
             android:label="@string/title_unpack_kit"
             android:screenOrientation="portrait" />

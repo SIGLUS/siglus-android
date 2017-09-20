@@ -763,6 +763,15 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="PatientDataForm" />
+
+    <style name="PatientDataForm.RowHeading">
+        <item name="android:textSize">@dimen/font_size_normal</item>
+        <item name="android:textColor">@color/color_black</item>
+        <item name="android:background">@color/color_patient_data_form_row_header</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <style name="AllStockHistory" />
 
     <style name="AllStockHistory.List">

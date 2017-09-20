@@ -54,8 +54,14 @@ public class PatientDataRepositoryTest {
     }
 
     @Test
-    public void shouldReturnTheFirstMovement() throws LMISException {
+    public void shouldReturnTheFirstMovementWhenExistsInTheDatabase() throws LMISException {
         Optional<PatientDataReport> patientDataReportSaved = patientDataReportRepository.saveMovement(patientDataReport);
         assertThat(patientDataReportRepository.getFirstMovement(), is(patientDataReportSaved));
+    }
+
+    @Test
+    public void shouldNotReturnTheFirstMovementWhenNotExistsInTheDatabase() throws LMISException {
+        Optional<PatientDataReport> patientDataReportedExpected = Optional.absent();
+        assertThat(patientDataReportRepository.getFirstMovement().isPresent(), is(false));
     }
 }

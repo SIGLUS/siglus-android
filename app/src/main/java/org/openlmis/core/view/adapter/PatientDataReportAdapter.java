@@ -11,11 +11,11 @@ import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
 
 import java.util.List;
 
-public class PatientDataAdapter extends RecyclerView.Adapter<PatientDataReportViewHolder>{
+public class PatientDataReportAdapter extends RecyclerView.Adapter<PatientDataReportViewHolder>{
     private Context context;
     private List<PatientDataReportViewModel> viewModels;
 
-    public PatientDataAdapter(Context context, List<PatientDataReportViewModel> viewModels) {
+    public PatientDataReportAdapter(Context context, List<PatientDataReportViewModel> viewModels) {
         this.context = context;
         this.viewModels = viewModels;
     }
@@ -32,6 +32,6 @@ public class PatientDataAdapter extends RecyclerView.Adapter<PatientDataReportVi
 
     @Override
     public int getItemCount() {
-        return 0;
+        return viewModels.size();
     }
 }

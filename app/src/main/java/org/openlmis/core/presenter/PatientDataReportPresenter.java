@@ -1,4 +1,4 @@
-package org.openlmis.core.view.presenter;
+package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
