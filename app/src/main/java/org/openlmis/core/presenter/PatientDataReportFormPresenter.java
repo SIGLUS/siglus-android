@@ -20,9 +20,17 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
     PatientDataService patientDataService;
 
     private List<PatientDataReportViewModel> viewModels;
+    private List<String> currentTreatmentsUs;
+    private List<String> existingStockUs;
+    private List<String> currentTreatmentsApe;
+    private List<String> existingStockApe;
 
     public PatientDataReportFormPresenter() {
         this.viewModels = new ArrayList<>();
+        this.currentTreatmentsUs = generateEmptyFields();
+        this.existingStockUs = generateEmptyFields();
+        this.currentTreatmentsApe = generateEmptyFields();
+        this.existingStockApe = generateEmptyFields();
     }
 
     @Override
@@ -42,12 +50,10 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
         PatientDataReportViewModel patientDataReportViewModelAPE = new PatientDataReportViewModel(period);
         PatientDataReportViewModel patientDataReportViewModelTotal = new PatientDataReportViewModel(period);
         patientDataReportViewModelUs.setUsApe("US");
-        patientDataReportViewModelUs.setExistingStock(patientDataService.getMalariaProductsStockHand());
-        patientDataReportViewModelUs.setCurrentTreatments(generateEmptyFields());
         patientDataReportViewModelAPE.setUsApe("APE");
-        patientDataReportViewModelAPE.setExistingStock(generateEmptyFields());
-        patientDataReportViewModelAPE.setCurrentTreatments(generateEmptyFields());
         patientDataReportViewModelTotal.setUsApe("TOTAL");
+        generateExistingStock(patientDataReportViewModelUs, patientDataReportViewModelAPE);
+        generateCurrentTreatments(patientDataReportViewModelUs, patientDataReportViewModelAPE);
         patientDataReportViewModelTotal.setExistingStock(calculateTotal(patientDataReportViewModelUs.getExistingStock(), patientDataReportViewModelAPE.getExistingStock()));
         patientDataReportViewModelTotal.setCurrentTreatments(calculateTotal(patientDataReportViewModelUs.getCurrentTreatments(), patientDataReportViewModelAPE.getCurrentTreatments()));
         viewModels.add(patientDataReportViewModelUs);
@@ -55,12 +61,44 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
         viewModels.add(patientDataReportViewModelTotal);
     }
 
+
+
+    private void generateExistingStock(PatientDataReportViewModel patientDataReportViewModelUs, PatientDataReportViewModel patientDataReportViewModelAPE) {
+//        if (existingStockUs.isEmpty()) {
+//            patientDataReportViewModelUs.setExistingStock(generateEmptyFields());
+//        } else {
+//            patientDataReportViewModelUs.setExistingStock(existingStockUs);
+//        }
+//        if (existingStockApe.isEmpty()) {
+//            patientDataReportViewModelAPE.setExistingStock(generateEmptyFields());
+//        } else {
+//            patientDataReportViewModelAPE.setExistingStock(existingStockApe);
+//        }
+        patientDataReportViewModelUs.setExistingStock(patientDataService.getMalariaProductsStockHand());
+        patientDataReportViewModelAPE.setExistingStock(existingStockApe);
+    }
+
+    private void generateCurrentTreatments(PatientDataReportViewModel patientDataReportViewModelUs, PatientDataReportViewModel patientDataReportViewModelAPE) {
+//        if (currentTreatmentsUs.isEmpty()) {
+//            patientDataReportViewModelUs.setExistingStock(generateEmptyFields());
+//        } else {
+//            patientDataReportViewModelUs.setExistingStock(currentTreatmentsUs);
+//        }
+//        if (currentTreatmentsApe.isEmpty()) {
+//            patientDataReportViewModelAPE.setExistingStock(generateEmptyFields());
+//        } else {
+//            patientDataReportViewModelAPE.setExistingStock(currentTreatmentsApe);
+//        }
+        patientDataReportViewModelUs.setCurrentTreatments(currentTreatmentsUs);
+        patientDataReportViewModelAPE.setCurrentTreatments(currentTreatmentsApe);
+    }
+
     private List<String> generateEmptyFields() {
         String[] treatments = new String[]{"0", "0", "0", "0"};
         return Arrays.asList(treatments);
     }
 
-    private List<String> calculateTotal(List<String> valuesUs, List<String> valuesApe) {
+    public List<String> calculateTotal(List<String> valuesUs, List<String> valuesApe) {
         List<String> valuesTotal = new ArrayList<>();
         for (int index = 0; index < MALARIA_PRODUCTS_TOTAL; index++) {
             int totalExistingStock = Integer.valueOf(valuesUs.get(index)) + Integer.valueOf(valuesApe.get(index));
@@ -82,5 +120,28 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
     @Override
     protected void addSignature(String signature) {
 
+    }
+
+    public void setCurrentTreatmentsUs(List<String> currentTreatmentsUs) {
+        this.currentTreatmentsUs = currentTreatmentsUs;
+    }
+
+    public void setExistingStockUs(List<String> existingStockUs) {
+        this.existingStockUs = existingStockUs;
+    }
+
+    public void setCurrentTreatmentsApe(List<String> currentTreatmentsApe) {
+        this.currentTreatmentsApe = currentTreatmentsApe;
+    }
+
+    public void setExistingStockApe(List<String> existingStockApe) {
+        this.existingStockApe = existingStockApe;
+    }
+
+    public PatientDataReportViewModel calculateTotal(PatientDataReportViewModel patientDataReportViewModel, PatientDataReportViewModel patientDataReportViewModel1) {
+        PatientDataReportViewModel totalViewModel = getViewModels().get(2);
+        totalViewModel.setExistingStock(calculateTotal(patientDataReportViewModel.getExistingStock(), patientDataReportViewModel1.getExistingStock()));
+        totalViewModel.setCurrentTreatments(calculateTotal(patientDataReportViewModel.getCurrentTreatments(), patientDataReportViewModel1.getCurrentTreatments()));
+        return totalViewModel;
     }
 }

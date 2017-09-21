@@ -33,8 +33,6 @@ public class PatientDataReportActivity extends BaseReportListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         patientDataAdapter = new PatientDataReportAdapter(this, presenter.getViewModels());
-        System.out.println(presenter.getViewModels().size());
-        System.out.println(presenter.getViewModels().get(0).getPeriod());
         rvPatientDataPeriods.setLayoutManager(new LinearLayoutManager(this));
         rvPatientDataPeriods.setAdapter(patientDataAdapter);
     }

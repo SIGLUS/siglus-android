@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/sum_vg_rapid_test_report_header"
+        android:id="@+id/vg_patient_data_report_header"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/border_bottom_black"
@@ -17,12 +17,12 @@
             android:background="@drawable/custom_border_title">
 
             <TextView
-                android:id="@+id/sum_tv_title_row"
+                android:id="@+id/tv_title_row"
                 style="@style/PatientDataForm.RowHeading"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/msg_total_sum_us_ape"
+                android:text="@string/msg_us_ape"
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/font_size_normal"
                 android:textStyle="bold" />
@@ -55,7 +55,7 @@
                         android:orientation="vertical">
 
                         <EditText
-                            android:id="@+id/sum_et_current_treatment_6x1"
+                            android:id="@+id/et_current_treatment_6x1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -74,7 +74,7 @@
                         android:orientation="vertical">
 
                         <EditText
-                            android:id="@+id/sum_et_current_treatment_6x2"
+                            android:id="@+id/et_current_treatment_6x2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -93,7 +93,7 @@
                         android:orientation="vertical">
 
                         <EditText
-                            android:id="@+id/sum_et_current_treatment_6x3"
+                            android:id="@+id/et_current_treatment_6x3"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -112,7 +112,7 @@
                         android:orientation="vertical">
 
                         <EditText
-                            android:id="@+id/sum_et_current_treatment_6x4"
+                            android:id="@+id/et_current_treatment_6x4"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -137,7 +137,7 @@
                         android:background="@drawable/border_right_black">
 
                         <EditText
-                            android:id="@+id/sum_et_existing_stock_6x1"
+                            android:id="@+id/et_existing_stock_6x1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -155,7 +155,7 @@
                         android:background="@drawable/border_right_black">
 
                         <EditText
-                            android:id="@+id/sum_et_existing_stock_6x2"
+                            android:id="@+id/et_existing_stock_6x2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -173,7 +173,7 @@
                         android:background="@drawable/border_right_black">
 
                         <EditText
-                            android:id="@+id/sum_et_existing_stock_6x3"
+                            android:id="@+id/et_existing_stock_6x3"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -191,7 +191,7 @@
                         android:background="@drawable/border_right_black">
 
                         <EditText
-                            android:id="@+id/sum_et_existing_stock_6x4"
+                            android:id="@+id/et_existing_stock_6x4"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"

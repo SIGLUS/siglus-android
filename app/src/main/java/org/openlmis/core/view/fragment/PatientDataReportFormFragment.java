@@ -34,7 +34,7 @@ public class PatientDataReportFormFragment extends BaseReportFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.generateViewModelsForAvailablePeriods();
-        adapter = new PatientDataReportFormRowAdapter(presenter.getViewModels());
+        adapter = new PatientDataReportFormRowAdapter(presenter.getViewModels(), presenter);
         rvPatientDataRowItem.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPatientDataRowItem.setAdapter(adapter);
     }
