@@ -23,7 +23,7 @@ public class PatientDataService {
     public static final String MALARIA_PRODUCT_CODE_6X2 = "08O05Z";
     public static final String MALARIA_PRODUCT_CODE_6X3 = "08O05X";
     public static final String MALARIA_PRODUCT_CODE_6X4 = "08O05Y";
-    public static final String NO_STOCK_ON_HAND_VALUE = "0";
+    private static final long NO_STOCK_ON_HAND_VALUE = 0;
 
     @Inject
     PatientDataRepository patientDataRepository;
@@ -91,12 +91,12 @@ public class PatientDataService {
         return malariaProductsStockCards;
     }
 
-    public List<String> getMalariaProductsStockHand() {
+    public List<Long> getMalariaProductsStockHand() {
         List<StockCard> malariaProductsStockCard = getMalariaProductsStockCards();
-        List<String> stocks = new ArrayList<>();
+        List<Long> stocks = new ArrayList<>();
         for (StockCard stock : malariaProductsStockCard) {
             if (stock != null) {
-                stocks.add(String.valueOf(stock.getStockOnHand()));
+                stocks.add(stock.getStockOnHand());
             } else {
                 stocks.add(NO_STOCK_ON_HAND_VALUE);
             }

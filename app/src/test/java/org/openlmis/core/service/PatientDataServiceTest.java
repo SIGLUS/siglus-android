@@ -21,7 +21,6 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.RuntimeEnvironment;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,6 +64,11 @@ public class PatientDataServiceTest {
     private Product product6x3;
     private Product product6x4;
 
+    private StockCard stockCard6x1 = new StockCard();
+    private StockCard stockCard6x2 = new StockCard();
+    private StockCard stockCard6x3 = new StockCard();
+    private StockCard stockCard6x4 = new StockCard();
+
     @Before
     public void setup() throws LMISException {
         patientDataRepository = mock(PatientDataRepository.class);
@@ -88,6 +92,22 @@ public class PatientDataServiceTest {
         when(productRepository.getByCode(MALARIA_PRODUCT_CODE_6X2)).thenReturn(product6x2);
         when(productRepository.getByCode(MALARIA_PRODUCT_CODE_6X3)).thenReturn(product6x3);
         when(productRepository.getByCode(MALARIA_PRODUCT_CODE_6X4)).thenReturn(product6x4);
+        stockCard6x1 = new StockCard();
+        stockCard6x2 = new StockCard();
+        stockCard6x3 = new StockCard();
+        stockCard6x4 = new StockCard();
+        stockCard6x1.setProduct(product6x1);
+        stockCard6x2.setProduct(product6x2);
+        stockCard6x3.setProduct(product6x3);
+        stockCard6x4.setProduct(product6x4);
+        stockCard6x1.setStockOnHand(STOCK_ON_HAND_VALUE);
+        stockCard6x2.setStockOnHand(STOCK_ON_HAND_VALUE);
+        stockCard6x3.setStockOnHand(STOCK_ON_HAND_VALUE);
+        stockCard6x4.setStockOnHand(STOCK_ON_HAND_VALUE);
+        when(stockRepository.queryStockCardByProductId(product6x1.getId())).thenReturn(stockCard6x1);
+        when(stockRepository.queryStockCardByProductId(product6x2.getId())).thenReturn(stockCard6x2);
+        when(stockRepository.queryStockCardByProductId(product6x3.getId())).thenReturn(stockCard6x3);
+        when(stockRepository.queryStockCardByProductId(product6x4.getId())).thenReturn(stockCard6x4);
     }
 
     @Test
@@ -169,22 +189,6 @@ public class PatientDataServiceTest {
 
     @Test
     public void shouldReturnExistingStockCardOfMalariaProducts() throws LMISException {
-        StockCard stockCard6x1 = new StockCard();
-        StockCard stockCard6x2 = new StockCard();
-        StockCard stockCard6x3 = new StockCard();
-        StockCard stockCard6x4 = new StockCard();
-        stockCard6x1.setProduct(product6x1);
-        stockCard6x2.setProduct(product6x2);
-        stockCard6x3.setProduct(product6x3);
-        stockCard6x4.setProduct(product6x4);
-        stockCard6x1.setStockOnHand(STOCK_ON_HAND_VALUE);
-        stockCard6x2.setStockOnHand(STOCK_ON_HAND_VALUE);
-        stockCard6x3.setStockOnHand(STOCK_ON_HAND_VALUE);
-        stockCard6x4.setStockOnHand(STOCK_ON_HAND_VALUE);
-        when(stockRepository.queryStockCardByProductId(product6x1.getId())).thenReturn(stockCard6x1);
-        when(stockRepository.queryStockCardByProductId(product6x2.getId())).thenReturn(stockCard6x2);
-        when(stockRepository.queryStockCardByProductId(product6x3.getId())).thenReturn(stockCard6x3);
-        when(stockRepository.queryStockCardByProductId(product6x4.getId())).thenReturn(stockCard6x4);
         Product[] malariaProducts = {product6x1, product6x2, product6x3, product6x4};
         List<Product> malariaProductsExpected = Arrays.asList(malariaProducts);
         List<StockCard> stocks = patientDataService.getMalariaProductsStockCards();
@@ -194,6 +198,14 @@ public class PatientDataServiceTest {
             Product productExpected = malariaProductsExpected.get(index);
             assertThat(EqualsBuilder.reflectionEquals(productExpected, stock.getProduct()), is(true));
             assertThat(stock.getStockOnHand(), is(STOCK_ON_HAND_VALUE));
+        }
+    }
+
+    @Test
+    public void shouldReturnStockCardValuesForAllMalariaProducts() throws Exception {
+        List<Long> stockValues = patientDataService.getMalariaProductsStockHand();
+        for (Long stockValue:stockValues) {
+            assertThat(stockValue, is(STOCK_ON_HAND_VALUE));
         }
     }
 

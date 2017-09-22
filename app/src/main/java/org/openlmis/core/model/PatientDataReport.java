@@ -16,7 +16,47 @@ public class PatientDataReport extends BaseModel {
     @DatabaseField
     private DateTime reportedDate;
 
+    @DatabaseField
+    private String type;
+
+    @DatabaseField
+    private long currentTreatment6x1;
+
+    @DatabaseField
+    private long currentTreatment6x2;
+
+    @DatabaseField
+    private long currentTreatment6x3;
+
+    @DatabaseField
+    private long currentTreatment6x4;
+
+    @DatabaseField
+    private long existingStock6x1;
+
+    @DatabaseField
+    private long existingStock6x2;
+
+    @DatabaseField
+    private long existingStock6x3;
+
+    @DatabaseField
+    private long existingStock6x4;
+
+    @DatabaseField
+    private boolean statusMissing;
+
+    @DatabaseField
+    private boolean statusDraft;
+
+    @DatabaseField
+    private boolean statusComplete;
+
+    @DatabaseField
+    private boolean statusSynced;
+
     public DateTime getReportedDate() {
         return reportedDate;
     }
+
 }

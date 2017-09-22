@@ -1,21 +1,15 @@
 package org.openlmis.core.view.holder;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.inject.Inject;
-
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.BaseActivity;
-import org.openlmis.core.view.activity.PatientDataReportActivity;
 import org.openlmis.core.view.activity.PatientDataReportFormActivity;
-import org.openlmis.core.view.activity.RapidTestReportFormActivity;
 import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
-import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
@@ -53,7 +47,7 @@ public class PatientDataReportViewHolder extends BaseViewHolder {
                 ((BaseActivity) context).loading();
                 if (viewModel.getPatientDataReport() == null) {
                     ((Activity) context).startActivityForResult(PatientDataReportFormActivity.getIntentToMe(context, PatientDataReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
-                }else {
+                } else {
                     ((Activity) context).startActivityForResult(PatientDataReportFormActivity.getIntentToMe(context, viewModel.getPatientDataReport().getId(), viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
                 }
                 ((BaseActivity) context).loaded();

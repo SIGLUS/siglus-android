@@ -41,8 +41,11 @@ public class PatientDataRepository {
     }
 
     public Optional<PatientDataReport> saveMovement(PatientDataReport patientDataReport) throws LMISException {
-        PatientDataReport patientDataReportSaved = genericDao.create(patientDataReport);
-        return Optional.of(patientDataReportSaved);
+        if (patientDataReport.isStatusMissing() || patientDataReport.isStatusDraft()){
+            PatientDataReport patientDataReportSaved = genericDao.create(patientDataReport);
+            return Optional.of(patientDataReportSaved);
+        }
+        return Optional.absent();
     }
 
     public List<PatientDataReport> getAllMovements() throws LMISException {

@@ -28,6 +28,8 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class PatientDataReportPresenterTest {
 
+    public static final int REQUISITION_START_DAY = 18;
+    public static final int ONE_MONTH = 1;
     private PatientDataService patientDataService;
     private PatientDataReportPresenter presenter;
 
@@ -41,7 +43,7 @@ public class PatientDataReportPresenterTest {
     @Test
     public void shouldGenerateViewModelsForAllPeriods() throws LMISException {
         DateTime firstDate = calculateDateWithinRequisitionPeriod();
-        DateTime secondDate = firstDate.plusMonths(1);
+        DateTime secondDate = firstDate.plusMonths(ONE_MONTH);
         Period firstPeriod = new Period(firstDate);
         Period secondPeriod = new Period(secondDate);
         List<Period> periodsExpected = Arrays.asList(new Period[]{firstPeriod, secondPeriod});
@@ -53,9 +55,8 @@ public class PatientDataReportPresenterTest {
     private DateTime calculateDateWithinRequisitionPeriod() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        int requisitionPeriodStartingDay = 18;
         int daysToAddWithinCurrentPeriod = nextInt(0, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, requisitionPeriodStartingDay);
+        calendar.set(Calendar.DAY_OF_MONTH, REQUISITION_START_DAY);
         DateTime actualDate = new DateTime(calendar.getTime().getTime()).plusDays(daysToAddWithinCurrentPeriod);
         return actualDate;
     }

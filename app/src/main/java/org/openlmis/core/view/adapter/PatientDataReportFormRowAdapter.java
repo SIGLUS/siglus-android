@@ -6,56 +6,48 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.presenter.PatientDataReportFormPresenter;
 import org.openlmis.core.view.holder.PatientDataReportRowViewHolder;
 import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import static org.openlmis.core.view.holder.PatientDataReportRowViewHolder.MALARIA_TOTAL_PRODUCTS;
 
 public class PatientDataReportFormRowAdapter extends RecyclerView.Adapter<PatientDataReportRowViewHolder> {
 
+    public static final int ROW_US_POSITION = 0;
+    public static final int ROW_APE_POSITION = 1;
     private boolean onBind;
 
+    Period period;
     private PatientDataReportFormPresenter presenter;
     private List<PatientDataReportViewModel> viewModels;
-    @Getter
-    @Setter
-    private boolean isNeededToUpdate;
 
-    public PatientDataReportFormRowAdapter(List<PatientDataReportViewModel> viewModels, PatientDataReportFormPresenter presenter) {
-        this.viewModels = viewModels;
+    public PatientDataReportFormRowAdapter(List<PatientDataReportViewModel> viewModels, PatientDataReportFormPresenter presenter, Period period) {
+        this.period = period;
         this.presenter = presenter;
+        this.viewModels = viewModels;
     }
 
     @Override
     public PatientDataReportRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_patient_data_report_form_row, parent, false);
-        return new PatientDataReportRowViewHolder(itemView, presenter, this);
+        return new PatientDataReportRowViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(PatientDataReportRowViewHolder holder, int position) {
-        onBind = true;
+        setOnBind(Boolean.TRUE);
         final PatientDataReportViewModel viewModel = viewModels.get(position);
-        holder.populate(viewModel, true);
-        holder.etCurrentTreatment6x1.addTextChangedListener(patientDataTextWatcher(holder, position));
-        holder.etCurrentTreatment6x2.addTextChangedListener(patientDataTextWatcher(holder, position));
-        holder.etCurrentTreatment6x3.addTextChangedListener(patientDataTextWatcher(holder, position));
-        holder.etCurrentTreatment6x4.addTextChangedListener(patientDataTextWatcher(holder, position));
-        holder.etExistingStock6x1.addTextChangedListener(patientDataTextWatcher(holder, position));
-        holder.etExistingStock6x2.addTextChangedListener(patientDataTextWatcher(holder, position));
-        holder.etExistingStock6x3.addTextChangedListener(patientDataTextWatcher(holder, position));
-        holder.etExistingStock6x4.addTextChangedListener(patientDataTextWatcher(holder, position));
-        onBind = false;
+        holder.populate(viewModel);
+        holder.putWatcherInComponents(patientDataTextWatcher(holder, position));
+        setOnBind(Boolean.FALSE);
+    }
+
+    private void setOnBind(boolean onBind) {
+        this.onBind = onBind;
     }
 
     public TextWatcher patientDataTextWatcher(final PatientDataReportRowViewHolder holder, final int position) {
@@ -63,49 +55,36 @@ public class PatientDataReportFormRowAdapter extends RecyclerView.Adapter<Patien
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                List<String> currentTreatments = new ArrayList<>();
-                List<String> existingStocks = new ArrayList<>();
-                EditText[] patientDataCurrentTreatmentsComponents = new EditText[]{holder.etCurrentTreatment6x1, holder.etCurrentTreatment6x2, holder.etCurrentTreatment6x3, holder.etCurrentTreatment6x4};
-                EditText[] patientDataExistingStockComponents = new EditText[]{holder.etExistingStock6x1, holder.etExistingStock6x2, holder.etExistingStock6x3, holder.etExistingStock6x4};
-                for (int index = 0; index < MALARIA_TOTAL_PRODUCTS; index++) {
-                    EditText patientDataCurrentTreatmentComponent = patientDataCurrentTreatmentsComponents[index];
-                    EditText patientDataExistingStockComponent = patientDataExistingStockComponents[index];
-                    String currentTreatmentValue = patientDataCurrentTreatmentComponent.getText().toString();
-                    String existingStockValue = patientDataExistingStockComponent.getText().toString();
-                    if (!currentTreatmentValue.isEmpty()) {
-                        currentTreatments.add(currentTreatmentValue);
-                    } else {
-                        currentTreatments.add("0");
-                    }if (!existingStockValue.isEmpty()) {
-                        existingStocks.add(existingStockValue);
-                    } else {
-                        existingStocks.add("0");
-                    }
-                }
-
-                if (position == 0) {
-                    presenter.setCurrentTreatmentsUs(currentTreatments);
-                    presenter.setExistingStockUs(existingStocks);
-                }
-                if (position == 1) {
-                    presenter.setCurrentTreatmentsApe(currentTreatments);
-                    presenter.setExistingStockApe(existingStocks);
-                }
-
-                presenter.generateViewModelsForAvailablePeriods();
-                viewModels = presenter.getViewModels();
+                List<Long> currentTreatments = holder.obtainCurrentTreatmentValues();
+                List<Long> existingStocks = holder.obtainExistingStockValues();
+                setCurrentTreatmentAndExistingStockInActualRow(currentTreatments, existingStocks, position);
+                presenter.generateViewModelsBySpecificPeriod(period);
+                viewModels = presenter.getViewModels(period);
                 if(!onBind) {
-                    notifyItemChanged(presenter.getViewModels().size() - 1);
+                    int totalRowPosition = viewModels.size() - 1;
+                    notifyItemChanged(totalRowPosition);
                 }
             }
+
             @Override
             public void afterTextChanged(Editable s) {
             }
         };
     }
 
+    private void setCurrentTreatmentAndExistingStockInActualRow(List<Long> currentTreatments, List<Long> existingStocks, int position) {
+        if (position == ROW_US_POSITION) {
+            presenter.setCurrentTreatmentsUs(currentTreatments);
+            presenter.setExistingStockUs(existingStocks);
+        }
+        if (position == ROW_APE_POSITION) {
+            presenter.setCurrentTreatmentsApe(currentTreatments);
+            presenter.setExistingStockApe(existingStocks);
+        }
+    }
 
     @Override
     public int getItemCount() {

@@ -84,4 +84,5 @@
     <color name="color_pink">#fd726f</color>
     <color name="color_pink_dark">#c54144</color>
     <color name="color_patient_data_form_row_header">#ce93d8</color>
+    <color name="patient_data_not_editable">#CFD8DC</color>
 </resources>
