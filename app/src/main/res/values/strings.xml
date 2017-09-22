@@ -469,8 +469,8 @@
     <string name="msg_us_ape">US/APE</string>
     <string name="msg_total_sum_us_ape">Total US/APE</string>
     <string name="msg_arthemeter_lumefantrina">ARTEMÉTER-LUMEFANTRINA (AL)</string>
-    <string name="msg_treatments_month">Nº Tratamentos  Aviados no Mês</string>
-    <string name="msg_existing_stock_month">Stock Existente no Fim do Mês</string>
+    <string name="msg_treatments_month">Nº Treatments Aviados in this month</string>
+    <string name="msg_existing_stock_month">Existing Stock at the end of the month</string>
     <string name="msg_product_code_6x1">6x1</string>
     <string name="msg_product_code_6x2">6x2</string>
     <string name="msg_product_code_6x3">6x3</string>
