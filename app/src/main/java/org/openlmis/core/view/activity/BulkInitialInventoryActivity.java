@@ -50,30 +50,33 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         btnDone.setOnClickListener(new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
-                btnDone.setEnabled(false);
+               btnDone.setEnabled(false);
                 if (validateInventory()) {
                     loading();
                     Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
                     subscriptions.add(subscription);
                 } else {
                     btnDone.setEnabled(true);
+                    ToastUtil.show(getResources().getString(R.string.msg_error_basic_products));
                 }
+
+
             }
         });
         btnSave.setOnClickListener(new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
                 btnSave.setEnabled(false);
-                    loading();
-                    Subscription subscription = presenter.initStockCardObservable().subscribe(new Action1<Object>() {
-                        @Override
-                        public void call(Object o) {
-                            Toast.makeText(getApplicationContext(), R.string.succesfully_saved,Toast.LENGTH_LONG).show();
-                            loaded();
-                            btnSave.setEnabled(true);
-                        }
-                    });
-                    subscriptions.add(subscription);
+                loading();
+                Subscription subscription = presenter.initStockCardObservable().subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG).show();
+                        loaded();
+                        btnSave.setEnabled(true);
+                    }
+                });
+                subscriptions.add(subscription);
             }
         });
     }
@@ -94,7 +97,9 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
             @Override
             public void onNext(List<InventoryViewModel> inventoryViewModels) {
-                inventoryViewModels.add(FIRST_ELEMENT_POSITION_OF_THE_LIST, new InventoryViewModel(Product.dummyProduct()));
+                InventoryViewModel inventoryModel = new InventoryViewModel(Product.dummyProduct());
+                inventoryModel.setDummyModel(true);
+                inventoryViewModels.add(FIRST_ELEMENT_POSITION_OF_THE_LIST, inventoryModel);
                 setUpFastScroller(inventoryViewModels);
                 mAdapter.refresh();
                 setTotal(inventoryViewModels.size() - ELEMENTS_ADDED_TO_HEADER);

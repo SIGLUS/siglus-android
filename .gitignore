@@ -66,3 +66,4 @@ test_servers/
 node_modules/
 package-lock.json
 *.swp
+**/**/.irb-history

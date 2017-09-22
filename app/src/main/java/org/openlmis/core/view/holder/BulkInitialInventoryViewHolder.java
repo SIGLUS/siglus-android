@@ -107,7 +107,7 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
     }
 
     @NonNull
-    protected SingleClickButtonListener getAddNewLotDialogOnClickListener() {
+    private SingleClickButtonListener getAddNewLotDialogOnClickListener() {
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
@@ -224,11 +224,13 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
             @Override
             public void addLotWithoutNumber(String expiryDate) {
                 btnAddNewLot.setEnabled(true);
+                AddBulkLotDialogFragment.IS_OCCUPIED = false;
                 String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getProduct().getCode(), expiryDate);
                 if (getLotNumbers().contains(lotNumber)) {
                     ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
                 } else {
                     addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY, addBulkLotDialogFragment.getQuantity()));
+
                 }
             }
         };

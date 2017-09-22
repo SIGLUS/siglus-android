@@ -40,6 +40,16 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
     }
 
     @Override
+    public int validateAll() {
+        for(int i = 0; i < data.size(); i++){
+            if(!data.get(i).isChecked() && !data.get(i).isDummyModel()){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         if (holder instanceof BulkInitialInventoryViewHolder) {
             final InventoryViewModel viewModel = filteredList.get(position);

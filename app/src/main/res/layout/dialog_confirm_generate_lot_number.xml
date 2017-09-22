@@ -6,6 +6,7 @@
 
     <TextView
         style="@style/Dialog.TitleLeft"
+        android:id="@+id/autogenerate_lot_dialog"
         android:layout_width="500dp"
         android:layout_height="wrap_content"
         android:text="@string/title_generate_lot_number"

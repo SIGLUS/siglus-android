@@ -53,6 +53,8 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
 
     boolean checked = false;
 
+    boolean dummyModel = false;
+
     private String signature;
     StockCard stockCard;
 
@@ -68,7 +70,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     public InventoryViewModel(Product product) {
         this.product = product;
         this.type = product.getType();
-
         setProductAttributes(product);
     }
 

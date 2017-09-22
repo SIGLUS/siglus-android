@@ -150,8 +150,8 @@ public class BaseLotListView extends FrameLayout {
     }
 
     public boolean showAddLotDialogFragment() {
-        if (!AddLotDialogFragment.IS_OCCUPIED) {
-            AddLotDialogFragment.IS_OCCUPIED = true;
+        //if (!AddLotDialogFragment.IS_OCCUPIED) {
+          //  AddLotDialogFragment.IS_OCCUPIED = true;
             Bundle bundle = new Bundle();
             bundle.putString(Constants.PARAM_STOCK_NAME, viewModel.getProduct().getFormattedProductName());
             addLotDialogFragment = new AddLotDialogFragment();
@@ -161,8 +161,8 @@ public class BaseLotListView extends FrameLayout {
             addLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
             addLotDialogFragment.show(((Activity) context).getFragmentManager(), ADD_LOT);
             return true;
-        }
-        return false;
+//        }
+//        return false;
     }
 
     @NonNull

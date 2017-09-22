@@ -51,6 +51,7 @@
     <string name="label_soh_amount">Stock on Hand</string>
     <string name="hint_soh_amount">Amount</string>
     <string name="tv_batch">Batch &amp; expiry date</string>
+    <string name="msg_error_basic_products">All the basic products have to be set up in order to continue</string>
 
     <!-- Home Page -->
     <string name="label_stock_cards">Stock Card Overview</string>
