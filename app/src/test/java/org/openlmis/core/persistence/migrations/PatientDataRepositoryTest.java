@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PatientDataReport;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.PatientDataRepository;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.RuntimeEnvironment;
@@ -34,6 +35,7 @@ public class PatientDataRepositoryTest {
 
     @Before
     public void setup() {
+        Period period =new Period(DateTime.parse("2017-06-18"));
         patientDataReportRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PatientDataRepository.class);
         patientDataReport = new PatientDataReport();
         patientDataReport.setType("US");
@@ -50,11 +52,13 @@ public class PatientDataRepositoryTest {
         patientDataReport.setStatusDraft(Boolean.FALSE);
         patientDataReport.setStatusComplete(Boolean.FALSE);
         patientDataReport.setStatusSynced(Boolean.FALSE);
+        patientDataReport.setStartDatePeriod(period.getBegin());
+        patientDataReport.setEndDatePeriod(period.getEnd());
     }
 
     @Test
     public void shouldReturnPatientDataReportedWhenPatientDataReportWasSavedSuccessfullyInDatabaseAndStatusIsMissingOrDraft() throws LMISException {
-        int typeStatus = nextInt(1, 3);;
+        int typeStatus = nextInt(1, 3);
         if (typeStatus == MISSING_TYPE) {
             patientDataReport.setStatusMissing(Boolean.TRUE);
         }
@@ -63,6 +67,10 @@ public class PatientDataRepositoryTest {
         }
         Optional<PatientDataReport> patientDataReportSaved = patientDataReportRepository.saveMovement(patientDataReport);
         assertThat(patientDataReportSaved, is(Optional.of(patientDataReport)));
+        assertThat(patientDataReportSaved.get().isStatusComplete(), is(Boolean.FALSE));
+        assertThat(patientDataReportSaved.get().isStatusDraft(), is(Boolean.TRUE));
+        assertThat(patientDataReportSaved.get().isStatusMissing(), is(Boolean.FALSE));
+        assertThat(patientDataReportSaved.get().isStatusSynced(), is(Boolean.FALSE));
     }
 
     @Test

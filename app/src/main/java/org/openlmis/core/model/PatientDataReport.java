@@ -17,6 +17,12 @@ public class PatientDataReport extends BaseModel {
     private DateTime reportedDate;
 
     @DatabaseField
+    private DateTime startDatePeriod;
+
+    @DatabaseField
+    private DateTime endDatePeriod;
+
+    @DatabaseField
     private String type;
 
     @DatabaseField
@@ -58,5 +64,4 @@ public class PatientDataReport extends BaseModel {
     public DateTime getReportedDate() {
         return reportedDate;
     }
-
 }

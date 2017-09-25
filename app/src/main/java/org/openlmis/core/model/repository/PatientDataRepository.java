@@ -42,6 +42,8 @@ public class PatientDataRepository {
 
     public Optional<PatientDataReport> saveMovement(PatientDataReport patientDataReport) throws LMISException {
         if (patientDataReport.isStatusMissing() || patientDataReport.isStatusDraft()){
+            patientDataReport.setStatusMissing(Boolean.FALSE);
+            patientDataReport.setStatusDraft(Boolean.TRUE);
             PatientDataReport patientDataReportSaved = genericDao.create(patientDataReport);
             return Optional.of(patientDataReportSaved);
         }

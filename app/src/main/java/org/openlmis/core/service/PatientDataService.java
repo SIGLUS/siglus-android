@@ -12,6 +12,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.PatientDataRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
 import org.roboguice.shaded.goole.common.base.Optional;
 
 import java.util.ArrayList;
@@ -102,5 +103,38 @@ public class PatientDataService {
             }
         }
         return stocks;
+    }
+
+    public Boolean savePatientDataMovementsPerPeriod(List<PatientDataReportViewModel> patientDataReportViewModels) {
+        boolean isSuccessful = Boolean.FALSE;
+        for (PatientDataReportViewModel model: patientDataReportViewModels) {
+            if(model.getCurrentTreatments().contains(null) || model.getExistingStock().contains(null)){
+                return Boolean.FALSE;
+            }
+            PatientDataReport patientDataReport = new PatientDataReport();
+            patientDataReport.setType(model.getUsApe());
+            patientDataReport.setStartDatePeriod(model.getPeriod().getBegin());
+            patientDataReport.setEndDatePeriod(model.getPeriod().getEnd());
+            patientDataReport.setExistingStock6x1(model.getExistingStock().get(0));
+            patientDataReport.setExistingStock6x2(model.getExistingStock().get(1));
+            patientDataReport.setExistingStock6x3(model.getExistingStock().get(2));
+            patientDataReport.setExistingStock6x4(model.getExistingStock().get(3));
+            patientDataReport.setCurrentTreatment6x1(model.getCurrentTreatments().get(0));
+            patientDataReport.setCurrentTreatment6x2(model.getCurrentTreatments().get(1));
+            patientDataReport.setCurrentTreatment6x3(model.getCurrentTreatments().get(2));
+            patientDataReport.setCurrentTreatment6x4(model.getCurrentTreatments().get(3));
+            try {
+                Optional<PatientDataReport> patientDataReportSaved = patientDataRepository.saveMovement(patientDataReport);
+                if (patientDataReportSaved.isPresent()) {
+                    isSuccessful = patientDataReportSaved.get().isStatusDraft();
+                } else {
+                    isSuccessful = Boolean.FALSE;
+                }
+            } catch (LMISException e) {
+                e.printStackTrace();
+                return Boolean.FALSE;
+            }
+        }
+        return isSuccessful;
     }
 }
