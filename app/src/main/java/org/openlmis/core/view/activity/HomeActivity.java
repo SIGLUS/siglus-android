@@ -123,6 +123,10 @@ public class HomeActivity extends BaseActivity {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rapid_test)) {
             btnRapidTestReport.setVisibility(View.GONE);
         }
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_patient_data)) {
+            btnPatientData.setVisibility(View.GONE);
+        }
     }
 
     private void registerSyncStartReceiver() {
