@@ -30,14 +30,20 @@ public class PatientDataRepositoryTest {
     public static final int DRAFT_TYPE = 2;
     private static final int COMPLETE_TYPE = 1;
     private static final int SYNCED_TYPE = 2;
+
     private PatientDataRepository patientDataReportRepository;
     private PatientDataReport patientDataReport;
+    private Period period;
 
     @Before
     public void setup() {
-        Period period =new Period(DateTime.parse("2017-06-18"));
+        period = new Period(DateTime.parse("2017-06-18"));
         patientDataReportRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PatientDataRepository.class);
-        patientDataReport = new PatientDataReport();
+        patientDataReport = createDummyPatientDataReport(period);
+    }
+
+    private PatientDataReport createDummyPatientDataReport(Period period) {
+        PatientDataReport patientDataReport = new PatientDataReport();
         patientDataReport.setType("US");
         patientDataReport.setReportedDate(DateTime.parse("2017-06-18"));
         patientDataReport.setCurrentTreatment6x1(CURRENT_TREATMENT_VALUE);
@@ -54,17 +60,12 @@ public class PatientDataRepositoryTest {
         patientDataReport.setStatusSynced(Boolean.FALSE);
         patientDataReport.setStartDatePeriod(period.getBegin());
         patientDataReport.setEndDatePeriod(period.getEnd());
+        return patientDataReport;
     }
 
     @Test
     public void shouldReturnPatientDataReportedWhenPatientDataReportWasSavedSuccessfullyInDatabaseAndStatusIsMissingOrDraft() throws LMISException {
-        int typeStatus = nextInt(1, 3);
-        if (typeStatus == MISSING_TYPE) {
-            patientDataReport.setStatusMissing(Boolean.TRUE);
-        }
-        if (typeStatus == DRAFT_TYPE) {
-            patientDataReport.setStatusDraft(Boolean.TRUE);
-        }
+        patientDataReport.setStatusMissing(Boolean.TRUE);
         Optional<PatientDataReport> patientDataReportSaved = patientDataReportRepository.saveMovement(patientDataReport);
         assertThat(patientDataReportSaved, is(Optional.of(patientDataReport)));
         assertThat(patientDataReportSaved.get().isStatusComplete(), is(Boolean.FALSE));
@@ -86,6 +87,16 @@ public class PatientDataRepositoryTest {
         assertThat(patientDataReportSaved, is(Optional.<PatientDataReport>absent()));
     }
 
+    @Test
+    public void shouldNotReturnPatientDataWhenThereIsAPatientDataReportedInThatPeriod() throws LMISException {
+        patientDataReport.setStatusMissing(Boolean.TRUE);
+        patientDataReportRepository.saveMovement(patientDataReport);
+        patientDataReport = createDummyPatientDataReport(period);
+        patientDataReport.setStatusMissing(Boolean.TRUE);
+        Optional<PatientDataReport> patientDataReportSaved = patientDataReportRepository.saveMovement(patientDataReport);
+        assertThat(patientDataReportSaved.isPresent(), is(false));
+    }
+
     @Test(expected = LMISException.class)
     public void shouldThrowLMISExceptionWhenReportedDateIsNullAndPatientDataReportWasNotSavedInDatabase() throws LMISException {
         patientDataReport.setStatusMissing(Boolean.TRUE);
@@ -98,8 +109,13 @@ public class PatientDataRepositoryTest {
         patientDataReport.setStatusMissing(Boolean.TRUE);
         patientDataReport.setReportedDate(DateTime.parse("2017-07-18"));
         patientDataReportRepository.saveMovement(patientDataReport);
-        patientDataReport.setReportedDate(DateTime.parse("2017-08-18"));
-        patientDataReportRepository.saveMovement(patientDataReport);
+        PatientDataReport anotherPatientDataReport = new PatientDataReport();
+        DateTime beginDateNextMonth = DateTime.parse("2017-08-18");
+        anotherPatientDataReport.setReportedDate(beginDateNextMonth);
+        Period period = new Period(beginDateNextMonth);
+        anotherPatientDataReport = createDummyPatientDataReport(period);
+        anotherPatientDataReport.setStatusMissing(Boolean.TRUE);
+        patientDataReportRepository.saveMovement(anotherPatientDataReport);
         List<PatientDataReport> reports = patientDataReportRepository.getAllMovements();
         assertThat(reports.size(), is(2));
     }

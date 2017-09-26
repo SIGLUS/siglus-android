@@ -57,12 +57,12 @@ public class PatientDataReportRowViewHolder extends BaseViewHolder {
         EditText[] patientDataCurrentTreatmentsComponents = getDataCurrentTreatmentsEditTexts();
         EditText[] patientDataExistingStockComponents = getExistingStockEditTexts();
         setEditTextValues(viewModel);
-        if (viewModel.getUsApe().equals(TOTAL)) {
+        if (viewModel.getType().equals(TOTAL)) {
             setPatientDataComponentsAsNotEditable(patientDataCurrentTreatmentsComponents);
             setPatientDataComponentsAsNotEditable(patientDataExistingStockComponents);
             tvTitleRow.setBackgroundColor(context.getResources().getColor(R.color.patient_data_not_editable));
         }
-        if (viewModel.getUsApe().equals(US)) {
+        if (viewModel.getType().equals(US)) {
             setPatientDataComponentsAsNotEditable(patientDataExistingStockComponents);
         }
     }
@@ -74,7 +74,7 @@ public class PatientDataReportRowViewHolder extends BaseViewHolder {
     }
 
     private void setEditTextValues(PatientDataReportViewModel viewModel) {
-        tvTitleRow.setText(viewModel.getUsApe());
+        tvTitleRow.setText(viewModel.getType());
         EditText[] patientDataCurrentTreatmentsComponents = getDataCurrentTreatmentsEditTexts();
         EditText[] patientDataExistingStockComponents = getExistingStockEditTexts();
         for (int i = 0; i < MALARIA_TOTAL_PRODUCTS; i++) {

@@ -40,12 +40,24 @@ public class PatientDataRepository {
         return Optional.absent();
     }
 
-    public Optional<PatientDataReport> saveMovement(PatientDataReport patientDataReport) throws LMISException {
-        if (patientDataReport.isStatusMissing() || patientDataReport.isStatusDraft()){
-            patientDataReport.setStatusMissing(Boolean.FALSE);
-            patientDataReport.setStatusDraft(Boolean.TRUE);
-            PatientDataReport patientDataReportSaved = genericDao.create(patientDataReport);
-            return Optional.of(patientDataReportSaved);
+    public Optional<PatientDataReport> saveMovement(final PatientDataReport patientDataReport) throws LMISException {
+        if (patientDataReport.isStatusMissing()) {
+            final PatientDataReport existingPatientDataReport = (PatientDataReport) dbUtil.withDao(PatientDataReport.class, new DbUtil.Operation<PatientDataReport, Object>() {
+                @Override
+                public PatientDataReport operate(Dao<PatientDataReport, String> dao) throws SQLException, LMISException {
+                    PatientDataReport queryPatientDataReport = dao.queryBuilder().where()
+                            .eq("startDatePeriod", patientDataReport.getStartDatePeriod())
+                            .and().eq("endDatePeriod", patientDataReport.getEndDatePeriod())
+                            .and().eq("type", patientDataReport.getType()).queryForFirst();
+                    return queryPatientDataReport;
+                }
+            });
+            if (existingPatientDataReport == null){
+                patientDataReport.setStatusMissing(Boolean.FALSE);
+                patientDataReport.setStatusDraft(Boolean.TRUE);
+                PatientDataReport patientDataReportSaved = genericDao.create(patientDataReport);
+                return Optional.of(patientDataReportSaved);
+            }
         }
         return Optional.absent();
     }

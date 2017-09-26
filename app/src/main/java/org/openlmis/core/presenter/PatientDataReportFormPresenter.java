@@ -63,7 +63,7 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
 
     private PatientDataReportViewModel generateViewModel(Period period, String title, List<Long> currentTreatments, List<Long> existingStock) {
         PatientDataReportViewModel patientDataReportViewModel = new PatientDataReportViewModel(period);
-        patientDataReportViewModel.setUsApe(title);
+        patientDataReportViewModel.setType(title);
         patientDataReportViewModel.setCurrentTreatments(currentTreatments);
         patientDataReportViewModel.setExistingStock(existingStock);
         return patientDataReportViewModel;

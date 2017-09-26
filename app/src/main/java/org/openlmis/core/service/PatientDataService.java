@@ -108,22 +108,11 @@ public class PatientDataService {
     public Boolean savePatientDataMovementsPerPeriod(List<PatientDataReportViewModel> patientDataReportViewModels) {
         boolean isSuccessful = Boolean.FALSE;
         for (PatientDataReportViewModel model: patientDataReportViewModels) {
-            if(model.getCurrentTreatments().contains(null) || model.getExistingStock().contains(null)){
+            if(isViewModelFully(model)){
                 return Boolean.FALSE;
             }
-            PatientDataReport patientDataReport = new PatientDataReport();
-            patientDataReport.setType(model.getUsApe());
-            patientDataReport.setStartDatePeriod(model.getPeriod().getBegin());
-            patientDataReport.setEndDatePeriod(model.getPeriod().getEnd());
-            patientDataReport.setExistingStock6x1(model.getExistingStock().get(0));
-            patientDataReport.setExistingStock6x2(model.getExistingStock().get(1));
-            patientDataReport.setExistingStock6x3(model.getExistingStock().get(2));
-            patientDataReport.setExistingStock6x4(model.getExistingStock().get(3));
-            patientDataReport.setCurrentTreatment6x1(model.getCurrentTreatments().get(0));
-            patientDataReport.setCurrentTreatment6x2(model.getCurrentTreatments().get(1));
-            patientDataReport.setCurrentTreatment6x3(model.getCurrentTreatments().get(2));
-            patientDataReport.setCurrentTreatment6x4(model.getCurrentTreatments().get(3));
             try {
+                PatientDataReport patientDataReport = setPatientDataReportInformation(model);
                 Optional<PatientDataReport> patientDataReportSaved = patientDataRepository.saveMovement(patientDataReport);
                 if (patientDataReportSaved.isPresent()) {
                     isSuccessful = patientDataReportSaved.get().isStatusDraft();
@@ -136,5 +125,19 @@ public class PatientDataService {
             }
         }
         return isSuccessful;
+    }
+
+    private PatientDataReport setPatientDataReportInformation(PatientDataReportViewModel model) {
+        PatientDataReport patientDataReport = new PatientDataReport();
+        patientDataReport.setType(model.getType());
+        patientDataReport.setStartDatePeriod(model.getPeriod().getBegin());
+        patientDataReport.setEndDatePeriod(model.getPeriod().getEnd());
+        patientDataReport.setCurrentTreatments(model.getCurrentTreatments());
+        patientDataReport.setExistingStocks(model.getExistingStock());
+        return patientDataReport;
+    }
+
+    private boolean isViewModelFully(PatientDataReportViewModel model) {
+        return model.getCurrentTreatments().contains(null) || model.getExistingStock().contains(null);
     }
 }

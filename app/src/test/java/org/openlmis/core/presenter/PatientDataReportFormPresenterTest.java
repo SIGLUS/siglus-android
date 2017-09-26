@@ -94,7 +94,7 @@ public class PatientDataReportFormPresenterTest {
         when(patientDataService.getMalariaProductsStockHand()).thenReturn(Arrays.asList(stockOnHand));
         presenter.generateViewModelsBySpecificPeriod(period);
         PatientDataReportViewModel patientDataReportUsViewModel = presenter.getViewModels(period).get(INDEX_US);
-        String usApe = patientDataReportUsViewModel.getUsApe();
+        String usApe = patientDataReportUsViewModel.getType();
         List<Long> currentTreatments = patientDataReportUsViewModel.getCurrentTreatments();
         List<Long> existingStockProducts = patientDataReportUsViewModel.getExistingStock();
         assertThat(presenter.getViewModels(period).size(), is (TOTAL_PATIENT_DATA_FORM_ROWS));
@@ -115,7 +115,7 @@ public class PatientDataReportFormPresenterTest {
         when(patientDataService.getMalariaProductsStockHand()).thenReturn(Arrays.asList(stockOnHand));
         presenter.generateViewModelsBySpecificPeriod(period);
         PatientDataReportViewModel patientDataReportUsViewModel = presenter.getViewModels(period).get(INDEX_APE);
-        String usApe = patientDataReportUsViewModel.getUsApe();
+        String usApe = patientDataReportUsViewModel.getType();
         List<Long> currentTreatments = patientDataReportUsViewModel.getCurrentTreatments();
         List<Long> existingStockProducts = patientDataReportUsViewModel.getExistingStock();
         assertThat(presenter.getViewModels(period).size(), is (TOTAL_PATIENT_DATA_FORM_ROWS));
@@ -137,7 +137,7 @@ public class PatientDataReportFormPresenterTest {
         PatientDataReportViewModel patientDataReportUsViewModel = presenter.getViewModels(period).get(INDEX_US);
         PatientDataReportViewModel patientDataReportApeViewModel = presenter.getViewModels(period).get(INDEX_APE);
         PatientDataReportViewModel patientDataReportTotalViewModel = presenter.getViewModels(period).get(INDEX_TOTAL);
-        String usApe = patientDataReportTotalViewModel.getUsApe();
+        String usApe = patientDataReportTotalViewModel.getType();
         List<Long> currentTreatmentsUs = patientDataReportUsViewModel.getCurrentTreatments();
         List<Long> existingStocksUs = patientDataReportUsViewModel.getExistingStock();
         List<Long> currentTreatmentsApe = patientDataReportApeViewModel.getCurrentTreatments();

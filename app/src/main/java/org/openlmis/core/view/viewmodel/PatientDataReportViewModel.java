@@ -29,7 +29,7 @@ public class PatientDataReportViewModel {
         return period;
     }
 
-    public String getUsApe() {
+    public String getType() {
         return usApe;
     }
 
@@ -45,7 +45,7 @@ public class PatientDataReportViewModel {
         this.existingStock = existingStock;
     }
 
-    public void setUsApe(String usApe) {
+    public void setType(String usApe) {
         this.usApe = usApe;
     }
 
