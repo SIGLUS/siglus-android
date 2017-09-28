@@ -2,8 +2,8 @@
 Feature: Log in and initialize Inventory with Basic Products
 
   Scenario: 01 - Submit initial inventory
-
-    Given I log in for the first time
+    Given today is "20160216.130000"
+    And I log in for the first time
     And I see the initial inventory screen
     And I search for "Hidralazina; 25mg/5mL; Injectável" to declare no stock
     And I save initial inventory
@@ -25,8 +25,7 @@ Feature: Log in and initialize Inventory with Basic Products
     Then I should see the application main menu screen
 
   Scenario: 02 - Product movements
-    Given today is "20160216.130000"
-    And I log in into the application
+    Given I log in into the application
     And I press "Stock Card Overview"
     And I search for "Digoxina 0,25mg Comp"
     And I add a new movement
@@ -47,3 +46,22 @@ Feature: Log in and initialize Inventory with Basic Products
     And I navigate back
     When I navigate back
     Then I should see the application main menu screen
+
+  Scenario: 03 - Requisitions
+    Given today is "20160218.130000"
+    And I log in into the application
+    And I press "Requisitions"
+    And I should see text containing "No Requisition Balancete has been created."
+    And I press "Complete Inventory"
+    And I see the inventory screen
+    And I search for "Digoxina 0,25mg Comp" in physical inventory
+    And I set the amount to 120
+    And I navigate back
+    And I search for "Dobutamina; 250mg/5mL; Injectável" in physical inventory
+    And I set the amount to 113
+    And I navigate back
+    And I search for "Hidralazina; 25mg/5mL; Injectável" in physical inventory
+    And I press "Complete"
+    And I approve the physical inventory and sign the report with "TWUIO"
+    And I should see text containing "No Requisition Balancete has been created."
+    And I press "Create Requisition Balancete"
