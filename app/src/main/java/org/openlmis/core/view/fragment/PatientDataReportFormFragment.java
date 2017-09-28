@@ -14,6 +14,7 @@ import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.PatientDataReportFormPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.PatientDataReportFormRowAdapter;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -39,11 +40,13 @@ public class PatientDataReportFormFragment extends BaseReportFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.generateViewModelsBySpecificPeriod(periodBegin);
-        adapter = new PatientDataReportFormRowAdapter(presenter.getViewModels(periodBegin), presenter, periodBegin);
+        presenter.generateViewModelsBySpecificPeriod(periodBegin, Boolean.FALSE);
+        adapter = new PatientDataReportFormRowAdapter(presenter.getViewModels(periodBegin, Boolean.FALSE), presenter, periodBegin);
         rvPatientDataRowItem.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPatientDataRowItem.setAdapter(adapter);
+        actionPanelView.setListener(getOnCompleteClickListener(), getOnSaveClickListener());
     }
+
 
     @Override
     protected BaseReportPresenter injectPresenter() {
@@ -61,8 +64,28 @@ public class PatientDataReportFormFragment extends BaseReportFragment {
         return null;
     }
 
+    private SingleClickButtonListener getOnSaveClickListener() {
+        return new SingleClickButtonListener() {
+            @Override
+            public void onSingleClick(View v) {
+                onSaveForm();
+            }
+        };
+    }
+
+    private View.OnClickListener getOnCompleteClickListener() {
+        return null;
+    }
+
+    public void onSaveForm() {
+        loading();
+        presenter.saveForm();
+        finish();
+    }
+
     @Override
     protected String getNotifyDialogMsg() {
         return null;
     }
+
 }

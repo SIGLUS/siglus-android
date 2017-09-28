@@ -61,8 +61,8 @@ public class PatientDataReportFormRowAdapter extends RecyclerView.Adapter<Patien
                 List<Long> currentTreatments = holder.obtainCurrentTreatmentValues();
                 List<Long> existingStocks = holder.obtainExistingStockValues();
                 setCurrentTreatmentAndExistingStockInActualRow(currentTreatments, existingStocks, position);
-                presenter.generateViewModelsBySpecificPeriod(period);
-                viewModels = presenter.getViewModels(period);
+                presenter.generateViewModelsBySpecificPeriod(period, Boolean.TRUE);
+                viewModels = presenter.getViewModels(period, Boolean.TRUE);
                 if(!onBind) {
                     int totalRowPosition = viewModels.size() - 1;
                     notifyItemChanged(totalRowPosition);

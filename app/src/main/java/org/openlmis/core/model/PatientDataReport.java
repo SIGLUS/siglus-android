@@ -5,6 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.joda.time.DateTime;
 
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -72,6 +73,14 @@ public class PatientDataReport extends BaseModel {
         this.existingStock6x2 = existingStocks.get(1);
         this.existingStock6x3 = existingStocks.get(2);
         this.existingStock6x4 = existingStocks.get(3);
+    }
+
+    public List<Long> getExistingStocks() {
+        return Arrays.asList(new Long[]{existingStock6x1, existingStock6x2, existingStock6x3, existingStock6x4});
+    }
+
+    public List<Long> getCurrentTreatments() {
+        return Arrays.asList(new Long[]{currentTreatment6x1, currentTreatment6x2, currentTreatment6x3, currentTreatment6x4});
     }
 
     public void setCurrentTreatments(List<Long> currentTreatments) {

@@ -102,7 +102,6 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product3);
         List<Product> products1 = productRepository.listProductsArchivedOrNotInStockCard();
 
-        System.out.println(products1.get(0).isArchived());
         assertTrue(products1.get(0).isArchived());
         assertEquals(1, products1.size());
 

@@ -113,8 +113,9 @@ public class PatientDataService {
             }
             try {
                 PatientDataReport patientDataReport = setPatientDataReportInformation(model);
+
                 Optional<PatientDataReport> patientDataReportSaved = patientDataRepository.saveMovement(patientDataReport);
-                if (patientDataReportSaved.isPresent()) {
+                if (patientDataReportSaved != null && patientDataReportSaved.isPresent()) {
                     isSuccessful = patientDataReportSaved.get().isStatusDraft();
                 } else {
                     isSuccessful = Boolean.FALSE;
@@ -134,10 +135,16 @@ public class PatientDataService {
         patientDataReport.setEndDatePeriod(model.getPeriod().getEnd());
         patientDataReport.setCurrentTreatments(model.getCurrentTreatments());
         patientDataReport.setExistingStocks(model.getExistingStock());
+//        patientDataReport.setStatusMissing(Boolean.TRUE);
         return patientDataReport;
     }
 
+
     private boolean isViewModelFully(PatientDataReportViewModel model) {
         return model.getCurrentTreatments().contains(null) || model.getExistingStock().contains(null);
+    }
+
+    public PatientDataReport getExistingByModelPerPeriod(DateTime beginDate, DateTime endDate, String type) throws LMISException {
+        return patientDataRepository.getPatientDataReportByPeriodAndType(beginDate, endDate, type);
     }
 }

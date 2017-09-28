@@ -154,7 +154,6 @@ public class ChangeMovementReasonToCodeTest extends LMISRepositoryUnitTest{
         migrate.up();
 
         for (StockMovementItem newItem : stockMovementItems){
-            System.out.println("ReasonCode:" + newItem.getReason());
             assertThat(newItem.getReason().isEmpty(), is(false));
         }
     }

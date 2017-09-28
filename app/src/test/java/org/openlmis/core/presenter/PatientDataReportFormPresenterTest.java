@@ -52,6 +52,7 @@ public class PatientDataReportFormPresenterTest {
     private Period period;
     private PatientDataService patientDataService;
     private PatientDataReportFormPresenter presenter;
+    private Boolean isUpdate = Boolean.FALSE;
 
     private Product product6x1 = new Product();
     private Product product6x2 = new Product();
@@ -90,18 +91,18 @@ public class PatientDataReportFormPresenterTest {
 
     @Test
     public void shouldGenerateViewModelsForPatientDataReportInCurrentPeriodWhenIsUS() {
-        Long [] stockOnHand = new Long[]{stockCard6x1.getStockOnHand(), stockCard6x2.getStockOnHand(), stockCard6x3.getStockOnHand(), stockCard6x4.getStockOnHand()};
+        Long[] stockOnHand = new Long[]{stockCard6x1.getStockOnHand(), stockCard6x2.getStockOnHand(), stockCard6x3.getStockOnHand(), stockCard6x4.getStockOnHand()};
         when(patientDataService.getMalariaProductsStockHand()).thenReturn(Arrays.asList(stockOnHand));
-        presenter.generateViewModelsBySpecificPeriod(period);
-        PatientDataReportViewModel patientDataReportUsViewModel = presenter.getViewModels(period).get(INDEX_US);
+        presenter.generateViewModelsBySpecificPeriod(period, isUpdate);
+        PatientDataReportViewModel patientDataReportUsViewModel = presenter.getViewModels(period, isUpdate).get(INDEX_US);
         String usApe = patientDataReportUsViewModel.getType();
         List<Long> currentTreatments = patientDataReportUsViewModel.getCurrentTreatments();
         List<Long> existingStockProducts = patientDataReportUsViewModel.getExistingStock();
-        assertThat(presenter.getViewModels(period).size(), is (TOTAL_PATIENT_DATA_FORM_ROWS));
+        assertThat(presenter.getViewModels(period, isUpdate).size(), is(TOTAL_PATIENT_DATA_FORM_ROWS));
         assertThat(usApe, is(US));
         assertThat(currentTreatments.size(), is(TOTAL_MALARIA_PRODUCTS));
         assertThat(existingStockProducts.size(), is(TOTAL_MALARIA_PRODUCTS));
-        for (int index = 0; index < existingStockProducts.size(); index ++) {
+        for (int index = 0; index < existingStockProducts.size(); index++) {
             long treatment = currentTreatments.get(index);
             long stock = existingStockProducts.get(index);
             assertThat(treatment, is(STOCK_ON_HAND_VALUE_WITHOUT_VALUE));
@@ -111,17 +112,17 @@ public class PatientDataReportFormPresenterTest {
 
     @Test
     public void shouldGenerateViewModelsForPatientDataReportInCurrentPeriodWhenIsAPE() {
-        Long [] stockOnHand = new Long[]{stockCard6x1.getStockOnHand(), stockCard6x2.getStockOnHand(), stockCard6x3.getStockOnHand(), stockCard6x4.getStockOnHand()};
+        Long[] stockOnHand = new Long[]{stockCard6x1.getStockOnHand(), stockCard6x2.getStockOnHand(), stockCard6x3.getStockOnHand(), stockCard6x4.getStockOnHand()};
         when(patientDataService.getMalariaProductsStockHand()).thenReturn(Arrays.asList(stockOnHand));
-        presenter.generateViewModelsBySpecificPeriod(period);
-        PatientDataReportViewModel patientDataReportUsViewModel = presenter.getViewModels(period).get(INDEX_APE);
+        presenter.generateViewModelsBySpecificPeriod(period, isUpdate);
+        PatientDataReportViewModel patientDataReportUsViewModel = presenter.getViewModels(period, isUpdate).get(INDEX_APE);
         String usApe = patientDataReportUsViewModel.getType();
         List<Long> currentTreatments = patientDataReportUsViewModel.getCurrentTreatments();
         List<Long> existingStockProducts = patientDataReportUsViewModel.getExistingStock();
-        assertThat(presenter.getViewModels(period).size(), is (TOTAL_PATIENT_DATA_FORM_ROWS));
+        assertThat(presenter.getViewModels(period,isUpdate).size(), is(TOTAL_PATIENT_DATA_FORM_ROWS));
         assertThat(usApe, is(APE));
         assertThat(currentTreatments.size(), is(TOTAL_MALARIA_PRODUCTS));
-        for (int index = 0; index < TOTAL_MALARIA_PRODUCTS; index ++) {
+        for (int index = 0; index < TOTAL_MALARIA_PRODUCTS; index++) {
             long treatment = currentTreatments.get(index);
             long stocks = existingStockProducts.get(index);
             assertThat(treatment, is(STOCK_ON_HAND_VALUE_WITHOUT_VALUE));
@@ -133,10 +134,10 @@ public class PatientDataReportFormPresenterTest {
     public void shouldGenerateViewModelsForPatientDataReportInCurrentPeriodWhenIsTotal() {
         Long[] stockOnHand = new Long[]{stockCard6x1.getStockOnHand(), stockCard6x2.getStockOnHand(), stockCard6x3.getStockOnHand(), stockCard6x4.getStockOnHand()};
         when(patientDataService.getMalariaProductsStockHand()).thenReturn(Arrays.asList(stockOnHand));
-        presenter.generateViewModelsBySpecificPeriod(period);
-        PatientDataReportViewModel patientDataReportUsViewModel = presenter.getViewModels(period).get(INDEX_US);
-        PatientDataReportViewModel patientDataReportApeViewModel = presenter.getViewModels(period).get(INDEX_APE);
-        PatientDataReportViewModel patientDataReportTotalViewModel = presenter.getViewModels(period).get(INDEX_TOTAL);
+        presenter.generateViewModelsBySpecificPeriod(period, isUpdate);
+        PatientDataReportViewModel patientDataReportUsViewModel = presenter.getViewModels(period, isUpdate).get(INDEX_US);
+        PatientDataReportViewModel patientDataReportApeViewModel = presenter.getViewModels(period, isUpdate).get(INDEX_APE);
+        PatientDataReportViewModel patientDataReportTotalViewModel = presenter.getViewModels(period, isUpdate).get(INDEX_TOTAL);
         String usApe = patientDataReportTotalViewModel.getType();
         List<Long> currentTreatmentsUs = patientDataReportUsViewModel.getCurrentTreatments();
         List<Long> existingStocksUs = patientDataReportUsViewModel.getExistingStock();
@@ -144,9 +145,9 @@ public class PatientDataReportFormPresenterTest {
         List<Long> existingStocksApe = patientDataReportApeViewModel.getExistingStock();
         List<Long> currentTreatmentsTotal = patientDataReportTotalViewModel.getCurrentTreatments();
         List<Long> existingStocksTotal = patientDataReportTotalViewModel.getExistingStock();
-        assertThat(presenter.getViewModels(period).size(), is (TOTAL_PATIENT_DATA_FORM_ROWS));
+        assertThat(presenter.getViewModels(period, isUpdate).size(), is(TOTAL_PATIENT_DATA_FORM_ROWS));
         assertThat(usApe, is(TOTAL));
-        for (int index = 0; index < TOTAL_MALARIA_PRODUCTS; index ++) {
+        for (int index = 0; index < TOTAL_MALARIA_PRODUCTS; index++) {
             long currentTreatmentUs = currentTreatmentsUs.get(index);
             long existingStockUs = existingStocksUs.get(index);
             long currentTreatmentApe = currentTreatmentsApe.get(index);

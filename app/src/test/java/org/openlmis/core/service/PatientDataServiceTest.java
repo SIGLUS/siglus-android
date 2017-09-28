@@ -1,5 +1,7 @@
 package org.openlmis.core.service;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.AbstractModule;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -31,6 +33,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.apache.commons.lang3.RandomUtils.nextInt;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -258,37 +261,60 @@ public class PatientDataServiceTest {
         when(patientDataRepository.saveMovement(patientDataReportUs)).thenReturn(Optional.<PatientDataReport>absent());
         when(patientDataRepository.saveMovement(patientDataReportApe)).thenReturn(Optional.<PatientDataReport>absent());
         boolean isSuccessful = patientDataService.savePatientDataMovementsPerPeriod(patientDataReportViewModels);
-        assertThat(isSuccessful, is (Boolean.FALSE));
+        assertThat(isSuccessful, is(Boolean.FALSE));
     }
 
     @Test
     public void shouldNotSavePatientDataReportWhenPeriodIsOpenToRequisitionsStatusAndPatientDataIsEmpty() throws LMISException {
-        DateTime requisitionOpenedDate = calculateDateWithinRequisitionPeriod();
-        Period currentPeriod = new Period(requisitionOpenedDate);
         List<Long> existingStocks = Arrays.asList(new Long[]{0L, null, 0L, 0L});
         List<Long> currentTreatments = Arrays.asList(new Long[]{0L, 0L, null, 0L});
+        List<PatientDataReportViewModel> patientDataReportViewModels = prepareDataInOrderToSave(existingStocks, currentTreatments);
+        boolean isSuccessful = patientDataService.savePatientDataMovementsPerPeriod(patientDataReportViewModels);
+        assertThat(isSuccessful, is(Boolean.FALSE));
+    }
+
+    @NonNull
+    private List<PatientDataReportViewModel> prepareDataInOrderToSave(List<Long> existingStocks, List<Long> currentTreatments) {
+        DateTime requisitionOpenedDate = calculateDateWithinRequisitionPeriod();
+        Period currentPeriod = new Period(requisitionOpenedDate);
         PatientDataReportViewModel dataReportViewModelUs = new PatientDataReportViewModel(currentPeriod);
         PatientDataReportViewModel dataReportViewModelApe = new PatientDataReportViewModel(currentPeriod);
+        dataReportViewModelApe.setType("APE");
+        dataReportViewModelUs.setType("US");
         dataReportViewModelUs.setCurrentTreatments(currentTreatments);
         dataReportViewModelUs.setExistingStock(existingStocks);
         dataReportViewModelApe.setCurrentTreatments(currentTreatments);
         dataReportViewModelApe.setExistingStock(existingStocks);
         PatientDataReportViewModel[] patientDataReports = {dataReportViewModelUs, dataReportViewModelApe};
-        List<PatientDataReportViewModel> patientDataReportViewModels = Arrays.asList(patientDataReports);
-        boolean isSuccessful = patientDataService.savePatientDataMovementsPerPeriod(patientDataReportViewModels);
-        assertThat(isSuccessful, is (Boolean.FALSE));
+        return Arrays.asList(patientDataReports);
+    }
+
+    @Test
+    public void shouldReturnEmptyIfNoPreviousPatientDataWasSavedBefore() throws LMISException {
+        List<Long> existingStocks = Arrays.asList(new Long[]{0L, 0L, 0L, 0L});
+        List<Long> currentTreatments = Arrays.asList(new Long[]{0L, 0L, 0L, 0L});
+        List<PatientDataReportViewModel> patientDataReportViewModels = prepareDataInOrderToSave(existingStocks, currentTreatments);
+        PatientDataReport patientDataReportUS = new PatientDataReport();
+        patientDataReportUS.setId(Long.MAX_VALUE);
+        patientDataReportUS.setType(US);
+        patientDataReportUS.setCurrentTreatments(currentTreatments);
+        patientDataReportUS.setExistingStocks(existingStocks);
+        when(patientDataRepository.saveMovement(patientDataReportUS)).thenReturn(Optional.of(patientDataReportUS));
+        patientDataService.savePatientDataMovementsPerPeriod(patientDataReportViewModels);
+        PatientDataReport dataPatientDataReportUS = patientDataService.getExistingByModelPerPeriod(patientDataReportViewModels.get(0).getPeriod().getBegin(), patientDataReportViewModels.get(0).getPeriod().getEnd(), "US");
+        assertThat(dataPatientDataReportUS, nullValue());
     }
 
     private List<Long> generatePatientDataValues() {
         List<Long> patientDataValues = new ArrayList<>();
-        for (int index = 0; index < TOTAL_MALARIA_PRODUCTS; index ++) {
+        for (int index = 0; index < TOTAL_MALARIA_PRODUCTS; index++) {
             long value = nextInt(0, 1000);
             patientDataValues.add(value);
         }
         return patientDataValues;
     }
 
-    private List<PatientDataReportViewModel> generatePatientDataViewModels (Period currentPeriod) {
+    private List<PatientDataReportViewModel> generatePatientDataViewModels(Period currentPeriod) {
         List<Long> existingStock = generatePatientDataValues();
         List<Long> currentTreatment = generatePatientDataValues();
         PatientDataReportViewModel dataReportViewModelUs = new PatientDataReportViewModel(currentPeriod);

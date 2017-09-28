@@ -10,6 +10,7 @@ import org.openlmis.core.model.PatientDataReport;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.PatientDataRepository;
 import org.roboguice.shaded.goole.common.base.Optional;
+import org.roboguice.shaded.goole.common.collect.BoundType;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;
@@ -18,7 +19,10 @@ import java.util.Random;
 import roboguice.RoboGuice;
 
 import static org.apache.commons.lang3.RandomUtils.nextInt;
+import static org.hamcrest.Matchers.hasValue;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 @RunWith(LMISTestRunner.class)
@@ -88,20 +92,10 @@ public class PatientDataRepositoryTest {
     }
 
     @Test
-    public void shouldNotReturnPatientDataWhenThereIsAPatientDataReportedInThatPeriod() throws LMISException {
-        patientDataReport.setStatusMissing(Boolean.TRUE);
-        patientDataReportRepository.saveMovement(patientDataReport);
-        patientDataReport = createDummyPatientDataReport(period);
-        patientDataReport.setStatusMissing(Boolean.TRUE);
+    public void shouldNotReturnPatientDataWhenThereIsAPatientDataReportedInThatPeriodAndIsNotCheckedAsMissingOrDraft() throws LMISException {
+        patientDataReport.setStatusComplete(Boolean.TRUE);
         Optional<PatientDataReport> patientDataReportSaved = patientDataReportRepository.saveMovement(patientDataReport);
         assertThat(patientDataReportSaved.isPresent(), is(false));
-    }
-
-    @Test(expected = LMISException.class)
-    public void shouldThrowLMISExceptionWhenReportedDateIsNullAndPatientDataReportWasNotSavedInDatabase() throws LMISException {
-        patientDataReport.setStatusMissing(Boolean.TRUE);
-        patientDataReport.setReportedDate(null);
-        patientDataReportRepository.saveMovement(patientDataReport);
     }
 
     @Test
@@ -130,5 +124,15 @@ public class PatientDataRepositoryTest {
     public void shouldNotReturnTheFirstMovementWhenNotExistsInTheDatabase() throws LMISException {
         Optional<PatientDataReport> patientDataReportedExpected = Optional.absent();
         assertThat(patientDataReportRepository.getFirstMovement().isPresent(), is(false));
+    }
+
+    @Test
+    public void shouldReturnDraftedPatientDataReportWhenThePatientDataReportIsAlreadySaved() throws LMISException {
+        patientDataReport.setStatusMissing(Boolean.TRUE);
+        patientDataReport.setReportedDate(DateTime.parse("2017-07-18"));
+        Optional<PatientDataReport> patientDataReportSaved = patientDataReportRepository.saveMovement(patientDataReport);
+        Optional<PatientDataReport> patientDataReportAfterModify = patientDataReportRepository.saveMovement(patientDataReportSaved.get());
+        assertThat(patientDataReportAfterModify, not(Optional.<PatientDataReport>absent()));
+        assertThat(patientDataReportAfterModify.get().isStatusDraft(), is(Boolean.TRUE));
     }
 }
