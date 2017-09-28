@@ -63,7 +63,7 @@ public class MovementTypeDialog {
         builder = new AlertDialog.Builder(context);
         contentList = newArrayList(context.getResources().getStringArray(R.array.movement_type_items_array));
 
-        adapter = new ArrayAdapter<>(context, R.layout.item_movement_type, R.id.text, contentList);
+        adapter = new ArrayAdapter<>(context, R.layout.item_movement_type, R.id.tv_option, contentList);
 
         builder.setAdapter(adapter, null);
         dialog = builder.create();
