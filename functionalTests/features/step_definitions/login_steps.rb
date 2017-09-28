@@ -1,5 +1,5 @@
 def login_page
-  @login_page ||= page(LoginPage).await(timeout: 30)
+  page(LoginPage).await(timeout: 30)
 end
 
 When(/^I enter username "([^\"]+)"$/) do |username|
@@ -23,6 +23,10 @@ Given(/^I try to log in with "(.*?)" "(.*?)"$/) do |username, password|
 end
 
 Given(/^I log in for the first time$/) do
+  login_page.login('core', 'password1')
+end
+
+Given(/^I log in into the application$/) do
   login_page.login('core', 'password1')
 end
 

@@ -38,7 +38,7 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
-        ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), R.layout.item_movement_type, R.id.text, selections);
+        ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), R.layout.item_movement_type, R.id.tv_option, selections);
 
         builder.setAdapter(adapter, null);
         final AlertDialog alertDialog = builder.create();

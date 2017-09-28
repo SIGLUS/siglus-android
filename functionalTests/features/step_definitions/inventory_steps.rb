@@ -1,5 +1,4 @@
 require 'calabash-android/calabash_steps'
-require 'pry'
 
 index = 0
 

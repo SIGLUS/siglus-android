@@ -1,4 +1,6 @@
-require 'calabash-android/calabash_steps'
+def movements_page
+  page(MovementsPage).await(timeout: 30)
+end
 
 Then(/^I select stock card code called "(.*?)"$/) do |name|
   q = query("android.widget.TextView id:'tv_product_name' {text CONTAINS '#{name}'}")
@@ -205,7 +207,7 @@ end
 
 Then(/^I see "(.*?)" in signature field$/) do |text|
   unless element_exists("android.widget.TextView id:'tx_signature' text:'#{text}'")
-    fail(msg="not found #{text} in signature field")
+    fail("not found #{text} in signature field")
   end
 end
 
@@ -341,4 +343,8 @@ Then (/^I add a new lot with lot number "(.*?)" and quantity "(.*?)"$/) do |lot_
         And I press "Complete"
         And I enter quantity "#{quantity}" for the last lot
     }
+end
+
+Given(/^I add a new movement$/) do
+  movements_page.open_new_movement_dialog
 end

@@ -12,6 +12,10 @@ module InputModule
       touch("* id:'#{button_id}' tag:'#{tag}'")
     end
 
+    def touch_button_with_id_and_text(button_id, text)
+      touch("* id:'#{button_id}' text:'#{text}'")
+    end
+
     def touch_view_with_id(view_id)
       touch("* id:'#{view_id}'")
     end
@@ -25,9 +29,9 @@ module InputModule
       enter_text("android.support.v7.widget.SearchView id:'action_search'", search_text)
     end
 
-    def set_calendar_with_date(expiration_date)
+    def set_calendar_with_date(date)
       date_format = '%d/%m/%Y'
-      formatted_date = expiration_date.strftime(date_format)
+      formatted_date = date.strftime(date_format)
       set_date("android.widget.DatePicker", formatted_date)
     end
 
