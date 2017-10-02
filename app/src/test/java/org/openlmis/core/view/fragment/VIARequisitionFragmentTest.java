@@ -125,7 +125,7 @@ public class VIARequisitionFragmentTest {
 
         VIARequisitionFragment.refreshRequisitionForm(rnRForm);
 
-        VIARequisitionFragment.consultationView.findViewById(R.id.edit_text).performClick();
+        VIARequisitionFragment.consultationView.findViewById(R.id.et_external_consultations_performed).performClick();
 
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("This information is not used when creating an emergency requisition");
         assertThat(((TextView) VIARequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText()).isEqualTo(StringUtils.EMPTY);
@@ -144,7 +144,7 @@ public class VIARequisitionFragmentTest {
         rnRForm.setEmergency(true);
         VIARequisitionFragment.refreshRequisitionForm(rnRForm);
         assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanelView.getVisibility());
-        assertFalse(VIARequisitionFragment.vgContainer.findViewById(R.id.edit_text).hasOnClickListeners());
+        assertFalse(VIARequisitionFragment.vgContainer.findViewById(R.id.et_external_consultations_performed).hasOnClickListeners());
         assertFalse(VIARequisitionFragment.kitView.findViewById(R.id.et_via_kit_opened_chw).hasOnClickListeners());
     }
 

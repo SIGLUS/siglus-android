@@ -20,8 +20,8 @@ public class ViaReportConsultationNumberViewTest {
 
     @Test
     public void shouldShowErrorWhenConsultationNumbersIsEmpty() throws Exception {
-        view.editText.setText("");
+        view.etExternalConsultationsPerformed.setText("");
         view.validate();
-        assertThat(view.editText.getError().toString()).isEqualTo("Invalid Input");
+        assertThat(view.etExternalConsultationsPerformed.getError().toString()).isEqualTo("Invalid Input");
     }
 }

@@ -24,15 +24,33 @@ module InputModule
       touch("* text:'#{text}'")
     end
 
+    def touch_menu_button
+      touch("* contentDescription:'More options'")
+    end
+
     def search_for(search_text)
       prepare_for_search
       enter_text("android.support.v7.widget.SearchView id:'action_search'", search_text)
+    end
+
+    def touch_component_and_enter_text(component, text)
+      touch(component)
+      clear_text_in(component)
+      keyboard_enter_text(text)
+    end
+
+    def search_all_components(component, id)
+      query("#{component} id:'#{id}'")
     end
 
     def set_calendar_with_date(date)
       date_format = '%d/%m/%Y'
       formatted_date = date.strftime(date_format)
       set_date("android.widget.DatePicker", formatted_date)
+    end
+
+    def check_item_found
+      touch("android.widget.CheckBox id:'checkbox' checked:'false'")
     end
 
     private

@@ -42,8 +42,8 @@ public class ViaReportConsultationNumberView extends LinearLayout {
     @InjectView(R.id.label)
     TextView tvLabel;
 
-    @InjectView(R.id.edit_text)
-    EditText editText;
+    @InjectView(R.id.et_external_consultations_performed)
+    EditText etExternalConsultationsPerformed;
 
     @InjectView(R.id.via_rnr_header)
     TextView viaRnrHeader;
@@ -89,29 +89,29 @@ public class ViaReportConsultationNumberView extends LinearLayout {
 
         tvLabel.setText(labelText);
         tvLabel.setWidth((int) width);
-        editText.setEms(ems);
-        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        editText.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+        etExternalConsultationsPerformed.setEms(ems);
+        etExternalConsultationsPerformed.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        etExternalConsultationsPerformed.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
         viaRnrHeader.setText(headerText);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        editText.setEnabled(enabled);
+        etExternalConsultationsPerformed.setEnabled(enabled);
     }
 
     public void setConsultationNumbers(VIARequisitionPresenter presenter) {
         this.presenter = presenter;
-        editText.setText(presenter.getConsultationNumbers());
+        etExternalConsultationsPerformed.setText(presenter.getConsultationNumbers());
         addTextChangedListener();
     }
 
     public void addTextChangedListener() {
-        editText.post(new Runnable() {
+        etExternalConsultationsPerformed.post(new Runnable() {
             @Override
             public void run() {
-                editText.addTextChangedListener(etConsultationNumbersTextWatcher);
+                etExternalConsultationsPerformed.addTextChangedListener(etConsultationNumbersTextWatcher);
             }
         });
     }
@@ -119,7 +119,7 @@ public class ViaReportConsultationNumberView extends LinearLayout {
     TextWatcher etConsultationNumbersTextWatcher = new SingleTextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
-            String input = editText.getText().toString();
+            String input = etExternalConsultationsPerformed.getText().toString();
             if (!input.equals(presenter.getConsultationNumbers())) {
                 presenter.setConsultationNumbers(input);
             }
@@ -128,15 +128,15 @@ public class ViaReportConsultationNumberView extends LinearLayout {
 
     public void initUI() {
         addTextChangedListener();
-        editText.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+        etExternalConsultationsPerformed.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
     }
 
     public boolean validate() {
-        return ViewUtil.checkEditTextEmpty(editText);
+        return ViewUtil.checkEditTextEmpty(etExternalConsultationsPerformed);
     }
 
     public String getValue() {
-        return editText.getText().toString();
+        return etExternalConsultationsPerformed.getText().toString();
     }
 
     public void setEmergencyRnrHeader() {
@@ -144,8 +144,8 @@ public class ViaReportConsultationNumberView extends LinearLayout {
     }
 
     public void setEditClickListener(OnClickListener listener) {
-        editText.setFocusable(false);
-        editText.setOnClickListener(listener);
+        etExternalConsultationsPerformed.setFocusable(false);
+        etExternalConsultationsPerformed.setOnClickListener(listener);
     }
 
     public void refreshNormalRnrConsultationView(VIARequisitionPresenter presenter) {
