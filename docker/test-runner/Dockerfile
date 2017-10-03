@@ -3,7 +3,7 @@ MAINTAINER ThoughtWorks
 
 RUN echo 'gem: --no-document' > /etc/gemrc
 
-RUN yum update && yum -y install \
+RUN yum -y update && yum -y install \
                 device-mapper-persistent-data \
                 epel-release \
                 git \
@@ -24,12 +24,12 @@ RUN yum update && yum -y install \
 # install docker
 RUN yum-config-manager --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo && \
-    yum makecache fast -y && \
-    yum install docker-ce -y
+    yum -y makecache fast && \
+    yum -y install docker-ce
 
 
 
-RUN yum groupinstall "Development Tools" -y
+RUN yum -y groupinstall "Development Tools"
 
 # install android sdk tools
 RUN wget -q  https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip \
