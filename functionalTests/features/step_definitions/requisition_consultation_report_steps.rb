@@ -14,11 +14,11 @@ Given(/^I press menu key to add a new product$/) do
   requisition_consultation_report_page.add_product_to_requisition
 end
 
-Given(/^I check the quantity for "([^"]*)" is equals to (\d+)$/) do |product, amount|
+Given(/^I check the quantity for "([^"]*)" is equals to (\d+) in requisition form$/) do |product, amount|
   requisition_consultation_report_page.assert_product_amount_is_equals_to(product, amount)
 end
 
-Given(/^I swipe "([^"]*)" (\d+) times$/) do |direction, times|
+Given(/^I swipe "([^"]*)" (\d+) times in requisition form$/) do |direction, times|
   requisition_consultation_report_page.swipe_completely_to_the_right(direction,times)
 end
 

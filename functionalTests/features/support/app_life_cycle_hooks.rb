@@ -2,6 +2,10 @@ require 'calabash-android/management/adb'
 require 'calabash-android/operations'
 
 Before do |scenario|
+  if scenario.source_tag_names.include? '@reinstall'
+    ensure_app_installed
+    clear_app_data
+  end
   start_test_server_in_background
 end
 

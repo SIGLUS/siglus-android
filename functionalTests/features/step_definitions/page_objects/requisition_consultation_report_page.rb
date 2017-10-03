@@ -3,12 +3,14 @@ require 'modules/assert_module'
 require 'modules/element_module'
 require 'modules/gestures_module'
 require 'modules/input_module'
+require 'modules/wait_module'
 
 class RequisitionConsultationReportPage < Calabash::ABase
   include AssertModule
   include ElementModule
   include GesturesModule
   include InputModule
+  include WaitModule
 
   def trait
     'android.widget.LinearLayout id:"ll_requisition_report_consultation"'
@@ -40,11 +42,7 @@ class RequisitionConsultationReportPage < Calabash::ABase
   end
 
   def set_quantity_requested_per_product(quantity)
-    components_found = search_all_components(@edit_quantity_requested_class, @edit_quantity_requested_id)
-    components_found = components_found.first components_found.size-1
-    for component in components_found
-      touch_component_and_enter_text(component, quantity)
-    end
+    bulk_text_for_component(@edit_quantity_requested_id, quantity.to_s)
   end
 
   def save_requisition
@@ -52,6 +50,7 @@ class RequisitionConsultationReportPage < Calabash::ABase
   end
 
   def submit_requisition_for_approval
+    wait_for_component_to_appear(@button_submit_for_approval_id)
     touch_button_with_id_and_tag(@button_submit_for_approval_id, @button_submit_for_approval_tag)
   end
 
@@ -72,7 +71,6 @@ class RequisitionConsultationReportPage < Calabash::ABase
     @button_add_products_id = 'title'
     @button_add_products_text = 'Add Products'
     @edit_quantity_requested_id = 'et_request_amount'
-    @edit_quantity_requested_class = 'android.widget.EditText'
     @button_save_id = 'btn_save'
     @button_save_text = 'Save'
     @button_submit_for_approval_id = 'btn_complete'

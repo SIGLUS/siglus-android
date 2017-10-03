@@ -12,4 +12,15 @@ module GesturesModule
     end
   end
 
+  def scroll_down_to_component_marked(text, view_name)
+    until element_exists("* marked:'#{text}'") do
+      scroll(view_name, :down)
+    end
+  end
+
+  def scroll_up_to_component_marked(text, view_name)
+    until element_exists("* marked:'#{text}'") do
+      scroll(view_name, :up)
+    end
+  end
 end

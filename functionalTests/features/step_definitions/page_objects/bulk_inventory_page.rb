@@ -1,12 +1,14 @@
 require 'calabash-android/abase'
-require 'modules/input_module'
 require 'modules/assert_module'
 require 'modules/element_module'
+require 'modules/input_module'
+require 'modules/wait_module'
 
 class BulkInventoryPage < Calabash::ABase
-  include InputModule
   include AssertModule
   include ElementModule
+  include InputModule
+  include WaitModule
 
   def trait
     'android.widget.TextView text:"Initial Inventory"'
@@ -40,6 +42,7 @@ class BulkInventoryPage < Calabash::ABase
   end
 
   def submit
+    wait_for_component_to_appear(@button_submit_id)
     touch_button_with_id_and_tag(@button_submit_id, @button_submit_tag)
   end
 

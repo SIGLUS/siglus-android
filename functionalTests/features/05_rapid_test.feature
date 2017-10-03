@@ -1,23 +1,16 @@
-@core @dev @rapid
+@core @rapid
 Feature: Rapid Test
 
   Scenario: Create Rapid Test Report and sync
-    Given I change device date to "20160216.130000"
-    Given I try to log in with "core" "password1"
-    Given I have initialized inventory with VIA user with lot
-    And I wait for "Stock Card Overview" to appear
-
-    Given I change device date to "20160218.140000"
-    And I wait for 2 seconds
-    And I press "Stock Card Overview"
-    And I try to log in with "core" "password1"
-    And I wait for "Stock Card Overview" to appear
-
+    Given today is "20160218.140000"
+    And I log in for the first time
+    And I see the initial inventory screen
     And I press "Rapid Test"
-    Then I wait for "Rapid Test Reports" to appear
-    And I wait for 1 second
+    And I should see text containing "No rapid test report has been created."
     And I press "CREATE RAPID TEST REPORT"
     And I wait for "Rapid Test Report" to appear
+
+    
     Then I enter quantity for Rapid Test Report
     And I wait for 1 second
     Then I press "Submit for Approval"

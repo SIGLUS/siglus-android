@@ -1,127 +1,47 @@
-require 'calabash-android/calabash_steps'
-require 'pry'
-
-Then(/^I should see issued movement "(.*?)"$/) do |number|
-    unless (element_exists("android.widget.TextView id:'tv_issued' text:'#{number}'"))
-		fail(msg="not found #{number}")
-	end
+def mmia_form_page
+  @mmia_form_page ||= page(MMIAFormPage).await(timeout: 30)
 end
 
-Then(/^I should see inventory "(.*?)"$/) do |number|
-    unless (element_exists("android.widget.TextView id:'tv_inventory' text:'#{number}'"))
-		fail(msg="not found #{number}")
-	end
+Given(/^I swipe "([^"]*)" (\d+) time in MMIA form$/) do |direction, times|
+  mmia_form_page.swipe_completely_to_the_right(direction, times)
 end
 
-And(/^I enter regimen totals$/) do
-    while !query("android.widget.EditText id:'et_total' text:''").empty?
-        query("android.widget.EditText id:'et_total'", {:setText => '1'})
-    end
-
-    steps %Q{
-        Then I scroll "scrollView" down to "Submit for Approval"
-    }
-
-    while !query("android.widget.EditText id:'et_total' text:''").empty?
-        query("android.widget.EditText id:'et_total'", {:setText => '1'})
-    end
+Given(/^I check the quantity for "([^"]*)" is equals to (\d+) in MMIA form$/) do |product, amount|
+  mmia_form_page.assert_product_amount_is_equals_to(product, amount)
+end
+Given(/^I scroll down to the bottom of the MMIA form$/) do
+  mmia_form_page.scroll_to_bottom
 end
 
-And(/^I add custom regimens and enter total$/) do
-    steps %Q{
-        Then I press "+ Adult regime"
-        Then I wait for "Create regime" to appear
-        And I select one drug to create a adult regime
-        Then I press "Next"
-
-        Then I wait for "MMIA" to appear
-        And I enter regimen totals
-
-        Then I press "+ Child regime"
-        Then I wait for "Create regime" to appear
-        And I select one drug to create a baby regime
-        Then I press "Next"
-
-        Then I wait for "MMIA" to appear
-        And I enter regimen totals
-    }
+Given(/^I enter patient totals$/) do
+  mmia_form_page.set_patient_totals
 end
 
-And(/^I select one drug to create a adult regime$/) do
-    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
-
-    if !q.empty?
-        touch(q)
-    end
+Given(/^I enter regimen totals$/) do
+  mmia_form_page.set_regimen_totals
 end
 
-And(/^I select one drug to create a baby regime$/) do
-    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+Given(/^I enter patient total different from regime total$/) do
+  mmia_form_page.set_custom_totals
+  end
 
-    if !q.empty?
-        touch(q)
-    end
+Given(/^I enter patient total different from regime total$/) do
+  mmia_form_page.set_custom_totals
 end
 
-
-And(/^I enter patient totals$/) do
-    q = query("android.widget.EditText id:'et_value'")
-    for element in q
-        if element.eql? q.first or element.eql? q.last
-            next
-        end
-
-        if element.eql? q.at(1)
-            touch(element)
-            keyboard_enter_text(8)
-        else
-            touch(element)
-            keyboard_enter_text(3)
-        end
-        hide_soft_keyboard
-    end
+Given(/^I add a "([^"]*)"$/) do |regimen_type|
+  mmia_form_page.add_regimen(regimen_type)
 end
 
-
-And(/^I enter patient total different from regime total$/) do
-    q = query("android.widget.EditText id:'et_value'")
-    for element in q
-        if element.eql? q.first or element.eql? q.last
-            next
-        end
-
-        if element.eql? q.at(1)
-            touch(element)
-            keyboard_enter_text(3)
-        else
-            touch(element)
-            keyboard_enter_text(3)
-        end
-    end
-    hide_soft_keyboard
+Given(/^I save MMIA form$/) do
+  mmia_form_page.save_mmia_form
 end
 
-When(/^I enter "(.*)" in "Observations"$/) do |text|
-    enter_text("android.widget.EditText id:'et_comment'", text)
-    hide_soft_keyboard
+Given(/^I submit MMIA form$/) do
+  mmia_form_page.submit_mmia_form
 end
 
-Then(/^I scroll "(.*?)" down to "(.*?)"$/) do |view, text|
-    until element_exists("* marked:'#{text}'") do
-        scroll(view, :down)
-    end
+Given(/^I add data to new regimens$/) do
+  mmia_form_page.add_amount_to_new_regimens
 end
-
-And(/^I press delete icon$/) do
-    q = query("android.widget.ImageView id:'iv_del'")
-    touch(q.first)
-end
-
-Then(/^I should see patient total number is "(.*?)"$/) do |number|
-    if !element_exists("android.widget.EditText id:'et_value' text:'#{number}'")
-		fail(msg="patient total is #{number}")
-	end
-end
-
-
 

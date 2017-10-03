@@ -1,6 +1,6 @@
 require 'calabash-android/abase'
 
-class RequisitionContinuePage < Calabash::ABase
+class ContinuePage < Calabash::ABase
   include InputModule
 
   def trait

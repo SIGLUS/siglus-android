@@ -1,6 +1,6 @@
 require 'calabash-android/abase'
 
-class RequisitionSignaturePage < Calabash::ABase
+class SignaturePage < Calabash::ABase
   include InputModule
 
   def trait
@@ -18,6 +18,4 @@ class RequisitionSignaturePage < Calabash::ABase
     @button_approve_id = 'btn_done'
     @button_approve_text = 'Approve'
   end
-
-
 end
