@@ -145,7 +145,6 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
         this.existingStockApe = existingStockApe;
     }
 
-
     public void saveForm() {
         try {
             Boolean isSuccess = patientDataService.savePatientDataMovementsPerPeriod(viewModels);

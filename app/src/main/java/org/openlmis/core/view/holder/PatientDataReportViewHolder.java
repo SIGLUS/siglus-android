@@ -48,7 +48,7 @@ public class PatientDataReportViewHolder extends BaseViewHolder {
                 if (viewModel.getPatientDataReport() == null) {
                     ((Activity) context).startActivityForResult(PatientDataReportFormActivity.getIntentToMe(context, PatientDataReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
                 } else {
-                    ((Activity) context).startActivityForResult(PatientDataReportFormActivity.getIntentToMe(context, viewModel.getPatientDataReport().getId(), viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
+                    ((Activity) context).startActivityForResult(PatientDataReportFormActivity.getIntentToMe(context, PatientDataReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
                 }
                 ((BaseActivity) context).loaded();
             }

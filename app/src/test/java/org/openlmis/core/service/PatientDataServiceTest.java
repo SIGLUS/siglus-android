@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.inject.AbstractModule;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.assertj.core.util.Lists;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,13 +14,16 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.PatientDataReport;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.repository.PatientDataRepository;
+import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.MalariaProgramMapper;
+import org.openlmis.core.utils.PatientDataReportMapper;
 import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.RuntimeEnvironment;
@@ -68,7 +72,7 @@ public class PatientDataServiceTest {
     public static final int SYNCED_TYPE = 4;
 
 
-    private PatientDataRepository patientDataRepository;
+    private MalariaProgramRepository malariaProgramRepository;
     private ProductRepository productRepository;
     private StockRepository stockRepository;
 
@@ -88,7 +92,7 @@ public class PatientDataServiceTest {
 
     @Before
     public void setup() throws LMISException {
-        patientDataRepository = mock(PatientDataRepository.class);
+        malariaProgramRepository = mock(MalariaProgramRepository.class);
         productRepository = mock(ProductRepository.class);
         stockRepository = mock(StockRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -130,8 +134,8 @@ public class PatientDataServiceTest {
     @Test
     public void shouldNotReturnPeriodsWhenThereAreNotPatientDataReportedAndCurrentPeriodIsNotOpenToRequisitions() throws LMISException {
         LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2017-09-13").getMillis());
-        Optional<PatientDataReport> patientDataReport = Optional.absent();
-        when(patientDataRepository.getFirstMovement()).thenReturn(patientDataReport);
+        Optional<MalariaProgram> malariaProgramOptional = Optional.absent();
+        when(malariaProgramRepository.getFirstMovement()).thenReturn(malariaProgramOptional);
         List<Period> periods = patientDataService.calculatePeriods();
         assertThat(periods.isEmpty(), is(true));
     }
@@ -140,8 +144,8 @@ public class PatientDataServiceTest {
     public void shouldReturnCurrentPeriodWhenThereAreNotPatientDataReportedAndCurrentPeriodIsOpenToRequisitions() throws LMISException {
         DateTime today = calculateDateWithinRequisitionPeriod();
         LMISTestApp.getInstance().setCurrentTimeMillis(today.getMillis());
-        Optional<PatientDataReport> patientDataReport = Optional.absent();
-        when(patientDataRepository.getFirstMovement()).thenReturn(patientDataReport);
+        Optional<MalariaProgram> malariaProgramOptional = Optional.absent();
+        when(malariaProgramRepository.getFirstMovement()).thenReturn(malariaProgramOptional);
         Period expectedPeriod = new Period(new DateTime(LMISApp.getInstance().getCurrentTimeMillis()));
         List<Period> periods = patientDataService.calculatePeriods();
         assertThat(EqualsBuilder.reflectionEquals(expectedPeriod, periods.get(FIRST_PERIOD_POSITION)), is(true));
@@ -152,9 +156,9 @@ public class PatientDataServiceTest {
         DateTime firstReportedDate = calculateDateWithinRequisitionPeriod();
         DateTime today = calculateValidDateForRequisitionPeriodWithinTwelveMonths(firstReportedDate);
         LMISTestApp.getInstance().setCurrentTimeMillis(today.getMillis());
-        PatientDataReport patientDataReport = new PatientDataReport();
-        patientDataReport.setReportedDate(firstReportedDate);
-        when(patientDataRepository.getFirstMovement()).thenReturn(Optional.of(patientDataReport));
+        MalariaProgram malariaProgram = new MalariaProgram();
+        malariaProgram.setReportedDate(firstReportedDate);
+        when(malariaProgramRepository.getFirstMovement()).thenReturn(Optional.of(malariaProgram));
         List<Period> periods = patientDataService.calculatePeriods();
         assertThat(periods.size(), is(monthsAfterInitialReportedDate + CURRENT_MONTH));
     }
@@ -164,9 +168,9 @@ public class PatientDataServiceTest {
         DateTime firstReportedDate = calculateDateWithinRequisitionPeriod();
         DateTime today = calculateInvalidDateForRequisitionPeriodWithinTwelveMonths(firstReportedDate);
         LMISTestApp.getInstance().setCurrentTimeMillis(today.getMillis());
-        PatientDataReport patientDataReport = new PatientDataReport();
-        patientDataReport.setReportedDate(firstReportedDate);
-        when(patientDataRepository.getFirstMovement()).thenReturn(Optional.of(patientDataReport));
+        MalariaProgram malariaProgram = new MalariaProgram();
+        malariaProgram.setReportedDate(firstReportedDate);
+        when(malariaProgramRepository.getFirstMovement()).thenReturn(Optional.of(malariaProgram));
         List<Period> periods = patientDataService.calculatePeriods();
         assertThat(periods.size(), is(monthsAfterInitialReportedDate));
     }
@@ -241,8 +245,10 @@ public class PatientDataServiceTest {
         patientDataReportApeExpected.setStatusDraft(Boolean.TRUE);
         setStatusAsMissing(patientDataReportUs);
         setStatusAsMissing(patientDataReportApe);
-        when(patientDataRepository.saveMovement(patientDataReportUs)).thenReturn(Optional.of(patientDataReportUsExpected));
-        when(patientDataRepository.saveMovement(patientDataReportApe)).thenReturn(Optional.of(patientDataReportApeExpected));
+
+        PatientDataReportMapper patientDataReportMapper = new PatientDataReportMapper();
+        MalariaProgram malariaProgram = patientDataReportMapper.mapToMalariaProgramFromAListOfPatientDataReport(Lists.newArrayList(patientDataReportUs, patientDataReportApe));
+        when(malariaProgramRepository.saveMovement(malariaProgram)).thenReturn(Optional.of(malariaProgram));
         boolean isSuccessful = patientDataService.savePatientDataMovementsPerPeriod(patientDataReportViewModels);
         assertThat(isSuccessful, is(Boolean.TRUE));
     }
@@ -258,8 +264,10 @@ public class PatientDataServiceTest {
         PatientDataReport patientDataReportApe = preparePatientDataReport(dataReportViewModelApe);
         setStatusDraftCompleteOrSynced(patientDataReportUs);
         setStatusDraftCompleteOrSynced(patientDataReportApe);
-        when(patientDataRepository.saveMovement(patientDataReportUs)).thenReturn(Optional.<PatientDataReport>absent());
-        when(patientDataRepository.saveMovement(patientDataReportApe)).thenReturn(Optional.<PatientDataReport>absent());
+
+        PatientDataReportMapper patientDataReportMapper = new PatientDataReportMapper();
+        MalariaProgram malariaProgram = patientDataReportMapper.mapToMalariaProgramFromAListOfPatientDataReport(Lists.newArrayList(patientDataReportUs, patientDataReportApe));
+        when(malariaProgramRepository.saveMovement(malariaProgram)).thenReturn(Optional.<MalariaProgram>absent());
         boolean isSuccessful = patientDataService.savePatientDataMovementsPerPeriod(patientDataReportViewModels);
         assertThat(isSuccessful, is(Boolean.FALSE));
     }
@@ -289,21 +297,6 @@ public class PatientDataServiceTest {
         return Arrays.asList(patientDataReports);
     }
 
-    @Test
-    public void shouldReturnEmptyIfNoPreviousPatientDataWasSavedBefore() throws LMISException {
-        List<Long> existingStocks = Arrays.asList(new Long[]{0L, 0L, 0L, 0L});
-        List<Long> currentTreatments = Arrays.asList(new Long[]{0L, 0L, 0L, 0L});
-        List<PatientDataReportViewModel> patientDataReportViewModels = prepareDataInOrderToSave(existingStocks, currentTreatments);
-        PatientDataReport patientDataReportUS = new PatientDataReport();
-        patientDataReportUS.setId(Long.MAX_VALUE);
-        patientDataReportUS.setType(US);
-        patientDataReportUS.setCurrentTreatments(currentTreatments);
-        patientDataReportUS.setExistingStocks(existingStocks);
-        when(patientDataRepository.saveMovement(patientDataReportUS)).thenReturn(Optional.of(patientDataReportUS));
-        patientDataService.savePatientDataMovementsPerPeriod(patientDataReportViewModels);
-        PatientDataReport dataPatientDataReportUS = patientDataService.getExistingByModelPerPeriod(patientDataReportViewModels.get(0).getPeriod().getBegin(), patientDataReportViewModels.get(0).getPeriod().getEnd(), "US");
-        assertThat(dataPatientDataReportUS, nullValue());
-    }
 
     private List<Long> generatePatientDataValues() {
         List<Long> patientDataValues = new ArrayList<>();
@@ -365,7 +358,7 @@ public class PatientDataServiceTest {
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
-            bind(PatientDataRepository.class).toInstance(patientDataRepository);
+            bind(MalariaProgramRepository.class).toInstance(malariaProgramRepository);
             bind(ProductRepository.class).toInstance(productRepository);
             bind(StockRepository.class).toInstance(stockRepository);
         }

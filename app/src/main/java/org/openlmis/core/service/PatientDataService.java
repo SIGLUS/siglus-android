@@ -5,13 +5,16 @@ import com.google.inject.Inject;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.PatientDataReport;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.repository.PatientDataRepository;
+import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.MalariaProgramMapper;
+import org.openlmis.core.utils.PatientDataReportMapper;
 import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
 import org.roboguice.shaded.goole.common.base.Optional;
 
@@ -27,7 +30,7 @@ public class PatientDataService {
     private static final long NO_STOCK_ON_HAND_VALUE = 0;
 
     @Inject
-    PatientDataRepository patientDataRepository;
+    MalariaProgramRepository malariaProgramRepository;
 
     @Inject
     ProductRepository productRepository;
@@ -37,10 +40,10 @@ public class PatientDataService {
 
     public List<Period> calculatePeriods() {
         List<Period> periods = new ArrayList<>();
-        Optional<PatientDataReport> patientDataReport = null;
+        Optional<MalariaProgram> malariaProgramOptional = null;
         try {
-            patientDataReport = patientDataRepository.getFirstMovement();
-            Optional<Period> period = calculateFirstAvailablePeriod(patientDataReport);
+            malariaProgramOptional = malariaProgramRepository.getFirstMovement();
+            Optional<Period> period = calculateFirstAvailablePeriod(malariaProgramOptional);
             while (period.isPresent()) {
                 periods.add(period.get());
                 period = period.get().generateNextAvailablePeriod();
@@ -51,11 +54,11 @@ public class PatientDataService {
         return periods;
     }
 
-    private Optional<Period> calculateFirstAvailablePeriod(Optional<PatientDataReport> patientDataReport) {
+    private Optional<Period> calculateFirstAvailablePeriod(Optional<MalariaProgram> malariaProgram) {
         DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         Optional<Period> period;
-        if (patientDataReport.isPresent()) {
-            period = Optional.of(new Period(patientDataReport.get().getReportedDate()));
+        if (malariaProgram.isPresent()) {
+            period = Optional.of(new Period(malariaProgram.get().getReportedDate()));
         } else {
             period = Optional.of(new Period(today));
         }
@@ -106,25 +109,31 @@ public class PatientDataService {
     }
 
     public Boolean savePatientDataMovementsPerPeriod(List<PatientDataReportViewModel> patientDataReportViewModels) {
-        boolean isSuccessful = Boolean.FALSE;
-        for (PatientDataReportViewModel model: patientDataReportViewModels) {
-            if(isViewModelFully(model)){
+        boolean isSuccessful;
+        List<PatientDataReport> patientDataReports = new ArrayList<>();
+        for (PatientDataReportViewModel model : patientDataReportViewModels) {
+            if (isViewModelFully(model)) {
                 return Boolean.FALSE;
-            }
-            try {
+            } else {
                 PatientDataReport patientDataReport = setPatientDataReportInformation(model);
-
-                Optional<PatientDataReport> patientDataReportSaved = patientDataRepository.saveMovement(patientDataReport);
-                if (patientDataReportSaved != null && patientDataReportSaved.isPresent()) {
-                    isSuccessful = patientDataReportSaved.get().isStatusDraft();
-                } else {
-                    isSuccessful = Boolean.FALSE;
-                }
-            } catch (LMISException e) {
-                e.printStackTrace();
-                return Boolean.FALSE;
+                patientDataReports.add(patientDataReport);
             }
         }
+
+        PatientDataReportMapper patientDataReportMapper = new PatientDataReportMapper();
+        MalariaProgram malariaProgram = patientDataReportMapper.mapToMalariaProgramFromAListOfPatientDataReport(patientDataReports);
+        try {
+            Optional<MalariaProgram> malariaProgramSaved = malariaProgramRepository.saveMovement(malariaProgram);
+            if (malariaProgramSaved.isPresent()) {
+                isSuccessful = Boolean.TRUE;
+            } else {
+                isSuccessful = Boolean.FALSE;
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+            return Boolean.FALSE;
+        }
+
         return isSuccessful;
     }
 
@@ -135,7 +144,6 @@ public class PatientDataService {
         patientDataReport.setEndDatePeriod(model.getPeriod().getEnd());
         patientDataReport.setCurrentTreatments(model.getCurrentTreatments());
         patientDataReport.setExistingStocks(model.getExistingStock());
-//        patientDataReport.setStatusMissing(Boolean.TRUE);
         return patientDataReport;
     }
 
@@ -145,6 +153,16 @@ public class PatientDataService {
     }
 
     public PatientDataReport getExistingByModelPerPeriod(DateTime beginDate, DateTime endDate, String type) throws LMISException {
-        return patientDataRepository.getPatientDataReportByPeriodAndType(beginDate, endDate, type);
+        MalariaProgram malariaProgram = malariaProgramRepository.getPatientDataReportByPeriodAndType(beginDate, endDate);
+        if (malariaProgram != null) {
+            MalariaProgramMapper malariaProgramMapper = new MalariaProgramMapper();
+            List<PatientDataReport> patientDataReports = malariaProgramMapper.mapMalariaProgramToPatientDataReport(malariaProgram);
+            for (PatientDataReport patientDataReport : patientDataReports) {
+                if (patientDataReport.getType().equals(type)) {
+                    return patientDataReport;
+                }
+            }
+        }
+        return null;
     }
 }

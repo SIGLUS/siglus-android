@@ -6,9 +6,9 @@ import android.support.v7.widget.RecyclerView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.presenter.PatientDataReportPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.PatientDataReportAdapter;
-import org.openlmis.core.presenter.PatientDataReportPresenter;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -43,8 +43,6 @@ public class PatientDataReportActivity extends BaseReportListActivity {
     }
 
     @Override
-    protected void loadForms() {
-
-    }
+    protected void loadForms() {}
 
 }
