@@ -71,58 +71,6 @@ public class MalariaProgramRepository {
         return Optional.absent();
     }
 
-    private void saveImplementationsAndTreatments(MalariaProgram malariaProgram, MalariaProgram malariaProgramSaved, MalariaProgram existingMalariaProgram) throws LMISException {
-        if (malariaProgramSaved != null) {
-            List<Product> products = getProducts();
-            List<Implementation> implementations;
-            List<Treatment> usTreatments;
-            List<Treatment> apeTreatments;
-            if (existingMalariaProgram != null) {
-                implementations = new ArrayList<>(existingMalariaProgram.getImplementations());
-                usTreatments = new ArrayList<>(implementations.get(MalariaProgramMapper.FIRST_ELEMENT_INDEX).getTreatments());
-                apeTreatments = new ArrayList<>(implementations.get(MalariaProgramMapper.SECOND_ELEMENT_INDEX).getTreatments());
-                for (int i = 0; i < implementations.size(); i++) {
-                    ArrayList<Implementation> currentImplementations = new ArrayList<>(malariaProgram.getImplementations());
-                    currentImplementations.get(i).setMalariaProgram(malariaProgramSaved);
-                    currentImplementations.get(i).setId(implementations.get(i).getId());
-                    Implementation implementationSaved = implementationGenericDao.createOrUpdate(currentImplementations.get(i));
-                    List<Treatment> treatments = (List<Treatment>) currentImplementations.get(i).getTreatments();
-                    for (int j = 0; j < treatments.size(); j++) {
-                        if (i == 0) {
-                            treatments.get(j).setId(usTreatments.get(j).getId());
-                        } else {
-                            treatments.get(j).setId(apeTreatments.get(j).getId());
-                        }
-                        treatments.get(j).setImplementation(implementationSaved);
-                        treatments.get(j).setProduct(products.get(j));
-                        treatmentGenericDaoDao.createOrUpdate(treatments.get(j));
-                    }
-                }
-            } else {
-                for (Implementation implementation : malariaProgram.getImplementations()) {
-                    implementation.setMalariaProgram(malariaProgramSaved);
-                    Implementation implementationSaved = implementationGenericDao.createOrUpdate(implementation);
-                    List<Treatment> treatments = (List<Treatment>) implementation.getTreatments();
-                    for (int i = 0; i < treatments.size(); i++) {
-                        treatments.get(i).setImplementation(implementationSaved);
-                        treatments.get(i).setProduct(products.get(i));
-                        treatmentGenericDaoDao.createOrUpdate(treatments.get(i));
-                    }
-                }
-            }
-
-        }
-    }
-
-    @NonNull
-    private List<Product> getProducts() throws LMISException {
-        Product product6x1 = productRepository.getByCode("08O05");
-        Product product6x2 = productRepository.getByCode("08O05X");
-        Product product6x3 = productRepository.getByCode("08O05Y");
-        Product product6x4 = productRepository.getByCode("08O05Z");
-        return newArrayList(product6x1, product6x2, product6x3, product6x4);
-    }
-
     public MalariaProgram getPatientDataReportByPeriodAndType(final DateTime beginDate, final DateTime endDate) throws LMISException {
         return (MalariaProgram) dbUtil.withDao(MalariaProgram.class, new DbUtil.Operation<MalariaProgram, Object>() {
             @Override
@@ -148,5 +96,69 @@ public class MalariaProgramRepository {
             return Optional.of(malariaProgram);
         }
         return Optional.absent();
+    }
+
+    private void saveImplementationsAndTreatments(MalariaProgram malariaProgram, MalariaProgram malariaProgramSaved, MalariaProgram existingMalariaProgram) throws LMISException {
+        if (malariaProgramSaved != null) {
+            List<Product> products = getProducts();
+            List<Implementation> implementations;
+            List<Treatment> usTreatments;
+            List<Treatment> apeTreatments;
+            if (existingMalariaProgram != null) {
+                implementations = new ArrayList<>(existingMalariaProgram.getImplementations());
+                usTreatments = new ArrayList<>(implementations.get(MalariaProgramMapper.FIRST_ELEMENT_INDEX).getTreatments());
+                apeTreatments = new ArrayList<>(implementations.get(MalariaProgramMapper.SECOND_ELEMENT_INDEX).getTreatments());
+                saveImplementationExistingMalariaProgram(malariaProgram, malariaProgramSaved, products, implementations, usTreatments, apeTreatments);
+            } else {
+                saveImplementationNonExistingProgram(malariaProgram, malariaProgramSaved, products);
+            }
+
+        }
+    }
+
+    private void saveImplementationNonExistingProgram(MalariaProgram malariaProgram, MalariaProgram malariaProgramSaved, List<Product> products) throws LMISException {
+        for (Implementation implementation : malariaProgram.getImplementations()) {
+            implementation.setMalariaProgram(malariaProgramSaved);
+            Implementation implementationSaved = implementationGenericDao.createOrUpdate(implementation);
+            List<Treatment> treatments = (List<Treatment>) implementation.getTreatments();
+            for (int i = 0; i < treatments.size(); i++) {
+                treatments.get(i).setImplementation(implementationSaved);
+                treatments.get(i).setProduct(products.get(i));
+                treatmentGenericDaoDao.createOrUpdate(treatments.get(i));
+            }
+        }
+    }
+
+    private void saveImplementationExistingMalariaProgram(MalariaProgram malariaProgram, MalariaProgram malariaProgramSaved, List<Product> products, List<Implementation> implementations, List<Treatment> usTreatments, List<Treatment> apeTreatments) throws LMISException {
+        for (int i = 0; i < implementations.size(); i++) {
+            ArrayList<Implementation> currentImplementations = new ArrayList<>(malariaProgram.getImplementations());
+            currentImplementations.get(i).setMalariaProgram(malariaProgramSaved);
+            currentImplementations.get(i).setId(implementations.get(i).getId());
+            Implementation implementationSaved = implementationGenericDao.createOrUpdate(currentImplementations.get(i));
+            List<Treatment> treatments = (List<Treatment>) currentImplementations.get(i).getTreatments();
+            setTreatmentsData(products, usTreatments, apeTreatments, i, implementationSaved, treatments);
+        }
+    }
+
+    private void setTreatmentsData(List<Product> products, List<Treatment> usTreatments, List<Treatment> apeTreatments, int i, Implementation implementationSaved, List<Treatment> treatments) throws LMISException {
+        for (int j = 0; j < treatments.size(); j++) {
+            if (i == 0) {
+                treatments.get(j).setId(usTreatments.get(j).getId());
+            } else {
+                treatments.get(j).setId(apeTreatments.get(j).getId());
+            }
+            treatments.get(j).setImplementation(implementationSaved);
+            treatments.get(j).setProduct(products.get(j));
+            treatmentGenericDaoDao.createOrUpdate(treatments.get(j));
+        }
+    }
+
+    @NonNull
+    private List<Product> getProducts() throws LMISException {
+        Product product6x1 = productRepository.getByCode("08O05");
+        Product product6x2 = productRepository.getByCode("08O05X");
+        Product product6x3 = productRepository.getByCode("08O05Y");
+        Product product6x4 = productRepository.getByCode("08O05Z");
+        return newArrayList(product6x1, product6x2, product6x3, product6x4);
     }
 }

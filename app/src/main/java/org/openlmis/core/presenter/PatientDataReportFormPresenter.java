@@ -2,6 +2,7 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.PatientDataReport;
@@ -149,7 +150,7 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
         try {
             Boolean isSuccess = patientDataService.savePatientDataMovementsPerPeriod(viewModels);
             if (isSuccess) {
-                ToastUtil.show("Successfully Saved");
+                ToastUtil.show(R.string.succesfully_saved);
             }
         } catch (Exception e) {
             new LMISException(e).reportToFabric();

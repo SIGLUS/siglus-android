@@ -19,7 +19,6 @@ public class MalariaProgramMapper {
     public static final String APE_EXECUTOR = "APE";
 
     public List<PatientDataReport> mapMalariaProgramToPatientDataReport(MalariaProgram malariaProgram) {
-
         List<PatientDataReport> patientDataReports = new ArrayList<>();
         PatientDataReport firstPatientDataReport = new PatientDataReport();
         PatientDataReport secondPatientDataReport = new PatientDataReport();
