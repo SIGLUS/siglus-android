@@ -1,8 +1,10 @@
 require 'calabash-android/abase'
 require 'modules/input_module'
+require 'modules/wait_module'
 
 class RapidTestReportPage < Calabash::ABase
   include InputModule
+  include WaitModule
 
   def trait
     'android.widget.RelativeLayout id:"fragment_rapid_test_report_form"'
@@ -17,6 +19,7 @@ class RapidTestReportPage < Calabash::ABase
   end
 
   def submit_rapid_test_report
+    wait_for_component_to_appear(@button_submit_for_approval_id)
     touch_button_with_id_and_tag(@button_submit_for_approval_id, @button_submit_for_approval_tag)
   end
 

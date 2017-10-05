@@ -11,7 +11,7 @@ services:
       - 5432:5432
 
   test-runner:
-    image: test-runner
+    image: siglus/test-runner:1.0.0
     container_name: test-runner
     privileged: true
     volumes:

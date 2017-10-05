@@ -34,12 +34,12 @@ setup_data(LMIS_MOBILE_DIR, OPEN_LMIS_DB_CONTAINER_NAME)
 
 apply_data(OPEN_LMIS_DB_CONTAINER_NAME)
 
-puts "STEP 4 ===> Connecting and validating emulator".yellow
+puts "STEP 4 ===> Connecting and validating emulator\n".yellow
 
 connect_to_emulator(EMULATOR_NAME, OPEN_LMIS_TEST_RUNNER_CONTAINER_NAME)
 is_emulator_connected(EMULATOR_NAME, OPEN_LMIS_TEST_RUNNER_CONTAINER_NAME)
 
-puts "STEP 5 ===> Running functional tests".yellow
+puts "STEP 5 ===> Running functional tests\n".yellow
 
 rename_local_properties
 run_functional_tests(OPEN_LMIS_TEST_RUNNER_CONTAINER_NAME)

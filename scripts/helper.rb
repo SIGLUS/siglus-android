@@ -58,21 +58,20 @@ def is_emulator_connected(emulator_name, test_runner_container_name)
   devices_connected = `adb devices`.split("\n")[1..-1]
   devices_connected.each do |device|
     if device.include? emulator_name
-      puts "Emulator connected and available".green
-      return
+      return puts "Emulator connected and available".green
     end
   end
   return abort("The emulator is not connected to the container".red)
 end
 
 def run_functional_tests(test_runner_container_name)
-  system "docker exec -it #{test_runner_container_name} ./gradlew fT"
+  system "docker exec -it #{test_runner_container_name} bash -c 'cd functionalTests && calabash-android run ../app/build/outputs/apk/app-local-debug.apk --tag @dev'"
 end
 
-def rename_local_properties()
+def rename_local_properties
   system "mv local.properties local.properties.bk"
-  end
+end
 
-def rollback_local_properties()
+def rollback_local_properties
   system "mv local.properties.bk local.properties"
 end
