@@ -3,7 +3,7 @@ Feature: Rapid Test
 
   Scenario: Create Rapid Test Report and sync
     Given today is "20160218.140000"
-    And I log in for the first time
+    And I log in into the application
     And I press "Rapid Test"
     And I should see text containing "No rapid test report has been created"
     And I press "CREATE RAPID TEST REPORT"

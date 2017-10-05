@@ -70,6 +70,7 @@ public class PatientDataReportRowViewHolder extends BaseViewHolder {
     private void setPatientDataComponentsAsNotEditable(EditText[] components) {
         for (int i = 0; i < MALARIA_TOTAL_PRODUCTS; i++) {
             components[i].setFocusable(Boolean.FALSE);
+            components[i].setTag("disabled");
         }
     }
 

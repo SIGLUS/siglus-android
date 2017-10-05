@@ -37,6 +37,10 @@ module InputModule
     query("* id:'#{component_id}'", setText: text)
   end
 
+  def bulk_text_for_component_with_tag(component_id, tag, text)
+    query("* id:'#{component_id}' tag:'#{tag}'", setText: text)
+  end
+
   def bulk_text_for_component_without_text_value(component_id, text)
     query("* id:'#{component_id}' text:''", setText: text)
   end

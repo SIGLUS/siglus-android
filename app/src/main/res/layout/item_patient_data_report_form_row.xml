@@ -62,6 +62,7 @@
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLength="5"
+                            android:tag="enabled"
                             android:textSize="@dimen/font_size_normal" />
 
                     </LinearLayout>
@@ -81,6 +82,7 @@
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLength="5"
+                            android:tag="enabled"
                             android:textSize="@dimen/font_size_normal" />
 
                     </LinearLayout>
@@ -100,6 +102,7 @@
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLength="5"
+                            android:tag="enabled"
                             android:textSize="@dimen/font_size_normal" />
 
                     </LinearLayout>
@@ -119,6 +122,7 @@
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLength="5"
+                            android:tag="enabled"
                             android:textSize="@dimen/font_size_normal" />
 
                     </LinearLayout>
@@ -144,6 +148,7 @@
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLength="5"
+                            android:tag="enabled"
                             android:textSize="@dimen/font_size_normal" />
 
                     </LinearLayout>
@@ -162,6 +167,7 @@
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLength="5"
+                            android:tag="enabled"
                             android:textSize="@dimen/font_size_normal" />
 
                     </LinearLayout>
@@ -180,6 +186,7 @@
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLength="5"
+                            android:tag="enabled"
                             android:textSize="@dimen/font_size_normal" />
 
                     </LinearLayout>
@@ -198,6 +205,7 @@
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLength="5"
+                            android:tag="enabled"
                             android:textSize="@dimen/font_size_normal" />
 
                     </LinearLayout>
