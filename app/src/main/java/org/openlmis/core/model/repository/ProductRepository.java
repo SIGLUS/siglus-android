@@ -320,6 +320,39 @@ public class ProductRepository {
         return products;
     }
 
+    public List<Product> listNonBasicProducts() {
+        String rawSql = "SELECT * FROM products "
+                + "WHERE isactive = '1' "
+                + "AND products.isbasic = '0' "
+                + "AND (isarchived = '1' "
+                + "OR id NOT IN ("
+                + "SELECT product_id from stock_cards));";
+
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        List<Product> nonBasicProducts = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                Product product = new Product();
+
+                product.setActive(Boolean.TRUE);
+                product.setBasic(Boolean.TRUE);
+                product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow("primaryName")));
+                product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow("isArchived")) != 0);
+                product.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
+                product.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow("strength")));
+                product.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+                nonBasicProducts.add(product);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        Collections.sort(nonBasicProducts);
+        return nonBasicProducts;
+    }
+
     public enum IsWithKit {
         Yes(true),
         No(false);

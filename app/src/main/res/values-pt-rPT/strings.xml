@@ -425,6 +425,7 @@
     <string name="msg_product_code_6x1">6x1</string>
     <string name="msg_product_code_6x3">6x3</string>
     <string name="msg_product_code_6x4">6x4</string>
+    <string name="title_add_non_basic_products">Adicionar produtos a serem emitidos</string>
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
         <item>Últimos 14 dias</item>

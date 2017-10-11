@@ -1,8 +1,10 @@
 package org.openlmis.core.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.openlmis.core.R;
@@ -17,12 +19,16 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 import java.util.List;
 
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 
 @ContentView(R.layout.activity_bulk_initial_inventory)
 public class BulkInitialInventoryActivity extends InventoryActivity {
+
+    @InjectView(R.id.btn_add_products)
+    private TextView btnAddProducts;
 
     public static final int FIRST_ELEMENT_POSITION_OF_THE_LIST = 0;
     public static final int ELEMENTS_ADDED_TO_HEADER = 1;
@@ -44,6 +50,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     @Override
     public void initUI() {
         super.initUI();
+        btnAddProducts.setOnClickListener(goToAddNonBasicProductsLister());
         initRecyclerView();
         Subscription subscription = presenter.loadInventoryWithBasicProducts().subscribe(getOnViewModelsLoadedSubscriber());
         subscriptions.add(subscription);
@@ -123,5 +130,15 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         }
         setUpFastScroller(mAdapter.getFilteredList());
         return false;
+    }
+
+    public View.OnClickListener goToAddNonBasicProductsLister() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AddNonBasicProductsActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        };
     }
 }

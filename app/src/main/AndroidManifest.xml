@@ -41,6 +41,10 @@
             android:label="@string/title_init_inventory"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".view.activity.AddNonBasicProductsActivity"
+            android:label="@string/title_add_non_basic_products"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.activity.PhysicalInventoryActivity"
             android:label="@string/title_physical_inventory"
             android:screenOrientation="portrait" />

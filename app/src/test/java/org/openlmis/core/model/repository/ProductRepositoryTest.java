@@ -326,6 +326,17 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         assertEquals("08A01", basicProducts.get(0).getCode());
     }
 
+    @Test
+    public void shouldReturnAListOfNonBasicProducts() throws Exception {
+        createSeveralProducts();
+
+        List<Product> nonBasicProducts = productRepository.listNonBasicProducts();
+
+        assertThat(nonBasicProducts.size(), is(2));
+        assertThat(nonBasicProducts.get(0).getCode(), is("08A02"));
+        assertThat(nonBasicProducts.get(1).getCode(), is("08A04"));
+    }
+
     private Product createProduct(String code, boolean archived, boolean isKit, boolean active) throws LMISException {
         Product productInVIA = new ProductBuilder().setCode(code)
                 .setPrimaryName("product 1").setIsArchived(archived).setIsKit(isKit)
