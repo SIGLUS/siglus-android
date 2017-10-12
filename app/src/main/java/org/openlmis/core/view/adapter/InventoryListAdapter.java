@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
@@ -39,11 +40,13 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
     List<InventoryViewModel> data;
 
     @Getter
+    @Setter
     List<InventoryViewModel> filteredList = new ArrayList<>();
     String queryKeyWord;
 
     public InventoryListAdapter(List<InventoryViewModel> data) {
         this.data = data;
+        filteredList = new ArrayList<>();
     }
 
     @Override
@@ -67,7 +70,6 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
                 }
             }).toList();
         }
-
         filteredList.clear();
         filteredList.addAll(filteredViewModels);
         this.notifyDataSetChanged();

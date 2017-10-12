@@ -27,6 +27,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @DatabaseTable(tableName = "products")
-public class Product extends BaseModel implements Comparable<Product> {
+public class Product extends BaseModel implements Comparable<Product>, Serializable {
 
     public static final String MEDICINE_TYPE_ADULT = "Adult";
     public static final String MEDICINE_TYPE_CHILDREN = "Children";

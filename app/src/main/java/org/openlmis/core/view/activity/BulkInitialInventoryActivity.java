@@ -16,6 +16,8 @@ import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.ContentView;
@@ -27,11 +29,15 @@ import rx.functions.Action1;
 @ContentView(R.layout.activity_bulk_initial_inventory)
 public class BulkInitialInventoryActivity extends InventoryActivity {
 
+    public static final int REQUEST_CODE = 1050;
+    public static final int ELEMENTS_ADDED_TO_HEADER_FOR_NON_BASIC_PRODUCTS = 1;
+    public static final int ELEMENTS_ADDED_TO_HEADER = 1;
+    public final String EMPTY_STRING = "";
+
+    private List<Product> selectedProducts;
+
     @InjectView(R.id.btn_add_products)
     private TextView btnAddProducts;
-
-    public static final int FIRST_ELEMENT_POSITION_OF_THE_LIST = 0;
-    public static final int ELEMENTS_ADDED_TO_HEADER = 1;
 
     @InjectPresenter(InitialInventoryPresenter.class)
     InitialInventoryPresenter presenter;
@@ -39,6 +45,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selectedProducts = new ArrayList<>();
     }
 
     @Override
@@ -54,23 +61,13 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         initRecyclerView();
         Subscription subscription = presenter.loadInventoryWithBasicProducts().subscribe(getOnViewModelsLoadedSubscriber());
         subscriptions.add(subscription);
-        btnDone.setOnClickListener(new SingleClickButtonListener() {
-            @Override
-            public void onSingleClick(View v) {
-               btnDone.setEnabled(false);
-                if (validateInventory()) {
-                    loading();
-                    Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
-                    subscriptions.add(subscription);
-                } else {
-                    btnDone.setEnabled(true);
-                    ToastUtil.show(getResources().getString(R.string.msg_error_basic_products));
-                }
+        btnDone.setOnClickListener(doneListener());
+        btnSave.setOnClickListener(saveListener());
+    }
 
-
-            }
-        });
-        btnSave.setOnClickListener(new SingleClickButtonListener() {
+    @NonNull
+    private SingleClickButtonListener saveListener() {
+        return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
                 btnSave.setEnabled(false);
@@ -85,7 +82,25 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
                 });
                 subscriptions.add(subscription);
             }
-        });
+        };
+    }
+
+    @NonNull
+    private SingleClickButtonListener doneListener() {
+        return new SingleClickButtonListener() {
+            @Override
+            public void onSingleClick(View v) {
+                btnDone.setEnabled(false);
+                if (validateInventory()) {
+                    loading();
+                    Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
+                    subscriptions.add(subscription);
+                } else {
+                    btnDone.setEnabled(true);
+                    ToastUtil.show(getResources().getString(R.string.msg_error_basic_products));
+                }
+            }
+        };
     }
 
     @NonNull
@@ -104,12 +119,9 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
             @Override
             public void onNext(List<InventoryViewModel> inventoryViewModels) {
-                InventoryViewModel inventoryModel = new InventoryViewModel(Product.dummyProduct());
-                inventoryModel.setDummyModel(true);
-                inventoryViewModels.add(FIRST_ELEMENT_POSITION_OF_THE_LIST, inventoryModel);
                 setUpFastScroller(inventoryViewModels);
-                mAdapter.refresh();
-                setTotal(inventoryViewModels.size() - ELEMENTS_ADDED_TO_HEADER);
+                ((BulkInitialInventoryAdapter) mAdapter).arrangeViewModels(EMPTY_STRING);
+                setTotal();
                 loaded();
             }
         };
@@ -124,11 +136,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
     @Override
     public boolean onSearchStart(String query) {
-        mAdapter.filter(query);
-        if (!query.isEmpty()) {
-            mAdapter.getFilteredList().add(FIRST_ELEMENT_POSITION_OF_THE_LIST, new InventoryViewModel(Product.dummyProduct()));
-        }
-        setUpFastScroller(mAdapter.getFilteredList());
+        ((BulkInitialInventoryAdapter) mAdapter).arrangeViewModels(query);
         return false;
     }
 
@@ -137,8 +145,36 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddNonBasicProductsActivity.class);
-                startActivityForResult(intent, 0);
+                intent.putExtra(AddNonBasicProductsActivity.SELECTED_PRODUCTS, (Serializable) selectedProducts);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         };
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (areThereSelectedProducts(requestCode, resultCode, data)) {
+            this.selectedProducts.clear();
+            this.selectedProducts.addAll((ArrayList<Product>) data.getSerializableExtra(AddNonBasicProductsActivity.SELECTED_PRODUCTS));
+            presenter.addNonBasicProductsToInventory(selectedProducts);
+            setUpFastScroller(presenter.getInventoryViewModelList());
+            ((BulkInitialInventoryAdapter) mAdapter).arrangeViewModels(EMPTY_STRING);
+            setTotal();
+        }
+    }
+
+    private boolean areThereSelectedProducts(int requestCode, int resultCode, Intent data) {
+        return requestCode == REQUEST_CODE && resultCode == AddNonBasicProductsActivity.RESULT_CODE && data.getExtras().
+                containsKey(AddNonBasicProductsActivity.SELECTED_PRODUCTS);
+    }
+
+    protected void setTotal() {
+        int total = 0;
+        for (InventoryViewModel model: presenter.getInventoryViewModelList()){
+            if(model.getProductId()!=0){
+                total++;
+            }
+        }
+        tvTotal.setText(getString(R.string.label_total, String.valueOf(total)));
     }
 }

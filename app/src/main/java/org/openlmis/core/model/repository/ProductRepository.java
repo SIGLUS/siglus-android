@@ -336,7 +336,6 @@ public class ProductRepository {
                 Product product = new Product();
 
                 product.setActive(Boolean.TRUE);
-                product.setBasic(Boolean.TRUE);
                 product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow("primaryName")));
                 product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow("isArchived")) != 0);
                 product.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));

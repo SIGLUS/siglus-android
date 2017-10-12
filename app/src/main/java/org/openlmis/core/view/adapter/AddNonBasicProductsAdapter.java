@@ -13,10 +13,13 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class AddNonBasicProductsAdapter extends RecyclerView.Adapter<NonBasicProductViewHolder>{
 
+    @Getter
     private List<NonBasicProductsViewModel> models;
 
     private List<NonBasicProductsViewModel> filteredList;

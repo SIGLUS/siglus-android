@@ -1,19 +1,24 @@
 package org.openlmis.core.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Button;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.AddNonBasicProductsPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddNonBasicProductsAdapter;
 import org.openlmis.core.view.viewmodel.NonBasicProductsViewModel;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.ContentView;
@@ -25,6 +30,8 @@ import rx.Subscription;
 public class AddNonBasicProductsActivity extends SearchBarActivity {
 
     public static final String EMPTY_STRING = "";
+    public static final int RESULT_CODE = 2000;
+    public static final String SELECTED_PRODUCTS = "SELECTED_PRODUCTS";
     @InjectView(R.id.non_basic_products)
     RecyclerView rvNonBasicProducts;
 
@@ -39,13 +46,47 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
 
     AddNonBasicProductsAdapter adapter;
 
+    private List<Product> previouslySelectedProducts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initRecyclerView();
-        Subscription subscription = presenter.getAllNonBasicProductsViewModels().subscribe(getOnViewModelsLoadedSubscriber());
+        previouslySelectedProducts = (List<Product>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
+        btnCancel.setOnClickListener(cancelListener());
+        btnAddProducts.setOnClickListener(addProductsListener());
+        Subscription subscription = presenter.getAllNonBasicProductsViewModels(previouslySelectedProducts).subscribe(getOnViewModelsLoadedSubscriber());
         subscriptions.add(subscription);
 
+    }
+
+    @NonNull
+    private View.OnClickListener addProductsListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<Product> selectedProducts = new ArrayList<>();
+                for (NonBasicProductsViewModel model : adapter.getModels()) {
+                    if (model.isChecked()) {
+                        selectedProducts.add(model.getProduct());
+                    }
+                }
+                Intent intent = new Intent();
+                intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
+                setResult(RESULT_CODE, intent);
+                finish();
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener cancelListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        };
     }
 
     private void initRecyclerView() {

@@ -34,7 +34,7 @@ public class AddNonBasicProductsPresenter extends Presenter {
 
     }
 
-    public Observable<List<NonBasicProductsViewModel>> getAllNonBasicProductsViewModels() {
+    public Observable<List<NonBasicProductsViewModel>> getAllNonBasicProductsViewModels(final List<Product> selectedProducts) {
         return Observable.create(new Observable.OnSubscribe<List<NonBasicProductsViewModel>>() {
             @Override
             public void call(Subscriber<? super List<NonBasicProductsViewModel>> subscriber) {
@@ -42,6 +42,9 @@ public class AddNonBasicProductsPresenter extends Presenter {
                     List<Product> products = productRepository.listNonBasicProducts();
                     for (Product product : products) {
                         NonBasicProductsViewModel currentModel = new NonBasicProductsViewModel(product);
+                        if (selectedProducts.contains(product)) {
+                            currentModel.setChecked(true);
+                        }
                         models.add(currentModel);
                     }
                     subscriber.onNext(models);

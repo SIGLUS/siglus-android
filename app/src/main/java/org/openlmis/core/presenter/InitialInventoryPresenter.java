@@ -7,9 +7,11 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -78,6 +80,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
                 viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
             } else {
                 viewModel = new InventoryViewModel(product);
+                viewModel.setViewType(BulkInitialInventoryAdapter.ITEM_LIST);
                 viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
             }
             viewModel.setChecked(false);
@@ -127,6 +130,32 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         StockMovementItem movementItem = new StockMovementItem(stockCard, model);
         stockCard.setStockOnHand(movementItem.getStockOnHand());
         stockRepository.addStockMovementAndUpdateStockCard(movementItem);
+    }
+
+    public void addNonBasicProductsToInventory(List<Product> nonBasicProducts) {
+        setDefaultBasicProductsList();
+        List<InventoryViewModel> nonBasicProductsModels = buildNonBasicProductViewModelsList(nonBasicProducts);
+        inventoryViewModelList.addAll(nonBasicProductsModels);
+    }
+
+    private void setDefaultBasicProductsList() {
+        List<InventoryViewModel> basicProductViewModels = new ArrayList<>();
+        for (InventoryViewModel model : inventoryViewModelList) {
+            if (model.isBasic()) {
+                basicProductViewModels.add(model);
+            }
+        }
+        inventoryViewModelList.clear();
+        inventoryViewModelList.addAll(basicProductViewModels);
+    }
+
+    private List<InventoryViewModel> buildNonBasicProductViewModelsList(List<Product> products) {
+        List<InventoryViewModel> nonBasicProductsModels = new ArrayList<>();
+        for (Product product : products) {
+            InventoryViewModel model = convertProductToStockCardViewModel(product);
+            nonBasicProductsModels.add(model);
+        }
+        return nonBasicProductsModels;
     }
 
 }

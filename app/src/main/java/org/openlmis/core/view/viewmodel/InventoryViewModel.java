@@ -27,6 +27,7 @@ import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 
 import lombok.Data;
+import lombok.Setter;
 
 @Data
 public class InventoryViewModel extends BaseStockMovementViewModel {
@@ -55,6 +56,11 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
 
     boolean dummyModel = false;
 
+    boolean isBasic = false;
+
+    @Setter
+    private int viewType;
+
     private String signature;
     StockCard stockCard;
 
@@ -70,6 +76,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     public InventoryViewModel(Product product) {
         this.product = product;
         this.type = product.getType();
+        this.isBasic = product.isBasic();
         setProductAttributes(product);
     }
 

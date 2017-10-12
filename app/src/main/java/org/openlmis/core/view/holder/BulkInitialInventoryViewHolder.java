@@ -84,6 +84,9 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
         sumLotQuantities();
 
         btnAddNewLot.setOnClickListener(showNewLotDialogListener());
+        if(!inventoryViewModel.isBasic()){
+            btnNoStock.setVisibility(View.INVISIBLE);
+        }
         btnNoStock.setOnClickListener(noStockListener());
     }
 
