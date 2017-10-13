@@ -52,6 +52,7 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initRecyclerView();
+        loading(getString(R.string.add_products_loading_message));
         previouslySelectedProducts = (List<Product>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
         btnCancel.setOnClickListener(cancelListener());
         btnAddProducts.setOnClickListener(addProductsListener());
