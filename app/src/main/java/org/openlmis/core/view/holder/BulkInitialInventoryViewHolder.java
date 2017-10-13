@@ -51,6 +51,9 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.btn_no_stock)
     TextView btnNoStock;
 
+    @InjectView(R.id.btn_remove_product)
+    public TextView btnRemoveProduct;
+
     @InjectView(R.id.rv_lots)
     RecyclerView rvLots;
 
@@ -85,7 +88,11 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
 
         btnAddNewLot.setOnClickListener(showNewLotDialogListener());
         if(!inventoryViewModel.isBasic()){
-            btnNoStock.setVisibility(View.INVISIBLE);
+            btnNoStock.setVisibility(View.GONE);
+            btnRemoveProduct.setVisibility(View.VISIBLE);
+        }else{
+            btnNoStock.setVisibility(View.VISIBLE);
+            btnRemoveProduct.setVisibility(View.GONE);
         }
         btnNoStock.setOnClickListener(noStockListener());
     }

@@ -1,6 +1,7 @@
 package org.openlmis.core.presenter;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -10,6 +11,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,12 @@ import rx.schedulers.Schedulers;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class InitialInventoryPresenter extends InventoryPresenter {
+
+    public static final String EMPTY_STRING = "";
+    private final int FIRST_ELEMENT_POSITION_OF_THE_LIST = 0;
+    private static final int DEFAULT_PRODUCT_ID = 0;
+    private List<InventoryViewModel> defaultViewModelList;
+
     @Override
     public Observable<List<InventoryViewModel>> loadInventory() {
         return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
@@ -62,6 +70,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
                                 }
                             }).toList());
                     subscriber.onNext(inventoryViewModelList);
+                    defaultViewModelList = new ArrayList<>(inventoryViewModelList);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
@@ -135,12 +144,13 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     public void addNonBasicProductsToInventory(List<Product> nonBasicProducts) {
         setDefaultBasicProductsList();
         List<InventoryViewModel> nonBasicProductsModels = buildNonBasicProductViewModelsList(nonBasicProducts);
-        inventoryViewModelList.addAll(nonBasicProductsModels);
+        defaultViewModelList.addAll(nonBasicProductsModels);
+        arrangeViewModels(EMPTY_STRING);
     }
 
     private void setDefaultBasicProductsList() {
         List<InventoryViewModel> basicProductViewModels = new ArrayList<>();
-        for (InventoryViewModel model : inventoryViewModelList) {
+        for (InventoryViewModel model : defaultViewModelList) {
             if (model.isBasic()) {
                 basicProductViewModels.add(model);
             }
@@ -158,4 +168,95 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         return nonBasicProductsModels;
     }
 
+    private void addHeaderForBasicProducts() {
+        Product basicProductHeader = Product.dummyProduct();
+        basicProductHeader.setBasic(true);
+        InventoryViewModel inventoryModelBasicHeader = new InventoryViewModel(basicProductHeader);
+        inventoryModelBasicHeader.setDummyModel(true);
+        inventoryModelBasicHeader.setViewType(BulkInitialInventoryAdapter.ITEM_BASIC_HEADER);
+        inventoryViewModelList.add(FIRST_ELEMENT_POSITION_OF_THE_LIST, inventoryModelBasicHeader);
+    }
+
+    private void addHeaderForNonBasicProducts(int position) {
+        InventoryViewModel headerInventoryModel = new InventoryViewModel(Product.dummyProduct());
+        headerInventoryModel.setDummyModel(true);
+        headerInventoryModel.setViewType(BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER);
+        inventoryViewModelList.add(position, headerInventoryModel);
+    }
+
+    private void removeHeaders() {
+        for (int i = 0; i < inventoryViewModelList.size(); i++) {
+            if (inventoryViewModelList.get(i).getProductId() == DEFAULT_PRODUCT_ID) {
+                inventoryViewModelList.remove(i);
+            }
+        }
+    }
+
+    private void addHeaders(boolean areThereNonBasicProducts) {
+        if (areThereNonBasicProducts) {
+            int nonBasicProductsHeaderPosition = getNonBasicProductsHeaderPosition();
+            if (nonBasicProductsHeaderPosition > FIRST_ELEMENT_POSITION_OF_THE_LIST) {
+                addHeaderForBasicProducts();
+                nonBasicProductsHeaderPosition++;
+            }
+            addHeaderForNonBasicProducts(nonBasicProductsHeaderPosition);
+        } else {
+            addHeaderForBasicProducts();
+        }
+    }
+
+    private int getNonBasicProductsHeaderPosition() {
+        int nonBasicProductsHeaderPosition = 0;
+        while (inventoryViewModelList.size() > nonBasicProductsHeaderPosition && (inventoryViewModelList.get(nonBasicProductsHeaderPosition)).isBasic()) {
+            nonBasicProductsHeaderPosition++;
+        }
+        return nonBasicProductsHeaderPosition;
+    }
+
+    private boolean checkIfNonBasicProductsExists() {
+        for (InventoryViewModel model : inventoryViewModelList) {
+            if (!model.isBasic()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void arrangeViewModels(final String keyword) {
+        filterViewModels(keyword);
+        removeHeaders();
+        addHeaders(checkIfNonBasicProductsExists());
+    }
+
+    private void filterViewModels(final String keyword) {
+        if (TextUtils.isEmpty(keyword)) {
+            inventoryViewModelList.clear();
+            inventoryViewModelList.addAll(defaultViewModelList);
+        } else {
+            List<InventoryViewModel> filteredResult = from(defaultViewModelList).filter(new Predicate<InventoryViewModel>() {
+                @Override
+                public boolean apply(InventoryViewModel inventoryViewModel) {
+                    return inventoryViewModel.getProduct().getProductFullName().toLowerCase().contains(keyword.toLowerCase());
+                }
+            }).toList();
+            inventoryViewModelList.clear();
+            inventoryViewModelList.addAll(filteredResult);
+        }
+    }
+
+    private int getNumberOfHeaders(){
+        int numberOfHeaders = 0;
+        for(InventoryViewModel model: inventoryViewModelList){
+            if(model.getProductId() == DEFAULT_PRODUCT_ID){
+                numberOfHeaders++;
+            }
+        }
+        return numberOfHeaders;
+    }
+
+    public void removeNonBasicProductElement(int position){
+        int positionWithoutHeaders = position - getNumberOfHeaders();
+        defaultViewModelList.remove(positionWithoutHeaders);
+        arrangeViewModels(EMPTY_STRING);
+    }
 }

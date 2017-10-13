@@ -30,8 +30,6 @@ import rx.functions.Action1;
 public class BulkInitialInventoryActivity extends InventoryActivity {
 
     public static final int REQUEST_CODE = 1050;
-    public static final int ELEMENTS_ADDED_TO_HEADER_FOR_NON_BASIC_PRODUCTS = 1;
-    public static final int ELEMENTS_ADDED_TO_HEADER = 1;
     public final String EMPTY_STRING = "";
 
     private List<Product> selectedProducts;
@@ -52,6 +50,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     protected void initRecyclerView() {
         mAdapter = new BulkInitialInventoryAdapter(presenter.getInventoryViewModelList());
         productListRecycleView.setAdapter(mAdapter);
+        ((BulkInitialInventoryAdapter)mAdapter).setRemoveNonBasicProductListener(removeNonBasicProductListener());
     }
 
     @Override
@@ -120,7 +119,8 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
             @Override
             public void onNext(List<InventoryViewModel> inventoryViewModels) {
                 setUpFastScroller(inventoryViewModels);
-                ((BulkInitialInventoryAdapter) mAdapter).arrangeViewModels(EMPTY_STRING);
+                presenter.arrangeViewModels(EMPTY_STRING);
+                mAdapter.notifyDataSetChanged();
                 setTotal();
                 loaded();
             }
@@ -136,7 +136,8 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
     @Override
     public boolean onSearchStart(String query) {
-        ((BulkInitialInventoryAdapter) mAdapter).arrangeViewModels(query);
+        presenter.arrangeViewModels(query);
+        mAdapter.notifyDataSetChanged();
         return false;
     }
 
@@ -158,7 +159,8 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
             this.selectedProducts.addAll((ArrayList<Product>) data.getSerializableExtra(AddNonBasicProductsActivity.SELECTED_PRODUCTS));
             presenter.addNonBasicProductsToInventory(selectedProducts);
             setUpFastScroller(presenter.getInventoryViewModelList());
-            ((BulkInitialInventoryAdapter) mAdapter).arrangeViewModels(EMPTY_STRING);
+            presenter.arrangeViewModels(EMPTY_STRING);
+            mAdapter.notifyDataSetChanged();
             setTotal();
         }
     }
@@ -176,5 +178,17 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
             }
         }
         tvTotal.setText(getString(R.string.label_total, String.valueOf(total)));
+    }
+
+    @NonNull
+    private View.OnClickListener removeNonBasicProductListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               int position = (Integer)v.getTag();
+                presenter.removeNonBasicProductElement(position);
+                mAdapter.notifyDataSetChanged();
+            }
+        };
     }
 }
