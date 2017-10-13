@@ -37,3 +37,6 @@ Given(/^the initial inventory list should not contains product "([^"]*)"$/) do |
   inventory_page.assert_product_is_not_listed(product_name)
 end
 
+Given(/^I add non basic products$/) do
+  inventory_page.add_products
+end

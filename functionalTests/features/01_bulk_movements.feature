@@ -25,5 +25,15 @@ Feature: Log in and initialize Inventory with Basic Products
     And I add a new lot with number "CCC", amount 120 and expiration date next year
     And I search for "Estavudina+Lamivudina+Nevirapi; 6mg + 30mg +50mg, 60 Cps (Baby; Embalagem" to add a new lot
     And I add a new lot with number "DDD", amount 130 and expiration date next year
+    And I add non basic products
+    And I search for "Acarbose; 50mg; Comprimidos" to check
+    And I search for "Trastuzumab; 150mg" to check
+    And I add selected products
+    And I submit the initial inventory
+    And I see "All the basic products have to be set up in order to continue"
+    And I search for "Acarbose; 50mg; Comprimidos" to add a new lot
+    And I add a new lot with number "EEE", amount 350 and expiration date next year
+    And I search for "Trastuzumab; 150mg" to add a new lot
+    And I add a new lot with number "FFF", amount 300 and expiration date next year
     When I submit the initial inventory
     Then I should see the application main menu screen

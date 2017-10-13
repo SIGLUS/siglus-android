@@ -54,6 +54,10 @@ class BulkInventoryPage < Calabash::ABase
     assert { current_page? }
   end
 
+  def add_products
+    touch_view_with_id(@button_add_products)
+  end
+
   def initialize(world, transition_duration=0.5)
     super(world, transition_duration)
     @button_add_lot_id = 'btn_add_new_lot'
@@ -64,5 +68,6 @@ class BulkInventoryPage < Calabash::ABase
     @button_submit_tag = 'btn_action_complete'
     @button_save_id = 'btn_save'
     @label_product_name_id = 'tv_product_name'
+    @button_add_products = 'btn_add_products'
   end
 end
