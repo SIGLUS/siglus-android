@@ -2,7 +2,7 @@ def add_non_basic_products
   @add_non_basic_products ||= page(AddNonBasicProductsPage).await(timeout: 30)
 end
 
-Given(/^I search for "(.*?)" to check$/) do |product_name|
+Given(/^I select "(.*?)" to be added$/) do |product_name|
   add_non_basic_products.search_product_with_name(product_name)
   add_non_basic_products.check_product_with_name
 end

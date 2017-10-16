@@ -25,6 +25,4 @@ class AddNonBasicProductsPage < Calabash::ABase
     @checkbox_check_products_id = 'checkbox'
     @button_add_selected_products_id = 'btn_add_products'
   end
-
 end
-
