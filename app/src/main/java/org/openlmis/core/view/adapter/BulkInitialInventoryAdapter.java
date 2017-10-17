@@ -57,7 +57,7 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
         if (holder instanceof BulkInitialInventoryViewHolder) {
             final InventoryViewModel viewModel = data.get(position);
             ((BulkInitialInventoryViewHolder) holder).populate(viewModel, queryKeyWord);
-            ((BulkInitialInventoryViewHolder) holder).btnRemoveProduct.setTag(position);
+            ((BulkInitialInventoryViewHolder) holder).btnRemoveProduct.setTag(viewModel);
             ((BulkInitialInventoryViewHolder) holder).btnRemoveProduct.setOnClickListener(removeNonBasicProductListener);
         }
     }

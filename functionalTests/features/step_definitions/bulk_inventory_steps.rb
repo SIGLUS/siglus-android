@@ -40,3 +40,8 @@ end
 Given(/^I add non basic products$/) do
   inventory_page.add_products
 end
+
+Given(/^I search for "(.*?)" to delete it$/) do |product_name|
+  inventory_page.delete_product(product_name)
+end
+

@@ -35,5 +35,7 @@ Feature: Log in and initialize Inventory with Basic Products
     And I add a new lot with number "EEE", amount 350 and expiration date next year
     And I search for "Trastuzumab; 150mg" to add a new lot
     And I add a new lot with number "FFF", amount 300 and expiration date next year
+    And I search for "Trastuzumab; 150mg" to delete it
+    And the initial inventory list should not contains product "Trastuzumab; 150mg"
     When I submit the initial inventory
     Then I should see the application main menu screen

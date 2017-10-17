@@ -38,7 +38,7 @@ class BulkInventoryPage < Calabash::ABase
   def assert_product_is_not_listed(product_name)
     products = get_elements_by_id(@label_product_name_id)
     product_names = products.map { |product| product['text'] }
-    assert { not product_names.any? { |name| name =~ /#{Regex.quote(product_name)}/ }}
+    assert { not product_names.any? { |name| name =~ /#{Regexp.quote(product_name)}/ }}
   end
 
   def submit
@@ -56,6 +56,11 @@ class BulkInventoryPage < Calabash::ABase
 
   def add_products
     touch_view_with_id(@button_add_products)
+    end
+
+  def delete_product(product_name)
+    search_for(product_name)
+    touch_view_with_id(@button_remove_products_id)
   end
 
   def initialize(world, transition_duration=0.5)
@@ -69,5 +74,6 @@ class BulkInventoryPage < Calabash::ABase
     @button_save_id = 'btn_save'
     @label_product_name_id = 'tv_product_name'
     @button_add_products = 'btn_add_products'
+    @button_remove_products_id = 'btn_remove_product'
   end
 end

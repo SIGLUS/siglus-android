@@ -16,6 +16,7 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -28,7 +29,8 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     public static final String EMPTY_STRING = "";
     private final int FIRST_ELEMENT_POSITION_OF_THE_LIST = 0;
     private static final int DEFAULT_PRODUCT_ID = 0;
-    private List<InventoryViewModel> defaultViewModelList;
+    @Getter
+    private List<InventoryViewModel> defaultViewModelList = new ArrayList<>();
 
     @Override
     public Observable<List<InventoryViewModel>> loadInventory() {
@@ -112,7 +114,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     }
 
     void initOrArchiveBackStockCards() {
-        for (InventoryViewModel inventoryViewModel : inventoryViewModelList) {
+        for (InventoryViewModel inventoryViewModel : defaultViewModelList) {
             if (inventoryViewModel.isChecked()) {
                 initOrArchiveBackStockCard(inventoryViewModel);
             }
@@ -144,8 +146,18 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     public void addNonBasicProductsToInventory(List<Product> nonBasicProducts) {
         setDefaultBasicProductsList();
         List<InventoryViewModel> nonBasicProductsModels = buildNonBasicProductViewModelsList(nonBasicProducts);
+        removeExistentNonBasicProducts();
         defaultViewModelList.addAll(nonBasicProductsModels);
-        arrangeViewModels(EMPTY_STRING);
+        filterViewModels(EMPTY_STRING);
+    }
+
+    private void removeExistentNonBasicProducts() {
+        List<InventoryViewModel> defaultModels = new ArrayList<>(defaultViewModelList);
+        for(InventoryViewModel model :defaultModels){
+            if(!model.isBasic()){
+                defaultViewModelList.remove(model);
+            }
+        }
     }
 
     private void setDefaultBasicProductsList() {
@@ -222,13 +234,13 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         return false;
     }
 
-    public void arrangeViewModels(final String keyword) {
-        filterViewModels(keyword);
+    public void filterViewModels(final String keyword) {
+        filterViewModelsByProductFullName(keyword);
         removeHeaders();
         addHeaders(checkIfNonBasicProductsExists());
     }
 
-    private void filterViewModels(final String keyword) {
+    private void filterViewModelsByProductFullName(final String keyword) {
         if (TextUtils.isEmpty(keyword)) {
             inventoryViewModelList.clear();
             inventoryViewModelList.addAll(defaultViewModelList);
@@ -244,19 +256,8 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         }
     }
 
-    private int getNumberOfHeaders(){
-        int numberOfHeaders = 0;
-        for(InventoryViewModel model: inventoryViewModelList){
-            if(model.getProductId() == DEFAULT_PRODUCT_ID){
-                numberOfHeaders++;
-            }
-        }
-        return numberOfHeaders;
-    }
-
-    public void removeNonBasicProductElement(int position){
-        int positionWithoutHeaders = position - getNumberOfHeaders();
-        defaultViewModelList.remove(positionWithoutHeaders);
-        arrangeViewModels(EMPTY_STRING);
+    public void removeNonBasicProductElement(InventoryViewModel model){
+        defaultViewModelList.remove(model);
+        filterViewModels(EMPTY_STRING);
     }
 }

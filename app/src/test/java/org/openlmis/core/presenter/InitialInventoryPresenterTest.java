@@ -1,5 +1,8 @@
 package org.openlmis.core.presenter;
 
+import android.support.annotation.NonNull;
+import android.util.LongSparseArray;
+
 import com.google.inject.AbstractModule;
 
 import org.junit.After;
@@ -37,8 +40,11 @@ import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
 import static org.assertj.core.util.Lists.newArrayList;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -56,6 +62,8 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
     private Product product;
     private SharedPreferenceMgr sharedPreferenceMgr;
     private InventoryRepository mockInventoryRepository;
+    private LongSparseArray<InventoryViewModel> models;
+    private int DEFAULT_ID = 0;
 
     @Before
     public void setup() throws Exception {
@@ -81,6 +89,39 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
                 return Schedulers.immediate();
             }
         });
+        models = new LongSparseArray<>();
+        getInventoryViewModelList();
+    }
+
+    @NonNull
+    private void getInventoryViewModelList() {
+        product.setBasic(true);
+        product.setPrimaryName("Product 1");
+        product.setId(1L);
+        InventoryViewModel inventoryViewModel = new InventoryViewModel(product);
+        Product product2 = new Product();
+        product2.setPrimaryName("Product 2");
+        product2.setCode("BCD");
+        product2.setBasic(true);
+        product2.setId(2L);
+        InventoryViewModel inventoryViewModel2 = new InventoryViewModel(product2);
+        Product product3 = new Product();
+        product3.setPrimaryName("Product 3");
+        product3.setCode("BCDE");
+        product3.setBasic(true);
+        product3.setId(3L);
+        InventoryViewModel inventoryViewModel3 = new InventoryViewModel(product3);
+        Product product4 = new Product();
+        product4.setPrimaryName("Product 4");
+        product4.setCode("BCDEF");
+        product4.setBasic(false);
+        product4.setId(4L);
+        InventoryViewModel inventoryViewModel4 = new InventoryViewModel(product4);
+
+        models.put(inventoryViewModel.getProduct().getId(), inventoryViewModel);
+        models.put(inventoryViewModel2.getProduct().getId(), inventoryViewModel2);
+        models.put(inventoryViewModel3.getProduct().getId(), inventoryViewModel3);
+        models.put(inventoryViewModel4.getProduct().getId(), inventoryViewModel4);
     }
 
     @After
@@ -170,6 +211,8 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
         initialInventoryPresenter.getInventoryViewModelList().add(model);
         initialInventoryPresenter.getInventoryViewModelList().add(model2);
+        initialInventoryPresenter.getDefaultViewModelList().add(model);
+        initialInventoryPresenter.getDefaultViewModelList().add(model2);
         initialInventoryPresenter.initOrArchiveBackStockCards();
 
         verify(stockRepositoryMock, times(1)).updateStockCardWithProduct(any(StockCard.class));
@@ -192,6 +235,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         List<InventoryViewModel> inventoryViewModelList = newArrayList(uncheckedModel, archivedViewModel);
 
         initialInventoryPresenter.getInventoryViewModelList().addAll(inventoryViewModelList);
+        initialInventoryPresenter.getDefaultViewModelList().addAll(inventoryViewModelList);
         initialInventoryPresenter.initOrArchiveBackStockCards();
 
         assertFalse(archivedStockCard.getProduct().isArchived());
@@ -205,12 +249,12 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true).build();
 
         initialInventoryPresenter.getInventoryViewModelList().add(model);
+        initialInventoryPresenter.getDefaultViewModelList().add(model);
         initialInventoryPresenter.initOrArchiveBackStockCards();
 
         ArgumentCaptor<StockMovementItem> argument = ArgumentCaptor.forClass(StockMovementItem.class);
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(argument.capture());
     }
-
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
@@ -219,6 +263,91 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
             bind(InventoryRepository.class).toInstance(mockInventoryRepository);
             bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
         }
+
     }
 
+    @Test
+    public void shouldHaveTheSameNumberOfDefaultElementsPlusTwoHeaders() throws Exception {
+        initialInventoryPresenter.getDefaultViewModelList().addAll(newArrayList(models.get(1L),models.get(2L),models.get(3L),models.get(4L)));
+
+        initialInventoryPresenter.filterViewModels("");
+
+        assertThat(initialInventoryPresenter.getInventoryViewModelList().size(), is(6));
+    }
+
+    @Test
+    public void shouldHaveOneBasicAndOneNonBasicHeader() throws Exception {
+        initialInventoryPresenter.getDefaultViewModelList().addAll(newArrayList(models.get(1L),models.get(2L),models.get(3L),models.get(4L)));
+
+        initialInventoryPresenter.filterViewModels("");
+
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).isBasic());
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).getProductId() == DEFAULT_ID);
+        assertFalse(initialInventoryPresenter.getInventoryViewModelList().get(4).isBasic());
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(4).getProductId() == DEFAULT_ID);
+    }
+
+    @Test
+    public void shouldHaveOneNonBasicHeader() throws Exception {
+        initialInventoryPresenter.getDefaultViewModelList().addAll(newArrayList(models.get(1L),models.get(2L),models.get(3L),models.get(4L)));
+
+        initialInventoryPresenter.filterViewModels("Product 4");
+
+        assertThat(initialInventoryPresenter.getInventoryViewModelList().size(), is(2));
+        assertFalse(initialInventoryPresenter.getInventoryViewModelList().get(0).isBasic());
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).getProductId() == DEFAULT_ID);
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(1).getProductId() != DEFAULT_ID);
+    }
+
+    @Test
+    public void shouldHaveOneBasicHeader() throws Exception {
+        initialInventoryPresenter.getDefaultViewModelList().addAll(newArrayList(models.get(1L),models.get(2L),models.get(3L),models.get(4L)));
+
+        initialInventoryPresenter.filterViewModels("Product 1");
+
+        assertThat(initialInventoryPresenter.getInventoryViewModelList().size(), is(2));
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).isBasic());
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).getProductId() == DEFAULT_ID);
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(1).getProductId() != DEFAULT_ID);
+    }
+
+
+    @Test
+    public void shouldArrangeViewModelsWithNonEmptyQueryStringResultingInNonBasicInventoryViewModels() throws Exception {
+        initialInventoryPresenter.getDefaultViewModelList().addAll(newArrayList(models.get(1L),models.get(2L),models.get(3L),models.get(4L)));
+
+        initialInventoryPresenter.filterViewModels("Product 4");
+
+        assertThat(initialInventoryPresenter.getInventoryViewModelList().size(), is(2));
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(1).getProductId()==4L);
+    }
+
+
+    @Test
+    public void shouldArrangeViewModelsWithNonEmptyQueryStringResultingInBasicInventoryViewModels() throws Exception {
+        initialInventoryPresenter.getDefaultViewModelList().addAll(newArrayList(models.get(1L),models.get(2L),models.get(3L),models.get(4L)));
+
+        initialInventoryPresenter.filterViewModels("Product 1");
+
+        assertThat(initialInventoryPresenter.getInventoryViewModelList().size(), is(2));
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).getProductId()==0);
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).isBasic());
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(1).getProductId()==1L);
+    }
+
+    @Test
+    public void shouldArrangeViewModelsWithNonEmptyQueryStringResultingInBasicAndNonBasicInventoryViewModels() throws Exception {
+        models.get(3L).getProduct().setPrimaryName("Product 43");
+        initialInventoryPresenter.getDefaultViewModelList().addAll(newArrayList(models.get(1L),models.get(2L),models.get(3L),models.get(4L)));
+
+        initialInventoryPresenter.filterViewModels("Product 4");
+
+        assertThat(initialInventoryPresenter.getInventoryViewModelList().size(), is(4));
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).getProductId()==0);
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(0).isBasic());
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(1).getProductId()==3L);
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(2).getProductId()==0);
+        assertFalse(initialInventoryPresenter.getInventoryViewModelList().get(2).isBasic());
+        assertTrue(initialInventoryPresenter.getInventoryViewModelList().get(3).getProductId()==4L);
+    }
 }

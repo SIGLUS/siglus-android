@@ -20,6 +20,9 @@ Feature: Log in and make a requisition for basic products
     And I search for "Estavudina+Lamivudina+Nevirapi; 6mg + 30mg +50mg, 60 Cps (Baby; Embalagem" in physical inventory
     And I set the amount to 130
     And I navigate back
+    And I search for "Acarbose; 50mg; Comprimidos" in physical inventory
+    And I set the amount to 120
+    And I navigate back
     And I search for "Hidralazina; 25mg/5mL; Injectável" in physical inventory
     And I press "Complete"
     And I approve the physical inventory and sign the report with "TWUIO"

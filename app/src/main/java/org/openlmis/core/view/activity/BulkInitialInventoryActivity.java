@@ -119,7 +119,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
             @Override
             public void onNext(List<InventoryViewModel> inventoryViewModels) {
                 setUpFastScroller(inventoryViewModels);
-                presenter.arrangeViewModels(EMPTY_STRING);
+                presenter.filterViewModels(EMPTY_STRING);
                 mAdapter.notifyDataSetChanged();
                 setTotal();
                 loaded();
@@ -136,7 +136,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
     @Override
     public boolean onSearchStart(String query) {
-        presenter.arrangeViewModels(query);
+        presenter.filterViewModels(query);
         mAdapter.notifyDataSetChanged();
         return false;
     }
@@ -159,7 +159,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
             this.selectedProducts.addAll((ArrayList<Product>) data.getSerializableExtra(AddNonBasicProductsActivity.SELECTED_PRODUCTS));
             presenter.addNonBasicProductsToInventory(selectedProducts);
             setUpFastScroller(presenter.getInventoryViewModelList());
-            presenter.arrangeViewModels(EMPTY_STRING);
             mAdapter.notifyDataSetChanged();
             setTotal();
         }
@@ -185,9 +184,10 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               int position = (Integer)v.getTag();
-                presenter.removeNonBasicProductElement(position);
+               InventoryViewModel model = (InventoryViewModel)v.getTag();
+                presenter.removeNonBasicProductElement(model);
                 mAdapter.notifyDataSetChanged();
+                setTotal();
             }
         };
     }
