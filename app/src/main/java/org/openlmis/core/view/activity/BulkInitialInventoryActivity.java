@@ -187,6 +187,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
                InventoryViewModel model = (InventoryViewModel)v.getTag();
                 presenter.removeNonBasicProductElement(model);
                 mAdapter.notifyDataSetChanged();
+                selectedProducts.remove(model.getProduct());
                 setTotal();
             }
         };
