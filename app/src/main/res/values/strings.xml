@@ -478,6 +478,9 @@
     <string name="title_add_non_basic_products">Add products to be issued</string>
     <string name="title_non_basic_products">Non basic products</string>
     <string name="add_products_loading_message">Downloading Non Basic Products</string>
+    <string name="create_ptv_data_report">CREATE PTV DATA REPORT</string>
+    <string name="title_patient_ptv_report_form">PTV DATA REPORT</string>
+    <string name="title_patient_data_report_form">PATIENT DATA REPORT</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>

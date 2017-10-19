@@ -34,7 +34,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     TextView tvDrugCount;
 
 
-    @InjectView(R.id.btn_report_entry)
+    @InjectView(R.id.btn_create_patient_data_report)
     TextView btnView;
 
     @InjectView(R.id.iv_del)
