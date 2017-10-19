@@ -55,7 +55,7 @@ import org.openlmis.core.persistence.migrations.AddSyncTagToStockMovementItem;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
 import org.openlmis.core.persistence.migrations.ConvertEssMedsToVIAProgram;
-import org.openlmis.core.persistence.migrations.CreateDepartmentTable;
+import org.openlmis.core.persistence.migrations.CreateServiceTable;
 import org.openlmis.core.persistence.migrations.CreateDraftInventoryTable;
 import org.openlmis.core.persistence.migrations.CreateDraftLotMovementTable;
 import org.openlmis.core.persistence.migrations.CreateDrugDispensationTable;
@@ -63,7 +63,7 @@ import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 import org.openlmis.core.persistence.migrations.CreateKitProductsTable;
 import org.openlmis.core.persistence.migrations.CreateMalariaTreatments;
-import org.openlmis.core.persistence.migrations.CreatePTVProgramDepartmentTable;
+import org.openlmis.core.persistence.migrations.CreatePTVProgramProductTable;
 import org.openlmis.core.persistence.migrations.CreatePTVProgramTable;
 import org.openlmis.core.persistence.migrations.CreatePatientDataReportTable;
 import org.openlmis.core.persistence.migrations.CreatePatientDispensationTable;
@@ -139,8 +139,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreatePatientDataReportTable());
             add(new CreateMalariaTreatments());
             add(new CreatePTVProgramTable());
-            add(new CreateDepartmentTable());
-            add(new CreatePTVProgramDepartmentTable());
+            add(new CreateServiceTable());
+            add(new CreatePTVProgramProductTable());
             add(new CreatePatientDispensationTable());
             add(new CreateDrugDispensationTable());
         }

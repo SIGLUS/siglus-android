@@ -2,10 +2,10 @@ package org.openlmis.core.persistence.migrations;
 
 import org.openlmis.core.persistence.Migration;
 
-public class CreatePTVProgramDepartmentTable extends Migration {
+public class CreatePTVProgramProductTable extends Migration {
     @Override
     public void up() {
-        execSQL("CREATE TABLE `ptv_program_department` ("
+        execSQL("CREATE TABLE `ptv_program_product` ("
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`initialStock` INTEGER, "
                 + "`entries` INTEGER, "

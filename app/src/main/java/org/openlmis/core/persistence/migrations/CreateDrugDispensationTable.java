@@ -9,9 +9,9 @@ public class CreateDrugDispensationTable extends Migration {
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`quantity` INTEGER, "
                 + "`signature` VARCHAR, "
-                + "`departmentId` INTEGER, "
-                + "`ptvProgramDepartmentId` INTEGER, "
-                + "FOREIGN KEY (departmentId) REFERENCES department(id), "
-                + "FOREIGN KEY (ptvProgramDepartmentId) REFERENCES ptv_program_department(id));");
+                + "`serviceId` INTEGER, "
+                + "`ptvProgramProductId` INTEGER, "
+                + "FOREIGN KEY (serviceId) REFERENCES service(id), "
+                + "FOREIGN KEY (ptvProgramProductId) REFERENCES ptv_program_product(id));");
     }
 }
