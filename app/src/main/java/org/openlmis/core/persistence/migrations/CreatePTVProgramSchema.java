@@ -13,15 +13,8 @@ public class CreatePTVProgramSchema extends Migration {
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`startPeriod` VARCHAR NOT NULL, "
                 + "`endPeriod` VARCHAR NOT NULL, "
-                + "`madeBy` VARCHAR NOT NULL, "
+                + "`createdBy` VARCHAR NOT NULL, "
                 + "`verifiedBy` VARCHAR NOT NULL, "
-                + "`createdAt` VARCHAR NOT NULL, "
-                + "`updatedAt` VARCHAR NOT NULL);");
-
-        execSQL("CREATE TABLE `service` ("
-                + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "`name` VARCHAR NOT NULL, "
-                + "`peripheral` INTEGER NOT NULL, "
                 + "`createdAt` VARCHAR NOT NULL, "
                 + "`updatedAt` VARCHAR NOT NULL);");
 
@@ -34,7 +27,14 @@ public class CreatePTVProgramSchema extends Migration {
                 + "`updatedAt` VARCHAR NOT NULL, "
                 + "FOREIGN KEY (ptvProgramId) REFERENCES ptv_program(id));");
 
-        execSQL("CREATE TABLE `ptv_program_product` ("
+        execSQL("CREATE TABLE `health_facility_service` ("
+                + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "`name` VARCHAR NOT NULL, "
+                + "`peripheral` INTEGER NOT NULL, "
+                + "`createdAt` VARCHAR NOT NULL, "
+                + "`updatedAt` VARCHAR NOT NULL);");
+
+        execSQL("CREATE TABLE `ptv_program_stock_information` ("
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`initialStock` INTEGER, "
                 + "`entries` INTEGER, "
@@ -47,16 +47,16 @@ public class CreatePTVProgramSchema extends Migration {
                 + "FOREIGN KEY (productId) REFERENCES product(id), "
                 + "FOREIGN KEY (ptvProgramId) REFERENCES ptv_program(id));");
 
-        execSQL("CREATE TABLE `drug_dispensation` ("
+        execSQL("CREATE TABLE `service_dispensation` ("
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`quantity` INTEGER, "
                 + "`signature` VARCHAR, "
                 + "`serviceId` INTEGER, "
-                + "`ptvProgramProductId` INTEGER, "
+                + "`ptvProgramStockInformationId` INTEGER, "
                 + "`createdAt` VARCHAR NOT NULL, "
                 + "`updatedAt` VARCHAR NOT NULL, "
-                + "FOREIGN KEY (serviceId) REFERENCES service(id), "
-                + "FOREIGN KEY (ptvProgramProductId) REFERENCES ptv_program_product(id));");
+                + "FOREIGN KEY (serviceId) REFERENCES health_facility_service(id), "
+                + "FOREIGN KEY (ptvProgramStockInformationId) REFERENCES ptv_program_stock_information(id));");
 
         insertData();
     }
@@ -64,13 +64,13 @@ public class CreatePTVProgramSchema extends Migration {
     private void insertData(){
         String formattedDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
 
-        execSQL("INSERT INTO service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('1', 'CPN', '0', '" + formattedDate + "', '" + formattedDate + "');");
-        execSQL("INSERT INTO service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('2', 'Maternity', '0', '" + formattedDate + "', '" + formattedDate + "');");
-        execSQL("INSERT INTO service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('3', 'CCR', '0', '" + formattedDate + "', '" + formattedDate + "');");
-        execSQL("INSERT INTO service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('4', 'Pharmacy', '0', '" + formattedDate + "', '" + formattedDate + "');");
-        execSQL("INSERT INTO service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('5', 'UATS', '1', '" + formattedDate + "', '" + formattedDate + "');");
-        execSQL("INSERT INTO service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('6', 'Banco de socorro', '1', '" + formattedDate + "', '" + formattedDate + "');");
-        execSQL("INSERT INTO service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('7', 'Lab', '1', '" + formattedDate + "', '" + formattedDate + "');");
-        execSQL("INSERT INTO service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('8', 'Estomatologia', '1', '" + formattedDate + "', '" + formattedDate + "');");
+        execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('1', 'CPN', '0', '" + formattedDate + "', '" + formattedDate + "');");
+        execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('2', 'Maternity', '0', '" + formattedDate + "', '" + formattedDate + "');");
+        execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('3', 'CCR', '0', '" + formattedDate + "', '" + formattedDate + "');");
+        execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('4', 'Pharmacy', '0', '" + formattedDate + "', '" + formattedDate + "');");
+        execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('5', 'UATS', '1', '" + formattedDate + "', '" + formattedDate + "');");
+        execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('6', 'Banco de socorro', '1', '" + formattedDate + "', '" + formattedDate + "');");
+        execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('7', 'Lab', '1', '" + formattedDate + "', '" + formattedDate + "');");
+        execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('8', 'Estomatologia', '1', '" + formattedDate + "', '" + formattedDate + "');");
     }
 }

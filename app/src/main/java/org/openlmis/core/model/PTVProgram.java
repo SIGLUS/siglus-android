@@ -51,7 +51,7 @@ public class PTVProgram extends BaseModel implements Serializable {
     String verifiedBy;
 
     @ForeignCollectionField(eager = true)
-    private Collection<PTVProgramProduct> ptvProgramProducts;
+    private Collection<PTVProgramStockInformation> ptvProgramStocksInformation;
 
     @ForeignCollectionField(eager = true)
     private Collection<PatientDispensation> patientDispensations;

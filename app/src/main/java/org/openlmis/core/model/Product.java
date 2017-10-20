@@ -79,7 +79,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
     private ForeignCollection<Lot> lotList;
 
     @ForeignCollectionField()
-    private ForeignCollection<PTVProgramProduct> ptvProgramProducts;
+    private ForeignCollection<PTVProgramStockInformation> ptvProgramStocksInformation;
 
     List<KitProduct> kitProductList = new ArrayList<>();
 

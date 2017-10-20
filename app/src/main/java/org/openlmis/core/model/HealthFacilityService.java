@@ -31,8 +31,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@DatabaseTable(tableName = "service")
-public class Service extends BaseModel implements Serializable {
+@DatabaseTable(tableName = "health_facility_service")
+public class HealthFacilityService extends BaseModel implements Serializable {
     @DatabaseField
     String name;
 
@@ -40,5 +40,5 @@ public class Service extends BaseModel implements Serializable {
     String peripheral;
 
     @ForeignCollectionField(eager = true)
-    private Collection<DrugDispensation> drugDispensations;
+    private Collection<ServiceDispensation> serviceDispensations;
 }

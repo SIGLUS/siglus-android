@@ -20,39 +20,28 @@ package org.openlmis.core.model;
 
 
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@DatabaseTable(tableName = "ptv_program_product")
-public class PTVProgramProduct extends BaseModel implements Serializable {
+@DatabaseTable(tableName = "service_dispensation")
+public class ServiceDispensation extends BaseModel implements Serializable {
 
     @DatabaseField
-    int initialStock;
+    int quantity;
 
     @DatabaseField
-    int entries;
+    String signature;
 
-    @DatabaseField
-    int lossesAndAdjustments;
+    @DatabaseField(columnName = "serviceId", foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
+    HealthFacilityService healthFacilityService;
 
-    @DatabaseField
-    int requisition;
-
-    @DatabaseField(columnName = "ptvProgramId", foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
-    PTVProgram ptvProgram;
-
-    @DatabaseField(columnName = "productId", foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
-    Product product;
-
-    @ForeignCollectionField(eager = true)
-    private Collection<DrugDispensation> drugDispensations;
+    @DatabaseField(columnName = "ptvProgramStockInformationId", foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
+    PTVProgramStockInformation ptvProgramStockInformation;
 
 }
