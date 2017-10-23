@@ -41,4 +41,22 @@ public class HealthFacilityService extends BaseModel implements Serializable {
 
     @ForeignCollectionField(eager = true)
     private Collection<ServiceDispensation> serviceDispensations;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HealthFacilityService)) return false;
+
+        HealthFacilityService that = (HealthFacilityService) o;
+
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
 }
