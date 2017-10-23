@@ -22,7 +22,7 @@ public class CreatePTVProgramSchema extends Migration {
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`type` VARCHAR, "
                 + "`total` INTEGER, "
-                + "`ptvProgramId` INTEGER, "
+                + "`ptvProgramId` INTEGER NOT NULL, "
                 + "`createdAt` VARCHAR NOT NULL, "
                 + "`updatedAt` VARCHAR NOT NULL, "
                 + "FOREIGN KEY (ptvProgramId) REFERENCES ptv_program(id));");

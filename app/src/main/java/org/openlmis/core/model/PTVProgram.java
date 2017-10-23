@@ -39,13 +39,13 @@ import lombok.Setter;
 public class PTVProgram extends BaseModel implements Serializable {
 
     @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
-    private Date startDatePeriod;
+    private Date startPeriod;
 
     @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
-    private Date endDatePeriod;
+    private Date endPeriod;
 
     @DatabaseField
-    String madeBy;
+    String createdBy;
 
     @DatabaseField
     String verifiedBy;
