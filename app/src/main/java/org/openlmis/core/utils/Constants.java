@@ -64,9 +64,17 @@ public final class Constants {
 
     public static final int REQUEST_ADD_DRUGS_TO_VIA = 500;
     public static final int REQUEST_NEW_MOVEMENT_PAGE = 600;
+
     // Broadcast Intent Filter
     public static final String INTENT_FILTER_START_SYNC_DATA = LMISApp.getContext().getPackageName() + ".start.sync_data";
     public static final String INTENT_FILTER_FINISH_SYNC_DATA = LMISApp.getContext().getPackageName() + ".finish.sync_data";
+
+    //PTV
+    public static final String PTV_PRODUCT_1_CODE = "08S40";
+    public static final String PTV_PRODUCT_2_CODE = "08S15";
+    public static final String PTV_PRODUCT_3_CODE = "08S22";
+    public static final String PTV_PRODUCT_4_CODE = "08S17";
+    public static final String PTV_PRODUCT_5_CODE = "08S23";
 
     private Constants() {
 

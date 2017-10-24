@@ -33,6 +33,7 @@ import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -62,7 +63,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     private List<StockMovementItem> stockMovementItemsWrapper;
 
     @ForeignCollectionField()
-    private ForeignCollection<StockMovementItem> foreignStockMovementItems;
+    private Collection<StockMovementItem> foreignStockMovementItems;
 
     @Expose
     @DatabaseField

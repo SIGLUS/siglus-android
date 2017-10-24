@@ -121,7 +121,7 @@ public class StockRepository {
         }
     }
 
-    public void   updateProductOfStockCard(Product product) {
+    public void updateProductOfStockCard(Product product) {
         try {
             productRepository.updateProduct(product);
         } catch (LMISException e) {
@@ -314,5 +314,26 @@ public class StockRepository {
 
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotItems);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockMovementItems);
+    }
+
+    public StockCard queryStockCardByProductCode(String productCode) throws LMISException {
+        String rawSql = "SELECT * FROM stock_cards WHERE product_id = ("
+                + " SELECT id FROM products WHERE code = '" + productCode + "');";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+
+        StockCard stockCard = null;
+
+        if (cursor.moveToFirst()) {
+            stockCard = new StockCard();
+            stockCard.setProduct(productRepository.getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
+            stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+            stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
+            stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+            stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return stockCard;
     }
 }
