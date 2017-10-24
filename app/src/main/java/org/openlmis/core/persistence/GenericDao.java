@@ -129,7 +129,7 @@ public class GenericDao<Model> {
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
-                    throw  new LMISException("Cannot create patient dispensation for current PTV program");
+                    throw  new LMISException("Cannot create model");
                 }
             }
         });

@@ -27,6 +27,9 @@ public class PTVProgramRepository {
     @Inject
     PatientDispensationRepository patientDispensationRepository;
 
+    @Inject
+    PTVProgramStockInformationRepository ptvProgramStockInformationRepository;
+
     private GenericDao<PTVProgram> genericDao;
 
 
@@ -41,9 +44,10 @@ public class PTVProgramRepository {
         return TransactionManager.callInTransaction(connectionSource, new Callable<PTVProgram>() {
             @Override
             public PTVProgram call() throws LMISException {
-                PTVProgram ptvProgramSaved = genericDao.create(ptvProgram);
+                genericDao.create(ptvProgram);
                 patientDispensationRepository.save(new ArrayList<>(ptvProgram.getPatientDispensations()));
-                return ptvProgramSaved;
+                ptvProgramStockInformationRepository.save(new ArrayList<>(ptvProgram.getPtvProgramStocksInformation()));
+                return ptvProgram;
             }
         });
     }

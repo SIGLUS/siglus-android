@@ -34,25 +34,6 @@ public class PatientDispensationRepositoryTest {
     }
 
     @Test
-    public void shouldSavePatientDispensationForAnExistentPTVProgram() throws LMISException {
-        PatientDispensation patientDispensation = createPatientDispensationObject();
-        ptvProgram.setId(1L);
-        patientDispensation.setPtvProgram(ptvProgram);
-
-        PatientDispensation patientDispensationSaved = patientDispensationRepository.save(patientDispensation);
-
-        assertThat(patientDispensationSaved, is(patientDispensation));
-    }
-
-    @Test(expected = LMISException.class)
-    public void shouldNotSavePatientDispensationWhenPTVProgramDoesNotExist() throws Exception {
-        PatientDispensation patientDispensation = createPatientDispensationObject();
-        patientDispensation.setPtvProgram(ptvProgram);
-
-        patientDispensationRepository.save(patientDispensation);
-    }
-
-    @Test
     public void shouldReturnTrueWhenPatientDispensationsWereSaved() throws LMISException {
         ptvProgram.setId(1L);
         PatientDispensation patientDispensation = createPatientDispensationObject();

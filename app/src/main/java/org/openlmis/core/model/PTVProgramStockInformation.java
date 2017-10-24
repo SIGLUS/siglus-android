@@ -23,7 +23,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 import lombok.Getter;
@@ -32,7 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @DatabaseTable(tableName = "ptv_program_stock_information")
-public class PTVProgramStockInformation extends BaseModel implements Serializable {
+public class PTVProgramStockInformation extends BaseModel {
 
     @DatabaseField
     int initialStock;
@@ -46,13 +45,39 @@ public class PTVProgramStockInformation extends BaseModel implements Serializabl
     @DatabaseField
     int requisition;
 
-    @DatabaseField(columnName = "ptvProgramId", foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
+
+    @DatabaseField(columnName = "ptvProgramId", foreign = true)
     PTVProgram ptvProgram;
 
-    @DatabaseField(columnName = "productId", foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
+    @DatabaseField(columnName = "productId", foreign = true)
     Product product;
 
     @ForeignCollectionField(eager = true)
     private Collection<ServiceDispensation> serviceDispensations;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PTVProgramStockInformation)) return false;
+
+        PTVProgramStockInformation that = (PTVProgramStockInformation) o;
+
+        if (initialStock != that.initialStock) return false;
+        if (entries != that.entries) return false;
+        if (lossesAndAdjustments != that.lossesAndAdjustments) return false;
+        if (requisition != that.requisition) return false;
+        return ptvProgram.equals(that.ptvProgram) && product.equals(that.product);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + initialStock;
+        result = 31 * result + entries;
+        result = 31 * result + lossesAndAdjustments;
+        result = 31 * result + requisition;
+        result = 31 * result + ptvProgram.hashCode();
+        result = 31 * result + product.hashCode();
+        return result;
+    }
 }

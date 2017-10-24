@@ -8,7 +8,9 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
+import org.openlmis.core.model.PTVProgramStockInformation;
 import org.openlmis.core.model.PatientDispensation;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.PTVUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -40,10 +42,17 @@ public class PTVProgramRepositoryTest {
     @Test
     public void shouldSaveProgramRepository() throws LMISException, SQLException {
         PTVProgram ptvProgramExpected = PTVUtil.createDummyPTVProgram();
+        Product product = Product.dummyProduct();
+        product.setId(10L);
         PatientDispensation patientDispensation = new PatientDispensation();
         patientDispensation.setPtvProgram(ptvProgramExpected);
         List<PatientDispensation> patientDispensations = newArrayList(patientDispensation);
         ptvProgramExpected.setPatientDispensations(patientDispensations);
+        PTVProgramStockInformation ptvProgramStockInformation = new PTVProgramStockInformation();
+        ptvProgramStockInformation.setPtvProgram(ptvProgramExpected);
+        ptvProgramStockInformation.setProduct(product);
+        List<PTVProgramStockInformation> ptvProgramStocksInformation = newArrayList(ptvProgramStockInformation);
+        ptvProgramExpected.setPtvProgramStocksInformation(ptvProgramStocksInformation);
 
         PTVProgram ptvProgramSaved = ptvProgramRepository.save(ptvProgramExpected);
 
@@ -56,6 +65,24 @@ public class PTVProgramRepositoryTest {
         PatientDispensation patientDispensation = new PatientDispensation();
         List<PatientDispensation> patientDispensations = newArrayList(patientDispensation);
         ptvProgramExpected.setPatientDispensations(patientDispensations);
+        exceptionGrabber.expect(SQLException.class);
+
+        ptvProgramRepository.save(ptvProgramExpected);
+        List<PTVProgram> ptvPrograms = ptvProgramRepository.getAll();
+
+        assertThat(ptvPrograms.isEmpty(), is(true));
+    }
+
+    @Test
+    public void shouldDoRollbackWhenCurrentTransactionFailsTryingToSavePTVProgramStocksInformation() throws Exception {
+        PTVProgram ptvProgramExpected = PTVUtil.createDummyPTVProgram();
+        PatientDispensation patientDispensation = new PatientDispensation();
+        patientDispensation.setPtvProgram(ptvProgramExpected);
+        List<PatientDispensation> patientDispensations = newArrayList(patientDispensation);
+        ptvProgramExpected.setPatientDispensations(patientDispensations);
+        PTVProgramStockInformation ptvProgramStockInformation = new PTVProgramStockInformation();
+        List<PTVProgramStockInformation> ptvProgramStocksInformation = newArrayList(ptvProgramStockInformation);
+        ptvProgramExpected.setPtvProgramStocksInformation(ptvProgramStocksInformation);
         exceptionGrabber.expect(SQLException.class);
 
         ptvProgramRepository.save(ptvProgramExpected);

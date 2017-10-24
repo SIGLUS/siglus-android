@@ -25,13 +25,6 @@ public class PatientDispensationRepository {
         patientDispensationGenericDao = new GenericDao<>(PatientDispensation.class, context);
     }
 
-    public PatientDispensation save(PatientDispensation patientDispensation) throws LMISException {
-        if (patientDispensation.getPtvProgram().getId() == 0) {
-            throw new LMISException("The PTV Program does not exist!");
-        }
-        return patientDispensationGenericDao.createOrUpdate(patientDispensation);
-    }
-
     public boolean save(List<PatientDispensation> patientDispensations) throws LMISException {
         return patientDispensationGenericDao.create(patientDispensations);
     }
