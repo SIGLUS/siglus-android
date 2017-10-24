@@ -38,10 +38,10 @@ public class ServiceDispensation extends BaseModel implements Serializable {
     @DatabaseField
     String signature;
 
-    @DatabaseField(columnName = "serviceId", foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
+    @DatabaseField(columnName = "serviceId", foreign = true)
     HealthFacilityService healthFacilityService;
 
-    @DatabaseField(columnName = "ptvProgramStockInformationId", foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
+    @DatabaseField(columnName = "ptvProgramStockInformationId", foreign = true)
     PTVProgramStockInformation ptvProgramStockInformation;
 
 }

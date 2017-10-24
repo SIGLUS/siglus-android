@@ -8,6 +8,7 @@ import com.j256.ormlite.support.ConnectionSource;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
+import org.openlmis.core.model.PTVProgramStockInformation;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -30,6 +31,9 @@ public class PTVProgramRepository {
     @Inject
     PTVProgramStockInformationRepository ptvProgramStockInformationRepository;
 
+    @Inject
+    ServiceDispensationRepository serviceDispensationRepository;
+
     private GenericDao<PTVProgram> genericDao;
 
 
@@ -47,6 +51,9 @@ public class PTVProgramRepository {
                 genericDao.create(ptvProgram);
                 patientDispensationRepository.save(new ArrayList<>(ptvProgram.getPatientDispensations()));
                 ptvProgramStockInformationRepository.save(new ArrayList<>(ptvProgram.getPtvProgramStocksInformation()));
+                for (PTVProgramStockInformation ptvProgramStockInformation: ptvProgram.getPtvProgramStocksInformation()) {
+                    serviceDispensationRepository.save(new ArrayList<>(ptvProgramStockInformation.getServiceDispensations()));
+                }
                 return ptvProgram;
             }
         });

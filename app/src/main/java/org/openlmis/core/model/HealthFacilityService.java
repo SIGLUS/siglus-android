@@ -23,7 +23,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 import lombok.Getter;
@@ -32,7 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @DatabaseTable(tableName = "health_facility_service")
-public class HealthFacilityService extends BaseModel implements Serializable {
+public class HealthFacilityService extends BaseModel {
     @DatabaseField
     String name;
 

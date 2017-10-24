@@ -1,5 +1,7 @@
 package org.openlmis.core.model.repository;
 
+import android.support.annotation.NonNull;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -7,10 +9,12 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.HealthFacilityService;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ServiceDispensation;
 import org.openlmis.core.utils.PTVUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -33,41 +37,36 @@ public class PTVProgramRepositoryTest {
 
     PatientDispensationRepository patientDispensationRepository;
 
+    private Product product;
+    private PTVProgram ptvProgram;
+
     @Before
     public void setUp() throws Exception {
         ptvProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PTVProgramRepository.class);
         patientDispensationRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PatientDispensationRepository.class);
+        product = Product.dummyProduct();
+        ptvProgram = PTVUtil.createDummyPTVProgram();
     }
 
     @Test
     public void shouldSaveProgramRepository() throws LMISException, SQLException {
-        PTVProgram ptvProgramExpected = PTVUtil.createDummyPTVProgram();
-        Product product = Product.dummyProduct();
-        product.setId(10L);
-        PatientDispensation patientDispensation = new PatientDispensation();
-        patientDispensation.setPtvProgram(ptvProgramExpected);
-        List<PatientDispensation> patientDispensations = newArrayList(patientDispensation);
-        ptvProgramExpected.setPatientDispensations(patientDispensations);
-        PTVProgramStockInformation ptvProgramStockInformation = new PTVProgramStockInformation();
-        ptvProgramStockInformation.setPtvProgram(ptvProgramExpected);
-        ptvProgramStockInformation.setProduct(product);
-        List<PTVProgramStockInformation> ptvProgramStocksInformation = newArrayList(ptvProgramStockInformation);
-        ptvProgramExpected.setPtvProgramStocksInformation(ptvProgramStocksInformation);
+        PTVProgram expectedPtvProgram = ptvProgram;
+        setPatientDispensationsToPTVProgram(expectedPtvProgram);
+        PTVProgramStockInformation ptvProgramStockInformation = createValidPTVProgramStockInformation(expectedPtvProgram);
+        setHealthFacilityAndPtvProgramStockInformationToServiceDispensation(ptvProgramStockInformation);
+        expectedPtvProgram.setPtvProgramStocksInformation(newArrayList(ptvProgramStockInformation));
 
-        PTVProgram ptvProgramSaved = ptvProgramRepository.save(ptvProgramExpected);
+        PTVProgram ptvProgramSaved = ptvProgramRepository.save(expectedPtvProgram);
 
-        assertThat(ptvProgramSaved, is(ptvProgramExpected));
+        assertThat(ptvProgramSaved, is(expectedPtvProgram));
     }
 
     @Test
-    public void shouldDoRollbackWhenCurrentTransactionFails() throws LMISException, SQLException {
-        PTVProgram ptvProgramExpected = PTVUtil.createDummyPTVProgram();
-        PatientDispensation patientDispensation = new PatientDispensation();
-        List<PatientDispensation> patientDispensations = newArrayList(patientDispensation);
-        ptvProgramExpected.setPatientDispensations(patientDispensations);
+    public void shouldDoRollbackWhenCurrentTransactionFailsTryingToSavePatientDispensations() throws LMISException, SQLException {
+        ptvProgram.setPatientDispensations(newArrayList(new PatientDispensation()));
         exceptionGrabber.expect(SQLException.class);
 
-        ptvProgramRepository.save(ptvProgramExpected);
+        ptvProgramRepository.save(ptvProgram);
         List<PTVProgram> ptvPrograms = ptvProgramRepository.getAll();
 
         assertThat(ptvPrograms.isEmpty(), is(true));
@@ -75,19 +74,49 @@ public class PTVProgramRepositoryTest {
 
     @Test
     public void shouldDoRollbackWhenCurrentTransactionFailsTryingToSavePTVProgramStocksInformation() throws Exception {
-        PTVProgram ptvProgramExpected = PTVUtil.createDummyPTVProgram();
-        PatientDispensation patientDispensation = new PatientDispensation();
-        patientDispensation.setPtvProgram(ptvProgramExpected);
-        List<PatientDispensation> patientDispensations = newArrayList(patientDispensation);
-        ptvProgramExpected.setPatientDispensations(patientDispensations);
-        PTVProgramStockInformation ptvProgramStockInformation = new PTVProgramStockInformation();
-        List<PTVProgramStockInformation> ptvProgramStocksInformation = newArrayList(ptvProgramStockInformation);
-        ptvProgramExpected.setPtvProgramStocksInformation(ptvProgramStocksInformation);
+        setPatientDispensationsToPTVProgram(ptvProgram);
+        ptvProgram.setPtvProgramStocksInformation(newArrayList(new PTVProgramStockInformation()));
         exceptionGrabber.expect(SQLException.class);
 
-        ptvProgramRepository.save(ptvProgramExpected);
+        ptvProgramRepository.save(ptvProgram);
         List<PTVProgram> ptvPrograms = ptvProgramRepository.getAll();
 
         assertThat(ptvPrograms.isEmpty(), is(true));
+    }
+
+    @Test
+    public void shouldDoRollbackWhenCurrentTransactionFailsTryingToSaveServiceDispensations() throws Exception {
+        setPatientDispensationsToPTVProgram(ptvProgram);
+        PTVProgramStockInformation ptvProgramStockInformation = createValidPTVProgramStockInformation(ptvProgram);
+        ptvProgramStockInformation.setServiceDispensations(newArrayList(new ServiceDispensation()));
+        ptvProgram.setPtvProgramStocksInformation(newArrayList(ptvProgramStockInformation));
+        exceptionGrabber.expect(SQLException.class);
+
+        ptvProgramRepository.save(ptvProgram);
+        List<PTVProgram> ptvPrograms = ptvProgramRepository.getAll();
+
+        assertThat(ptvPrograms.isEmpty(), is(true));
+    }
+
+    private void setPatientDispensationsToPTVProgram(PTVProgram ptvProgram) {
+        PatientDispensation patientDispensation = new PatientDispensation();
+        patientDispensation.setPtvProgram(ptvProgram);
+        List<PatientDispensation> patientDispensations = newArrayList(patientDispensation);
+        ptvProgram.setPatientDispensations(patientDispensations);
+    }
+
+    @NonNull
+    private PTVProgramStockInformation createValidPTVProgramStockInformation(PTVProgram ptvProgram) {
+        PTVProgramStockInformation ptvProgramStockInformation = new PTVProgramStockInformation();
+        ptvProgramStockInformation.setPtvProgram(ptvProgram);
+        ptvProgramStockInformation.setProduct(product);
+        return ptvProgramStockInformation;
+    }
+
+    private void setHealthFacilityAndPtvProgramStockInformationToServiceDispensation(PTVProgramStockInformation ptvProgramStockInformation) {
+        ServiceDispensation serviceDispensation = new ServiceDispensation();
+        serviceDispensation.setHealthFacilityService(new HealthFacilityService());
+        serviceDispensation.setPtvProgramStockInformation(ptvProgramStockInformation);
+        ptvProgramStockInformation.setServiceDispensations(newArrayList(serviceDispensation));
     }
 }
