@@ -15,6 +15,7 @@ set_emulator_name
 OPEN_LMIS_DB_CONTAINER_NAME="open-lmis-db"
 OPEN_LMIS_TEST_RUNNER_CONTAINER_NAME="test-runner"
 EMULATOR_NAME=ENV["EMULATOR_NAME"]
+PORTAL_URL = ENV['PORTAL_URL'] ?  ENV['PORTAL_URL'] : 'localhost'
 INITIAL_ATTEMPT= 0
 ATTEMPTS = 10
 
@@ -26,7 +27,7 @@ starting_open_lmis_containers
 
 puts "STEP 2 ===> Checking Open LMIS Services \n".yellow
 
-is_portal_started(INITIAL_ATTEMPT, ATTEMPTS)
+is_portal_started(PORTAL_URL,INITIAL_ATTEMPT, ATTEMPTS)
 
 puts "STEP 3 ===> Setting up data for test \n".yellow
 

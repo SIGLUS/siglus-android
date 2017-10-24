@@ -20,8 +20,8 @@ def check_portal(cmd)
   `#{cmd}`.split("\n").first
 end
 
-def is_portal_started(initial_attempt, attempts)
-  cmd = "curl -o - -s -w \"%{http_code}\n\" \"http://localhost:8081\""
+def is_portal_started(portal_url, initial_attempt, attempts)
+  cmd = "curl -o - -s -w \"%{http_code}\n\" \"http://#{portal_url}:8081\""
   status = check_portal(cmd)
 
   if status == "302"

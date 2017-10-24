@@ -74,6 +74,9 @@ android {
         prd {
             applicationId 'org.openlmis.core'
         }
+        ci {
+            applicationId 'org.openlmis.core.ci'
+        }
     }
 
     //the following code will change release apk file names to: {applicationId}-{versionCode}-release.apk

@@ -366,6 +366,7 @@
 
     <!--App Name In Different Environment-->
     <string name="app_name_in_local">SIGLUS LOCAL</string>
+    <string name="app_name_in_ci">SIGLUS CI</string>
     <string name="app_name_in_prodsim">SIGLUS PRODSIM</string>
     <string name="app_name_in_prd">SIGLUS</string>
     <string name="app_name_in_qa">SIGLUS QA</string>
