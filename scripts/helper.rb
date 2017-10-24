@@ -64,8 +64,8 @@ def is_emulator_connected(emulator_name, test_runner_container_name)
   return abort("The emulator is not connected to the container".red)
 end
 
-def run_functional_tests(test_runner_container_name)
-  system "docker exec -it #{test_runner_container_name} bash -c 'cd functionalTests && calabash-android run ../app/build/outputs/apk/app-local-debug.apk --tag @dev'"
+def run_functional_tests(test_runner_container_name, apk_to_use)
+  system "docker exec -it #{test_runner_container_name} bash -c 'cd functionalTests && calabash-android run ../app/build/outputs/apk/#{apk_to_use} --tag @dev'"
 end
 
 def rename_local_properties

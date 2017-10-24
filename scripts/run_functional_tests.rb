@@ -16,6 +16,7 @@ OPEN_LMIS_DB_CONTAINER_NAME="open-lmis-db"
 OPEN_LMIS_TEST_RUNNER_CONTAINER_NAME="test-runner"
 EMULATOR_NAME=ENV["EMULATOR_NAME"]
 PORTAL_URL = ENV['PORTAL_URL'] ?  ENV['PORTAL_URL'] : 'localhost'
+APK_TO_USE = ENV['APK_TO_USE'] ? ENV['APK_TO_USE'] : 'app-local-debug.apk'
 INITIAL_ATTEMPT= 0
 ATTEMPTS = 10
 
@@ -43,5 +44,5 @@ is_emulator_connected(EMULATOR_NAME, OPEN_LMIS_TEST_RUNNER_CONTAINER_NAME)
 puts "STEP 5 ===> Running functional tests\n".yellow
 
 rename_local_properties
-run_functional_tests(OPEN_LMIS_TEST_RUNNER_CONTAINER_NAME)
+run_functional_tests(OPEN_LMIS_TEST_RUNNER_CONTAINER_NAME, APK_TO_USE)
 rollback_local_properties
