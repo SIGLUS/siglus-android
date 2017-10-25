@@ -40,17 +40,17 @@ end
 
 def setup_data(lmis_moz_dir, open_lmis_db_container_name)
   puts "Copying all scripts into /data/setup/dev".blue
-  system "docker exec -it #{open_lmis_db_container_name} mkdir -p /data/setup"
+  system "docker exec -t #{open_lmis_db_container_name} mkdir -p /data/setup"
   system "docker cp #{lmis_moz_dir}/functionalTests/data/setup/dev/ #{open_lmis_db_container_name}:/data/setup"
 end
 
 def apply_data(open_lmis_db_container_name)
   puts "Applying data to #{open_lmis_db_container_name}".blue
-  `docker exec -it #{open_lmis_db_container_name} psql -U postgres --file data/setup/dev/seed.sql -w open_lmis -h localhost`
+  `docker exec -t #{open_lmis_db_container_name} psql -U postgres --file data/setup/dev/seed.sql -w open_lmis -h localhost`
 end
 
 def connect_to_emulator(emulator_name, test_runner_container_name)
-  system "docker exec -it #{test_runner_container_name} adb connect #{emulator_name}"
+  system "docker exec -t #{test_runner_container_name} adb connect #{emulator_name}"
 end
 
 def is_emulator_connected(emulator_name, test_runner_container_name)
@@ -65,7 +65,7 @@ def is_emulator_connected(emulator_name, test_runner_container_name)
 end
 
 def run_functional_tests(test_runner_container_name, apk_to_use)
-  system "docker exec -it #{test_runner_container_name} bash -c 'cd functionalTests && calabash-android run ../app/build/outputs/apk/#{apk_to_use} --tag @dev'"
+  system "docker exec -t #{test_runner_container_name} bash -c 'cd functionalTests && calabash-android run ../app/build/outputs/apk/#{apk_to_use} --tag @dev'"
 end
 
 def rename_local_properties
