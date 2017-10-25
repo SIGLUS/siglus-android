@@ -53,23 +53,11 @@ android {
         qa {
             applicationId 'org.openlmis.core.qa'
         }
-        prodsim {
-            applicationId 'org.openlmis.core.prodsim'
-        }
-        showcase {
-            applicationId 'org.openlmis.core.showcase'
+        uat {
+            applicationId 'org.openlmis.core.uat'
         }
         training {
             applicationId 'org.openlmis.core.training'
-        }
-        staging {
-            applicationId 'org.openlmis.core.staging'
-        }
-        regression {
-            applicationId 'org.openlmis.core.regression'
-        }
-        upgrade {
-            applicationId 'org.openlmis.core.upgrade'
         }
         prd {
             applicationId 'org.openlmis.core'
