@@ -366,14 +366,11 @@
 
     <!--App Name In Different Environment-->
     <string name="app_name_in_local">SIGLUS LOCAL</string>
-    <string name="app_name_in_prodsim">SIGLUS PRODSIM</string>
+    <string name="app_name_in_ci">SIGLUS CI</string>
+    <string name="app_name_in_uat">SIGLUS UAT</string>
     <string name="app_name_in_prd">SIGLUS</string>
     <string name="app_name_in_qa">SIGLUS QA</string>
-    <string name="app_name_in_regression">SIGLUS REGRESSION</string>
-    <string name="app_name_in_showcase">SIGLUS TREINO I</string>
     <string name="app_name_in_training">SIGLUS TREINO II</string>
-    <string name="app_name_in_demo">SIGLUS DEMO</string>
-    <string name="app_name_in_upgrade">SIGLUS UPGRADE</string>
     <!--Incomplete Requisition Banner-->
     <string name="via_and_mmia_requisition_alert">Your MMIA and VIA requisitions for <![CDATA[<b>%1$s</b>]]> have not been completed</string>
     <string name="via_requisition_alert">Your VIA requisition for <![CDATA[<b>%1$s</b>]]> has not been completed</string>
@@ -478,6 +475,9 @@
     <string name="title_add_non_basic_products">Add products to be issued</string>
     <string name="title_non_basic_products">Non basic products</string>
     <string name="add_products_loading_message">Downloading Non Basic Products</string>
+    <string name="create_ptv_data_report">CREATE PTV DATA REPORT</string>
+    <string name="title_patient_ptv_report_form">PTV DATA REPORT</string>
+    <string name="title_patient_data_report_form">PATIENT DATA REPORT</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>

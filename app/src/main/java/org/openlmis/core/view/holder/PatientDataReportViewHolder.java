@@ -1,6 +1,8 @@
 package org.openlmis.core.view.holder;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
@@ -8,6 +10,7 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.activity.PTVDataReportFormActivity;
 import org.openlmis.core.view.activity.PatientDataReportFormActivity;
 import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -22,8 +25,11 @@ public class PatientDataReportViewHolder extends BaseViewHolder {
     @InjectView(R.id.tv_report_status)
     TextView tvReportStatus;
 
-    @InjectView(R.id.btn_report_entry)
-    TextView btnReportEntry;
+    @InjectView(R.id.btn_create_patient_data_report)
+    TextView btnCreatePatientDataReport;
+
+    @InjectView(R.id.btn_create_ptv_data_report)
+    TextView btnCreatePtvDataReport;
 
     private PatientDataReportViewModel viewModel;
 
@@ -35,9 +41,24 @@ public class PatientDataReportViewHolder extends BaseViewHolder {
         viewModel = patientDataReportViewModel;
         tvReportStatus.setText(Html.fromHtml(context.getString(R.string.msg_patient_data_report_missing)));
         tvPeriod.setText(patientDataReportViewModel.getPeriod().toString());
-        btnReportEntry.setOnClickListener(goToPatientDataReportFormActivity());
+        btnCreatePatientDataReport.setOnClickListener(goToPatientDataReportFormActivity());
+        btnCreatePtvDataReport.setOnClickListener(goToPTVDataFormActivity());
         setGrayHeader();
-        setBlueButton();
+        setBlueButton(btnCreatePatientDataReport);
+        setBlueButton(btnCreatePtvDataReport);
+    }
+
+    @NonNull
+    private View.OnClickListener goToPTVDataFormActivity() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((BaseActivity) context).loading();
+                Intent intent = new Intent(context, PTVDataReportFormActivity.class);
+                context.startActivity(intent);
+                ((BaseActivity) context).loaded();
+            }
+        };
     }
 
     public SingleClickButtonListener goToPatientDataReportFormActivity() {
@@ -45,11 +66,7 @@ public class PatientDataReportViewHolder extends BaseViewHolder {
             @Override
             public void onSingleClick(View v) {
                 ((BaseActivity) context).loading();
-                if (viewModel.getPatientDataReport() == null) {
-                    ((Activity) context).startActivityForResult(PatientDataReportFormActivity.getIntentToMe(context, PatientDataReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
-                } else {
-                    ((Activity) context).startActivityForResult(PatientDataReportFormActivity.getIntentToMe(context, PatientDataReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
-                }
+                ((Activity) context).startActivityForResult(PatientDataReportFormActivity.getIntentToMe(context, PatientDataReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
                 ((BaseActivity) context).loaded();
             }
         };
@@ -61,8 +78,8 @@ public class PatientDataReportViewHolder extends BaseViewHolder {
         tvPeriod.setTextColor(context.getResources().getColor(R.color.color_white));
     }
 
-    public void setBlueButton() {
-        btnReportEntry.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
-        btnReportEntry.setTextColor(context.getResources().getColor(R.color.color_white));
+    public void setBlueButton(TextView component) {
+        component.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
+        component.setTextColor(context.getResources().getColor(R.color.color_white));
     }
 }

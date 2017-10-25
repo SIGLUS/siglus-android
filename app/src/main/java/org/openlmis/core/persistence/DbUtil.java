@@ -44,6 +44,11 @@ public class DbUtil {
     }
 
     public static <T> Dao<T, String> initialiseDao(SQLiteOpenHelper openHelper, Class<T> domainClass) throws SQLException {
+        ConnectionSource connectionSource = getConnectionSource(openHelper);
+        return createDao(connectionSource, domainClass);
+    }
+
+    public static ConnectionSource getConnectionSource(SQLiteOpenHelper openHelper) {
         ConnectionSource connectionSource;
         if (openHelper instanceof LmisSqliteOpenHelper) {
             LmisSqliteOpenHelper helper = (LmisSqliteOpenHelper) openHelper;
@@ -51,7 +56,7 @@ public class DbUtil {
         } else {
             connectionSource = new AndroidConnectionSource(openHelper);
         }
-        return createDao(connectionSource, domainClass);
+        return connectionSource;
     }
 
     public <DomainType, ReturnType> ReturnType withDao(

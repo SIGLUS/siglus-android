@@ -1,5 +1,5 @@
 def login_page
-  page(LoginPage).await(timeout: 30)
+  page(LoginPage).await(timeout: 120)
 end
 
 Given(/^I log in for the first time$/) do

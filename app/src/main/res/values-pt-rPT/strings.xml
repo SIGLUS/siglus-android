@@ -428,6 +428,9 @@
     <string name="title_add_non_basic_products">Adicionar produtos a serem emitidos</string>
     <string name="title_non_basic_products">Produtos não básicos</string>
     <string name="add_products_loading_message">Descarregando Produtos não Básicos</string>
+    <string name="create_ptv_data_report">GERAR RELATÓRIO PTV DATA</string>
+    <string name="title_patient_ptv_report_form">RELATÓRIO DE DADOS PTV</string>
+    <string name="title_patient_data_report_form">RELATÓRIO DE DADOS DO PACIENTE</string>
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
         <item>Últimos 14 dias</item>

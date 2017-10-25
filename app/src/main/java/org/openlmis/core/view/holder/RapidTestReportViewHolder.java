@@ -23,7 +23,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
     @InjectView(R.id.tv_report_status)
     TextView tvReportStatus;
 
-    @InjectView(R.id.btn_report_entry)
+    @InjectView(R.id.btn_create_patient_data_report)
     TextView btnReportEntry;
     private RapidTestReportViewModel viewModel;
 

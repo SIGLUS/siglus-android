@@ -345,4 +345,16 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertEquals(MovementReasonManager.MovementType.POSITIVE_ADJUST, stockCardQueried.getStockMovementItemsWrapper().get(0).getMovementType());
         assertEquals(1, stockCardQueried.getStockMovementItemsWrapper().get(0).getLotMovementItemListWrapper().size());
     }
+
+    @Test
+    public void shouldReturnStockCardProductByCode() throws LMISException {
+        StockCard expectedStockCard = new StockCard();
+        expectedStockCard.setProduct(product);
+        expectedStockCard.setStockOnHand(100);
+
+        stockRepository.saveStockCardAndBatchUpdateMovements(expectedStockCard);
+        StockCard actualStockCard = stockRepository.queryStockCardByProductCode(product.getCode());
+
+        assertThat(actualStockCard, is(expectedStockCard));
+    }
 }

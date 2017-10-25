@@ -6,8 +6,8 @@ def set_emulator_name
   end
 end
 
-def starting_open_lmis_containers
-  system "cd docker && docker-compose up -d"
+def starting_open_lmis_containers(docker_compose_file_name)
+  system "cd docker && docker-compose -f #{docker_compose_file_name} up -d"
 end
 
 def should_stop_execution(initial_attempt, attempts)
@@ -20,8 +20,8 @@ def check_portal(cmd)
   `#{cmd}`.split("\n").first
 end
 
-def is_portal_started(initial_attempt, attempts)
-  cmd = "curl -o - -s -w \"%{http_code}\n\" \"http://localhost:8081\""
+def is_portal_started(portal_url, initial_attempt, attempts)
+  cmd = "curl -o - -s -w \"%{http_code}\n\" \"http://#{portal_url}:8081\""
   status = check_portal(cmd)
 
   if status == "302"
@@ -64,8 +64,8 @@ def is_emulator_connected(emulator_name, test_runner_container_name)
   return abort("The emulator is not connected to the container".red)
 end
 
-def run_functional_tests(test_runner_container_name)
-  system "docker exec -it #{test_runner_container_name} bash -c 'cd functionalTests && calabash-android run ../app/build/outputs/apk/app-local-debug.apk --tag @dev'"
+def run_functional_tests(test_runner_container_name, apk_to_use)
+  system "docker exec -it #{test_runner_container_name} bash -c 'cd functionalTests && calabash-android run ../app/build/outputs/apk/#{apk_to_use} --tag @dev'"
 end
 
 def rename_local_properties
