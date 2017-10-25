@@ -6,8 +6,8 @@ def set_emulator_name
   end
 end
 
-def starting_open_lmis_containers
-  system "cd docker && docker-compose up -d"
+def starting_open_lmis_containers(docker_compose_file_name)
+  system "cd docker && docker-compose -f #{docker_compose_file_name} up -d"
 end
 
 def should_stop_execution(initial_attempt, attempts)
