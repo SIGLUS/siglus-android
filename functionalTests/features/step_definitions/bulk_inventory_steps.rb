@@ -1,5 +1,5 @@
 def inventory_page
-  @inventory_page ||= page(BulkInventoryPage).await(timeout: 30)
+  @inventory_page ||= page(BulkInventoryPage).await(timeout: 120)
 end
 
 Given(/^I see the initial inventory screen$/) do
