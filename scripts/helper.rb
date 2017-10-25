@@ -10,9 +10,9 @@ def starting_open_lmis_containers(docker_compose_file_name)
   system "cd docker && docker-compose -f #{docker_compose_file_name} up -d"
 end
 
-def should_stop_execution(initial_attempt, attempts)
+def should_stop_execution(initial_attempt, attempts, service)
   if initial_attempt == attempts
-    abort("The Portal didn't START on time".red)
+    abort("#{service} didn't START on time".red)
   end
 end
 
@@ -33,7 +33,7 @@ def is_portal_started(portal_url, initial_attempt, attempts)
     initial_attempt+=1
     puts "OpenLMIS Portal is not UP yet, waiting for it - attempt(#{initial_attempt} of #{attempts})..."
     status = check_portal(cmd)
-    should_stop_execution(initial_attempt, attempts)
+    should_stop_execution(initial_attempt, attempts, "Portal")
     sleep 10
   end
 end

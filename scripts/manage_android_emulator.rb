@@ -1,27 +1,33 @@
-require 'json'
 require_relative 'colors'
 require_relative 'helper'
+require 'json'
 
 INSTANCE_ID = ENV['INSTANCE_ID'] ? ENV['INSTANCE_ID'] : 'i-09c821996867a8cfe'
-INITIAL_ATTEMPS = 1
-MAX_ATTEMPS = 5
+INITIAL_ATTEMPT = 1
+MAX_ATTEMPTS = 60
 START_COMMAND = 'start-instances'
 START_STATUS_MESSAGE = 'ok'
-STOP_STATUS_MESSAGE = 'stopped'
-START_MESSAGE = 'Emulator instance Started'.green
-STOP_MESSAGE = 'Emulator instance Stopped'.green
 STOP_COMMAND = 'stop-instances'
+STOP_STATUS_MESSAGE = 'stopped'
+SERVICE = 'Android Emulator'
+START_MESSAGE = "#{SERVICE} instance STARTED".green
+STOP_MESSAGE = "#{SERVICE} instance STOPPED".green
+INSTANCE_READY_TO_LAUNCH = false
 
 def manage_emulator_instance(command, status, message)
-  puts "manage emulator".yellow
-  execute_command(command, INSTANCE_ID)
-  instance_status = ''
+  response = execute_command(command, INSTANCE_ID)
+  while response == INSTANCE_READY_TO_LAUNCH
+    puts "Retrying start command".yellow
+    response = execute_command(command, INSTANCE_ID)
+    sleep 10
+  end
+  instance_status = instance_status(INSTANCE_ID)
   initial_attempt = INITIAL_ATTEMPT
-  while instance_status != "#{status}"
-   initial_attempt +=1
+  while not instance_status.eql? status
    instance_status = instance_status(INSTANCE_ID)
-   should_stop_execution(initial_attempt, MAX_ATTEMPS)
-   sleep 60
+   initial_attempt +=1
+   sleep 10
+   should_stop_execution(initial_attempt, MAX_ATTEMPTS, SERVICE)
   end
   puts "#{message}".green
 end
