@@ -65,6 +65,7 @@ def is_emulator_connected(emulator_name, test_runner_container_name)
 end
 
 def run_functional_tests(test_runner_container_name, apk_to_use)
+  system "docker exec -t #{test_runner_container_name} bash -c 'source ~/.bash_profile && hash -r'"
   system "docker exec -t #{test_runner_container_name} bash -c 'cd functionalTests && calabash-android run ../app/build/outputs/apk/#{apk_to_use} --tag @dev'"
 end
 
