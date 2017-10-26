@@ -76,3 +76,9 @@ end
 def rollback_local_properties
   system "mv local.properties.bk local.properties"
 end
+
+def report_exit_status(command_exit_status)
+  if command_exit_status != 0
+    exit(command_exit_status)
+  end
+end
