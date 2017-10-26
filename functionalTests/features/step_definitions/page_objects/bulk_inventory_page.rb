@@ -55,6 +55,7 @@ class BulkInventoryPage < Calabash::ABase
   end
 
   def add_products
+    wait_for_component_to_appear(@button_add_products)
     touch_view_with_id(@button_add_products)
     end
 
