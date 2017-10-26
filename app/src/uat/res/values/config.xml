@@ -1,8 +1,8 @@
 <resources>
     <string name="server_base_url">http://UAT-LB-52855868.ap-northeast-1.elb.amazonaws.com:8000</string>
-    <string name="sync_account_type">org.clintonhealthaccess.lmismoz.prodsim</string>
+    <string name="sync_account_type">org.clintonhealthaccess.lmismoz.uat</string>
     <integer name="sync_interval">3600</integer>
-    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.prodsim</string>
+    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.uat</string>
 
     <string name="ga_trackingId">I am a track id</string>
     <bool name="ga_dryRun">true</bool>
