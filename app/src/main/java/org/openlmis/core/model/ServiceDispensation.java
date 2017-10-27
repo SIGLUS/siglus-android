@@ -33,7 +33,7 @@ import lombok.Setter;
 public class ServiceDispensation extends BaseModel implements Serializable {
 
     @DatabaseField
-    int quantity;
+    long quantity;
 
     @DatabaseField
     String signature;

@@ -1,7 +1,5 @@
 package org.openlmis.core.model.repository;
 
-import android.support.annotation.NonNull;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;

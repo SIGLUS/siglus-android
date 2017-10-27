@@ -33,21 +33,21 @@ import lombok.Setter;
 public class PatientDispensation extends BaseModel implements Serializable {
 
     @DatabaseField
-    PatientDispensationType type;
+    Type type;
 
     @DatabaseField
-    int total;
+    Long total;
 
     @DatabaseField(columnName = "ptvProgramId", foreign = true)
     PTVProgram ptvProgram;
 
-    public enum PatientDispensationType {
+    public enum Type {
 
         WOMAN("Woman"), CHILD("Child");
 
         String type;
 
-        PatientDispensationType(String type) {
+        Type(String type) {
             this.type = type;
         }
     }

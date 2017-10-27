@@ -34,16 +34,16 @@ import lombok.Setter;
 public class PTVProgramStockInformation extends BaseModel {
 
     @DatabaseField
-    int initialStock;
+    long initialStock;
 
     @DatabaseField
-    int entries;
+    long entries;
 
     @DatabaseField
-    int lossesAndAdjustments;
+    long lossesAndAdjustments;
 
     @DatabaseField
-    int requisition;
+    long requisition;
 
 
     @DatabaseField(columnName = "ptvProgramId", foreign = true)
@@ -72,12 +72,13 @@ public class PTVProgramStockInformation extends BaseModel {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + initialStock;
-        result = 31 * result + entries;
-        result = 31 * result + lossesAndAdjustments;
-        result = 31 * result + requisition;
-        result = 31 * result + ptvProgram.hashCode();
-        result = 31 * result + product.hashCode();
+        result = 31 * result + (int) (initialStock ^ (initialStock >>> 32));
+        result = 31 * result + (int) (entries ^ (entries >>> 32));
+        result = 31 * result + (int) (lossesAndAdjustments ^ (lossesAndAdjustments >>> 32));
+        result = 31 * result + (int) (requisition ^ (requisition >>> 32));
+        result = 31 * result + (ptvProgram != null ? ptvProgram.hashCode() : 0);
+        result = 31 * result + (product != null ? product.hashCode() : 0);
+        result = 31 * result + (serviceDispensations != null ? serviceDispensations.hashCode() : 0);
         return result;
     }
 }

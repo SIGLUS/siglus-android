@@ -2,17 +2,20 @@ package org.openlmis.core.model.repository;
 
 import android.support.annotation.NonNull;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.enums.PatientDataStatusEnum;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.HealthFacilityService;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
 import org.openlmis.core.model.PatientDispensation;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ServiceDispensation;
 import org.openlmis.core.utils.PTVUtil;
@@ -45,7 +48,8 @@ public class PTVProgramRepositoryTest {
         ptvProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PTVProgramRepository.class);
         patientDispensationRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PatientDispensationRepository.class);
         product = Product.dummyProduct();
-        ptvProgram = PTVUtil.createDummyPTVProgram();
+        Period period = new Period(DateTime.now());
+        ptvProgram = PTVUtil.createDummyPTVProgram(period);
     }
 
     @Test
@@ -55,6 +59,7 @@ public class PTVProgramRepositoryTest {
         PTVProgramStockInformation ptvProgramStockInformation = createValidPTVProgramStockInformation(expectedPtvProgram);
         setHealthFacilityAndPtvProgramStockInformationToServiceDispensation(ptvProgramStockInformation);
         expectedPtvProgram.setPtvProgramStocksInformation(newArrayList(ptvProgramStockInformation));
+        expectedPtvProgram.setStatus(PatientDataStatusEnum.MISSING);
 
         PTVProgram ptvProgramSaved = ptvProgramRepository.save(expectedPtvProgram);
 

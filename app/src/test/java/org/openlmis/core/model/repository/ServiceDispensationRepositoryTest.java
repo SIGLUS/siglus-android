@@ -1,5 +1,6 @@
 package org.openlmis.core.model.repository;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +9,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.HealthFacilityService;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ServiceDispensation;
 import org.openlmis.core.utils.PTVUtil;
@@ -32,7 +34,8 @@ public class ServiceDispensationRepositoryTest {
 
     @Test
     public void shouldSaveServiceDispensationsWhenPtvProgramStockInformationExists() throws Exception {
-        PTVProgram ptvProgram = PTVUtil.createDummyPTVProgram();
+        Period period = new Period(DateTime.now());
+        PTVProgram ptvProgram = PTVUtil.createDummyPTVProgram(period);
         Product product = Product.dummyProduct();
         PTVProgramStockInformation ptvProgramStockInformation = new PTVProgramStockInformation();
         ptvProgramStockInformation.setProduct(product);

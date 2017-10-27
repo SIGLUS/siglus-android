@@ -47,12 +47,15 @@ public class ProductRepository {
 
     GenericDao<KitProduct> kitProductGenericDao;
 
+    private Context context;
+
     @Inject
     DbUtil dbUtil;
 
     @Inject
     public ProductRepository(Context context) {
         genericDao = new GenericDao<>(Product.class, context);
+        this.context = context;
         kitProductGenericDao = new GenericDao<>(KitProduct.class, context);
     }
 
@@ -350,6 +353,22 @@ public class ProductRepository {
         }
         Collections.sort(nonBasicProducts);
         return nonBasicProducts;
+    }
+
+    public List<Product> getProductsByCodes(final List<String> codes) throws LMISException {
+        final List<Product> products = new ArrayList<>();
+        dbUtil.withDaoAsBatch(context, Product.class, new DbUtil.Operation<Product,Void>() {
+            @Override
+            public Void operate(Dao<Product, String> dao) throws SQLException, LMISException {
+                for (String code : codes) {
+                    Product product = dao.queryBuilder().where().eq("code", code).queryForFirst();
+                    products.add(product);
+
+                }
+                return null;
+            }
+        });
+        return products;
     }
 
     public enum IsWithKit {

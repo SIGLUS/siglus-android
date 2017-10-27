@@ -1,5 +1,6 @@
 package org.openlmis.core.model.repository;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,11 +8,11 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.PTVUtil;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -31,7 +32,8 @@ public class PTVProgramStockInformationRepositoryTest {
     @Before
     public void setUp() throws Exception {
         ptvProgramStockInformationRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PTVProgramStockInformationRepository.class);
-        ptvProgram = PTVUtil.createDummyPTVProgram();
+        Period period = new Period(DateTime.now());
+        ptvProgram = PTVUtil.createDummyPTVProgram(period);
         product = Product.dummyProduct();
     }
 

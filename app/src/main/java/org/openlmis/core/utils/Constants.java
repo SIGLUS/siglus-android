@@ -70,11 +70,11 @@ public final class Constants {
     public static final String INTENT_FILTER_FINISH_SYNC_DATA = LMISApp.getContext().getPackageName() + ".finish.sync_data";
 
     //PTV
-    public static final String PTV_PRODUCT_1_CODE = "08S40";
-    public static final String PTV_PRODUCT_2_CODE = "08S15";
-    public static final String PTV_PRODUCT_3_CODE = "08S22";
-    public static final String PTV_PRODUCT_4_CODE = "08S17";
-    public static final String PTV_PRODUCT_5_CODE = "08S23";
+    public static final String PTV_PRODUCT_ONE_CODE = "08S40";
+    public static final String PTV_PRODUCT_TWO_CODE = "08S15";
+    public static final String PTV_PRODUCT_THREE_CODE = "08S22";
+    public static final String PTV_PRODUCT_FOUR_CODE = "08S17";
+    public static final String PTV_PRODUCT_FIVE_CODE = "08S23";
 
     private Constants() {
 

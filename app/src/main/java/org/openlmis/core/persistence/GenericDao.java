@@ -26,7 +26,6 @@ import org.openlmis.core.exceptions.LMISException;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -114,24 +113,15 @@ public class GenericDao<Model> {
     }
 
     public boolean create(final List<Model> models) throws LMISException {
-        return dbUtil.withDao(context, type, new DbUtil.Operation<Model, Boolean>() {
+        return dbUtil.withDaoAsBatch(context, type, new DbUtil.Operation<Model, Boolean>() {
             @Override
             public Boolean operate(final Dao<Model, String> dao) throws LMISException, SQLException {
-                try {
-                    return dao.callBatchTasks(new Callable<Boolean>() {
-                        @Override
-                        public Boolean call() throws Exception {
-                            for (Model model : models) {
-                                dao.createOrUpdate(model);
-                            }
-                            return true;
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw  new LMISException("Cannot create model");
+                for (Model model : models) {
+                    dao.createOrUpdate(model);
                 }
+                return true;
             }
         });
     }
+
 }

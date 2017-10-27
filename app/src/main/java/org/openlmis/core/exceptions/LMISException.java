@@ -27,8 +27,11 @@ import org.openlmis.core.LMISApp;
 public class LMISException extends Exception {
     private static String openLMISError = "OpenLMISError";
 
+    private String msg;
+
     public LMISException(String msg) {
         super(msg);
+        this.msg = msg;
     }
 
     public LMISException(Exception e) {
@@ -43,9 +46,23 @@ public class LMISException extends Exception {
         //this will save exception messages locally
         //it only uploads to fabric server when network is available
         //so this actually behaves analogously with our sync data logic
-        if(!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             LMISApp.getInstance().logErrorOnFabric(this);
         }
         Log.e(openLMISError, this.getMessage(), this);
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof LMISException && ((LMISException) o).getMsg().equals(msg);
+    }
+
+    @Override
+    public int hashCode() {
+        return msg != null ? msg.hashCode() : 0;
     }
 }

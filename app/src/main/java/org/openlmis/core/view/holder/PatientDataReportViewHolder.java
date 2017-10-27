@@ -1,7 +1,6 @@
 package org.openlmis.core.view.holder;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.view.View;
@@ -54,8 +53,7 @@ public class PatientDataReportViewHolder extends BaseViewHolder {
             @Override
             public void onClick(View v) {
                 ((BaseActivity) context).loading();
-                Intent intent = new Intent(context, PTVDataReportFormActivity.class);
-                context.startActivity(intent);
+                ((Activity) context).startActivityForResult(PTVDataReportFormActivity.getIntentToMe(context, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
                 ((BaseActivity) context).loaded();
             }
         };

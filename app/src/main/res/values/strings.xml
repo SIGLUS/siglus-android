@@ -478,6 +478,11 @@
     <string name="create_ptv_data_report">CREATE PTV DATA REPORT</string>
     <string name="title_patient_ptv_report_form">PTV DATA REPORT</string>
     <string name="title_patient_data_report_form">PATIENT DATA REPORT</string>
+    <string name="total_woman">Total Woman</string>
+    <string name="total_child">Total Child</string>
+    <string name="service_name">Service Name / Drugs</string>
+    <string name="signature">Signature</string>
+    <string name="initial_stock">Initial Stock</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>

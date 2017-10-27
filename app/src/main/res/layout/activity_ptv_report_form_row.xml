@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/rl_pet_report_form">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/border_black"
+        android:layout_margin="@dimen/margin_small"
+        android:id="@+id/ll_container"
+        android:layout_above="@+id/action_panel"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <Texetiew
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black_header_bg_violet"
+                android:gravity="center"
+                tools:text="Maternity"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_normal"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/et_initial_stock1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="10" />
+
+            <EditText
+                android:id="@+id/et_initial_stock2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="20" />
+
+            <EditText
+                android:id="@+id/et_initial_stock3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="30" />
+
+            <EditText
+                android:id="@+id/et_initial_stock4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="40"/>
+
+            <EditText
+                android:id="@+id/et_initial_stock5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="50" />
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_regular"
+                android:textStyle="bold"
+                android:background="@android:color/transparent"
+                tools:text="TW"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,5 +1,6 @@
 package org.openlmis.core.model.repository;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,6 +8,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PatientDispensation;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.utils.PTVUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -30,7 +32,8 @@ public class PatientDispensationRepositoryTest {
     @Before
     public void setUp() throws Exception {
         patientDispensationRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PatientDispensationRepository.class);
-        ptvProgram = PTVUtil.createDummyPTVProgram();
+        Period period = new Period(DateTime.now());
+        ptvProgram = PTVUtil.createDummyPTVProgram(period);
     }
 
     @Test
@@ -79,9 +82,9 @@ public class PatientDispensationRepositoryTest {
 
     private PatientDispensation createPatientDispensationObject() {
         int typeRandomPosition = new Random().nextInt(2);
-        int totalPatients = new Random().nextInt();
+        long totalPatients = new Random().nextLong();
         PatientDispensation patientDispensation = new PatientDispensation();
-        PatientDispensation.PatientDispensationType patientDispensationType = PatientDispensation.PatientDispensationType.values()[typeRandomPosition];
+        PatientDispensation.Type patientDispensationType = PatientDispensation.Type.values()[typeRandomPosition];
         patientDispensation.setType(patientDispensationType);
         patientDispensation.setTotal(totalPatients);
         return patientDispensation;

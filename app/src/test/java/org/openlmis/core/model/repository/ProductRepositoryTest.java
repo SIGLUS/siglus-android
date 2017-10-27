@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model.repository;
 
+import android.support.annotation.NonNull;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +40,11 @@ import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.builder.RnRFormBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
+import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.PTVUtil;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -344,4 +349,15 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(productInVIA);
         return productInVIA;
     }
+
+    @Test
+    public void shouldReturnProductsWhenCodesAreSupplied() throws Exception {
+        List<Product> expectedProducts = PTVUtil.getProductsWithPTVProductCodes();
+        productRepository.batchCreateOrUpdateProducts(expectedProducts);
+
+        List<Product> products = productRepository.getProductsByCodes(PTVUtil.ptvProductCodes);
+
+        assertThat(products, is(expectedProducts));
+    }
+
 }

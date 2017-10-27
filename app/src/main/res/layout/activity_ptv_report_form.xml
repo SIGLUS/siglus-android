@@ -1,6 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/rl_ptv_report_form">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/border_black"
+        android:layout_margin="@dimen/margin_small"
+        android:id="@+id/ll_container"
+        android:layout_above="@+id/action_panel"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:id="@+id/ll_patient_dispensation"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/border_bottom_black"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/total_woman"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_normal"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:hint="@string/total_woman" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/total_child"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_normal"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:hint="@string/total_child" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_bottom_right_black"
+                android:gravity="center"
+                android:text="@string/initial_stock"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_normal"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_initial_stock1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_bottom_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="10" />
+
+            <TextView
+                android:id="@+id/tv_initial_stock2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_bottom_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="20" />
+
+            <TextView
+                android:id="@+id/tv_initial_stock3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_bottom_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="30" />
+
+            <TextView
+                android:id="@+id/tv_initial_stock4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_bottom_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="40"/>
+
+            <TextView
+                android:id="@+id/tv_initial_stock5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_bottom_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="50" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_normal"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:text="@string/service_name"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_normal"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_product_name1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="drug1" />
+
+            <TextView
+                android:id="@+id/tv_product_name2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="drug2" />
+
+            <TextView
+                android:id="@+id/tv_product_name3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="drug3" />
+
+            <TextView
+                android:id="@+id/tv_product_name4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="Zidovudina 300mg/Lamivudine150mg Frasco 60 comps" />
+
+            <TextView
+                android:id="@+id/tv_product_name5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small"
+                tools:text="drug5" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="top|center"
+                android:text="@string/signature"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_normal"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vg_rapid_test_report_header"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_patient_data_row_item_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_top_black"
+                android:overScrollMode="never" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <org.openlmis.core.view.widget.ActionPanelView
+        android:id="@+id/action_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

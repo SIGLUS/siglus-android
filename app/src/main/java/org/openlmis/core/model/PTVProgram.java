@@ -24,6 +24,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.openlmis.core.enums.PatientDataStatusEnum;
 import org.openlmis.core.utils.DateUtil;
 
 import java.io.Serializable;
@@ -50,9 +51,46 @@ public class PTVProgram extends BaseModel implements Serializable {
     @DatabaseField
     String verifiedBy;
 
+    @DatabaseField (dataType = DataType.ENUM_INTEGER)
+    PatientDataStatusEnum status;
+
     @ForeignCollectionField(eager = true)
     private Collection<PTVProgramStockInformation> ptvProgramStocksInformation;
 
     @ForeignCollectionField(eager = true)
     private Collection<PatientDispensation> patientDispensations;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PTVProgram)) return false;
+
+        PTVProgram that = (PTVProgram) o;
+
+        if (startPeriod != null ? !startPeriod.equals(that.startPeriod) : that.startPeriod != null)
+            return false;
+        if (endPeriod != null ? !endPeriod.equals(that.endPeriod) : that.endPeriod != null)
+            return false;
+        if (createdBy != null ? !createdBy.equals(that.createdBy) : that.createdBy != null)
+            return false;
+        if (verifiedBy != null ? !verifiedBy.equals(that.verifiedBy) : that.verifiedBy != null)
+            return false;
+        if (status != that.status) return false;
+        if (ptvProgramStocksInformation != null ? !ptvProgramStocksInformation.equals(that.ptvProgramStocksInformation) : that.ptvProgramStocksInformation != null)
+            return false;
+        return patientDispensations != null ? patientDispensations.equals(that.patientDispensations) : that.patientDispensations == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (startPeriod != null ? startPeriod.hashCode() : 0);
+        result = 31 * result + (endPeriod != null ? endPeriod.hashCode() : 0);
+        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        result = 31 * result + (verifiedBy != null ? verifiedBy.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (ptvProgramStocksInformation != null ? ptvProgramStocksInformation.hashCode() : 0);
+        result = 31 * result + (patientDispensations != null ? patientDispensations.hashCode() : 0);
+        return result;
+    }
 }
