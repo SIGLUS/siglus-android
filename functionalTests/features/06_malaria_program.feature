@@ -6,7 +6,7 @@ Feature: Add values to malaria program chart for US and APE and Save Information
     And I log in into the application
     And I press "VIA PATIENT DATA"
     And I should see text containing "No patient data report has been created"
-    And I press "CREATE PATIENT DATA REPORT"
+    And I press "Create patient data report"
     And I enter values for Malaria program report
     When I save malaria program report
     Then I wait up to 30 seconds to see "Successfully Saved"
