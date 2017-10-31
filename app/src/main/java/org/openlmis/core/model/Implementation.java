@@ -30,4 +30,8 @@ public class Implementation extends BaseModel{
 
     @ForeignCollectionField(eager = true)
     private Collection<Treatment> treatments;
+
+    public boolean isExecutor(String executor) {
+        return this.executor.equals(executor);
+    }
 }

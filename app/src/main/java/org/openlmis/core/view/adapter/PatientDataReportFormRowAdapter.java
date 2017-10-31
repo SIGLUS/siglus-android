@@ -8,28 +8,34 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.Period;
-import org.openlmis.core.presenter.PatientDataReportFormPresenter;
 import org.openlmis.core.view.holder.PatientDataReportRowViewHolder;
-import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
+import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
 
 import java.util.List;
 
+import lombok.Setter;
+
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+
 public class PatientDataReportFormRowAdapter extends RecyclerView.Adapter<PatientDataReportRowViewHolder> {
 
-    public static final int ROW_US_POSITION = 0;
-    public static final int ROW_APE_POSITION = 1;
-    private boolean onBind;
+    @Setter
+    private List<ImplementationReportViewModel> viewModels;
 
-    Period period;
-    private PatientDataReportFormPresenter presenter;
-    private List<PatientDataReportViewModel> viewModels;
+    @Setter
+    private PatientDataReportListener listener;
+    private RecyclerView view;
 
-    public PatientDataReportFormRowAdapter(List<PatientDataReportViewModel> viewModels, PatientDataReportFormPresenter presenter, Period period) {
-        this.period = period;
-        this.presenter = presenter;
-        this.viewModels = viewModels;
+    public PatientDataReportFormRowAdapter() {
+        viewModels = newArrayList();
     }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        view = recyclerView;
+    }
+
 
     @Override
     public PatientDataReportRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,16 +45,11 @@ public class PatientDataReportFormRowAdapter extends RecyclerView.Adapter<Patien
 
     @Override
     public void onBindViewHolder(PatientDataReportRowViewHolder holder, int position) {
-        setOnBind(Boolean.TRUE);
-        final PatientDataReportViewModel viewModel = viewModels.get(position);
+        final ImplementationReportViewModel viewModel = viewModels.get(position);
         holder.populate(viewModel);
         holder.putWatcherInComponents(patientDataTextWatcher(holder, position));
-        setOnBind(Boolean.FALSE);
     }
 
-    private void setOnBind(boolean onBind) {
-        this.onBind = onBind;
-    }
 
     public TextWatcher patientDataTextWatcher(final PatientDataReportRowViewHolder holder, final int position) {
         return new TextWatcher() {
@@ -58,32 +59,21 @@ public class PatientDataReportFormRowAdapter extends RecyclerView.Adapter<Patien
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                List<Long> currentTreatments = holder.obtainCurrentTreatmentValues();
-                List<Long> existingStocks = holder.obtainExistingStockValues();
-                setCurrentTreatmentAndExistingStockInActualRow(currentTreatments, existingStocks, position);
-                presenter.generateViewModelsBySpecificPeriod(period, Boolean.TRUE);
-                viewModels = presenter.getViewModels(period, Boolean.TRUE);
-                if(!onBind) {
-                    int totalRowPosition = viewModels.size() - 1;
-                    notifyItemChanged(totalRowPosition);
+                if (listener != null) {
+                    listener.notifyModelChanged(holder.getImplementationViewModel());
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable editable) {
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyItemChanged(viewModels.size() - 1);
+                    }
+                });
             }
         };
-    }
-
-    private void setCurrentTreatmentAndExistingStockInActualRow(List<Long> currentTreatments, List<Long> existingStocks, int position) {
-        if (position == ROW_US_POSITION) {
-            presenter.setCurrentTreatmentsUs(currentTreatments);
-            presenter.setExistingStockUs(existingStocks);
-        }
-        if (position == ROW_APE_POSITION) {
-            presenter.setCurrentTreatmentsApe(currentTreatments);
-            presenter.setExistingStockApe(existingStocks);
-        }
     }
 
     @Override
@@ -91,5 +81,7 @@ public class PatientDataReportFormRowAdapter extends RecyclerView.Adapter<Patien
         return viewModels.size();
     }
 
-
+    public interface PatientDataReportListener {
+        void notifyModelChanged(ImplementationReportViewModel reportViewModel);
+    }
 }

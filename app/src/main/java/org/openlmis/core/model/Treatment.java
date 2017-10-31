@@ -3,21 +3,13 @@ package org.openlmis.core.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @DatabaseTable(tableName = "treatment")
 public class Treatment extends BaseModel {
-
-    public Treatment() {
-    }
-
-    public Treatment(long amount, long stock) {
-        this.amount = amount;
-        this.stock = stock;
-    }
 
     @DatabaseField(columnName = "implementation", foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
     private Implementation implementation;
@@ -30,4 +22,10 @@ public class Treatment extends BaseModel {
 
     @DatabaseField
     private long stock;
+
+    public Treatment(Product product, long amount, long stock) {
+        this.product = product;
+        this.amount = amount;
+        this.stock = stock;
+    }
 }

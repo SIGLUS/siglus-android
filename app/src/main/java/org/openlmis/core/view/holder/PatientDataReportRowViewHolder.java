@@ -7,17 +7,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.openlmis.core.view.viewmodel.malaria.ImplementationReportType;
+import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
 
 import roboguice.inject.InjectView;
 
-public class PatientDataReportRowViewHolder extends BaseViewHolder {
+import static org.openlmis.core.view.viewmodel.malaria.ImplementationReportType.TOTAL;
 
-    public static final String TOTAL = "TOTAL";
-    public static final String US = "US";
+public class PatientDataReportRowViewHolder extends BaseViewHolder {
 
     public static final int MALARIA_TOTAL_PRODUCTS = 4;
     public static final long EMPTY_VALUE = 0L;
@@ -53,7 +50,7 @@ public class PatientDataReportRowViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void populate(PatientDataReportViewModel viewModel) {
+    public void populate(ImplementationReportViewModel viewModel) {
         EditText[] patientDataCurrentTreatmentsComponents = getDataCurrentTreatmentsEditTexts();
         EditText[] patientDataExistingStockComponents = getExistingStockEditTexts();
         setEditTextValues(viewModel);
@@ -62,20 +59,35 @@ public class PatientDataReportRowViewHolder extends BaseViewHolder {
             setPatientDataComponentsAsNotEditable(patientDataExistingStockComponents);
             tvTitleRow.setBackgroundColor(context.getResources().getColor(R.color.patient_data_not_editable));
         }
-        if (viewModel.getType().equals(US)) {
+        if (viewModel.getType() == ImplementationReportType.US) {
             setPatientDataComponentsAsNotEditable(patientDataExistingStockComponents);
         }
     }
 
+    public ImplementationReportViewModel getImplementationViewModel() {
+        ImplementationReportViewModel result = new ImplementationReportViewModel(
+                ImplementationReportType.valueOf(tvTitleRow.getText().toString()),
+                getLongValueFromEditText(etCurrentTreatment6x1),
+                getLongValueFromEditText(etCurrentTreatment6x2),
+                getLongValueFromEditText(etCurrentTreatment6x3),
+                getLongValueFromEditText(etCurrentTreatment6x4),
+                getLongValueFromEditText(etExistingStock6x1),
+                getLongValueFromEditText(etExistingStock6x2),
+                getLongValueFromEditText(etExistingStock6x3),
+                getLongValueFromEditText(etExistingStock6x4));
+        return result;
+
+    }
+
     private void setPatientDataComponentsAsNotEditable(EditText[] components) {
         for (int i = 0; i < MALARIA_TOTAL_PRODUCTS; i++) {
-            components[i].setFocusable(Boolean.FALSE);
+            components[i].setFocusable(false);
             components[i].setTag("disabled");
         }
     }
 
-    private void setEditTextValues(PatientDataReportViewModel viewModel) {
-        tvTitleRow.setText(viewModel.getType());
+    private void setEditTextValues(ImplementationReportViewModel viewModel) {
+        tvTitleRow.setText(viewModel.getType().name());
         EditText[] patientDataCurrentTreatmentsComponents = getDataCurrentTreatmentsEditTexts();
         EditText[] patientDataExistingStockComponents = getExistingStockEditTexts();
         for (int i = 0; i < MALARIA_TOTAL_PRODUCTS; i++) {
@@ -91,35 +103,17 @@ public class PatientDataReportRowViewHolder extends BaseViewHolder {
         return new EditText[]{etExistingStock6x1, etExistingStock6x2, etExistingStock6x3, etExistingStock6x4};
     }
 
-    public List<Long> obtainCurrentTreatmentValues() {
-        EditText[] patientDataCurrentTreatmentsComponents = getDataCurrentTreatmentsEditTexts();
-        List<Long> currentTreatments = obtainPatientDataFieldsValues(patientDataCurrentTreatmentsComponents);
-        return currentTreatments;
-    }
-
     @NonNull
     private EditText[] getDataCurrentTreatmentsEditTexts() {
         return new EditText[]{etCurrentTreatment6x1, etCurrentTreatment6x2, etCurrentTreatment6x3, etCurrentTreatment6x4};
     }
 
-    public List<Long> obtainExistingStockValues() {
-        EditText[] patientDataExistingStockComponents = getExistingStockEditTexts();
-        List<Long> existingStocks = obtainPatientDataFieldsValues(patientDataExistingStockComponents);
-        return existingStocks;
-    }
-
-    private List<Long> obtainPatientDataFieldsValues(EditText[] components) {
-        List<Long> fieldsValues = new ArrayList<>();
-        for (int index = 0; index < MALARIA_TOTAL_PRODUCTS; index++) {
-            EditText patientDataCurrentTreatmentComponent = components[index];
-            String currentValue = patientDataCurrentTreatmentComponent.getText().toString();
-            if (!currentValue.isEmpty()) {
-                fieldsValues.add(Long.parseLong(currentValue));
-            } else {
-                fieldsValues.add(EMPTY_VALUE);
-            }
+    private long getLongValueFromEditText(EditText editText) {
+        String currentValue = editText.getText().toString();
+        if (!currentValue.isEmpty()) {
+            return  Long.parseLong(currentValue);
         }
-        return fieldsValues;
+        return EMPTY_VALUE;
     }
 
     public void putWatcherInComponents(TextWatcher patientDataTextWatcher) {

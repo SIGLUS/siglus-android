@@ -52,6 +52,7 @@ import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovement
 import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
 import org.openlmis.core.persistence.migrations.AddSyncErrorsMessageTable;
 import org.openlmis.core.persistence.migrations.AddSyncTagToStockMovementItem;
+import org.openlmis.core.persistence.migrations.ChangeMalariaTreatments;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
 import org.openlmis.core.persistence.migrations.ConvertEssMedsToVIAProgram;
@@ -79,6 +80,8 @@ import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.roboguice.shaded.goole.common.base.Ascii.EM;
 
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
@@ -134,6 +137,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddIsBasicColumnToProductsTable());
             add(new CreatePatientDataReportTable());
             add(new CreateMalariaTreatments());
+            add(new ChangeMalariaTreatments());
             add(new CreatePTVProgramSchema());
         }
     };

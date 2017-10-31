@@ -43,6 +43,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.CmmRepository;
+import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -94,16 +95,12 @@ public class SyncUpManagerTest {
     private SyncErrorsRepository mockedSyncErrorsRepository;
     private ProductRepository mockedProductRepository;
     private CmmRepository mockedCmmRepository;
-
     private SharedPreferenceMgr mockedSharedPreferenceMgr;
-
     private LMISRestApi mockedLmisRestApi;
-
     private StockRepository stockRepository;
-
     private SyncUpManager syncUpManager;
-
     private ProgramDataFormRepository mockedProgramDataFormRepository;
+    private MalariaProgramRepository mockedMalariaprogramRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -112,9 +109,9 @@ public class SyncUpManagerTest {
         mockedProductRepository = mock(ProductRepository.class);
         mockedCmmRepository = mock(CmmRepository.class);
         mockedProgramDataFormRepository = mock(ProgramDataFormRepository.class);
-
         mockedSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         mockedLmisRestApi = mock(LMISRestApi.class);
+        mockedMalariaprogramRepository = mock(MalariaProgramRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
@@ -396,6 +393,11 @@ public class SyncUpManagerTest {
         verify(mockedLmisRestApi, times(1)).syncUpCmms(eq("123"), anyListOf(CmmEntry.class));
         assertThat(cmm.isSynced(), is(false));
         verify(mockedCmmRepository, never()).save(cmm);
+    }
+
+    @Test
+    public void shouldSyncUpMalariaProgramAndMarkThemAsSync() throws Exception {
+        
     }
 
     private List<Cmm> createCmmsData() throws LMISException, ParseException {

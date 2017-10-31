@@ -6,27 +6,25 @@ import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.MalariaProgram;
-import org.openlmis.core.model.PatientDataReport;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.utils.MalariaProgramMapper;
-import org.openlmis.core.utils.PatientDataReportMapper;
-import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
+import org.openlmis.core.utils.mapper.MalariaProgramToMalariaDataReportViewModelMapper;
 import org.roboguice.shaded.goole.common.base.Optional;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientDataService {
+import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x1_CODE;
+import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x2_CODE;
+import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x3_CODE;
+import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x4_CODE;
 
-    public static final String MALARIA_PRODUCT_CODE_6X1 = "08O05";
-    public static final String MALARIA_PRODUCT_CODE_6X2 = "08O05Z";
-    public static final String MALARIA_PRODUCT_CODE_6X3 = "08O05X";
-    public static final String MALARIA_PRODUCT_CODE_6X4 = "08O05Y";
+public class PatientDataService {
     private static final long NO_STOCK_ON_HAND_VALUE = 0;
 
     @Inject
@@ -38,9 +36,12 @@ public class PatientDataService {
     @Inject
     StockRepository stockRepository;
 
+    @Inject
+    MalariaProgramToMalariaDataReportViewModelMapper malariaDataReportMapper;
+
     public List<Period> calculatePeriods() {
         List<Period> periods = new ArrayList<>();
-        Optional<MalariaProgram> malariaProgramOptional = null;
+        Optional<MalariaProgram> malariaProgramOptional;
         try {
             malariaProgramOptional = malariaProgramRepository.getFirstMovement();
             Optional<Period> period = calculateFirstAvailablePeriod(malariaProgramOptional);
@@ -66,19 +67,6 @@ public class PatientDataService {
             return period;
         }
         return Optional.absent();
-    }
-
-    public List<Product> getMalariaProducts() {
-        List<Product> malariaProducts = new ArrayList<>();
-        try {
-            malariaProducts.add(productRepository.getByCode(MALARIA_PRODUCT_CODE_6X1));
-            malariaProducts.add(productRepository.getByCode(MALARIA_PRODUCT_CODE_6X2));
-            malariaProducts.add(productRepository.getByCode(MALARIA_PRODUCT_CODE_6X3));
-            malariaProducts.add(productRepository.getByCode(MALARIA_PRODUCT_CODE_6X4));
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-        return malariaProducts;
     }
 
     public List<StockCard> getMalariaProductsStockCards() {
@@ -108,61 +96,30 @@ public class PatientDataService {
         return stocks;
     }
 
-    public Boolean savePatientDataMovementsPerPeriod(List<PatientDataReportViewModel> patientDataReportViewModels) {
-        boolean isSuccessful;
-        List<PatientDataReport> patientDataReports = new ArrayList<>();
-        for (PatientDataReportViewModel model : patientDataReportViewModels) {
-            if (isViewModelFully(model)) {
-                return Boolean.FALSE;
-            } else {
-                PatientDataReport patientDataReport = setPatientDataReportInformation(model);
-                patientDataReports.add(patientDataReport);
-            }
-        }
-
-        PatientDataReportMapper patientDataReportMapper = new PatientDataReportMapper();
-        MalariaProgram malariaProgram = patientDataReportMapper.mapToMalariaProgramFromAListOfPatientDataReport(patientDataReports);
+    public boolean save(MalariaProgram malariaProgram) {
         try {
-            Optional<MalariaProgram> malariaProgramSaved = malariaProgramRepository.saveMovement(malariaProgram);
-            if (malariaProgramSaved.isPresent()) {
-                isSuccessful = Boolean.TRUE;
-            } else {
-                isSuccessful = Boolean.FALSE;
-            }
+            Optional<MalariaProgram> malariaProgramSaved = malariaProgramRepository.save(malariaProgram);
+            return malariaProgramSaved.isPresent();
+        } catch (LMISException e) {
+            e.reportToFabric();
+            return false;
+        }
+    }
+
+    public MalariaProgram findForPeriod(DateTime beginDate, DateTime endDate) throws LMISException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        return  malariaProgramRepository.getPatientDataReportByPeriodAndType(beginDate, endDate);
+    }
+
+    public List<Product> getMalariaProducts() {
+        List<Product> malariaProducts = new ArrayList<>();
+        try {
+            malariaProducts.add(productRepository.getByCode(PRODUCT_6x1_CODE.getValue()));
+            malariaProducts.add(productRepository.getByCode(PRODUCT_6x2_CODE.getValue()));
+            malariaProducts.add(productRepository.getByCode(PRODUCT_6x3_CODE.getValue()));
+            malariaProducts.add(productRepository.getByCode(PRODUCT_6x4_CODE.getValue()));
         } catch (LMISException e) {
             e.printStackTrace();
-            return Boolean.FALSE;
         }
-
-        return isSuccessful;
-    }
-
-    private PatientDataReport setPatientDataReportInformation(PatientDataReportViewModel model) {
-        PatientDataReport patientDataReport = new PatientDataReport();
-        patientDataReport.setType(model.getType());
-        patientDataReport.setStartDatePeriod(model.getPeriod().getBegin());
-        patientDataReport.setEndDatePeriod(model.getPeriod().getEnd());
-        patientDataReport.setCurrentTreatments(model.getCurrentTreatments());
-        patientDataReport.setExistingStocks(model.getExistingStock());
-        return patientDataReport;
-    }
-
-
-    private boolean isViewModelFully(PatientDataReportViewModel model) {
-        return model.getCurrentTreatments().contains(null) || model.getExistingStock().contains(null);
-    }
-
-    public PatientDataReport getExistingByModelPerPeriod(DateTime beginDate, DateTime endDate, String type) throws LMISException {
-        MalariaProgram malariaProgram = malariaProgramRepository.getPatientDataReportByPeriodAndType(beginDate, endDate);
-        if (malariaProgram != null) {
-            MalariaProgramMapper malariaProgramMapper = new MalariaProgramMapper();
-            List<PatientDataReport> patientDataReports = malariaProgramMapper.mapMalariaProgramToPatientDataReport(malariaProgram);
-            for (PatientDataReport patientDataReport : patientDataReports) {
-                if (patientDataReport.getType().equals(type)) {
-                    return patientDataReport;
-                }
-            }
-        }
-        return null;
+        return malariaProducts;
     }
 }

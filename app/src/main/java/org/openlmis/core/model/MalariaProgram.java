@@ -1,5 +1,6 @@
 package org.openlmis.core.model;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -8,47 +9,39 @@ import org.joda.time.DateTime;
 
 import java.util.Collection;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
 @DatabaseTable(tableName = "malaria_program")
-public class MalariaProgram extends BaseModel{
-
-    public MalariaProgram() {}
-
-    public MalariaProgram(DateTime reportedDate, DateTime startDatePeriod, DateTime endDatePeriod, boolean statusMissing, boolean statusDraft, Collection<Implementation> implementations) {
-        this.reportedDate = reportedDate;
-        this.startDatePeriod = startDatePeriod;
-        this.endDatePeriod = endDatePeriod;
-        this.statusMissing = statusMissing;
-        this.statusDraft = statusDraft;
-        this.implementations = implementations;
-    }
+@NoArgsConstructor
+public class MalariaProgram extends BaseModel {
 
     @DatabaseField
     private DateTime reportedDate;
 
     @DatabaseField
-    private DateTime startDatePeriod;
+    private DateTime startPeriodDate;
 
     @DatabaseField
-    private DateTime endDatePeriod;
+    private DateTime endPeriodDate;
 
-    @DatabaseField
-    private boolean statusMissing;
+    @DatabaseField(dataType = DataType.ENUM_INTEGER)
+    private MalariaProgramStatus status;
 
-    @DatabaseField
-    private boolean statusDraft;
-
-    @DatabaseField
-    private boolean statusComplete;
-
-    @DatabaseField
-    private boolean statusSynced;
-
-
-    @ForeignCollectionField(columnName = "implementations", eager = true)
+    @ForeignCollectionField(columnName = "implementations", eager = true, maxEagerLevel = 2)
     private Collection<Implementation> implementations;
+
+    @DatabaseField
+    private String username;
+
+    public MalariaProgram(String username, DateTime reportedDate, DateTime startPeriodDate,
+                          DateTime endDatePeriod,
+                          Collection<Implementation> implementations) {
+        this.username = username;
+        this.reportedDate = reportedDate;
+        this.startPeriodDate = startPeriodDate;
+        this.endPeriodDate = endDatePeriod;
+        this.implementations = implementations;
+    }
 }

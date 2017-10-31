@@ -7,17 +7,23 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.PatientDataReportViewHolder;
-import org.openlmis.core.view.viewmodel.PatientDataReportViewModel;
+import org.openlmis.core.view.viewmodel.malaria.PatientDataReportViewModel;
 
 import java.util.List;
 
+import lombok.Setter;
+
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+
 public class PatientDataReportAdapter extends RecyclerView.Adapter<PatientDataReportViewHolder>{
     private Context context;
+
+    @Setter
     private List<PatientDataReportViewModel> viewModels;
 
-    public PatientDataReportAdapter(Context context, List<PatientDataReportViewModel> viewModels) {
+    public PatientDataReportAdapter(Context context) {
         this.context = context;
-        this.viewModels = viewModels;
+        viewModels =  newArrayList();
     }
 
     @Override
