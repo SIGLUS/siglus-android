@@ -62,8 +62,6 @@ public class MalariaProgramRepository {
         return null;
     }
 
-    public List<MalariaProgram> 
-
     public Optional<MalariaProgram> getFirstMovement() throws LMISException {
         MalariaProgram malariaProgram = (MalariaProgram) dbUtil.withDao(MalariaProgram.class, new DbUtil.Operation<MalariaProgram, Object>() {
             @Override
@@ -94,5 +92,9 @@ public class MalariaProgramRepository {
 
     public void bulkUpdateAsSynced(List<MalariaProgram> pendingForSync) {
 
+    }
+
+    public List<MalariaProgram> getAll() throws LMISException {
+        return genericDao.queryForAll();
     }
 }

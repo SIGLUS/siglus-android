@@ -12,7 +12,6 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.utils.mapper.MalariaProgramToMalariaDataReportViewModelMapper;
 import org.roboguice.shaded.goole.common.base.Optional;
 
 import java.lang.reflect.InvocationTargetException;
@@ -35,9 +34,6 @@ public class PatientDataService {
 
     @Inject
     StockRepository stockRepository;
-
-    @Inject
-    MalariaProgramToMalariaDataReportViewModelMapper malariaDataReportMapper;
 
     public List<Period> calculatePeriods() {
         List<Period> periods = new ArrayList<>();

@@ -1,9 +1,10 @@
 package org.openlmis.core.view.viewmodel.malaria;
 
+import org.joda.time.DateTime;
+import org.openlmis.core.model.MalariaProgramStatus;
 import org.openlmis.core.model.Period;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class PatientDataReportViewModel {
@@ -12,10 +13,13 @@ public class PatientDataReportViewModel {
 
     private Period period;
 
-    @Setter
-    private String executor;
+    private DateTime reportedDate;
 
-    public PatientDataReportViewModel(Period period) {
+    private MalariaProgramStatus status;
+
+    public PatientDataReportViewModel(Period period, DateTime reportedDate, MalariaProgramStatus status) {
         this.period = period;
+        this.reportedDate = reportedDate;
+        this.status = status;
     }
 }
