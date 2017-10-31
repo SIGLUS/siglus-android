@@ -1,5 +1,6 @@
 package org.openlmis.core.view.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.PatientDataReportFormRowAdapter;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
+import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.List;
@@ -31,6 +33,7 @@ import roboguice.inject.InjectView;
 import rx.Subscription;
 import rx.functions.Action1;
 
+import static org.openlmis.core.R.id.action_panel;
 import static org.openlmis.core.model.MalariaProgramStatus.DRAFT;
 import static org.openlmis.core.model.MalariaProgramStatus.SUBMITTED;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -38,7 +41,10 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 public class PatientDataReportFormFragment extends BaseReportFragment implements PatientDataReportFormRowAdapter.PatientDataReportListener {
 
     @InjectView(R.id.rv_patient_data_row_item_list)
-    RecyclerView rvPatientDataRowItem;
+    private RecyclerView rvPatientDataRowItem;
+
+    @InjectView(action_panel)
+    private ActionPanelView actionPanel;
 
     @Inject
     private PatientDataReportFormRowAdapter adapter;
@@ -77,6 +83,10 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
         return new Action1<List<ImplementationReportViewModel>>() {
             @Override
             public void call(List<ImplementationReportViewModel> implementationReportViewModels) {
+                ImplementationReportViewModel viewModel = implementationReportViewModels.get(0);
+                if (viewModel.getStatus() == MalariaProgramStatus.SYNCED) {
+                    actionPanel.setVisibility(View.GONE);
+                }
                 adapter.setViewModels(implementationReportViewModels);
                 adapter.notifyDataSetChanged();
             }
@@ -122,6 +132,7 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
                 ToastUtil.show(R.string.succesfully_saved);
                 loaded();
                 if (status == MalariaProgramStatus.SUBMITTED) {
+                    getActivity().setResult(Activity.RESULT_OK);
                     finish();
                 }
             }

@@ -1,5 +1,7 @@
 package org.openlmis.core.view.viewmodel.malaria;
 
+import org.openlmis.core.model.MalariaProgramStatus;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class ImplementationReportViewModel {
 
     private ImplementationReportType type;
+
+    private MalariaProgramStatus status;
 
     private long currentTreatment6x1;
 

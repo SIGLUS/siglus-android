@@ -23,22 +23,21 @@ public class PatientDataReportAdapter extends RecyclerView.Adapter<PatientDataRe
 
     @Setter
     private List<PatientDataReportViewModel> viewModels;
-    private final HashMap<MalariaProgramStatus, Class> viewHolderMap;
+    private final HashMap<Integer, Class> viewHolderMap;
 
     public PatientDataReportAdapter(Context context) {
         this.context = context;
         viewModels = newArrayList();
         viewHolderMap = new HashMap<>();
-        viewHolderMap.put(MalariaProgramStatus.DRAFT, PatientDataReportViewHolderPending.class);
-        viewHolderMap.put(MalariaProgramStatus.MISSING, PatientDataReportViewHolderPending.class);
-        viewHolderMap.put(MalariaProgramStatus.SUBMITTED, PatientDataReportViewHolderSubmitted.class);
-        viewHolderMap.put(MalariaProgramStatus.SYNCED, PatientDataReportViewHolderSynced.class);
+        viewHolderMap.put(MalariaProgramStatus.DRAFT.ordinal(), PatientDataReportViewHolderPending.class);
+        viewHolderMap.put(MalariaProgramStatus.MISSING.ordinal(), PatientDataReportViewHolderPending.class);
+        viewHolderMap.put(MalariaProgramStatus.SUBMITTED.ordinal(), PatientDataReportViewHolderSubmitted.class);
+        viewHolderMap.put(MalariaProgramStatus.SYNCED.ordinal(), PatientDataReportViewHolderSynced.class);
     }
 
     @Override
     public PatientDataReportViewHolderBase onCreateViewHolder(ViewGroup parent, int viewType) {
-        PatientDataReportViewModel viewModel = viewModels.get(viewType);
-        Class viewHolderClass = viewHolderMap.get(viewModel.getStatus());
+        Class viewHolderClass = viewHolderMap.get(viewType);
         PatientDataReportViewHolderBase viewHolder = null;
         try {
             viewHolder = (PatientDataReportViewHolderBase) viewHolderClass.getConstructor(Context.class, ViewGroup.class).newInstance(context, parent);
@@ -59,5 +58,8 @@ public class PatientDataReportAdapter extends RecyclerView.Adapter<PatientDataRe
     }
 
     @Override
-    public int getItemViewType(int position) { return position; }
+    public int getItemViewType(int position) {
+        PatientDataReportViewModel viewModel = viewModels.get(position);
+        return viewModel.getStatus().ordinal();
+    }
 }

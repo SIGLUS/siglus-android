@@ -20,8 +20,8 @@ public class MalariaProgramToMalariaDataReportViewModelMapper {
         return new MalariaDataReportViewModel(malariaProgram.getReportedDate(),
                 malariaProgram.getStartPeriodDate(),
                 malariaProgram.getEndPeriodDate(),
-                implementationReportMapper.mapUsImplementations(malariaProgram.getImplementations()),
-                implementationReportMapper.mapApeImplementations(malariaProgram.getImplementations()));
+                implementationReportMapper.mapUsImplementations(malariaProgram.getImplementations(), malariaProgram.getStatus()),
+                implementationReportMapper.mapApeImplementations(malariaProgram.getImplementations(), malariaProgram.getStatus()));
 
     }
 }

@@ -45,8 +45,8 @@ public class MalariaProgramToMalariaDataReportViewModelMapperTest {
         usImplementations = mock(ImplementationReportViewModel.class);
         apeImplementations = mock(ImplementationReportViewModel.class);
         malariaProgram = make(a(randomMalariaProgram, with(implementations, expectedImplementations)));
-        when(implementationReportMapper.mapUsImplementations(expectedImplementations)).thenReturn(usImplementations);
-        when(implementationReportMapper.mapApeImplementations(expectedImplementations)).thenReturn(apeImplementations);
+        when(implementationReportMapper.mapUsImplementations(expectedImplementations, malariaProgram.getStatus())).thenReturn(usImplementations);
+        when(implementationReportMapper.mapApeImplementations(expectedImplementations, malariaProgram.getStatus())).thenReturn(apeImplementations);
 
     }
 

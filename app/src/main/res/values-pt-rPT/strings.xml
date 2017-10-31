@@ -445,6 +445,7 @@
     <string name="loading_report_information">Carregando informações do relatório</string>
     <string name="report_submitted_synced_pending_message">O seu relatório foi <![CDATA[<b>gravado com sucesso</b>]]>, e vai ser submetido \r\n automaticamente quando tiver conecção a internet.</string>
     <string name="report_synced_successfully">Seu relatório foi <![CDATA[<b>sincronizado com sucesso</b>]]></string>
+    <string name="btn_view_patient_data_report">Visualizar relatório</string>
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
         <item>Últimos 14 dias</item>

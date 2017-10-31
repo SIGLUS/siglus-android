@@ -1,6 +1,7 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -64,4 +65,10 @@ public class PatientDataReportActivity extends BaseReportListActivity {
     @Override
     protected void loadForms() {}
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            presenter.getViewModels().subscribe(loadViewModels());
+        }
+    }
 }

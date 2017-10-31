@@ -84,14 +84,14 @@ public class ImplementationListToImplementationReportViewModelMapperTest {
     @Test
     public void shouldMapUsType() throws Exception {
         Implementation implementation = getImplementationForExecutor(PRODUCT_6x1_CODE, US_EXECUTOR);
-        ImplementationReportViewModel viewModel = mapper.mapUsImplementations(newArrayList(implementation));
+        ImplementationReportViewModel viewModel = mapper.mapUsImplementations(newArrayList(implementation), malariaProgram.getStatus());
         assertThat(viewModel.getType(), is(ImplementationReportType.US));
     }
 
     @Test
     public void shouldMapApeType() throws Exception {
         Implementation implementation = getImplementationForExecutor(PRODUCT_6x1_CODE, APE_EXECUTOR);
-        ImplementationReportViewModel viewModel = mapper.mapApeImplementations(newArrayList(implementation));
+        ImplementationReportViewModel viewModel = mapper.mapApeImplementations(newArrayList(implementation), malariaProgram.getStatus());
         assertThat(viewModel.getType(), is(ImplementationReportType.APE));
     }
 
@@ -99,7 +99,7 @@ public class ImplementationListToImplementationReportViewModelMapperTest {
     public void shouldReturnEmptyIfImplementationsAreNoUsExecutor() throws Exception {
         Implementation implementation = make(a(randomImplementation));
         ImplementationReportViewModel implementationReportViewModel = mapper.mapUsImplementations(newArrayList
-                (implementation));
+                (implementation), malariaProgram.getStatus());
         assertThat(implementationReportViewModel.getCurrentTreatment6x1(), is(0L));
         assertThat(implementationReportViewModel.getExistingStock6x1(), is(0L));
         assertThat(implementationReportViewModel.getCurrentTreatment6x2(), is(0L));
@@ -113,8 +113,8 @@ public class ImplementationListToImplementationReportViewModelMapperTest {
     private void assertProductForImplementationWasMapped(String productCode, String executorName, String productName) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Implementation implementation = getImplementationForExecutor(productCode, executorName);
         ImplementationReportViewModel implementationReportViewModel = executorName == US_EXECUTOR ?
-                mapper.mapUsImplementations(newArrayList(implementation)) :
-                mapper.mapApeImplementations(newArrayList(implementation));
+                mapper.mapUsImplementations(newArrayList(implementation), malariaProgram.getStatus()) :
+                mapper.mapApeImplementations(newArrayList(implementation), malariaProgram.getStatus());
         Method getCurrentTreatment = implementationReportViewModel.getClass().getMethod("getCurrentTreatment" + productName);
         Method getExistingStock = implementationReportViewModel.getClass().getMethod("getExistingStock" + productName);
         assertThat((long)getCurrentTreatment.invoke(implementationReportViewModel), is(treatment.getAmount()));

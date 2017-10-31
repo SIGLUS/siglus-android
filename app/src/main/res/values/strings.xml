@@ -491,6 +491,7 @@
     <string name="loading_report_information">Loading report information</string>
     <string name="report_submitted_synced_pending_message">Your report was <![CDATA[<b>submitted successfully </b>]]>, but is still pending for synchronization. It will sync as soon as you have internet connection</string>
     <string name="report_synced_successfully">Your report was <![CDATA[<b>synced successfully</b>]]></string>
+    <string name="btn_view_patient_data_report">View Report</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>

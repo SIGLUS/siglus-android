@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.MalariaProgramStatus;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportType;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
 
@@ -60,6 +61,10 @@ public class PatientDataReportRowViewHolder extends BaseViewHolder {
             tvTitleRow.setBackgroundColor(context.getResources().getColor(R.color.patient_data_not_editable));
         }
         if (viewModel.getType() == ImplementationReportType.US) {
+            setPatientDataComponentsAsNotEditable(patientDataExistingStockComponents);
+        }
+        if (viewModel.getStatus() == MalariaProgramStatus.SYNCED) {
+            setPatientDataComponentsAsNotEditable(patientDataCurrentTreatmentsComponents);
             setPatientDataComponentsAsNotEditable(patientDataExistingStockComponents);
         }
     }
