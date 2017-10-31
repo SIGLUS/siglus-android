@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum PatientDataStatusEnum {
 
-    MISSING(1),DRAFT(2),COMPLETE(3),SYNCED(4);
+    MISSING(0),DRAFT(1),COMPLETE(2),SYNCED(3);
 
     int status;
 

@@ -73,20 +73,30 @@ public class PTVProgramStockInformationBuilderTest {
         when(healthFacilityServiceRepository.getAll()).thenReturn(expectedHealthFacilityServices);
         List<Product> products = PTVUtil.getProductsWithPTVProductCodes();
         when(productRepository.getProductsByCodes(PTVUtil.ptvProductCodes)).thenReturn(products);
-        for (Product product : products){
-            stockOnHand = new Random().nextLong();
-            movementQuantity = new Random().nextLong();
+        for (Product product : products) {
+            stockOnHand = getRandomLong();
+            movementQuantity = getRandomLong();
             StockCard stockCard = createStockCardInformation(product);
             PTVProgramStockInformation ptvProgramStockInformation = createPtvProgramStockInformation(product);
+            ptvProgramStockInformation.setInitialStock(setInitialStock());
             List<ServiceDispensation> serviceDispensations = PTVUtil.createDummyServiceDispensations(ptvProgramStockInformation);
             when(serviceDispensationBuilder.buildInitialServiceDispensations(ptvProgramStockInformation)).thenReturn(serviceDispensations);
-            when(stockRepository.queryStockCardByProductCode(product.getCode())).thenReturn(stockCard);
+            when(stockRepository.queryStockCardByProductId(product.getId())).thenReturn(stockCard);
             expectedPtvProgramStocksInformation.add(ptvProgramStockInformation);
         }
 
         List<PTVProgramStockInformation> actualPtvProgramStocksInformation = ptvProgramStockInformationBuilder.buildPTVProgramStockInformation(ptvProgram);
 
         assertThat(actualPtvProgramStocksInformation, is(expectedPtvProgramStocksInformation));
+    }
+
+    private long getRandomLong() {
+        return 1 + (long) (Math.random() * (999));
+    }
+
+    private long setInitialStock() {
+        long initialStock = stockOnHand - movementQuantity;
+        return initialStock > 0 ? initialStock : 0;
     }
 
     @Test
@@ -97,7 +107,7 @@ public class PTVProgramStockInformationBuilderTest {
         when(healthFacilityServiceRepository.getAll()).thenReturn(expectedHealthFacilityServices);
         List<Product> products = PTVUtil.getProductsWithPTVProductCodes();
         when(productRepository.getProductsByCodes(PTVUtil.ptvProductCodes)).thenReturn(products);
-        for (Product product : products){
+        for (Product product : products) {
             StockCard stockCard = null;
             PTVProgramStockInformation ptvProgramStockInformation = createPtvProgramStockInformation(product);
             List<ServiceDispensation> serviceDispensations = PTVUtil.createDummyServiceDispensations(ptvProgramStockInformation);

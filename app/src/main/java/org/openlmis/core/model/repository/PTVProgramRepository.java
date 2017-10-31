@@ -3,12 +3,14 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -61,5 +63,14 @@ public class PTVProgramRepository {
 
     public List<PTVProgram> getAll() throws LMISException {
         return genericDao.queryForAll();
+    }
+
+    public PTVProgram getByPeriod(final Period period) throws LMISException {
+        return dbUtil.withDao(PTVProgram.class, new DbUtil.Operation<PTVProgram, PTVProgram>() {
+            @Override
+            public PTVProgram operate(Dao<PTVProgram, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().eq("startPeriod", period.getBegin().toDate()).and().eq("endPeriod", period.getEnd().toDate()).queryForFirst();
+            }
+        });
     }
 }

@@ -8,11 +8,13 @@ import android.widget.FrameLayout;
 
 import org.openlmis.core.R;
 
+import lombok.Getter;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
+@Getter
 public class ActionPanelView extends FrameLayout {
-    @InjectView(R.id.btn_save)
+    @InjectView(R.id.layout_action_buttons)
     View btnSave;
 
     @InjectView(R.id.btn_complete)

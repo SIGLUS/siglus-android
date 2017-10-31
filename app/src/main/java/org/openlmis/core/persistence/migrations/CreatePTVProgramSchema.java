@@ -17,7 +17,9 @@ public class CreatePTVProgramSchema extends Migration {
                 + "`createdBy` VARCHAR NOT NULL, "
                 + "`verifiedBy` VARCHAR NOT NULL, "
                 + "`createdAt` VARCHAR NOT NULL, "
-                + "`updatedAt` VARCHAR NOT NULL);");
+                + "`updatedAt` VARCHAR NOT NULL,"
+                + "CONSTRAINT unique_period_cst"
+                + " UNIQUE (startPeriod, endPeriod) ON CONFLICT REPLACE);");
 
         execSQL("CREATE TABLE `patient_dispensation` ("
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "

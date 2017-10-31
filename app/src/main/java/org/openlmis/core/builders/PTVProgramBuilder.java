@@ -20,7 +20,7 @@ public class PTVProgramBuilder {
     @Inject
     PTVProgramStockInformationBuilder ptvProgramStockInformationBuilder;
 
-    public PTVProgram buildPTVProgram(Period period) throws LMISException {
+    public PTVProgram buildInitialPTVProgram(Period period) throws LMISException {
         PTVProgram ptvProgram = new PTVProgram();
         ptvProgram.setStartPeriod(period.getBegin().toDate());
         ptvProgram.setEndPeriod(period.getEnd().toDate());
@@ -30,6 +30,12 @@ public class PTVProgramBuilder {
         List<PatientDispensation> patientDispensations = patientDispensationBuilder.buildInitialPatientDispensations(ptvProgram);
         ptvProgram.setPatientDispensations(patientDispensations);
         List<PTVProgramStockInformation> ptvProgramStocksInformation = ptvProgramStockInformationBuilder.buildPTVProgramStockInformation(ptvProgram);
+        ptvProgram.setPtvProgramStocksInformation(ptvProgramStocksInformation);
+        return ptvProgram;
+    }
+
+    public PTVProgram buildExistentPTVProgram(PTVProgram ptvProgram) throws LMISException {
+        List<PTVProgramStockInformation> ptvProgramStocksInformation = ptvProgramStockInformationBuilder.buildExistentPTVProgramStockInformation(ptvProgram);
         ptvProgram.setPtvProgramStocksInformation(ptvProgramStocksInformation);
         return ptvProgram;
     }

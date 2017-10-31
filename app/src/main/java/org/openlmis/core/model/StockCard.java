@@ -62,7 +62,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     @SerializedName("stockMovementItems")
     private List<StockMovementItem> stockMovementItemsWrapper;
 
-    @ForeignCollectionField()
+    @ForeignCollectionField(eager = true)
     private Collection<StockMovementItem> foreignStockMovementItems;
 
     @Expose

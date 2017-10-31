@@ -3,6 +3,7 @@ package org.openlmis.core.utils;
 import android.support.annotation.NonNull;
 
 import org.joda.time.DateTime;
+import org.openlmis.core.enums.PatientDataStatusEnum;
 import org.openlmis.core.model.HealthFacilityService;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
@@ -32,6 +33,7 @@ public final class PTVUtil {
         ptvProgramExpected.setEndPeriod(endPeriod);
         ptvProgramExpected.setCreatedBy("TWUIO");
         ptvProgramExpected.setVerifiedBy("MZ");
+        ptvProgramExpected.setStatus(PatientDataStatusEnum.MISSING);
         ptvProgramExpected.setCreatedAt(today.toDate());
         ptvProgramExpected.setUpdatedAt(today.toDate());
         return ptvProgramExpected;
@@ -105,6 +107,7 @@ public final class PTVUtil {
         List<Product> expectedProducts = new ArrayList<>();
         for (String code: ptvProductCodes){
             Product product = Product.dummyProduct();
+            product.setId(ptvProductCodes.indexOf(code));
             product.setCode(code);
             expectedProducts.add(product);
         }

@@ -51,7 +51,7 @@ public class PTVProgramBuilderTest {
         when(ptvProgramStockInformationBuilder.buildPTVProgramStockInformation(expectedPTVProgram)).thenReturn(new ArrayList<PTVProgramStockInformation>());
         expectedPTVProgram.setPtvProgramStocksInformation(ptvProgramStockInformationBuilder.buildPTVProgramStockInformation(expectedPTVProgram));
 
-        PTVProgram actualPTVProgram = ptvProgramBuilder.buildPTVProgram(period);
+        PTVProgram actualPTVProgram = ptvProgramBuilder.buildInitialPTVProgram(period);
 
         assertThat(actualPTVProgram, is(expectedPTVProgram));
     }

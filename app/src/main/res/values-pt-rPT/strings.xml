@@ -433,9 +433,15 @@
     <string name="title_patient_data_report_form">RELATÓRIO DE DADOS DO PACIENTE</string>
     <string name="total_woman">Total de Mulheres</string>
     <string name="total_child">Total de Crianças</string>
-    <string name="service_name">Nome do Serviço / Medicines</string>
+    <string name="service_name">Nome do Serviço</string>
     <string name="signature">Assinatura</string>
     <string name="initial_stock">Estoque Inicial</string>
+    <string name="drug_name">Nome da Droga</string>
+    <string name="entries">Ingressos</string>
+    <string name="losses_and_adjustments">Perdas e Ajustes</string>
+    <string name="requisition">Requisição</string>
+    <string name="final_stock">estoque final</string>
+    <string name="loading_report_information">Carregando informações do relatório</string>
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
         <item>Últimos 14 dias</item>

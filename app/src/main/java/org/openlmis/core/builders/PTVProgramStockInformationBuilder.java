@@ -48,11 +48,16 @@ public class PTVProgramStockInformationBuilder {
     }
 
     private void setStockCardInformation(Product product, PTVProgramStockInformation ptvProgramStockInformation) throws LMISException {
-        StockCard stockCard = stockRepository.queryStockCardByProductCode(product.getCode());
+        StockCard stockCard = stockRepository.queryStockCardByProductId(product.getId());
         if (stockCard != null) {
-            ptvProgramStockInformation.setInitialStock(stockCard.getStockOnHand());
-            List<StockMovementItem> stockMovementItems = ((List<StockMovementItem>) stockCard.getForeignStockMovementItems());
-            ptvProgramStockInformation.setEntries(getEntriesQuantity(stockMovementItems));
+            List<StockMovementItem> stockMovementItems = new ArrayList<>(stockCard.getForeignStockMovementItems());
+            long entriesQuantity = getEntriesQuantity(stockMovementItems);
+            long initialStock = stockCard.getStockOnHand() - entriesQuantity;
+            if (initialStock < 0) {
+                initialStock = DEFAULT_QUANTITY;
+            }
+            ptvProgramStockInformation.setInitialStock(initialStock);
+            ptvProgramStockInformation.setEntries(entriesQuantity);
         } else {
             ptvProgramStockInformation.setInitialStock(DEFAULT_QUANTITY);
             ptvProgramStockInformation.setEntries(DEFAULT_QUANTITY);
@@ -60,14 +65,15 @@ public class PTVProgramStockInformationBuilder {
     }
 
     private long getEntriesQuantity(List<StockMovementItem> stockMovementItems) {
+        long entriesQuantity = DEFAULT_QUANTITY;
         if (stockMovementItems != null) {
             for (StockMovementItem movementItem : stockMovementItems) {
                 if (movementItem.getMovementType().equals(MovementReasonManager.MovementType.RECEIVE)) {
-                    return movementItem.getMovementQuantity();
+                    entriesQuantity += movementItem.getMovementQuantity();
                 }
             }
         }
-        return DEFAULT_QUANTITY;
+        return entriesQuantity;
     }
 
     @NonNull
@@ -79,5 +85,18 @@ public class PTVProgramStockInformationBuilder {
         ptvProductCodes.add(Constants.PTV_PRODUCT_FOUR_CODE);
         ptvProductCodes.add(Constants.PTV_PRODUCT_FIVE_CODE);
         return ptvProductCodes;
+    }
+
+    public List<PTVProgramStockInformation> buildExistentPTVProgramStockInformation(PTVProgram ptvProgram) throws LMISException {
+        List<PTVProgramStockInformation> ptvProgramStocksInformation = new ArrayList<>();
+        for (PTVProgramStockInformation stockInformation : ptvProgram.getPtvProgramStocksInformation()) {
+            long id = stockInformation.getProduct().getId();
+            Product product = productRepository.getProductById(id);
+            stockInformation.setProduct(product);
+            List<ServiceDispensation> serviceDispensations = serviceDispensationBuilder.buildExistentInitialServiceDispensations(stockInformation);
+            stockInformation.setServiceDispensations(serviceDispensations);
+            ptvProgramStocksInformation.add(stockInformation);
+        }
+        return ptvProgramStocksInformation;
     }
 }

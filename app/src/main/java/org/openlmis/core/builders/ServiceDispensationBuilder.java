@@ -15,6 +15,7 @@ public class ServiceDispensationBuilder {
 
     @Inject
     private HealthFacilityServiceRepository healthFacilityServiceRepository;
+    private List<HealthFacilityService> services;
 
     @Inject
     public ServiceDispensationBuilder() {
@@ -33,7 +34,27 @@ public class ServiceDispensationBuilder {
     }
 
     private List<HealthFacilityService> getAllHealthFacilityServices() throws LMISException {
-            return healthFacilityServiceRepository.getAll();
+        return healthFacilityServiceRepository.getAll();
     }
 
+    public List<ServiceDispensation> buildExistentInitialServiceDispensations(PTVProgramStockInformation ptvProgramStockInformation) throws LMISException {
+        List<ServiceDispensation> serviceDispensations = new ArrayList<>();
+        services = getAllHealthFacilityServices();
+        for (ServiceDispensation serviceDispensation : ptvProgramStockInformation.getServiceDispensations()) {
+            HealthFacilityService healthFacilityService = getFacilityServiceForCurrentServiceDispensation(serviceDispensation);
+            serviceDispensation.setHealthFacilityService(healthFacilityService);
+            serviceDispensations.add(serviceDispensation);
+        }
+        return serviceDispensations;
+    }
+
+    private HealthFacilityService getFacilityServiceForCurrentServiceDispensation(ServiceDispensation serviceDispensation) {
+        long id = serviceDispensation.getHealthFacilityService().getId();
+        for (HealthFacilityService healthFacilityService : services) {
+            if (healthFacilityService.getId() == id) {
+                return healthFacilityService;
+            }
+        }
+        return serviceDispensation.getHealthFacilityService();
+    }
 }

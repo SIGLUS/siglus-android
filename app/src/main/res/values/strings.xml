@@ -480,9 +480,15 @@
     <string name="title_patient_data_report_form">PATIENT DATA REPORT</string>
     <string name="total_woman">Total Woman</string>
     <string name="total_child">Total Child</string>
-    <string name="service_name">Service Name / Drugs</string>
+    <string name="service_name">Service Name</string>
     <string name="signature">Signature</string>
     <string name="initial_stock">Initial Stock</string>
+    <string name="drug_name">Drug Name</string>
+    <string name="entries">Entries</string>
+    <string name="losses_and_adjustments">Losses and Adjustments</string>
+    <string name="requisition">Requisition</string>
+    <string name="final_stock">Final Stock</string>
+    <string name="loading_report_information">Loading report information</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>
