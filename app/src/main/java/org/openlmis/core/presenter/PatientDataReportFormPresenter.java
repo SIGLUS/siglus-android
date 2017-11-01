@@ -58,8 +58,11 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
             public void call(final Subscriber<? super List<ImplementationReportViewModel>> subscriber) {
                 try {
                     malariaProgram = patientDataService.findForPeriod(period.getBegin(), period.getEnd());
+                    List<Long> malariaProductsStockHand = patientDataService.getMalariaProductsStockHand();
                     MalariaDataReportViewModel malariaDataReportViewModel = reportViewModelMapper.Map(malariaProgram);
-                    viewModels.add(malariaDataReportViewModel.getUsImplementationReportViewModel());
+                    ImplementationReportViewModel usImplementationReportViewModel = malariaDataReportViewModel.getUsImplementationReportViewModel();
+                    usImplementationReportViewModel.setExistingStock(malariaProductsStockHand);
+                    viewModels.add(usImplementationReportViewModel);
                     viewModels.add(malariaDataReportViewModel.getApeImplementationReportViewModel());
                     viewModels.add(generateTotalViewModel(viewModels.get(0), viewModels.get(1)));
                     subscriber.onNext(viewModels);

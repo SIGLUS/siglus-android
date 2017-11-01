@@ -65,7 +65,7 @@ public class MalariaProgramSyncTaskTest {
     }
 
     @Test
-    public void shouldReportErrorToFabricWhenAccessingPendingForSync() throws Exception {
+    public void shouldReportErrorToFabricWhenAccessingPendingForSync() throws LMISException {
         LMISException lmisException = mock(LMISException.class);
         doThrow(lmisException).when(malariaProgramRepository).getPendingForSync();
         syncTask.sync();
@@ -73,7 +73,7 @@ public class MalariaProgramSyncTaskTest {
     }
 
     @Test
-    public void shouldReportErrorToFabricWhenUpdatingSyncedPrograms() throws Exception {
+    public void shouldReportErrorToFabricWhenUpdatingSyncedPrograms() throws LMISException {
         LMISException lmisException = mock(LMISException.class);
         doThrow(lmisException).when(malariaProgramRepository).bulkUpdateAsSynced((List<MalariaProgram>) anyObject());
         syncTask.sync();

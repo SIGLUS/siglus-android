@@ -90,7 +90,7 @@ public class MalariaProgramRepository {
         }
     }
 
-    public void bulkUpdateAsSynced(List<MalariaProgram> pendingForSync) {
+    public void bulkUpdateAsSynced(List<MalariaProgram> pendingForSync) throws LMISException {
 
     }
 

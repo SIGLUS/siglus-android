@@ -12,6 +12,7 @@ import org.openlmis.core.model.Implementation;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Treatment;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.view.viewmodel.malaria.ImplementationReportType;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
 
 import java.lang.reflect.Field;
@@ -21,12 +22,14 @@ import java.util.List;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
+import static com.natpryce.makeiteasy.MakeItEasy.with;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.helpers.ImplementationBuilder.createDefaultImplementations;
 import static org.openlmis.core.helpers.ImplementationReportBuilder.randomImplementationReport;
+import static org.openlmis.core.helpers.ImplementationReportBuilder.type;
 import static org.openlmis.core.utils.MalariaExecutors.APE;
 import static org.openlmis.core.utils.MalariaExecutors.US;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x1_CODE;
@@ -39,8 +42,8 @@ import static org.openlmis.core.utils.mapper.ImplementationUtils.findTreatmentFo
 @RunWith(MockitoJUnitRunner.class)
 public class ImplementationReportViewModelToImplementationListMapperTest {
 
-    private ImplementationReportViewModel usReport = make(a(randomImplementationReport));
-    private ImplementationReportViewModel apeReport = make(a(randomImplementationReport));
+    private ImplementationReportViewModel usReport = make(a(randomImplementationReport, with(type, ImplementationReportType.US)));
+    private ImplementationReportViewModel apeReport = make(a(randomImplementationReport, with(type, ImplementationReportType.APE)));
     private List<Implementation> implementations = createDefaultImplementations();
 
     @Mock
@@ -109,7 +112,7 @@ public class ImplementationReportViewModelToImplementationListMapperTest {
         Method getExistingStock = ImplementationReportViewModel.class.getMethod("getExistingStock" + productPartialCode);
         Field productField = this.getClass().getDeclaredField("product" + productPartialCode);
         productField.setAccessible(true);
-        assertThat(treatment, is(notNull()));
+        assertThat(treatment, is(notNullValue()));
         assertThat(treatment.getAmount(), is(getCurrentTreatment.invoke(report)));
         assertThat(treatment.getStock(), is(getExistingStock.invoke(report)));
         assertThat(treatment.getProduct(), is((Product) productField.get(this)));

@@ -19,8 +19,6 @@ public class PatientDataReportViewHolderSubmitted extends PatientDataReportViewH
     @InjectView(R.id.btn_report_entry)
     TextView btnReportEntry;
 
-    private PatientDataReportViewModel viewModel;
-
     public PatientDataReportViewHolderSubmitted(Context context, ViewGroup parent) {
         super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_submitted, parent, false));
     }

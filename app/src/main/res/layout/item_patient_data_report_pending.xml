@@ -22,6 +22,7 @@
         <TextView
             android:id="@+id/tv_report_status"
             style="@style/ItemRnr.MessageTextType2"
+            android:text="@string/msg_patient_data_report_missing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

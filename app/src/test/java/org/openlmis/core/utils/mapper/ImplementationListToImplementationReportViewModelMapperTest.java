@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openlmis.core.model.Implementation;
+import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Treatment;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportType;
@@ -21,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openlmis.core.helpers.ImplementationBuilder.executor;
 import static org.openlmis.core.helpers.ImplementationBuilder.randomImplementation;
 import static org.openlmis.core.helpers.ImplementationBuilder.treatments;
+import static org.openlmis.core.helpers.MalariaProgramBuilder.defaultMalariaProgram;
 import static org.openlmis.core.helpers.ProductBuilder.code;
 import static org.openlmis.core.helpers.ProductBuilder.randomProduct;
 import static org.openlmis.core.helpers.TreatmentBuilder.product;
@@ -37,6 +39,7 @@ public class ImplementationListToImplementationReportViewModelMapperTest {
     private static final String PRODUCT_6x3_CODE = PRODUCT_6x1_CODE + "Y";
     private static final String PRODUCT_6x4_CODE = PRODUCT_6x1_CODE + "X";
 
+    private MalariaProgram malariaProgram = make(a(defaultMalariaProgram));
     @InjectMocks
     private ImplementationListToImplementationReportViewModelMapper mapper;
     private Treatment treatment;
