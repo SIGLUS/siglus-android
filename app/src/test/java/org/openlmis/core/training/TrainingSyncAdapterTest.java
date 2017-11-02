@@ -2,6 +2,7 @@ package org.openlmis.core.training;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -39,6 +40,7 @@ public class TrainingSyncAdapterTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime());
     }
 
+    @Ignore
     @Test
     public void shouldRequestTrainingSyncWhenTrainingFeatureIsOn() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_training, true);

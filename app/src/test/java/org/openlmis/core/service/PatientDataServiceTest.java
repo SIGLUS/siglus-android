@@ -157,7 +157,7 @@ public class PatientDataServiceTest {
     }
 
     @Test
-    public void shouldReturnMalariaProducts() throws LMISException {
+    public void shouldReturnMalariaProducts() throws Exception {
         List<Product> expectedMalariaProducts = newArrayList(product6x1, product6x2, product6x3, product6x4);
         List<Product> malariaProducts = patientDataService.getMalariaProducts();
         assertThat(malariaProducts.size(), is(expectedMalariaProducts.size()));
@@ -167,7 +167,7 @@ public class PatientDataServiceTest {
     }
 
     @Test
-    public void shouldReturnExistingStockCardOfMalariaProducts() throws LMISException {
+    public void shouldReturnExistingStockCardOfMalariaProducts() throws Exception {
         List<StockCard> expectedMalariaStockCards = newArrayList(stockCard6x1, stockCard6x2, stockCard6x3, stockCard6x4);
         List<StockCard> stocks = patientDataService.getMalariaProductsStockCards();
         assertThat(stocks.size(), is(expectedMalariaStockCards.size()));
