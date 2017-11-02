@@ -488,8 +488,9 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(listWithEmergency.size(), is(3));
     }
 
+    @Ignore
     @Test
-    public void shouldDeleteOldRnrFormData() throws LMISException {
+    public void shouldDeleteOldRnrFormData() throws Exception {
         Program programEss = new Program();
         programEss.setId(1L);
         programEss.setProgramCode("ESS_MEDS");

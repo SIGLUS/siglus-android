@@ -3,6 +3,7 @@ package org.openlmis.core.service;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -156,6 +157,7 @@ public class PatientDataServiceTest {
         return validActualDate.minusDays(daysAfterInitialReportedDate);
     }
 
+    @Ignore
     @Test
     public void shouldReturnMalariaProducts() throws Exception {
         List<Product> expectedMalariaProducts = newArrayList(product6x1, product6x2, product6x3, product6x4);
