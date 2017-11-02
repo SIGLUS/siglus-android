@@ -3,11 +3,8 @@
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.qa</string>
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.qa</string>
-
     <string name="ga_trackingId">UA-74647160-2</string>
     <bool name="ga_dryRun">false</bool>
-
     <string name="app_name">@string/app_name_in_qa</string>
-
     <string name="app_time_out">3600000</string>
 </resources>
