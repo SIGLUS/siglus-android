@@ -40,6 +40,12 @@
             android:name=".view.activity.BulkInitialInventoryActivity"
             android:label="@string/title_init_inventory"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".view.activity.ViaPatientDataReportActivity"
+            android:label="@string/title_patient_data_report"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.AddNonBasicProductsActivity"
             android:label="@string/title_add_non_basic_products"
@@ -56,10 +62,6 @@
             android:name=".view.activity.RapidTestReportFormActivity"
             android:label="@string/title_rapid_test_form"
             android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".view.activity.PatientDataReportActivity"
-            android:label="@string/title_patient_data_report"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.PatientDataReportFormActivity"
             android:label="@string/title_patient_data_report_form"

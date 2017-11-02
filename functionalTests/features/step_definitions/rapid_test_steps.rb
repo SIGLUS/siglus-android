@@ -1,5 +1,5 @@
 def rapid_test_report_page
-  @rapid_test_report_page ||= page(RapidTestReportPage).await(timeout: 30)
+ page(RapidTestReportPage).await(timeout: 30)
 end
 
 Given(/^I enter quantity for Rapid Test Report$/) do

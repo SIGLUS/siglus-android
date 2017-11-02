@@ -104,7 +104,9 @@ Severity: EASY
         <module name="MethodLength">
             <property name="max" value="46" />
         </module>
-        <module name="ParameterNumber" />
+        <module name="ParameterNumber">
+            <property name="max" value="10" />
+        </module>
 
 
         <!-- Checks for whitespace                               -->

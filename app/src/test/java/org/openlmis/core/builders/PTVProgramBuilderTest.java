@@ -7,10 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.enums.PatientDataStatusEnum;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.Period;
 import org.robolectric.RuntimeEnvironment;
 
@@ -44,7 +44,7 @@ public class PTVProgramBuilderTest {
         PTVProgram expectedPTVProgram = new PTVProgram();
         expectedPTVProgram.setStartPeriod(period.getBegin().toDate());
         expectedPTVProgram.setEndPeriod(period.getEnd().toDate());
-        expectedPTVProgram.setStatus(PatientDataStatusEnum.MISSING);
+        expectedPTVProgram.setStatus(PatientDataProgramStatus.MISSING);
         expectedPTVProgram.setCreatedBy("");
         expectedPTVProgram.setVerifiedBy("");
         expectedPTVProgram.setPatientDispensations(patientDispensationBuilder.buildInitialPatientDispensations(expectedPTVProgram));

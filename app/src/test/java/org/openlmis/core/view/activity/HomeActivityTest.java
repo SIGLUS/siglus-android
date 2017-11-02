@@ -79,7 +79,7 @@ public class HomeActivityTest {
     @Test
     public void shouldGoToPatientDataReportPage() {
         homeActivity.btnPatientData.performClick();
-        verifyNextPage(PatientDataReportActivity.class.getName());
+        verifyNextPage(ViaPatientDataReportActivity.class.getName());
     }
 
     @Test

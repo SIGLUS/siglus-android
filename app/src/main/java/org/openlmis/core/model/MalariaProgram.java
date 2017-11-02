@@ -27,7 +27,7 @@ public class MalariaProgram extends BaseModel {
     private DateTime endPeriodDate;
 
     @DatabaseField(dataType = DataType.ENUM_INTEGER)
-    private MalariaProgramStatus status;
+    private PatientDataProgramStatus status;
 
     @ForeignCollectionField(columnName = "implementations", eager = true, maxEagerLevel = 2)
     private Collection<Implementation> implementations;

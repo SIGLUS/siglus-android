@@ -181,7 +181,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickPatientDataReport(View view) {
-        startActivity(new Intent(this, PatientDataReportActivity.class));
+        startActivity(new Intent(this, ViaPatientDataReportActivity.class));
     }
 
     public void onClickRapidTestHistory(View view) {

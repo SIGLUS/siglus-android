@@ -461,7 +461,7 @@
     <string name="succesfully_saved">Successfully Saved</string>
     <string name="btn_bulk_add_new_lot">ADD LOT</string>
     <string name="title_patient_data_report">VIA PATIENT DATA</string>
-    <string name="btn_create_patient_data_report">Create patient data report</string>
+    <string name="btn_create_malaria_report">Create malaria report</string>
     <string name="msg_patient_data_report_missing">No patient data report has been created</string>
     <string name="msg_us_ape">US/APE</string>
     <string name="msg_total_sum_us_ape">Total US/APE</string>
@@ -475,7 +475,7 @@
     <string name="title_add_non_basic_products">Add products to be issued</string>
     <string name="title_non_basic_products">Non basic products</string>
     <string name="add_products_loading_message">Downloading Non Basic Products</string>
-    <string name="create_ptv_data_report">Create PTV Data report</string>
+    <string name="create_ptv_data_report">Create PTV Data Report</string>
     <string name="title_patient_ptv_report_form">PTV DATA REPORT</string>
     <string name="title_patient_data_report_form">PATIENT DATA REPORT</string>
     <string name="total_woman">Total Woman</string>
@@ -492,6 +492,10 @@
     <string name="report_submitted_synced_pending_message">Your report was <![CDATA[<b>submitted successfully </b>]]>, but is still pending for synchronization. It will sync as soon as you have internet connection</string>
     <string name="report_synced_successfully">Your report was <![CDATA[<b>synced successfully</b>]]></string>
     <string name="btn_view_patient_data_report">View Report</string>
+    <string name="malaria_report_incomplete">Malaria Report is incomplete</string>
+    <string name="ptv_report_incomplete">PTV Report is incomplete</string>
+    <string name="continue_editing_malaria">Continue editing Malaria Report</string>
+    <string name="continue_editing_ptv">Continue editing PTV Report</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>

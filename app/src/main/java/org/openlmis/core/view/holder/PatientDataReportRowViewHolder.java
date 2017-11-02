@@ -7,7 +7,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.MalariaProgramStatus;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportType;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
 
@@ -63,7 +63,7 @@ public class PatientDataReportRowViewHolder extends BaseViewHolder {
         if (viewModel.getType() == ImplementationReportType.US) {
             setPatientDataComponentsAsNotEditable(patientDataExistingStockComponents);
         }
-        if (viewModel.getStatus() == MalariaProgramStatus.SYNCED) {
+        if (viewModel.getStatus() == PatientDataProgramStatus.SYNCED) {
             setPatientDataComponentsAsNotEditable(patientDataCurrentTreatmentsComponents);
             setPatientDataComponentsAsNotEditable(patientDataExistingStockComponents);
         }

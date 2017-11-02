@@ -2,16 +2,18 @@ package org.openlmis.core.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.ViewGroup;
 
-import org.openlmis.core.model.MalariaProgramStatus;
+import org.openlmis.core.enums.PatientDataReportType;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.view.holder.PatientDataReportViewHolderBase;
-import org.openlmis.core.view.holder.PatientDataReportViewHolderPending;
+import org.openlmis.core.view.holder.PatientDataReportViewHolderDraft;
+import org.openlmis.core.view.holder.PatientDataReportViewHolderMissing;
 import org.openlmis.core.view.holder.PatientDataReportViewHolderSubmitted;
 import org.openlmis.core.view.holder.PatientDataReportViewHolderSynced;
 import org.openlmis.core.view.viewmodel.malaria.PatientDataReportViewModel;
 
-import java.util.HashMap;
 import java.util.List;
 
 import lombok.Setter;
@@ -20,27 +22,29 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class PatientDataReportAdapter extends RecyclerView.Adapter<PatientDataReportViewHolderBase> {
     private Context context;
+    private PatientDataReportType patientDataReportType;
 
     @Setter
     private List<PatientDataReportViewModel> viewModels;
-    private final HashMap<Integer, Class> viewHolderMap;
+    private final SparseArray<Class> viewHolderSparseArray;
 
-    public PatientDataReportAdapter(Context context) {
+    public PatientDataReportAdapter(Context context, PatientDataReportType patientDataReportType) {
         this.context = context;
+        this.patientDataReportType = patientDataReportType;
         viewModels = newArrayList();
-        viewHolderMap = new HashMap<>();
-        viewHolderMap.put(MalariaProgramStatus.DRAFT.ordinal(), PatientDataReportViewHolderPending.class);
-        viewHolderMap.put(MalariaProgramStatus.MISSING.ordinal(), PatientDataReportViewHolderPending.class);
-        viewHolderMap.put(MalariaProgramStatus.SUBMITTED.ordinal(), PatientDataReportViewHolderSubmitted.class);
-        viewHolderMap.put(MalariaProgramStatus.SYNCED.ordinal(), PatientDataReportViewHolderSynced.class);
+        viewHolderSparseArray = new SparseArray<>();
+        viewHolderSparseArray.put(PatientDataProgramStatus.MISSING.ordinal(), PatientDataReportViewHolderMissing.class);
+        viewHolderSparseArray.put(PatientDataProgramStatus.DRAFT.ordinal(), PatientDataReportViewHolderDraft.class);
+        viewHolderSparseArray.put(PatientDataProgramStatus.SUBMITTED.ordinal(), PatientDataReportViewHolderSubmitted.class);
+        viewHolderSparseArray.put(PatientDataProgramStatus.SYNCED.ordinal(), PatientDataReportViewHolderSynced.class);
     }
 
     @Override
     public PatientDataReportViewHolderBase onCreateViewHolder(ViewGroup parent, int viewType) {
-        Class viewHolderClass = viewHolderMap.get(viewType);
+        Class viewHolderClass = viewHolderSparseArray.get(viewType);
         PatientDataReportViewHolderBase viewHolder = null;
         try {
-            viewHolder = (PatientDataReportViewHolderBase) viewHolderClass.getConstructor(Context.class, ViewGroup.class).newInstance(context, parent);
+            viewHolder = (PatientDataReportViewHolderBase) viewHolderClass.getConstructor(Context.class, ViewGroup.class, PatientDataReportType.class).newInstance(context, parent, patientDataReportType);
         } catch (Exception e) {
             e.printStackTrace();
         }

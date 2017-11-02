@@ -1,6 +1,6 @@
 package org.openlmis.core.model;
 
-public enum MalariaProgramStatus {
+public enum PatientDataProgramStatus {
     MISSING,
     DRAFT,
     SUBMITTED,

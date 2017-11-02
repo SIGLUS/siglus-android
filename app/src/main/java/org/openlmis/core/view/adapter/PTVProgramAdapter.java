@@ -5,9 +5,9 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.enums.PatientDataStatusEnum;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.view.holder.PTVProgramViewHolder;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder
 
     @Override
     public PTVProgramViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (ptvProgram.getStatus().equals(PatientDataStatusEnum.COMPLETE)) {
+        if (ptvProgram.getStatus().equals(PatientDataProgramStatus.SUBMITTED)) {
             return new PTVProgramViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.ptv_report_form_row, parent, false), true);
         }
         return new PTVProgramViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.ptv_report_form_row, parent, false),false);

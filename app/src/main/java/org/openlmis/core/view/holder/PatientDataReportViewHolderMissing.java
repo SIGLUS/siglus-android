@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.enums.PatientDataReportType;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.PTVDataReportFormActivity;
@@ -20,26 +21,31 @@ import roboguice.inject.InjectView;
 import static org.openlmis.core.R.id.btn_create_patient_data_report;
 
 
-public class PatientDataReportViewHolderPending extends PatientDataReportViewHolderBase {
+public class PatientDataReportViewHolderMissing extends PatientDataReportViewHolderBase {
 
     @InjectView(btn_create_patient_data_report)
     private TextView btnReportEntry;
 
-    @InjectView(R.id.btn_create_ptv_data_report)
-    TextView btnCreatePtvDataReport;
-
     private PatientDataReportViewModel viewModel;
 
-    public PatientDataReportViewHolderPending(Context context, ViewGroup parent) {
-        super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_pending, parent, false));
+    protected PatientDataReportType patientDataReportType;
+
+    public PatientDataReportViewHolderMissing(Context context, ViewGroup parent, PatientDataReportType patientDataReportType) {
+        super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_missing, parent, false));
+        this.patientDataReportType = patientDataReportType;
     }
 
     @Override
     public void populate(PatientDataReportViewModel patientDataReportViewModel) {
         viewModel = patientDataReportViewModel;
         tvPeriod.setText(patientDataReportViewModel.getPeriod().toString());
-        btnReportEntry.setOnClickListener(goToPatientDataReportFormActivity());
-        btnCreatePtvDataReport.setOnClickListener(goToPTVDataFormActivity());
+        if(patientDataReportType.equals(PatientDataReportType.MALARIA)) {
+            btnReportEntry.setOnClickListener(goToPatientDataReportFormActivity());
+            btnReportEntry.setText(R.string.btn_create_malaria_report);
+        }else{
+            btnReportEntry.setOnClickListener(goToPTVDataFormActivity());
+            btnReportEntry.setText(R.string.create_ptv_data_report);
+        }
     }
 
 
@@ -61,7 +67,7 @@ public class PatientDataReportViewHolderPending extends PatientDataReportViewHol
                 ((BaseActivity) context).loading();
                 ((Activity) context).startActivityForResult(PatientDataReportFormActivity
                                 .getIntentToMe(context,
-                                        PatientDataReportViewModel.DEFAULT_FORM_ID,
+                                        Constants.DEFAULT_FORM_ID,
                                         viewModel.getPeriod().getBegin()),
                         Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
                 ((BaseActivity) context).loaded();

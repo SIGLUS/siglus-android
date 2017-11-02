@@ -14,7 +14,10 @@ import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x2_CODE;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x3_CODE;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x4_CODE;
 
-public class ImplementationUtils {
+public final class ImplementationUtils {
+
+    private ImplementationUtils() {
+    }
 
     public static final String CURRENT_TREATMENT_SETTER = "setCurrentTreatment";
     public static final String EXISTING_STOCK_SETTER = "setExistingStock";

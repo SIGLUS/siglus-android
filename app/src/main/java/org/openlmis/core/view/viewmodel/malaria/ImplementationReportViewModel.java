@@ -1,6 +1,6 @@
 package org.openlmis.core.view.viewmodel.malaria;
 
-import org.openlmis.core.model.MalariaProgramStatus;
+import org.openlmis.core.model.PatientDataProgramStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +14,7 @@ public class ImplementationReportViewModel {
 
     private ImplementationReportType type;
 
-    private MalariaProgramStatus status;
+    private PatientDataProgramStatus status;
 
     private long currentTreatment6x1;
 

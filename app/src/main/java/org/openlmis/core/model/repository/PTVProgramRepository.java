@@ -73,4 +73,14 @@ public class PTVProgramRepository {
             }
         });
     }
+
+    public PTVProgram getFirstMovement() throws LMISException {
+        return dbUtil.withDao(PTVProgram.class, new DbUtil.Operation<PTVProgram, PTVProgram>() {
+            @Override
+            public PTVProgram operate(Dao<PTVProgram, String> dao) throws SQLException, LMISException {
+                PTVProgram ptvProgramDataReport = dao.queryBuilder().orderBy("createdAt", true).queryForFirst();
+                return ptvProgramDataReport;
+            }
+        });
+    }
 }

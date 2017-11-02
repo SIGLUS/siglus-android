@@ -76,6 +76,8 @@ public final class Constants {
     public static final String PTV_PRODUCT_FOUR_CODE = "08S17";
     public static final String PTV_PRODUCT_FIVE_CODE = "08S23";
 
+    public static long DEFAULT_FORM_ID = 0;
+
     private Constants() {
 
     }

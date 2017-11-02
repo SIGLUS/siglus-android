@@ -1,6 +1,7 @@
 package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,8 +14,9 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
+import org.openlmis.core.enums.PatientDataReportType;
 import org.openlmis.core.model.MalariaProgram;
-import org.openlmis.core.model.MalariaProgramStatus;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.presenter.BaseReportPresenter;
@@ -34,8 +36,8 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 import static org.openlmis.core.R.id.action_panel;
-import static org.openlmis.core.model.MalariaProgramStatus.DRAFT;
-import static org.openlmis.core.model.MalariaProgramStatus.SUBMITTED;
+import static org.openlmis.core.model.PatientDataProgramStatus.DRAFT;
+import static org.openlmis.core.model.PatientDataProgramStatus.SUBMITTED;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class PatientDataReportFormFragment extends BaseReportFragment implements PatientDataReportFormRowAdapter.PatientDataReportListener {
@@ -84,7 +86,7 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
             @Override
             public void call(List<ImplementationReportViewModel> implementationReportViewModels) {
                 ImplementationReportViewModel viewModel = implementationReportViewModels.get(0);
-                if (viewModel.getStatus() == MalariaProgramStatus.SYNCED) {
+                if (viewModel.getStatus() == PatientDataProgramStatus.SYNCED) {
                     actionPanel.setVisibility(View.GONE);
                 }
                 adapter.setViewModels(implementationReportViewModels);
@@ -109,7 +111,7 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
         return null;
     }
 
-    private SingleClickButtonListener getSaveFormListenerForStatus(final MalariaProgramStatus status) {
+    private SingleClickButtonListener getSaveFormListenerForStatus(final PatientDataProgramStatus status) {
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
@@ -119,24 +121,35 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
     }
 
 
-    public void onSaveForm(MalariaProgramStatus status) {
+    public void onSaveForm(PatientDataProgramStatus status) {
         Subscription subscription = patientPresenter.onSaveForm(status).subscribe(getOnSaveActionForStatus(status));
         subscriptions.add(subscription);
     }
 
     @NonNull
-    private Action1<? super MalariaProgram> getOnSaveActionForStatus(final MalariaProgramStatus status) {
+    private Action1<? super MalariaProgram> getOnSaveActionForStatus(final PatientDataProgramStatus status) {
         return new Action1<MalariaProgram>() {
             @Override
             public void call(MalariaProgram malariaProgram) {
                 ToastUtil.show(R.string.succesfully_saved);
                 loaded();
-                if (status == MalariaProgramStatus.SUBMITTED) {
-                    getActivity().setResult(Activity.RESULT_OK);
-                    finish();
+                if (status == PatientDataProgramStatus.SUBMITTED) {
+                    finishWithResult();
                 }
             }
         };
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishWithResult();
+    }
+
+    private void finishWithResult() {
+        Intent intent = new Intent();
+        intent.putExtra("type", PatientDataReportType.MALARIA);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     @Override

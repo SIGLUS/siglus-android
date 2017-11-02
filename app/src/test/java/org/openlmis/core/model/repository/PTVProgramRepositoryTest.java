@@ -9,11 +9,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.enums.PatientDataStatusEnum;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.HealthFacilityService;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
@@ -59,7 +59,7 @@ public class PTVProgramRepositoryTest {
         PTVProgramStockInformation ptvProgramStockInformation = createValidPTVProgramStockInformation(expectedPtvProgram);
         setHealthFacilityAndPtvProgramStockInformationToServiceDispensation(ptvProgramStockInformation);
         expectedPtvProgram.setPtvProgramStocksInformation(newArrayList(ptvProgramStockInformation));
-        expectedPtvProgram.setStatus(PatientDataStatusEnum.MISSING);
+        expectedPtvProgram.setStatus(PatientDataProgramStatus.MISSING);
 
         PTVProgram ptvProgramSaved = ptvProgramRepository.save(expectedPtvProgram);
 

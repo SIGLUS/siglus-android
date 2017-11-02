@@ -26,15 +26,27 @@ Feature: Log in and initialize Inventory with Basic Products
     And I search for "Estavudina+Lamivudina+Nevirapi; 6mg + 30mg +50mg, 60 Cps (Baby; Embalagem" to add a new lot
     And I add a new lot with number "DDD", amount 130 and expiration date next year
     And I add non basic products
-    And I select "Acarbose; 50mg; Comprimidos" to be added
+    And I select "Zidovudina/Lamivudina; 300mg+150mg 60Comp; Embalagem" to be added
+    And I select "Nevirapina (NVP); 200mg 60Comp; Embalagem" to be added
+    And I select "Nevirapina (NVP); 50mg/5mL 240mL; Suspensão" to be added
+    And I select "Zidovudina (AZT); 300mg 60Comp; Embalagem" to be added
+    And I select "Zidovudina (AZT); 50mg/5mL 240mL; Solução" to be added
     And I select "Trastuzumab; 150mg" to be added
     And I add selected products
     And I submit the initial inventory
     And I should see text containing "All the basic products have to be set up in order to continue"
-    And I search for "Acarbose; 50mg; Comprimidos" to add a new lot
+    And I search for "Zidovudina/Lamivudina; 300mg+150mg 60Comp; Embalagem" to add a new lot
     And I add a new lot with number "EEE", amount 350 and expiration date next year
+    And I search for "Nevirapina (NVP); 200mg 60Comp; Embalagem" to add a new lot
+    And I add a new lot with number "FFF", amount 400 and expiration date next year
+    And I search for "Nevirapina (NVP); 50mg/5mL 240mL; Suspensão" to add a new lot
+    And I add a new lot with number "GGG", amount 500 and expiration date next year
+    And I search for "Zidovudina (AZT); 300mg 60Comp; Embalagem" to add a new lot
+    And I add a new lot with number "HHH", amount 500 and expiration date next year
+    And I search for "Zidovudina (AZT); 50mg/5mL 240mL; Solução" to add a new lot
+    And I add a new lot with number "III", amount 500 and expiration date next year
     And I search for "Trastuzumab; 150mg" to add a new lot
-    And I add a new lot with number "FFF", amount 300 and expiration date next year
+    And I add a new lot with number "JJJ", amount 300 and expiration date next year
     And I search for "Trastuzumab; 150mg" to delete it
     And the initial inventory list should not contains product "Trastuzumab; 150mg"
     When I submit the initial inventory

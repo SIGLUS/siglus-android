@@ -20,8 +20,9 @@ public abstract class PatientDataReportViewHolderBase extends BaseViewHolder {
     protected TextView tvReportStatus;
 
 
+
     public PatientDataReportViewHolderBase(Context context, ViewGroup parent) {
-        super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_pending, parent, false));
+        super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_missing, parent, false));
     }
 
     public PatientDataReportViewHolderBase(View itemView) {

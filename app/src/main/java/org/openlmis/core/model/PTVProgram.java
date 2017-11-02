@@ -24,7 +24,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.openlmis.core.enums.PatientDataStatusEnum;
 import org.openlmis.core.utils.DateUtil;
 
 import java.io.Serializable;
@@ -52,7 +51,7 @@ public class PTVProgram extends BaseModel implements Serializable {
     String verifiedBy;
 
     @DatabaseField (dataType = DataType.ENUM_INTEGER)
-    PatientDataStatusEnum status;
+    PatientDataProgramStatus status;
 
     @ForeignCollectionField(eager = true)
     private Collection<PTVProgramStockInformation> ptvProgramStocksInformation;

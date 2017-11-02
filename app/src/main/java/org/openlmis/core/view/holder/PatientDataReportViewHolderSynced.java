@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.enums.PatientDataReportType;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.PatientDataReportFormActivity;
@@ -25,8 +26,11 @@ public class PatientDataReportViewHolderSynced extends PatientDataReportViewHold
     private TextView btnViewReport;
     private PatientDataReportViewModel viewModel;
 
-    public PatientDataReportViewHolderSynced(Context context, ViewGroup parent) {
+    protected PatientDataReportType patientDataReportType;
+
+    public PatientDataReportViewHolderSynced(Context context, ViewGroup parent, PatientDataReportType patientDataReportType) {
         super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_synced, parent, false));
+        this.patientDataReportType = patientDataReportType;
     }
 
     public void populate(final PatientDataReportViewModel patientDataReportViewModel) {
@@ -43,7 +47,7 @@ public class PatientDataReportViewHolderSynced extends PatientDataReportViewHold
                 ((BaseActivity) context).loading();
                 ((Activity) context).startActivityForResult(PatientDataReportFormActivity
                                 .getIntentToMe(context,
-                                        PatientDataReportViewModel.DEFAULT_FORM_ID,
+                                        Constants.DEFAULT_FORM_ID,
                                         viewModel.getPeriod().getBegin()),
                         Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
                 ((BaseActivity) context).loaded();

@@ -1,5 +1,6 @@
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,12 +14,13 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
-import org.openlmis.core.enums.PatientDataStatusEnum;
+import org.openlmis.core.enums.PatientDataReportType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.model.HealthFacilityService;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ServiceDispensation;
@@ -129,7 +131,7 @@ public class PTVDataReportFormActivity extends BaseActivity {
             public void onCompleted() {
                 Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG).show();
                 if (isCompleted) {
-                    finish();
+                    finishWithResult();
                 }
                 changeButtonsState(true);
             }
@@ -157,6 +159,18 @@ public class PTVDataReportFormActivity extends BaseActivity {
                 ptvProgramPresenter.savePTVProgram(isCompleted).subscribe(updatePTVProgramSubscriber());
             }
         };
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishWithResult();
+    }
+
+    private void finishWithResult() {
+        Intent intent = new Intent();
+        intent.putExtra("type", PatientDataReportType.PTV);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     private void updatePTVProgram() {
@@ -200,7 +214,7 @@ public class PTVDataReportFormActivity extends BaseActivity {
     }
 
     public void updateHeader(PTVProgram ptvProgram) {
-        if(ptvProgram.getStatus().equals(PatientDataStatusEnum.COMPLETE)){
+        if(ptvProgram.getStatus().equals(PatientDataProgramStatus.SUBMITTED)){
             actionPanelView.setVisibility(View.GONE);
             etTotalChild.setClickable(false);
             etTotalWoman.setClickable(false);

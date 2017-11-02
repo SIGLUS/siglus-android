@@ -9,8 +9,9 @@ Feature: Rapid Test
     And I press "CREATE RAPID TEST REPORT"
     And I enter quantity for Rapid Test Report
     And I save rapid test report
+    And I wait for 2 seconds
     And I should see text containing "Rapid Test Reports is incomplete."
-    And I press "Continue Working on Rapid Test Reports"
+    And I press continue working on rapid test report
     And I submit rapid test report
     And I sign using "TWUIO" as initials
     And I press continue to finish approval

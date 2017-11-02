@@ -22,7 +22,6 @@
         <TextView
             android:id="@+id/tv_report_status"
             style="@style/ItemRnr.MessageTextType2"
-            android:text="@string/msg_patient_data_report_missing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -36,18 +35,10 @@
                 style="@style/ItemRnr.BtnView"
                 android:layout_height="@dimen/button_height_default"
                 android:layout_marginBottom="@dimen/margin_small"
-                android:text="@string/btn_create_patient_data_report"
+                android:text="@string/btn_create_malaria_report"
                 android:textColor="@color/color_blue_dark"
                 android:layout_width="wrap_content"/>
 
-            <TextView
-                android:id="@+id/btn_create_ptv_data_report"
-                style="@style/ItemRnr.BtnView"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/button_height_default"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:textColor="@color/color_blue_dark"
-                android:text="@string/create_ptv_data_report" />
         </LinearLayout>
 
 

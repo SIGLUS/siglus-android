@@ -20,8 +20,20 @@ Feature: Log in and make a requisition for basic products
     And I search for "Estavudina+Lamivudina+Nevirapi; 6mg + 30mg +50mg, 60 Cps (Baby; Embalagem" in physical inventory
     And I set the amount to 130
     And I navigate back
-    And I search for "Acarbose; 50mg; Comprimidos" in physical inventory
-    And I set the amount to 120
+    And I search for "Zidovudina/Lamivudina; 300mg+150mg 60Comp; Embalagem" in physical inventory
+    And I set the amount to 200
+    And I navigate back
+    And I search for "Nevirapina (NVP); 200mg 60Comp; Embalagem" in physical inventory
+    And I set the amount to 230
+    And I navigate back
+    And I search for "Nevirapina (NVP); 50mg/5mL 240mL; Suspensão" in physical inventory
+    And I set the amount to 300
+    And I navigate back
+    And I search for "Zidovudina (AZT); 300mg 60Comp; Embalagem" in physical inventory
+    And I set the amount to 500
+    And I navigate back
+    And I search for "Zidovudina (AZT); 50mg/5mL 240mL; Solução" in physical inventory
+    And I set the amount to 500
     And I navigate back
     And I search for "Hidralazina; 25mg/5mL; Injectável" in physical inventory
     And I press "Complete"

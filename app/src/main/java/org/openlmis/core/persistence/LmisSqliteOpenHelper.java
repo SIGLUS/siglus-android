@@ -81,8 +81,6 @@ import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.roboguice.shaded.goole.common.base.Ascii.EM;
-
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     private static final List<Migration> MIGRATIONS = new ArrayList<Migration>() {

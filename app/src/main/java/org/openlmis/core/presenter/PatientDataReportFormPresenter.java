@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.MalariaProgram;
-import org.openlmis.core.model.MalariaProgramStatus;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.service.PatientDataService;
 import org.openlmis.core.utils.mapper.MalariaDataReportViewModelToMalariaProgramMapper;
@@ -116,7 +116,7 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
 
     }
 
-    public Observable<MalariaProgram> onSaveForm(final MalariaProgramStatus status) {
+    public Observable<MalariaProgram> onSaveForm(final PatientDataProgramStatus status) {
         return Observable.create(new Observable.OnSubscribe<MalariaProgram>() {
             @Override
             public void call(Subscriber<? super MalariaProgram> subscriber) {

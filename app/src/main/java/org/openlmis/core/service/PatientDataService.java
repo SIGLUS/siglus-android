@@ -4,12 +4,16 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.enums.PatientDataReportType;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.MalariaProgram;
+import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.MalariaProgramRepository;
+import org.openlmis.core.model.repository.PTVProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.roboguice.shaded.goole.common.base.Optional;
@@ -30,17 +34,29 @@ public class PatientDataService {
     MalariaProgramRepository malariaProgramRepository;
 
     @Inject
+    PTVProgramRepository ptvProgramRepository;
+
+    @Inject
     ProductRepository productRepository;
 
     @Inject
     StockRepository stockRepository;
 
-    public List<Period> calculatePeriods() {
+    public List<Period> calculatePeriods(PatientDataReportType patientDataReportType) {
         List<Period> periods = new ArrayList<>();
-        Optional<MalariaProgram> malariaProgramOptional;
+        if (patientDataReportType.equals(PatientDataReportType.MALARIA)) {
+            calculateMalariaPeriods(periods);
+        }else{
+            calculatePTVPeriods(periods);
+        }
+        return periods;
+    }
+
+    private void calculatePTVPeriods(List<Period> periods) {
+        PTVProgram ptvProgram;
         try {
-            malariaProgramOptional = malariaProgramRepository.getFirstMovement();
-            Optional<Period> period = calculateFirstAvailablePeriod(malariaProgramOptional);
+            ptvProgram = ptvProgramRepository.getFirstMovement();
+            Optional<Period> period = calculateFirstAvailablePeriod(ptvProgram);
             while (period.isPresent()) {
                 periods.add(period.get());
                 period = period.get().generateNextAvailablePeriod();
@@ -48,14 +64,27 @@ public class PatientDataService {
         } catch (LMISException e) {
             e.printStackTrace();
         }
-        return periods;
     }
 
-    private Optional<Period> calculateFirstAvailablePeriod(Optional<MalariaProgram> malariaProgram) {
+    private void calculateMalariaPeriods(List<Period> periods) {
+        MalariaProgram malariaProgram;
+        try {
+            malariaProgram = malariaProgramRepository.getFirstMovement();
+            Optional<Period> period = calculateFirstAvailablePeriod(malariaProgram);
+            while (period.isPresent()) {
+                periods.add(period.get());
+                period = period.get().generateNextAvailablePeriod();
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Optional<Period> calculateFirstAvailablePeriod(BaseModel baseModel) {
         DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         Optional<Period> period;
-        if (malariaProgram.isPresent()) {
-            period = Optional.of(new Period(malariaProgram.get().getReportedDate()));
+        if (baseModel!=null) {
+            period = Optional.of(new Period(new DateTime(baseModel.getCreatedAt())));
         } else {
             period = Optional.of(new Period(today));
         }
@@ -103,7 +132,7 @@ public class PatientDataService {
     }
 
     public MalariaProgram findForPeriod(DateTime beginDate, DateTime endDate) throws LMISException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return  malariaProgramRepository.getPatientDataReportByPeriodAndType(beginDate, endDate);
+        return malariaProgramRepository.getPatientDataReportByPeriodAndType(beginDate, endDate);
     }
 
     public List<Product> getMalariaProducts() {

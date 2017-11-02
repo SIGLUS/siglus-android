@@ -62,15 +62,14 @@ public class MalariaProgramRepository {
         return null;
     }
 
-    public Optional<MalariaProgram> getFirstMovement() throws LMISException {
-        MalariaProgram malariaProgram = (MalariaProgram) dbUtil.withDao(MalariaProgram.class, new DbUtil.Operation<MalariaProgram, Object>() {
+    public MalariaProgram getFirstMovement() throws LMISException {
+        return dbUtil.withDao(MalariaProgram.class, new DbUtil.Operation<MalariaProgram, MalariaProgram>() {
             @Override
             public MalariaProgram operate(Dao<MalariaProgram, String> dao) throws SQLException, LMISException {
-                MalariaProgram patientDataReport = dao.queryBuilder().orderBy("reportedDate", true).queryForFirst();
-                return patientDataReport;
+                MalariaProgram malariaProgram = dao.queryBuilder().orderBy("createdAt", true).queryForFirst();
+                return malariaProgram;
             }
         });
-        return Optional.fromNullable(malariaProgram);
     }
 
     private void saveImplementations(MalariaProgram malariaProgram) throws LMISException {

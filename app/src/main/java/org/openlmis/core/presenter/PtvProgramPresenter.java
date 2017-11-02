@@ -5,11 +5,11 @@ import android.support.annotation.NonNull;
 import com.google.inject.Inject;
 
 import org.openlmis.core.builders.PTVProgramBuilder;
-import org.openlmis.core.enums.PatientDataStatusEnum;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.PTVProgramRepository;
@@ -96,9 +96,9 @@ public class PtvProgramPresenter extends Presenter {
 
     private void setPTVProgramStatus(boolean isCompleted) {
         if (isCompleted) {
-            ptvProgram.setStatus(PatientDataStatusEnum.COMPLETE);
+            ptvProgram.setStatus(PatientDataProgramStatus.SUBMITTED);
         } else {
-            ptvProgram.setStatus(PatientDataStatusEnum.DRAFT);
+            ptvProgram.setStatus(PatientDataProgramStatus.DRAFT);
         }
     }
 

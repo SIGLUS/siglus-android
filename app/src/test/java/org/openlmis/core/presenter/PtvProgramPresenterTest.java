@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.builders.PTVProgramBuilder;
-import org.openlmis.core.enums.PatientDataStatusEnum;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
+import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.PTVProgramRepository;
 import org.openlmis.core.utils.PTVUtil;
@@ -83,7 +83,7 @@ public class PtvProgramPresenterTest {
     @Test
     public void shouldUpdatePTVProgramWhenThereIsAPTVProgramStored() throws LMISException, SQLException {
         PTVProgram expectedPtvProgram = PTVUtil.createDummyPTVProgram(period);
-        expectedPtvProgram.setStatus(PatientDataStatusEnum.DRAFT);
+        expectedPtvProgram.setStatus(PatientDataProgramStatus.DRAFT);
         buildExistingPTVProgram(expectedPtvProgram);
 
         when(ptvProgramRepository.save(expectedPtvProgram)).thenReturn(expectedPtvProgram);
