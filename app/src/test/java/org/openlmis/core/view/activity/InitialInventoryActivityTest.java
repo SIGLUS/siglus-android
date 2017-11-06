@@ -121,9 +121,7 @@ public class InitialInventoryActivityTest {
 
     @Test
     public void shouldInitUIWhenInitialInventory() {
-        assertThat(initialInventoryActivity.btnSave.getVisibility()).isEqualTo(View.GONE);
         assertTrue(initialInventoryActivity.loadingDialog.isShowing());
-
         verify(mockedPresenter).loadInventory();
     }
 
