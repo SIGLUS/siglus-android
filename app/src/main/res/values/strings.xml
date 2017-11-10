@@ -496,6 +496,7 @@
     <string name="ptv_report_incomplete">PTV Report is incomplete</string>
     <string name="continue_editing_malaria">Continue editing Malaria Report</string>
     <string name="continue_editing_ptv">Continue editing PTV Report</string>
+    <string name="header_ptv_name">Patient Name / HF Service</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>

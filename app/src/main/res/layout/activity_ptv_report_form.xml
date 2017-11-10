@@ -11,9 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_tiny"
         android:layout_marginLeft="@dimen/margin_tiny"
         android:layout_marginRight="@dimen/margin_tiny"
+        android:layout_marginTop="@dimen/margin_tiny"
         android:background="@drawable/border_black"
         android:orientation="vertical">
 
@@ -46,10 +46,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:inputType="number"
                     android:background="@android:color/transparent"
                     android:gravity="center"
-                    android:hint="@string/total_woman" />
+                    android:hint="@string/total_woman"
+                    android:inputType="number" />
             </LinearLayout>
 
             <LinearLayout
@@ -73,16 +73,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:inputType="number"
                     android:background="@android:color/transparent"
                     android:gravity="center"
-                    android:hint="@string/total_child" />
+                    android:hint="@string/total_child"
+                    android:inputType="number" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:background="@drawable/border_bottom_black"
             android:orientation="horizontal">
 
             <TextView
@@ -91,15 +92,91 @@
                 android:layout_weight="2"
                 android:background="@drawable/border_right_black"
                 android:gravity="center"
-                android:text="@string/drug_name"
+                android:text="@string/header_ptv_name"
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/font_size_regular"
                 android:textStyle="bold" />
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="8"
+                android:background="@drawable/border_right_black"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_product_name1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_right_black"
+                        android:gravity="center"
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/font_size_tiny"
+                        tools:text="Product1" />
+
+                    <TextView
+                        android:id="@+id/tv_product_name2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_right_black"
+                        android:gravity="center"
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/font_size_tiny"
+                        tools:text="Product2" />
+
+                    <TextView
+                        android:id="@+id/tv_product_name3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_right_black"
+                        android:gravity="center"
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/font_size_tiny"
+                        tools:text="Product3" />
+
+                    <TextView
+                        android:id="@+id/tv_product_name4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_right_black"
+                        android:gravity="center"
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/font_size_tiny"
+                        tools:text="Product4" />
+
+                    <TextView
+                        android:id="@+id/tv_product_name5"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/font_size_tiny"
+                        tools:text="Product5" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:background="@drawable/border_right_black"
                 android:gravity="center"
                 android:text="@string/initial_stock"
@@ -114,17 +191,6 @@
                 android:background="@drawable/border_right_black"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_bottom_black"
-                    android:gravity="center"
-                    android:text="@string/service_name"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_regular"
-                    android:textStyle="bold" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -132,149 +198,61 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/tv_service_name1"
+                        android:id="@+id/tv_initial_stock1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/border_right_black"
                         android:gravity="center"
                         android:textColor="@color/color_black"
-                        android:textSize="@dimen/font_size_tiny"
-                        tools:text="Service1" />
+                        android:textSize="@dimen/font_size_regular"
+                        tools:text="Product1" />
 
                     <TextView
-                        android:id="@+id/tv_service_name2"
+                        android:id="@+id/tv_initial_stock2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/border_right_black"
                         android:gravity="center"
                         android:textColor="@color/color_black"
-                        android:textSize="@dimen/font_size_tiny"
-                        tools:text="Service2" />
+                        android:textSize="@dimen/font_size_regular"
+                        tools:text="Product2" />
 
                     <TextView
-                        android:id="@+id/tv_service_name3"
+                        android:id="@+id/tv_initial_stock3"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/border_right_black"
                         android:gravity="center"
                         android:textColor="@color/color_black"
-                        android:textSize="@dimen/font_size_tiny"
-                        tools:text="Service3" />
+                        android:textSize="@dimen/font_size_regular"
+                        tools:text="Product3" />
 
                     <TextView
-                        android:id="@+id/tv_service_name4"
+                        android:id="@+id/tv_initial_stock4"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/border_right_black"
                         android:gravity="center"
                         android:textColor="@color/color_black"
-                        android:textSize="@dimen/font_size_tiny"
-                        tools:text="Service4" />
+                        android:textSize="@dimen/font_size_regular"
+                        tools:text="Product4" />
 
                     <TextView
-                        android:id="@+id/tv_service_name5"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/border_right_black"
-                        android:gravity="center"
-                        android:textColor="@color/color_black"
-                        android:textSize="@dimen/font_size_tiny"
-                        tools:text="Service5" />
-
-                    <TextView
-                        android:id="@+id/tv_service_name6"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/border_right_black"
-                        android:gravity="center"
-                        android:textColor="@color/color_black"
-                        android:textSize="@dimen/font_size_tiny"
-                        tools:text="Service6" />
-
-                    <TextView
-                        android:id="@+id/tv_service_name7"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/border_right_black"
-                        android:gravity="center"
-                        android:textColor="@color/color_black"
-                        android:textSize="@dimen/font_size_tiny"
-                        tools:text="Service7" />
-
-                    <TextView
-                        android:id="@+id/tv_service_name8"
+                        android:id="@+id/tv_initial_stock5"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:textColor="@color/color_black"
-                        android:textSize="@dimen/font_size_tiny"
-                        tools:text="Service8" />
+                        android:textSize="@dimen/font_size_regular"
+                        tools:text="Product5" />
 
                 </LinearLayout>
             </LinearLayout>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/border_right_black"
-                android:gravity="center"
-                android:text="@string/total"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_small"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/border_right_black"
-                android:gravity="center"
-                android:text="@string/entries"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_small"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/border_right_black"
-                android:gravity="center"
-                android:text="@string/losses_and_adjustments"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_small"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/border_right_black"
-                android:gravity="center"
-                android:text="@string/final_stock"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_small"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/requisition"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_small"
-                android:textStyle="bold" />
-
         </LinearLayout>
 
     </LinearLayout>
@@ -287,7 +265,7 @@
         android:layout_below="@+id/ll_container"
         android:layout_marginLeft="@dimen/margin_tiny"
         android:layout_marginRight="@dimen/margin_tiny"
-        android:overScrollMode="never"/>
+        android:overScrollMode="never" />
 
     <org.openlmis.core.view.widget.ActionPanelView
         android:id="@+id/action_panel"

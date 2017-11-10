@@ -100,8 +100,8 @@ public final class PTVUtil {
         return ptvProgramStocksInformation;
     }
 
-    public static List<String> ptvProductCodes = newArrayList(Constants.PTV_PRODUCT_ONE_CODE, Constants.PTV_PRODUCT_TWO_CODE,
-            Constants.PTV_PRODUCT_THREE_CODE, Constants.PTV_PRODUCT_FOUR_CODE, Constants.PTV_PRODUCT_FIVE_CODE);
+    public static List<String> ptvProductCodes = newArrayList(Constants.PTV_PRODUCT_FIRST_CODE, Constants.PTV_PRODUCT_SECOND_CODE,
+            Constants.PTV_PRODUCT_THIRD_CODE, Constants.PTV_PRODUCT_FOURTH_CODE, Constants.PTV_PRODUCT_FIFTH_CODE);
 
     public static List<Product> getProductsWithPTVProductCodes() {
         List<Product> expectedProducts = new ArrayList<>();

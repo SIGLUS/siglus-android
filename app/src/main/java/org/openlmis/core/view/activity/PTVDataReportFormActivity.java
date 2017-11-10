@@ -17,18 +17,20 @@ import org.openlmis.core.R;
 import org.openlmis.core.enums.PatientDataReportType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
-import org.openlmis.core.model.HealthFacilityService;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
 import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
-import org.openlmis.core.model.ServiceDispensation;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.PtvProgramPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.PTVProgramAdapter;
 import org.openlmis.core.view.widget.ActionPanelView;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,29 +44,35 @@ import rx.Subscriber;
 @ContentView(R.layout.activity_ptv_report_form)
 public class PTVDataReportFormActivity extends BaseActivity {
 
-    @InjectView(R.id.tv_service_name1)
-    TextView tvService1;
+    @InjectView(R.id.tv_product_name1)
+    TextView tvProduct1;
 
-    @InjectView(R.id.tv_service_name2)
-    TextView tvService2;
+    @InjectView(R.id.tv_product_name2)
+    TextView tvProduct2;
 
-    @InjectView(R.id.tv_service_name3)
-    TextView tvService3;
+    @InjectView(R.id.tv_product_name3)
+    TextView tvProduct3;
 
-    @InjectView(R.id.tv_service_name4)
-    TextView tvService4;
+    @InjectView(R.id.tv_product_name4)
+    TextView tvProduct4;
 
-    @InjectView(R.id.tv_service_name5)
-    TextView tvService5;
+    @InjectView(R.id.tv_product_name5)
+    TextView tvProduct5;
 
-    @InjectView(R.id.tv_service_name6)
-    TextView tvService6;
+    @InjectView(R.id.tv_initial_stock1)
+    TextView tvInitialStock1;
 
-    @InjectView(R.id.tv_service_name7)
-    TextView tvService7;
+    @InjectView(R.id.tv_initial_stock2)
+    TextView tvInitialStock2;
 
-    @InjectView(R.id.tv_service_name8)
-    TextView tvService8;
+    @InjectView(R.id.tv_initial_stock3)
+    TextView tvInitialStock3;
+
+    @InjectView(R.id.tv_initial_stock4)
+    TextView tvInitialStock4;
+
+    @InjectView(R.id.tv_initial_stock5)
+    TextView tvInitialStock5;
 
     @InjectView(R.id.rv_ptv_report_information)
     RecyclerView rvPtvReportInformation;
@@ -163,7 +171,22 @@ public class PTVDataReportFormActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        finishWithResult();
+        showConfirmLeaveDialog();
+    }
+
+    private void showConfirmLeaveDialog() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setMessage("Are you sure you want to leave?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finishWithResult();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void finishWithResult() {
@@ -176,14 +199,13 @@ public class PTVDataReportFormActivity extends BaseActivity {
     private void updatePTVProgram() {
         String totalWoman = etTotalWoman.getText().toString();
         String totalChild = etTotalChild.getText().toString();
-        ptvProgramPresenter.updatePTVProgram(ptvProgramAdapter.getPtvProgramStocksInformation(), totalWoman, totalChild);
+        ptvProgramPresenter.updatePTVProgram(totalWoman, totalChild);
     }
 
-    private void initializeRecyclerView(PTVProgram ptvProgram) {
+    private void initializeRecyclerView(PTVProgram ptvProgram) throws LMISException {
         rvPtvReportInformation.setLayoutManager(new LinearLayoutManager(this));
-        ptvProgramAdapter = new PTVProgramAdapter(ptvProgram);
+        ptvProgramAdapter = new PTVProgramAdapter(ptvProgram, ptvProgramPresenter.getViewModels());
         rvPtvReportInformation.setAdapter(ptvProgramAdapter);
-        ptvProgramAdapter.refresh();
     }
 
     @NonNull
@@ -202,7 +224,11 @@ public class PTVDataReportFormActivity extends BaseActivity {
             @Override
             public void onNext(PTVProgram ptvProgram) {
                 updateHeader(ptvProgram);
-                initializeRecyclerView(ptvProgram);
+                try {
+                    initializeRecyclerView(ptvProgram);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
             }
         };
     }
@@ -214,7 +240,7 @@ public class PTVDataReportFormActivity extends BaseActivity {
     }
 
     public void updateHeader(PTVProgram ptvProgram) {
-        if(ptvProgram.getStatus().equals(PatientDataProgramStatus.SUBMITTED)){
+        if (ptvProgram.getStatus().equals(PatientDataProgramStatus.SUBMITTED)) {
             actionPanelView.setVisibility(View.GONE);
             etTotalChild.setClickable(false);
             etTotalWoman.setClickable(false);
@@ -223,17 +249,19 @@ public class PTVDataReportFormActivity extends BaseActivity {
             rvPtvReportInformation.setClickable(false);
             rvPtvReportInformation.setFocusable(false);
         }
-        setHealthFacilityServicesNames(ptvProgram);
+        setProductsInformation(ptvProgram);
         setPatientDispensationValues(ptvProgram);
     }
 
-    private void setHealthFacilityServicesNames(PTVProgram ptvProgram) {
+    private void setProductsInformation(PTVProgram ptvProgram) {
         List<PTVProgramStockInformation> ptvProgramStocksInformation = new ArrayList<>(ptvProgram.getPtvProgramStocksInformation());
-        TextView[] tvServices = {tvService1, tvService2, tvService3, tvService4, tvService5, tvService6, tvService7, tvService8};
-        List<ServiceDispensation> servicesDispensations = new ArrayList<>(ptvProgramStocksInformation.get(0).getServiceDispensations());
-        for (int i = 0; i < tvServices.length; i++) {
-            HealthFacilityService healthFacilityService = servicesDispensations.get(i).getHealthFacilityService();
-            tvServices[i].setText(healthFacilityService.getName());
+        TextView[] tvProducts = {tvProduct1, tvProduct2, tvProduct3, tvProduct4, tvProduct5};
+        TextView[] tvInitialStock = {tvInitialStock1, tvInitialStock2, tvInitialStock3, tvInitialStock4, tvInitialStock5};
+        for (int i = 0; i < tvProducts.length; i++) {
+            PTVProgramStockInformation ptvProgramStockInformation = ptvProgramStocksInformation.get(i);
+            Product product = ptvProgramStockInformation.getProduct();
+            tvProducts[i].setText(product.getPrimaryName());
+            tvInitialStock[i].setText(String.valueOf(ptvProgramStockInformation.getInitialStock()));
         }
     }
 

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_pet_report_form"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="40dp"
     android:layout_alignParentTop="true"
     android:layout_centerHorizontal="true"
     android:background="@drawable/border_black_right_left"
@@ -15,7 +15,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_drug_name"
+            android:id="@+id/tv_placeholder_item"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
@@ -24,18 +24,6 @@
             android:textColor="@color/color_black"
             android:textSize="@dimen/font_size_regular"
             tools:text="@string/drug_name" />
-
-        <TextView
-            android:id="@+id/tv_initial_stock"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_right_black"
-            android:gravity="center"
-            android:textColor="@color/color_black"
-            android:inputType="number"
-            android:textSize="@dimen/font_size_regular"
-            tools:text="@string/initial_stock" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -104,103 +92,7 @@
                 android:textSize="@dimen/font_size_regular"
                 tools:text="Service5" />
 
-            <EditText
-                android:id="@+id/et_product_quantity_6"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/border_right_black"
-                android:gravity="center"
-                android:inputType="number"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_regular"
-                tools:text="Service6" />
-
-            <EditText
-                android:id="@+id/et_product_quantity_7"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/border_right_black"
-                android:gravity="center"
-                android:inputType="number"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_regular"
-                tools:text="Service7" />
-
-            <EditText
-                android:id="@+id/et_product_quantity_8"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:inputType="number"
-                android:textColor="@color/color_black"
-                android:background="@color/white_transparent_color"
-                android:textSize="@dimen/font_size_regular"
-                tools:text="Service8" />
-
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_total"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_right_black"
-            android:gravity="center"
-            android:inputType="number"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/font_size_regular"
-            tools:text="@string/total" />
-
-        <TextView
-            android:id="@+id/tv_entry_quantity"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_right_black"
-            android:gravity="center"
-            android:inputType="number"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/font_size_regular"
-            tools:text="@string/entries" />
-
-        <EditText
-            android:id="@+id/et_adjustments_quantity"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_right_black"
-            android:gravity="center"
-            android:inputType="number"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/font_size_regular"
-            tools:text="@string/losses_and_adjustments" />
-
-        <TextView
-            android:id="@+id/tv_final_stock"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/color_black"
-            android:background="@drawable/border_right_black"
-            android:textSize="@dimen/font_size_regular"
-            tools:text="final stock" />
-
-        <EditText
-            android:id="@+id/et_requisition_quantity"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:inputType="number"
-            android:textColor="@color/color_black"
-            android:background="@color/white_transparent_color"
-            android:textSize="@dimen/font_size_regular"
-            tools:text="@string/requisition" />
-
     </LinearLayout>
 
 </LinearLayout>

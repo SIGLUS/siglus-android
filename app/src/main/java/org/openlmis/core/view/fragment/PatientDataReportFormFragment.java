@@ -1,6 +1,8 @@
 package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +25,7 @@ import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.PatientDataReportFormPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.PatientDataReportFormRowAdapter;
+import org.openlmis.core.view.adapter.MalariaDataReportFormRowAdapter;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
 import org.openlmis.core.view.widget.ActionPanelView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -40,7 +42,7 @@ import static org.openlmis.core.model.PatientDataProgramStatus.DRAFT;
 import static org.openlmis.core.model.PatientDataProgramStatus.SUBMITTED;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-public class PatientDataReportFormFragment extends BaseReportFragment implements PatientDataReportFormRowAdapter.PatientDataReportListener {
+public class PatientDataReportFormFragment extends BaseReportFragment implements MalariaDataReportFormRowAdapter.PatientDataReportListener {
 
     @InjectView(R.id.rv_patient_data_row_item_list)
     private RecyclerView rvPatientDataRowItem;
@@ -49,7 +51,7 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
     private ActionPanelView actionPanel;
 
     @Inject
-    private PatientDataReportFormRowAdapter adapter;
+    private MalariaDataReportFormRowAdapter adapter;
 
     @Inject
     private MalariaProgramRepository malariaProgramRepository;
@@ -142,7 +144,22 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
 
     @Override
     public void onBackPressed() {
-        finishWithResult();
+        showConfirmLeaveDialog();
+    }
+
+    private void showConfirmLeaveDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setMessage("Are you sure you want to leave?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finishWithResult();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void finishWithResult() {

@@ -8,17 +8,21 @@ import org.openlmis.core.builders.PTVProgramBuilder;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.PTVProgram;
-import org.openlmis.core.model.PTVProgramStockInformation;
 import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.repository.HealthFacilityServiceRepository;
 import org.openlmis.core.model.repository.PTVProgramRepository;
+import org.openlmis.core.utils.mapper.PTVProgramToPTVViewModelMapper;
+import org.openlmis.core.utils.mapper.PTVViewModelToPTVProgramMapper;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.viewmodel.ptv.PTVViewModel;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import lombok.Setter;
 import rx.Observable;
 import rx.Subscriber;
@@ -33,10 +37,23 @@ public class PtvProgramPresenter extends Presenter {
     @Inject
     private PTVProgramRepository ptvProgramRepository;
 
+    @Inject
+    private HealthFacilityServiceRepository healthFacilityServiceRepository;
+
+    @Inject
+    private PTVProgramToPTVViewModelMapper PTVProgramToPtvViewModelMapper;
+
+    @Inject
+    private PTVViewModelToPTVProgramMapper ptvViewModelToPTVProgramMapper;
+
     @Setter
     private Period period;
 
     private PTVProgram ptvProgram;
+
+    @Getter
+    @Setter
+    private List<PTVViewModel> viewModels;
 
     public PtvProgramPresenter() {
     }
@@ -55,6 +72,7 @@ public class PtvProgramPresenter extends Presenter {
                         throw new LMISException("Period cannot be null");
                     }
                     createPTVProgram();
+                    buildPlaceholderRows();
                     subscriber.onNext(ptvProgram);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -102,8 +120,9 @@ public class PtvProgramPresenter extends Presenter {
         }
     }
 
-    public PTVProgram updatePTVProgram(List<PTVProgramStockInformation> ptvProgramStocksInformation, String totalWoman, String totalChild) {
-        ptvProgram.setPtvProgramStocksInformation(ptvProgramStocksInformation);
+    public PTVProgram updatePTVProgram(String totalWoman, String totalChild) {
+        ptvViewModelToPTVProgramMapper.setPtvProgram(ptvProgram);
+        ptvProgram = ptvViewModelToPTVProgramMapper.convertToPTVProgram(viewModels);
         List<PatientDispensation> patientDispensations = updatePatientDispensations(totalWoman, totalChild);
         ptvProgram.setPatientDispensations(patientDispensations);
         return ptvProgram;
@@ -125,5 +144,10 @@ public class PtvProgramPresenter extends Presenter {
             }
         }
         return patientDispensations;
+    }
+
+    public void buildPlaceholderRows() throws LMISException {
+        PTVProgramToPtvViewModelMapper.setPtvProgram(ptvProgram);
+        viewModels = PTVProgramToPtvViewModelMapper.buildPlaceholderRows();
     }
 }

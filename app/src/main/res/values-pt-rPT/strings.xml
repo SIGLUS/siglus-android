@@ -450,6 +450,7 @@
     <string name="ptv_report_incomplete">O Relatório PTV está incompleto</string>
     <string name="continue_editing_malaria">Continue editando o Relatório de Malária</string>
     <string name="continue_editing_ptv">Continue editando o Relatório PTV</string>
+    <string name="header_ptv_name">Nome do Paciente / Serviço HF</string>
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
         <item>Últimos 14 dias</item>

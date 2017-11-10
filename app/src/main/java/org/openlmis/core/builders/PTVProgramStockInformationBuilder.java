@@ -79,11 +79,11 @@ public class PTVProgramStockInformationBuilder {
     @NonNull
     private List<String> getProductCodes() {
         List<String> ptvProductCodes = new ArrayList<>();
-        ptvProductCodes.add(Constants.PTV_PRODUCT_ONE_CODE);
-        ptvProductCodes.add(Constants.PTV_PRODUCT_TWO_CODE);
-        ptvProductCodes.add(Constants.PTV_PRODUCT_THREE_CODE);
-        ptvProductCodes.add(Constants.PTV_PRODUCT_FOUR_CODE);
-        ptvProductCodes.add(Constants.PTV_PRODUCT_FIVE_CODE);
+        ptvProductCodes.add(Constants.PTV_PRODUCT_FIRST_CODE);
+        ptvProductCodes.add(Constants.PTV_PRODUCT_SECOND_CODE);
+        ptvProductCodes.add(Constants.PTV_PRODUCT_THIRD_CODE);
+        ptvProductCodes.add(Constants.PTV_PRODUCT_FOURTH_CODE);
+        ptvProductCodes.add(Constants.PTV_PRODUCT_FIFTH_CODE);
         return ptvProductCodes;
     }
 

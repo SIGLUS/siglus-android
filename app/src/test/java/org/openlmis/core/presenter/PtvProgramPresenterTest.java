@@ -14,6 +14,7 @@ import org.openlmis.core.model.PatientDataProgramStatus;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.PTVProgramRepository;
 import org.openlmis.core.utils.PTVUtil;
+import org.openlmis.core.utils.mapper.PTVProgramToPTVViewModelMapper;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
@@ -34,6 +35,7 @@ public class PtvProgramPresenterTest {
     private PtvProgramPresenter ptvProgramPresenter;
     private PTVProgramBuilder ptvProgramBuilder;
     private PTVProgramRepository ptvProgramRepository;
+    private PTVProgramToPTVViewModelMapper ptvProgramToPTVViewModelMapper;
     private Period period;
     private PTVProgram ptvProgram;
     private TestSubscriber<PTVProgram> subscriber;
@@ -45,6 +47,7 @@ public class PtvProgramPresenterTest {
         subscriber = new TestSubscriber<>();
         ptvProgramBuilder = mock(PTVProgramBuilder.class);
         ptvProgramRepository = mock(PTVProgramRepository.class);
+        ptvProgramToPTVViewModelMapper = mock(PTVProgramToPTVViewModelMapper.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new PtvProgramPresenterTest.MyTestModule());
         ptvProgramPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PtvProgramPresenter.class);
         ptvProgramPresenter.setPeriod(period);
@@ -172,6 +175,7 @@ public class PtvProgramPresenterTest {
         protected void configure() {
             bind(PTVProgramBuilder.class).toInstance(ptvProgramBuilder);
             bind(PTVProgramRepository.class).toInstance(ptvProgramRepository);
+            bind(PTVProgramToPTVViewModelMapper.class).toInstance(ptvProgramToPTVViewModelMapper);
         }
     }
 }

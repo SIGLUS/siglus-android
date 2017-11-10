@@ -65,11 +65,11 @@
         <activity
             android:name=".view.activity.PatientDataReportFormActivity"
             android:label="@string/title_patient_data_report_form"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.PTVDataReportFormActivity"
             android:label="@string/title_patient_ptv_report_form"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.UnpackKitActivity"
             android:label="@string/title_unpack_kit"

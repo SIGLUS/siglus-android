@@ -7,7 +7,7 @@
     <LinearLayout
         android:id="@+id/vg_rapid_test_report_header"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="120dp"
         android:orientation="horizontal"
         android:background="@drawable/border_top_black">
 

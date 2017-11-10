@@ -17,7 +17,7 @@ import lombok.Setter;
 
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-public class PatientDataReportFormRowAdapter extends RecyclerView.Adapter<PatientDataReportRowViewHolder> {
+public class MalariaDataReportFormRowAdapter extends RecyclerView.Adapter<PatientDataReportRowViewHolder> {
 
     @Setter
     private List<ImplementationReportViewModel> viewModels;
@@ -26,7 +26,7 @@ public class PatientDataReportFormRowAdapter extends RecyclerView.Adapter<Patien
     private PatientDataReportListener listener;
     private RecyclerView view;
 
-    public PatientDataReportFormRowAdapter() {
+    public MalariaDataReportFormRowAdapter() {
         viewModels = newArrayList();
     }
 
