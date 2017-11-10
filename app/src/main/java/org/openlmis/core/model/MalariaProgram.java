@@ -26,6 +26,12 @@ public class MalariaProgram extends BaseModel {
     @DatabaseField
     private DateTime endPeriodDate;
 
+    @DatabaseField
+    private String createdBy;
+
+    @DatabaseField
+    private String verifiedBy;
+
     @DatabaseField(dataType = DataType.ENUM_INTEGER)
     private PatientDataProgramStatus status;
 

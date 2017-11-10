@@ -15,6 +15,11 @@ import java.util.List;
 
 import lombok.Setter;
 
+import static org.openlmis.core.utils.Constants.ENTRIES;
+import static org.openlmis.core.utils.Constants.FINAL_STOCK;
+import static org.openlmis.core.utils.Constants.LOSSES_AND_ADJUSTMENTS;
+import static org.openlmis.core.utils.Constants.REQUISITIONS;
+import static org.openlmis.core.utils.Constants.TOTAL;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_FIFTH_CODE;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_FIRST_CODE;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_FOURTH_CODE;
@@ -44,10 +49,10 @@ public class PTVProgramToPTVViewModelMapper {
         List<HealthFacilityService> healthFacilities = healthFacilityServiceRepository.getAll();
         List<PTVProgramStockInformation> ptvProgramStocksInformation = new ArrayList<>(ptvProgram.getPtvProgramStocksInformation());
         createRowsForFacilities(ptvViewModels, healthFacilities);
-        ptvViewModelEntry = new PTVViewModel("Entries");
-        ptvViewModelLossesAndAdjustments = new PTVViewModel("Losses and Adjustments");
-        ptvViewModelRequisition = new PTVViewModel("Requisitions");
-        ptvFinalStock = new PTVViewModel("Final Stock");
+        ptvViewModelEntry = new PTVViewModel(ENTRIES);
+        ptvViewModelLossesAndAdjustments = new PTVViewModel(LOSSES_AND_ADJUSTMENTS);
+        ptvViewModelRequisition = new PTVViewModel(REQUISITIONS);
+        ptvFinalStock = new PTVViewModel(FINAL_STOCK);
         for (PTVProgramStockInformation ptvProgramStockInformation : ptvProgramStocksInformation) {
             List<ServiceDispensation> serviceDispensations = new ArrayList<>(ptvProgramStockInformation.getServiceDispensations());
             setQuantitiesForModels(healthFacilities, ptvProgramStockInformation, serviceDispensations);
@@ -57,7 +62,7 @@ public class PTVProgramToPTVViewModelMapper {
     }
 
     private void addPTVInformation() {
-        ptvViewModels.add(new PTVViewModel("Total"));
+        ptvViewModels.add(new PTVViewModel(TOTAL));
         ptvViewModels.add(ptvViewModelEntry);
         ptvViewModels.add(ptvViewModelLossesAndAdjustments);
         ptvViewModels.add(ptvViewModelRequisition);

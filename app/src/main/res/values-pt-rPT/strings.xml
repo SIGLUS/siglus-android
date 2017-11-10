@@ -451,6 +451,13 @@
     <string name="continue_editing_malaria">Continue editando o Relatório de Malária</string>
     <string name="continue_editing_ptv">Continue editando o Relatório PTV</string>
     <string name="header_ptv_name">Nome do Paciente / Serviço HF</string>
+    <string name="ptv_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e apresentação do Relatório PTV</string>
+    <string name="msg_ptv_submit_signature">Insira suas iniciais e, em seguida, aprova os montantes do Relatório PTV</string>
+    <string name="msg_approve_signature_ptv">Insira suas iniciais e, em seguida, aprova o Relatório PTV</string>
+    <string name="submit_for_approval">Enviar para aprovação</string>
+    <string name="msg_malaria_submit_signature">Insira suas iniciais e, em seguida, aprova os montantes do Relatório Malaria</string>
+    <string name="msg_approve_signature_malaria">Insira suas iniciais e, em seguida, aprova o Relatório Malaria</string>
+    <string name="malaria_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e apresentação do Relatório Malaria</string>
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
         <item>Últimos 14 dias</item>

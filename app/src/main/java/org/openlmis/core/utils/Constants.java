@@ -78,6 +78,12 @@ public final class Constants {
 
     public static long DEFAULT_FORM_ID = 0;
 
+    public static final String ENTRIES = "Entries";
+    public static final String LOSSES_AND_ADJUSTMENTS = "Losses and Adjustments";
+    public static final String REQUISITIONS = "Requisitions";
+    public static final String FINAL_STOCK = "Final Stock";
+    public static final String TOTAL = "Total";
+
     private Constants() {
 
     }

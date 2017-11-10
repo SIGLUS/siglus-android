@@ -150,4 +150,16 @@ public class PtvProgramPresenter extends Presenter {
         PTVProgramToPtvViewModelMapper.setPtvProgram(ptvProgram);
         viewModels = PTVProgramToPtvViewModelMapper.buildPlaceholderRows();
     }
+
+    public boolean isSubmittedForApproval() {
+        return ptvProgram.getCreatedBy() != null
+                && (ptvProgram.getStatus().equals(PatientDataProgramStatus.DRAFT)
+                || ptvProgram.getStatus().equals(PatientDataProgramStatus.MISSING))
+                && ptvProgram.getCreatedBy().isEmpty();
+    }
+
+    public Observable<PTVProgram> signReport(String signature, boolean isComplete) {
+        ptvProgram.setCreatedBy(signature);
+        return savePTVProgram(isComplete);
+    }
 }

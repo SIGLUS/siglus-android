@@ -27,7 +27,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.MalariaDataReportFormRowAdapter;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
-import org.openlmis.core.view.widget.ActionPanelView;
+import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.List;
@@ -37,7 +37,6 @@ import roboguice.inject.InjectView;
 import rx.Subscription;
 import rx.functions.Action1;
 
-import static org.openlmis.core.R.id.action_panel;
 import static org.openlmis.core.model.PatientDataProgramStatus.DRAFT;
 import static org.openlmis.core.model.PatientDataProgramStatus.SUBMITTED;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -46,9 +45,6 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
 
     @InjectView(R.id.rv_patient_data_row_item_list)
     private RecyclerView rvPatientDataRowItem;
-
-    @InjectView(action_panel)
-    private ActionPanelView actionPanel;
 
     @Inject
     private MalariaDataReportFormRowAdapter adapter;
@@ -89,7 +85,9 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
             public void call(List<ImplementationReportViewModel> implementationReportViewModels) {
                 ImplementationReportViewModel viewModel = implementationReportViewModels.get(0);
                 if (viewModel.getStatus() == PatientDataProgramStatus.SYNCED) {
-                    actionPanel.setVisibility(View.GONE);
+                    actionPanelView.setVisibility(View.GONE);
+                } else if (patientPresenter.isSubmittedForApproval()) {
+                    actionPanelView.getBtnComplete().setText(R.string.submit_for_approval);
                 }
                 adapter.setViewModels(implementationReportViewModels);
                 adapter.notifyDataSetChanged();
@@ -104,11 +102,6 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
     }
 
     @Override
-    protected String getSignatureDialogTitle() {
-        return null;
-    }
-
-    @Override
     protected Action1<? super Void> getOnSignedAction() {
         return null;
     }
@@ -117,14 +110,17 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
-                onSaveForm(status);
+                if (status.equals(SUBMITTED)) {
+                    showSignDialog(status);
+                } else {
+                    onSaveForm(status, "");
+                }
             }
         };
     }
 
-
-    public void onSaveForm(PatientDataProgramStatus status) {
-        Subscription subscription = patientPresenter.onSaveForm(status).subscribe(getOnSaveActionForStatus(status));
+    public void onSaveForm(PatientDataProgramStatus status, String sign) {
+        Subscription subscription = patientPresenter.onSaveForm(status, sign).subscribe(getOnSaveActionForStatus(status));
         subscriptions.add(subscription);
     }
 
@@ -135,7 +131,12 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
             public void call(MalariaProgram malariaProgram) {
                 ToastUtil.show(R.string.succesfully_saved);
                 loaded();
-                if (status == PatientDataProgramStatus.SUBMITTED) {
+                patientPresenter.setStatus(malariaProgram.getStatus());
+                patientPresenter.setCreatedBy(malariaProgram.getCreatedBy());
+                if (malariaProgram.getStatus().equals(DRAFT) && !malariaProgram.getCreatedBy().isEmpty()) {
+                    showMessageNotifyDialog();
+                    actionPanelView.getBtnComplete().setText(R.string.btn_complete);
+                } else {
                     finishWithResult();
                 }
             }
@@ -170,11 +171,6 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
     }
 
     @Override
-    protected String getNotifyDialogMsg() {
-        return null;
-    }
-
-    @Override
     public void notifyModelChanged(ImplementationReportViewModel reportViewModel) {
         PatientDataReportFormPresenter patientPresenter = (PatientDataReportFormPresenter) presenter;
         List<ImplementationReportViewModel> viewModels = patientPresenter.regenerateImplementationModels(reportViewModel);
@@ -189,5 +185,35 @@ public class PatientDataReportFormFragment extends BaseReportFragment implements
             }
         }
         super.onDestroy();
+    }
+
+    public void showSignDialog(PatientDataProgramStatus status) {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        String signatureDialogTitle = getSignatureDialogTitle();
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
+        signatureDialogDelegate = createDelegate(status);
+        signatureDialog.setDelegate(signatureDialogDelegate);
+        signatureDialog.show(this.getFragmentManager());
+    }
+
+    private SignatureDialog.DialogDelegate createDelegate(final PatientDataProgramStatus status) {
+        return new SignatureDialog.DialogDelegate() {
+            public void onSign(String sign) {
+                if (actionPanelView.getBtnComplete().getText().toString().equals(getString(R.string.submit_for_approval))) {
+                    onSaveForm(DRAFT, sign);
+                } else {
+                    onSaveForm(status, sign);
+                }
+            }
+        };
+    }
+
+    protected String getSignatureDialogTitle() {
+        return patientPresenter.isSubmittedForApproval() ? getResources().getString(R.string.msg_malaria_submit_signature) : getResources().getString(R.string.msg_approve_signature_malaria);
+    }
+
+    @Override
+    public String getNotifyDialogMsg() {
+        return getActivity().getString(R.string.malaria_report_notify_dialog);
     }
 }

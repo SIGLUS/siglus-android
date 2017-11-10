@@ -6,7 +6,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.adapter.PTVProgramAdapter;
 import org.openlmis.core.view.viewmodel.ptv.PTVViewModel;
 
 import java.util.ArrayList;
@@ -15,9 +14,14 @@ import java.util.List;
 
 import roboguice.inject.InjectView;
 
+import static org.openlmis.core.utils.Constants.ENTRIES;
+import static org.openlmis.core.utils.Constants.FINAL_STOCK;
+import static org.openlmis.core.utils.Constants.LOSSES_AND_ADJUSTMENTS;
+import static org.openlmis.core.utils.Constants.REQUISITIONS;
+import static org.openlmis.core.utils.Constants.TOTAL;
+
 public class PTVProgramViewHolder extends BaseViewHolder {
 
-    public static final int DEFAULT_QUANTITY = 0;
     @InjectView(R.id.tv_placeholder_item)
     TextView tvPlaceHolderItem;
 
@@ -38,22 +42,20 @@ public class PTVProgramViewHolder extends BaseViewHolder {
 
     private EditText[] productQuantities;
     private PTVViewModel ptvViewModel;
-    private PTVProgramAdapter ptvProgramAdapter;
     private boolean isCompleted;
 
-    public PTVProgramViewHolder(View itemView, boolean isCompleted, PTVProgramAdapter ptvProgramAdapter) {
+    public PTVProgramViewHolder(View itemView, boolean isCompleted) {
         super(itemView);
         productQuantities = new EditText[]{etProductQuantity1, etProductQuantity2, etProductQuantity3, etProductQuantity4, etProductQuantity5};
-        this.ptvProgramAdapter = ptvProgramAdapter;
         this.isCompleted = isCompleted;
     }
 
     private boolean isNotAService() {
-        return ptvViewModel.getPlaceholderItemName().equals("Total") || ptvViewModel.getPlaceholderItemName().equals("Entries") || ptvViewModel.getPlaceholderItemName().equals("Losses and Adjustments") || ptvViewModel.getPlaceholderItemName().equals("Requisition") || ptvViewModel.getPlaceholderItemName().equals("Final Stock") || ptvViewModel.getPlaceholderItemName().equals("Requisitions");
+        return ptvViewModel.getPlaceholderItemName().equals(TOTAL) || ptvViewModel.getPlaceholderItemName().equals(ENTRIES) || ptvViewModel.getPlaceholderItemName().equals(LOSSES_AND_ADJUSTMENTS) || ptvViewModel.getPlaceholderItemName().equals(FINAL_STOCK) || ptvViewModel.getPlaceholderItemName().equals(REQUISITIONS);
     }
 
     private boolean needsBeDisable() {
-        return isCompleted || ptvViewModel.getPlaceholderItemName().equals("Total") || ptvViewModel.getPlaceholderItemName().equals("Final Stock");
+        return isCompleted || ptvViewModel.getPlaceholderItemName().equals(TOTAL) || ptvViewModel.getPlaceholderItemName().equals(FINAL_STOCK) || ptvViewModel.getPlaceholderItemName().equals(ENTRIES);
     }
 
     private void disableView(View view) {

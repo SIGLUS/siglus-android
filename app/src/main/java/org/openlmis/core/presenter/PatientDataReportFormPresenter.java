@@ -25,7 +25,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-
 public class PatientDataReportFormPresenter extends BaseReportPresenter {
 
     public static final int INVALID_INDEX = -1;
@@ -42,6 +41,16 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
     private MalariaProgram malariaProgram = new MalariaProgram();
 
     private List<ImplementationReportViewModel> viewModels;
+    private String createdBy;
+    private PatientDataProgramStatus status;
+
+    public void setStatus(PatientDataProgramStatus status) {
+        this.status = status;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public PatientDataReportFormPresenter() {
         this.viewModels = new ArrayList<>();
@@ -58,6 +67,13 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
             public void call(final Subscriber<? super List<ImplementationReportViewModel>> subscriber) {
                 try {
                     malariaProgram = patientDataService.findForPeriod(period.getBegin(), period.getEnd());
+                    if (malariaProgram != null) {
+                        createdBy = malariaProgram.getCreatedBy();
+                        status = malariaProgram.getStatus();
+                    } else {
+                        createdBy = "";
+                        status = PatientDataProgramStatus.MISSING;
+                    }
                     List<Long> malariaProductsStockHand = patientDataService.getMalariaProductsStockHand();
                     MalariaDataReportViewModel malariaDataReportViewModel = reportViewModelMapper.Map(malariaProgram);
                     ImplementationReportViewModel usImplementationReportViewModel = malariaDataReportViewModel.getUsImplementationReportViewModel();
@@ -116,13 +132,18 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
 
     }
 
-    public Observable<MalariaProgram> onSaveForm(final PatientDataProgramStatus status) {
+    public Observable<MalariaProgram> onSaveForm(final PatientDataProgramStatus status, final String sign) {
         return Observable.create(new Observable.OnSubscribe<MalariaProgram>() {
             @Override
             public void call(Subscriber<? super MalariaProgram> subscriber) {
                 try {
                     MalariaProgram malariaProgram = getMalariaProgram();
                     malariaProgram.setStatus(status);
+                    if (status.equals(PatientDataProgramStatus.SUBMITTED)) {
+                        malariaProgram.setVerifiedBy(sign);
+                    } else {
+                        malariaProgram.setCreatedBy(sign);
+                    }
                     patientDataService.save(malariaProgram);
                     subscriber.onNext(malariaProgram);
                     subscriber.onCompleted();
@@ -146,5 +167,12 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
     @Override
     protected void addSignature(String signature) {
 
+    }
+
+    public boolean isSubmittedForApproval() {
+        return createdBy != null
+                && (status.equals(PatientDataProgramStatus.DRAFT)
+                || status.equals(PatientDataProgramStatus.MISSING))
+                && createdBy.isEmpty();
     }
 }

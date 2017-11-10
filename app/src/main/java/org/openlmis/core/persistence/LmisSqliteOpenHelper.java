@@ -42,6 +42,7 @@ import org.openlmis.core.persistence.migrations.AddLotMovementItemsTable;
 import org.openlmis.core.persistence.migrations.AddLotOnHandTable;
 import org.openlmis.core.persistence.migrations.AddLotsTable;
 import org.openlmis.core.persistence.migrations.AddLowStockAvgColumnToStockCardTable;
+import org.openlmis.core.persistence.migrations.AddMalariaSignature;
 import org.openlmis.core.persistence.migrations.AddManualAddColumnToRnrFormItemsTable;
 import org.openlmis.core.persistence.migrations.AddNewPrograms;
 import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
@@ -137,6 +138,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateMalariaTreatments());
             add(new ChangeMalariaTreatments());
             add(new CreatePTVProgramSchema());
+            add(new AddMalariaSignature());
         }
     };
     private static int instanceCount = 0;

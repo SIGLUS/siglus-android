@@ -17,6 +17,11 @@ import org.openlmis.core.model.PTVProgramStockInformation;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.openlmis.core.utils.Constants.ENTRIES;
+import static org.openlmis.core.utils.Constants.FINAL_STOCK;
+import static org.openlmis.core.utils.Constants.LOSSES_AND_ADJUSTMENTS;
+import static org.openlmis.core.utils.Constants.TOTAL;
+
 public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder> {
 
     public static final int TOTAL_SERVICES_NUMBER = 8;
@@ -44,7 +49,7 @@ public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder
 
     private int getTotalElementPosition() {
         for (PTVViewModel model : ptvViewModels) {
-            if (model.getPlaceholderItemName().equals("Total")) {
+            if (model.getPlaceholderItemName().equals(TOTAL)) {
                 return ptvViewModels.indexOf(model);
             }
         }
@@ -54,9 +59,9 @@ public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder
     @Override
     public PTVProgramViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (ptvProgram.getStatus().equals(PatientDataProgramStatus.SUBMITTED)) {
-            return new PTVProgramViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.ptv_report_form_row, parent, false), true, this);
+            return new PTVProgramViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.ptv_report_form_row, parent, false), true);
         }
-        return new PTVProgramViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.ptv_report_form_row, parent, false), false, this);
+        return new PTVProgramViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.ptv_report_form_row, parent, false), false);
     }
 
     @Override
@@ -92,28 +97,28 @@ public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder
 
         for (PTVViewModel model : ptvViewModels) {
             switch (model.getPlaceholderItemName()) {
-                case "Entries":
+                case ENTRIES:
                     entry[0] = model.getQuantity1();
                     entry[1] = model.getQuantity2();
                     entry[2] = model.getQuantity3();
                     entry[3] = model.getQuantity4();
                     entry[4] = model.getQuantity5();
                     break;
-                case "Total":
+                case TOTAL:
                     total[0] = model.getQuantity1();
                     total[1] = model.getQuantity2();
                     total[2] = model.getQuantity3();
                     total[3] = model.getQuantity4();
                     total[4] = model.getQuantity5();
                     break;
-                case "Losses and Adjustments":
+                case LOSSES_AND_ADJUSTMENTS:
                     lossesAndAdjustments[0] = model.getQuantity1();
                     lossesAndAdjustments[1] = model.getQuantity2();
                     lossesAndAdjustments[2] = model.getQuantity3();
                     lossesAndAdjustments[3] = model.getQuantity4();
                     lossesAndAdjustments[4] = model.getQuantity5();
                     break;
-                case "Final Stock":
+                case FINAL_STOCK:
                     finalStockPosition = ptvViewModels.indexOf(model);
                     break;
             }

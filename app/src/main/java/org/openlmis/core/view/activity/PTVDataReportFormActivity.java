@@ -1,7 +1,9 @@
 package org.openlmis.core.view.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,9 +30,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.PTVProgramAdapter;
 import org.openlmis.core.view.widget.ActionPanelView;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import org.openlmis.core.view.widget.SignatureDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +39,7 @@ import lombok.Getter;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
+import rx.Subscription;
 
 @Getter
 @ContentView(R.layout.activity_ptv_report_form)
@@ -109,6 +110,7 @@ public class PTVDataReportFormActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         loading(getString(R.string.loading_report_information));
         initializePtvProgramPresenter();
+
     }
 
     private void initializePtvProgramPresenter() {
@@ -127,7 +129,28 @@ public class PTVDataReportFormActivity extends BaseActivity {
                 updatePTVProgram();
                 isCompleted = false;
                 changeButtonsState(false);
-                ptvProgramPresenter.savePTVProgram(isCompleted).subscribe(updatePTVProgramSubscriber());
+                ptvProgramPresenter.savePTVProgram(isCompleted).subscribe(savePTVProgramSubscriber());
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<PTVProgram> savePTVProgramSubscriber() {
+        return new Subscriber<PTVProgram>() {
+            @Override
+            public void onCompleted() {
+                Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG).show();
+                changeButtonsState(true);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                new LMISException(e.getCause()).reportToFabric();
+            }
+
+            @Override
+            public void onNext(PTVProgram ptvProgram) {
             }
         };
     }
@@ -140,8 +163,11 @@ public class PTVDataReportFormActivity extends BaseActivity {
                 Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG).show();
                 if (isCompleted) {
                     finishWithResult();
+                } else {
+                    actionPanelView.getBtnComplete().setText(R.string.btn_complete);
+                    changeButtonsState(true);
+                    showMessageNotifyDialog();
                 }
-                changeButtonsState(true);
             }
 
             @Override
@@ -161,10 +187,8 @@ public class PTVDataReportFormActivity extends BaseActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updatePTVProgram();
+                showSignDialog();
                 changeButtonsState(false);
-                isCompleted = true;
-                ptvProgramPresenter.savePTVProgram(isCompleted).subscribe(updatePTVProgramSubscriber());
             }
         };
     }
@@ -223,6 +247,9 @@ public class PTVDataReportFormActivity extends BaseActivity {
 
             @Override
             public void onNext(PTVProgram ptvProgram) {
+                if (ptvProgramPresenter.isSubmittedForApproval()) {
+                    actionPanelView.getBtnComplete().setText(R.string.submit_for_approval);
+                }
                 updateHeader(ptvProgram);
                 try {
                     initializeRecyclerView(ptvProgram);
@@ -281,4 +308,48 @@ public class PTVDataReportFormActivity extends BaseActivity {
         actionPanelView.getBtnComplete().setClickable(isEnabled);
         actionPanelView.getBtnSave().setClickable(isEnabled);
     }
+
+    public void showSignDialog() {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        String signatureDialogTitle = getSignatureDialogTitle();
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
+        signatureDialog.setDelegate(signatureDialogDelegate);
+        signatureDialog.show(this.getFragmentManager());
+    }
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        public void onSign(String sign) {
+            isCompleted = !ptvProgramPresenter.isSubmittedForApproval();
+            Subscription subscription = ptvProgramPresenter.signReport(sign, isCompleted).subscribe(updatePTVProgramSubscriber());
+            subscriptions.add(subscription);
+        }
+
+        public void onCancel() {
+            changeButtonsState(true);
+        }
+    };
+
+    protected String getSignatureDialogTitle() {
+        return ptvProgramPresenter.isSubmittedForApproval() ? getResources().getString(R.string.msg_ptv_submit_signature) : getResources().getString(R.string.msg_approve_signature_ptv);
+    }
+
+
+    private void showMessageNotifyDialog() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setMessage(getString(R.string.ptv_report_notify_dialog))
+                .setNegativeButton("Continue", changeButtonStateListener())
+                .show();
+    }
+
+    @NonNull
+    private DialogInterface.OnClickListener changeButtonStateListener() {
+        return new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                changeButtonsState(true);
+            }
+        };
+    }
+
 }
