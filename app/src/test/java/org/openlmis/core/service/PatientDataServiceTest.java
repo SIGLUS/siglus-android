@@ -36,6 +36,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.helpers.MalariaProgramBuilder.periodEndDate;
 import static org.openlmis.core.helpers.MalariaProgramBuilder.randomMalariaProgram;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x1_CODE;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x2_CODE;
@@ -109,7 +110,7 @@ public class PatientDataServiceTest {
         DateTime today = calculateDateWithinRequisitionPeriod();
         LMISTestApp.getInstance().setCurrentTimeMillis(today.getMillis());
         when(malariaProgramRepository.getFirstMovement()).thenReturn(null);
-        Period expectedPeriod = new Period(new DateTime(LMISApp.getInstance().getCurrentTimeMillis()));
+        Period expectedPeriod = new Period(new DateTime(LMISTestApp.getInstance().getCurrentTimeMillis()));
         List<Period> periods = patientDataService.calculatePeriods(PatientDataReportType.MALARIA);
         assertThat(EqualsBuilder.reflectionEquals(expectedPeriod, periods.get(FIRST_PERIOD_POSITION)), is(true));
     }
@@ -121,6 +122,7 @@ public class PatientDataServiceTest {
         DateTime today = calculateValidDateForRequisitionPeriodWithinTwelveMonths(firstReportedDate);
         LMISTestApp.getInstance().setCurrentTimeMillis(today.getMillis());
         malariaProgram.setReportedDate(firstReportedDate);
+        malariaProgram.setCreatedAt(firstReportedDate.toDate());
         when(malariaProgramRepository.getFirstMovement()).thenReturn(malariaProgram);
         List<Period> periods = patientDataService.calculatePeriods(PatientDataReportType.MALARIA);
         assertThat(periods.size(), is(monthsAfterInitialReportedDate + CURRENT_MONTH));
@@ -130,9 +132,10 @@ public class PatientDataServiceTest {
     @Ignore("TODO: Fixme")
     public void shouldReturnPeriodsStartingFromFirstPatientDataReportedExcludingCurrentWhenCurrentDateIsNotOpenToRequisitions() throws LMISException {
         DateTime firstReportedDate = calculateDateWithinRequisitionPeriod();
-        DateTime today = calculateInvalidDateForRequisitionPeriodWithinTwelveMonths(firstReportedDate);
-        LMISTestApp.getInstance().setCurrentTimeMillis(today.getMillis());
+        DateTime futureToday = calculateInvalidDateForRequisitionPeriodWithinTwelveMonths(firstReportedDate);
+        LMISTestApp.getInstance().setCurrentTimeMillis(futureToday.getMillis());
         malariaProgram.setReportedDate(firstReportedDate);
+        malariaProgram.setCreatedAt(firstReportedDate.toDate());
         when(malariaProgramRepository.getFirstMovement()).thenReturn(malariaProgram);
         List<Period> periods = patientDataService.calculatePeriods(PatientDataReportType.MALARIA);
         assertThat(periods.size(), is(monthsAfterInitialReportedDate));
@@ -143,7 +146,7 @@ public class PatientDataServiceTest {
         calendar.setTime(new Date());
         int daysToAddWithinCurrentPeriod = nextInt(0, 3);
         calendar.set(Calendar.DAY_OF_MONTH, REQUISITION_PERIOD_STARTING_DAY);
-        DateTime actualDate = new DateTime(calendar.getTime().getTime()).plusDays(daysToAddWithinCurrentPeriod);
+        DateTime actualDate = new DateTime(calendar).plusDays(daysToAddWithinCurrentPeriod);
         return actualDate;
     }
 
