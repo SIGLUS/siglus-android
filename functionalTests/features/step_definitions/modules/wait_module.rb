@@ -17,4 +17,15 @@ module WaitModule
     query_string = "* id:'#{id}'"
     wait_for_element_exists(query_string, { timeout: timeout , post_timeout: post_timeout})
   end
+
+  def wait_for_element_to_disappear(text, timeout=120, post_timeout=0.2)
+    view_query = "* text:'#{text}'"
+    wait_for_element_does_not_exist(view_query, {timeout: timeout, post_timeout: post_timeout})
+  end
+
+  def wait_for_component_to_appear_identified_by_text(text, timeout=10, post_timeout=0.2)
+    query_string = "* {text CONTAINS '#{text}'}"
+    wait_for_element_exists(query_string, { timeout: timeout , post_timeout: post_timeout})
+  end
+
 end

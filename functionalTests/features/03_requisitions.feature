@@ -5,7 +5,7 @@ Feature: Log in and make a requisition for basic products
     Given today is "20160218.130000"
     And I log in into the application
     And I press "Requisitions"
-    And I should see text containing "No Requisition Balancete has been created."
+    And I wait for requisition page is initialized
     And I press "Complete Inventory"
     And I see the inventory screen
     And I search for "Digoxina 0,25mg Comp" in physical inventory
