@@ -54,7 +54,7 @@ public class PtvProgramPresenterTest {
     }
 
     @Test
-    public void shouldCreatePTVProgramForCurrentPeriodWhenPTVProgramDoesNotSave() throws LMISException {
+    public void shouldCreatePTVProgramForCurrentPeriodWhenPTVProgramIsNotSaved() throws LMISException {
         Period period = new Period(DateTime.now());
         PTVProgram expectedPTVProgram = PTVUtil.createDummyPTVProgram(period);
         expectedPTVProgram.setPatientDispensations(PTVUtil.createDummyPatientDispensations());
@@ -87,7 +87,7 @@ public class PtvProgramPresenterTest {
     public void shouldUpdatePTVProgramWhenThereIsAPTVProgramStored() throws LMISException, SQLException {
         PTVProgram expectedPtvProgram = PTVUtil.createDummyPTVProgram(period);
         expectedPtvProgram.setStatus(PatientDataProgramStatus.DRAFT);
-        buildExistingPTVProgram(expectedPtvProgram);
+        buildExistentPTVProgram(expectedPtvProgram);
 
         when(ptvProgramRepository.save(expectedPtvProgram)).thenReturn(expectedPtvProgram);
         Observable<PTVProgram> observableSave = ptvProgramPresenter.savePTVProgram(false);
@@ -97,13 +97,13 @@ public class PtvProgramPresenterTest {
 
         PTVProgram actualPTVProgram = subscriber.getOnNextEvents().get(0);
         assertThat(actualPTVProgram, is(expectedPtvProgram));
+        assertThat(actualPTVProgram.getStatus(), is(PatientDataProgramStatus.DRAFT));
     }
 
     @Test
-    public void shouldSavePTVProgramWhenThereIsNOtPTVProgramStored() throws LMISException, SQLException {
+    public void shouldSavePTVProgramWhenThereIsNotPTVProgramStored() throws LMISException, SQLException {
         PTVProgram expectedPtvProgram = createInitialPTVProgram();
 
-        subscriber = new TestSubscriber<>();
         when(ptvProgramRepository.save(expectedPtvProgram)).thenReturn(expectedPtvProgram);
         Observable<PTVProgram> observableSave = ptvProgramPresenter.savePTVProgram(false);
         observableSave.subscribe(subscriber);
@@ -127,6 +127,26 @@ public class PtvProgramPresenterTest {
     }
 
     @Test
+    public void shouldSetSubmittedStatusWhenPTVProgramIsCompleted() throws LMISException, SQLException {
+        PTVProgram expectedPtvProgram = PTVUtil.createDummyPTVProgram(period);
+        expectedPtvProgram.setStatus(PatientDataProgramStatus.SUBMITTED);
+        buildExistentPTVProgram(expectedPtvProgram);
+
+        when(ptvProgramRepository.save(expectedPtvProgram)).thenReturn(expectedPtvProgram);
+        Observable<PTVProgram> observableSave = ptvProgramPresenter.savePTVProgram(true);
+        observableSave.subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        PTVProgram actualPTVProgram = subscriber.getOnNextEvents().get(0);
+        assertThat(actualPTVProgram, is(expectedPtvProgram));
+        assertThat(actualPTVProgram.getStatus(), is(PatientDataProgramStatus.SUBMITTED));
+    }
+
+//    @Test
+//    public void
+
+    @Test
     public void shouldThrowLMISExceptionWhenPTVProgramIsNull() throws Exception {
         Observable<PTVProgram> observable = ptvProgramPresenter.savePTVProgram(false);
         observable.subscribe(subscriber);
@@ -137,7 +157,7 @@ public class PtvProgramPresenterTest {
 
     @Test
     public void shouldThrowLMISExceptionWhenSavePTVProgramWithErrors() throws Exception {
-        buildExistingPTVProgram(ptvProgram);
+        buildExistentPTVProgram(ptvProgram);
 
         subscriber = new TestSubscriber<>();
         doThrow(new LMISException("Cannot create PTV program")).when(ptvProgramRepository).save(ptvProgram);
@@ -150,7 +170,7 @@ public class PtvProgramPresenterTest {
 
     @Test
     public void shouldThrowSQLExceptionWhenSavePTVProgramWithErrors() throws Exception {
-        buildExistingPTVProgram(ptvProgram);
+        buildExistentPTVProgram(ptvProgram);
 
         subscriber = new TestSubscriber<>();
         doThrow(SQLException.class).when(ptvProgramRepository).save(ptvProgram);
@@ -161,7 +181,7 @@ public class PtvProgramPresenterTest {
         subscriber.assertError(SQLException.class);
     }
 
-    private void buildExistingPTVProgram(PTVProgram ptvProgram) throws LMISException {
+    private void buildExistentPTVProgram(PTVProgram ptvProgram) throws LMISException {
         when(ptvProgramRepository.getByPeriod(period)).thenReturn(ptvProgram);
         when(ptvProgramBuilder.buildExistentPTVProgram(ptvProgram)).thenReturn(ptvProgram);
         Observable<PTVProgram> observableBuild = ptvProgramPresenter.buildInitialPtvProgram();

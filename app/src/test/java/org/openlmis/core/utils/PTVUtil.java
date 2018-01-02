@@ -87,8 +87,8 @@ public final class PTVUtil {
 
     public static List<PTVProgramStockInformation> createDummyPTVProgramStocksInformation() {
         List<PTVProgramStockInformation> ptvProgramStocksInformation = new ArrayList<>();
-        int totalPtvProgramStockInformation = new Random().nextInt(9);
-        for (int i = 0; i < totalPtvProgramStockInformation; i ++) {
+        List<Product> products = getProductsWithPTVProductCodes();
+        for (int i = 0; i < products.size(); i ++) {
             PTVProgramStockInformation ptvProgramStockInformation = new PTVProgramStockInformation();
             ptvProgramStockInformation.setEntries(new Random().nextLong());
             ptvProgramStockInformation.setInitialStock(new Random().nextLong());
@@ -96,6 +96,7 @@ public final class PTVUtil {
             ptvProgramStockInformation.setRequisition(new Random().nextLong());
             ptvProgramStockInformation.setServiceDispensations(createDummyServiceDispensations(ptvProgramStockInformation));
             ptvProgramStocksInformation.add(ptvProgramStockInformation);
+            ptvProgramStockInformation.setProduct(products.get(i));
         }
         return ptvProgramStocksInformation;
     }
