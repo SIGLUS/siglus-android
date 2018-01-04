@@ -146,8 +146,7 @@ public class PtvProgramPresenter extends Presenter {
     }
 
     public void buildPlaceholderRows() throws LMISException {
-        ptvProgramToPtvViewModelMapper.setPtvProgram(ptvProgram);
-        viewModels = ptvProgramToPtvViewModelMapper.buildPlaceholderRows();
+        viewModels = ptvProgramToPtvViewModelMapper.buildPlaceholderRows(ptvProgram);
     }
 
     public boolean isNotSubmittedForApproval() {
