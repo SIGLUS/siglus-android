@@ -246,7 +246,7 @@ public class PTVDataReportFormActivity extends BaseActivity {
 
             @Override
             public void onNext(PTVProgram ptvProgram) {
-                if (ptvProgramPresenter.isSubmittedForApproval()) {
+                if (ptvProgramPresenter.isNotSubmittedForApproval()) {
                     actionPanelView.getBtnComplete().setText(R.string.submit_for_approval);
                 }
                 updateHeader(ptvProgram);
@@ -318,18 +318,17 @@ public class PTVDataReportFormActivity extends BaseActivity {
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
-            isCompleted = !ptvProgramPresenter.isSubmittedForApproval();
+            isCompleted = !ptvProgramPresenter.isNotSubmittedForApproval();
             Subscription subscription = ptvProgramPresenter.signReport(sign, isCompleted).subscribe(updatePTVProgramSubscriber());
             subscriptions.add(subscription);
         }
-
         public void onCancel() {
             changeButtonsState(true);
         }
     };
 
     protected String getSignatureDialogTitle() {
-        return ptvProgramPresenter.isSubmittedForApproval() ? getResources().getString(R.string.msg_ptv_submit_signature) : getResources().getString(R.string.msg_approve_signature_ptv);
+        return ptvProgramPresenter.isNotSubmittedForApproval() ? getResources().getString(R.string.msg_ptv_submit_signature) : getResources().getString(R.string.msg_approve_signature_ptv);
     }
 
 

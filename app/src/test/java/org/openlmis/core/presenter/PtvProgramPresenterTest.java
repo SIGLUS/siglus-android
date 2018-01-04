@@ -11,13 +11,19 @@ import org.openlmis.core.builders.PTVProgramBuilder;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PatientDataProgramStatus;
+import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.PTVProgramRepository;
 import org.openlmis.core.utils.PTVUtil;
 import org.openlmis.core.utils.mapper.PTVProgramToPTVViewModelMapper;
+import org.openlmis.core.utils.mapper.PTVViewModelToPTVProgramMapper;
+import org.openlmis.core.view.viewmodel.ptv.PTVViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -36,18 +42,24 @@ public class PtvProgramPresenterTest {
     private PTVProgramBuilder ptvProgramBuilder;
     private PTVProgramRepository ptvProgramRepository;
     private PTVProgramToPTVViewModelMapper ptvProgramToPTVViewModelMapper;
+    private PTVViewModelToPTVProgramMapper ptvViewModelToPTVProgramMapper;
     private Period period;
     private PTVProgram ptvProgram;
     private TestSubscriber<PTVProgram> subscriber;
+    private long[] quantities;
+    private List<PTVViewModel> ptvViewModels;
 
     @Before
     public void setUp() throws Exception {
         period = new Period(DateTime.now());
+        quantities = PTVUtil.getRandomQuantitiesForPTVViewModels();
+        ptvViewModels = PTVUtil.getPtvViewModels(quantities);
         ptvProgram = PTVUtil.createDummyPTVProgram(period);
         subscriber = new TestSubscriber<>();
         ptvProgramBuilder = mock(PTVProgramBuilder.class);
         ptvProgramRepository = mock(PTVProgramRepository.class);
         ptvProgramToPTVViewModelMapper = mock(PTVProgramToPTVViewModelMapper.class);
+        ptvViewModelToPTVProgramMapper = mock(PTVViewModelToPTVProgramMapper.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new PtvProgramPresenterTest.MyTestModule());
         ptvProgramPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PtvProgramPresenter.class);
         ptvProgramPresenter.setPeriod(period);
@@ -114,18 +126,6 @@ public class PtvProgramPresenterTest {
         assertThat(actualPTVProgram, is(expectedPtvProgram));
     }
 
-    private PTVProgram createInitialPTVProgram() throws LMISException {
-        PTVProgram expectedPtvProgram = PTVUtil.createDummyPTVProgram(period);
-        when(ptvProgramRepository.getByPeriod(period)).thenReturn(null);
-        when(ptvProgramBuilder.buildInitialPTVProgram(period)).thenReturn(expectedPtvProgram);
-
-        Observable<PTVProgram> observableBuild = ptvProgramPresenter.buildInitialPtvProgram();
-        observableBuild.subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        return expectedPtvProgram;
-    }
-
     @Test
     public void shouldSetSubmittedStatusWhenPTVProgramIsCompleted() throws LMISException, SQLException {
         PTVProgram expectedPtvProgram = PTVUtil.createDummyPTVProgram(period);
@@ -143,8 +143,18 @@ public class PtvProgramPresenterTest {
         assertThat(actualPTVProgram.getStatus(), is(PatientDataProgramStatus.SUBMITTED));
     }
 
-//    @Test
-//    public void
+    @Test
+    public void shouldUpdatePTVProgramFromPTVViewModelsAndChildAndWomenNumber() throws LMISException {
+        ptvProgram = createInitialPTVProgram();
+        ptvProgram.setPatientDispensations(PTVUtil.createDummyPatientDispensations());
+        when(ptvViewModelToPTVProgramMapper.convertToPTVProgram(ptvViewModels, ptvProgram)).thenReturn(ptvProgram);
+        String numberOfChild = String.valueOf(1 + new Random().nextInt(99));
+        String numberOfWomen = String.valueOf(1 + new Random().nextInt(99));
+
+        PTVProgram actualPTVProgram = ptvProgramPresenter.updatePTVProgram(numberOfWomen, numberOfChild);
+
+        assertWomanAndChildQuantitiesAreSetUp(numberOfChild, numberOfWomen, actualPTVProgram);
+    }
 
     @Test
     public void shouldThrowLMISExceptionWhenPTVProgramIsNull() throws Exception {
@@ -181,6 +191,73 @@ public class PtvProgramPresenterTest {
         subscriber.assertError(SQLException.class);
     }
 
+    @Test
+    public void shouldReturnTrueWhenPTVProgramDoesNotHaveCreatedByFieldFilled() throws LMISException {
+        ptvProgram = createInitialPTVProgram();
+
+        boolean isNotSubmittedForApproval = ptvProgramPresenter.isNotSubmittedForApproval();
+
+        assertThat(true, is(isNotSubmittedForApproval));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenStatusIsMissingOrDraftAndCreatedByFieldIsNotFilled() throws LMISException {
+        ptvProgram = createInitialPTVProgram();
+        ptvProgram.setStatus(PatientDataProgramStatus.DRAFT);
+
+        boolean isNotSubmittedForApproval = ptvProgramPresenter.isNotSubmittedForApproval();
+
+        assertThat(true, is(isNotSubmittedForApproval));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenStatusIsNotMissingOrDraft() throws LMISException {
+        ptvProgram = createInitialPTVProgram();
+        ptvProgram.setStatus(PatientDataProgramStatus.SUBMITTED);
+
+        boolean isNotSubmittedForApproval = ptvProgramPresenter.isNotSubmittedForApproval();
+
+        assertThat(false, is(isNotSubmittedForApproval));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenCreatedByFieldIsNotEmpty() throws LMISException {
+        ptvProgram = createInitialPTVProgram();
+        ptvProgram.setCreatedBy("TWUIO");
+
+        boolean isNotSubmittedForApproval = ptvProgramPresenter.isNotSubmittedForApproval();
+
+        assertThat(false, is(isNotSubmittedForApproval));
+    }
+
+    @Test
+    public void shouldCallSavePTVProgram() throws LMISException, SQLException {
+        ptvProgram = createInitialPTVProgram();
+        PTVProgram resultPTVProgram = PTVUtil.createDummyPTVProgram(period);
+        when(ptvProgramRepository.save(ptvProgram)).thenReturn(resultPTVProgram);
+        Observable<PTVProgram> observableSave = ptvProgramPresenter.savePTVProgram(true);
+        observableSave.subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        ptvProgramPresenter.signReport("TEST", true);
+
+        assertThat(ptvProgram.getCreatedBy(), is("TEST"));
+    }
+
+
+    private PTVProgram createInitialPTVProgram() throws LMISException {
+        PTVProgram expectedPtvProgram = PTVUtil.createDummyPTVProgram(period);
+        when(ptvProgramRepository.getByPeriod(period)).thenReturn(null);
+        when(ptvProgramBuilder.buildInitialPTVProgram(period)).thenReturn(expectedPtvProgram);
+        when(ptvProgramToPTVViewModelMapper.buildPlaceholderRows()).thenReturn(ptvViewModels);
+        Observable<PTVProgram> observableBuild = ptvProgramPresenter.buildInitialPtvProgram();
+        observableBuild.subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        return expectedPtvProgram;
+    }
+
     private void buildExistentPTVProgram(PTVProgram ptvProgram) throws LMISException {
         when(ptvProgramRepository.getByPeriod(period)).thenReturn(ptvProgram);
         when(ptvProgramBuilder.buildExistentPTVProgram(ptvProgram)).thenReturn(ptvProgram);
@@ -190,12 +267,27 @@ public class PtvProgramPresenterTest {
         subscriber.assertNoErrors();
     }
 
+
+    private void assertWomanAndChildQuantitiesAreSetUp(String numberOfChild, String numberOfWomen, PTVProgram actualPTVProgram) {
+        List<PatientDispensation> patientDispensations = new ArrayList<>(actualPTVProgram.getPatientDispensations());
+        for (PatientDispensation patientDispensation : patientDispensations) {
+            if (patientDispensation.getType().equals(PatientDispensation.Type.WOMAN)) {
+                assertThat(patientDispensation.getTotal(), is(Long.parseLong(numberOfWomen)));
+            }
+            if (patientDispensation.getType().equals(PatientDispensation.Type.CHILD)) {
+                assertThat(patientDispensation.getTotal(), is(Long.parseLong(numberOfChild)));
+            }
+        }
+    }
+
     public class MyTestModule extends AbstractModule {
+
         @Override
         protected void configure() {
             bind(PTVProgramBuilder.class).toInstance(ptvProgramBuilder);
             bind(PTVProgramRepository.class).toInstance(ptvProgramRepository);
             bind(PTVProgramToPTVViewModelMapper.class).toInstance(ptvProgramToPTVViewModelMapper);
+            bind(PTVViewModelToPTVProgramMapper.class).toInstance(ptvViewModelToPTVProgramMapper);
         }
     }
 }

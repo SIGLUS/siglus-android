@@ -9,8 +9,6 @@ import org.openlmis.core.view.viewmodel.ptv.PTVViewModel;
 
 import java.util.List;
 
-import lombok.Setter;
-
 import static org.openlmis.core.utils.Constants.LOSSES_AND_ADJUSTMENTS;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_FIFTH_CODE;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_FIRST_CODE;
@@ -21,15 +19,12 @@ import static org.openlmis.core.utils.Constants.REQUISITIONS;
 
 public class PTVViewModelToPTVProgramMapper {
 
-    @Setter
-    private PTVProgram ptvProgram;
-
     @Inject
-    public PTVViewModelToPTVProgramMapper(PTVProgram ptvProgram) {
-        this.ptvProgram = ptvProgram;
+    public PTVViewModelToPTVProgramMapper() {
     }
 
-    public PTVProgram convertToPTVProgram(List<PTVViewModel> viewModels) {
+    public PTVProgram convertToPTVProgram(List<PTVViewModel> viewModels, PTVProgram ptvProgram) {
+
         for (PTVProgramStockInformation ptvProgramStockInformation : ptvProgram.getPtvProgramStocksInformation()) {
             for (ServiceDispensation service : ptvProgramStockInformation.getServiceDispensations()) {
                 putViewModelsAmountsInPTVFields(ptvProgramStockInformation, service, viewModels);

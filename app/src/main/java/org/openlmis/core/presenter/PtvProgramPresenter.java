@@ -41,7 +41,7 @@ public class PtvProgramPresenter extends Presenter {
     private HealthFacilityServiceRepository healthFacilityServiceRepository;
 
     @Inject
-    private PTVProgramToPTVViewModelMapper PTVProgramToPtvViewModelMapper;
+    private PTVProgramToPTVViewModelMapper ptvProgramToPtvViewModelMapper;
 
     @Inject
     private PTVViewModelToPTVProgramMapper ptvViewModelToPTVProgramMapper;
@@ -121,8 +121,7 @@ public class PtvProgramPresenter extends Presenter {
     }
 
     public PTVProgram updatePTVProgram(String totalWoman, String totalChild) {
-        ptvViewModelToPTVProgramMapper.setPtvProgram(ptvProgram);
-        ptvProgram = ptvViewModelToPTVProgramMapper.convertToPTVProgram(viewModels);
+        ptvProgram = ptvViewModelToPTVProgramMapper.convertToPTVProgram(viewModels, ptvProgram);
         List<PatientDispensation> patientDispensations = updatePatientDispensations(totalWoman, totalChild);
         ptvProgram.setPatientDispensations(patientDispensations);
         return ptvProgram;
@@ -147,15 +146,13 @@ public class PtvProgramPresenter extends Presenter {
     }
 
     public void buildPlaceholderRows() throws LMISException {
-        PTVProgramToPtvViewModelMapper.setPtvProgram(ptvProgram);
-        viewModels = PTVProgramToPtvViewModelMapper.buildPlaceholderRows();
+        ptvProgramToPtvViewModelMapper.setPtvProgram(ptvProgram);
+        viewModels = ptvProgramToPtvViewModelMapper.buildPlaceholderRows();
     }
 
-    public boolean isSubmittedForApproval() {
-        return ptvProgram.getCreatedBy() != null
-                && (ptvProgram.getStatus().equals(PatientDataProgramStatus.DRAFT)
-                || ptvProgram.getStatus().equals(PatientDataProgramStatus.MISSING))
-                && ptvProgram.getCreatedBy().isEmpty();
+    public boolean isNotSubmittedForApproval() {
+        return ptvProgram.getCreatedBy() != null && (ptvProgram.getStatus().equals(PatientDataProgramStatus.DRAFT)
+                || ptvProgram.getStatus().equals(PatientDataProgramStatus.MISSING)) && ptvProgram.getCreatedBy().isEmpty();
     }
 
     public Observable<PTVProgram> signReport(String signature, boolean isComplete) {
