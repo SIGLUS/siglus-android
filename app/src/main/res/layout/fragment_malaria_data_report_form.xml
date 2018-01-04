@@ -264,7 +264,7 @@
         android:layout_below="@+id/vg_rapid_test_report_header">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_patient_data_row_item_list"
+            android:id="@+id/rv_malaria_data_row_item_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/action_panel"

@@ -9,10 +9,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.enums.PatientDataReportType;
+import org.openlmis.core.enums.VIAReportType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.helpers.ProductBuilder;
 import org.openlmis.core.model.MalariaProgram;
@@ -36,7 +35,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.helpers.MalariaProgramBuilder.periodEndDate;
 import static org.openlmis.core.helpers.MalariaProgramBuilder.randomMalariaProgram;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x1_CODE;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x2_CODE;
@@ -101,7 +99,7 @@ public class PatientDataServiceTest {
     public void shouldNotReturnPeriodsWhenThereAreNotPatientDataReportedAndCurrentPeriodIsNotOpenToRequisitions() throws LMISException {
         LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2017-09-13").getMillis());
         when(malariaProgramRepository.getFirstMovement()).thenReturn(null);
-        List<Period> periods = patientDataService.calculatePeriods(PatientDataReportType.MALARIA);
+        List<Period> periods = patientDataService.calculatePeriods(VIAReportType.MALARIA);
         assertThat(periods.isEmpty(), is(true));
     }
 
@@ -111,7 +109,7 @@ public class PatientDataServiceTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(today.getMillis());
         when(malariaProgramRepository.getFirstMovement()).thenReturn(null);
         Period expectedPeriod = new Period(new DateTime(LMISTestApp.getInstance().getCurrentTimeMillis()));
-        List<Period> periods = patientDataService.calculatePeriods(PatientDataReportType.MALARIA);
+        List<Period> periods = patientDataService.calculatePeriods(VIAReportType.MALARIA);
         assertThat(EqualsBuilder.reflectionEquals(expectedPeriod, periods.get(FIRST_PERIOD_POSITION)), is(true));
     }
 
@@ -123,7 +121,7 @@ public class PatientDataServiceTest {
         malariaProgram.setReportedDate(firstReportedDate);
         malariaProgram.setCreatedAt(firstReportedDate.toDate());
         when(malariaProgramRepository.getFirstMovement()).thenReturn(malariaProgram);
-        List<Period> periods = patientDataService.calculatePeriods(PatientDataReportType.MALARIA);
+        List<Period> periods = patientDataService.calculatePeriods(VIAReportType.MALARIA);
         assertThat(periods.size(), is(monthsAfterInitialReportedDate + CURRENT_MONTH));
     }
 
@@ -135,7 +133,7 @@ public class PatientDataServiceTest {
         malariaProgram.setReportedDate(firstReportedDate);
         malariaProgram.setCreatedAt(firstReportedDate.toDate());
         when(malariaProgramRepository.getFirstMovement()).thenReturn(malariaProgram);
-        List<Period> periods = patientDataService.calculatePeriods(PatientDataReportType.MALARIA);
+        List<Period> periods = patientDataService.calculatePeriods(VIAReportType.MALARIA);
         assertThat(periods.size(), is(monthsAfterInitialReportedDate));
     }
 

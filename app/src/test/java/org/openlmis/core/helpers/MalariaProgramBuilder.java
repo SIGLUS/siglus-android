@@ -7,7 +7,7 @@ import com.natpryce.makeiteasy.PropertyLookup;
 import org.joda.time.DateTime;
 import org.openlmis.core.model.Implementation;
 import org.openlmis.core.model.MalariaProgram;
-import org.openlmis.core.model.PatientDataProgramStatus;
+import org.openlmis.core.model.ViaReportStatus;
 
 import java.util.List;
 
@@ -25,14 +25,14 @@ public class MalariaProgramBuilder {
     public static final Property<MalariaProgram, DateTime> reportedDate = new Property<>();
     public static final Property<MalariaProgram, DateTime> periodStartDate = new Property<>();
     public static final Property<MalariaProgram, DateTime> periodEndDate = new Property<>();
-    public static final Property<MalariaProgram, PatientDataProgramStatus> status = new Property<>();
+    public static final Property<MalariaProgram, ViaReportStatus> status = new Property<>();
     public static final Property<MalariaProgram, List<Implementation>> implementations = new Property<>();
 
     public static final Instantiator<MalariaProgram> randomMalariaProgram = new Instantiator<MalariaProgram>() {
         @Override
         public MalariaProgram instantiate(PropertyLookup<MalariaProgram> lookup) {
             DateTime referenceDate = now();
-            PatientDataProgramStatus[] statuses = PatientDataProgramStatus.values();
+            ViaReportStatus[] statuses = ViaReportStatus.values();
             MalariaProgram malariaProgram = new MalariaProgram(
                     lookup.valueOf(username, randomAlphabetic(10)),
                     lookup.valueOf(reportedDate, referenceDate),
@@ -48,7 +48,7 @@ public class MalariaProgramBuilder {
         @Override
         public MalariaProgram instantiate(PropertyLookup<MalariaProgram> lookup) {
             DateTime referenceDate = now();
-            PatientDataProgramStatus[] statuses = PatientDataProgramStatus.values();
+            ViaReportStatus[] statuses = ViaReportStatus.values();
             MalariaProgram malariaProgram = new MalariaProgram(
                     lookup.valueOf(username, randomAlphabetic(10)),
                     lookup.valueOf(reportedDate, referenceDate),

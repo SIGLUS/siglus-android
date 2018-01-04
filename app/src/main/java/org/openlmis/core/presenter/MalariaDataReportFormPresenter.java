@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.MalariaProgram;
-import org.openlmis.core.model.PatientDataProgramStatus;
+import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.service.PatientDataService;
 import org.openlmis.core.utils.mapper.MalariaDataReportViewModelToMalariaProgramMapper;
@@ -25,7 +25,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class PatientDataReportFormPresenter extends BaseReportPresenter {
+public class MalariaDataReportFormPresenter extends BaseReportPresenter {
 
     public static final int INVALID_INDEX = -1;
     @Inject
@@ -42,9 +42,9 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
 
     private List<ImplementationReportViewModel> viewModels;
     private String createdBy;
-    private PatientDataProgramStatus status;
+    private ViaReportStatus status;
 
-    public void setStatus(PatientDataProgramStatus status) {
+    public void setStatus(ViaReportStatus status) {
         this.status = status;
     }
 
@@ -52,7 +52,7 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
         this.createdBy = createdBy;
     }
 
-    public PatientDataReportFormPresenter() {
+    public MalariaDataReportFormPresenter() {
         this.viewModels = new ArrayList<>();
     }
 
@@ -72,7 +72,7 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
                         status = malariaProgram.getStatus();
                     } else {
                         createdBy = "";
-                        status = PatientDataProgramStatus.MISSING;
+                        status = ViaReportStatus.MISSING;
                     }
                     List<Long> malariaProductsStockHand = patientDataService.getMalariaProductsStockHand();
                     MalariaDataReportViewModel malariaDataReportViewModel = reportViewModelMapper.Map(malariaProgram);
@@ -132,14 +132,14 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
 
     }
 
-    public Observable<MalariaProgram> onSaveForm(final PatientDataProgramStatus status, final String sign) {
+    public Observable<MalariaProgram> onSaveForm(final ViaReportStatus status, final String sign) {
         return Observable.create(new Observable.OnSubscribe<MalariaProgram>() {
             @Override
             public void call(Subscriber<? super MalariaProgram> subscriber) {
                 try {
                     MalariaProgram malariaProgram = getMalariaProgram();
                     malariaProgram.setStatus(status);
-                    if (status.equals(PatientDataProgramStatus.SUBMITTED)) {
+                    if (status.equals(ViaReportStatus.SUBMITTED)) {
                         malariaProgram.setVerifiedBy(sign);
                     } else {
                         malariaProgram.setCreatedBy(sign);
@@ -171,8 +171,8 @@ public class PatientDataReportFormPresenter extends BaseReportPresenter {
 
     public boolean isSubmittedForApproval() {
         return createdBy != null
-                && (status.equals(PatientDataProgramStatus.DRAFT)
-                || status.equals(PatientDataProgramStatus.MISSING))
+                && (status.equals(ViaReportStatus.DRAFT)
+                || status.equals(ViaReportStatus.MISSING))
                 && createdBy.isEmpty();
     }
 }

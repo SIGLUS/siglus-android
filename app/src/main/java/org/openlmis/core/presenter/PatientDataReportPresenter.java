@@ -3,11 +3,11 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.openlmis.core.enums.PatientDataReportType;
+import org.openlmis.core.enums.VIAReportType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.MalariaProgram;
-import org.openlmis.core.model.PatientDataProgramStatus;
+import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.MalariaProgramRepository;
@@ -44,7 +44,7 @@ public class PatientDataReportPresenter extends Presenter {
 
     }
 
-    public Observable<List<PatientDataReportViewModel>> getViewModels(final PatientDataReportType reportType) {
+    public Observable<List<PatientDataReportViewModel>> getViewModels(final VIAReportType reportType) {
         return Observable.create(new Observable.OnSubscribe<List<PatientDataReportViewModel>>() {
             @Override
             public void call(Subscriber<? super List<PatientDataReportViewModel>> subscriber) {
@@ -60,10 +60,10 @@ public class PatientDataReportPresenter extends Presenter {
                 .subscribeOn(Schedulers.io());
     }
 
-    public List<PatientDataReportViewModel> generateViewModelsForAvailablePeriods(PatientDataReportType reportType) throws LMISException {
+    public List<PatientDataReportViewModel> generateViewModelsForAvailablePeriods(VIAReportType reportType) throws LMISException {
         List<PatientDataReportViewModel> results = newArrayList();
         List<Period> periods = patientDataService.calculatePeriods(reportType);
-        if (reportType.equals(PatientDataReportType.MALARIA)) {
+        if (reportType.equals(VIAReportType.MALARIA)) {
             buildMalariaViewModels(results, periods);
         } else {
             buildPTVViewModels(results, periods);
@@ -78,7 +78,7 @@ public class PatientDataReportPresenter extends Presenter {
             if (ptvProgramOptional.isPresent()) {
                 results.add(new PatientDataReportViewModel(period, new DateTime(ptvProgramOptional.get().getCreatedAt()), ptvProgramOptional.get().getStatus()));
             } else {
-                results.add(new PatientDataReportViewModel(period, null, PatientDataProgramStatus.MISSING));
+                results.add(new PatientDataReportViewModel(period, null, ViaReportStatus.MISSING));
             }
         }
     }
@@ -90,7 +90,7 @@ public class PatientDataReportPresenter extends Presenter {
             if (malariaProgramOptional.isPresent()) {
                 results.add(new PatientDataReportViewModel(period, new DateTime(malariaProgramOptional.get().getCreatedAt()), malariaProgramOptional.get().getStatus()));
             } else {
-                results.add(new PatientDataReportViewModel(period, null, PatientDataProgramStatus.MISSING));
+                results.add(new PatientDataReportViewModel(period, null, ViaReportStatus.MISSING));
             }
         }
     }

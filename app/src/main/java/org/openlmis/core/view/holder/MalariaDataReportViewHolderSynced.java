@@ -9,10 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.enums.PatientDataReportType;
+import org.openlmis.core.enums.VIAReportType;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.BaseActivity;
-import org.openlmis.core.view.activity.PatientDataReportFormActivity;
+import org.openlmis.core.view.activity.MalariaDataReportFormActivity;
 import org.openlmis.core.view.viewmodel.malaria.PatientDataReportViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
@@ -20,17 +20,17 @@ import roboguice.inject.InjectView;
 
 import static org.openlmis.core.R.id.btn_report_entry;
 
-public class PatientDataReportViewHolderSynced extends PatientDataReportViewHolderBase {
+public class MalariaDataReportViewHolderSynced extends MalariaDataReportViewHolderBase {
 
     @InjectView(btn_report_entry)
     private TextView btnViewReport;
     private PatientDataReportViewModel viewModel;
 
-    protected PatientDataReportType patientDataReportType;
+    protected VIAReportType VIAReportType;
 
-    public PatientDataReportViewHolderSynced(Context context, ViewGroup parent, PatientDataReportType patientDataReportType) {
+    public MalariaDataReportViewHolderSynced(Context context, ViewGroup parent, VIAReportType VIAReportType) {
         super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_synced, parent, false));
-        this.patientDataReportType = patientDataReportType;
+        this.VIAReportType = VIAReportType;
     }
 
     public void populate(final PatientDataReportViewModel patientDataReportViewModel) {
@@ -45,7 +45,7 @@ public class PatientDataReportViewHolderSynced extends PatientDataReportViewHold
             @Override
             public void onSingleClick(View v) {
                 ((BaseActivity) context).loading();
-                ((Activity) context).startActivityForResult(PatientDataReportFormActivity
+                ((Activity) context).startActivityForResult(MalariaDataReportFormActivity
                                 .getIntentToMe(context,
                                         Constants.DEFAULT_FORM_ID,
                                         viewModel.getPeriod().getBegin()),

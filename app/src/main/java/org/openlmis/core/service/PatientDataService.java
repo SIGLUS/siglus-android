@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.enums.PatientDataReportType;
+import org.openlmis.core.enums.VIAReportType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.MalariaProgram;
@@ -42,9 +42,9 @@ public class PatientDataService {
     @Inject
     StockRepository stockRepository;
 
-    public List<Period> calculatePeriods(PatientDataReportType patientDataReportType) {
+    public List<Period> calculatePeriods(VIAReportType VIAReportType) {
         List<Period> periods = new ArrayList<>();
-        if (patientDataReportType.equals(PatientDataReportType.MALARIA)) {
+        if (VIAReportType.equals(VIAReportType.MALARIA)) {
             calculateMalariaPeriods(periods);
         }else{
             calculatePTVPeriods(periods);

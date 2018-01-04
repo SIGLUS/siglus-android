@@ -11,7 +11,7 @@ import org.openlmis.core.view.viewmodel.malaria.PatientDataReportViewModel;
 
 import roboguice.inject.InjectView;
 
-public abstract class PatientDataReportViewHolderBase extends BaseViewHolder {
+public abstract class MalariaDataReportViewHolderBase extends BaseViewHolder {
 
     @InjectView(R.id.tv_period)
     protected TextView tvPeriod;
@@ -21,11 +21,11 @@ public abstract class PatientDataReportViewHolderBase extends BaseViewHolder {
 
 
 
-    public PatientDataReportViewHolderBase(Context context, ViewGroup parent) {
+    public MalariaDataReportViewHolderBase(Context context, ViewGroup parent) {
         super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_missing, parent, false));
     }
 
-    public PatientDataReportViewHolderBase(View itemView) {
+    public MalariaDataReportViewHolderBase(View itemView) {
         super(itemView);
     }
 

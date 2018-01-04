@@ -8,18 +8,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.enums.PatientDataReportType;
+import org.openlmis.core.enums.VIAReportType;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.PTVDataReportFormActivity;
-import org.openlmis.core.view.activity.PatientDataReportFormActivity;
+import org.openlmis.core.view.activity.MalariaDataReportFormActivity;
 import org.openlmis.core.view.viewmodel.malaria.PatientDataReportViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
 
 
-public class PatientDataReportViewHolderDraft extends PatientDataReportViewHolderBase {
+public class MalariaDataReportViewHolderDraft extends MalariaDataReportViewHolderBase {
 
     @InjectView(R.id.btn_create_patient_data_report)
     private TextView btnReportEntry;
@@ -29,18 +29,18 @@ public class PatientDataReportViewHolderDraft extends PatientDataReportViewHolde
 
     private PatientDataReportViewModel viewModel;
 
-    protected PatientDataReportType patientDataReportType;
+    protected VIAReportType VIAReportType;
 
-    public PatientDataReportViewHolderDraft(Context context, ViewGroup parent, PatientDataReportType patientDataReportType) {
+    public MalariaDataReportViewHolderDraft(Context context, ViewGroup parent, VIAReportType VIAReportType) {
         super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_draft, parent, false));
-        this.patientDataReportType = patientDataReportType;
+        this.VIAReportType = VIAReportType;
     }
 
     @Override
     public void populate(PatientDataReportViewModel patientDataReportViewModel) {
         viewModel = patientDataReportViewModel;
         tvPeriod.setText(patientDataReportViewModel.getPeriod().toString());
-        if (patientDataReportType.equals(PatientDataReportType.MALARIA)) {
+        if (VIAReportType.equals(VIAReportType.MALARIA)) {
             tvReportStatus.setText(R.string.malaria_report_incomplete);
             btnReportEntry.setText(R.string.continue_editing_malaria);
             btnReportEntry.setOnClickListener(goToPatientDataReportFormActivity());
@@ -68,7 +68,7 @@ public class PatientDataReportViewHolderDraft extends PatientDataReportViewHolde
             @Override
             public void onSingleClick(View v) {
                 ((BaseActivity) context).loading();
-                ((Activity) context).startActivityForResult(PatientDataReportFormActivity
+                ((Activity) context).startActivityForResult(MalariaDataReportFormActivity
                                 .getIntentToMe(context,
                                         Constants.DEFAULT_FORM_ID,
                                         viewModel.getPeriod().getBegin()),

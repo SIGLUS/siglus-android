@@ -7,12 +7,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.enums.PatientDataReportType;
+import org.openlmis.core.enums.VIAReportType;
 import org.openlmis.core.view.viewmodel.malaria.PatientDataReportViewModel;
 
 import roboguice.inject.InjectView;
 
-public class PatientDataReportViewHolderSubmitted extends PatientDataReportViewHolderBase {
+public class MalariaDataReportViewHolderSubmitted extends MalariaDataReportViewHolderBase {
 
     @InjectView(R.id.tv_period)
     TextView tvPeriod;
@@ -20,11 +20,11 @@ public class PatientDataReportViewHolderSubmitted extends PatientDataReportViewH
     @InjectView(R.id.btn_report_entry)
     TextView btnReportEntry;
 
-    protected PatientDataReportType patientDataReportType;
+    protected VIAReportType VIAReportType;
 
-    public PatientDataReportViewHolderSubmitted(Context context, ViewGroup parent, PatientDataReportType patientDataReportType) {
+    public MalariaDataReportViewHolderSubmitted(Context context, ViewGroup parent, VIAReportType VIAReportType) {
         super(LayoutInflater.from(context).inflate(R.layout.item_patient_data_report_submitted, parent, false));
-        this.patientDataReportType = patientDataReportType;
+        this.VIAReportType = VIAReportType;
     }
 
     public void populate(final PatientDataReportViewModel patientDataReportViewModel) {

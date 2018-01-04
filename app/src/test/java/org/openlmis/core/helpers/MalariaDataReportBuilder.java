@@ -5,7 +5,7 @@ import com.natpryce.makeiteasy.Property;
 import com.natpryce.makeiteasy.PropertyLookup;
 
 import org.joda.time.DateTime;
-import org.openlmis.core.model.PatientDataProgramStatus;
+import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
 import org.openlmis.core.view.viewmodel.malaria.MalariaDataReportViewModel;
 
@@ -27,7 +27,7 @@ public class MalariaDataReportBuilder {
         @Override
         public MalariaDataReportViewModel instantiate(PropertyLookup<MalariaDataReportViewModel> lookup) {
             DateTime today = now();
-            PatientDataProgramStatus[] statuses = PatientDataProgramStatus.values();
+            ViaReportStatus[] statuses = ViaReportStatus.values();
             return new MalariaDataReportViewModel(
                     lookup.valueOf(reportedDate, today),
                     lookup.valueOf(startPeriodDate, today.minusDays(nextInt(10))),

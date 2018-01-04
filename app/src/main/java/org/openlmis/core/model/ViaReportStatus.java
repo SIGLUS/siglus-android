@@ -1,6 +1,6 @@
 package org.openlmis.core.model;
 
-public enum PatientDataProgramStatus {
+public enum ViaReportStatus {
     MISSING,
     DRAFT,
     SUBMITTED,

@@ -13,7 +13,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.HealthFacilityService;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
-import org.openlmis.core.model.PatientDataProgramStatus;
+import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
@@ -59,7 +59,7 @@ public class PTVProgramRepositoryTest {
         PTVProgramStockInformation ptvProgramStockInformation = createValidPTVProgramStockInformation(expectedPtvProgram);
         setHealthFacilityAndPtvProgramStockInformationToServiceDispensation(ptvProgramStockInformation);
         expectedPtvProgram.setPtvProgramStocksInformation(newArrayList(ptvProgramStockInformation));
-        expectedPtvProgram.setStatus(PatientDataProgramStatus.MISSING);
+        expectedPtvProgram.setStatus(ViaReportStatus.MISSING);
 
         PTVProgram ptvProgramSaved = ptvProgramRepository.save(expectedPtvProgram);
 

@@ -7,16 +7,16 @@ import org.joda.time.DateTime;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.fragment.PatientDataReportFormFragment;
+import org.openlmis.core.view.fragment.MalariaDataReportFormFragment;
 
 import roboguice.inject.ContentView;
 
-@ContentView(R.layout.activity_patient_data_report_form)
-public class PatientDataReportFormActivity extends BaseActivity {
+@ContentView(R.layout.activity_malaria_data_report_form)
+public class MalariaDataReportFormActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.PatientDataReportFormScreen;
+        return ScreenName.MalariaDataReportFormScreen;
     }
 
     @Override
@@ -26,11 +26,11 @@ public class PatientDataReportFormActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        ((PatientDataReportFormFragment) getFragmentManager().findFragmentById(R.id.fragment_patient_data_report_form)).onBackPressed();
+        ((MalariaDataReportFormFragment) getFragmentManager().findFragmentById(R.id.fragment_malaria_data_report_form)).onBackPressed();
     }
 
     public static Intent getIntentToMe(Context context, long formId, DateTime periodBegin) {
-        Intent intent = new Intent(context, PatientDataReportFormActivity.class);
+        Intent intent = new Intent(context, MalariaDataReportFormActivity.class);
         intent.putExtra(Constants.PARAM_FORM_ID, formId);
         intent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
         return intent;

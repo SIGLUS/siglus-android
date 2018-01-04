@@ -8,7 +8,7 @@ import org.openlmis.core.builders.PTVProgramBuilder;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.PTVProgram;
-import org.openlmis.core.model.PatientDataProgramStatus;
+import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.HealthFacilityServiceRepository;
@@ -114,9 +114,9 @@ public class PtvProgramPresenter extends Presenter {
 
     private void setPTVProgramStatus(boolean isCompleted) {
         if (isCompleted) {
-            ptvProgram.setStatus(PatientDataProgramStatus.SUBMITTED);
+            ptvProgram.setStatus(ViaReportStatus.SUBMITTED);
         } else {
-            ptvProgram.setStatus(PatientDataProgramStatus.DRAFT);
+            ptvProgram.setStatus(ViaReportStatus.DRAFT);
         }
     }
 
@@ -151,8 +151,8 @@ public class PtvProgramPresenter extends Presenter {
     }
 
     public boolean isNotSubmittedForApproval() {
-        return ptvProgram.getCreatedBy() != null && (ptvProgram.getStatus().equals(PatientDataProgramStatus.DRAFT)
-                || ptvProgram.getStatus().equals(PatientDataProgramStatus.MISSING)) && ptvProgram.getCreatedBy().isEmpty();
+        return ptvProgram.getCreatedBy() != null && (ptvProgram.getStatus().equals(ViaReportStatus.DRAFT)
+                || ptvProgram.getStatus().equals(ViaReportStatus.MISSING)) && ptvProgram.getCreatedBy().isEmpty();
     }
 
     public Observable<PTVProgram> signReport(String signature, boolean isComplete) {

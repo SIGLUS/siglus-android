@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
-import org.openlmis.core.model.PatientDataProgramStatus;
+import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
 
@@ -24,7 +24,7 @@ public class PTVProgramBuilder {
         PTVProgram ptvProgram = new PTVProgram();
         ptvProgram.setStartPeriod(period.getBegin().toDate());
         ptvProgram.setEndPeriod(period.getEnd().toDate());
-        ptvProgram.setStatus(PatientDataProgramStatus.MISSING);
+        ptvProgram.setStatus(ViaReportStatus.MISSING);
         ptvProgram.setCreatedBy(EMPTY_STRING);
         ptvProgram.setVerifiedBy(EMPTY_STRING);
         List<PatientDispensation> patientDispensations = patientDispensationBuilder.buildInitialPatientDispensations(ptvProgram);
