@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+        android:id="@+id/sc_requisition"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rnr_form_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical" />
+                android:id="@+id/rnr_form_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"/>
 
         <TextView
-            android:id="@+id/tv_archived_old_data"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/color_divider"
-            android:layout_margin="@dimen/margin_normal"
-            android:layout_marginBottom="@dimen/margin_larger"
-            android:gravity="center"
-            android:text="@string/msg_has_archived_old_data" />
+                android:id="@+id/tv_archived_old_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_divider"
+                android:layout_margin="@dimen/margin_normal"
+                android:layout_marginBottom="@dimen/margin_larger"
+                android:gravity="center"
+                android:text="@string/msg_has_archived_old_data"/>
     </LinearLayout>
 </ScrollView>
 

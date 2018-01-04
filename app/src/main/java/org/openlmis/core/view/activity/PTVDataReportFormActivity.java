@@ -110,7 +110,6 @@ public class PTVDataReportFormActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         loading(getString(R.string.loading_report_information));
         initializePtvProgramPresenter();
-
     }
 
     private void initializePtvProgramPresenter() {

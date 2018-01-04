@@ -4,7 +4,7 @@ Feature: Log in and make movements with initialized products
   Scenario: 04 - MMIA
     Given I log in into the application
     And I press "MMIA"
-    And I should see text containing "No MMIA has been created."
+    And I wait for mmia page is initialized
     And I press "Create MMIA"
     And I select current MMIA period
     And I press next to continue with the MMIA form

@@ -64,9 +64,11 @@ public class PTVViewModelToPTVProgramMapper {
         String serviceName = service.getHealthFacilityService().getName();
         if (serviceName.equals(ptvViewModel.getPlaceholderItemName())) {
             service.setQuantity(quantity);
-        } else if (ptvViewModel.getPlaceholderItemName().equals(REQUISITIONS)) {
+        }
+        if (ptvViewModel.getPlaceholderItemName().equals(REQUISITIONS)) {
             ptvProgramStockInformation.setRequisition(quantity);
-        } else if (ptvViewModel.getPlaceholderItemName().equals(LOSSES_AND_ADJUSTMENTS)) {
+        }
+        if (ptvViewModel.getPlaceholderItemName().equals(LOSSES_AND_ADJUSTMENTS)) {
             ptvProgramStockInformation.setLossesAndAdjustments(quantity);
         }
     }
