@@ -51,7 +51,7 @@ public class PTVProgram extends BaseModel implements Serializable {
     String verifiedBy;
 
     @DatabaseField (dataType = DataType.ENUM_INTEGER)
-    PatientDataProgramStatus status;
+    ViaReportStatus status;
 
     @ForeignCollectionField(eager = true)
     private Collection<PTVProgramStockInformation> ptvProgramStocksInformation;

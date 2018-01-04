@@ -11,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.enums.PatientDataReportType;
+import org.openlmis.core.enums.VIAReportType;
 import org.openlmis.core.presenter.PatientDataReportPresenter;
-import org.openlmis.core.view.adapter.PatientDataReportAdapter;
+import org.openlmis.core.view.adapter.MalariaDataReportAdapter;
 import org.openlmis.core.view.viewmodel.malaria.PatientDataReportViewModel;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class MalariaProgramFragment extends Fragment {
 
     private RecyclerView rvPatientDataPeriods;
 
-    private PatientDataReportAdapter patientDataReportAdapter;
+    private MalariaDataReportAdapter malariaDataReportAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,16 +37,16 @@ public class MalariaProgramFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        patientDataReportAdapter = new PatientDataReportAdapter(getContext(), PatientDataReportType.MALARIA);
+        malariaDataReportAdapter = new MalariaDataReportAdapter(getContext(), VIAReportType.MALARIA);
         initializeRecyclerView();
         presenter = injectPresenter();
-        presenter.getViewModels(PatientDataReportType.MALARIA).subscribe(getViewModelsSubscriber());
+        presenter.getViewModels(VIAReportType.MALARIA).subscribe(getViewModelsSubscriber());
     }
 
     private void initializeRecyclerView() {
         rvPatientDataPeriods = (RecyclerView) getView().findViewById(R.id.rv_patient_data_periods);
         rvPatientDataPeriods.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvPatientDataPeriods.setAdapter(patientDataReportAdapter);
+        rvPatientDataPeriods.setAdapter(malariaDataReportAdapter);
     }
 
     private PatientDataReportPresenter injectPresenter(){
@@ -69,8 +69,8 @@ public class MalariaProgramFragment extends Fragment {
 
             @Override
             public void onNext(List<PatientDataReportViewModel> patientDataReportViewModels) {
-                patientDataReportAdapter.setViewModels(patientDataReportViewModels);
-                patientDataReportAdapter.notifyDataSetChanged();
+                malariaDataReportAdapter.setViewModels(patientDataReportViewModels);
+                malariaDataReportAdapter.notifyDataSetChanged();
             }
         };
     }

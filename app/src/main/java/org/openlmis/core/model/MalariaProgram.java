@@ -33,7 +33,7 @@ public class MalariaProgram extends BaseModel {
     private String verifiedBy;
 
     @DatabaseField(dataType = DataType.ENUM_INTEGER)
-    private PatientDataProgramStatus status;
+    private ViaReportStatus status;
 
     @ForeignCollectionField(columnName = "implementations", eager = true, maxEagerLevel = 2)
     private Collection<Implementation> implementations;

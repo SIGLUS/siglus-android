@@ -10,7 +10,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.builders.PTVProgramBuilder;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
-import org.openlmis.core.model.PatientDataProgramStatus;
+import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.PTVProgramRepository;
@@ -98,7 +98,7 @@ public class PtvProgramPresenterTest {
     @Test
     public void shouldUpdatePTVProgramWhenThereIsAPTVProgramStored() throws LMISException, SQLException {
         PTVProgram expectedPtvProgram = PTVUtil.createDummyPTVProgram(period);
-        expectedPtvProgram.setStatus(PatientDataProgramStatus.DRAFT);
+        expectedPtvProgram.setStatus(ViaReportStatus.DRAFT);
         buildExistentPTVProgram(expectedPtvProgram);
 
         when(ptvProgramRepository.save(expectedPtvProgram)).thenReturn(expectedPtvProgram);
@@ -109,7 +109,7 @@ public class PtvProgramPresenterTest {
 
         PTVProgram actualPTVProgram = subscriber.getOnNextEvents().get(0);
         assertThat(actualPTVProgram, is(expectedPtvProgram));
-        assertThat(actualPTVProgram.getStatus(), is(PatientDataProgramStatus.DRAFT));
+        assertThat(actualPTVProgram.getStatus(), is(ViaReportStatus.DRAFT));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class PtvProgramPresenterTest {
     @Test
     public void shouldSetSubmittedStatusWhenPTVProgramIsCompleted() throws LMISException, SQLException {
         PTVProgram expectedPtvProgram = PTVUtil.createDummyPTVProgram(period);
-        expectedPtvProgram.setStatus(PatientDataProgramStatus.SUBMITTED);
+        expectedPtvProgram.setStatus(ViaReportStatus.SUBMITTED);
         buildExistentPTVProgram(expectedPtvProgram);
 
         when(ptvProgramRepository.save(expectedPtvProgram)).thenReturn(expectedPtvProgram);
@@ -140,7 +140,7 @@ public class PtvProgramPresenterTest {
 
         PTVProgram actualPTVProgram = subscriber.getOnNextEvents().get(0);
         assertThat(actualPTVProgram, is(expectedPtvProgram));
-        assertThat(actualPTVProgram.getStatus(), is(PatientDataProgramStatus.SUBMITTED));
+        assertThat(actualPTVProgram.getStatus(), is(ViaReportStatus.SUBMITTED));
     }
 
     @Test
@@ -203,7 +203,7 @@ public class PtvProgramPresenterTest {
     @Test
     public void shouldReturnTrueWhenStatusIsMissingOrDraftAndCreatedByFieldIsNotFilled() throws LMISException {
         ptvProgram = createInitialPTVProgram();
-        ptvProgram.setStatus(PatientDataProgramStatus.DRAFT);
+        ptvProgram.setStatus(ViaReportStatus.DRAFT);
 
         boolean isNotSubmittedForApproval = ptvProgramPresenter.isNotSubmittedForApproval();
 
@@ -213,7 +213,7 @@ public class PtvProgramPresenterTest {
     @Test
     public void shouldReturnFalseWhenStatusIsNotMissingOrDraft() throws LMISException {
         ptvProgram = createInitialPTVProgram();
-        ptvProgram.setStatus(PatientDataProgramStatus.SUBMITTED);
+        ptvProgram.setStatus(ViaReportStatus.SUBMITTED);
 
         boolean isNotSubmittedForApproval = ptvProgramPresenter.isNotSubmittedForApproval();
 
