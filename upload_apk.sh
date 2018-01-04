@@ -10,7 +10,8 @@ token=$2;
 commit_id=$(git rev-parse HEAD);
 apk_path=$1;
 
-echo "Uploading $apk_path...BEGIN"
+echo "Uploading $apk_path...BEGIN";
+echo "Token = $token";
 
 curl -F "status=$AVAILABLE_TO_DOWNLOAD" \
      -F "notify=$NOTIFY_ALL_TESTERS" \
@@ -20,4 +21,4 @@ curl -F "status=$AVAILABLE_TO_DOWNLOAD" \
      -H "X-HockeyAppToken: $token" \
      $HOCKEYAPP_API_URL
 
-echo "Uploading $apk_path...DONE"
+echo "Uploading $apk_path...DONE";
