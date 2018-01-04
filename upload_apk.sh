@@ -6,10 +6,9 @@ NOTIFY_ALL_TESTERS=2;
 AVAILABLE_TO_DOWNLOAD=2;
 HOCKEYAPP_API_URL="https://rink.hockeyapp.net/api/2/apps/upload";
 
-token=$2;
-environment=$1;
+token=$1;
 commit_id=$(git rev-parse HEAD);
-apk_path=$(find . -name *$environment*.apk -type f);
+apk_path=$(find . -type f -name '*-release.apk' -print -quit);
 
 echo "Uploading $apk_path...BEGIN";
 
