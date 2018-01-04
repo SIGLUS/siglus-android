@@ -6,9 +6,10 @@ NOTIFY_ALL_TESTERS=2;
 AVAILABLE_TO_DOWNLOAD=2;
 HOCKEYAPP_API_URL="https://rink.hockeyapp.net/api/2/apps/upload";
 
-token=$1;
+token=$2;
+environment=$1;
 commit_id=$(git rev-parse HEAD);
-apk_path=$(find . -type f -name '*-release.apk' -print -quit);
+apk_path=$(find . -type f -name "*$environment*-release.apk" -print -quit);
 
 echo "Uploading $apk_path...BEGIN";
 
@@ -18,6 +19,6 @@ curl -F "status=$AVAILABLE_TO_DOWNLOAD" \
      -F "note=$commit_id" \
      -F "ipa=@$apk_path" \
      -H "X-HockeyAppToken: $token" \
-     $HOCKEYAPP_API_URL
+     $HOCKEYAPP_API_URL > /dev/null
 
 echo "Uploading $apk_path...DONE";
