@@ -22,8 +22,14 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public final class PTVUtil {
 
-
-    public static final String SERVICE_NAME = "Maternity";
+    public static final String CPN = "CPN";
+    public static final String MATERNITY = "Maternity";
+    public static final String CCR = "CCR";
+    public static final String PHARMACY = "Pharmacy";
+    public static final String UATS = "UATS";
+    public static final String BANCO_DE_SOCORRO = "Banco de socorro";
+    public static final String LAB = "Lab";
+    public static final String ESTOMATOLOGIA = "Estomatologia";
 
     private PTVUtil() {
     }
@@ -54,14 +60,14 @@ public final class PTVUtil {
     @NonNull
     public static ArrayList<HealthFacilityService> createDummyHealthFacilityServices() {
         ArrayList<HealthFacilityService> expectedHealthFacilityServices = new ArrayList<>();
-        expectedHealthFacilityServices.add(getHealthFacilityService(1, "CPN"));
-        expectedHealthFacilityServices.add(getHealthFacilityService(2, "Maternity"));
-        expectedHealthFacilityServices.add(getHealthFacilityService(3, "CCR"));
-        expectedHealthFacilityServices.add(getHealthFacilityService(4, "Pharmacy"));
-        expectedHealthFacilityServices.add(getHealthFacilityService(5, "UATS"));
-        expectedHealthFacilityServices.add(getHealthFacilityService(6, "Banco de socorro"));
-        expectedHealthFacilityServices.add(getHealthFacilityService(7, "Lab"));
-        expectedHealthFacilityServices.add(getHealthFacilityService(8, "Estomatologia"));
+        expectedHealthFacilityServices.add(getHealthFacilityService(1, CPN));
+        expectedHealthFacilityServices.add(getHealthFacilityService(2, MATERNITY));
+        expectedHealthFacilityServices.add(getHealthFacilityService(3, CCR));
+        expectedHealthFacilityServices.add(getHealthFacilityService(4, PHARMACY));
+        expectedHealthFacilityServices.add(getHealthFacilityService(5, UATS));
+        expectedHealthFacilityServices.add(getHealthFacilityService(6, BANCO_DE_SOCORRO));
+        expectedHealthFacilityServices.add(getHealthFacilityService(7, LAB));
+        expectedHealthFacilityServices.add(getHealthFacilityService(8, ESTOMATOLOGIA));
         return expectedHealthFacilityServices;
     }
 
@@ -131,7 +137,14 @@ public final class PTVUtil {
     @NonNull
     public static List<PTVViewModel> getPtvViewModels(long[] quantities) {
         List<PTVViewModel> ptvViewModels = new ArrayList<>();
-        ptvViewModels.add(createPTVViewModel(SERVICE_NAME, quantities));
+        ptvViewModels.add(createPTVViewModel(MATERNITY, quantities));
+        ptvViewModels.add(createPTVViewModel(CPN, quantities));
+        ptvViewModels.add(createPTVViewModel(CCR, quantities));
+        ptvViewModels.add(createPTVViewModel(PHARMACY, quantities));
+        ptvViewModels.add(createPTVViewModel(UATS, quantities));
+        ptvViewModels.add(createPTVViewModel(BANCO_DE_SOCORRO, quantities));
+        ptvViewModels.add(createPTVViewModel(LAB, quantities));
+        ptvViewModels.add(createPTVViewModel(ESTOMATOLOGIA, quantities));
         ptvViewModels.add(createPTVViewModel(Constants.REQUISITIONS, quantities));
         ptvViewModels.add(createPTVViewModel(Constants.LOSSES_AND_ADJUSTMENTS, quantities));
         return ptvViewModels;

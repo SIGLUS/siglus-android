@@ -25,6 +25,7 @@ import static org.openlmis.core.utils.Constants.TOTAL;
 public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder> {
 
     public static final int TOTAL_SERVICES_NUMBER = 8;
+    private final int NUMBER_OF_PRODUCTS = 5;
     private PTVProgram ptvProgram;
 
     private List<PTVViewModel> ptvViewModels;
@@ -70,17 +71,12 @@ public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder
         holder.setWatchersForEditableListeners(productQuantitiesWatcher(holder));
     }
 
-    // TODO: REFACTOR ME PLEASEEEEEEEE!!!!!!!!!!!!!!!!!
-    public void calculateTotal() {
-        long[] totals = new long[5];
-        for (int i = 0; i < TOTAL_SERVICES_NUMBER; i++) {
-            totals[0] += ptvViewModels.get(i).getQuantity1();
-            totals[1] += ptvViewModels.get(i).getQuantity2();
-            totals[2] += ptvViewModels.get(i).getQuantity3();
-            totals[3] += ptvViewModels.get(i).getQuantity4();
-            totals[4] += ptvViewModels.get(i).getQuantity5();
-        }
+    private void calculateTotal() {
+        long[] totals = sumValuesForEachProduct();
+        assignTotalsToEachModel(totals);
+    }
 
+    private void assignTotalsToEachModel(long[] totals) {
         PTVViewModel ptvViewModel = ptvViewModels.get(getTotalElementPosition());
         ptvViewModel.setQuantity(1, totals[0]);
         ptvViewModel.setQuantity(2, totals[1]);
@@ -89,6 +85,24 @@ public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder
         ptvViewModel.setQuantity(5, totals[4]);
     }
 
+    private long[] sumValuesForEachProduct() {
+        long[] totals = new long[NUMBER_OF_PRODUCTS];
+        for (int actualServicePosition = 0; actualServicePosition < TOTAL_SERVICES_NUMBER; actualServicePosition++) {
+            int FIRST_PRODUCT_POSITION = 0;
+            int SECOND_PRODUCT_POSITION = 1;
+            int THIRD_PRODUCT_POSITION = 2;
+            int FOURTH_PRODUCT_POSITION = 3;
+            int FIFTH_PRODUCT_POSITION = 4;
+            totals[FIRST_PRODUCT_POSITION] += ptvViewModels.get(actualServicePosition).getQuantity1();
+            totals[SECOND_PRODUCT_POSITION] += ptvViewModels.get(actualServicePosition).getQuantity2();
+            totals[THIRD_PRODUCT_POSITION] += ptvViewModels.get(actualServicePosition).getQuantity3();
+            totals[FOURTH_PRODUCT_POSITION] += ptvViewModels.get(actualServicePosition).getQuantity4();
+            totals[FIFTH_PRODUCT_POSITION] += ptvViewModels.get(actualServicePosition).getQuantity5();
+        }
+        return totals;
+    }
+
+    //TODO It will change because of Diana's new requirements
     private void calculateFinalStock() {
         long[] entry = new long[5];
         long[] total = new long[5];

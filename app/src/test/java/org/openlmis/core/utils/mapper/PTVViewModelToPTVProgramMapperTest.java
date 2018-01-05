@@ -60,7 +60,7 @@ public class PTVViewModelToPTVProgramMapperTest {
 
     private void assertServiceQuantities(int i, List<ServiceDispensation> serviceDispensations) {
         for (ServiceDispensation serviceDispensation : serviceDispensations) {
-            if (serviceDispensation.getHealthFacilityService().getName().equals(PTVUtil.SERVICE_NAME)) {
+            if (serviceDispensation.getHealthFacilityService().getName().equals(PTVUtil.PHARMACY)) {
                 assertThat(serviceDispensation.getQuantity(), is(quantities[i]));
             }
         }
