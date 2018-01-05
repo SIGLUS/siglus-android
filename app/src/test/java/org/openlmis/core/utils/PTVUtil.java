@@ -79,6 +79,7 @@ public final class PTVUtil {
             ServiceDispensation serviceDispensation = new ServiceDispensation();
             serviceDispensation.setHealthFacilityService(facilityService);
             serviceDispensation.setPtvProgramStockInformation(ptvProgramStockInformation);
+            serviceDispensation.setQuantity(new Random().nextInt(30));
             serviceDispensations.add(serviceDispensation);
         }
         return serviceDispensations;

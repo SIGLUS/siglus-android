@@ -250,7 +250,7 @@ public class PtvProgramPresenterTest {
         PTVProgram expectedPtvProgram = PTVUtil.createDummyPTVProgram(period);
         when(ptvProgramRepository.getByPeriod(period)).thenReturn(null);
         when(ptvProgramBuilder.buildInitialPTVProgram(period)).thenReturn(expectedPtvProgram);
-        when(ptvProgramToPTVViewModelMapper.buildPlaceholderRows()).thenReturn(ptvViewModels);
+        when(ptvProgramToPTVViewModelMapper.buildPlaceholderRows(ptvProgram)).thenReturn(ptvViewModels);
         Observable<PTVProgram> observableBuild = ptvProgramPresenter.buildInitialPtvProgram();
         observableBuild.subscribe(subscriber);
         subscriber.awaitTerminalEvent();

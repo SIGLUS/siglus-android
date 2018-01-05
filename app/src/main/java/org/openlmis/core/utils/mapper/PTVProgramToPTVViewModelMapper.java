@@ -31,8 +31,6 @@ public class PTVProgramToPTVViewModelMapper {
     @Inject
     private HealthFacilityServiceRepository healthFacilityServiceRepository;
 
-    @Setter
-    private PTVProgram ptvProgram;
     private PTVViewModel ptvViewModelEntry;
     private PTVViewModel ptvViewModelLossesAndAdjustments;
     private PTVViewModel ptvViewModelRequisition;
@@ -44,7 +42,7 @@ public class PTVProgramToPTVViewModelMapper {
     public PTVProgramToPTVViewModelMapper() {
     }
 
-    public List<PTVViewModel> buildPlaceholderRows() throws LMISException {
+    public List<PTVViewModel> buildPlaceholderRows(PTVProgram ptvProgram) throws LMISException {
         ptvViewModels = new ArrayList<>();
         List<HealthFacilityService> healthFacilities = healthFacilityServiceRepository.getAll();
         List<PTVProgramStockInformation> ptvProgramStocksInformation = new ArrayList<>(ptvProgram.getPtvProgramStocksInformation());
@@ -70,11 +68,11 @@ public class PTVProgramToPTVViewModelMapper {
     }
 
     private void setQuantitiesForModels(List<HealthFacilityService> healthFacilities, PTVProgramStockInformation ptvProgramStockInformation, List<ServiceDispensation> serviceDispensations) {
-        for(int position=0; position<healthFacilities.size(); position++){
+        for (int position = 0; position < healthFacilities.size(); position++) {
             ServiceDispensation serviceDispensation = serviceDispensations.get(position);
             String serviceName = serviceDispensation.getHealthFacilityService().getName();
-            if(serviceName.equals(ptvViewModels.get(position).getPlaceholderItemName())){
-                switch (ptvProgramStockInformation.getProduct().getCode()){
+            if (serviceName.equals(ptvViewModels.get(position).getPlaceholderItemName())) {
+                switch (ptvProgramStockInformation.getProduct().getCode()) {
                     case PTV_PRODUCT_FIRST_CODE:
                         productOrdinal = 1;
                         setQuantitiesForProduct(ptvProgramStockInformation, position, serviceDispensation);
