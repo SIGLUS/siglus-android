@@ -23,7 +23,7 @@ public final class ImplementationUtils {
     public static final String EXISTING_STOCK_SETTER = "setExistingStock";
     private static HashMap<String, String> productMapped;
 
-    private static HashMap<String, String> producMap() {
+    private static HashMap<String, String> productMap() {
         if (productMapped == null) {
             productMapped = new HashMap<>(4);
             productMapped.put("6x1", PRODUCT_6x1_CODE.getValue());
@@ -37,7 +37,7 @@ public final class ImplementationUtils {
     public static void mapForProduct(Implementation implementation, String productName,
                                      ImplementationReportViewModel report) throws
             NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Treatment treatment = findTreatmentForProduct(implementation.getTreatments(), producMap().get(productName));
+        Treatment treatment = findTreatmentForProduct(implementation.getTreatments(), productMap().get(productName));
         if (treatment == null) {
             return;
         }
@@ -48,9 +48,9 @@ public final class ImplementationUtils {
     }
 
 
-    public static Treatment findTreatmentForProduct(Collection<Treatment> treatments, String productName) {
+    public static Treatment findTreatmentForProduct(Collection<Treatment> treatments, String productCode) {
         for (Treatment treatment : treatments) {
-            if (treatment.getProduct().getCode().equals(productName)) {
+            if (treatment.getProduct().getCode().equals(productCode)) {
                 return treatment;
             }
         }

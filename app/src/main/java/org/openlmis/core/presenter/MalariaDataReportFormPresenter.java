@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Setter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,21 +39,15 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
     PatientDataService patientDataService;
 
     private Period period;
-    private MalariaProgram malariaProgram = new MalariaProgram();
-
+    private MalariaProgram malariaProgram;
     private List<ImplementationReportViewModel> viewModels;
+    @Setter
     private String createdBy;
+    @Setter
     private ViaReportStatus status;
 
-    public void setStatus(ViaReportStatus status) {
-        this.status = status;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
     public MalariaDataReportFormPresenter() {
+        this.malariaProgram = new MalariaProgram();
         this.viewModels = new ArrayList<>();
     }
 
