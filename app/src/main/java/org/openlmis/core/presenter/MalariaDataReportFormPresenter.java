@@ -6,8 +6,8 @@ import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.MalariaProgram;
-import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.service.PatientDataService;
 import org.openlmis.core.utils.mapper.MalariaDataReportViewModelToMalariaProgramMapper;
 import org.openlmis.core.utils.mapper.MalariaProgramToMalariaDataReportViewModelMapper;
@@ -55,24 +55,24 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
     public void attachView(BaseView v) throws ViewNotMatchException {
     }
 
-    public Observable<List<ImplementationReportViewModel>> loadPatientData(final Period period) {
+    public Observable<List<ImplementationReportViewModel>> getImplementationViewModelsForCurrentMalariaProgram(final Period period) {
         this.period = period;
         return Observable.create(new Observable.OnSubscribe<List<ImplementationReportViewModel>>() {
             @Override
             public void call(final Subscriber<? super List<ImplementationReportViewModel>> subscriber) {
                 try {
                     malariaProgram = patientDataService.findForPeriod(period.getBegin(), period.getEnd());
+                    MalariaDataReportViewModel malariaDataReportViewModel = reportViewModelMapper.Map(malariaProgram);
+                    ImplementationReportViewModel usImplementationReportViewModel = malariaDataReportViewModel.getUsImplementationReportViewModel();
                     if (malariaProgram != null) {
                         createdBy = malariaProgram.getCreatedBy();
                         status = malariaProgram.getStatus();
                     } else {
                         createdBy = "";
                         status = ViaReportStatus.MISSING;
+                        List<Long> malariaProductsStockHand = patientDataService.getMalariaProductsStockHand();
+                        usImplementationReportViewModel.setExistingStock(malariaProductsStockHand);
                     }
-                    List<Long> malariaProductsStockHand = patientDataService.getMalariaProductsStockHand();
-                    MalariaDataReportViewModel malariaDataReportViewModel = reportViewModelMapper.Map(malariaProgram);
-                    ImplementationReportViewModel usImplementationReportViewModel = malariaDataReportViewModel.getUsImplementationReportViewModel();
-                    usImplementationReportViewModel.setExistingStock(malariaProductsStockHand);
                     viewModels.add(usImplementationReportViewModel);
                     viewModels.add(malariaDataReportViewModel.getApeImplementationReportViewModel());
                     viewModels.add(generateTotalViewModel(viewModels.get(0), viewModels.get(1)));
@@ -80,6 +80,7 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     new LMISException(e).reportToFabric();
+                    subscriber.onError(e);
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
@@ -144,6 +145,8 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);
+                    new LMISException(e).reportToFabric();
+
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
@@ -166,8 +169,7 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
 
     public boolean isSubmittedForApproval() {
         return createdBy != null
-                && (status.equals(ViaReportStatus.DRAFT)
-                || status.equals(ViaReportStatus.MISSING))
+                && (status.equals(ViaReportStatus.DRAFT) || status.equals(ViaReportStatus.MISSING))
                 && createdBy.isEmpty();
     }
 }

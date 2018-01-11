@@ -4,27 +4,25 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.HealthFacilityService;
+import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
 import org.openlmis.core.model.ServiceDispensation;
 import org.openlmis.core.model.repository.HealthFacilityServiceRepository;
 import org.openlmis.core.view.viewmodel.ptv.PTVViewModel;
-import org.openlmis.core.model.PTVProgram;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Setter;
-
 import static org.openlmis.core.utils.Constants.ENTRIES;
 import static org.openlmis.core.utils.Constants.FINAL_STOCK;
 import static org.openlmis.core.utils.Constants.LOSSES_AND_ADJUSTMENTS;
-import static org.openlmis.core.utils.Constants.REQUISITIONS;
-import static org.openlmis.core.utils.Constants.TOTAL;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_FIFTH_CODE;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_FIRST_CODE;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_FOURTH_CODE;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_SECOND_CODE;
 import static org.openlmis.core.utils.Constants.PTV_PRODUCT_THIRD_CODE;
+import static org.openlmis.core.utils.Constants.REQUISITIONS;
+import static org.openlmis.core.utils.Constants.TOTAL;
 
 public class PTVProgramToPTVViewModelMapper {
 

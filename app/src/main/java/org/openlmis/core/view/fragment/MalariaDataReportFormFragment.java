@@ -75,7 +75,7 @@ public class MalariaDataReportFormFragment extends BaseReportFragment implements
         rvMalariaDataRowItem.setLayoutManager(new LinearLayoutManager(getActivity()));
         actionPanelView.setListener(getSaveFormListenerForStatus(SUBMITTED), getSaveFormListenerForStatus(DRAFT));
         rvMalariaDataRowItem.setAdapter(adapter);
-        Subscription subscription = malariaDataReportFormPresenter.loadPatientData(period).subscribe(malariaDataReportDataSubscriber());
+        Subscription subscription = malariaDataReportFormPresenter.getImplementationViewModelsForCurrentMalariaProgram(period).subscribe(malariaDataReportDataSubscriber());
         subscriptions.add(subscription);
     }
 

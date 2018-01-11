@@ -34,6 +34,7 @@ import static org.apache.commons.lang3.RandomUtils.nextLong;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.helpers.MalariaProgramBuilder.randomMalariaProgram;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x1_CODE;
@@ -157,7 +158,6 @@ public class PatientDataServiceTest {
         return validActualDate.minusDays(daysAfterInitialReportedDate);
     }
 
-    @Ignore
     @Test
     public void shouldReturnMalariaProducts() throws Exception {
         List<Product> expectedMalariaProducts = newArrayList(product6x1, product6x2, product6x3, product6x4);
@@ -189,14 +189,13 @@ public class PatientDataServiceTest {
     @Test
     public void shouldSavePatientDataReportSuccessfully() throws LMISException {
         when(malariaProgramRepository.save(malariaProgram)).thenReturn(Optional.of(malariaProgram));
-        boolean result = patientDataService.save(malariaProgram);
-        assertThat(result, is(true));
+        Optional<MalariaProgram> savedMalariaProgram = patientDataService.save(malariaProgram);
+        assertThat(savedMalariaProgram.get(), is(malariaProgram));
     }
 
-    @Test
+    @Test (expected = LMISException.class)
     public void shouldReturnFalseWhenSavingMalariaProgramWasFaulty() throws LMISException {
-        when(malariaProgramRepository.save(malariaProgram)).thenReturn(Optional.<MalariaProgram>absent());
-        boolean result = patientDataService.save(malariaProgram);
-        assertThat(result, is(false));
+        doThrow(LMISException.class).when(malariaProgramRepository).save(malariaProgram);
+        patientDataService.save(malariaProgram);
     }
 }

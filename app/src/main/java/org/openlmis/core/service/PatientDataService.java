@@ -46,7 +46,7 @@ public class PatientDataService {
         List<Period> periods = new ArrayList<>();
         if (VIAReportType.equals(VIAReportType.MALARIA)) {
             calculateMalariaPeriods(periods);
-        }else{
+        } else {
             calculatePTVPeriods(periods);
         }
         return periods;
@@ -83,7 +83,7 @@ public class PatientDataService {
     private Optional<Period> calculateFirstAvailablePeriod(BaseModel baseModel) {
         DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         Optional<Period> period;
-        if (baseModel!=null) {
+        if (baseModel != null) {
             period = Optional.of(new Period(new DateTime(baseModel.getCreatedAt())));
         } else {
             period = Optional.of(new Period(today));
@@ -121,14 +121,8 @@ public class PatientDataService {
         return stocks;
     }
 
-    public boolean save(MalariaProgram malariaProgram) {
-        try {
-            Optional<MalariaProgram> malariaProgramSaved = malariaProgramRepository.save(malariaProgram);
-            return malariaProgramSaved.isPresent();
-        } catch (LMISException e) {
-            e.reportToFabric();
-            return false;
-        }
+    public Optional<MalariaProgram> save(MalariaProgram malariaProgram) throws LMISException {
+        return malariaProgramRepository.save(malariaProgram);
     }
 
     public MalariaProgram findForPeriod(DateTime beginDate, DateTime endDate) throws LMISException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {

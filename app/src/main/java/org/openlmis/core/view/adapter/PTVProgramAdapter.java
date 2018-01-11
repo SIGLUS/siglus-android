@@ -33,6 +33,11 @@ public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder
     private RecyclerView view;
     private boolean needsRefresh;
     private int finalStockPosition;
+    private static final int FIFTH_PRODUCT_POSITION = 4;
+    private static final int FOURTH_PRODUCT_POSITION = 3;
+    private static final int THIRD_PRODUCT_POSITION = 2;
+    private static final int SECOND_PRODUCT_POSITION = 1;
+    private static final int FIRST_PRODUCT_POSITION = 0;
 
     public PTVProgramAdapter(PTVProgram ptvProgram, List<PTVViewModel> ptvViewModels) {
         this.ptvProgram = ptvProgram;
@@ -88,11 +93,6 @@ public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder
     private long[] sumValuesForEachProduct() {
         long[] totals = new long[NUMBER_OF_PRODUCTS];
         for (int actualServicePosition = 0; actualServicePosition < TOTAL_SERVICES_NUMBER; actualServicePosition++) {
-            int FIRST_PRODUCT_POSITION = 0;
-            int SECOND_PRODUCT_POSITION = 1;
-            int THIRD_PRODUCT_POSITION = 2;
-            int FOURTH_PRODUCT_POSITION = 3;
-            int FIFTH_PRODUCT_POSITION = 4;
             totals[FIRST_PRODUCT_POSITION] += ptvViewModels.get(actualServicePosition).getQuantity1();
             totals[SECOND_PRODUCT_POSITION] += ptvViewModels.get(actualServicePosition).getQuantity2();
             totals[THIRD_PRODUCT_POSITION] += ptvViewModels.get(actualServicePosition).getQuantity3();
