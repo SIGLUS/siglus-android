@@ -5,5 +5,5 @@
     <bool name="feature_rapid_test">true</bool>
     <bool name="feature_all_drugs_movements_history">true</bool>
     <bool name="feature_fabric_on">true</bool>
-    <bool name="feature_patient_data">true</bool>
+    <bool name="feature_patient_data">false</bool>
 </resources>
