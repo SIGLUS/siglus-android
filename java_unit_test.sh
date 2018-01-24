@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 taskrunner="${TASKRUNNER:-siglus/test-runner:1.0.0}"
 pipelinename="${PIPELINE_NAME:-mobile_build}"
 dockernet="${DOCKER_NET:-gocd_default}"
