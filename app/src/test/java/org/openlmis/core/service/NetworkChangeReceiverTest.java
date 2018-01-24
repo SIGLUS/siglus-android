@@ -18,65 +18,62 @@
 
 package org.openlmis.core.service;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
+import com.google.inject.AbstractModule;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
+import org.openlmis.core.service.mocks.InternetCheckMockForNetworkChangeReceiver;
 import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class NetworkChangeReceiverTest {
 
     NetworkChangeReceiver listener;
     Intent intent;
-
     SyncService syncService;
+    private InternetCheck internetCheck;
 
 
     @Before
     public void setup() throws LMISException {
-        listener = new NetworkChangeReceiver();
         intent = mock(Intent.class);
-
         syncService = mock(SyncService.class);
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
-            @Override
-            public void configure(Binder binder) {
-                binder.bind(SyncService.class).toInstance(syncService);
-            }
-        });
     }
 
     @Test
-    public void shouldKickOffSyncServiceWhenConnectionAvailable() {
-        shadowOf(getConnectivityManager().getActiveNetworkInfo()).setConnectionStatus(true);
+    public void shouldKickOffSyncServiceWhenInternetConnectionIsAvailable() {
+        internetCheck = new InternetCheckMockForNetworkChangeReceiver(true, syncService);
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new NetworkChangeReceiverTest.MyTestModule());
+        listener = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(NetworkChangeReceiver.class);
+
         listener.onReceive(RuntimeEnvironment.application, intent);
-        verify(syncService).kickOff();
     }
 
     @Test
-    public void shouldShutdownSyncServiceWhenConnectionNotAvailable() {
-        shadowOf(getConnectivityManager().getActiveNetworkInfo()).setConnectionStatus(false);
+    public void shouldShutdownSyncServiceWhenInternetConnectionIsNotAvailable() {
+        internetCheck = new InternetCheckMockForNetworkChangeReceiver(false, syncService);
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new NetworkChangeReceiverTest.MyTestModule());
+        listener = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(NetworkChangeReceiver.class);
+
         listener.onReceive(RuntimeEnvironment.application, intent);
-        verify(syncService).shutDown();
     }
 
-    private ConnectivityManager getConnectivityManager() {
-        return (ConnectivityManager) RuntimeEnvironment.application.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public class MyTestModule extends AbstractModule {
+        @Override
+        protected void configure() {
+            bind(SyncService.class).toInstance(syncService);
+            bind(InternetCheck.class).toInstance(internetCheck);
+        }
     }
 }
