@@ -22,12 +22,8 @@ import android.os.AsyncTask;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.view.activity.HomeActivity;
-
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
-import lombok.Setter;
 
 public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, InternetListener> {
 
