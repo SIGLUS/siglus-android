@@ -22,13 +22,18 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.service.StockService;
+import org.openlmis.core.network.InternetCheck;
+import org.openlmis.core.network.NetworkConnectionManager;
+import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
@@ -36,6 +41,7 @@ import org.openlmis.core.view.BaseView;
 import java.util.Date;
 
 import lombok.Getter;
+import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -62,6 +68,9 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
     @Getter
     protected boolean isHistoryForm = false;
+
+    @Inject
+    InternetCheck internetCheck;
 
     public BaseRequisitionPresenter() {
         rnrFormRepository = initRnrFormRepository();
@@ -159,6 +168,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
     protected Subscriber<Void> getAuthoriseRequisitionSubscriber() {
         return new Subscriber<Void>() {
+
             @Override
             public void onCompleted() {
             }
@@ -175,7 +185,21 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
                 view.completeSuccess();
                 Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
                 TrackRnREventUtil.trackRnRListEvent(TrackerActions.AuthoriseRnR, rnRForm.getProgram().getProgramCode());
-                syncService.requestSyncImmediately();
+                internetCheck.execute(checkInternetListener());
+            }
+        };
+    }
+
+    private InternetCheck.Callback checkInternetListener() {
+
+        return new InternetCheck.Callback() {
+            @Override
+            public void launchResponse(Boolean internet) {
+                if (internet) {
+                    syncService.requestSyncImmediately();
+                } else {
+                    System.out.println("No hay conexion");
+                }
             }
         };
     }

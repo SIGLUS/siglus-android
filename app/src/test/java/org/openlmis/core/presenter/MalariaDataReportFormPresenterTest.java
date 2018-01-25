@@ -34,6 +34,7 @@ import rx.observers.TestSubscriber;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -142,15 +143,10 @@ public class MalariaDataReportFormPresenterTest {
 
     @Test
     public void shouldCallMapMethodFromMalariaDataReportViewModelToMalariaProgramMapper() throws InvocationTargetException, NoSuchMethodException, LMISException, IllegalAccessException {
-        List<ImplementationReportViewModel> implementationReportViewModels = initializeImplementationReportViewModels();
-        MalariaDataReportViewModel malariaReportViewModel = new MalariaDataReportViewModel(
-                DateTime.now(),
-                period.getBegin(),
-                period.getEnd(),
-                implementationReportViewModels.get(0),
-                implementationReportViewModels.get(1));
+        initializeImplementationReportViewModels();
         malariaDataReportFormPresenter.getMalariaProgram();
-        verify(malariaProgramMapper, times(1)).map(malariaReportViewModel, malariaProgram);
+
+        verify(malariaProgramMapper, times(1)).map(any(MalariaDataReportViewModel.class), any(MalariaProgram.class));
     }
 
     @Test
@@ -210,6 +206,7 @@ public class MalariaDataReportFormPresenterTest {
         listImplementationViewModelSubscriber.assertNoErrors();
         return listImplementationViewModelSubscriber.getOnNextEvents().get(0);
     }
+
     private List<ImplementationReportViewModel> initializeImplementationReportViewModels() throws LMISException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         malariaProgram = new MalariaProgram("", DateTime.now(), period.getBegin(), period.getEnd(), new ArrayList<Implementation>());
         malariaProgram.setStatus(ViaReportStatus.SUBMITTED);
