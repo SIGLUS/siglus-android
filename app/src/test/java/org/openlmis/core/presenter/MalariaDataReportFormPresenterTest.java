@@ -34,6 +34,7 @@ import rx.observers.TestSubscriber;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -145,7 +146,7 @@ public class MalariaDataReportFormPresenterTest {
         initializeImplementationReportViewModels();
         malariaDataReportFormPresenter.getMalariaProgram();
 
-        verify(malariaProgramMapper, times(1)).map((MalariaDataReportViewModel) anyObject(), (MalariaProgram) anyObject());
+        verify(malariaProgramMapper, times(1)).map(any(MalariaDataReportViewModel.class), any(MalariaProgram.class));
     }
 
     @Test

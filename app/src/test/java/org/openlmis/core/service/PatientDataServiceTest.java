@@ -174,7 +174,7 @@ public class PatientDataServiceTest {
         List<Product> malariaProducts = patientDataService.getMalariaProducts();
         assertThat(malariaProducts.size(), is(expectedMalariaProducts.size()));
         for (Product expectedProduct : expectedMalariaProducts) {
-            assertThat(malariaProducts, hasItem(expectedProduct));
+            assertTrue(malariaProducts.contains(expectedProduct));
         }
     }
 
