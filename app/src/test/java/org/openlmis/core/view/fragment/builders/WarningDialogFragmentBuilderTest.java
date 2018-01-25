@@ -17,7 +17,12 @@ public class WarningDialogFragmentBuilderTest {
     public void shouldBuildAWarningDialogGivenADelegateAndMessages(){
         WarningDialogFragmentBuilder warningDialogFragmentBuilder = new WarningDialogFragmentBuilder();
 
-        WarningDialogFragment.DialogDelegate delegate = anyObject();
+        WarningDialogFragment.DialogDelegate delegate = new WarningDialogFragment.DialogDelegate() {
+            @Override
+            public void onPositiveClick() {
+
+            }
+        };
         int titleMessage = 2;
         int positiveButtonMessage = 3;
         int negativeButtonMessage = 4;

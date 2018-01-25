@@ -10,6 +10,7 @@ import org.robolectric.shadows.ShadowToast;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -36,12 +37,10 @@ public class InternetCheckMockForHomeActivity extends InternetCheck {
     protected void onPostExecute(InternetListener internetListener) {
         internetListener.launchCallback();
         if (internetListener.isInternet()) {
-            verify(warningDialogFragmentBuilder, times(1)).build((WarningDialogFragment.DialogDelegate) anyObject(), (int) anyObject(), (int) anyObject(), (int) anyObject());
+            verify(warningDialogFragmentBuilder, times(1)).build((WarningDialogFragment.DialogDelegate) anyObject(), anyInt(), anyInt(), anyInt());
         } else {
             String toastMessage = ShadowToast.getTextOfLatestToast();
             assertThat(toastMessage, is(LMISApp.getInstance().getString(R.string.message_wipe_no_connection)));
         }
     }
-
-
 }

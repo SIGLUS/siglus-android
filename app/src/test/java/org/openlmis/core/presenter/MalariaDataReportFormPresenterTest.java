@@ -142,15 +142,10 @@ public class MalariaDataReportFormPresenterTest {
 
     @Test
     public void shouldCallMapMethodFromMalariaDataReportViewModelToMalariaProgramMapper() throws InvocationTargetException, NoSuchMethodException, LMISException, IllegalAccessException {
-        List<ImplementationReportViewModel> implementationReportViewModels = initializeImplementationReportViewModels();
-        MalariaDataReportViewModel malariaReportViewModel = new MalariaDataReportViewModel(
-                DateTime.now(),
-                period.getBegin(),
-                period.getEnd(),
-                implementationReportViewModels.get(0),
-                implementationReportViewModels.get(1));
+        initializeImplementationReportViewModels();
         malariaDataReportFormPresenter.getMalariaProgram();
-        verify(malariaProgramMapper, times(1)).map(malariaReportViewModel, malariaProgram);
+
+        verify(malariaProgramMapper, times(1)).map((MalariaDataReportViewModel) anyObject(), (MalariaProgram) anyObject());
     }
 
     @Test
@@ -210,6 +205,7 @@ public class MalariaDataReportFormPresenterTest {
         listImplementationViewModelSubscriber.assertNoErrors();
         return listImplementationViewModelSubscriber.getOnNextEvents().get(0);
     }
+
     private List<ImplementationReportViewModel> initializeImplementationReportViewModels() throws LMISException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         malariaProgram = new MalariaProgram("", DateTime.now(), period.getBegin(), period.getEnd(), new ArrayList<Implementation>());
         malariaProgram.setStatus(ViaReportStatus.SUBMITTED);

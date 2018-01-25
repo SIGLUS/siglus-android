@@ -57,6 +57,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
@@ -208,8 +209,10 @@ public class HomeActivityTest {
     @Test
     public void shouldShowWarningDialogWhenWipeDataWiped() throws Exception {
         WarningDialogFragment.DialogDelegate delegate = anyObject();
-        int message = anyObject();
-        when(warningDialogFragmentBuilder.build(delegate,message,message,message)).thenReturn(mock(WarningDialogFragment.class));
+        int message = anyInt();
+        int positiveMessageButton = anyInt();
+        int negativeMessageButton = anyInt();
+        when(warningDialogFragmentBuilder.build(delegate,message,positiveMessageButton,negativeMessageButton)).thenReturn(mock(WarningDialogFragment.class));
 
         homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
     }
