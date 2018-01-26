@@ -30,6 +30,7 @@ def is_portal_started(portal_url, initial_attempt, attempts)
   end
 
   while status != "302" do
+    puts "ERROR: #{status} OpenLMIS Portal is not available.".red
     initial_attempt+=1
     puts "OpenLMIS Portal is not UP yet, waiting for it - attempt(#{initial_attempt} of #{attempts})..."
     status = check_portal(cmd)
