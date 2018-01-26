@@ -1,14 +1,12 @@
 package org.openlmis.core.service;
 
+import com.google.inject.AbstractModule;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.enums.VIAReportType;
@@ -19,22 +17,28 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.MalariaProgramRepository;
+import org.openlmis.core.model.repository.PTVProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.roboguice.shaded.goole.common.base.Optional;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import roboguice.RoboGuice;
+
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.apache.commons.lang3.RandomUtils.nextLong;
-import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.helpers.MalariaProgramBuilder.randomMalariaProgram;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x1_CODE;
@@ -50,13 +54,11 @@ public class PatientDataServiceTest {
     public static final int REQUISITION_PERIOD_STARTING_DAY = 18;
     public long STOCK_ON_HAND_VALUE = nextLong(1, 100);
 
-    @Mock
     private MalariaProgramRepository malariaProgramRepository;
-    @Mock
     private ProductRepository productRepository;
-    @Mock
     private StockRepository stockRepository;
-    @InjectMocks
+    private PTVProgramRepository ptvProgramRepository;
+
     private PatientDataService patientDataService;
 
     private int monthsAfterInitialReportedDate;
@@ -65,15 +67,23 @@ public class PatientDataServiceTest {
     private Product product6x2 = make(a(ProductBuilder.product6x2));
     private Product product6x3 = make(a(ProductBuilder.product6x3));
     private Product product6x4 = make(a(ProductBuilder.product6x4));
-    private StockCard stockCard6x1 = new StockCard();
-    private StockCard stockCard6x2 = new StockCard();
-    private StockCard stockCard6x3 = new StockCard();
-    private StockCard stockCard6x4 = new StockCard();
+    private StockCard stockCard6x1;
+    private StockCard stockCard6x2;
+    private StockCard stockCard6x3;
+    private StockCard stockCard6x4;
     private MalariaProgram malariaProgram = make(a(randomMalariaProgram));
 
     @Before
     public void setUp() throws LMISException {
-        MockitoAnnotations.initMocks(this);
+
+        malariaProgramRepository = mock(MalariaProgramRepository.class);
+        productRepository = mock(ProductRepository.class);
+        stockRepository = mock(StockRepository.class);
+        ptvProgramRepository = mock(PTVProgramRepository.class);
+
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new PatientDataServiceTest.MyTestModule());
+        patientDataService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PatientDataService.class);
+
         when(productRepository.getByCode(PRODUCT_6x1_CODE.getValue())).thenReturn(product6x1);
         when(productRepository.getByCode(PRODUCT_6x2_CODE.getValue())).thenReturn(product6x2);
         when(productRepository.getByCode(PRODUCT_6x3_CODE.getValue())).thenReturn(product6x3);
@@ -164,7 +174,7 @@ public class PatientDataServiceTest {
         List<Product> malariaProducts = patientDataService.getMalariaProducts();
         assertThat(malariaProducts.size(), is(expectedMalariaProducts.size()));
         for (Product expectedProduct : expectedMalariaProducts) {
-            assertThat(malariaProducts, hasItem(expectedProduct));
+            assertTrue(malariaProducts.contains(expectedProduct));
         }
     }
 
@@ -174,7 +184,7 @@ public class PatientDataServiceTest {
         List<StockCard> stocks = patientDataService.getMalariaProductsStockCards();
         assertThat(stocks.size(), is(expectedMalariaStockCards.size()));
         for (StockCard expectedStockCard : expectedMalariaStockCards) {
-            assertThat(stocks, hasItem(expectedStockCard));
+            assertTrue(stocks.contains(expectedStockCard));
         }
     }
 
@@ -193,9 +203,19 @@ public class PatientDataServiceTest {
         assertThat(savedMalariaProgram.get(), is(malariaProgram));
     }
 
-    @Test (expected = LMISException.class)
+    @Test(expected = LMISException.class)
     public void shouldReturnFalseWhenSavingMalariaProgramWasFaulty() throws LMISException {
         doThrow(LMISException.class).when(malariaProgramRepository).save(malariaProgram);
         patientDataService.save(malariaProgram);
+    }
+
+    public class MyTestModule extends AbstractModule {
+        @Override
+        protected void configure() {
+            bind(MalariaProgramRepository.class).toInstance(malariaProgramRepository);
+            bind(ProductRepository.class).toInstance(productRepository);
+            bind(StockRepository.class).toInstance(stockRepository);
+            bind(PTVProgramRepository.class).toInstance(ptvProgramRepository);
+        }
     }
 }

@@ -18,10 +18,11 @@
 
 package org.openlmis.core.view.activity;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+
+import com.google.inject.AbstractModule;
 
 import org.hamcrest.core.Is;
 import org.junit.Assert;
@@ -33,7 +34,11 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
+import org.openlmis.core.view.activity.mocks.InternetCheckMockForHomeActivity;
+import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.fakes.RoboMenuItem;
@@ -44,14 +49,17 @@ import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -60,12 +68,23 @@ public class HomeActivityTest {
     private HomeActivity homeActivity;
     private LMISTestApp testApp;
     protected SharedPreferenceMgr sharedPreferenceMgr;
+    private InternetCheck internetCheck;
+    private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     @Before
     public void setUp() {
         testApp = (LMISTestApp) RuntimeEnvironment.application;
-        homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
+        warningDialogFragmentBuilder = mock(WarningDialogFragmentBuilder.class);
+        internetCheck = new InternetCheckMockForHomeActivity(true, warningDialogFragmentBuilder);
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(InternetCheck.class).toInstance(internetCheck);
+                bind(WarningDialogFragmentBuilder.class).toInstance(warningDialogFragmentBuilder);
+            }
+        });
         sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
+        homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
     }
 
     @Test
@@ -189,21 +208,27 @@ public class HomeActivityTest {
 
     @Test
     public void shouldShowWarningDialogWhenWipeDataWiped() throws Exception {
-        LMISTestApp.getInstance().setNetworkConnection(true);
+        WarningDialogFragment.DialogDelegate delegate = anyObject();
+        int message = anyInt();
+        int positiveMessageButton = anyInt();
+        int negativeMessageButton = anyInt();
+        when(warningDialogFragmentBuilder.build(delegate,message,positiveMessageButton,negativeMessageButton)).thenReturn(mock(WarningDialogFragment.class));
 
         homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
-        DialogFragment dialogFragment = (DialogFragment) homeActivity.getFragmentManager().findFragmentByTag("WipeDataWarning");
-
-        assertNotNull(dialogFragment);
     }
 
     @Test
     public void shouldShowToastWhenResyncWithoutNetwork() {
-        LMISTestApp.getInstance().setNetworkConnection(false);
+        boolean isAvailableInternet = false;
+        internetCheck = new InternetCheckMockForHomeActivity(isAvailableInternet, warningDialogFragmentBuilder);
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(InternetCheck.class).toInstance(internetCheck);
+            }
+        });
+        homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
 
         homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
-
-        String toastMessage = ShadowToast.getTextOfLatestToast();
-        assertThat(toastMessage, is(LMISApp.getInstance().getString(R.string.message_wipe_no_connection)));
     }
 }

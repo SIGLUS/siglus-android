@@ -44,12 +44,14 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
+import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
+import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
@@ -93,6 +95,11 @@ public class HomeActivity extends BaseActivity {
 
     @Inject
     SyncService syncService;
+    @Inject
+    InternetCheck internetCheck;
+
+    @Inject
+    WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     private boolean exitPressedOnce = false;
 
@@ -291,21 +298,32 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void alertWipeData() {
-        if (!LMISApp.getInstance().isConnectionAvailable() && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            ToastUtil.show(R.string.message_wipe_no_connection);
-            return;
-        }
+        internetCheck.execute(validateConnectionListener());
+    }
 
-        WarningDialogFragment wipeDataDialog = WarningDialogFragment.newInstance(
-                R.string.message_warning_wipe_data, R.string.btn_positive, R.string.btn_negative);
-        wipeDataDialog.setDelegate(new WarningDialogFragment.DialogDelegate() {
+    private InternetCheck.Callback validateConnectionListener() {
+
+        return new InternetCheck.Callback() {
+            @Override
+            public void launchResponse(Boolean internet) {
+                if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+                    ToastUtil.show(R.string.message_wipe_no_connection);
+                } else {
+                    WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(), R.string.message_warning_wipe_data, R.string.btn_positive, R.string.btn_negative);
+                    wipeDataDialog.show(getFragmentManager(), "WipeDataWarning");
+                }
+            }
+        };
+    }
+
+    private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {
+        return new WarningDialogFragment.DialogDelegate() {
             @Override
             public void onPositiveClick() {
                 setRestartIntent();
                 LMISApp.getInstance().wipeAppData();
             }
-        });
-        wipeDataDialog.show(getFragmentManager(), "WipeDataWarning");
+        };
     }
 
     private void setRestartIntent() {

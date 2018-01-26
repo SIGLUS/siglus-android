@@ -4,7 +4,7 @@ display_error_message () {
   exit 2;
 }
 
-declare -A envvalues=(
+declare envvalues=(
   [local]=1 [ci]=1
 )
 dockerflag=

@@ -22,12 +22,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
@@ -43,6 +46,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
+import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
@@ -75,6 +79,8 @@ public class RnRFormListActivity extends BaseReportListActivity {
 
     private String programCode;
     private RnRFormListAdapter adapter;
+    @Inject
+    private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     public static Intent getIntentToMe(Context context, String programCode) {
         Intent intent = new Intent(context, RnRFormListActivity.class);
@@ -95,7 +101,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
 
         setTitle(isMMIA() ? R.string.mmia_list : R.string.requisition_list);
 
-        if(!SharedPreferenceMgr.getInstance().hasDeletedOldRnr()){
+        if (!SharedPreferenceMgr.getInstance().hasDeletedOldRnr()) {
             tvArchivedOldData.setVisibility(View.GONE);
         }
 
@@ -151,15 +157,9 @@ public class RnRFormListActivity extends BaseReportListActivity {
     protected RnRFormItemClickListener rnRFormItemClickListener = new RnRFormItemClickListener() {
         @Override
         public void deleteForm(final RnRForm form) {
-            WarningDialogFragment warningDialogFragment = WarningDialogFragment.newInstance(
-                    R.string.msg_del_requisition, R.string.btn_del, R.string.dialog_cancel
-            );
-            warningDialogFragment.setDelegate(new WarningDialogFragment.DialogDelegate() {
-                @Override
-                public void onPositiveClick() {
-                    deleteRnRForm(form);
-                }
-            });
+
+            WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder.build(buildWarningDialogFragmentDelegate(form), R.string.msg_del_requisition, R.string.btn_del, R.string.dialog_cancel);
+
             warningDialogFragment.show(getFragmentManager(), "WarningDialogFragment");
         }
 
@@ -188,6 +188,16 @@ public class RnRFormListActivity extends BaseReportListActivity {
             view.setEnabled(true);
         }
     };
+
+    @NonNull
+    private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(final RnRForm form) {
+        return new WarningDialogFragment.DialogDelegate() {
+            @Override
+            public void onPositiveClick() {
+                deleteRnRForm(form);
+            }
+        };
+    }
 
     private void goToRequisitionPage(long rnrFormId) {
         Intent intent = isMMIA() ? MMIARequisitionActivity.getIntentToMe(this, rnrFormId) : VIARequisitionActivity.getIntentToMe(this, rnrFormId);
