@@ -19,6 +19,7 @@
 package org.openlmis.core.presenter;
 
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -31,6 +32,7 @@ import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -41,9 +43,14 @@ import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.service.sync.SyncSilently;
 import org.openlmis.core.training.TrainingEnvironmentHelper;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -53,6 +60,9 @@ import rx.Subscriber;
 public class LoginPresenter extends Presenter {
 
     LoginView view;
+
+    @Inject
+    SyncSilently syncSilently;
 
     @Inject
     UserRepository userRepository;
@@ -235,6 +245,8 @@ public class LoginPresenter extends Presenter {
                         break;
 
                     case ProductSynced:
+                        syncStockCards();
+
                     case StockCardsLastMonthSynced:
                         view.loaded();
                         break;
@@ -249,6 +261,50 @@ public class LoginPresenter extends Presenter {
                         tryGoToNextPage();
                         break;
                 }
+            }
+        };
+    }
+
+    private void syncStockCards() {
+        syncSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
+    }
+
+    @NonNull
+    private Subscriber<List<StockCard>> getSyncLastYearStockCardSubscriber() {
+        return new Subscriber<List<StockCard>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                //TODO
+            }
+
+            @Override
+            public void onNext(List<StockCard> stockCards) {
+                syncDownManager.saveStockCards(stockCards).subscribe(getSaveStockCardsSubscriber());
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<Void> getSaveStockCardsSubscriber() {
+        return new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                //TODO
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
             }
         };
     }

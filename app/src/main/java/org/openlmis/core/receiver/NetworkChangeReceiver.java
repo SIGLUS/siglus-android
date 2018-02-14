@@ -41,7 +41,9 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         SyncService syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
-        internetCheck.execute(synchronizeListener(syncService));
+        if(internetCheck!=null) {
+            internetCheck.execute(synchronizeListener(syncService));
+        }
     }
 
     private InternetCheck.Callback synchronizeListener(final SyncService syncService) {
