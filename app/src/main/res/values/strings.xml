@@ -505,6 +505,7 @@
     <string name="msg_approve_signature_malaria">Enter your initials and then approve the Malaria Report</string>
     <string name="malaria_report_notify_dialog">Please hand the device to the person responsible for approval and submission of Malaria Report</string>
     <string name="last_year_stock_cards_sync">Stock cards from last year are synchronizing</string>
+    <string name="sync_stock_card_last_year_error">Error downloading stock cards from last year. Please retry</string>
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>
         <item>Last 14 days</item>

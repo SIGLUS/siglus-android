@@ -35,6 +35,9 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     @Inject
     SyncErrorsPresenter syncErrorsPresenter;
 
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
+
     protected Context context;
     protected long rnrLastSyncTime;
     protected long stockLastSyncTime;
@@ -76,6 +79,10 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         }
 
         updateSyncTimeViewUI();
+
+        if(sharedPreferenceMgr.isStockCardLastYearSyncError()) {
+            setSyncStockCardLastYearError();
+        }
     }
 
     private void updateSyncTimeViewUI() {
@@ -123,14 +130,17 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        showLastSyncTime();
-        popUpBottomSheet();
+        if(!sharedPreferenceMgr.isStockCardLastYearSyncError() && !sharedPreferenceMgr.shouldSyncLastYearStockData()) {
+            showLastSyncTime();
+            popUpBottomSheet();
+        }
     }
 
     private void popUpBottomSheet() {
         SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
         syncDateBottomSheet.setArguments(SyncDateBottomSheet.getArgumentsToMe(rnrLastSyncTime, stockLastSyncTime));
         syncDateBottomSheet.show(((BaseActivity) context).getFragmentManager());
+
     }
 
     public void showSyncProgressBarAndHideIcon() {
@@ -145,5 +155,11 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
 
     public void setSyncStockCardLastYearText(){
         txSyncTime.setText(R.string.last_year_stock_cards_sync);
+    }
+
+    public void setSyncStockCardLastYearError() {
+        hideSyncProgressBarAndShowIcon();
+        txSyncTime.setText(R.string.sync_stock_card_last_year_error);
+        ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
     }
 }

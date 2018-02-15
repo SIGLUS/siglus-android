@@ -284,8 +284,7 @@ public class StockRepository {
         });
     }
 
-    public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards) {
-        try {
+    public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards) throws SQLException {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
@@ -299,9 +298,6 @@ public class StockRepository {
                     return null;
                 }
             });
-        } catch (SQLException e) {
-            new LMISException(e).reportToFabric();
-        }
     }
 
     public void deleteOldData() {

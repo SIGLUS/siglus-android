@@ -43,8 +43,8 @@ import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.utils.DateUtil;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -263,19 +263,23 @@ public class SyncDownManager {
 
         SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
 
-        stockRepository.batchCreateSyncDownStockCardsAndMovements(syncDownStockCardResponse.getStockCards());
+        try {
+            stockRepository.batchCreateSyncDownStockCardsAndMovements(syncDownStockCardResponse.getStockCards());
+        } catch (SQLException e) {
+            new LMISException(e).reportToFabric();
+        }
     }
 
-    public Observable<Void> saveStockCards(final List<StockCard> stockCards){
+    public Observable<Void> saveStockCards(final List<StockCard> stockCards) {
 
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
-                try{
+                try {
                     stockRepository.batchCreateSyncDownStockCardsAndMovements(stockCards);
                     stockService.immediatelyUpdateAvgMonthlyConsumption();
                     subscriber.onCompleted();
-                }catch (Exception e){
+                } catch (Exception e) {
                     subscriber.onError(e);
                 }
             }

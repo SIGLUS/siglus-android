@@ -68,6 +68,7 @@ public final class Constants {
     // Broadcast Intent Filter
     public static final String INTENT_FILTER_START_SYNC_DATA = LMISApp.getContext().getPackageName() + ".start.sync_data";
     public static final String INTENT_FILTER_FINISH_SYNC_DATA = LMISApp.getContext().getPackageName() + ".finish.sync_data";
+    public static final String INTENT_FILTER_ERROR_SYNC_DATA = LMISApp.getContext().getPackageName() + ".error.sync_data";
 
     //PTV
     public static final String PTV_PRODUCT_FIRST_CODE = "08S40";

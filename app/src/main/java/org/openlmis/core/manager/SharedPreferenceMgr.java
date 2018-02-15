@@ -64,6 +64,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_HAS_DELETED_OLD_RNR = "has_deleted_old_rnr";
     public static final String KEY_HAS_SYNCED_DOWN_RAPID_TESTS = "syncedRapidTests";
     public static final String MONTH_OFFSET_DEFINED_OLD_DATA = "month_offset_that_defined_old_data";
+    public static final String KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR = "stock_card_last_year_sync_error";
     final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
 
@@ -99,7 +100,7 @@ public class SharedPreferenceMgr {
     }
 
     public boolean shouldSyncLastYearStockData() {
-        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_LAST_YEAR, false);
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_LAST_YEAR, true);
     }
 
     public void setShouldSyncLastYearStockCardData(boolean shouldSyncLastYearStockCardData) {
@@ -254,5 +255,13 @@ public class SharedPreferenceMgr {
 
     public void setRapidTestsDataSynced(boolean hasRapidTestsDataSynced) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_DOWN_RAPID_TESTS, hasRapidTestsDataSynced).apply();
+    }
+
+    public void setStockCardLastYearSyncError(boolean isSyncFailed) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR, isSyncFailed).apply();
+    }
+
+    public boolean isStockCardLastYearSyncError() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR, false);
     }
 }

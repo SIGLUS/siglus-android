@@ -284,6 +284,7 @@ public class LoginPresenter extends Presenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
+                sharedPreferenceMgr.setStockCardLastYearSyncError(true);
                 new LMISException(e).reportToFabric();
             }
 
@@ -306,6 +307,8 @@ public class LoginPresenter extends Presenter {
             @Override
             public void onError(Throwable e) {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
+                sharedPreferenceMgr.setStockCardLastYearSyncError(true);
+                view.sendSyncErrorBroadcast();
             }
 
             @Override
@@ -355,5 +358,7 @@ public class LoginPresenter extends Presenter {
         void sendSyncStartBroadcast();
 
         void sendSyncFinishedBroadcast();
+
+        void sendSyncErrorBroadcast();
     }
 }

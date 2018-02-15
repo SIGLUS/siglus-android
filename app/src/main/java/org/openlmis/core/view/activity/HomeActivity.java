@@ -106,7 +106,6 @@ public class HomeActivity extends BaseActivity {
     WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     private boolean exitPressedOnce = false;
-    private boolean stockCardIsSynced;
 
     @Override
     protected ScreenName getScreenName() {
@@ -131,12 +130,7 @@ public class HomeActivity extends BaseActivity {
         }
         registerSyncStartReceiver();
         registerSyncFinishedReceiver();
-
-        stockCardIsSynced = sharedPreferenceMgr.shouldSyncLastYearStockData();
-
-        if (stockCardIsSynced) {
-            sendSyncStartBroadcast();
-        }
+        registerErrorFinishedReceiver();
 
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rapid_test)) {
             btnRapidTestReport.setVisibility(View.GONE);
@@ -165,6 +159,12 @@ public class HomeActivity extends BaseActivity {
         registerReceiver(syncFinishedReceiver, filter);
     }
 
+    private void registerErrorFinishedReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
+        registerReceiver(syncErrorReceiver, filter);
+    }
+
     @Override
     protected int getThemeRes() {
         return R.style.AppTheme_Gray;
@@ -184,10 +184,18 @@ public class HomeActivity extends BaseActivity {
         }
     };
 
+    BroadcastReceiver syncErrorReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            syncTimeView.setSyncStockCardLastYearError();
+        }
+    };
+
     @Override
     protected void onDestroy() {
         unregisterReceiver(syncStartReceiver);
         unregisterReceiver(syncFinishedReceiver);
+        unregisterReceiver(syncErrorReceiver);
         super.onDestroy();
     }
 
@@ -232,7 +240,11 @@ public class HomeActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         incompleteRequisitionBanner.setIncompleteRequisitionBanner();
-        setSyncedTime();
+        if(sharedPreferenceMgr.isStockCardLastYearSyncError()) {
+            syncTimeView.setSyncStockCardLastYearError();
+        } else {
+            setSyncedTime();
+        }
     }
 
     protected void setSyncedTime() {

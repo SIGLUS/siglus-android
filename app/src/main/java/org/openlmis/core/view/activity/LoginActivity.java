@@ -289,4 +289,11 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
         sendBroadcast(intent);
     }
+
+    @Override
+    public void sendSyncErrorBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
+        sendBroadcast(intent);
+    }
 }
