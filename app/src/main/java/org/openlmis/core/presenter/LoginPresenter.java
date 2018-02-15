@@ -82,6 +82,9 @@ public class LoginPresenter extends Presenter {
     @Inject
     SyncDownManager syncDownManager;
 
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
+
     private boolean hasGoneToNextPage;
 
     @Inject
@@ -245,6 +248,7 @@ public class LoginPresenter extends Presenter {
                         break;
 
                     case ProductSynced:
+                        view.sendSyncStartBroadcast();
                         syncStockCards();
 
                     case StockCardsLastMonthSynced:
@@ -279,7 +283,8 @@ public class LoginPresenter extends Presenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                //TODO
+                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
+                new LMISException(e).reportToFabric();
             }
 
             @Override
@@ -294,12 +299,13 @@ public class LoginPresenter extends Presenter {
         return new Subscriber<Void>() {
             @Override
             public void onCompleted() {
-                //TODO
+                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
+                view.sendSyncFinishedBroadcast();
             }
 
             @Override
             public void onError(Throwable e) {
-
+                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
             }
 
             @Override
@@ -345,5 +351,9 @@ public class LoginPresenter extends Presenter {
         void clearErrorAlerts();
 
         void sendScreenToGoogleAnalyticsAfterLogin();
+
+        void sendSyncStartBroadcast();
+
+        void sendSyncFinishedBroadcast();
     }
 }

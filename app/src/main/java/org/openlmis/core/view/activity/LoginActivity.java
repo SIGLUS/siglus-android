@@ -277,4 +277,16 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
             }
         });
     }
+
+    public void sendSyncStartBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
+        sendBroadcast(intent);
+    }
+
+    public void sendSyncFinishedBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+        sendBroadcast(intent);
+    }
 }

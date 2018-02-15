@@ -259,7 +259,6 @@ public class SyncDownManager {
     }
 
     private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {
-        //default start date is one month before and end date is one day after
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
 
         SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
@@ -274,6 +273,7 @@ public class SyncDownManager {
             public void call(Subscriber<? super Void> subscriber) {
                 try{
                     stockRepository.batchCreateSyncDownStockCardsAndMovements(stockCards);
+                    stockService.immediatelyUpdateAvgMonthlyConsumption();
                     subscriber.onCompleted();
                 }catch (Exception e){
                     subscriber.onError(e);

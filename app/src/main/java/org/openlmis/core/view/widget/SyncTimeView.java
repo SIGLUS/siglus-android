@@ -142,4 +142,8 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         progressBar.setVisibility(GONE);
         ivSyncTimeIcon.setVisibility(VISIBLE);
     }
+
+    public void setSyncStockCardLastYearText(){
+        txSyncTime.setText(R.string.last_year_stock_cards_sync);
+    }
 }

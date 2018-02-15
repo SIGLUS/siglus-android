@@ -42,6 +42,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.InternetCheck;
@@ -99,9 +100,13 @@ public class HomeActivity extends BaseActivity {
     InternetCheck internetCheck;
 
     @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
+
+    @Inject
     WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     private boolean exitPressedOnce = false;
+    private boolean stockCardIsSynced;
 
     @Override
     protected ScreenName getScreenName() {
@@ -127,6 +132,12 @@ public class HomeActivity extends BaseActivity {
         registerSyncStartReceiver();
         registerSyncFinishedReceiver();
 
+        stockCardIsSynced = sharedPreferenceMgr.shouldSyncLastYearStockData();
+
+        if (stockCardIsSynced) {
+            sendSyncStartBroadcast();
+        }
+
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rapid_test)) {
             btnRapidTestReport.setVisibility(View.GONE);
         }
@@ -134,6 +145,12 @@ public class HomeActivity extends BaseActivity {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_patient_data)) {
             btnPatientData.setVisibility(View.GONE);
         }
+    }
+
+    public void sendSyncStartBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
+        sendBroadcast(intent);
     }
 
     private void registerSyncStartReceiver() {
@@ -219,7 +236,11 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void setSyncedTime() {
-        syncTimeView.showLastSyncTime();
+        if (!sharedPreferenceMgr.shouldSyncLastYearStockData()) {
+            syncTimeView.showLastSyncTime();
+        } else {
+            syncTimeView.setSyncStockCardLastYearText();
+        }
     }
 
     @Override
