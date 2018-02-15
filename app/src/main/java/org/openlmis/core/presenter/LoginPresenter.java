@@ -43,13 +43,11 @@ import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
-import org.openlmis.core.service.sync.SyncSilently;
+import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.training.TrainingEnvironmentHelper;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import retrofit.Callback;
@@ -62,7 +60,7 @@ public class LoginPresenter extends Presenter {
     LoginView view;
 
     @Inject
-    SyncSilently syncSilently;
+    SyncStockCardsLastYearSilently syncStockCardsLastYearSilently;
 
     @Inject
     UserRepository userRepository;
@@ -270,7 +268,7 @@ public class LoginPresenter extends Presenter {
     }
 
     private void syncStockCards() {
-        syncSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
+        syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
     }
 
     @NonNull

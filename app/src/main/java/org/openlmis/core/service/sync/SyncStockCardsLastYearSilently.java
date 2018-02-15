@@ -25,7 +25,7 @@ import rx.Subscriber;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
-public class SyncSilently {
+public class SyncStockCardsLastYearSilently {
 
 
     private final int DAYS_OF_REGULAR_MONTH = 30;
@@ -38,19 +38,19 @@ public class SyncSilently {
     private Scheduler scheduler;
 
     @Inject
-    public SyncSilently() {
+    public SyncStockCardsLastYearSilently() {
     }
 
     public Observable<List<StockCard>> performSync() {
 
-        final int MONTHS_IN_A_YEAR = 12;
+        final int monthsInAYear = 12;
         lmisRestApi = LMISApp.getInstance().getRestApi();
         facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
         List<Observable<SyncDownStockCardResponse>> tasks = new ArrayList<>();
         scheduler = createScheduler();
         int startMonth = sharedPreferenceMgr.getPreference().getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
 
-        for (int month = startMonth; month <= MONTHS_IN_A_YEAR; month++) {
+        for (int month = startMonth; month <= monthsInAYear; month++) {
             Observable<SyncDownStockCardResponse> objectObservable = createObservableToFetchStockMovements(month);
             tasks.add(objectObservable);
         }
@@ -94,8 +94,8 @@ public class SyncSilently {
     }
 
     private String getStartDate(Date now, int month) {
-        final int ONE_MONTH = 1;
-        Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_REGULAR_MONTH * (month + ONE_MONTH));
+        final int oneMonth = 1;
+        Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_REGULAR_MONTH * (month + oneMonth));
         return DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
     }
 
