@@ -41,6 +41,7 @@ import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,9 +149,6 @@ public class SyncDownManagerTest {
         assertThat(subscriber.syncProgresses.get(5), is(RequisitionSynced));
         assertThat(subscriber.syncProgresses.get(6), is(SyncingRapidTests));
         assertThat(subscriber.syncProgresses.get(7), is(RapidTestsSynced));
-        assertThat(subscriber.syncProgresses.get(8), is(SyncingStockCardsLastYear));
-        assertThat(subscriber.syncProgresses.get(9), is(StockCardsLastYearSynced));
-        verify(stockService).immediatelyUpdateAvgMonthlyConsumption();
     }
 
     @Test
@@ -172,7 +170,7 @@ public class SyncDownManagerTest {
         laterEnterSubscriber.assertNoTerminalEvent();
 
         //then
-        assertThat(firstEnterSubscriber.syncProgresses.size(), is(10));
+        assertThat(firstEnterSubscriber.syncProgresses.size(), is(8));
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }
 
@@ -275,7 +273,7 @@ public class SyncDownManagerTest {
         verify(stockRepository, times(0)).queryStockCardByProductId(anyLong());
     }
 
-    private void testSyncProgress(SyncProgress progress) {
+    private void testSyncProgress(SyncProgress progress) throws SQLException {
         try {
             if (progress == StockCardsLastMonthSynced) {
                 verifyLastMonthStockCardsSynced();
@@ -356,7 +354,7 @@ public class SyncDownManagerTest {
         return syncDownProgramDataResponse;
     }
 
-    private void verifyLastMonthStockCardsSynced() throws LMISException {
+    private void verifyLastMonthStockCardsSynced() throws LMISException, SQLException {
         verify(lmisRestApi).fetchStockMovementData(anyString(), anyString(), anyString());
 
         verify(sharedPreferenceMgr).setIsNeedsInventory(false);
@@ -387,7 +385,11 @@ public class SyncDownManagerTest {
         @Override
         public void onNext(SyncProgress syncProgress) {
             super.onNext(syncProgress);
-            testSyncProgress(syncProgress);
+            try {
+                testSyncProgress(syncProgress);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

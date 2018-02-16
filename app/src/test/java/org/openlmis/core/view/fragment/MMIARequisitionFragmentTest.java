@@ -98,6 +98,7 @@ public class MMIARequisitionFragmentTest {
         });
 
         rnrFormList = mock(MMIARnrForm.class);
+        SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
         mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
 
         regimeListView = mock(MMIARegimeList.class);

@@ -68,7 +68,7 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class VIARequisitionFragmentTest {
 
-    VIARequisitionFragment VIARequisitionFragment;
+    VIARequisitionFragment viaRequisitionFragment;
     VIARequisitionPresenter presenter;
     private List<RequisitionFormItemViewModel> formItemList;
     private Program program;
@@ -99,7 +99,8 @@ public class VIARequisitionFragmentTest {
         when(presenter.getRnRForm()).thenReturn(form);
         when(presenter.getRnrFormStatus()).thenReturn(RnRForm.STATUS.DRAFT);
 
-        VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
+        SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
+        viaRequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
     }
 
     private VIARequisitionFragment getVIARequisitionFragmentFromActivityWithIntent() {
@@ -111,47 +112,47 @@ public class VIARequisitionFragmentTest {
 
     @Test
     public void shouldShowRequisitionPeriodOnTitle() {
-        VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
+        viaRequisitionFragment.refreshRequisitionForm(viaRequisitionFragment.presenter.getRnRForm());
 
-        assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("Requisition - 21 Apr to 20 May");
+        assertThat(viaRequisitionFragment.getActivity().getTitle()).isEqualTo("Requisition - 21 Apr to 20 May");
     }
 
     @Test
     public void shouldSetEmergencyViewWhenRnrIsEmergency() {
         LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-04-21 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
 
-        RnRForm rnRForm = VIARequisitionFragment.presenter.getRnRForm();
+        RnRForm rnRForm = viaRequisitionFragment.presenter.getRnRForm();
         rnRForm.setEmergency(true);
 
-        VIARequisitionFragment.refreshRequisitionForm(rnRForm);
+        viaRequisitionFragment.refreshRequisitionForm(rnRForm);
 
-        VIARequisitionFragment.consultationView.findViewById(R.id.et_external_consultations_performed).performClick();
+        viaRequisitionFragment.consultationView.findViewById(R.id.et_external_consultations_performed).performClick();
 
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("This information is not used when creating an emergency requisition");
-        assertThat(((TextView) VIARequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText()).isEqualTo(StringUtils.EMPTY);
-        assertThat(((TextView) VIARequisitionFragment.consultationView.findViewById(R.id.via_rnr_header)).getText()).isEqualTo("Emergency requisition balancete");
-        assertThat(VIARequisitionFragment.getActivity().getTitle().toString()).isEqualTo("Emergency requisition - 21 Apr");
+        assertThat(((TextView) viaRequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText()).isEqualTo(StringUtils.EMPTY);
+        assertThat(((TextView) viaRequisitionFragment.consultationView.findViewById(R.id.via_rnr_header)).getText()).isEqualTo("Emergency requisition balancete");
+        assertThat(viaRequisitionFragment.getActivity().getTitle().toString()).isEqualTo("Emergency requisition - 21 Apr");
     }
 
     @Test
     public void shouldSetHistoryViewWhenRnrIsAuthorized() {
-        RnRForm rnRForm = VIARequisitionFragment.presenter.getRnRForm();
+        RnRForm rnRForm = viaRequisitionFragment.presenter.getRnRForm();
         rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
 
-        VIARequisitionFragment.refreshRequisitionForm(rnRForm);
-        assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanelView.getVisibility());
+        viaRequisitionFragment.refreshRequisitionForm(rnRForm);
+        assertThat(View.GONE).isEqualTo(viaRequisitionFragment.actionPanelView.getVisibility());
 
         rnRForm.setEmergency(true);
-        VIARequisitionFragment.refreshRequisitionForm(rnRForm);
-        assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanelView.getVisibility());
-        assertFalse(VIARequisitionFragment.vgContainer.findViewById(R.id.et_external_consultations_performed).hasOnClickListeners());
-        assertFalse(VIARequisitionFragment.kitView.findViewById(R.id.et_via_kit_opened_chw).hasOnClickListeners());
+        viaRequisitionFragment.refreshRequisitionForm(rnRForm);
+        assertThat(View.GONE).isEqualTo(viaRequisitionFragment.actionPanelView.getVisibility());
+        assertFalse(viaRequisitionFragment.vgContainer.findViewById(R.id.et_external_consultations_performed).hasOnClickListeners());
+        assertFalse(viaRequisitionFragment.kitView.findViewById(R.id.et_via_kit_opened_chw).hasOnClickListeners());
     }
 
     @Test
     public void shouldGetIntentToRequisitionActivity() {
         long formId = 100L;
-        Intent intent = VIARequisitionActivity.getIntentToMe(VIARequisitionFragment.getActivity(), formId);
+        Intent intent = VIARequisitionActivity.getIntentToMe(viaRequisitionFragment.getActivity(), formId);
 
         assertThat(intent).isNotNull();
         assertThat(intent.getLongExtra(Constants.PARAM_FORM_ID, 0L)).isEqualTo(formId);
@@ -160,9 +161,9 @@ public class VIARequisitionFragmentTest {
     @Test
     public void shouldShowAlertDialogWhenPressedBack() {
         when(presenter.isDraft()).thenReturn(true);
-        VIARequisitionFragment.onBackPressed();
+        viaRequisitionFragment.onBackPressed();
 
-        DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("back_confirm_dialog"));
+        DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("back_confirm_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -173,7 +174,7 @@ public class VIARequisitionFragmentTest {
 
     @Test
     public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
-        VIARequisitionFragment.onBackPressed();
+        viaRequisitionFragment.onBackPressed();
         verify(presenter, never()).deleteDraft();
     }
 
@@ -181,9 +182,9 @@ public class VIARequisitionFragmentTest {
     public void shouldShowSubmitSignatureDialog() {
         when(presenter.isDraftOrDraftMissed()).thenReturn(true);
 
-        VIARequisitionFragment.showSignDialog();
+        viaRequisitionFragment.showSignDialog();
 
-        DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
+        DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -191,7 +192,7 @@ public class VIARequisitionFragmentTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = VIARequisitionFragment.getString(R.string.msg_via_submit_signature);
+        String alertMessage = viaRequisitionFragment.getString(R.string.msg_via_submit_signature);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 
@@ -199,9 +200,9 @@ public class VIARequisitionFragmentTest {
     public void shouldShowApproveSignatureDialog() {
         when(presenter.isDraftOrDraftMissed()).thenReturn(false);
 
-        VIARequisitionFragment.showSignDialog();
+        viaRequisitionFragment.showSignDialog();
 
-        DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
+        DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -209,15 +210,15 @@ public class VIARequisitionFragmentTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = VIARequisitionFragment.getString(R.string.msg_approve_signature_via);
+        String alertMessage = viaRequisitionFragment.getString(R.string.msg_approve_signature_via);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 
     @Test
     public void shouldMessageNotifyDialog() {
-        VIARequisitionFragment.showMessageNotifyDialog();
+        viaRequisitionFragment.showMessageNotifyDialog();
 
-        DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
+        DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -231,9 +232,9 @@ public class VIARequisitionFragmentTest {
         reset(presenter);
         when(presenter.getRnrFormStatus()).thenReturn(RnRForm.STATUS.DRAFT);
         SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
-        VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
+        viaRequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
 
-        String msg = VIARequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
+        String msg = viaRequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
         verify(presenter, never()).loadData(anyLong(), any(Date.class));
     }

@@ -270,7 +270,7 @@ public class SyncDownManager {
         }
     }
 
-    public Observable<Void> saveStockCards(final List<StockCard> stockCards) {
+    public Observable<Void> saveStockCardsFromLastYear(final List<StockCard> stockCards) {
 
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override

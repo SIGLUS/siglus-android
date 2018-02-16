@@ -288,7 +288,7 @@ public class LoginPresenter extends Presenter {
 
             @Override
             public void onNext(List<StockCard> stockCards) {
-                syncDownManager.saveStockCards(stockCards).subscribe(getSaveStockCardsSubscriber());
+                syncDownManager.saveStockCardsFromLastYear(stockCards).subscribe(getSaveStockCardsSubscriber());
             }
         };
     }
