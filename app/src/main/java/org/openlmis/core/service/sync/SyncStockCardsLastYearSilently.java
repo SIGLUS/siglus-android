@@ -46,7 +46,7 @@ public class SyncStockCardsLastYearSilently {
         lmisRestApi = LMISApp.getInstance().getRestApi();
         facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
         List<Observable<SyncDownStockCardResponse>> tasks = new ArrayList<>();
-        scheduler = createScheduler();
+        scheduler = SchedulerBuilder.createScheduler();
         int startMonth = sharedPreferenceMgr.getPreference().getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
 
         for (int month = startMonth; month <= monthsInAYear; month++) {
@@ -107,12 +107,5 @@ public class SyncStockCardsLastYearSilently {
     private Date getActualDate() {
         long syncEndTimeMillions = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, new Date().getTime());
         return new Date(syncEndTimeMillions);
-    }
-
-    @NonNull
-    private Scheduler createScheduler() {
-        int threadCount = Runtime.getRuntime().availableProcessors();
-        ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(threadCount);
-        return Schedulers.from(threadPoolExecutor);
     }
 }

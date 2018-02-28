@@ -44,18 +44,22 @@ import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 @Singleton
@@ -150,8 +154,7 @@ public class SyncDownManager {
                     syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     sendSyncFinishedBroadcast();
-                }
-                else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+                } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
                 }
             }
@@ -355,6 +358,34 @@ public class SyncDownManager {
 
     public Observable<Void> saveStockCardsFromLastYear(final List<StockCard> stockCards) {
 
+        Scheduler scheduler = SchedulerBuilder.createScheduler();
+
+        List<Observable<Void>> observables = new ArrayList<>();
+
+        int threadNumber = Runtime.getRuntime().availableProcessors();
+
+        int numberOfElementsInAListForAnObservable = stockCards.size() / threadNumber;
+        int startPosition = 0;
+        for (int arrayNumber = 1; arrayNumber<=threadNumber; arrayNumber++) {
+            int endPosition = arrayNumber==threadNumber ? stockCards.size()-1 : numberOfElementsInAListForAnObservable * arrayNumber;
+            observables.add(saveStockCards(stockCards.subList(startPosition, endPosition), scheduler));
+            startPosition = endPosition + 1;
+        }
+        return zipObservables(observables);
+    }
+
+    private Observable<Void> zipObservables(List<Observable<Void>> tasks) {
+        return Observable.zip(tasks, new FuncN<Void>() {
+            @Override
+            public Void call(Object... args) {
+                return null;
+            }
+        });
+    }
+
+
+    public Observable<Void> saveStockCards(final List<StockCard> stockCards, Scheduler scheduler) {
+
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
@@ -366,7 +397,7 @@ public class SyncDownManager {
                     subscriber.onError(e);
                 }
             }
-        });
+        }).observeOn(scheduler);
     }
 
     private void fetchAndSaveRequisition() throws LMISException {
