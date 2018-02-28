@@ -193,7 +193,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
                 if (internet) {
                     syncService.requestSyncImmediately();
                 } else {
-                    System.out.println("No hay conexion");
+                    Log.d("Internet", "No hay conexion");
                 }
             }
         };

@@ -141,12 +141,6 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-    public void sendSyncStartBroadcast() {
-        Intent intent = new Intent();
-        intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-        sendBroadcast(intent);
-    }
-
     private void registerSyncStartReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_START_SYNC_DATA);
@@ -174,6 +168,7 @@ public class HomeActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             syncTimeView.showSyncProgressBarAndHideIcon();
+            setSyncedTime();
         }
     };
 
@@ -248,7 +243,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void setSyncedTime() {
-        if (!sharedPreferenceMgr.shouldSyncLastYearStockData()) {
+        if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
             syncTimeView.showLastSyncTime();
         } else {
             syncTimeView.setSyncStockCardLastYearText();

@@ -42,7 +42,6 @@ public class SyncStockCardsLastYearSilently {
     }
 
     public Observable<List<StockCard>> performSync() {
-
         final int monthsInAYear = 12;
         lmisRestApi = LMISApp.getInstance().getRestApi();
         facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();

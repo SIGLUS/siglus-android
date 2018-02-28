@@ -59,17 +59,17 @@ public class LoginPresenter extends Presenter {
 
     LoginView view;
 
-    @Inject
-    SyncStockCardsLastYearSilently syncStockCardsLastYearSilently;
-
-    @Inject
-    UserRepository userRepository;
 
     @Inject
     LotRepository lotRepository;
 
     @Inject
     StockRepository stockRepository;
+    @Inject
+    SyncStockCardsLastYearSilently syncStockCardsLastYearSilently;
+
+    @Inject
+    UserRepository userRepository;
 
     @Inject
     RnrFormRepository rnrFormRepository;
@@ -246,10 +246,10 @@ public class LoginPresenter extends Presenter {
                         break;
 
                     case ProductSynced:
-                        view.sendSyncStartBroadcast();
-                        syncStockCards();
-
+                        view.loaded();
+                        break;
                     case StockCardsLastMonthSynced:
+                        syncStockCards();
                         view.loaded();
                         break;
 
@@ -268,7 +268,14 @@ public class LoginPresenter extends Presenter {
     }
 
     private void syncStockCards() {
-        syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
+        if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+            sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
+            view.sendSyncStartBroadcast();
+            syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
+        } else {
+            view.sendSyncFinishedBroadcast();
+            sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+        }
     }
 
     @NonNull
@@ -283,6 +290,8 @@ public class LoginPresenter extends Presenter {
                 e.printStackTrace();
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(true);
+                view.sendSyncErrorBroadcast();
+                sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
                 new LMISException(e).reportToFabric();
             }
 
@@ -299,13 +308,16 @@ public class LoginPresenter extends Presenter {
             @Override
             public void onCompleted() {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
+                sharedPreferenceMgr.setStockCardLastYearSyncError(false);
                 view.sendSyncFinishedBroadcast();
+                sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
             }
 
             @Override
             public void onError(Throwable e) {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(true);
+                sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
                 view.sendSyncErrorBroadcast();
             }
 

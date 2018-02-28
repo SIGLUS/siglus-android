@@ -18,6 +18,9 @@
 
 package org.openlmis.core.service;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -41,6 +44,8 @@ import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
@@ -78,6 +83,8 @@ public class SyncDownManager {
     ProgramDataFormRepository programDataFormRepository;
     @Inject
     StockService stockService;
+    @Inject
+    SyncStockCardsLastYearSilently syncStockCardsLastYearSilently;
 
     public SyncDownManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -98,7 +105,6 @@ public class SyncDownManager {
                     syncDownRequisition(subscriber);
                     syncDownRapidTests(subscriber);
 //                    syncDownLastYearStockCardsSilently(subscriber);
-
                     isSyncing = false;
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -138,20 +144,97 @@ public class SyncDownManager {
         syncDownServerData(new Subscriber<SyncProgress>() {
             @Override
             public void onCompleted() {
-
+                if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+                    sendSyncStartBroadcast();
+                    sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
+                    syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
+                } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+                    sendSyncFinishedBroadcast();
+                }
+                else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+                    sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+                }
             }
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
             public void onNext(SyncProgress syncProgress) {
-
             }
         });
     }
+
+    @NonNull
+    private Subscriber<List<StockCard>> getSyncLastYearStockCardSubscriber() {
+        return new Subscriber<List<StockCard>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
+                sharedPreferenceMgr.setStockCardLastYearSyncError(true);
+                sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+                new LMISException(e).reportToFabric();
+                sendSyncErrorBroadcast();
+            }
+
+            @Override
+            public void onNext(List<StockCard> stockCards) {
+                saveStockCardsFromLastYear(stockCards).subscribe(getSaveStockCardsSubscriber());
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<Void> getSaveStockCardsSubscriber() {
+        return new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
+                sharedPreferenceMgr.setStockCardLastYearSyncError(false);
+                sendSyncFinishedBroadcast();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
+                sharedPreferenceMgr.setStockCardLastYearSyncError(true);
+                sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+                sendSyncErrorBroadcast();
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
+            }
+        };
+    }
+
+    private void sendSyncErrorBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
+        LMISApp.getContext().sendBroadcast(intent);
+    }
+
+    private void sendSyncStartBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
+        LMISApp.getContext().sendBroadcast(intent);
+    }
+
+    private void sendSyncFinishedBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+        LMISApp.getContext().sendBroadcast(intent);
+        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+    }
+
 
     private void syncDownLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
         if (sharedPreferenceMgr.shouldSyncLastYearStockData()) {

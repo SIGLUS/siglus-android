@@ -15,9 +15,7 @@ services:
     container_name: test-runner
     privileged: true
     volumes:
-      - type: volume
-        source: ../
-        target: /lmis-moz-mobile
+      - ../:/lmis-moz-mobile
     working_dir: /lmis-moz-mobile
     command: /bin/sh -c 'tail -f /dev/null'
     environment:

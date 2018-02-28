@@ -285,19 +285,19 @@ public class StockRepository {
     }
 
     public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards) throws SQLException {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    for (StockCard stockCard : stockCards) {
-                        if (stockCard.getId() <= 0) {
-                            saveStockCardAndBatchUpdateMovements(stockCard);
-                        } else {
-                            stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
-                        }
+        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                for (StockCard stockCard : stockCards) {
+                    if (stockCard.getId() <= 0) {
+                        saveStockCardAndBatchUpdateMovements(stockCard);
+                    } else {
+                        stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
                     }
-                    return null;
                 }
-            });
+                return null;
+            }
+        });
     }
 
     public void deleteOldData() {

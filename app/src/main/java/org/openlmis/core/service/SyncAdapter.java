@@ -91,7 +91,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         syncUpManager.syncArchivedProducts();
         syncUpManager.syncUpCmms();
 
-        sendSyncFinishedBroadcast();
+        if(!sharedPreferenceMgr.shouldSyncLastYearStockData()) {
+            sendSyncFinishedBroadcast();
+        }
     }
 
     private void sendSyncStartBroadcast() {
