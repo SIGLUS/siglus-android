@@ -16,14 +16,11 @@ import org.openlmis.core.utils.DateUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
 import rx.functions.FuncN;
-import rx.schedulers.Schedulers;
 
 public class SyncStockCardsLastYearSilently {
 

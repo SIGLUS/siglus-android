@@ -50,7 +50,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -358,9 +357,13 @@ public class SyncDownManager {
 
     public Observable<Void> saveStockCardsFromLastYear(final List<StockCard> stockCards) {
 
+        List<Observable<Void>> observables = new ArrayList<>();
+        if(stockCards.isEmpty()){
+            return zipObservables(observables);
+        }
+
         Scheduler scheduler = SchedulerBuilder.createScheduler();
 
-        List<Observable<Void>> observables = new ArrayList<>();
 
         int threadNumber = Runtime.getRuntime().availableProcessors();
 

@@ -6,7 +6,10 @@ import java.util.concurrent.Executors;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
 
-public class SchedulerBuilder {
+public final class SchedulerBuilder {
+
+    private SchedulerBuilder() {
+    }
 
     public static Scheduler createScheduler() {
         int threadNumber = Runtime.getRuntime().availableProcessors();
