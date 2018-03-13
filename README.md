@@ -5,6 +5,8 @@ Unit Tests
 --------------
 run `./gradlew testLocalDebug` to run the Robolectric tests for local debug apk
 
+run `./java_unit_test.sh -d -e local` to run the unit tests in docker
+
 Contract Tests
 --------------
 1. Install rvm via `\curl -L https://get.rvm.io | bash -s stable`
