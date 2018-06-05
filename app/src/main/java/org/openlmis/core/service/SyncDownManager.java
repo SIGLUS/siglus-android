@@ -238,20 +238,20 @@ public class SyncDownManager {
     }
 
 
-    private void syncDownLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
-        if (sharedPreferenceMgr.shouldSyncLastYearStockData()) {
-            try {
-                subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
-                fetchLatestYearStockMovements();
-                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
-                stockService.immediatelyUpdateAvgMonthlyConsumption();
-                subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
-            } catch (LMISException e) {
-                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
-                e.reportToFabric();
-            }
-        }
-    }
+//    private void syncDownLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
+//        if (sharedPreferenceMgr.shouldSyncLastYearStockData()) {
+//            try {
+//                subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
+//                fetchLatestYearStockMovements();
+//                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
+//                stockService.immediatelyUpdateAvgMonthlyConsumption();
+//                subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
+//            } catch (LMISException e) {
+//                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
+//                e.reportToFabric();
+//            }
+//        }
+//    }
 
     private void syncDownRequisition(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         if (!sharedPreferenceMgr.isRequisitionDataSynced()) {
@@ -428,29 +428,29 @@ public class SyncDownManager {
         }
     }
 
-    private void fetchLatestYearStockMovements() throws LMISException {
-        long syncEndTimeMillions = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, new Date().getTime());
-
-        Date now = new Date(syncEndTimeMillions);
-
-        int startMonth = sharedPreferenceMgr.getPreference().getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
-
-        for (int month = startMonth; month <= MONTHS_OF_YEAR; month++) {
-            Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * (month + 1));
-            String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
-
-            Date endDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * month);
-            String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
-
-            try {
-                fetchAndSaveStockCards(startDateStr, endDateStr);
-            } catch (LMISException e) {
-                sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, syncEndTimeMillions).apply();
-                sharedPreferenceMgr.getPreference().edit().putInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, month).apply();
-                throw e;
-            }
-        }
-    }
+//    private void fetchLatestYearStockMovements() throws LMISException {
+//        long syncEndTimeMillions = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, new Date().getTime());
+//
+//        Date now = new Date(syncEndTimeMillions);
+//
+//        int startMonth = sharedPreferenceMgr.getPreference().getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
+//
+//        for (int month = startMonth; month <= MONTHS_OF_YEAR; month++) {
+//            Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * (month + 1));
+//            String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
+//
+//            Date endDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * month);
+//            String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
+//
+//            try {
+//                fetchAndSaveStockCards(startDateStr, endDateStr);
+//            } catch (LMISException e) {
+//                sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, syncEndTimeMillions).apply();
+//                sharedPreferenceMgr.getPreference().edit().putInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, month).apply();
+//                throw e;
+//            }
+//        }
+//    }
 
     private String errorMessage(int code) {
         return LMISApp.getContext().getResources().getString(code);
@@ -460,7 +460,7 @@ public class SyncDownManager {
         SyncingProduct(R.string.msg_fetching_products),
         SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
         SyncingRequisition(R.string.msg_sync_requisition_data),
-        SyncingStockCardsLastYear,
+//        SyncingStockCardsLastYear,
         SyncingRapidTests,
 
         ProductSynced,

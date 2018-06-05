@@ -74,7 +74,7 @@ import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingProd
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRapidTests;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRequisition;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastMonth;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastYear;
+//import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastYear;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)

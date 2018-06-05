@@ -18,13 +18,18 @@
 
 package org.openlmis.core;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Bundle;
+import android.support.multidex.MultiDex;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -53,11 +58,13 @@ public class LMISApp extends Application {
     private static LMISApp instance;
 
     public static long lastOperateTime = 0L;
+    private static String TAG = "123";
     private final int facilityCustomDimensionKey = 1;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Stetho.initializeWithDefaults(this);
         JodaTimeAndroid.init(this);
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
@@ -67,6 +74,40 @@ public class LMISApp extends Application {
         setupGoogleAnalytics();
 
         instance = this;
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                Log.d(TAG,"onActivityCreated: " + activity.getLocalClassName());
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                Log.d(TAG,"onActivityStarted: " + activity.getLocalClassName());
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                Log.d(TAG,"onActivityResumed: " + activity.getLocalClassName());
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+                Log.d(TAG,"onActivityPaused: " + activity.getLocalClassName());
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                Log.d(TAG, "onActivityStopped: " + activity.getLocalClassName());
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                Log.d(TAG,"onActivityDestroyed: " + activity.getLocalClassName());
+            }
+        });
     }
 
     protected void setupGoogleAnalytics() {
@@ -151,4 +192,9 @@ public class LMISApp extends Application {
         return SharedPreferenceMgr.getInstance().isQaDebugEnabled();
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(base);
+    }
 }
