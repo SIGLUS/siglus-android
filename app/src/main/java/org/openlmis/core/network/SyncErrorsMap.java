@@ -48,6 +48,6 @@ public final class SyncErrorsMap {
         if (errorMessage.contains(PERIOD_MISMATCH)) {
             return context.getString(R.string.period_mismatch_error);
         }
-        return context.getString(R.string.default_sync_data_error);
+        return errorMessage;
     }
 }
