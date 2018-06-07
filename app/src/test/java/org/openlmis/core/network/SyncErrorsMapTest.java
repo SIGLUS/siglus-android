@@ -50,7 +50,7 @@ public class SyncErrorsMapTest {
     @Test
     public void shouldReturnAppDataErrorWhenServerReturnsOtherError() {
         String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("Something else");
-        assertEquals(LMISTestApp.getContext().getString(R.string.default_sync_data_error), appDisplayError);
+        assertEquals("Something else", appDisplayError);
     }
 
     @Test
