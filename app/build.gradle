@@ -8,18 +8,12 @@ repositories {
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
         applicationId "org.openlmis.core"
         minSdkVersion 17
         targetSdkVersion 21
-        flavorDimensions "1"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                includeCompileClasspath true
-            }
-        }
         if (project.hasProperty("prodsim")) {
             versionCode((new Date().getTime() / 1000).toInteger())
             versionName "$prodsim"
@@ -76,11 +70,11 @@ android {
     //the following code will change release apk file names to: {applicationId}-{versionCode}-release.apk
     //this is needed for in-app upgrade to work, because it's how the upgrade server matches package names
     applicationVariants.all { variant ->
-        variant.outputs.all { output ->
+        variant.outputs.each { output ->
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk') && outputFile.name.contains("-release")) {
                 def fileName = "${applicationId}-${versionCode}-release.apk"
-                outputFileName =  fileName
+                output.outputFile = new File(outputFile.parent, fileName)
             }
         }
     }
