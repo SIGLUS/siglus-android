@@ -11,7 +11,7 @@ services:
       - 5432:5432
 
   open-lmis:
-    image: siglus/open-lmis-portal:latest
+    image: siglus/open-lmis-portal:latest-hotfix
     container_name: open-lmis-portal
     command: sh -c '/scripts/run/wait-for-postgres.sh open-lmis-db sh /scripts/run/start.sh'
     environment:
