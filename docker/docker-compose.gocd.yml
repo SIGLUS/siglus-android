@@ -5,18 +5,18 @@ services:
     container_name: open-lmis-db
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=p@ssw0rd
+      - POSTGRES_PASSWORD=postgresPwd
       - POSTGRES_DB=open_lmis
     ports:
       - 5432:5432
 
   open-lmis:
-    image: siglus/open-lmis-portal:latest-hotfix
+    image: siglus/open-lmis-portal:latest-0620
     container_name: open-lmis-portal
     command: sh -c '/scripts/run/wait-for-postgres.sh open-lmis-db sh /scripts/run/start.sh'
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=p@ssw0rd
+      - POSTGRES_PASSWORD=postgresPwd
       - POSTGRES_HOST=open-lmis-db
       - POSTGRES_DB=open_lmis
       - APP_URL=http://localhost:8080
