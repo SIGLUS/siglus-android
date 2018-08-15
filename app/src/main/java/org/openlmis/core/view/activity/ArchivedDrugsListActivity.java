@@ -88,4 +88,8 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
     public void refresh(List<InventoryViewModel> data) {
         mAdapter.refreshList(data);
     }
+
+    @Override
+    public void refreshBannerText() {
+    }
 }

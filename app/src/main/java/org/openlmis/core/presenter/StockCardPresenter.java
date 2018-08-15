@@ -44,6 +44,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class StockCardPresenter extends Presenter {
@@ -73,7 +74,13 @@ public class StockCardPresenter extends Presenter {
     }
 
     public void loadStockCards(ArchiveStatus status) {
-        view.loading();
+        loadStockCards(status, true);
+    }
+
+    public void loadStockCards(ArchiveStatus status, Boolean showLoading) {
+        if (showLoading) {
+            view.loading();
+        }
         Subscription subscription = getLoadStockCardsObservable(status).subscribe(afterLoadHandler);
         subscriptions.add(subscription);
     }
@@ -82,6 +89,35 @@ public class StockCardPresenter extends Presenter {
         view.loading();
         Subscription subscription = createOrGetKitStockCardsObservable().subscribe(afterLoadHandler);
         subscriptions.add(subscription);
+    }
+
+    public void refreshStockCardsObservable() {
+        view.loading();
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                refreshStockCardViewModelsSOH();
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ToastUtil.show(e.getMessage());
+                view.loaded();
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                view.refreshBannerText();
+                loadStockCards(Active, false);
+            }
+        });
     }
 
     public void refreshStockCardViewModelsSOH() {
@@ -216,5 +252,6 @@ public class StockCardPresenter extends Presenter {
 
     public interface StockCardListView extends BaseView {
         void refresh(List<InventoryViewModel> data);
+        void refreshBannerText();
     }
 }
