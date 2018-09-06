@@ -119,7 +119,7 @@ public class StockCardListFragmentTest {
 
         fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
-        verify(productUpdateBanner).refreshBannerText();
+        verify(fragment.presenter).refreshStockCardsObservable();
     }
 
     @Test
@@ -127,6 +127,6 @@ public class StockCardListFragmentTest {
         fragment.productsUpdateBanner = productUpdateBanner;
         fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
-        verify(productUpdateBanner).refreshBannerText();
+        verify(fragment.presenter).refreshStockCardsObservable();
     }
 }
