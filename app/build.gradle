@@ -1,9 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: "de.felixschulze.gradle.hockeyapp"
 
 repositories {
     jcenter()
     maven { url 'https://maven.fabric.io/public' }
+}
+
+hockeyapp {
+    apiToken = "77ae006f85024b2fbb075669ae9f2cdf"
 }
 
 android {
