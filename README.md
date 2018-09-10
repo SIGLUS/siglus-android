@@ -58,3 +58,11 @@ You need to set environment variables for KSTOREPWD and KEYPWD.
 After you have these environment variables set, run `./gradlew assembleShowCaseRelease` or `./gradlew assembleTrainingRelease`.
 
 
+Code Coverage by Unit Tests
+--------------
+Run `./gradlew jacocoTestReport` in master branch.
+
+you can get test coverage report in 'lmis-moz-mobile/app/build/reports'.
+
+you can refrence "https://www.jacoco.org/jacoco/trunk/doc/counters.html" if you have  test report question.
+
