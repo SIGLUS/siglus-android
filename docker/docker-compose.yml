@@ -23,7 +23,7 @@ services:
       - KEYPWD=!EBus&tre46A
 
   open-lmis:
-    image: siglus/open-lmis-portal:latest-0620
+    image: siglus/open-lmis-portal:latest
     container_name: open-lmis-portal
     command: sh -c '/scripts/run/wait-for-postgres.sh open-lmis-db sh /scripts/run/start.sh'
     environment:
