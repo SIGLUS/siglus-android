@@ -55,7 +55,7 @@ RUN mkdir -p $ANDROID_HOME/licenses/ && \
   echo "count=0" > ~/.android/repositories.cfg
 
 RUN sdkmanager "tools" \
-              "build-tools;22.0.1" \
+              "build-tools;27.0.3" \
               "platforms;android-21" \
               "platform-tools" \
               "extras;google;m2repository" \
