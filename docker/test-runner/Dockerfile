@@ -86,10 +86,14 @@ ENV PATH /usr/local/rbenv/bin:/usr/local/rbenv/shims:$PATH
 RUN eval "$(rbenv init -)"; rbenv install 2.2.1 \
 &&  eval "$(rbenv init -)"; rbenv global 2.2.1 \
 &&  eval "$(rbenv init -)"; gem update --system \
-&&  eval "$(rbenv init -)"; gem install bundler
+&&  eval "$(rbenv init -)"; gem install bundle
 
-RUN git clone https://github.com/SIGLUS/lmis-moz-mobile.git /lmis-mobile
+RUN git clone https://github.com/SIGLUS/lmis-moz-mobile.git /lmis-mobile &&\
+    cd /lmis-mobile &&\
+    git checkout master3
+
 COPY debug.keystore /root/.android/
+RUN bundle config mirror.https://ruby.taobao.org https://rubygems.org
 RUN cd /lmis-mobile && ./gradlew app:bundleInstall
 RUN rm -rf /lmis-mobile
 
