@@ -196,7 +196,7 @@ public class LoginActivityTest {
 //        intent.putExtra(Constants.PARAM_USERNAME, "username");
 //        intent.putExtra(Constants.PARAM_PASSWORD, "password");
 //
-//        loginActivity = Robolectric.buildActivity(LoginActivity.class).create(intent.getExtras()).get();
+//        loginActivity = Robolectric.buildActivity(LoginActivity.class, intent).create().get();
 //
 //        verify(mockedPresenter).startLogin("username", "password");
     }

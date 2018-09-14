@@ -90,7 +90,7 @@ public class InitialInventoryActivityTest {
         Intent intentToStockCard = new Intent();
         intentToStockCard.putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, true);
 
-        initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class).create(intentToStockCard.getExtras()).get();
+        initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class, intentToStockCard).create().get();
 
         initialInventoryActivity.goToNextPage();
 

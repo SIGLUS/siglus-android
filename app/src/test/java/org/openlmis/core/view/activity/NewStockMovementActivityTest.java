@@ -74,7 +74,7 @@ public class NewStockMovementActivityTest {
                 .putExtra(Constants.PARAM_MOVEMENT_TYPE, MovementReasonManager.MovementType.ISSUE)
                 .putExtra(Constants.PARAM_STOCK_CARD_ID, 0L)
                 .putExtra(Constants.PARAM_IS_KIT, false);
-        newStockMovementActivity = Robolectric.buildActivity(NewStockMovementActivity.class).create(intent.getExtras()).get();
+        newStockMovementActivity = Robolectric.buildActivity(NewStockMovementActivity.class, intent).create().get();
     }
 
     @After

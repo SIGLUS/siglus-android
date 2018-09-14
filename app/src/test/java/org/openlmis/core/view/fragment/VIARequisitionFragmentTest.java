@@ -106,7 +106,7 @@ public class VIARequisitionFragmentTest {
     private VIARequisitionFragment getVIARequisitionFragmentFromActivityWithIntent() {
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_FORM_ID, 1L);
-        VIARequisitionActivity viaRequisitionActivity = Robolectric.buildActivity(VIARequisitionActivity.class).create(intent.getExtras()).visible().get();
+        VIARequisitionActivity viaRequisitionActivity = Robolectric.buildActivity(VIARequisitionActivity.class, intent).create().visible().get();
         return (VIARequisitionFragment) viaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
     }
 

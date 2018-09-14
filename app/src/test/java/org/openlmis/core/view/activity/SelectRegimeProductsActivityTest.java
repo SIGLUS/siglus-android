@@ -67,7 +67,7 @@ public class SelectRegimeProductsActivityTest {
 
         Intent intent = new Intent();
         intent.putExtra(SelectRegimeProductsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
-        selectProductsActivity = Robolectric.buildActivity(SelectRegimeProductsActivity.class).create(intent.getExtras()).get();
+        selectProductsActivity = Robolectric.buildActivity(SelectRegimeProductsActivity.class, intent).create().get();
     }
 
     @Test

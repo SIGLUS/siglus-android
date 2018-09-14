@@ -63,7 +63,7 @@ public class SelectPeriodActivityTest {
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, "MMIA");
         intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, true);
-        selectPeriodActivity = Robolectric.buildActivity(SelectPeriodActivity.class).create(intent.getExtras()).get();
+        selectPeriodActivity = Robolectric.buildActivity(SelectPeriodActivity.class, intent).create().get();
 
         List<SelectInventoryViewModel> selectInventoryViewModels = Arrays.asList(
                 new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-25").toDate())),

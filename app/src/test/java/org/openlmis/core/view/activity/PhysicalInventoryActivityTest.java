@@ -82,7 +82,7 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
         });
         when(mockedPresenter.loadInventory()).thenReturn(value);
 
-        physicalInventoryActivity = Robolectric.buildActivity(PhysicalInventoryActivity.class).create(intentFromParentActivity.getExtras()).get();
+        physicalInventoryActivity = Robolectric.buildActivity(PhysicalInventoryActivity.class, intentFromParentActivity).create().get();
         physicalInventoryActivity.goToNextPage();
 
         assertTrue(physicalInventoryActivity.isFinishing());
