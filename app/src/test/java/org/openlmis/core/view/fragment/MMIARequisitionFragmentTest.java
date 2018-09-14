@@ -129,7 +129,7 @@ public class MMIARequisitionFragmentTest {
     private MMIARequisitionFragment getMMIARequisitionFragmentWithFormId() {
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_FORM_ID, 1L);
-        MMIARequisitionActivity mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).newIntent(intent).create().get();
+        MMIARequisitionActivity mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).create(intent.getExtras()).get();
         MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
         fragment.regimeListView = regimeListView;
         fragment.mmiaInfoListView = mmiaInfoListView;

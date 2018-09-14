@@ -75,7 +75,7 @@ public class RnRFormListActivityTest {
 
         intent = new Intent();
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.MMIA_PROGRAM_CODE);
-        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).newIntent(intent).create().get();
+        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).create(intent.getExtras()).get();
     }
 
     @After
@@ -93,7 +93,7 @@ public class RnRFormListActivityTest {
     public void shouldSetViaTitleAndProgramCodeWhenProgramCodeIsVia() {
 
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
-        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).newIntent(intent).create().get();
+        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).create(intent.getExtras()).get();
 
         assertThat(rnRFormListActivity.getTitle()).isEqualTo(rnRFormListActivity.getResources().getString(R.string.requisition_list));
         verify(mockedPresenter).setProgramCode(Constants.VIA_PROGRAM_CODE);
@@ -181,7 +181,7 @@ public class RnRFormListActivityTest {
         View view = mock(View.class);
 
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
-        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).newIntent(intent).create().get();
+        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).create(intent.getExtras()).get();
 
         RnRFormViewModel viewModel = generateRnRFormViewModel("ESS_MEDS", RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
         viewModel.setId(999L);
@@ -240,7 +240,7 @@ public class RnRFormListActivityTest {
         data.putExtra(Constants.PARAM_IS_MISSED_PERIOD, true);
 
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
-        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).newIntent(intent).create().get();
+        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).create(intent.getExtras()).get();
 
         rnRFormListActivity.onActivityResult(Constants.REQUEST_SELECT_PERIOD_END, Activity.RESULT_OK, data);
 

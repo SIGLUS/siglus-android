@@ -106,7 +106,7 @@ public class VIARequisitionFragmentTest {
     private VIARequisitionFragment getVIARequisitionFragmentFromActivityWithIntent() {
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_FORM_ID, 1L);
-        VIARequisitionActivity viaRequisitionActivity = Robolectric.buildActivity(VIARequisitionActivity.class).newIntent(intent).create().visible().get();
+        VIARequisitionActivity viaRequisitionActivity = Robolectric.buildActivity(VIARequisitionActivity.class).create(intent.getExtras()).visible().get();
         return (VIARequisitionFragment) viaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
     }
 
@@ -129,7 +129,7 @@ public class VIARequisitionFragmentTest {
         viaRequisitionFragment.consultationView.findViewById(R.id.et_external_consultations_performed).performClick();
 
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("This information is not used when creating an emergency requisition");
-        assertThat(((TextView) viaRequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText()).isEqualTo(StringUtils.EMPTY);
+        assertThat(((TextView) viaRequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText().toString()).isEqualTo(StringUtils.EMPTY);
         assertThat(((TextView) viaRequisitionFragment.consultationView.findViewById(R.id.via_rnr_header)).getText()).isEqualTo("Emergency requisition balancete");
         assertThat(viaRequisitionFragment.getActivity().getTitle().toString()).isEqualTo("Emergency requisition - 21 Apr");
     }

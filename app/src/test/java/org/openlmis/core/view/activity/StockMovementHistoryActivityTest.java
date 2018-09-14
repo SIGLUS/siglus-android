@@ -22,7 +22,7 @@ public class StockMovementHistoryActivityTest {
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_STOCK_NAME, "Stock Name");
 
-        activity = Robolectric.buildActivity(StockMovementHistoryActivity.class).newIntent(intent).create().get();
+        activity = Robolectric.buildActivity(StockMovementHistoryActivity.class).create(intent.getExtras()).get();
     }
 
     @Test

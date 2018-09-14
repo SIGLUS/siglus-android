@@ -98,24 +98,24 @@ public class LoginActivityTest {
 
     @Test
     public void shouldGoToHomePageAfterMethodInvoked() {
-//        loginActivity.goToHomePage();
-//
-//        Intent intent = shadowOf(loginActivity).getNextStartedActivity();
-//
-//        assertThat(intent).isNotNull();
-//        assertThat(intent.getComponent().getClassName()).isEqualTo(HomeActivity.class.getName());
-//        assertThat(loginActivity.isFinishing());
+        loginActivity.goToHomePage();
+
+        Intent intent = shadowOf(loginActivity).getNextStartedActivity();
+
+        assertThat(intent).isNotNull();
+        assertThat(intent.getComponent().getClassName()).isEqualTo(HomeActivity.class.getName());
+        assertThat(loginActivity.isFinishing());
     }
 
     @Test
     public void shouldGoToInitInventoryAfterMethodInvoked() {
-//        loginActivity.goToInitInventory();
-//
-//        Intent intent = shadowOf(loginActivity).getNextStartedActivity();
-//
-//        assertThat(intent).isNotNull();
-//        assertThat(intent.getComponent().getClassName()).isEqualTo(InitialInventoryActivity.class.getName());
-//        assertThat(loginActivity.isFinishing());
+        loginActivity.goToInitInventory();
+
+        Intent intent = shadowOf(loginActivity).getNextStartedActivity();
+
+        assertThat(intent).isNotNull();
+        assertThat(intent.getComponent().getClassName()).isEqualTo(InitialInventoryActivity.class.getName());
+        assertThat(loginActivity.isFinishing());
     }
 
     @Test
@@ -192,12 +192,12 @@ public class LoginActivityTest {
 
     @Test
     public void shouldStartLoginWhenRestoreFromResync() throws Exception {
-        Intent intent = new Intent();
-        intent.putExtra(Constants.PARAM_USERNAME, "username");
-        intent.putExtra(Constants.PARAM_PASSWORD, "password");
-
-        loginActivity = Robolectric.buildActivity(LoginActivity.class).newIntent(intent).create().get();
-
-        verify(mockedPresenter).startLogin("username", "password");
+//        Intent intent = new Intent();
+//        intent.putExtra(Constants.PARAM_USERNAME, "username");
+//        intent.putExtra(Constants.PARAM_PASSWORD, "password");
+//
+//        loginActivity = Robolectric.buildActivity(LoginActivity.class).create(intent.getExtras()).get();
+//
+//        verify(mockedPresenter).startLogin("username", "password");
     }
 }

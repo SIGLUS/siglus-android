@@ -62,7 +62,7 @@ public class UnpackKitActivityTest {
         Intent intent = new Intent()
                 .putExtra(Constants.PARAM_KIT_CODE, "SD0001")
                 .putExtra(Constants.PARAM_KIT_NUM, 1);
-        unpackKitActivity = Robolectric.buildActivity(UnpackKitActivity.class).newIntent(intent).create().visible().get();
+        unpackKitActivity = Robolectric.buildActivity(UnpackKitActivity.class).create(intent.getExtras()).visible().get();
     }
 
     @Test
