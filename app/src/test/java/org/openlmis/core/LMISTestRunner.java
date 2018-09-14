@@ -34,7 +34,6 @@ import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.schedulers.Schedulers;
 
-@Config(application = LMISTestApp.class)
 public class LMISTestRunner extends RobolectricTestRunner {
 
     /**
@@ -46,32 +45,15 @@ public class LMISTestRunner extends RobolectricTestRunner {
      */
     public LMISTestRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
-
-        String buildVariant = (BuildConfig.FLAVOR.isEmpty() ? "" : BuildConfig.FLAVOR + "/") + BuildConfig.BUILD_TYPE;
-        String intermediatesPath = BuildConfig.class.getResource("").toString().replace("file:", "");
-        intermediatesPath = intermediatesPath.substring(0, intermediatesPath.indexOf("/classes"));
-
-        System.setProperty("android.package", "org.openlmis.core");
-        System.setProperty("android.manifest", intermediatesPath + "/manifests/full/" + buildVariant + "/AndroidManifest.xml");
-        System.setProperty("android.resources", intermediatesPath + "/res/" + buildVariant);
-        System.setProperty("android.assets", intermediatesPath + "/assets/" + buildVariant);
     }
 
-//    protected Config.Implementation overwriteConfig(
-//            Config config, String key, String value) {
-//        Properties properties = new Properties();
-//        properties.setProperty(key, value);
-//        return new Config.Implementation(config,
-//                Config.Implementation.fromProperties(properties));
-//    }
-//
-//
-//    @Override
-//    protected int pickSdkVersion(Config config, AndroidManifest manifest) {
-//        config = overwriteConfig(config, "emulateSdk", "18");
-//        return super.pickSdkVersion(config, manifest);
-//    }
-
+    @Override
+    protected Config buildGlobalConfig() {
+        return new Config.Builder()
+                .setApplication(LMISTestApp.class)
+                .setSdk(18)
+                .build();
+    }
 
     @Override
     protected Class<? extends TestLifecycle> getTestLifecycleClass() {
@@ -79,10 +61,6 @@ public class LMISTestRunner extends RobolectricTestRunner {
     }
 
     public static class MyTestLifeCycle extends DefaultTestLifecycle {
-//        @Override
-//        public Application createApplication(Method method, AndroidManifest appManifest, Config config) {
-//            return new LMISTestApp();
-//        }
 
         @Override
         public void beforeTest(Method method) {
