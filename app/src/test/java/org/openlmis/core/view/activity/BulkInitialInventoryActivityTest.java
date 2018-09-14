@@ -51,10 +51,10 @@ public class BulkInitialInventoryActivityTest {
 
     @Test
     public void shouldGoToHomePageAfterInitInventoryAndSetNeedInventoryToFalse(){
-//        bulkInventoryActivity.goToNextPage();
-//
-//        Intent startIntent = shadowOf(bulkInventoryActivity).getNextStartedActivity();
-//        assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
-//        assertEquals(SharedPreferenceMgr.getInstance().isNeedsInventory(), false);
+        bulkInventoryActivity.goToNextPage();
+
+        Intent startIntent = shadowOf(bulkInventoryActivity).getNextStartedActivity();
+        assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
+        assertEquals(SharedPreferenceMgr.getInstance().isNeedsInventory(), false);
     }
 }

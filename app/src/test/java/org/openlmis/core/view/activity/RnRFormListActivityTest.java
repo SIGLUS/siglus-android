@@ -305,22 +305,22 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldGotoEmergencyPage() throws Exception {
-//        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
-//
-//        Observable<Boolean> value = Observable.create(new Observable.OnSubscribe<Boolean>() {
-//            @Override
-//            public void call(Subscriber<? super Boolean> subscriber) {
-//                subscriber.onNext(false);
-//            }
-//        });
-//        when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
-//
-//        rnRFormListActivity.checkAndGotoEmergencyPage();
-//
-//        ShadowActivity shadowActivity = shadowOf(rnRFormListActivity);
-//        Intent startedIntent = shadowActivity.getNextStartedActivity();
-//        ShadowIntent shadowIntent = shadowOf(startedIntent);
-//        MatcherAssert.assertThat(shadowIntent.getIntentClass().getC, equalTo(SelectEmergencyProductsActivity.class));
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+
+        Observable<Boolean> value = Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onNext(false);
+            }
+        });
+        when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
+
+        rnRFormListActivity.checkAndGotoEmergencyPage();
+
+        ShadowActivity shadowActivity = shadowOf(rnRFormListActivity);
+        Intent startedIntent = shadowActivity.getNextStartedActivity();
+        ShadowIntent shadowIntent = shadowOf(startedIntent);
+        MatcherAssert.assertThat(shadowIntent.getIntentClass().getCanonicalName(), equalTo(SelectEmergencyProductsActivity.class.getName()));
     }
 
     private RnRFormViewModel generateRnRFormViewModel(String programCode, int viewModelType) {

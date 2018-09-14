@@ -40,7 +40,6 @@ public class TrainingSyncAdapterTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime());
     }
 
-    @Ignore
     @Test
     public void shouldRequestTrainingSyncWhenTrainingFeatureIsOn() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_training, true);

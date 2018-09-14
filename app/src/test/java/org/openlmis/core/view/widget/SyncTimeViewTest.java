@@ -45,81 +45,77 @@ public class SyncTimeViewTest {
         sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
     }
 
-//    @Ignore
-//    @Test
-//    public void shouldDisplayGreenIconAndTimeUnitIsMinute() throws Exception {
-//        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusMinutes(1).getMillis());
-//        sharedPreferenceMgr.setRnrLastSyncTime();
-//        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusMinutes(2).getMillis());
-//        sharedPreferenceMgr.setStockLastSyncTime();
-//
-//        syncTimeView.showLastSyncTime();
-//        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 minute since last sync"));
-//        assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_green));
-//    }
-//
-//    @Ignore
-//    @Test
-//    public void shouldDisplayGreenIconAndTimeUnitIsHour() throws Exception {
-//        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(2).getMillis());
-//        sharedPreferenceMgr.setRnrLastSyncTime();
-//        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(1).getMillis());
-//        sharedPreferenceMgr.setStockLastSyncTime();
-//
-//        syncTimeView.showLastSyncTime();
-//        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 hour since last sync"));
-//        assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_green));
-//    }
-//
-//    @Ignore
-//    @Test
-//    public void shouldDisplayYellowIconAndTimeUnitIsDay() throws Exception {
-//        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(1).getMillis());
-//        sharedPreferenceMgr.setRnrLastSyncTime();
-//        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(2).getMillis());
-//        sharedPreferenceMgr.setStockLastSyncTime();
-//
-//        syncTimeView.showLastSyncTime();
-//        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 day since last sync"));
-//        assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_yellow));
-//    }
-//
-//    @Ignore
-//    @Test
-//    public void shouldDisplayRedIconAndTimeUnitIsDay() throws Exception {
-//        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(4).getMillis());
-//        sharedPreferenceMgr.setRnrLastSyncTime();
-//        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(3).getMillis());
-//        sharedPreferenceMgr.setStockLastSyncTime();
-//
-//        syncTimeView.showLastSyncTime();
-//        assertThat(syncTimeView.txSyncTime.getText().toString(), is("3 days since last sync"));
-//        assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_red));
-//    }
-//
-//    @Test
-//    public void shouldShowErrorMsgWhenNeverSyncSuccessful() throws Exception {
-//        LMISTestApp.getInstance().setCurrentTimeMillis(0);
-//        sharedPreferenceMgr.setRnrLastSyncTime();
-//        LMISTestApp.getInstance().setCurrentTimeMillis(0);
-//        sharedPreferenceMgr.setStockLastSyncTime();
-//
-//        when(mockPresenter.hasStockCardSyncError()).thenReturn(true);
-//
-//        syncTimeView.showLastSyncTime();
-//        assertThat(syncTimeView.txSyncTime.getText().toString(), is("Initial sync failed"));
-//        assertNull(syncTimeView.ivSyncTimeIcon.getDrawable());
-//
-//        when(mockPresenter.hasRnrSyncError()).thenReturn(true);
-//        syncTimeView.showLastSyncTime();
-//        assertThat(syncTimeView.txSyncTime.getText().toString(), is("Initial sync failed"));
-//        assertNull(syncTimeView.ivSyncTimeIcon.getDrawable());
-//    }
-//
-//    @Test
-//    public void shouldHideProgressBarAndShowSyncTimeIconWhenShowLastSyncTime() throws Exception {
-//        syncTimeView.showLastSyncTime();
-//        assertThat(syncTimeView.progressBar.getVisibility(),is(GONE));
-//        assertThat(syncTimeView.ivSyncTimeIcon.getVisibility(),is(VISIBLE));
-//    }
+    @Test
+    public void shouldDisplayGreenIconAndTimeUnitIsMinute() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusMinutes(1).getMillis());
+        sharedPreferenceMgr.setRnrLastSyncTime();
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusMinutes(2).getMillis());
+        sharedPreferenceMgr.setStockLastSyncTime();
+
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 minute since last sync"));
+        assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_green));
+    }
+
+    @Test
+    public void shouldDisplayGreenIconAndTimeUnitIsHour() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(2).getMillis());
+        sharedPreferenceMgr.setRnrLastSyncTime();
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(1).getMillis());
+        sharedPreferenceMgr.setStockLastSyncTime();
+
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 hour since last sync"));
+        assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_green));
+    }
+
+    @Test
+    public void shouldDisplayYellowIconAndTimeUnitIsDay() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(1).getMillis());
+        sharedPreferenceMgr.setRnrLastSyncTime();
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(2).getMillis());
+        sharedPreferenceMgr.setStockLastSyncTime();
+
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 day since last sync"));
+        assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_yellow));
+    }
+
+    @Test
+    public void shouldDisplayRedIconAndTimeUnitIsDay() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(4).getMillis());
+        sharedPreferenceMgr.setRnrLastSyncTime();
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(3).getMillis());
+        sharedPreferenceMgr.setStockLastSyncTime();
+
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("3 days since last sync"));
+        assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_red));
+    }
+
+    @Test
+    public void shouldShowErrorMsgWhenNeverSyncSuccessful() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(0);
+        sharedPreferenceMgr.setRnrLastSyncTime();
+        LMISTestApp.getInstance().setCurrentTimeMillis(0);
+        sharedPreferenceMgr.setStockLastSyncTime();
+
+        when(mockPresenter.hasStockCardSyncError()).thenReturn(true);
+
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("Initial sync failed"));
+        assertNull(syncTimeView.ivSyncTimeIcon.getDrawable());
+
+        when(mockPresenter.hasRnrSyncError()).thenReturn(true);
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("Initial sync failed"));
+        assertNull(syncTimeView.ivSyncTimeIcon.getDrawable());
+    }
+
+    @Test
+    public void shouldHideProgressBarAndShowSyncTimeIconWhenShowLastSyncTime() throws Exception {
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.progressBar.getVisibility(),is(GONE));
+        assertThat(syncTimeView.ivSyncTimeIcon.getVisibility(),is(VISIBLE));
+    }
 }

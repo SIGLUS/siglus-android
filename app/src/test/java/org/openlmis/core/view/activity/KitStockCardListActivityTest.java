@@ -29,8 +29,8 @@ public class KitStockCardListActivityTest {
 
     @Test
     public void shouldNotHaveAnyMenuItems() {
-//        Menu optionsMenu = shadowOf(kitStockCardListActivity).getOptionsMenu();
+        Menu optionsMenu = shadowOf(kitStockCardListActivity).getOptionsMenu();
 
-//        assertThat(optionsMenu.size()).isEqualTo(0);
+        assertThat(optionsMenu.size()).isEqualTo(0);
     }
 }

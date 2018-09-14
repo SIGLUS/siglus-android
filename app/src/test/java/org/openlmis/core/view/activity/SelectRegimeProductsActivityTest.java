@@ -117,16 +117,16 @@ public class SelectRegimeProductsActivityTest {
 
     @Test
     public void shouldReturnRegimeWhenOnNext() throws Exception {
-//        ShadowActivity shadowActivity = shadowOf(selectProductsActivity);
-//        Regimen regimen = new Regimen();
-//        String regimenName = "regimenName";
-//        regimen.setName(regimenName);
-//        selectProductsActivity.saveSubscriber.onNext(regimen);
-//
-//        Intent resultIntent = shadowActivity.getResultIntent();
-//        assertThat(shadowActivity.getResultCode(), is(Activity.RESULT_OK));
-//        assertThat(((Regimen) resultIntent.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN)).getName(), is(regimenName));
-//        assertTrue(shadowActivity.isFinishing());
+        ShadowActivity shadowActivity = shadowOf(selectProductsActivity);
+        Regimen regimen = new Regimen();
+        String regimenName = "regimenName";
+        regimen.setName(regimenName);
+        selectProductsActivity.saveSubscriber.onNext(regimen);
+
+        Intent resultIntent = shadowActivity.getResultIntent();
+        assertThat(shadowActivity.getResultCode(), is(Activity.RESULT_OK));
+        assertThat(((Regimen) resultIntent.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN)).getName(), is(regimenName));
+        assertTrue(shadowActivity.isFinishing());
     }
 
     private ArrayList<RegimeProductViewModel> getInventoryViewModels() {
