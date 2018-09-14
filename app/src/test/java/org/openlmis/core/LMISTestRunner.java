@@ -18,8 +18,6 @@
 
 package org.openlmis.core;
 
-import android.app.Application;
-
 import org.junit.runners.model.InitializationError;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.robolectric.DefaultTestLifecycle;
@@ -27,10 +25,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.TestLifecycle;
 import org.robolectric.annotation.Config;
-import org.robolectric.manifest.AndroidManifest;
 
 import java.lang.reflect.Method;
-import java.util.Properties;
 
 import roboguice.RoboGuice;
 import rx.Scheduler;
@@ -38,6 +34,7 @@ import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.schedulers.Schedulers;
 
+@Config(application = LMISTestApp.class)
 public class LMISTestRunner extends RobolectricTestRunner {
 
     /**
@@ -60,21 +57,20 @@ public class LMISTestRunner extends RobolectricTestRunner {
         System.setProperty("android.assets", intermediatesPath + "/assets/" + buildVariant);
     }
 
-
-    protected Config.Implementation overwriteConfig(
-            Config config, String key, String value) {
-        Properties properties = new Properties();
-        properties.setProperty(key, value);
-        return new Config.Implementation(config,
-                Config.Implementation.fromProperties(properties));
-    }
-
-
-    @Override
-    protected int pickSdkVersion(Config config, AndroidManifest manifest) {
-        config = overwriteConfig(config, "emulateSdk", "18");
-        return super.pickSdkVersion(config, manifest);
-    }
+//    protected Config.Implementation overwriteConfig(
+//            Config config, String key, String value) {
+//        Properties properties = new Properties();
+//        properties.setProperty(key, value);
+//        return new Config.Implementation(config,
+//                Config.Implementation.fromProperties(properties));
+//    }
+//
+//
+//    @Override
+//    protected int pickSdkVersion(Config config, AndroidManifest manifest) {
+//        config = overwriteConfig(config, "emulateSdk", "18");
+//        return super.pickSdkVersion(config, manifest);
+//    }
 
 
     @Override
@@ -83,10 +79,10 @@ public class LMISTestRunner extends RobolectricTestRunner {
     }
 
     public static class MyTestLifeCycle extends DefaultTestLifecycle {
-        @Override
-        public Application createApplication(Method method, AndroidManifest appManifest, Config config) {
-            return new LMISTestApp();
-        }
+//        @Override
+//        public Application createApplication(Method method, AndroidManifest appManifest, Config config) {
+//            return new LMISTestApp();
+//        }
 
         @Override
         public void beforeTest(Method method) {
