@@ -5,6 +5,7 @@ import android.view.View;
 import com.google.inject.AbstractModule;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -23,6 +24,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@Ignore
 @RunWith(LMISTestRunner.class)
 public class SyncDateBottomSheetTest {
 
