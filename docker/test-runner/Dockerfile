@@ -88,9 +88,7 @@ RUN eval "$(rbenv init -)"; rbenv install 2.2.1 \
 &&  eval "$(rbenv init -)"; gem update --system \
 &&  eval "$(rbenv init -)"; gem install bundle
 
-RUN git clone https://github.com/SIGLUS/lmis-moz-mobile.git /lmis-mobile &&\
-    cd /lmis-mobile &&\
-    git checkout master3
+RUN git clone https://github.com/SIGLUS/lmis-moz-mobile.git /lmis-mobile
 
 COPY debug.keystore /root/.android/
 RUN bundle config mirror.https://ruby.taobao.org https://rubygems.org
