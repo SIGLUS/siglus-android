@@ -107,7 +107,6 @@ public class SyncDownManager {
                     syncDownLastMonthStockCards(subscriber);
                     syncDownRequisition(subscriber);
                     syncDownRapidTests(subscriber);
-//                    syncDownLastYearStockCardsSilently(subscriber);
                     isSyncing = false;
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -236,22 +235,6 @@ public class SyncDownManager {
         LMISApp.getContext().sendBroadcast(intent);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
     }
-
-
-//    private void syncDownLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
-//        if (sharedPreferenceMgr.shouldSyncLastYearStockData()) {
-//            try {
-//                subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
-//                fetchLatestYearStockMovements();
-//                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
-//                stockService.immediatelyUpdateAvgMonthlyConsumption();
-//                subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
-//            } catch (LMISException e) {
-//                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
-//                e.reportToFabric();
-//            }
-//        }
-//    }
 
     private void syncDownRequisition(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         if (!sharedPreferenceMgr.isRequisitionDataSynced()) {

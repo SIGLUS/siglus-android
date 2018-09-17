@@ -259,9 +259,6 @@ public class LoginPresenter extends Presenter {
                         }
                         goToNextPage();
                         break;
-//                    case SyncingStockCardsLastYear:
-//                        tryGoToNextPage();
-//                        break;
                 }
             }
         };
