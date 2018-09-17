@@ -124,7 +124,7 @@ jacoco {
 
 def coverageSourceDirs = ['./src/main/java']
 
-task jacocoTestReport(type: JacocoReport, dependsOn: "testLocalDebug") {
+task jacocoTestReport(type: JacocoReport, dependsOn: "testLocalDebugUnitTest") {
     reports {
         xml.enabled = true
         html.enabled = true
@@ -149,7 +149,7 @@ task checkstyle(type: Checkstyle) {
     classpath = files()
 }
 
-task checkci(dependsOn: ['checkstyle', 'testLocalDebug'])
+task checkci(dependsOn: ['checkstyle', 'testLocalDebugUnitTest'])
 
 task findbugs(type: FindBugs) {
     ignoreFailures = true
