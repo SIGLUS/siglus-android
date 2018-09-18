@@ -234,8 +234,6 @@ public class LoginPresenterTest {
         verify(userRepository).mapUserFromLocal(any(User.class));
         assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
 
-        verify(mockActivity).loaded();
-        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(RuntimeEnvironment.application.getString(R.string.msg_sync_products_list_failed));
     }
 
     @Test
