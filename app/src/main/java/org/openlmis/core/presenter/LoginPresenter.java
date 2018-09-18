@@ -241,11 +241,8 @@ public class LoginPresenter extends Presenter {
                         break;
 
                     case ProductSynced:
-                        view.loaded();
-                        break;
                     case StockCardsLastMonthSynced:
                         syncStockCards();
-                        view.loaded();
                         break;
 
                     case RequisitionSynced:
