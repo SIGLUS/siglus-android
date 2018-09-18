@@ -53,7 +53,10 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class LoginPresenter extends Presenter {
 
@@ -199,21 +202,30 @@ public class LoginPresenter extends Presenter {
         syncDownManager.syncDownServerData(getSyncSubscriber());
 
         view.sendScreenToGoogleAnalyticsAfterLogin();
+        archiveOldData();
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_old_data)) {
-            ArchiveOldData();
-        }
     }
 
-    private void ArchiveOldData() {
-        if (stockRepository.hasOldDate()) {
-            stockRepository.deleteOldData();
-            SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
+    private void archiveOldData() {
+        if (! LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_old_data)) {
+            return;
         }
-        if (rnrFormRepository.hasOldDate()) {
-            rnrFormRepository.deleteOldData();
-            SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
-        }
+
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                if (stockRepository.hasOldDate()) {
+                    stockRepository.deleteOldData();
+                    SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
+                }
+                if (rnrFormRepository.hasOldDate()) {
+                    rnrFormRepository.deleteOldData();
+                    SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
+                }
+            }}).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(System.out::println, Throwable::printStackTrace);
+
     }
 
     public void onLoginFailed() {
