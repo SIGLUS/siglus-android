@@ -173,6 +173,7 @@ public class StockRepository {
         return null;
     }
 
+    //TODO: modify judge logic
     public boolean hasStockData() {
         List<StockCard> list = list();
         return list != null && list.size() > 0;

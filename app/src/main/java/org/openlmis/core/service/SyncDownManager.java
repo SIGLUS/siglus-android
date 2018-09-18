@@ -439,6 +439,13 @@ public class SyncDownManager {
         return LMISApp.getContext().getResources().getString(code);
     }
 
+    public enum SyncLocalUserProgress {
+        SyncLastSyncProductFail,
+        SyncLastMonthStockDataFail,
+        SyncRequisitionDataFail,
+        SyncLastDataSuccess
+    }
+
     public enum SyncProgress {
         SyncingProduct(R.string.msg_fetching_products),
         SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),

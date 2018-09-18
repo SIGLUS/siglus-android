@@ -42,6 +42,7 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
+import org.openlmis.core.service.SyncDownManager.SyncLocalUserProgress;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.training.TrainingEnvironmentHelper;
@@ -130,25 +131,7 @@ public class LoginPresenter extends Presenter {
         }
 
         UserInfoMgr.getInstance().setUser(localUser);
-
-        if (SharedPreferenceMgr.getInstance().getLastSyncProductTime() == null) {
-            view.loaded();
-            ToastUtil.show(R.string.msg_sync_products_list_failed);
-            return;
-        }
-
-        if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced()) {
-            view.loaded();
-            ToastUtil.show(R.string.msg_sync_stock_movement_failed);
-            return;
-        }
-        if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
-            view.loaded();
-            ToastUtil.show(R.string.msg_sync_requisition_failed);
-            return;
-        }
-
-        goToNextPage();
+        syncLocalUserData(getSyncLocalUserDataSubscriber());
     }
 
     private void authorizeAndLoginUserRemote(final User user) {
@@ -307,6 +290,65 @@ public class LoginPresenter extends Presenter {
             @Override
             public void onNext(List<StockCard> stockCards) {
                 syncDownManager.saveStockCardsFromLastYear(stockCards).subscribe(getSaveStockCardsSubscriber());
+            }
+        };
+    }
+
+    private void syncLocalUserData(Subscriber<SyncLocalUserProgress> subscriber) {
+        Observable.create(new Observable.OnSubscribe<SyncLocalUserProgress>() {
+            @Override
+            public void call(Subscriber<? super SyncLocalUserProgress> subscriber) {
+                if (SharedPreferenceMgr.getInstance().getLastSyncProductTime() == null) {
+                    subscriber.onNext(SyncLocalUserProgress.SyncLastSyncProductFail);
+                    return;
+                }
+
+                if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced()) {
+                    subscriber.onNext(SyncLocalUserProgress.SyncLastMonthStockDataFail);
+                    return;
+                }
+                if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
+                    subscriber.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
+                    return;
+                }
+                subscriber.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
+            }}).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+
+    }
+
+    @NonNull
+    private Subscriber<SyncLocalUserProgress> getSyncLocalUserDataSubscriber() {
+        return new Subscriber<SyncLocalUserProgress>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(SyncLocalUserProgress progress) {
+                switch (progress) {
+                    case SyncLastSyncProductFail:
+                        view.loaded();
+                        ToastUtil.show(R.string.msg_sync_products_list_failed);
+                        break;
+                    case SyncLastMonthStockDataFail:
+                        view.loaded();
+                        ToastUtil.show(R.string.msg_sync_stock_movement_failed);
+                        break;
+                    case SyncRequisitionDataFail:
+                        view.loaded();
+                        ToastUtil.show(R.string.msg_sync_requisition_failed);
+                        break;
+                    case SyncLastDataSuccess:
+                        goToNextPage();
+                        break;
+                }
             }
         };
     }
