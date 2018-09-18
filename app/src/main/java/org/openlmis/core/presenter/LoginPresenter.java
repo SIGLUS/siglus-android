@@ -311,7 +311,7 @@ public class LoginPresenter extends Presenter {
                     subscriber.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
                     return;
                 }
-                subscriber.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
+                subscriber.onNext(SyncLocalUserProgress.SyncLastDataSuccess);
             }}).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
