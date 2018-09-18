@@ -291,7 +291,7 @@ public class LoginPresenter extends Presenter {
         };
     }
 
-    private void syncLocalUserData(Subscriber<SyncLocalUserProgress> subscriber) {
+    public void syncLocalUserData(Subscriber<SyncLocalUserProgress> subscriber) {
         Observable.create(new Observable.OnSubscribe<SyncLocalUserProgress>() {
             @Override
             public void call(Subscriber<? super SyncLocalUserProgress> subscriber) {
@@ -316,7 +316,7 @@ public class LoginPresenter extends Presenter {
     }
 
     @NonNull
-    private Subscriber<SyncLocalUserProgress> getSyncLocalUserDataSubscriber() {
+    public Subscriber<SyncLocalUserProgress> getSyncLocalUserDataSubscriber() {
         return new Subscriber<SyncLocalUserProgress>() {
             @Override
             public void onCompleted() {

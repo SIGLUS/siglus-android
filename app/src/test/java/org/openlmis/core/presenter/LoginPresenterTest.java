@@ -221,8 +221,6 @@ public class LoginPresenterTest {
         verify(userRepository).mapUserFromLocal(any(User.class));
         assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
 
-        verify(mockActivity).loaded();
-        verify(mockActivity).goToHomePage();
     }
 
     @Test

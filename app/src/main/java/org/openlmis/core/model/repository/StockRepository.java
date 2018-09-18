@@ -173,9 +173,12 @@ public class StockRepository {
         return null;
     }
 
-    //TODO: modify judge logic
     public boolean hasStockData() {
         List<StockCard> list = list();
+        return list != null && list.size() > 0;
+    }
+
+    private boolean hasStockCardData(List<StockCard> list) {
         return list != null && list.size() > 0;
     }
 
@@ -183,7 +186,7 @@ public class StockRepository {
         Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
         List<StockCard> list = list();
-        if (hasStockData()) {
+        if (hasStockCardData(list)) {
             for (StockCard stockCard : list) {
                 for (StockMovementItem stockMovementItem : stockCard.getStockMovementItemsWrapper()) {
                     if (stockMovementItem.getMovementDate().before(dueDateShouldDataLivedInDB)) {
