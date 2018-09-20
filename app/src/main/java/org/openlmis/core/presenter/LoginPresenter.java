@@ -241,6 +241,7 @@ public class LoginPresenter extends Presenter {
                         break;
 
                     case ProductSynced:
+                        break;
                     case StockCardsLastMonthSynced:
                         syncStockCards();
                         break;
