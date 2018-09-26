@@ -45,12 +45,16 @@ public class RapidTestFormItemViewModel {
 
     public static final String CONSUME_HIVDETERMINE = "CONSUME_HIVDETERMINE";
     public static final String POSITIVE_HIVDETERMINE = "POSITIVE_HIVDETERMINE";
+    public static final String UNJUSTIFILED_HIVDETERMINE = "UNJUSTIFILED_HIVDETERMINE";
     public static final String CONSUME_HIVUNIGOLD = "CONSUME_HIVUNIGOLD";
     public static final String POSITIVE_HIVUNIGOLD = "POSITIVE_HIVUNIGOLD";
+    public static final String UNJUSTIFILED_HIVUNIGOLD = "UNJUSTIFILED_HIVUNIGOLD";
     public static final String CONSUME_SYPHILLIS = "CONSUME_SYPHILLIS";
     public static final String POSITIVE_SYPHILLIS = "POSITIVE_SYPHILLIS";
+    public static final String UNJUSTIFILED_SYPHILLIS = "UNJUSTIFILED_SYPHILLIS";
     public static final String CONSUME_MALARIA = "CONSUME_MALARIA";
     public static final String POSITIVE_MALARIA = "POSITIVE_MALARIA";
+    public static final String UNJUSTIFILED_MALARIA = "UNJUSTIFILED_MALARIA";
 
     public List<ProgramDataFormItem> convertToDataModel() {
         if (issueReason.getDescription().equals(LMISApp.getInstance().getString(R.string.total))) {
