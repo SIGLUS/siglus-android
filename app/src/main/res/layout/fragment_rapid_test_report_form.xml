@@ -68,6 +68,21 @@
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/font_size_tiny" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="Injustificado"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_tiny" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -119,6 +134,21 @@
                     android:gravity="center"
                     android:maxLines="1"
                     android:text="Positivo"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_tiny" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="Injustificado"
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/font_size_tiny" />
 
@@ -177,6 +207,21 @@
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/font_size_tiny" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="Injustificado"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_tiny" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -228,6 +273,21 @@
                     android:gravity="center"
                     android:maxLines="1"
                     android:text="Positivo"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_tiny" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="Injustificado"
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/font_size_tiny" />
 
