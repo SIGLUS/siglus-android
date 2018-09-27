@@ -20,6 +20,9 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_positive_rapid_test_report_grid)
     EditText etPositive;
 
+    @InjectView(R.id.et_unjustified)
+    EditText etUnjustified;
+
     RapidTestFormGridViewModel viewModel;
     private Boolean editable;
     private QuantityChangeListener quantityChangeListener;
@@ -52,6 +55,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     public void setEditable(Boolean editable) {
         etConsume.setFocusableInTouchMode(editable);
         etPositive.setFocusableInTouchMode(editable);
+        etUnjustified.setFocusableInTouchMode(editable);
     }
 
     public void populateData(RapidTestFormGridViewModel viewModel) {
