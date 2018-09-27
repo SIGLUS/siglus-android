@@ -85,6 +85,7 @@
     <string name="label_rnrfrom_left_header">Medicine</string>
     <string name="label_regime_header_name">Therapeutic Regime</string>
     <string name="total">Total</string>
+    <string name="ape">APEs</string>
     <string name="label_mmia_info_header_name">TYPE</string>
     <string name="label_mmia_speed_info_header">Number of patients on ART</string>
     <string name="hint_mmia_comment">Observations</string>

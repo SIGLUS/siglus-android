@@ -31,6 +31,8 @@ public class RapidTestReportViewModel implements Serializable {
     MovementReasonManager movementReasonManager;
 
     RapidTestFormItemViewModel itemTotal;
+    RapidTestFormItemViewModel itemAPEs;
+
     List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
     Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
 
@@ -61,9 +63,13 @@ public class RapidTestReportViewModel implements Serializable {
         }
 
         MovementReasonManager.MovementReason totalCategory = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "TOTAL", LMISApp.getInstance().getString(R.string.total));
+        MovementReasonManager.MovementReason totalAPES = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "APES", LMISApp.getInstance().getString(R.string.ape));
 
         itemTotal = new RapidTestFormItemViewModel(totalCategory);
+        itemAPEs = new RapidTestFormItemViewModel(totalAPES);
+
         itemViewModelList.add(itemTotal);
+        itemViewModelList.add(itemAPEs);
     }
 
     private void setItemViewModelMap() {
