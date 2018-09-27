@@ -25,9 +25,6 @@ public class ProgramDataFormItem extends BaseModel {
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private ProgramDataForm form;
 
-    @DatabaseField(defaultValue = "")
-    private String Observataion;
-
     public ProgramDataFormItem(String name, ProgramDataColumn programDataColumn, int value) {
         this.name = name;
         this.programDataColumn = programDataColumn;

@@ -51,6 +51,11 @@ public class ProgramDataForm extends BaseModel {
     @DatabaseField
     private Date submittedTime;
 
+    @Getter
+    @Expose
+    @DatabaseField(defaultValue = "")
+    private String observataion;
+
     @ForeignCollectionField
     private ForeignCollection<ProgramDataFormItem> programDataFormItemList;
 
