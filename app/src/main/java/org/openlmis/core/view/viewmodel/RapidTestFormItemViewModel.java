@@ -6,6 +6,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,7 +87,7 @@ public class RapidTestFormItemViewModel {
         return true;
     }
 
-    public void clearValue(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume) {
-        rapidTestFormGridViewModelMap.get(columnCode.toString()).clear(isConsume);
+    public void clearValue(RapidTestFormGridViewModel.ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {
+        rapidTestFormGridViewModelMap.get(columnCode.toString()).clear(gridColumnCode);
     }
 }

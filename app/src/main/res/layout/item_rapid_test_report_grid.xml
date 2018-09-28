@@ -34,7 +34,7 @@
         android:background="@color/color_black" />
 
     <EditText
-        android:id="@+id/et_unjustified"
+        android:id="@+id/et_unjustified_rapid_test_report_grid"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

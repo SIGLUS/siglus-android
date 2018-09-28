@@ -12,15 +12,38 @@ import lombok.Data;
 
 @Data
 public class RapidTestFormGridViewModel {
+
+    public enum RapidTestGridColumnCode {
+        consumption,
+        positive,
+        unjustified
+    }
+
+    public enum ColumnCode {
+        HIVDetermine,
+        HIVUnigold,
+        Syphillis,
+        Malaria;
+
+        @Override
+        public String toString() {
+            return StringUtils.upperCase(name());
+        }
+    }
+
     ColumnCode columnCode;
     String consumptionValue = "";
     String positiveValue = "";
+    String unjustifiedValue = "";
+
 
     ProgramDataColumn positiveColumn;
     ProgramDataColumn consumeColumn;
+    ProgramDataColumn unjustifiedColumn;
 
     final static String COLUMN_CODE_PREFIX_CONSUME = "CONSUME_";
     final static String COLUMN_CODE_PREFIX_POSITIVE = "POSITIVE_";
+    final static String COLUMN_CODE_PREFIX_UNJUSTIFIED = "UNJUSTIFIED_";
 
     RapidTestFormGridViewModel(ColumnCode columnCode) {
         this.columnCode = columnCode;
@@ -36,25 +59,88 @@ public class RapidTestFormGridViewModel {
     }
 
     public void setValue(ProgramDataColumn column, int value) {
-        if (column.getCode().contains("CONSUME")) {
-            consumeColumn = column;
-            setConsumptionValue(String.valueOf(value));
-        } else {
+        setConsumptionValue(column, value);
+        setPositiveValue(column, value);
+        setUnjustifiedValue(column, value);
+    }
+
+    public List<ProgramDataFormItem> convertFormGridViewModelToDataModel(MovementReasonManager.MovementReason issueReason) {
+        List<ProgramDataFormItem> programDataFormItems = new ArrayList<>();
+        setConsumptionFormItem(issueReason, programDataFormItems);
+        setPositiveFormItem(issueReason, programDataFormItems);
+        setUnjustifiedFormItem(issueReason, programDataFormItems);
+        return programDataFormItems;
+    }
+
+    public void clear(RapidTestGridColumnCode column) {
+        switch (column) {
+            case positive:
+                positiveValue =  "";
+                break;
+            case consumption:
+                consumptionValue =  "";
+                break;
+            case unjustified:
+                unjustifiedValue =  "";
+                break;
+        }
+    }
+
+    public void setValue(RapidTestGridColumnCode column, String value) {
+        switch (column) {
+            case positive:
+                positiveValue = value;
+                break;
+            case consumption:
+                consumptionValue = value;
+                break;
+            case unjustified:
+                unjustifiedValue = value;
+                break;
+        }
+    }
+
+    public boolean isEmpty() {
+        return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue);
+    }
+
+    private String generateFullColumnName(String prefix) {
+        return prefix + StringUtils.upperCase(getColumnCode().name());
+    }
+
+    private void setUnjustifiedValue(ProgramDataColumn column, int value) {
+        if (column.getCode().contains(COLUMN_CODE_PREFIX_UNJUSTIFIED)) {
+            unjustifiedColumn = column;
+            setUnjustifiedValue(String.valueOf(value));
+        }
+    }
+
+    private void setPositiveValue(ProgramDataColumn column, int value) {
+        if (column.getCode().contains(COLUMN_CODE_PREFIX_POSITIVE)) {
             positiveColumn = column;
             setPositiveValue(String.valueOf(value));
         }
     }
 
-    public List<ProgramDataFormItem> convertFormGridViewModelToDataModel(MovementReasonManager.MovementReason issueReason) {
-        List<ProgramDataFormItem> programDataFormItems = new ArrayList<>();
-        if (!StringUtils.isEmpty(getConsumptionValue())) {
-            if (consumeColumn == null) {
-                consumeColumn = new ProgramDataColumn();
-                consumeColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_CONSUME));
-            }
-            ProgramDataFormItem consumeDataFormItem = new ProgramDataFormItem(issueReason.getCode(), consumeColumn, Integer.parseInt(getConsumptionValue()));
-            programDataFormItems.add(consumeDataFormItem);
+    private void setConsumptionValue(ProgramDataColumn column, int value) {
+        if (column.getCode().contains(COLUMN_CODE_PREFIX_CONSUME)) {
+            consumeColumn = column;
+            setConsumptionValue(String.valueOf(value));
         }
+    }
+
+    private void setUnjustifiedFormItem(MovementReasonManager.MovementReason issueReason, List<ProgramDataFormItem> programDataFormItems) {
+        if (!StringUtils.isEmpty(getUnjustifiedValue())) {
+            if (unjustifiedColumn == null) {
+                unjustifiedColumn = new ProgramDataColumn();
+                unjustifiedColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_UNJUSTIFIED));
+            }
+            ProgramDataFormItem positiveDataFormItem = new ProgramDataFormItem(issueReason.getCode(), positiveColumn, Integer.parseInt(getPositiveValue()));
+            programDataFormItems.add(positiveDataFormItem);
+        }
+    }
+
+    private void setPositiveFormItem(MovementReasonManager.MovementReason issueReason, List<ProgramDataFormItem> programDataFormItems) {
         if (!StringUtils.isEmpty(getPositiveValue())) {
             if (positiveColumn == null) {
                 positiveColumn = new ProgramDataColumn();
@@ -63,42 +149,16 @@ public class RapidTestFormGridViewModel {
             ProgramDataFormItem positiveDataFormItem = new ProgramDataFormItem(issueReason.getCode(), positiveColumn, Integer.parseInt(getPositiveValue()));
             programDataFormItems.add(positiveDataFormItem);
         }
-        return programDataFormItems;
     }
 
-    public String generateFullColumnName(String prefix) {
-        return prefix + StringUtils.upperCase(getColumnCode().name());
-    }
-
-    public boolean isEmpty() {
-        return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue);
-    }
-
-    public void clear(boolean isConsume) {
-        if (isConsume) {
-            consumptionValue = "";
-        } else {
-            positiveValue = "";
-        }
-    }
-
-    public void setValue(boolean isConsume, String value) {
-        if (isConsume) {
-            consumptionValue = value;
-        } else {
-            positiveValue = value;
-        }
-    }
-
-    public enum ColumnCode {
-        HIVDetermine,
-        HIVUnigold,
-        Syphillis,
-        Malaria;
-
-        @Override
-        public String toString() {
-            return StringUtils.upperCase(name());
+    private void setConsumptionFormItem(MovementReasonManager.MovementReason issueReason, List<ProgramDataFormItem> programDataFormItems) {
+        if (!StringUtils.isEmpty(getConsumptionValue())) {
+            if (consumeColumn == null) {
+                consumeColumn = new ProgramDataColumn();
+                consumeColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_CONSUME));
+            }
+            ProgramDataFormItem consumeDataFormItem = new ProgramDataFormItem(issueReason.getCode(), consumeColumn, Integer.parseInt(getConsumptionValue()));
+            programDataFormItems.add(consumeDataFormItem);
         }
     }
 

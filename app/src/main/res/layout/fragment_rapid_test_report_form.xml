@@ -301,20 +301,19 @@
         android:id="@+id/rv_rapid_report_row_item_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/action_panel"
         android:layout_below="@+id/vg_rapid_test_report_header"
         android:background="@drawable/border_top_black_right_black_bold"
         android:overScrollMode="never" />
 
     <LinearLayout
-        android:id="@+id/vg_observation"
-        android:layout_width="wrap_content"
+        android:id="@+id/rv_observation_row_item_list"
+        android:layout_width="match_parent"
         android:layout_height="68dp"
-        android:layout_above="@+id/action_panel"
         android:layout_below="@+id/rv_rapid_report_row_item_list"
         android:orientation="horizontal" >
         <TextView
-            android:layout_width="200dp"
+            android:id="@+id/rv_observation_header"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
             android:maxLines="1"
@@ -322,8 +321,8 @@
             android:textColor="@color/color_black"
             android:textSize="@dimen/font_size_tiny"/>
         <EditText
-            android:id="@+id/et_consume_rapid_test_report_grid"
-            android:layout_width="200dp"
+            android:id="@+id/rv_observation_content"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@null"

@@ -5,10 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
@@ -21,6 +25,7 @@ import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -33,6 +38,12 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     @InjectView(R.id.vg_rapid_test_report_empty_header)
     ViewGroup emptyHeaderView;
+
+    @InjectView(R.id.rv_observation_header)
+    TextView observationHeader;
+
+    @InjectView(R.id.rv_observation_content)
+    EditText observationContent;
 
     RapidTestReportFormPresenter presenter;
 
@@ -57,6 +68,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
         updateHeaderSize();
         setUpRowItems();
+        addObservationChange();
         if (isSavedInstanceState && presenter.getViewModel() != null) {
             updateUI();
         } else {
@@ -73,6 +85,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     private void updateHeaderSize() {
         calculateRowHeaderAndGridSize();
         emptyHeaderView.getLayoutParams().width = ROW_HEADER_WIDTH;
+        observationHeader.getLayoutParams().width = ROW_HEADER_WIDTH;
     }
 
     private void calculateRowHeaderAndGridSize() {
@@ -98,8 +111,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     private RapidTestReportGridViewHolder.QuantityChangeListener getQuantityChangeListener() {
         return new RapidTestReportGridViewHolder.QuantityChangeListener() {
             @Override
-            public void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume) {
-                presenter.getViewModel().updateTotal(columnCode, isConsume);
+            public void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {
+                presenter.getViewModel().updateTotal(columnCode, gridColumnCode);
                 adapter.updateTotal();
             }
         };
@@ -224,5 +237,22 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     private void populateFormData(RapidTestReportViewModel viewModel) {
         adapter.refresh(viewModel.getItemViewModelList(), viewModel.isEditable());
+    }
+
+    private void addObservationChange() {
+        observationContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.getViewModel().setObservataion(editable.toString());
+            }
+        });
     }
 }

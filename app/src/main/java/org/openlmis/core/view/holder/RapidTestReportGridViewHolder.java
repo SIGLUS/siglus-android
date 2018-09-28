@@ -8,6 +8,7 @@ import android.widget.EditText;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
 import roboguice.inject.InjectView;
 
@@ -20,7 +21,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_positive_rapid_test_report_grid)
     EditText etPositive;
 
-    @InjectView(R.id.et_unjustified)
+    @InjectView(R.id.et_unjustified_rapid_test_report_grid)
     EditText etUnjustified;
 
     RapidTestFormGridViewModel viewModel;
@@ -61,16 +62,20 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     public void populateData(RapidTestFormGridViewModel viewModel) {
         etConsume.setText(viewModel.getConsumptionValue());
         etPositive.setText(viewModel.getPositiveValue());
+        etUnjustified.setText(viewModel.getUnjustifiedValue());
     }
 
     private void setTextWatcher() {
         TextWatcher textWatcherConsume = new TextWatcher(etConsume);
         TextWatcher textWatcherPositive = new TextWatcher(etPositive);
+        TextWatcher textWatcherUnjustified = new TextWatcher(etUnjustified);
         etPositive.removeTextChangedListener(textWatcherPositive);
         etConsume.removeTextChangedListener(textWatcherConsume);
+        etUnjustified.removeTextChangedListener(textWatcherUnjustified);
         if (editable) {
             etConsume.addTextChangedListener(textWatcherConsume);
             etPositive.addTextChangedListener(textWatcherPositive);
+            etUnjustified.addTextChangedListener(textWatcherUnjustified);
         }
     }
 
@@ -93,16 +98,33 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
         @Override
         public void afterTextChanged(Editable s) {
-            boolean isConsume = editText.getId() == R.id.et_consume_rapid_test_report_grid;
-            viewModel.setValue(isConsume, s.toString());
-            updateTotal(isConsume);
+            RapidTestGridColumnCode  gridColumnCode = switchEditIdToGridColumn(editText);
+            viewModel.setValue(gridColumnCode, s.toString());
+            updateTotal(gridColumnCode);
             updateAlert();
         }
+
+        private RapidTestGridColumnCode switchEditIdToGridColumn(EditText editText) {
+            RapidTestGridColumnCode column = RapidTestGridColumnCode.unjustified;
+            switch (editText.getId()) {
+                case  R.id.et_consume_rapid_test_report_grid:
+                    column = RapidTestGridColumnCode.consumption;
+                    break;
+                case  R.id.et_positive_rapid_test_report_grid:
+                    column = RapidTestGridColumnCode.positive;
+                    break;
+                case  R.id.et_unjustified_rapid_test_report_grid:
+                    column = RapidTestGridColumnCode.unjustified;
+                    break;
+            }
+            return  column;
+        }
+
     }
 
-    public void updateTotal(boolean isConsume) {
+    public void updateTotal(RapidTestGridColumnCode gridColumnCode) {
         if (!isInTotalRow()) {
-            quantityChangeListener.updateTotal(viewModel.getColumnCode(), isConsume);
+            quantityChangeListener.updateTotal(viewModel.getColumnCode(), gridColumnCode);
         }
     }
 
@@ -111,6 +133,6 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     public interface QuantityChangeListener {
-        void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, boolean isConsume);
+        void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode);
     }
 }
