@@ -52,6 +52,12 @@ public class RapidTestFormItemViewModel {
         }
     }
 
+    public void updateNoValueGridRowToZero(RapidTestFormGridViewModel viewModel) {
+        viewModel.consumptionValue = StringUtils.isEmpty(viewModel.consumptionValue) ? "0" : viewModel.consumptionValue;
+        viewModel.positiveValue = StringUtils.isEmpty(viewModel.positiveValue) ? "0" : viewModel.positiveValue;
+        viewModel.unjustifiedValue = StringUtils.isEmpty(viewModel.unjustifiedValue) ? "0" : viewModel.unjustifiedValue;
+    }
+
     public static final String CONSUME_HIVDETERMINE = "CONSUME_HIVDETERMINE";
     public static final String POSITIVE_HIVDETERMINE = "POSITIVE_HIVDETERMINE";
     public static final String UNJUSTIFILED_HIVDETERMINE = "UNJUSTIFILED_HIVDETERMINE";

@@ -1,5 +1,6 @@
 package org.openlmis.core.view.viewmodel;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -14,6 +15,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +99,7 @@ public class RapidTestReportViewModel implements Serializable {
             itemViewModelMap.get(item.getName()).setColumnValue(item.getProgramDataColumn(), item.getValue());
         }
         addCompatibleWithNotSubmitUnjustified();
+        addCompatibleWithNotSubmitAPE();
         for (ColumnCode columnCode : ColumnCode.values()) {
             updateTotal(columnCode, consumption);
             updateTotal(columnCode, positive);
@@ -108,6 +111,25 @@ public class RapidTestReportViewModel implements Serializable {
         for (RapidTestFormItemViewModel formItemViewModel : itemViewModelList) {
             formItemViewModel.updateUnjustifiedColumn();
         }
+    }
+
+    private void addCompatibleWithNotSubmitAPE() {
+       List<String> columnList = Arrays.asList(new String[]{"HIVDetermine", "HIVUnigold","Syphillis", "Malaria"});
+       for (String columnName: columnList) {
+           if (isNeedAPE(columnName)) {
+               RapidTestFormGridViewModel viewModel = itemAPEs.rapidTestFormGridViewModelMap.get(StringUtils.upperCase(columnName));
+               itemAPEs.updateNoValueGridRowToZero(viewModel);
+           }
+       }
+    }
+
+    private Boolean isNeedAPE(String columnName) {
+        for (RapidTestFormItemViewModel viewModel : itemViewModelList) {
+            if (!viewModel.rapidTestFormGridViewModelMap.get(StringUtils.upperCase(columnName)).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setRapidTestForm(ProgramDataForm rapidTestForm) {
