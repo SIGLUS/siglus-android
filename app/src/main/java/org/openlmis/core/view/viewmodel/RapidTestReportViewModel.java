@@ -96,10 +96,17 @@ public class RapidTestReportViewModel implements Serializable {
         for (ProgramDataFormItem item : programDataFormItemList) {
             itemViewModelMap.get(item.getName()).setColumnValue(item.getProgramDataColumn(), item.getValue());
         }
+        addCompatibleWithNotSubmitUnjustified();
         for (ColumnCode columnCode : ColumnCode.values()) {
             updateTotal(columnCode, consumption);
             updateTotal(columnCode, positive);
             updateTotal(columnCode, unjustified);
+        }
+    }
+
+    private void addCompatibleWithNotSubmitUnjustified() {
+        for (RapidTestFormItemViewModel formItemViewModel : itemViewModelList) {
+            formItemViewModel.updateUnjustifiedColumn();
         }
     }
 

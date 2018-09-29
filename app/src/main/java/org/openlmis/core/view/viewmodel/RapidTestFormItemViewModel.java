@@ -44,6 +44,14 @@ public class RapidTestFormItemViewModel {
         rapidTestFormGridViewModelMap.get(columnName).setValue(column, value);
     }
 
+    public  void updateUnjustifiedColumn() {
+        for (RapidTestFormGridViewModel viewModel: rapidTestFormGridViewModelList) {
+            if(viewModel.isAddUnjustified()) {
+                viewModel.unjustifiedValue = "0";
+            }
+        }
+    }
+
     public static final String CONSUME_HIVDETERMINE = "CONSUME_HIVDETERMINE";
     public static final String POSITIVE_HIVDETERMINE = "POSITIVE_HIVDETERMINE";
     public static final String UNJUSTIFILED_HIVDETERMINE = "UNJUSTIFILED_HIVDETERMINE";

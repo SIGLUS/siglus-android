@@ -104,6 +104,10 @@ public class RapidTestFormGridViewModel {
         return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue) && StringUtils.isEmpty(unjustifiedValue);
     }
 
+    public boolean isAddUnjustified() {
+        return  StringUtils.isEmpty(unjustifiedValue) && ! (StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue));
+    }
+
     private String generateFullColumnName(String prefix) {
         return prefix + StringUtils.upperCase(getColumnCode().name());
     }
