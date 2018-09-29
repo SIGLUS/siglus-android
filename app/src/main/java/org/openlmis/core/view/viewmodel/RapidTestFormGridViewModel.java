@@ -135,8 +135,8 @@ public class RapidTestFormGridViewModel {
                 unjustifiedColumn = new ProgramDataColumn();
                 unjustifiedColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_UNJUSTIFIED));
             }
-            ProgramDataFormItem positiveDataFormItem = new ProgramDataFormItem(issueReason.getCode(), unjustifiedColumn, Integer.parseInt(getUnjustifiedValue()));
-            programDataFormItems.add(positiveDataFormItem);
+            ProgramDataFormItem unjustfiedDataFormItem = new ProgramDataFormItem(issueReason.getCode(), unjustifiedColumn, Integer.parseInt(getUnjustifiedValue()));
+            programDataFormItems.add(unjustfiedDataFormItem);
         }
     }
 
