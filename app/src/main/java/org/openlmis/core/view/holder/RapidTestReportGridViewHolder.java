@@ -83,9 +83,11 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         if (editable && !viewModel.validate()) {
             etPositive.setTextColor(context.getResources().getColor(R.color.color_red));
             etConsume.setTextColor(context.getResources().getColor(R.color.color_red));
+            etUnjustified.setTextColor(context.getResources().getColor(R.color.color_red));
         } else {
             etPositive.setTextColor(context.getResources().getColor(R.color.color_black));
             etConsume.setTextColor(context.getResources().getColor(R.color.color_black));
+            etUnjustified.setTextColor(context.getResources().getColor(R.color.color_black));
         }
     }
 

@@ -52,7 +52,7 @@ public class RapidTestFormGridViewModel {
     public boolean validate() {
         try {
             return isEmpty()
-                    || Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue);
+                    || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue) && Long.parseLong(unjustifiedValue) >= 0) ;
         } catch (NumberFormatException e) {
             return false;
         }
@@ -101,7 +101,7 @@ public class RapidTestFormGridViewModel {
     }
 
     public boolean isEmpty() {
-        return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue);
+        return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue) && StringUtils.isEmpty(unjustifiedValue);
     }
 
     private String generateFullColumnName(String prefix) {
@@ -135,7 +135,7 @@ public class RapidTestFormGridViewModel {
                 unjustifiedColumn = new ProgramDataColumn();
                 unjustifiedColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_UNJUSTIFIED));
             }
-            ProgramDataFormItem positiveDataFormItem = new ProgramDataFormItem(issueReason.getCode(), positiveColumn, Integer.parseInt(getPositiveValue()));
+            ProgramDataFormItem positiveDataFormItem = new ProgramDataFormItem(issueReason.getCode(), unjustifiedColumn, Integer.parseInt(getUnjustifiedValue()));
             programDataFormItems.add(positiveDataFormItem);
         }
     }

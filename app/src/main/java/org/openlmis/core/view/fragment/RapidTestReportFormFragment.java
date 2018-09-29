@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -230,9 +231,15 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     public void updateUI() {
-        populateFormData(presenter.getViewModel());
+        RapidTestReportViewModel viewModel = presenter.getViewModel();
+        populateFormData(viewModel);
+        updateObservation(viewModel);
         updateActionPanel();
         loaded();
+    }
+
+    private void  updateObservation(RapidTestReportViewModel viewModel) {
+        observationContent.setText(viewModel.getObservataion());
     }
 
     private void populateFormData(RapidTestReportViewModel viewModel) {
