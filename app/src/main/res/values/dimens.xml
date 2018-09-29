@@ -22,7 +22,7 @@
     <dimen name="font_size_tiny">10sp</dimen>
     <dimen name="font_size_small">12sp</dimen>
     <dimen name="font_size_regular">14sp</dimen>
-    <dimen name="font_size_normal">16sp</dimen>
+    <dimen name="font_size_normal">20sp</dimen>
     <dimen name="font_size_medium">20sp</dimen>
     <dimen name="font_size_large">24sp</dimen>
     <dimen name="font_size_huge">34sp</dimen>

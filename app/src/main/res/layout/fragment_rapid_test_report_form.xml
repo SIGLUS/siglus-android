@@ -51,7 +51,7 @@
                     android:maxLines="1"
                     android:text="Consumo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -66,7 +66,7 @@
                     android:maxLines="1"
                     android:text="Positivo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -81,7 +81,7 @@
                     android:maxLines="1"
                     android:text="Injustificado"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
             </LinearLayout>
 
@@ -120,7 +120,7 @@
                     android:maxLines="1"
                     android:text="Consumo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -135,7 +135,7 @@
                     android:maxLines="1"
                     android:text="Positivo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -150,7 +150,7 @@
                     android:maxLines="1"
                     android:text="Injustificado"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
             </LinearLayout>
 
@@ -189,7 +189,7 @@
                     android:maxLines="1"
                     android:text="Consumo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
 
                 <View
@@ -205,7 +205,7 @@
                     android:maxLines="1"
                     android:text="Positivo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -220,7 +220,7 @@
                     android:maxLines="1"
                     android:text="Injustificado"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
             </LinearLayout>
 
@@ -259,7 +259,7 @@
                     android:maxLines="1"
                     android:text="Consumo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -274,7 +274,7 @@
                     android:maxLines="1"
                     android:text="Positivo"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -289,7 +289,7 @@
                     android:maxLines="1"
                     android:text="Injustificado"
                     android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_tiny" />
+                    android:textSize="@dimen/font_size_small" />
 
             </LinearLayout>
 
@@ -310,6 +310,7 @@
         android:layout_width="match_parent"
         android:layout_height="68dp"
         android:layout_below="@+id/rv_rapid_report_row_item_list"
+        android:background="@drawable/border_bottom_black"
         android:orientation="horizontal" >
         <TextView
             android:id="@+id/rv_observation_header"
@@ -319,7 +320,8 @@
             android:maxLines="1"
             android:text="Observation"
             android:textColor="@color/color_black"
-            android:textSize="@dimen/font_size_tiny"/>
+            android:background="@drawable/border_right_black"
+            android:textSize="@dimen/font_size_small"/>
         <EditText
             android:id="@+id/rv_observation_content"
             android:layout_width="fill_parent"
