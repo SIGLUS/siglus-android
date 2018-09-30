@@ -37,6 +37,7 @@ public class RapidTestReportViewModel implements Serializable {
     MovementReasonManager movementReasonManager;
 
     RapidTestFormItemViewModel itemTotal;
+    RapidTestFormItemViewModel itemRealTotal;
     RapidTestFormItemViewModel itemAPEs;
 
     List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
@@ -45,6 +46,7 @@ public class RapidTestReportViewModel implements Serializable {
     private ProgramDataForm rapidTestForm = new ProgramDataForm();
 
     public static long DEFAULT_FORM_ID = 0;
+    public static String DEFAULT_TOTAl_NULL = "";
 
     public RapidTestReportViewModel(Period period) {
         this.period = period;
@@ -64,16 +66,19 @@ public class RapidTestReportViewModel implements Serializable {
                     }
                 }).toList();
 
-        for (MovementReasonManager.MovementReason movementReason: issueReasons) {
+        for (MovementReasonManager.MovementReason movementReason : issueReasons) {
             RapidTestFormItemViewModel item = new RapidTestFormItemViewModel(movementReason);
             itemViewModelList.add(item);
         }
 
         MovementReasonManager.MovementReason totalCategory = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "TOTAL", LMISApp.getInstance().getString(R.string.total));
+        MovementReasonManager.MovementReason realTotalCategory = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "realTotalCategory", LMISApp.getInstance().getString(R.string.total));
         MovementReasonManager.MovementReason totalAPES = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "APES", LMISApp.getInstance().getString(R.string.ape));
 
         itemTotal = new RapidTestFormItemViewModel(totalCategory);
+        itemRealTotal = new RapidTestFormItemViewModel(realTotalCategory);
         itemAPEs = new RapidTestFormItemViewModel(totalAPES);
+        itemAPEs.setAPEItem();
 
         itemViewModelList.add(itemTotal);
         itemViewModelList.add(itemAPEs);
@@ -105,6 +110,7 @@ public class RapidTestReportViewModel implements Serializable {
             updateTotal(columnCode, positive);
             updateTotal(columnCode, unjustified);
         }
+        updateAPEWaring();
     }
 
     private void addCompatibleWithNotSubmitUnjustified() {
@@ -114,13 +120,13 @@ public class RapidTestReportViewModel implements Serializable {
     }
 
     private void addCompatibleWithNotSubmitAPE() {
-       List<String> columnList = Arrays.asList(new String[]{"HIVDetermine", "HIVUnigold","Syphillis", "Malaria"});
-       for (String columnName: columnList) {
-           if (isNeedAPE(columnName)) {
-               RapidTestFormGridViewModel viewModel = itemAPEs.rapidTestFormGridViewModelMap.get(StringUtils.upperCase(columnName));
-               itemAPEs.updateNoValueGridRowToZero(viewModel);
-           }
-       }
+        List<String> columnList = Arrays.asList(new String[]{"HIVDetermine", "HIVUnigold", "Syphillis", "Malaria"});
+        for (String columnName : columnList) {
+            if (isNeedAPE(columnName)) {
+                RapidTestFormGridViewModel viewModel = itemAPEs.rapidTestFormGridViewModelMap.get(StringUtils.upperCase(columnName));
+                itemAPEs.updateNoValueGridRowToZero(viewModel);
+            }
+        }
     }
 
     private Boolean isNeedAPE(String columnName) {
@@ -184,9 +190,33 @@ public class RapidTestReportViewModel implements Serializable {
         return rapidTestForm.getStatus() == null || rapidTestForm.getStatus() == ProgramDataForm.STATUS.DRAFT;
     }
 
-    public boolean validate() {
+    public boolean validatePositive() {
         for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-            if (!itemViewModel.validate()) {
+            if (itemViewModel == itemAPEs) {
+                continue;
+            }
+            if (!itemViewModel.validatePositive()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean validateUnjustified() {
+        for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+            if (itemViewModel == itemAPEs) {
+                continue;
+            }
+            if (!itemViewModel.validateUnjustified()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean validateAPES() {
+        for (RapidTestFormGridViewModel itemViewModel : itemAPEs.rapidTestFormGridViewModelList) {
+            if (itemViewModel.isNeedAddGridViewWarning()) {
                 return false;
             }
         }
@@ -224,7 +254,10 @@ public class RapidTestReportViewModel implements Serializable {
 
     public void updateTotal(ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {
         itemTotal.clearValue(columnCode, gridColumnCode);
-        long total = 0;
+        itemRealTotal.clearValue(columnCode, gridColumnCode);
+        Total total = new Total();
+        total.longTotal = 0;
+        total.stringTotal = DEFAULT_TOTAl_NULL;
         for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
             if (itemViewModel == itemAPEs) {
                 continue;
@@ -232,36 +265,57 @@ public class RapidTestReportViewModel implements Serializable {
             RapidTestFormGridViewModel gridViewModel = itemViewModel.getRapidTestFormGridViewModelMap().get(columnCode.toString());
             total = calculateTotalLogic(total, gridViewModel, gridColumnCode);
         }
-        setTotalRowValue(columnCode, gridColumnCode, total);
+        setTotalRowValue(itemTotal, columnCode, gridColumnCode, String.valueOf(total.longTotal));
+        setTotalRowValue(itemRealTotal, columnCode, gridColumnCode, total.stringTotal);
     }
 
-    private long calculateTotalLogic(long total, RapidTestFormGridViewModel gridViewModel, RapidTestGridColumnCode gridColumnCode) {
+    public void updateAPEWaring() {
+        for (RapidTestFormGridViewModel viewModel : itemRealTotal.rapidTestFormGridViewModelList) {
+            RapidTestFormGridViewModel APEViewModel = itemAPEs.rapidTestFormGridViewModelMap.get(viewModel.getColumnCode().name().toUpperCase());
+            if (!viewModel.isEmpty()) {
+                APEViewModel.isNeedAllAPEValue = true;
+            } else {
+                APEViewModel.isNeedAllAPEValue = false;
+            }
+        }
+    }
+
+    private Total calculateTotalLogic(Total total, RapidTestFormGridViewModel gridViewModel, RapidTestGridColumnCode gridColumnCode) {
         switch (gridColumnCode) {
             case consumption:
-                total += !gridViewModel.getConsumptionValue().equals("") ? Long.parseLong(gridViewModel.getConsumptionValue()) : 0;
+                if (!gridViewModel.getConsumptionValue().equals("")) {
+                    total.longTotal += Long.parseLong(gridViewModel.getConsumptionValue());
+                    total.stringTotal = String.valueOf(total.longTotal);
+                }
                 break;
             case positive:
-                total += !gridViewModel.getPositiveValue().equals("") ? Long.parseLong(gridViewModel.getPositiveValue()) : 0;
+                if (!gridViewModel.getPositiveValue().equals("")) {
+                    total.longTotal += Long.parseLong(gridViewModel.getPositiveValue());
+                    total.stringTotal = String.valueOf(total.longTotal);
+                }
                 break;
             case unjustified:
-                total += !gridViewModel.getUnjustifiedValue().equals("") ? Long.parseLong(gridViewModel.getUnjustifiedValue()) : 0;
+                if (!gridViewModel.getUnjustifiedValue().equals("")) {
+                    total.longTotal += Long.parseLong(gridViewModel.getUnjustifiedValue());
+                    total.stringTotal = String.valueOf(total.longTotal);
+                }
                 break;
         }
+
         return total;
     }
 
-    private void setTotalRowValue(ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode, long total) {
+    private void setTotalRowValue(RapidTestFormItemViewModel totalItem, ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode, String total) {
         switch (gridColumnCode) {
             case consumption:
-                itemTotal.getRapidTestFormGridViewModelMap().get(columnCode.toString()).setConsumptionValue(String.valueOf(total));
+                totalItem.getRapidTestFormGridViewModelMap().get(columnCode.toString()).setConsumptionValue(total);
                 break;
             case positive:
-                itemTotal.getRapidTestFormGridViewModelMap().get(columnCode.toString()).setPositiveValue(String.valueOf(total));
+                totalItem.getRapidTestFormGridViewModelMap().get(columnCode.toString()).setPositiveValue(total);
                 break;
             case unjustified:
-                itemTotal.getRapidTestFormGridViewModelMap().get(columnCode.toString()).setUnjustifiedValue(String.valueOf(total));
+                totalItem.getRapidTestFormGridViewModelMap().get(columnCode.toString()).setUnjustifiedValue(total);
                 break;
-
         }
     }
 
@@ -286,3 +340,13 @@ public class RapidTestReportViewModel implements Serializable {
     }
 }
 
+class Total {
+    long longTotal;
+    String stringTotal;
+
+    // 构造函数
+    public Total() {
+        super();
+    }
+
+}

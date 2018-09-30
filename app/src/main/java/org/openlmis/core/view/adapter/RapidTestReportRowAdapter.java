@@ -57,4 +57,7 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestRep
     public void updateTotal() {
         notifyItemChanged(getItemCount() - 2);
     }
+    public void updateAPE() {
+        notifyItemChanged(getItemCount() - 1);
+    }
 }

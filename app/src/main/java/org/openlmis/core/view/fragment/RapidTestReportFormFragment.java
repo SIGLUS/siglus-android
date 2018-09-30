@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.BaseReportPresenter;
@@ -116,7 +117,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
             @Override
             public void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {
                 presenter.getViewModel().updateTotal(columnCode, gridColumnCode);
+                presenter.getViewModel().updateAPEWaring();
                 adapter.updateTotal();
+                adapter.updateAPE();
             }
         };
     }
@@ -142,13 +145,26 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
-                if (presenter.getViewModel().isFormEmpty()) {
-                    ToastUtil.show(getString(R.string.error_empty_rapid_test));
-                } else if (!presenter.getViewModel().validate()) {
-                    ToastUtil.show(getString(R.string.error_positive_larger_than_consumption));
-                } else {
-                    showSignDialog();
+                String errorMessage = showErrorMessage();
+                if (!StringUtils.isEmpty(errorMessage)){
+                    ToastUtil.show(errorMessage);
+                    return;
                 }
+                showSignDialog();
+            }
+
+            private String showErrorMessage() {
+                String errorMessage = "";
+                if (presenter.getViewModel().isFormEmpty()) {
+                    errorMessage = getString(R.string.error_empty_rapid_test);
+                } else if (!presenter.getViewModel().validatePositive()) {
+                    errorMessage = getString(R.string.error_positive_larger_than_consumption);
+                } else if (!presenter.getViewModel().validateUnjustified()) {
+                    errorMessage = getString(R.string.error_rapid_test_unjustified);
+                } else if (!presenter.getViewModel().validateAPES()) {
+                    errorMessage = getString(R.string.error_rapid_test_ape);
+                }
+                return errorMessage;
             }
         };
     }

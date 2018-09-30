@@ -115,6 +115,10 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         public void afterTextChanged(Editable s) {
             RapidTestGridColumnCode  gridColumnCode = switchEditIdToGridColumn(editText);
             viewModel.setValue(gridColumnCode, s.toString());
+            if (viewModel.getIsAPE()) {
+                updateGridViewHaveValueAlert();
+                return;
+            }
             updateTotal(gridColumnCode);
             updateAlert();
         }

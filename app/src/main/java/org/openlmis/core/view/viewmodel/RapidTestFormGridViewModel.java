@@ -10,6 +10,8 @@ import java.util.List;
 
 import lombok.Data;
 
+import static org.openlmis.core.view.viewmodel.RapidTestReportViewModel.DEFAULT_TOTAl_NULL;
+
 @Data
 public class RapidTestFormGridViewModel {
 
@@ -61,6 +63,25 @@ public class RapidTestFormGridViewModel {
         }
     }
 
+    public boolean validatePositive() {
+        try {
+            return (StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue))
+                    || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue)) ;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public boolean validateUnjustified() {
+        try {
+            return isEmpty()
+                    || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue) && Long.parseLong(unjustifiedValue) >= 0) ;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+
     public void setValue(ProgramDataColumn column, int value) {
         setConsumptionValue(column, value);
         setPositiveValue(column, value);
@@ -104,11 +125,13 @@ public class RapidTestFormGridViewModel {
     }
 
     public boolean isEmpty() {
-        return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue) && StringUtils.isEmpty(unjustifiedValue);
+        return StringUtils.isEmpty(consumptionValue)
+                && StringUtils.isEmpty(positiveValue)
+                && StringUtils.isEmpty(unjustifiedValue);
     }
 
     public boolean isNeedAddGridViewWarning() {
-       return isNeedAllAPEValue && isAllNotEmpty();
+       return isAPE && isNeedAllAPEValue && !isAllNotEmpty();
     }
 
     private  boolean isAllNotEmpty() {

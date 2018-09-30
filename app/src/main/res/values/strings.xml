@@ -443,6 +443,8 @@
     <string name="msg_sync_rapid_tests_failed">Sync Rapid Tests failed.</string>
     <string name="title_rapid_test">Rapid Test</string>
     <string name="error_positive_larger_than_consumption">The number of positive tests cannot be more than the number of tests consumed. Please input the correct data</string>
+    <string name="error_rapid_test_unjustified">The number of unjustified cannot be empty.</string>
+    <string name="error_rapid_test_ape">The number of APES cannot be empty.</string>
     <string name="error_empty_rapid_test">Rapid test report cannot be empty.</string>
     <string name="btn_edit">EDIT</string>
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - No adjustment will be made</string>

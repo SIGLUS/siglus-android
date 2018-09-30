@@ -20,43 +20,6 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Data
 public class RapidTestFormItemViewModel {
-    MovementReasonManager.MovementReason issueReason;
-
-    RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVDetermine);
-    RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVUnigold);
-    RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Syphillis);
-    RapidTestFormGridViewModel gridMalaria = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Malaria);
-
-    List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = Arrays.asList(gridHIVDetermine, gridHIVUnigold, gridSyphillis, gridMalaria);
-
-    Map<String, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
-
-    public RapidTestFormItemViewModel(MovementReasonManager.MovementReason issueReason) {
-        this.issueReason = issueReason;
-        for (RapidTestFormGridViewModel viewModel : rapidTestFormGridViewModelList) {
-            rapidTestFormGridViewModelMap.put(StringUtils.upperCase(viewModel.getColumnCode().name()), viewModel);
-        }
-    }
-
-    public void setColumnValue(ProgramDataColumn column, int value) {
-        String[] columnNames = column.getCode().split("_");
-        String columnName = columnNames[1];
-        rapidTestFormGridViewModelMap.get(columnName).setValue(column, value);
-    }
-
-    public  void updateUnjustifiedColumn() {
-        for (RapidTestFormGridViewModel viewModel: rapidTestFormGridViewModelList) {
-            if(viewModel.isAddUnjustified()) {
-                viewModel.unjustifiedValue = "0";
-            }
-        }
-    }
-
-    public void updateNoValueGridRowToZero(RapidTestFormGridViewModel viewModel) {
-        viewModel.consumptionValue = StringUtils.isEmpty(viewModel.consumptionValue) ? "0" : viewModel.consumptionValue;
-        viewModel.positiveValue = StringUtils.isEmpty(viewModel.positiveValue) ? "0" : viewModel.positiveValue;
-        viewModel.unjustifiedValue = StringUtils.isEmpty(viewModel.unjustifiedValue) ? "0" : viewModel.unjustifiedValue;
-    }
 
     public static final String CONSUME_HIVDETERMINE = "CONSUME_HIVDETERMINE";
     public static final String POSITIVE_HIVDETERMINE = "POSITIVE_HIVDETERMINE";
@@ -71,6 +34,50 @@ public class RapidTestFormItemViewModel {
     public static final String POSITIVE_MALARIA = "POSITIVE_MALARIA";
     public static final String UNJUSTIFILED_MALARIA = "UNJUSTIFILED_MALARIA";
 
+    MovementReasonManager.MovementReason issueReason;
+
+    RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVDetermine);
+    RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVUnigold);
+    RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Syphillis);
+    RapidTestFormGridViewModel gridMalaria = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Malaria);
+
+    public List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = Arrays.asList(gridHIVDetermine, gridHIVUnigold, gridSyphillis, gridMalaria);
+
+    public Map<String, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
+
+    public RapidTestFormItemViewModel(MovementReasonManager.MovementReason issueReason) {
+        this.issueReason = issueReason;
+        for (RapidTestFormGridViewModel viewModel : rapidTestFormGridViewModelList) {
+            rapidTestFormGridViewModelMap.put(StringUtils.upperCase(viewModel.getColumnCode().name()), viewModel);
+        }
+    }
+
+    public void setColumnValue(ProgramDataColumn column, int value) {
+        String[] columnNames = column.getCode().split("_");
+        String columnName = columnNames[1];
+        rapidTestFormGridViewModelMap.get(columnName).setValue(column, value);
+    }
+
+    public void updateUnjustifiedColumn() {
+        for (RapidTestFormGridViewModel viewModel: rapidTestFormGridViewModelList) {
+            if(viewModel.isAddUnjustified()) {
+                viewModel.unjustifiedValue = "0";
+            }
+        }
+    }
+
+    public void setAPEItem() {
+        for (RapidTestFormGridViewModel viewModel: rapidTestFormGridViewModelList) {
+                viewModel.isAPE = true;
+        }
+    }
+
+    public void updateNoValueGridRowToZero(RapidTestFormGridViewModel viewModel) {
+        viewModel.consumptionValue = StringUtils.isEmpty(viewModel.consumptionValue) ? "0" : viewModel.consumptionValue;
+        viewModel.positiveValue = StringUtils.isEmpty(viewModel.positiveValue) ? "0" : viewModel.positiveValue;
+        viewModel.unjustifiedValue = StringUtils.isEmpty(viewModel.unjustifiedValue) ? "0" : viewModel.unjustifiedValue;
+    }
+
     public List<ProgramDataFormItem> convertToDataModel() {
         if (issueReason.getDescription().equals(LMISApp.getInstance().getString(R.string.total))) {
             return newArrayList();
@@ -83,9 +90,18 @@ public class RapidTestFormItemViewModel {
         return programDataFormItems;
     }
 
-    public boolean validate() {
+    public boolean validatePositive() {
         for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
-            if (!gridViewModel.validate()) {
+            if (!gridViewModel.validatePositive()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean validateUnjustified() {
+        for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
+            if (!gridViewModel.validateUnjustified()) {
                 return false;
             }
         }
