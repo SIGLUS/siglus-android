@@ -1,234 +1,395 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rapid_test_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/margin_tiny"
-    android:id="@+id/rl_rapid_test_form">
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
-    <LinearLayout
-        android:id="@+id/vg_rapid_test_report_header"
+    <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rapid_test"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@drawable/border_right_black_bold"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:layout_above="@id/new_movement_panel"
+        android:layout_below="@id/title_panel">
 
-        <LinearLayout
-            android:id="@+id/vg_rapid_test_report_empty_header"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" />
+        <ScrollView
+            android:layout_width="@dimen/rapid_view_width"
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_left_black_bold"
-            android:orientation="vertical">
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rl_rapid_test_report"
+                android:layout_width="@dimen/rapid_view_width"
+                android:layout_height="1200dp"
+                android:paddingTop="@dimen/margin_tiny">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/border_top_black"
-                android:gravity="center"
-                android:text="HIV Determine"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_normal"
-                android:textStyle="bold" />
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/rl_rapid_test_form"
+                    android:layout_width="@dimen/rapid_view_width"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_left_black_bold">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/border_top_black"
-                android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/vg_rapid_test_report_header_title"
+                        android:layout_width="@dimen/rapid_view_width"
+                        android:layout_height="44dp"
+                        android:background="@drawable/border_top_black"
+                        android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Consumo"
-                    android:textColor="@color/color_black" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/border_right_black_bold"
+                            android:gravity="left|center"
+                            android:paddingLeft="@dimen/rapid_view_view_left_padding"
+                            android:text="Rapid Test Report"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/font_size_regular"
+                            android:textStyle="bold" />
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/color_black" />
+                    </LinearLayout>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Positivo"
-                    android:textColor="@color/color_black" />
+                    <LinearLayout
+                        android:id="@+id/vg_rapid_test_report_header"
+                        android:layout_width="@dimen/rapid_view_width"
+                        android:layout_height="88dp"
+                        android:layout_below="@+id/vg_rapid_test_report_header_title"
+                        android:background="@drawable/border_right_black_bold"
+                        android:orientation="horizontal">
 
-            </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/vg_rapid_test_report_empty_header"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/border_top_black"
+                            android:orientation="horizontal" />
 
-        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_left_black_bold"
+                            android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_left_black_bold"
-            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_top_black"
+                                android:gravity="center"
+                                android:text="HIV Determine"
+                                android:textColor="@color/color_black"
+                                android:textSize="@dimen/font_size_regular"
+                                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/border_top_black"
-                android:gravity="center"
-                android:text="HIV Unigold"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_normal"
-                android:textStyle="bold" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_top_black"
+                                android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/border_top_black"
-                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Consumo"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Consumo"
-                    android:textColor="@color/color_black" />
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/color_black" />
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/color_black" />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Positivo"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Positivo"
-                    android:textColor="@color/color_black" />
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/color_black" />
 
-            </LinearLayout>
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Injustificado"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
 
-        </LinearLayout>
+                            </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_left_black_bold"
-            android:orientation="vertical">
+                        </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/border_top_black"
-                android:gravity="center"
-                android:text="Syphillis"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_normal"
-                android:textStyle="bold" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_left_black_bold"
+                            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/border_top_black"
-                android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_top_black"
+                                android:gravity="center"
+                                android:text="HIV Unigold"
+                                android:textColor="@color/color_black"
+                                android:textSize="@dimen/font_size_regular"
+                                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Consumo"
-                    android:textColor="@color/color_black" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_top_black"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Consumo"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
+
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/color_black" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Positivo"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
+
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/color_black" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Injustificado"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_left_black_bold"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_top_black"
+                                android:gravity="center"
+                                android:text="@string/label_column_syphillis"
+                                android:textColor="@color/color_black"
+                                android:textSize="@dimen/font_size_regular"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_top_black"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Consumo"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
 
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/color_black" />
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/color_black" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Positivo"
-                    android:textColor="@color/color_black" />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Positivo"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
 
-            </LinearLayout>
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/color_black" />
 
-        </LinearLayout>
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Injustificado"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_left_black_bold"
-            android:orientation="vertical">
+                            </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/border_top_black"
-                android:gravity="center"
-                android:text="Malaria"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/font_size_normal"
-                android:textStyle="bold" />
+                        </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@drawable/border_top_black"
-                android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_left_black_bold"
+                            android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Consumo"
-                    android:textColor="@color/color_black" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_top_black"
+                                android:gravity="center"
+                                android:text="Malaria"
+                                android:textColor="@color/color_black"
+                                android:textSize="@dimen/font_size_regular"
+                                android:textStyle="bold" />
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/color_black" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_top_black"
+                                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Positivo"
-                    android:textColor="@color/color_black" />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Consumo"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
 
-            </LinearLayout>
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/color_black" />
 
-        </LinearLayout>
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Positivo"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
 
-    </LinearLayout>
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/color_black" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_rapid_report_row_item_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/action_panel"
-        android:layout_below="@+id/vg_rapid_test_report_header"
-        android:background="@drawable/border_top_black_right_black_bold"
-        android:overScrollMode="never" />
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="Injustificado"
+                                    android:textColor="@color/color_black"
+                                    android:textSize="@dimen/font_size_small" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_rapid_report_row_item_list"
+                        android:layout_width="@dimen/rapid_view_width"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/vg_rapid_test_report_header"
+                        android:background="@drawable/border_top_black_right_black_bold"
+                        android:overScrollMode="never" />
+
+                    <LinearLayout
+                        android:id="@+id/rv_observation_row_item_list"
+                        android:layout_width="@dimen/rapid_view_width"
+                        android:layout_height="44dp"
+                        android:layout_below="@+id/rv_rapid_report_row_item_list"
+                        android:background="@drawable/border_bottom_black"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/rv_observation_header"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/border_right_black_bold">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@color/color_rapid_test_form_total_header"
+                                android:gravity="center"
+                                android:maxLines="1"
+                                android:text="Observation"
+                                android:textColor="@color/color_black"
+                                android:textSize="@dimen/font_size_regular" />
+                        </LinearLayout>
+
+                        <EditText
+                            android:id="@+id/rv_observation_content"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:paddingLeft="@dimen/rapid_view_view_left_padding"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_right_black_bold"
+                            android:gravity="left|center"
+                            android:inputType="text" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+        </ScrollView>
+    </HorizontalScrollView>
 
     <org.openlmis.core.view.widget.ActionPanelView
         android:id="@+id/action_panel"

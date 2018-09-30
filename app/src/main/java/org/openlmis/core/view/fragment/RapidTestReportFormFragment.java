@@ -241,6 +241,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     private void updateObservation(RapidTestReportViewModel viewModel) {
+        observationContent.setEnabled(viewModel.isEditable());
         observationContent.setText(viewModel.getObservataion());
     }
 

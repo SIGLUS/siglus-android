@@ -61,7 +61,7 @@
         <activity
             android:name=".view.activity.RapidTestReportFormActivity"
             android:label="@string/title_rapid_test_form"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".view.activity.MalariaDataReportFormActivity"
             android:label="@string/title_patient_data_report_form"
