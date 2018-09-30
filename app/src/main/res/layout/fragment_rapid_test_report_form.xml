@@ -20,7 +20,7 @@
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/rl_rapid_test_report"
                 android:layout_width="@dimen/rapid_view_width"
-                android:layout_height="1200dp"
+                android:layout_height="1000dp"
                 android:paddingTop="@dimen/margin_tiny">
 
                 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -354,7 +354,7 @@
                     <LinearLayout
                         android:id="@+id/rv_observation_row_item_list"
                         android:layout_width="@dimen/rapid_view_width"
-                        android:layout_height="44dp"
+                        android:layout_height="wrap_content"
                         android:layout_below="@+id/rv_rapid_report_row_item_list"
                         android:background="@drawable/border_bottom_black"
                         android:orientation="horizontal">
@@ -363,7 +363,8 @@
                             android:id="@+id/rv_observation_header"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:background="@drawable/border_right_black_bold">
+                            android:background="@drawable/border_right_black_bold"
+                            android:minHeight="44dp">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -376,15 +377,23 @@
                                 android:textSize="@dimen/font_size_regular" />
                         </LinearLayout>
 
-                        <EditText
-                            android:id="@+id/rv_observation_content"
-                            android:layout_width="fill_parent"
-                            android:layout_height="match_parent"
-                            android:paddingLeft="@dimen/rapid_view_view_left_padding"
-                            android:layout_weight="1"
+                        <LinearLayout
+                            android:id="@+id/rv_observation_content_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:background="@drawable/border_right_black_bold"
-                            android:gravity="left|center"
-                            android:inputType="text" />
+                            android:minHeight="44dp">
+
+                            <EditText
+                                android:id="@+id/rv_observation_content"
+                                android:layout_width="450dp"
+                                android:layout_height="wrap_content"
+                                android:paddingTop="8dp"
+                                android:gravity="left|top"
+                                android:inputType="textMultiLine"
+                                android:paddingLeft="@dimen/rapid_view_view_left_padding"
+                                android:background="@null"/>
+                        </LinearLayout>
                     </LinearLayout>
                 </RelativeLayout>
             </RelativeLayout>
