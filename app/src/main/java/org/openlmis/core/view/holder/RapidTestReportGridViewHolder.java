@@ -4,6 +4,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -24,6 +25,9 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_unjustified_rapid_test_report_grid)
     EditText etUnjustified;
 
+    @InjectView(R.id.et_warning_border)
+    LinearLayout warningLinerLayout;
+
     RapidTestFormGridViewModel viewModel;
     private Boolean editable;
     private QuantityChangeListener quantityChangeListener;
@@ -41,6 +45,15 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         updateEditTextMaxLength();
         setTextWatcher();
         updateAlert();
+        updateGridViewHaveValueAlert();
+    }
+
+    private void updateGridViewHaveValueAlert() {
+        if (viewModel.isNeedAddGridViewWarning()){
+            warningLinerLayout.setBackground(context.getResources().getDrawable(R.drawable.border_bg_red));
+            return;
+        }
+        warningLinerLayout.setBackground(null);
     }
 
     private void updateEditTextMaxLength() {
@@ -80,7 +93,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     private void updateAlert() {
-        if (editable && !viewModel.validate()) {
+        if (editable && !viewModel.validate() && !viewModel.getIsAPE()) {
             etPositive.setTextColor(context.getResources().getColor(R.color.color_red));
             etConsume.setTextColor(context.getResources().getColor(R.color.color_red));
             etUnjustified.setTextColor(context.getResources().getColor(R.color.color_red));

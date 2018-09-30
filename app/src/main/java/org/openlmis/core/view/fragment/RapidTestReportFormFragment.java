@@ -70,6 +70,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         updateHeaderSize();
         setUpRowItems();
         addObservationChange();
+        rvReportRowItemListView.setNestedScrollingEnabled(false);
         if (isSavedInstanceState && presenter.getViewModel() != null) {
             updateUI();
         } else {
@@ -90,11 +91,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     private void calculateRowHeaderAndGridSize() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int totalWidthWithoutBorders = metrics.widthPixels - 2;
-        GRID_SIZE = totalWidthWithoutBorders / 5;
-        ROW_HEADER_WIDTH = GRID_SIZE + totalWidthWithoutBorders % 5;
+        int totalWidthWithoutBorders = (int)(getResources().getDimension(R.dimen.rapid_view_width) - getResources().getDimension(R.dimen.rapid_view_Header_view));
+        GRID_SIZE = totalWidthWithoutBorders / 4;
+        ROW_HEADER_WIDTH = (int) getResources().getDimension(R.dimen.rapid_view_Header_view);
     }
 
     private void loadForm(long formId, DateTime periodBegin) {

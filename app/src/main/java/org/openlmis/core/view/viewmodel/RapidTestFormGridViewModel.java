@@ -41,6 +41,9 @@ public class RapidTestFormGridViewModel {
     ProgramDataColumn consumeColumn;
     ProgramDataColumn unjustifiedColumn;
 
+    Boolean isNeedAllAPEValue = false;
+    Boolean isAPE = false;
+
     final static String COLUMN_CODE_PREFIX_CONSUME = "CONSUME_";
     final static String COLUMN_CODE_PREFIX_POSITIVE = "POSITIVE_";
     final static String COLUMN_CODE_PREFIX_UNJUSTIFIED = "UNJUSTIFIED_";
@@ -102,6 +105,14 @@ public class RapidTestFormGridViewModel {
 
     public boolean isEmpty() {
         return StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue) && StringUtils.isEmpty(unjustifiedValue);
+    }
+
+    public boolean isNeedAddGridViewWarning() {
+       return isNeedAllAPEValue && isAllNotEmpty();
+    }
+
+    private  boolean isAllNotEmpty() {
+        return StringUtils.isNotEmpty(consumptionValue) && StringUtils.isNotEmpty(positiveValue) && StringUtils.isNotEmpty(unjustifiedValue);
     }
 
     public boolean isAddUnjustified() {

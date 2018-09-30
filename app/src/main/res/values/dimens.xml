@@ -20,7 +20,7 @@
 
     <!--Font size-->
     <dimen name="font_size_tiny">10sp</dimen>
-    <dimen name="font_size_small">12sp</dimen>
+    <dimen name="font_size_small">10sp</dimen>
     <dimen name="font_size_regular">14sp</dimen>
     <dimen name="font_size_normal">20sp</dimen>
     <dimen name="font_size_medium">20sp</dimen>
@@ -46,5 +46,9 @@
     <dimen name="padding_largest">50dp</dimen>
 
     <dimen name="cardview_radius">4dp</dimen>
+
+    <!--RapidTest-->
+    <dimen name="rapid_view_width">1108dp</dimen>
+    <dimen name="rapid_view_Header_view">101dp</dimen>
 
 </resources>
