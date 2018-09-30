@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
@@ -41,7 +42,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     ViewGroup emptyHeaderView;
 
     @InjectView(R.id.rv_observation_header)
-    TextView observationHeader;
+    LinearLayout observationHeader;
 
     @InjectView(R.id.rv_observation_content)
     EditText observationContent;
@@ -87,11 +88,13 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     private void updateHeaderSize() {
         calculateRowHeaderAndGridSize();
         emptyHeaderView.getLayoutParams().width = ROW_HEADER_WIDTH;
-        observationHeader.getLayoutParams().width = ROW_HEADER_WIDTH;
+        observationHeader.getLayoutParams().width = (int) (ROW_HEADER_WIDTH + getResources().getDimension(R.dimen.rapid_view_border_width));
     }
 
     private void calculateRowHeaderAndGridSize() {
-        int totalWidthWithoutBorders = (int)(getResources().getDimension(R.dimen.rapid_view_width) - getResources().getDimension(R.dimen.rapid_view_Header_view));
+        int totalWidthWithoutBorders = (int) (getResources().getDimension(R.dimen.rapid_view_width)
+                - getResources().getDimension(R.dimen.rapid_view_Header_view)
+                - getResources().getDimension(R.dimen.rapid_view_border_width));
         GRID_SIZE = totalWidthWithoutBorders / 4;
         ROW_HEADER_WIDTH = (int) getResources().getDimension(R.dimen.rapid_view_Header_view);
     }
@@ -237,7 +240,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         loaded();
     }
 
-    private void  updateObservation(RapidTestReportViewModel viewModel) {
+    private void updateObservation(RapidTestReportViewModel viewModel) {
         observationContent.setText(viewModel.getObservataion());
     }
 

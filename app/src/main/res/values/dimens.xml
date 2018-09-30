@@ -48,7 +48,9 @@
     <dimen name="cardview_radius">4dp</dimen>
 
     <!--RapidTest-->
-    <dimen name="rapid_view_width">1108dp</dimen>
+    <dimen name="rapid_view_width">1110dp</dimen>
     <dimen name="rapid_view_Header_view">101dp</dimen>
+    <dimen name="rapid_view_view_left_padding">12dp</dimen>
+    <dimen name="rapid_view_border_width">2dp</dimen>
 
 </resources>

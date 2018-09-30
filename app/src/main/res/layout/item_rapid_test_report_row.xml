@@ -10,7 +10,8 @@
         style="@style/RapidTestForm.RowHeading"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:paddingLeft="@dimen/rapid_view_view_left_padding"
+        android:gravity="left|center"
         android:text="Farmácia Pública" />
 
     <LinearLayout

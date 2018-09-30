@@ -38,7 +38,7 @@ public class RapidTestReportRowViewHolder extends BaseViewHolder {
 
     public void setUpHeader(RapidTestFormItemViewModel viewModel) {
         tvRowHeader.setText(viewModel.getIssueReason().getDescription());
-        if (isTotal(viewModel)) {
+        if (isTotal(viewModel) || isAPEs(viewModel)) {
             tvRowHeader.setBackgroundColor(LMISApp.getInstance().getResources().getColor(R.color.color_rapid_test_form_total_header));
         } else {
             tvRowHeader.setBackgroundColor(LMISApp.getInstance().getResources().getColor(R.color.color_rapid_test_form_row_header));
@@ -47,5 +47,9 @@ public class RapidTestReportRowViewHolder extends BaseViewHolder {
 
     public boolean isTotal(RapidTestFormItemViewModel viewModel) {
         return viewModel.getIssueReason().getDescription().equals(LMISApp.getInstance().getString(R.string.total));
+    }
+
+    public boolean isAPEs(RapidTestFormItemViewModel viewModel) {
+        return viewModel.getIssueReason().getDescription().equals(LMISApp.getInstance().getString(R.string.ape));
     }
 }
