@@ -29,7 +29,8 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class StockService {
 
-    private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 3;
+    private final int HIGH_STOCK_CALCULATE_MONTH_QUANTITY = 3;
+    private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 2;
 
     @Inject
     StockRepository stockRepository;
@@ -77,6 +78,7 @@ public class StockService {
             firstPeriodBegin = queryFirstPeriodBegin(stockCard);
         } catch (LMISException e) {
             e.reportToFabric();
+            //TODO: not period
             return -1;
         }
 
@@ -85,7 +87,7 @@ public class StockService {
         int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, period.getBegin().toDate());
 
         if (periodQuantity < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
-            return -1;
+            return 1;
         }
 
         for (int i = 0; i < periodQuantity; i++) {
@@ -95,18 +97,13 @@ public class StockService {
             if (totalIssuesEachMonth == null) {
                 continue;
             }
-
             issuePerMonths.add(totalIssuesEachMonth);
-
-            if (issuePerMonths.size() == LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
+            if (issuePerMonths.size() == HIGH_STOCK_CALCULATE_MONTH_QUANTITY) {
                 break;
             }
         }
 
-        if (issuePerMonths.size() < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
-            return -1;
-        }
-        return getTotalIssues(issuePerMonths) * 1f / LOW_STOCK_CALCULATE_MONTH_QUANTITY;
+        return getTotalIssues(issuePerMonths) * 1f / issuePerMonths.size();
     }
 
     private long getTotalIssues(List<Long> issuePerMonths) {
