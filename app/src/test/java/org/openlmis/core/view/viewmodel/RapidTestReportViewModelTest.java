@@ -28,6 +28,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.consumption;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.positive;
 
 @RunWith(LMISTestRunner.class)
 public class RapidTestReportViewModelTest {
@@ -106,15 +108,15 @@ public class RapidTestReportViewModelTest {
         RapidTestFormItemViewModel itemViewModel1 = mock(RapidTestFormItemViewModel.class);
         RapidTestFormItemViewModel itemViewModel2 = mock(RapidTestFormItemViewModel.class);
 
-        when(itemViewModel1.validate()).thenReturn(true);
-        when(itemViewModel2.validate()).thenReturn(false);
+        when(itemViewModel1.validatePositive()).thenReturn(true);
+        when(itemViewModel2.validatePositive()).thenReturn(false);
 
         viewModel.setItemViewModelList(new ArrayList<RapidTestFormItemViewModel>());
         viewModel.getItemViewModelList().add(itemViewModel1);
-        assertTrue(viewModel.validate());
+        assertTrue(viewModel.validatePositive());
 
         viewModel.getItemViewModelList().add(itemViewModel2);
-        assertFalse(viewModel.validate());
+        assertFalse(viewModel.validatePositive());
     }
 
     @Test
@@ -145,11 +147,11 @@ public class RapidTestReportViewModelTest {
     public void shouldUpdateTotal() throws Exception {
         viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
         viewModel.getItemViewModelList().get(0).getGridHIVDetermine().setConsumptionValue("100");
-        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, true);
+        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine,consumption);
         assertEquals("100", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
 
         viewModel.getItemViewModelList().get(1).getGridHIVDetermine().setConsumptionValue("2333");
-        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, true);
+        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, consumption);
         assertEquals("2433", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
     }
 }

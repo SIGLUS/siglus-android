@@ -35,14 +35,14 @@ public class RapidTestFormItemViewModelTest {
         itemViewModel = new RapidTestFormItemViewModel(reason1);
         RapidTestFormGridViewModel formGridViewModel1 = mock(RapidTestFormGridViewModel.class);
         RapidTestFormGridViewModel formGridViewModel2 = mock(RapidTestFormGridViewModel.class);
-        when(formGridViewModel1.validate()).thenReturn(true);
-        when(formGridViewModel2.validate()).thenReturn(false);
+        when(formGridViewModel1.validatePositive()).thenReturn(true);
+        when(formGridViewModel2.validatePositive()).thenReturn(false);
 
         itemViewModel.setRapidTestFormGridViewModelList(new ArrayList<RapidTestFormGridViewModel>());
         itemViewModel.getRapidTestFormGridViewModelList().add(formGridViewModel1);
-        assertTrue(itemViewModel.validate());
+        assertTrue(itemViewModel.validatePositive());
 
         itemViewModel.getRapidTestFormGridViewModelList().add(formGridViewModel2);
-        assertFalse(itemViewModel.validate());
+        assertFalse(itemViewModel.validatePositive());
     }
 }

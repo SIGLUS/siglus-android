@@ -33,6 +33,9 @@ public class RapidTestFormGridViewModelTest {
         assertFalse(viewModel.validate());
 
         viewModel.setConsumptionValue("100");
+        assertFalse(viewModel.validate());
+
+        viewModel.setUnjustifiedValue("100");
         assertTrue(viewModel.validate());
     }
 
