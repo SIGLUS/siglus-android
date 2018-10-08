@@ -73,8 +73,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void triggerSync() {
         sendSyncStartBroadcast();
 
-        syncDownManager.syncDownServerData();
-
         boolean isSyncRnrSuccessful = syncUpManager.syncRnr();
         if (isSyncRnrSuccessful) {
             sharedPreferenceMgr.setRnrLastSyncTime();
@@ -90,6 +88,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         syncUpManager.syncAppVersion();
         syncUpManager.syncArchivedProducts();
         syncUpManager.syncUpCmms();
+        syncDownManager.syncDownServerData();
 
         if(!sharedPreferenceMgr.shouldSyncLastYearStockData()) {
             sendSyncFinishedBroadcast();
