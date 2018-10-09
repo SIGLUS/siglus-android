@@ -140,7 +140,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
 
         //then
-        assertThat(averageMonthlyConsumption, is(-1F));
+        assertThat(averageMonthlyConsumption, is(100F));
     }
 
     private StockMovementItem createMovementItem(MovementReasonManager.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced) throws LMISException {
@@ -176,7 +176,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
 
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(2, stockService.stockMovementRepository.listLastFiveStockMovements(stockCard.getId()).size());
-        assertThat(-1F, is(averageMonthlyConsumption));
+        assertThat(100F, is(averageMonthlyConsumption));
     }
 
     @Test
@@ -191,7 +191,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         stockService.stockRepository.createOrUpdate(stockCard);
 
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
-        assertThat(-1F, is(averageMonthlyConsumption));
+        assertThat(1F, is(averageMonthlyConsumption));
     }
 
     @Test
@@ -220,7 +220,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
 
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(3, stockService.stockMovementRepository.listLastFiveStockMovements(stockCard.getId()).size());
-        assertThat(-1F, is(averageMonthlyConsumption));
+        assertThat(100F, is(averageMonthlyConsumption));
     }
 
     @Test

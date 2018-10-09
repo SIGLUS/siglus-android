@@ -78,8 +78,7 @@ public class StockService {
             firstPeriodBegin = queryFirstPeriodBegin(stockCard);
         } catch (LMISException e) {
             e.reportToFabric();
-            //TODO: not period
-            return -1;
+            return 1;
         }
 
         List<Long> issuePerMonths = new ArrayList<>();
