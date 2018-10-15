@@ -25,6 +25,7 @@ import android.database.Cursor;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
+import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
@@ -187,6 +188,8 @@ public class ProductRepository {
 
     private void createKitProductsIfNotExist(Product product) throws LMISException {
         if (product.getKitProductList() != null && !product.getKitProductList().isEmpty()) {
+            // product as kit product
+            deleteKitProductByCode(product.getCode());
             for (KitProduct kitProduct : product.getKitProductList()) {
                 createProductForKitIfNotExist(kitProduct);
                 KitProduct kitProductInDB = queryKitProductByCode(kitProduct.getKitCode(), kitProduct.getProductCode());
@@ -211,6 +214,18 @@ public class ProductRepository {
             @Override
             public KitProduct operate(Dao<KitProduct, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("kitCode", kitCode).and().eq("productCode", productCode).queryForFirst();
+            }
+        });
+    }
+
+    private  void  deleteKitProductByCode(final String productCode) throws LMISException {
+        dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, KitProduct>() {
+            @Override
+            public KitProduct operate(Dao<KitProduct, String> dao) throws SQLException, LMISException{
+                DeleteBuilder<KitProduct, String> deleteBuilder = dao.deleteBuilder();
+                deleteBuilder.where().eq("kitCode", productCode);
+                deleteBuilder.delete();
+                return null;
             }
         });
     }
