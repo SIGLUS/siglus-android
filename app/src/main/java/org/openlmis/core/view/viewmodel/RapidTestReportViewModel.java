@@ -223,6 +223,10 @@ public class RapidTestReportViewModel implements Serializable {
         return true;
     }
 
+    public boolean validateOnlyAPES() {
+        return itemRealTotal.isEmpty() && !itemAPEs.isEmpty();
+    }
+
     public void addSignature(String signature) {
         if (rapidTestForm.getSignaturesWrapper().size() == 0) {
             rapidTestForm.getSignaturesWrapper().add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));

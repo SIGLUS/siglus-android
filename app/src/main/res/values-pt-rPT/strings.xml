@@ -404,6 +404,7 @@
     <string name="error_positive_larger_than_consumption">O número de testes positivos não pode ser superior ao número de testes consumidos. Introduza os dados correctos</string>
     <string name="error_rapid_test_unjustified">O número de injustificado não pode estar vazio.</string>
     <string name="error_rapid_test_ape">O número de APES não pode estar vazio.</string>
+    <string name="error_rapid_test_only_ape">O relatório de teste rápido não pode ser apenas APE.</string>
     <string name="error_empty_rapid_test">O relatório de teste rápido não pode estar vazio.</string>
     <string name="btn_edit">EDITAR</string>
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
