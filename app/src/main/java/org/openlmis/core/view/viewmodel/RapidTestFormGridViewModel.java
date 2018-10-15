@@ -65,7 +65,7 @@ public class RapidTestFormGridViewModel {
 
     public boolean validatePositive() {
         try {
-            return (StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue))
+            return (StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue) && StringUtils.isEmpty(unjustifiedValue))
                     || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue)) ;
         } catch (NumberFormatException e) {
             return false;
