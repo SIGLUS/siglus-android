@@ -45,9 +45,8 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
     public static final String MEDICINE_TYPE_OTHER = "Other";
 
     //DEPRECATED, DO NOT USE
-    @Deprecated
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private Program program;
+     Program program;
 
     @DatabaseField
     String primaryName;
@@ -74,6 +73,9 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
 
     @DatabaseField
     boolean isBasic;
+
+    @DatabaseField(defaultValue = "false")
+    boolean isHIV;
 
     @ForeignCollectionField()
     private ForeignCollection<Lot> lotList;

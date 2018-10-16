@@ -130,22 +130,20 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     }
 
     public int getStockOnHandLevel() {
-
         if (stockOnHand == 0) {
             return StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT;
         }
 
         if (stockCard.getCMM() < 0) {
             return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
-        } else {
-            if (stockCard.isOverStock()) {
-                return StockCardViewHolder.STOCK_ON_HAND_OVER_STOCK;
-            }
-            if (stockCard.isLowStock()) {
-                return StockCardViewHolder.STOCK_ON_HAND_LOW_STOCK;
-            }
-            return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
         }
+
+        if (stockCard.isLowStock()) {
+            return StockCardViewHolder.STOCK_ON_HAND_LOW_STOCK;
+        } else if (stockCard.isOverStock()) {
+            return StockCardViewHolder.STOCK_ON_HAND_OVER_STOCK;
+        }
+        return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
     }
 
     public Long getLotListQuantityTotalAmount() {
