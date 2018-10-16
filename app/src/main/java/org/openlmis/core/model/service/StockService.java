@@ -78,24 +78,21 @@ public class StockService {
             firstPeriodBegin = queryFirstPeriodBegin(stockCard);
         } catch (LMISException e) {
             e.reportToFabric();
-            return 1;
+            return -1;
         }
 
         List<Long> issuePerMonths = new ArrayList<>();
         Period period = Period.of(today());
         int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, period.getBegin().toDate());
 
-        if (periodQuantity < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
-            return 1;
-        }
-
         for (int i = 0; i < periodQuantity; i++) {
             period = period.previous();
             Long totalIssuesEachMonth = calculateTotalIssuesPerPeriod(stockCard, period);
 
-            if (totalIssuesEachMonth == null) {
+            if (hasStockOutTotoalIssue(totalIssuesEachMonth)) {
                 continue;
             }
+
             issuePerMonths.add(totalIssuesEachMonth);
             if (issuePerMonths.size() == HIGH_STOCK_CALCULATE_MONTH_QUANTITY) {
                 break;
@@ -105,6 +102,9 @@ public class StockService {
         return getTotalIssues(issuePerMonths) * 1f / issuePerMonths.size();
     }
 
+    private Boolean hasStockOutTotoalIssue (Long totalIssuesEachMonth) {
+        return  totalIssuesEachMonth == null;
+    }
     private long getTotalIssues(List<Long> issuePerMonths) {
         long total = 0;
         for (Long totalIssues : issuePerMonths) {
