@@ -163,7 +163,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
                     errorMessage = getString(R.string.error_rapid_test_unjustified);
                 } else if (!presenter.getViewModel().validateAPES()) {
                     errorMessage = getString(R.string.error_rapid_test_ape);
-                }else if (presenter.getViewModel().validateOnlyAPES()) {
+                } else if (presenter.getViewModel().validateOnlyAPES()) {
                     errorMessage = getString(R.string.error_rapid_test_only_ape);
                 }
 
