@@ -238,8 +238,10 @@
     <string name="msg_expired_warning">This product has expired stock. Please check product expiry dates.</string>
     <string name="msg_expiring_date">Expiring %1$s</string>
     <string name="msg_expired_date">Expired %1$s</string>
-    <string name="msg_over_stock">Over stock</string>
-    <string name="msg_low_stock">Low stock</string>
+    <string name="msg_over_stock">Over Stock</string>
+    <string name="msg_regular_stock">Regular Stock</string>
+    <string name="msg_stock_out">Stock Out</string>
+    <string name="msg_low_stock">Low Stock</string>
 
     <!-- Physical Inventory Page -->
     <string name="label_physical_inventory_stock_on_hand">Current stock on hand:</string>

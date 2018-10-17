@@ -48,10 +48,10 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     public enum StockOnHandStatus {
 
-        REGULAR_STOCK("regularStock", "Regular Stock", R.color.color_regular_stock_bg, R.color.color_regular_stock),
-        LOW_STOCK("lowStock", "Low Stock", R.color.color_low_stock_bg, R.color.color_low_stock),
-        STOCK_OUT("stockOut", "Stock Out", R.color.color_stock_out_bg, R.color.color_stock_out),
-        OVER_STOCK("overStock", "Over Stock",R.color.color_over_stock_bg, R.color.color_over_stock);
+        REGULAR_STOCK("regularStock", "Regular Stock", R.color.color_regular_stock, R.color.color_stock_status),
+        LOW_STOCK("lowStock", "Low Stock", R.color.color_low_stock, R.color.color_stock_status),
+        STOCK_OUT("stockOut", "Stock Out", R.color.color_stock_out, R.color.color_stock_status),
+        OVER_STOCK("overStock", "Over Stock",R.color.color_over_stock, R.color.color_stock_status);
 
         private String messageKey;
         private String description;
@@ -99,7 +99,6 @@ public class StockCardViewHolder extends BaseViewHolder {
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
 
         initExpiryDateWarning(inventoryViewModel);
-
         initStockOnHandWarning(inventoryViewModel);
     }
 
@@ -117,8 +116,6 @@ public class StockCardViewHolder extends BaseViewHolder {
             }
         }
         hideExpiryDate();
-
-        hideStockStatus();
     }
 
     private void showExpiryDateWithMessage(int expiryMsg, Date earliestExpiryDate) {
@@ -131,18 +128,6 @@ public class StockCardViewHolder extends BaseViewHolder {
     private void hideExpiryDate() {
         if (lyExpiryDateWarning != null) {
             lyExpiryDateWarning.setVisibility(View.GONE);
-        }
-    }
-
-    private void hideStockStatus() {
-        if (lyStockStatus != null) {
-            lyStockStatus.setVisibility(View.GONE);
-        }
-    }
-
-    private void showStockStatus() {
-        if (lyStockStatus != null) {
-            lyStockStatus.setVisibility(View.VISIBLE);
         }
     }
 
@@ -175,7 +160,7 @@ public class StockCardViewHolder extends BaseViewHolder {
                 tvStockOnHand.setTypeface(null, Typeface.NORMAL);
                 break;
             case STOCK_OUT:
-                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_stock_out));
+                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_over_stock));
                 tvStockOnHand.setTypeface(null, Typeface.BOLD);
                 break;
             default:

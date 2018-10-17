@@ -225,6 +225,8 @@
     <string name="msg_expired_date">Expirado %1$s</string>
     <string name="msg_over_stock">Excesso de Estoque</string>
     <string name="msg_low_stock">Estoque em risco</string>
+    <string name="msg_regular_stock">Estoque regular</string>
+    <string name="msg_stock_out">Stock Out</string>
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Estoque existente actual</string>
     <string name="label_physical_inventory_title_stock_on_hand">Estoque Existente</string>
