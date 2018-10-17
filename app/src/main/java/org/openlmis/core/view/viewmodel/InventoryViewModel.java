@@ -25,6 +25,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.holder.StockCardViewHolder;
+import org.openlmis.core.view.holder.StockCardViewHolder.StockOnHandStatus;
 
 import lombok.Data;
 import lombok.Setter;
@@ -129,21 +130,21 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         return viewModel;
     }
 
-    public int getStockOnHandLevel() {
+    public StockOnHandStatus getStockOnHandLevel() {
         if (stockOnHand == 0) {
-            return StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT;
+            return StockOnHandStatus.STOCK_OUT;
         }
 
         if (stockCard.getCMM() < 0) {
-            return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
+            return StockOnHandStatus.REGULAR_STOCK;
         }
 
         if (stockCard.isLowStock()) {
-            return StockCardViewHolder.STOCK_ON_HAND_LOW_STOCK;
+            return StockOnHandStatus.LOW_STOCK;
         } else if (stockCard.isOverStock()) {
-            return StockCardViewHolder.STOCK_ON_HAND_OVER_STOCK;
+            return StockOnHandStatus.OVER_STOCK;
         }
-        return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
+        return StockOnHandStatus.REGULAR_STOCK;
     }
 
     public Long getLotListQuantityTotalAmount() {

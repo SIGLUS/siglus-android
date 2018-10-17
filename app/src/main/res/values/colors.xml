@@ -40,9 +40,7 @@
     <color name="color_regime_baby">#FFFF81</color>
     <color name="color_regime_other">#DAEEF3</color>
 
-    <color name="color_stock_out">#A11E1D</color>
     <color name="color_warning">#FFDE80</color>
-    <color name="color_over_stock">#186D8C</color>
     <color name="color_draft_title">#9E9E9E</color>
     <color name="color_warning_banner">#FCF8E2</color>
     <color name="color_warning_text">#8B6E37</color>
@@ -85,4 +83,15 @@
     <color name="color_pink_dark">#c54144</color>
     <color name="color_patient_data_form_row_header">#ce93d8</color>
     <color name="patient_data_not_editable">#CFD8DC</color>
+
+    <color name="color_over_stock_bg">#886610c7</color>
+    <color name="color_regular_stock_bg">#884bba14</color>
+    <color name="color_low_stock_bg">#88fad74d</color>
+    <color name="color_stock_out_bg">#88f5212d</color>
+
+    <color name="color_over_stock">#6610c7</color>
+    <color name="color_regular_stock">#4bba14</color>
+    <color name="color_low_stock">#fad74d</color>
+    <color name="color_stock_out">#f5212d</color>
+
 </resources>

@@ -55,16 +55,16 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ly_over_stock"
+            android:id="@+id/ly_stock_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/ly_expiry_date_warning"
             android:gravity="center"
-            android:paddingLeft="@dimen/padding_small"
-            android:visibility="gone">
+            android:paddingLeft="@dimen/padding_small">
 
             <TextView
+                android:id="@+id/tv_stock_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_bg_light_blue"
@@ -75,26 +75,6 @@
                 android:textSize="@dimen/font_size_small" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ly_low_stock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/ly_expiry_date_warning"
-            android:gravity="center"
-            android:paddingLeft="@dimen/padding_small"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/border_light_bg_light_yellow"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
-                android:text="@string/msg_low_stock"
-                android:textColor="@color/color_box_text_yellow"
-                android:textSize="@dimen/font_size_small" />
-        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout

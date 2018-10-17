@@ -1,6 +1,7 @@
 package org.openlmis.core.view.holder;
 
 import android.graphics.Typeface;
+import android.support.annotation.ColorRes;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,19 +37,50 @@ public class StockCardViewHolder extends BaseViewHolder {
     @InjectView(R.id.tv_expiry_date_msg)
     TextView tvExpiryDateMsg;
 
-    @InjectView(R.id.ly_over_stock)
-    LinearLayout lyOverStock;
+    @InjectView(R.id.ly_stock_status)
+    LinearLayout lyStockStatus;
 
-    @InjectView(R.id.ly_low_stock)
-    LinearLayout lyLowStock;
+    @InjectView(R.id.tv_stock_status)
+    TextView tvStockStatus;
 
     protected StockService stockService;
     private OnItemViewClickListener listener;
 
-    public static final int STOCK_ON_HAND_NORMAL = 1;
-    public static final int STOCK_ON_HAND_LOW_STOCK = 2;
-    public static final int STOCK_ON_HAND_OVER_STOCK = 3;
-    public static final int STOCK_ON_HAND_STOCK_OUT = 4;
+    public enum StockOnHandStatus {
+
+        REGULAR_STOCK("regularStock", "Regular Stock", R.color.color_regular_stock_bg, R.color.color_regular_stock),
+        LOW_STOCK("lowStock", "Low Stock", R.color.color_low_stock_bg, R.color.color_low_stock),
+        STOCK_OUT("stockOut", "Stock Out", R.color.color_stock_out_bg, R.color.color_stock_out),
+        OVER_STOCK("overStock", "Over Stock",R.color.color_over_stock_bg, R.color.color_over_stock);
+
+        private String messageKey;
+        private String description;
+        private @ColorRes int bgColor;
+        private @ColorRes int color;
+
+        StockOnHandStatus(String key, String desc, @ColorRes int bgColor, @ColorRes int color) {
+            this.messageKey = key;
+            this.description = desc;
+            this.bgColor = bgColor;
+            this.color = color;
+        }
+
+        public String getMessageKey() {
+            return messageKey;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public @ColorRes int getColor() {
+            return color;
+        }
+
+        public @ColorRes int getBgColor() {
+            return bgColor;
+        }
+    }
 
     public StockCardViewHolder(View itemView, OnItemViewClickListener listener) {
         super(itemView);
@@ -103,24 +135,14 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     private void hideStockStatus() {
-        if (lyOverStock != null) {
-            lyOverStock.setVisibility(View.GONE);
-        }
-
-        if (lyLowStock != null) {
-            lyLowStock.setVisibility(View.GONE);
+        if (lyStockStatus != null) {
+            lyStockStatus.setVisibility(View.GONE);
         }
     }
 
-    private void hideLowStockStatus() {
-        if (lyLowStock != null) {
-            lyLowStock.setVisibility(View.GONE);
-        }
-    }
-
-    private void hideOverStockStatus() {
-        if (lyOverStock != null) {
-            lyOverStock.setVisibility(View.GONE);
+    private void showStockStatus() {
+        if (lyStockStatus != null) {
+            lyStockStatus.setVisibility(View.VISIBLE);
         }
     }
 
@@ -138,31 +160,28 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     private void initStockOnHandWarning(final InventoryViewModel viewModel) {
 
-        int stockOnHandLevel = viewModel.getStockOnHandLevel();
+        StockOnHandStatus stockOnHandStatus = viewModel.getStockOnHandLevel();
+        tvStockStatus.setText(stockOnHandStatus.description);
+        tvStockStatus.setTextColor(context.getResources().getColor(stockOnHandStatus.getColor()));
+        tvStockStatus.setBackgroundColor(context.getResources().getColor(stockOnHandStatus.getBgColor()));
 
-        switch (stockOnHandLevel) {
-            case STOCK_ON_HAND_OVER_STOCK:
+        switch (stockOnHandStatus) {
+            case OVER_STOCK:
                 tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_over_stock));
                 tvStockOnHand.setTypeface(null, Typeface.NORMAL);
-                lyOverStock.setVisibility(View.VISIBLE);
-                hideLowStockStatus();
                 break;
-            case STOCK_ON_HAND_LOW_STOCK:
+            case LOW_STOCK:
                 tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_warning_text));
                 tvStockOnHand.setTypeface(null, Typeface.NORMAL);
-                lyLowStock.setVisibility(View.VISIBLE);
-                hideOverStockStatus();
                 break;
-            case STOCK_ON_HAND_STOCK_OUT:
+            case STOCK_OUT:
                 tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_stock_out));
                 tvStockOnHand.setTypeface(null, Typeface.BOLD);
-                hideStockStatus();
                 break;
             default:
                 stockOnHandBg.setBackgroundResource(R.color.color_white);
                 tvStockOnHand.setTextAppearance(context, R.style.Text_Black_Normal);
                 tvStockOnHand.setTypeface(null, Typeface.NORMAL);
-                hideStockStatus();
                 break;
         }
     }
