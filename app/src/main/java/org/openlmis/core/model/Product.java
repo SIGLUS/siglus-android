@@ -75,7 +75,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
     boolean isBasic;
 
     @DatabaseField(defaultValue = "false")
-    boolean isHIV;
+    boolean isHiv;
 
     @ForeignCollectionField()
     private ForeignCollection<Lot> lotList;

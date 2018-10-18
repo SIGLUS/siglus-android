@@ -5,7 +5,7 @@ import org.openlmis.core.persistence.Migration;
 public class AddIsHIVColumnToProductsTable extends Migration {
     @Override
     public void up() {
-        execSQL("ALTER TABLE 'products' ADD COLUMN isHIV BOOLEAN DEFAULT 0");
+        execSQL("ALTER TABLE 'products' ADD COLUMN isHiv BOOLEAN DEFAULT 0");
     }
 }
 
