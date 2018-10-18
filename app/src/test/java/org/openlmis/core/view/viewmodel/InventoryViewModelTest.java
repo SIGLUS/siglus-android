@@ -72,80 +72,92 @@ public class InventoryViewModelTest {
     @Test
     public void shouldGetNormalLevelWhenSOHGreaterThanAvg() throws LMISException {
         StockCard stockCard = new StockCard();
+        Product product = new Product();
+        stockCard.setProduct(product);
         stockCard.setStockOnHand(100);
         stockCard.setAvgMonthlyConsumption(80);
         viewModel.setStockCard(stockCard);
         viewModel.setStockOnHand(100);
 
-        int stockOnHandLevel = viewModel.getStockOnHandLevel();
+        StockCardViewHolder.StockOnHandStatus stockOnHandLevel = viewModel.getStockOnHandLevel();
 
-        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_NORMAL);
+        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.StockOnHandStatus.REGULAR_STOCK);
     }
 
     @Test
     public void shouldGetNormalLevelWhenAvgMonthlyConsumptionLessThanZero() throws LMISException {
         StockCard stockCard = new StockCard();
+        Product product = new Product();
+        stockCard.setProduct(product);
         stockCard.setAvgMonthlyConsumption(-1);
         viewModel.setStockCard(stockCard);
         viewModel.setStockOnHand(100);
 
-        int stockOnHandLevel = viewModel.getStockOnHandLevel();
+        StockCardViewHolder.StockOnHandStatus stockOnHandLevel = viewModel.getStockOnHandLevel();
 
-        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_NORMAL);
+        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.StockOnHandStatus.REGULAR_STOCK);
 
     }
 
     @Test
     public void shouldGetOverLevelWhenSOHSmallerThanAvg() throws LMISException {
         StockCard stockCard = new StockCard();
+        Product product = new Product();
+        stockCard.setProduct(product);
         stockCard.setStockOnHand(30);
         stockCard.setAvgMonthlyConsumption(10);
         viewModel.setStockCard(stockCard);
 
         viewModel.setStockOnHand(30);
 
-        int stockOnHandLevel = viewModel.getStockOnHandLevel();
+        StockCardViewHolder.StockOnHandStatus stockOnHandLevel = viewModel.getStockOnHandLevel();
 
-        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_OVER_STOCK);
+        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.StockOnHandStatus.OVER_STOCK);
     }
 
     @Test
     public void shouldGetLowLevelWhenSOHSmallerThanAvg() throws LMISException {
         StockCard stockCard = new StockCard();
+        Product product = new Product();
+        stockCard.setProduct(product);
         stockCard.setStockOnHand(2);
         stockCard.setAvgMonthlyConsumption(100);
         viewModel.setStockCard(stockCard);
         viewModel.setStockOnHand(2);
 
-        int stockOnHandLevel = viewModel.getStockOnHandLevel();
+        StockCardViewHolder.StockOnHandStatus stockOnHandLevel = viewModel.getStockOnHandLevel();
 
-        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_LOW_STOCK);
+        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.StockOnHandStatus.LOW_STOCK);
     }
 
     @Test
     public void shouldGetStockOutLevelWhenSOHIsZero() throws LMISException {
         StockCard stockCard = new StockCard();
+        Product product = new Product();
+        stockCard.setProduct(product);
         stockCard.setAvgMonthlyConsumption(80);
         viewModel.setStockCard(stockCard);
 
         viewModel.setStockOnHand(0);
 
-        int stockOnHandLevel = viewModel.getStockOnHandLevel();
+        StockCardViewHolder.StockOnHandStatus stockOnHandLevel = viewModel.getStockOnHandLevel();
 
-        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT);
+        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.StockOnHandStatus.STOCK_OUT);
     }
 
     @Test
     public void shouldGetStockOutLevelWhenSOHIsZeroEvenAvgMonthlyConsumptionLessThanZero() throws LMISException {
         StockCard stockCard = new StockCard();
+        Product product = new Product();
+        stockCard.setProduct(product);
         stockCard.setAvgMonthlyConsumption(-1);
         viewModel.setStockCard(stockCard);
 
         viewModel.setStockOnHand(0);
 
-        int stockOnHandLevel = viewModel.getStockOnHandLevel();
+        StockCardViewHolder.StockOnHandStatus stockOnHandLevel = viewModel.getStockOnHandLevel();
 
-        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT);
+        Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.StockOnHandStatus.STOCK_OUT);
     }
 
     @Test

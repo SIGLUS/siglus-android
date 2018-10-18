@@ -191,7 +191,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         stockService.stockRepository.createOrUpdate(stockCard);
 
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
-        assertThat(1F, is(averageMonthlyConsumption));
+        assertThat(-1F, is(averageMonthlyConsumption));
     }
 
     @Test
