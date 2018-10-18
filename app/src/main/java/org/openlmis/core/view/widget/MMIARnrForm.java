@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -225,18 +226,21 @@ public class MMIARnrForm extends LinearLayout {
         TextView tvIssuedUnit = (TextView) inflate.findViewById(R.id.tv_issued_unit);
         TextView tvInitialAmount = (TextView) inflate.findViewById(R.id.tv_initial_amount);
         TextView tvReceived = (TextView) inflate.findViewById(R.id.tv_received);
-        TextView tvIssued = (TextView) inflate.findViewById(R.id.tv_issued);
-        TextView tvAdjustment = (TextView) inflate.findViewById(R.id.tv_adjustment);
-        TextView tvInventory = (TextView) inflate.findViewById(R.id.tv_inventory);
+        EditText etIssued = (EditText) inflate.findViewById(R.id.et_issued);
+        EditText etAdjustment = (EditText) inflate.findViewById(R.id.et_adjustment);
+        EditText etInventory = (EditText) inflate.findViewById(R.id.et_inventory);
         TextView tvValidate = (TextView) inflate.findViewById(R.id.tv_validate);
 
         if (isHeaderView) {
             tvIssuedUnit.setText(R.string.label_issued_unit);
             tvInitialAmount.setText(R.string.label_initial_amount);
             tvReceived.setText(R.string.label_received_mmia);
-            tvIssued.setText(R.string.label_issued_mmia);
-            tvAdjustment.setText(R.string.label_adjustment);
-            tvInventory.setText(R.string.label_inventory);
+            etIssued.setText(R.string.label_issued_mmia);
+            etIssued.setEnabled(false);
+            etAdjustment.setText(R.string.label_adjustment);
+            etAdjustment.setEnabled(false);
+            etInventory.setText(R.string.label_inventory);
+            etInventory.setEnabled(false);
             tvValidate.setText(R.string.label_validate);
 
             inflate.setBackgroundResource(R.color.color_mmia_info_name);
@@ -248,9 +252,9 @@ public class MMIARnrForm extends LinearLayout {
 
             tvInitialAmount.setText(String.valueOf(isArchived ? 0 : item.getInitialAmount()));
             tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
-            tvIssued.setText(String.valueOf(isArchived ? 0 : item.getIssued()));
-            tvAdjustment.setText(String.valueOf(isArchived ? 0 : item.getAdjustment()));
-            tvInventory.setText(String.valueOf(isArchived ? 0 : item.getInventory()));
+            etIssued.setText(String.valueOf(isArchived ? 0 : item.getIssued()));
+            etAdjustment.setText(String.valueOf(isArchived ? 0 : item.getAdjustment()));
+            etInventory.setText(String.valueOf(isArchived ? 0 : item.getInventory()));
 
             rightViewGroup.addView(inflate);
 

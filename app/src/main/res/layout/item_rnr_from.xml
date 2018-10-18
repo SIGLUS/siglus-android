@@ -29,28 +29,31 @@
         android:layout_weight="1"
         tools:text="9" />
 
-    <TextView
-        android:id="@+id/tv_issued"
+    <EditText
+        android:id="@+id/et_issued"
         style="@style/ItemRnr.AmountText"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@null"
         tools:text="9" />
 
-    <TextView
-        android:id="@+id/tv_adjustment"
+    <EditText
+        android:id="@+id/et_adjustment"
         style="@style/ItemRnr.AmountText"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@null"
         tools:text="9" />
 
-    <TextView
-        android:id="@+id/tv_inventory"
+    <EditText
+        android:id="@+id/et_inventory"
         style="@style/ItemRnr.AmountText"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@null"
         tools:text="9" />
 
     <TextView
