@@ -18,6 +18,7 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -31,8 +32,10 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.ViewUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
@@ -255,6 +258,7 @@ public class MMIARnrForm extends LinearLayout {
             etIssued.setText(getValue(isArchived, item.getIssued()));
             etAdjustment.setText(getValue(isArchived, item.getAdjustment()));
             etInventory.setText(getValue(isArchived, item.getInventory()));
+            setTextWatcher(etIssued, etAdjustment, etInventory, item);
 
             rightViewGroup.addView(inflate);
 
@@ -267,6 +271,21 @@ public class MMIARnrForm extends LinearLayout {
             }
         }
         return inflate;
+    }
+
+    private void setTextWatcher(EditText etIssued, EditText etAdjustment, EditText etInventory, RnrFormItem item) {
+        EditTextWatcher twIssued = new EditTextWatcher(item, etIssued);
+        EditTextWatcher twAdjustment= new EditTextWatcher(item, etAdjustment);
+        EditTextWatcher twInventory = new EditTextWatcher(item, etInventory);
+
+        etIssued.removeTextChangedListener(twIssued);
+        etAdjustment.removeTextChangedListener(twAdjustment);
+        etInventory.removeTextChangedListener(twInventory);
+
+        etIssued.addTextChangedListener(twIssued);
+        etAdjustment.addTextChangedListener(twAdjustment);
+        etInventory.addTextChangedListener(twInventory);
+
     }
 
     private String getValue(Boolean isArchived, Long vaule) {
@@ -287,5 +306,31 @@ public class MMIARnrForm extends LinearLayout {
         return (int) getResources().getDimension(R.dimen.divider);
     }
 
+    class EditTextWatcher extends SingleTextWatcher {
+        private final RnrFormItem item;
+        private final EditText editText;
+
+        public EditTextWatcher(RnrFormItem item, EditText editText) {
+            this.item = item;
+            this.editText = editText;
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable etText) {
+            switch (editText.getId()) {
+                case  R.id.et_inventory:
+                    item.setInventory(Long.valueOf(etText.toString()));
+                    break;
+                case  R.id.et_issued:
+                    item.setIssued(Long.valueOf(etText.toString()));
+                    break;
+                case  R.id.et_adjustment:
+                    item.setAdjustment(Long.valueOf(etText.toString()));
+                    break;
+            }
+
+        }
+    }
 
 }
