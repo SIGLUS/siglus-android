@@ -11,8 +11,8 @@ public class RnrFormHelper {
 
     public void initRnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory) throws LMISException {
         rnrFormItem.setReceived(0);
-        rnrFormItem.setIssued(0);
-        rnrFormItem.setAdjustment(0);
+        rnrFormItem.setIssued((long) 0);
+        rnrFormItem.setAdjustment((long) 0);
         rnrFormItem.setCalculatedOrderQuantity(0L);
         rnrFormItem.setInitialAmount(lastRnrInventory);
         rnrFormItem.setInventory(lastRnrInventory);

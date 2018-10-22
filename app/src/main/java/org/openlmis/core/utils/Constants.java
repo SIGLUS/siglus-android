@@ -39,6 +39,7 @@ public final class Constants {
     public static final String PARAM_KIT_NAME = "kitName";
     public static final String PARAM_PROGRAM_CODE = "programCode";
     public static final String PARAM_FORM_ID = "formId";
+    public static final String PARAM_PREVIOUS_FORM = "previousForm";
     public static final String PARAM_IS_FROM_ARCHIVE = "isFromArchive";
     public static final String PARAM_IS_KIT = "isKit";
     public static final String PARAM_SELECTED_INVENTORY_DATE = "selectedInventoryDate";

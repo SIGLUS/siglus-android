@@ -41,6 +41,7 @@ import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -92,7 +93,7 @@ public class RnrFormRepository {
     @Inject
     private RequisitionPeriodService requisitionPeriodService;
     @Inject
-    private StockMovementRepository stockMovementRepository;
+    public StockMovementRepository stockMovementRepository;
 
     @Inject
     public RnrFormRepository(Context context) {

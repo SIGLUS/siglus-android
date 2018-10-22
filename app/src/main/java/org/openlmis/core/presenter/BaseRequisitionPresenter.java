@@ -126,6 +126,10 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         return rnrFormRepository.initNormalRnrForm(periodEndDate);
     }
 
+    public Boolean isHistoryForm(long formId) {
+        return  formId != 0;
+    }
+
     public void submitRequisition() {
         view.loading();
         Subscription submitSubscription = createOrUpdateRnrForm().subscribe(getSubmitRequisitionSubscriber());

@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Regimen;
@@ -32,6 +33,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -123,7 +125,7 @@ public class MMIARepository extends RnrFormRepository {
 
     @Override
     protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
-        RnrFormItem rnrFormItem = super.createRnrFormItemByPeriod(stockCard, startDate, endDate);
+        RnrFormItem rnrFormItem = this.createMMIARnrFormItemByPeriod(stockCard, startDate, endDate);
 
         rnrFormItem.setProduct(stockCard.getProduct());
         Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
@@ -132,6 +134,39 @@ public class MMIARepository extends RnrFormRepository {
         }
 
         return rnrFormItem;
+    }
+
+    protected RnrFormItem createMMIARnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsByCreatedDate(stockCard.getId(), startDate, endDate);
+
+        if (stockMovementItems.isEmpty()) {
+            this.initMMiARnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
+        } else {
+            rnrFormItem.setInitialAmount(lastRnrInventory(stockCard));
+            this.assignMMIATotalValues(rnrFormItem, stockMovementItems);
+        }
+
+        rnrFormItem.setProduct(stockCard.getProduct());
+        return rnrFormItem;
+    }
+
+    private void assignMMIATotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {
+        long totalReceived = 0;
+
+        for (StockMovementItem item : stockMovementItems) {
+            if (MovementReasonManager.MovementType.RECEIVE == item.getMovementType()) {
+                totalReceived += item.getMovementQuantity();
+            }
+        }
+        rnrFormItem.setReceived(totalReceived);
+    }
+
+    private void initMMiARnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory) throws LMISException {
+        rnrFormItem.setReceived(0);
+        rnrFormItem.setCalculatedOrderQuantity(0L);
+        rnrFormItem.setInitialAmount(lastRnrInventory);
+        rnrFormItem.setInventory(lastRnrInventory);
     }
 
     protected ArrayList<RnrFormItem> fillAllMMIAProducts(RnRForm form, List<RnrFormItem> rnrFormItems) throws LMISException {

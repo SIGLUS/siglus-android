@@ -209,9 +209,14 @@ public class RnRFormListActivity extends BaseReportListActivity {
     }
 
     private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
-        Intent intent = isMMIA() ? MMIARequisitionActivity.getIntentToMe(this, periodEndDate)
+        Intent intent = isMMIA() ? createMMIARequisitionIntent(periodEndDate)
                 : VIARequisitionActivity.getIntentToMe(this, periodEndDate, isMissedPeriod);
         startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+    }
+
+    private Intent createMMIARequisitionIntent(Date periodEndDate) {
+        RnRFormViewModel viewModel = data.size() > 1 ? data.get(data.size() - 2) : null;
+        return MMIARequisitionActivity.getIntentToMe(this, periodEndDate, viewModel);
     }
 
     private void deleteRnRForm(RnRForm form) {

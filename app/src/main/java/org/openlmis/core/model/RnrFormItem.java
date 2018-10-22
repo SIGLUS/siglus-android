@@ -51,17 +51,17 @@ public class RnrFormItem extends BaseModel{
     @Expose
     @SerializedName("quantityDispensed")
     @DatabaseField
-    private long issued;
+    private Long issued;
 
     @Expose
     @SerializedName("totalLossesAndAdjustments")
     @DatabaseField
-    private long adjustment;
+    private Long adjustment;
 
     @Expose
     @SerializedName("stockInHand")
     @DatabaseField
-    private long inventory;
+    private Long inventory;
 
     @Expose
     @SerializedName("expirationDate")

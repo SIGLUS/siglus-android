@@ -91,6 +91,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     MMIARequisitionPresenter presenter;
 
     private long formId;
+    private long previousFormId;
     protected View containerView;
     private Date periodEndDate;
 
@@ -104,6 +105,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         super.onCreate(savedInstanceState);
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
+        previousFormId = getActivity().getIntent().getLongExtra(Constants.PARAM_PREVIOUS_FORM, 0);
         periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
     }
 
