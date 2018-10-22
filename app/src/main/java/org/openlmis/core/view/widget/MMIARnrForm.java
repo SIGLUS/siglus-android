@@ -252,9 +252,9 @@ public class MMIARnrForm extends LinearLayout {
 
             tvInitialAmount.setText(String.valueOf(isArchived ? 0 : item.getInitialAmount()));
             tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
-            etIssued.setText(String.valueOf(isArchived ? 0 : item.getIssued()));
-            etAdjustment.setText(String.valueOf(isArchived ? 0 : item.getAdjustment()));
-            etInventory.setText(String.valueOf(isArchived ? 0 : item.getInventory()));
+            etIssued.setText(getValue(isArchived, item.getIssued()));
+            etAdjustment.setText(getValue(isArchived, item.getAdjustment()));
+            etInventory.setText(getValue(isArchived, item.getInventory()));
 
             rightViewGroup.addView(inflate);
 
@@ -267,6 +267,12 @@ public class MMIARnrForm extends LinearLayout {
             }
         }
         return inflate;
+    }
+
+    private String getValue(Boolean isArchived, Long vaule) {
+        if (isArchived) return String.valueOf(0);
+        return vaule == null ? "": String.valueOf(vaule.longValue());
+
     }
 
     private int getRightViewWidth(int rightWidth, int childCount) {
