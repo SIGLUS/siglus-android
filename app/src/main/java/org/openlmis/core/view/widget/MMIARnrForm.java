@@ -42,6 +42,7 @@ import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,6 +51,7 @@ import lombok.Getter;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class MMIARnrForm extends LinearLayout {
+    private Context context;
     private ViewGroup leftViewGroup;
 
     public List<RnrFormItem> itemFormList;
@@ -60,6 +62,7 @@ public class MMIARnrForm extends LinearLayout {
 
     @Getter
     private RnrFormHorizontalScrollView rnrItemsHorizontalScrollView;
+    private List<EditText> editTexts = new ArrayList<>();
 
     @Getter
     private View leftHeaderView;
@@ -77,6 +80,7 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void init(Context context) {
+        this.context = context;
         layoutInflater = LayoutInflater.from(context);
         View container = layoutInflater.inflate(R.layout.view_mmia_rnr_form, this, true);
         rnrItemsHorizontalScrollView = (RnrFormHorizontalScrollView) container.findViewById(R.id.vg_right_scrollview);
@@ -126,22 +130,25 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     public boolean isCompleted() {
-        return isCategoryComplete(Product.MEDICINE_TYPE_ADULT) &&
-                isCategoryComplete(Product.MEDICINE_TYPE_CHILDREN) &&
-                isCategoryComplete(Product.MEDICINE_TYPE_SOLUTION) ;
-    }
-
-    private boolean isCategoryComplete(String productType) {
-        for (RnrFormItem rnrFormItem : filterRnrFormItem(itemFormList, productType)) {
-            if (!isItemCompleted(rnrFormItem)){
-                return  false;
+        for (EditText editText : editTexts) {
+            if (TextUtils.isEmpty(editText.getText().toString()) || !isValidate(editText)) {
+                editText.setError(context.getString(R.string.hint_error_input));
+                editText.requestFocus();
+                return false;
             }
         }
         return true;
     }
 
-    private boolean isItemCompleted(RnrFormItem rnrFormItem) {
-        return rnrFormItem.getIssued() != null && rnrFormItem.getAdjustment() != null && rnrFormItem.getInventory() != null ;
+    private boolean isValidate(EditText editText) {
+        if (editText.getId() != R.id.et_adjustment) return  true;
+        Long text;
+        try {
+           text = Long.valueOf(editText.getText().toString());
+        } catch (NumberFormatException e) {
+            text = null;
+        }
+        return text != null;
     }
 
 
@@ -281,9 +288,12 @@ public class MMIARnrForm extends LinearLayout {
             tvInitialAmount.setText(String.valueOf(isArchived ? 0 : item.getInitialAmount()));
             tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
             etIssued.setText(getValue(isArchived, item.getIssued()));
+            editTexts.add(etIssued);
             etAdjustment.setText(getValue(isArchived, item.getAdjustment()));
             etAdjustment.setInputType(InputType.TYPE_CLASS_NUMBER| InputType.TYPE_NUMBER_FLAG_SIGNED);
+            editTexts.add(etAdjustment);
             etInventory.setText(getValue(isArchived, item.getInventory()));
+            editTexts.add(etInventory);
             setTextWatcher(etIssued, etAdjustment, etInventory, item);
 
             rightViewGroup.addView(inflate);
@@ -346,20 +356,25 @@ public class MMIARnrForm extends LinearLayout {
         public void afterTextChanged(Editable etText) {
             switch (editText.getId()) {
                 case  R.id.et_inventory:
-                    item.setInventory(Long.valueOf(etText.toString()));
+                    item.setInventory(getEditValue(etText));
                     break;
                 case  R.id.et_issued:
-                    item.setIssued(Long.valueOf(etText.toString()));
+                    item.setIssued(getEditValue(etText));
                     break;
                 case  R.id.et_adjustment:
-                    try {
-                        item.setAdjustment(Long.valueOf(etText.toString()));
-                    } catch (NumberFormatException e) {
-                        item.setAdjustment(null);
-                    }
+                    item.setAdjustment(getEditValue(etText));
                     break;
             }
 
+        }
+
+        private Long getEditValue(Editable etText) {
+            Long editText;
+            try { editText = Long.valueOf(etText.toString());
+            } catch (NumberFormatException e) {
+                editText = null;
+            }
+            return editText;
         }
     }
 

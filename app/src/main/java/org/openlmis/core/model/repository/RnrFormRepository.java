@@ -357,7 +357,7 @@ public class RnrFormRepository {
         if (rnRForms.isEmpty()) {
             return 0;
         }
-        List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 1).getRnrFormItemListWrapper();
+        List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
         for (RnrFormItem item : rnrFormItemListWrapper) {
             if (item.getProduct().getId() == stockCard.getProduct().getId()) {
                 return item.getInventory();

@@ -166,7 +166,6 @@ public class MMIARepository extends RnrFormRepository {
         rnrFormItem.setReceived(0);
         rnrFormItem.setCalculatedOrderQuantity(0L);
         rnrFormItem.setInitialAmount(lastRnrInventory);
-        rnrFormItem.setInventory(lastRnrInventory);
     }
 
     protected ArrayList<RnrFormItem> fillAllMMIAProducts(RnRForm form, List<RnrFormItem> rnrFormItems) throws LMISException {
