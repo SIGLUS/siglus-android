@@ -269,7 +269,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
-                if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
+                if (rnrFormList.isCompleted() && regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
                     presenter.setViewModels(rnrFormList.itemFormList, regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
                     if (!presenter.validateForm()) {
                         showValidationAlert();

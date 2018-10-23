@@ -43,6 +43,7 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Locale;
 
 import lombok.Getter;
 
@@ -122,6 +123,25 @@ public class MMIARnrForm extends LinearLayout {
         // Solution View
         addViewByMedicineType(filterRnrFormItem(itemFormList, Product.MEDICINE_TYPE_SOLUTION));
         addDividerView(Product.MEDICINE_TYPE_SOLUTION);
+    }
+
+    public boolean isCompleted() {
+        return isCategoryComplete(Product.MEDICINE_TYPE_ADULT) &&
+                isCategoryComplete(Product.MEDICINE_TYPE_CHILDREN) &&
+                isCategoryComplete(Product.MEDICINE_TYPE_SOLUTION) ;
+    }
+
+    private boolean isCategoryComplete(String productType) {
+        for (RnrFormItem rnrFormItem : filterRnrFormItem(itemFormList, productType)) {
+            if (!isItemCompleted(rnrFormItem)){
+                return  false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isItemCompleted(RnrFormItem rnrFormItem) {
+        return rnrFormItem.getIssued() != null && rnrFormItem.getAdjustment() != null && rnrFormItem.getInventory() != null ;
     }
 
 
