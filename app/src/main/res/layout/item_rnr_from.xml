@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@null"
+        android:inputType="number"
         tools:text="9" />
 
     <EditText
@@ -45,6 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@null"
+        android:inputType="numberSigned"
         tools:text="9" />
 
     <EditText
@@ -54,6 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@null"
+        android:inputType="number"
         tools:text="9" />
 
     <TextView

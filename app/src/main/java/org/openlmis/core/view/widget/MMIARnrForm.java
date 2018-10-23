@@ -19,6 +19,7 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -257,6 +258,7 @@ public class MMIARnrForm extends LinearLayout {
             tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
             etIssued.setText(getValue(isArchived, item.getIssued()));
             etAdjustment.setText(getValue(isArchived, item.getAdjustment()));
+            etAdjustment.setInputType(InputType.TYPE_CLASS_NUMBER| InputType.TYPE_NUMBER_FLAG_SIGNED);
             etInventory.setText(getValue(isArchived, item.getInventory()));
             setTextWatcher(etIssued, etAdjustment, etInventory, item);
 
@@ -326,7 +328,11 @@ public class MMIARnrForm extends LinearLayout {
                     item.setIssued(Long.valueOf(etText.toString()));
                     break;
                 case  R.id.et_adjustment:
-                    item.setAdjustment(Long.valueOf(etText.toString()));
+                    try {
+                        item.setAdjustment(Long.valueOf(etText.toString()));
+                    } catch (NumberFormatException e) {
+                        item.setAdjustment(null);
+                    }
                     break;
             }
 
