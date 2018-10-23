@@ -235,7 +235,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
             @Override
             public void onSingleClick(View v) {
                 loading();
-                Subscription subscription = presenter.getSaveFormObservable(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString())
+                Subscription subscription = presenter.getSaveFormObservable(rnrFormList.itemFormList, regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString())
                         .subscribe(getOnSavedSubscriber());
                 subscriptions.add(subscription);
             }
@@ -270,7 +270,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
             @Override
             public void onSingleClick(View v) {
                 if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
-                    presenter.setViewModels(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+                    presenter.setViewModels(rnrFormList.itemFormList, regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
                     if (!presenter.validateForm()) {
                         showValidationAlert();
                     } else if (!presenter.validateFormPeriod()) {
