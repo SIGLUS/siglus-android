@@ -129,8 +129,12 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
-            presenter.refreshStockCardsObservable();
+        if (resultCode == Activity.RESULT_OK ) {
+            if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
+                presenter.refreshStockCardsObservable();
+            } else if (requestCode == Constants.REQUEST_UNPACK_KIT) {
+                presenter.loadKits();
+            }
         }
     }
 
