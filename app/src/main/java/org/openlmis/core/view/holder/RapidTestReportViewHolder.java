@@ -36,6 +36,13 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
         viewModel = rapidTestReportViewModel;
         switch (viewModel.getStatus()) {
             case MISSING:
+                String finishPreviousForm;
+                finishPreviousForm = context.getString(R.string.label_previous_period_missing);
+                setGrayHeader();
+                btnReportEntry.setVisibility(View.INVISIBLE);
+                tvReportStatus.setText(Html.fromHtml(finishPreviousForm));
+                break;
+            case FIRST_MISSING:
                 tvReportStatus.setText(Html.fromHtml(context.getString(R.string.msg_report_missing)));
                 setGrayHeader();
                 setBlueButton();

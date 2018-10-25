@@ -30,8 +30,8 @@ import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidT
 @Data
 public class RapidTestReportViewModel implements Serializable {
     Period period;
-    Status status;
     String observataion;
+    public Status status;
     private Date syncedTime;
 
     MovementReasonManager movementReasonManager;
@@ -327,7 +327,9 @@ public class RapidTestReportViewModel implements Serializable {
         MISSING(true, 0),
         INCOMPLETE(true, 1),
         COMPLETED(false, 2),
-        SYNCED(false, 3);
+        SYNCED(false, 3),
+        FIRST_MISSING(false, 4);
+
 
         @Getter
         private boolean editable;

@@ -34,6 +34,7 @@ public class RapidTestReportsPresenter extends Presenter {
 
     @Getter
     private List<RapidTestReportViewModel> viewModelList = new ArrayList<>();
+    private boolean isHaveFirstPeriod;
 
     @Inject
     private ProgramDataFormRepository programDataFormRepository;
@@ -69,6 +70,7 @@ public class RapidTestReportsPresenter extends Presenter {
         Optional<Period> period = periodService.getFirstStandardPeriod();
 
         List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
+        isHaveFirstPeriod = false;
         while (period.isPresent()) {
             addViewModel(period.get(), rapidTestForms);
             period = period.get().generateNextAvailablePeriod();
@@ -87,6 +89,10 @@ public class RapidTestReportsPresenter extends Presenter {
     private void addViewModel(Period period, List<ProgramDataForm> rapidTestForms) {
         RapidTestReportViewModel rapidTestReportViewModel = new RapidTestReportViewModel(period);
         setExistingProgramDataForm(rapidTestReportViewModel, rapidTestForms);
+        if (rapidTestReportViewModel.status ==  RapidTestReportViewModel.Status.MISSING && !isHaveFirstPeriod) {
+            isHaveFirstPeriod = true;
+            rapidTestReportViewModel.status = RapidTestReportViewModel.Status.FIRST_MISSING;
+        }
         viewModelList.add(rapidTestReportViewModel);
     }
 
