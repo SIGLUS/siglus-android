@@ -78,6 +78,9 @@ android {
         ci {
             applicationId 'org.openlmis.core.ci'
         }
+        showcase {
+            applicationId 'org.openlmis.core.showcase'
+        }
     }
 
     //the following code will change release apk file names to: {applicationId}-{versionCode}-release.apk
