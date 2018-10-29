@@ -354,7 +354,7 @@ public class RnrFormRepository {
 
     protected long lastRnrInventory(StockCard stockCard) throws LMISException {
         List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.No, programCode);
-        if (rnRForms.isEmpty()) {
+        if (rnRForms.isEmpty() || rnRForms.size() == 1) {
             return 0;
         }
         List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();

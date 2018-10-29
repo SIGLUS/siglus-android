@@ -364,12 +364,12 @@ public class VIARequisitionPresenterTest {
         RnrFormItem rnrKitItem1 = new RnrFormItemBuilder()
                 .setProduct(new ProductBuilder().setCode("SCOD10").build())
                 .setReceived(100)
-                .setIssued(50)
+                .setIssued((long) 50)
                 .build();
         RnrFormItem rnrKitItem2 = new RnrFormItemBuilder()
                 .setProduct(new ProductBuilder().setCode("SCOD12").build())
                 .setReceived(300)
-                .setIssued(110)
+                .setIssued((long) 110)
                 .build();
         List<RnrFormItem> rnrFormItems = Lists.newArrayList(rnrKitItem1, rnrKitItem2);
         when(rnRForm.getRnrItems(IsKit.Yes)).thenReturn(rnrFormItems);
@@ -615,8 +615,14 @@ public class VIARequisitionPresenterTest {
         presenter.requisitionFormItemViewModels = new ArrayList<>();
         Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(true).build();
         Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(false).build();
-        RnrFormItem rnrFormItem1 = new RnrFormItemBuilder().setProduct(product1).setRequestAmount(100L).build();
-        RnrFormItem rnrFormItem2 = new RnrFormItemBuilder().setProduct(product2).setRequestAmount(200L).build();
+        RnrFormItem rnrFormItem1 = new RnrFormItemBuilder().
+                setProduct(product1).
+                setRequestAmount(100L).
+                build();
+        RnrFormItem rnrFormItem2 = new RnrFormItemBuilder().
+                setProduct(product2).
+                setRequestAmount(200L).
+                build();
 
         when(mockProductRepository.getByCode("P1")).thenReturn(new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(false).build());
         when(mockProductRepository.getByCode("P2")).thenReturn(new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(true).build());
@@ -692,8 +698,8 @@ public class VIARequisitionPresenterTest {
         product.setId(i);
         product.setCode("code");
         RnrFormItem rnrFormItem = new RnrFormItem();
-        rnrFormItem.setInventory(1000);
-        rnrFormItem.setIssued(i);
+        rnrFormItem.setInventory((long) 1000);
+        rnrFormItem.setIssued((long) i);
         rnrFormItem.setProduct(product);
         return rnrFormItem;
     }

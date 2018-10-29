@@ -71,7 +71,8 @@ public class RapidTestReportsActivity extends BaseReportListActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM) {
+        if (requestCode == Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM ||
+                requestCode == Constants.REQUEST_SELECT_PERIOD_END ) {
             loadForms();
         }
     }

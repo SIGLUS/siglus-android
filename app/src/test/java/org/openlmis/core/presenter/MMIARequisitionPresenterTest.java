@@ -119,15 +119,15 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
-        presenter.setViewModels(regimenItems,baseInfoItems,"bla");
+        presenter.setViewModels(new ArrayList<>(),regimenItems,baseInfoItems,"bla");
 
         assertTrue(presenter.validateForm());
 
-        presenter.setViewModels(regimenItems,baseInfoItems,"bla");
+        presenter.setViewModels(new ArrayList<>(), regimenItems,baseInfoItems,"bla");
         regimenItems.get(0).setAmount(90L);
         assertFalse(presenter.validateForm());
 
-        presenter.setViewModels(regimenItems,baseInfoItems,"dkdkdkdk");
+        presenter.setViewModels(new ArrayList<>(), regimenItems,baseInfoItems,"dkdkdkdk");
         assertTrue(presenter.validateForm());
     }
 

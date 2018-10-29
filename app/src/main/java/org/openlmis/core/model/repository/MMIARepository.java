@@ -143,12 +143,20 @@ public class MMIARepository extends RnrFormRepository {
         if (stockMovementItems.isEmpty()) {
             this.initMMiARnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
         } else {
-            rnrFormItem.setInitialAmount(lastRnrInventory(stockCard));
+            rnrFormItem.setInitialAmount(getMMiAInitialAmount(stockCard, stockMovementItems));
             this.assignMMIATotalValues(rnrFormItem, stockMovementItems);
         }
 
         rnrFormItem.setProduct(stockCard.getProduct());
         return rnrFormItem;
+    }
+
+    protected long getMMiAInitialAmount(StockCard stockCard,List<StockMovementItem> stockMovementItems) throws LMISException {
+        List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.No, programCode);
+        if (rnRForms.size() == 1) {
+            return stockMovementItems.get(0).calculatePreviousSOH();
+        }
+        return lastRnrInventory(stockCard);
     }
 
     private void assignMMIATotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {

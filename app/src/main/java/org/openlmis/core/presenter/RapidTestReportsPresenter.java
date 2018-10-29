@@ -28,6 +28,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static org.openlmis.core.model.ProgramDataForm.STATUS.DRAFT;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class RapidTestReportsPresenter extends Presenter {
@@ -70,7 +71,7 @@ public class RapidTestReportsPresenter extends Presenter {
         Optional<Period> period = periodService.getFirstStandardPeriod();
 
         List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
-        isHaveFirstPeriod = false;
+        isHaveFirstPeriod = isAllRapidTestFormInDBCompleted(rapidTestForms) ? false : true;
         while (period.isPresent()) {
             addViewModel(period.get(), rapidTestForms);
             period = period.get().generateNextAvailablePeriod();
@@ -84,7 +85,17 @@ public class RapidTestReportsPresenter extends Presenter {
                 return rhs.getPeriod().getBegin().toDate().compareTo(lhs.getPeriod().getBegin().toDate());
             }
         });
+
     }
+
+   private Boolean isAllRapidTestFormInDBCompleted(List<ProgramDataForm> rapidTestForms) {
+        for (ProgramDataForm dataForm: rapidTestForms) {
+            if (dataForm.getStatus() == DRAFT){
+                return  false;
+            }
+        }
+        return true;
+   }
 
     private void addViewModel(Period period, List<ProgramDataForm> rapidTestForms) {
         RapidTestReportViewModel rapidTestReportViewModel = new RapidTestReportViewModel(period);

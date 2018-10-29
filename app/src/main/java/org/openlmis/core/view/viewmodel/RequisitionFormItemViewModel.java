@@ -57,10 +57,10 @@ public class RequisitionFormItemViewModel {
         this.fmn = (item.getProduct().getCode());
         this.productName = item.getProduct().getPrimaryName();
 
-        long issued = item.getIssued();
+        long issued = item.getIssued() == null ? 0 : item.getIssued().longValue();
         long received = item.getReceived();
-        long theoretical = item.getInitialAmount() + received - item.getIssued();
-        long inventory = item.getInventory();
+        long theoretical = item.getInitialAmount() + received - issued;
+        long inventory = item.getInventory() == null ? 0 : item.getInventory().longValue();
         long different = inventory - theoretical;
         this.initAmount = String.valueOf(item.getInitialAmount());
         this.received = String.valueOf(received);

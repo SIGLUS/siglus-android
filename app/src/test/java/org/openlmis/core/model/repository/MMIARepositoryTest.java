@@ -62,6 +62,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -134,13 +135,9 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         RnRForm form = mmiaRepository.initNormalRnrForm(null);
         assertThat(form.getRnrFormItemList().size(), is(2));
-
         RnrFormItem item = form.getRnrFormItemListWrapper().get(0);
         assertThat(item.getReceived(), is(20L));
-        assertThat(item.getIssued(), is(10L));
-        assertThat(item.getAdjustment(), is(30L));
         assertThat(item.getInitialAmount(), is(10L));
-        assertThat(item.getInventory(), is(50L));
     }
 
     @NonNull
@@ -224,9 +221,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RnrFormItem rnrFormItemByPeriod = mmiaRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 
         assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
-        assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
         assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
-        assertThat(rnrFormItemByPeriod.getInventory(), is(100L));
         assertThat(rnrFormItemByPeriod.getInitialAmount(), is(100L));
 
         stockCard.setLotOnHandListWrapper(Lists.<LotOnHand>newArrayList());

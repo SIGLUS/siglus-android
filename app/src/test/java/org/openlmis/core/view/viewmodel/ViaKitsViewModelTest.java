@@ -23,13 +23,13 @@ public class ViaKitsViewModelTest {
         RnrFormItem rnrKitItem1 = new RnrFormItemBuilder()
                 .setProduct(new ProductBuilder().setCode("SCOD10").build())
                 .setReceived(100)
-                .setIssued(50)
+                .setIssued((long) 50)
                 .build();
 
         RnrFormItem rnrKitItem2 = new RnrFormItemBuilder()
                 .setProduct(new ProductBuilder().setCode("SCOD12").build())
                 .setReceived(300)
-                .setIssued(110)
+                .setIssued((long) 110)
                 .build();
 
         List<RnrFormItem> rnrFormItems = newArrayList(rnrKitItem1, rnrKitItem2);

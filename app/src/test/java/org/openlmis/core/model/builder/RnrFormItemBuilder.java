@@ -31,12 +31,12 @@ public class RnrFormItemBuilder {
         return this;
     }
 
-    public RnrFormItemBuilder setAdjustment(long adjustment) {
+    public RnrFormItemBuilder setAdjustment(Long adjustment) {
         rnrFormItem.setAdjustment(adjustment);
         return this;
     }
 
-    public RnrFormItemBuilder setInventory(long inventory) {
+    public RnrFormItemBuilder setInventory(Long inventory) {
         rnrFormItem.setInventory(inventory);
         return this;
     }
@@ -51,7 +51,7 @@ public class RnrFormItemBuilder {
         return this;
     }
 
-    public RnrFormItemBuilder setIssued(long issued) {
+    public RnrFormItemBuilder setIssued(Long issued) {
         rnrFormItem.setIssued(issued);
         return this;
     }
