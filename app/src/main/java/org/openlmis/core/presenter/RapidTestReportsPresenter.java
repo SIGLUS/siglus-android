@@ -96,15 +96,25 @@ public class RapidTestReportsPresenter extends Presenter {
 
         RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size()-1) : null;
         if (lastViewModel != null && (lastViewModel.status == Status.FIRST_MISSING && lastViewModel.getPeriod().getEnd().isAfterNow())) {
-            Period lastPeriod = lastViewModel.getPeriod();
-            List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(lastPeriod);
-            RapidTestReportViewModel rapidTestReportViewModel;
-            if (physicalInventories == null || physicalInventories.size() == 0) {
-                rapidTestReportViewModel =new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+
+            DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+            DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
+
+            if (dateTime.getDayOfMonth() >= 18 && dateTime.getMonthOfYear() == endDateTime.getMonthOfYear()) {
+                Period currentPeriod = lastViewModel.getPeriod();
+                Period lastPeriod = new Period(currentPeriod.getBegin(), currentPeriod.getEnd());
+                List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(lastPeriod);
+                RapidTestReportViewModel rapidTestReportViewModel;
+                if (physicalInventories == null || physicalInventories.size() == 0) {
+                    rapidTestReportViewModel = new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+                } else {
+                    rapidTestReportViewModel = new RapidTestReportViewModel(lastPeriod, Status.COMPLETE_INVENTORY);
+                }
+                viewModelList.set(viewModelList.size() - 1, rapidTestReportViewModel);
             } else {
-                rapidTestReportViewModel = new RapidTestReportViewModel(lastPeriod,  Status.COMPLETE_INVENTORY);
+                RapidTestReportViewModel rapidTest = new RapidTestReportViewModel(lastViewModel.getPeriod(), RapidTestReportViewModel.Status.CANNOT_DO_MONTHLY_INVENTORY);
+                viewModelList.set(viewModelList.size() - 1, rapidTest);
             }
-            viewModelList.set(viewModelList.size()-1, rapidTestReportViewModel);
         }
 
         if (isRapidTestListCompleted(viewModelList)){

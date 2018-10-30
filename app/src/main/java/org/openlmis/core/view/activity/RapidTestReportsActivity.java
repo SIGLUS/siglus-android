@@ -74,7 +74,8 @@ public class RapidTestReportsActivity extends BaseReportListActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM) {
+        if (requestCode == Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM ||
+                requestCode ==Constants.REQUEST_FROM_RNR_LIST_PAGE) {
             loadForms();
         } else if (requestCode == Constants.REQUEST_SELECT_PERIOD_END && resultCode == Activity.RESULT_OK) {
             Period Period = (Period) data.getSerializableExtra(Constants.PARAM_PERIOD);
