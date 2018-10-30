@@ -11,6 +11,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
@@ -23,6 +24,7 @@ import org.openlmis.core.view.adapter.SelectPeriodAdapter;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
+import java.io.Serializable;
 import java.util.List;
 
 import roboguice.inject.ContentView;
@@ -52,6 +54,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private SelectInventoryViewModel selectedInventory;
     private String programCode;
     private boolean isMissedPeriod;
+    private Period period;
 
     @Override
     protected ScreenName getScreenName() {
@@ -62,6 +65,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     protected void onCreate(Bundle savedInstanceState) {
         this.programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
         isMissedPeriod = getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
+        period = (Period) getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
         super.onCreate(savedInstanceState);
 
         init();
@@ -74,6 +78,8 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                 return R.style.AppTheme_AMBER;
             case Constants.VIA_PROGRAM_CODE:
                 return R.style.AppTheme_PURPLE;
+            case Constants.RAPID_TEST_CODE:
+                return R.style.AppTheme_BlueGray;
             default:
                 return super.getThemeRes();
         }
@@ -89,7 +95,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
             tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_select_close_of_period, date.monthOfYear().getAsShortText(), date.toString("dd MMM"))));
         }
 
-        presenter.loadData(programCode);
+        presenter.loadData(programCode, period);
         adapter = new SelectPeriodAdapter();
         vgContainer.setAdapter(adapter);
 
@@ -115,6 +121,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                 nextBtn.setEnabled(false);
                 Intent intent = new Intent();
                 intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getInventoryDate());
+                if (programCode.equals(Constants.RAPID_TEST_CODE)) {
+                    intent.putExtra(Constants.PARAM_PERIOD, (Serializable) new Period(period.getBegin(), new DateTime(selectedInventory.getInventoryDate())));
+                }
                 intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
 
                 TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectPeriod, programCode);
@@ -131,6 +140,12 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     public static Intent getIntentToMe(Context context, String programCode) {
         return getIntentToMe(context, programCode, false);
+    }
+
+    public static Intent getIntentToMe(Context context, String programCode, Period period) {
+        Intent intent = getIntentToMe(context, programCode, false);
+        intent.putExtra(Constants.PARAM_PERIOD, (Serializable) period);
+        return intent;
     }
 
     public static Intent getIntentToMe(Context context, String programCode, boolean isMissedPeriod) {

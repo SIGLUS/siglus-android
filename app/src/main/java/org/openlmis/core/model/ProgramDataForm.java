@@ -39,12 +39,12 @@ public class ProgramDataForm extends BaseModel {
     @Getter
     @Expose
     @DatabaseField
-    private Date periodBegin;
+    public Date periodBegin;
 
     @Getter
     @Expose
     @DatabaseField
-    private Date periodEnd;
+    public Date periodEnd;
 
     @Getter
     @Expose

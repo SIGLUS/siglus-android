@@ -253,6 +253,7 @@
     <!--Rnr form historical list-->
     <string name="label_via_name">Requisição Balancete</string>
     <string name="label_mmia_name">MMIA</string>
+    <string name="btn_view_completed_Rapid_Test_inventory">Criar testes rápidos</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
     <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b> Nenhum testes rápidos foi criada.</b>]]> Complete o seu inventário antes de criar um MMIA</string>

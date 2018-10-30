@@ -1,6 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -56,6 +57,14 @@ public class RapidTestReportViewModel implements Serializable {
         setItemViewModelMap();
     }
 
+    public RapidTestReportViewModel(Period period, Status status) {
+        this.period = period;
+        status = status;
+        observataion = "";
+        setupCategories();
+        setItemViewModelMap();
+    }
+
     private void setupCategories() {
         movementReasonManager = MovementReasonManager.getInstance();
         List<MovementReasonManager.MovementReason> issueReasons = FluentIterable.from(movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
@@ -92,7 +101,9 @@ public class RapidTestReportViewModel implements Serializable {
 
     public RapidTestReportViewModel(ProgramDataForm programDataForm) {
         setRapidTestForm(programDataForm);
-        period = Period.of(programDataForm.getPeriodBegin());
+        DateTime beginDateTime = new DateTime(programDataForm.getPeriodBegin());
+        DateTime endDateTime = new DateTime(programDataForm.getPeriodEnd());
+        period = new Period(beginDateTime, endDateTime);
         observataion = programDataForm.getObservataion();
         setupCategories();
         setItemViewModelMap();
@@ -329,7 +340,9 @@ public class RapidTestReportViewModel implements Serializable {
         COMPLETED(false, 2),
         SYNCED(false, 3),
         FIRST_MISSING(false, 4),
-        UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD(false, 5);
+        UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD(false, 5),
+        CANNOT_DO_MONTHLY_INVENTORY(false, 6),
+        COMPLETE_INVENTORY(false, 7);
 
 
         @Getter

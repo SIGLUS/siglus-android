@@ -36,13 +36,14 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
 
     }
 
-    public Observable<RapidTestReportViewModel> loadViewModel(final long formId, final DateTime periodBegin) {
+    public Observable<RapidTestReportViewModel> loadViewModel(final long formId, final Period period) {
         return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
             @Override
             public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
                 try {
                     if (formId == 0) {
-                        generateNewRapidTestForm(periodBegin);
+                        generateNewRapidTestForm(period);
+                        saveForm();
                     } else {
                         convertProgramDataFormToRapidTestReportViewModel(programDataFormRepository.queryById(formId));
                     }
@@ -60,8 +61,8 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
         viewModel = new RapidTestReportViewModel(programDataForm);
     }
 
-    private void generateNewRapidTestForm(DateTime periodBegin) {
-        viewModel = new RapidTestReportViewModel(new Period(periodBegin));
+    private void generateNewRapidTestForm(Period period) {
+        viewModel = new RapidTestReportViewModel(period);
         viewModel.setStatus(RapidTestReportViewModel.Status.INCOMPLETE);
     }
 

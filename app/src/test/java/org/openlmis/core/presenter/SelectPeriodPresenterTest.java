@@ -72,7 +72,7 @@ public class SelectPeriodPresenterTest {
         selectPeriodPresenter = spy(selectPeriodPresenter);
         when(selectPeriodPresenter.getSubscriber()).thenReturn(testSubscriber);
 
-        selectPeriodPresenter.loadData("MMIA");
+        selectPeriodPresenter.loadData("MMIA", null);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
@@ -103,7 +103,7 @@ public class SelectPeriodPresenterTest {
         selectPeriodPresenter = spy(selectPeriodPresenter);
         when(selectPeriodPresenter.getSubscriber()).thenReturn(testSubscriber);
 
-        selectPeriodPresenter.loadData("MMIA");
+        selectPeriodPresenter.loadData("MMIA", null);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();

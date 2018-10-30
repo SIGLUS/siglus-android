@@ -14,10 +14,8 @@ import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
-import org.openlmis.core.view.activity.RnRFormListActivity;
 import org.openlmis.core.view.activity.SelectPeriodActivity;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
-import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
@@ -50,6 +48,12 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 btnReportEntry.setVisibility(View.INVISIBLE);
                 tvReportStatus.setText(Html.fromHtml(finishPreviousForm));
                 break;
+            case CANNOT_DO_MONTHLY_INVENTORY:
+                finishPreviousForm = context.getString(R.string.label_training_can_not_create_rapid_Test_rnr);
+                setGrayHeader();
+                btnReportEntry.setVisibility(View.INVISIBLE);
+                tvReportStatus.setText(Html.fromHtml(finishPreviousForm));
+                break;
             case FIRST_MISSING:
                 tvReportStatus.setText(Html.fromHtml(context.getString(R.string.Rapid_Test_missed_period)));
                 setGrayHeader();
@@ -63,6 +67,13 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 setBlueButton();
                 btnReportEntry.setText(context.getString(R.string.btn_view_uncompleted_physical_inventory));
                 btnReportEntry.setOnClickListener(goToInventory());
+                break;
+            case COMPLETE_INVENTORY:
+                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, "Rapid Test")));
+                setGrayHeader();
+                setBlueButton();
+                btnReportEntry.setText(context.getString(R.string.btn_view_completed_Rapid_Test_inventory));
+                btnReportEntry.setOnClickListener(goToSelectPeriod());
                 break;
             case INCOMPLETE:
                 setGrayHeader();
@@ -123,7 +134,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
             @Override
             public void onSingleClick(View v) {
                 ((BaseActivity) context).loading();
-                ((Activity) context).startActivityForResult(SelectPeriodActivity.getIntentToMe((Activity) context, Constants.RAPID_TEST_CODE), Constants.REQUEST_SELECT_PERIOD_END);
+                ((Activity) context).startActivityForResult(SelectPeriodActivity.getIntentToMe((Activity) context, Constants.RAPID_TEST_CODE, viewModel.getPeriod()), Constants.REQUEST_SELECT_PERIOD_END);
                 TrackRnREventUtil.trackRnRListEvent(TrackerActions.CreateRnR, Constants.RAPID_TEST_CODE);
                 ((BaseActivity) context).loaded();
             }
@@ -150,9 +161,9 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
             public void onSingleClick(View v) {
                 ((BaseActivity) context).loading();
                 if (viewModel.getRapidTestForm() == null) {
-                    ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, RapidTestReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
+                    ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, RapidTestReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod(),viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
                 } else {
-                    ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, viewModel.getRapidTestForm().getId(), viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
+                    ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, viewModel.getRapidTestForm().getId(), viewModel.getPeriod(), viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
                 }
                 ((BaseActivity) context).loaded();
             }

@@ -282,6 +282,7 @@
     <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b>No MMIA has been created.</b>]]></string>
     <string name="label_completed_physical_inventory_message"><![CDATA[<b>No %1$s has been created.</b>]]></string>
     <string name="btn_view_completed_physical_inventory">Create %1$s</string>
+    <string name="btn_view_completed_Rapid_Test_inventory">Create Rapid Test</string>
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> is incomplete.</string>
     <string name="btn_view_incomplete_requisition">Continue Working on %1$s</string>
     <string name="label_unsynced_mmia_requisition">This <![CDATA[<b>MMIA</b>]]> did not sync due to lack of internet connection.<![CDATA[<br/>]]>  The form will be submitted as soon as an internet connection is available.</string>
@@ -297,6 +298,7 @@
     <string name="label_emergency_date">Emergency Requisition – %s</string>
     <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>You will be able to create a MMIA on the 18th of %1$s</b>]]> </string>
     <string name="label_training_can_not_create_mmia_rnr"><![CDATA[<b>You will be able to create a MMIA in the next period</b>]]></string>
+    <string name="label_training_can_not_create_rapid_Test_rnr"><![CDATA[<b>You will be able to create a Rapid Test in the next period</b>]]></string>
     <string name="label_can_not_create_via_rnr"><![CDATA[<b>You will be able to create a requisition on the 18th of %1$s</b>]]> </string>
     <string name="label_training_can_not_create_via_rnr"><![CDATA[<b>You will be able to create a requisition in the next period</b>]]> </string>
     <string name="label_previous_period_missing"><![CDATA[<b>The form cannot be created</b> until previous periods are closed.<br> Please close all previous periods]]></string>

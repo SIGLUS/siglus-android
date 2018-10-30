@@ -7,14 +7,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
-import android.util.Log;
+import org.openlmis.core.model.Period;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -68,6 +66,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         loading();
         long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
+        Period period = (Period) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
 
         updateHeaderSize();
         setUpRowItems();
@@ -76,7 +75,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         if (isSavedInstanceState && presenter.getViewModel() != null) {
             updateUI();
         } else {
-            loadForm(formId, periodBegin);
+            loadForm(formId, period);
         }
     }
 
@@ -100,9 +99,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         ROW_HEADER_WIDTH = (int) getResources().getDimension(R.dimen.rapid_view_Header_view);
     }
 
-    private void loadForm(long formId, DateTime periodBegin) {
+    private void loadForm(long formId, Period period) {
         loading();
-        Subscription subscription = presenter.loadViewModel(formId, periodBegin).subscribe(getOnViewModelLoadedAction());
+        Subscription subscription = presenter.loadViewModel(formId, period).subscribe(getOnViewModelLoadedAction());
         subscriptions.add(subscription);
     }
 

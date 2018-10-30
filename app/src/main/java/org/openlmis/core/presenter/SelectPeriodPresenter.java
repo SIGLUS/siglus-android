@@ -12,6 +12,7 @@ import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -43,13 +44,18 @@ public class SelectPeriodPresenter extends Presenter {
         view = (SelectPeriodView) v;
     }
 
-    public void loadData(final String programCode) {
+    public void loadData(final String programCode, Period period) {
         view.loading();
         Subscription subscription = Observable.create(new Observable.OnSubscribe<List<SelectInventoryViewModel>>() {
             @Override
             public void call(Subscriber<? super List<SelectInventoryViewModel>> subscriber) {
                 try {
-                    Period periodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
+                    Period periodInSchedule;
+                    if (programCode != Constants.RAPID_TEST_CODE) {
+                        periodInSchedule = period;
+                    } else {
+                        periodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
+                    }
                     List<Inventory> inventories = inventoryRepository.queryPeriodInventory(periodInSchedule);
                     boolean isDefaultInventoryDate = false;
                     if (inventories.isEmpty()) {

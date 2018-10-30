@@ -7,9 +7,10 @@ import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Optional;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Period {
+public class Period implements Serializable {
 
     public static final int BEGIN_DAY = 21;
     public static final int END_DAY = 20;
