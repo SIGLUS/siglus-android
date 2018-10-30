@@ -20,6 +20,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.RapidTestReportFormPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
@@ -67,6 +68,12 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
         Period period = (Period) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
+        if(period != null) {
+            getActivity().setTitle(getString(R.string.label_rapid_test_title,
+                    DateUtil.formatDateWithoutYear(period.getBegin().toDate()),
+                    DateUtil.formatDateWithoutYear(period.getEnd().toDate())));
+        }
+
 
         updateHeaderSize();
         setUpRowItems();

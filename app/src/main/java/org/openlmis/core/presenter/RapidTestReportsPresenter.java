@@ -95,16 +95,16 @@ public class RapidTestReportsPresenter extends Presenter {
         }
 
         RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size()-1) : null;
-        if (lastViewModel != null && (lastViewModel.status == Status.FIRST_MISSING && lastViewModel.getPeriod().getEnd().isBeforeNow())) {
+        if (lastViewModel != null && (lastViewModel.status == Status.FIRST_MISSING && lastViewModel.getPeriod().getEnd().isAfterNow())) {
             Period lastPeriod = lastViewModel.getPeriod();
             List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(lastPeriod);
             RapidTestReportViewModel rapidTestReportViewModel;
             if (physicalInventories == null || physicalInventories.size() == 0) {
                 rapidTestReportViewModel =new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
             } else {
-                rapidTestReportViewModel = new RapidTestReportViewModel(lastPeriod,  Status.INCOMPLETE);
+                rapidTestReportViewModel = new RapidTestReportViewModel(lastPeriod,  Status.COMPLETE_INVENTORY);
             }
-            viewModelList.add(rapidTestReportViewModel);
+            viewModelList.set(viewModelList.size()-1, rapidTestReportViewModel);
         }
 
         if (isRapidTestListCompleted(viewModelList)){

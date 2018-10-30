@@ -57,9 +57,9 @@ public class RapidTestReportViewModel implements Serializable {
         setItemViewModelMap();
     }
 
-    public RapidTestReportViewModel(Period period, Status status) {
+    public RapidTestReportViewModel(Period period, Status statusInput) {
         this.period = period;
-        status = status;
+        status = statusInput;
         observataion = "";
         setupCategories();
         setItemViewModelMap();

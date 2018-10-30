@@ -51,8 +51,8 @@ public class SelectPeriodPresenter extends Presenter {
             public void call(Subscriber<? super List<SelectInventoryViewModel>> subscriber) {
                 try {
                     Period periodInSchedule;
-                    if (programCode != Constants.RAPID_TEST_CODE) {
-                        periodInSchedule = period;
+                    if (programCode.equals(Constants.RAPID_TEST_CODE)) {
+                        periodInSchedule = new Period(period.getBegin(), period.getEnd());
                     } else {
                         periodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
                     }

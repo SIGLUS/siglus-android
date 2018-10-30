@@ -122,6 +122,7 @@
     <string name="label_via_kit_hf">HF</string>
     <string name="label_via_kit_chw">CHW</string>
     <string name="label_requisition_title">Requisition - %1$s to %2$s</string>
+    <string name="label_rapid_test_title">Rapid Test - %1$s to %2$s</string>
     <string name="label_requisition_header_consultation_header">Normal Requisition</string>
     <string name="request_provincial_district_level">Requisition for Province or District Level</string>
     <string name="title_stock_move_ment">Stock Movements</string>

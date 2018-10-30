@@ -114,6 +114,7 @@
     <string name="label_via_kit_hf">US</string>
     <string name="label_via_kit_chw">APE</string>
     <string name="label_requisition_title">Requisição- %1$s a %2$s</string>
+    <string name="label_rapid_test_title">testes rápidos- %1$s a %2$s</string>
     <string name="label_requisition_header_consultation_header">Requisição normal </string>
     <string name="request_provincial_district_level">Requisição do nível provincial ou distrital</string>
     <string name="title_stock_move_ment">Movimento de estoque</string>

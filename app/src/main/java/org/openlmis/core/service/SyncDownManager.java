@@ -173,6 +173,7 @@ public class SyncDownManager {
         return new Subscriber<List<StockCard>>() {
             @Override
             public void onCompleted() {
+
             }
 
             @Override
