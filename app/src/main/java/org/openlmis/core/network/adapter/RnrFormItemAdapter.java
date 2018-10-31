@@ -1,5 +1,7 @@
 package org.openlmis.core.network.adapter;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -63,7 +65,9 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
 
         @Override
         public JsonElement serialize(Product src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonParser().parse(src.getCode());
+            String parseCode = src.getCode().contains(" ") ? "\""+src.getCode()+"\"" : src.getCode();
+            Log.e("123", parseCode);
+            return new JsonParser().parse(parseCode);
         }
     }
 }
