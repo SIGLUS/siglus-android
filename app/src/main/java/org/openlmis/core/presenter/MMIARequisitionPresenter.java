@@ -111,9 +111,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public boolean validateForm() {
-        return validateTotalsMatch(rnRForm) || rnRForm.getComments().length() >= 5;
-    }
 
     public void setViewModels(List<RnrFormItem> formItems, List<RegimenItem> regimenItemList, List<BaseInfoItem> baseInfoItemList, String comments) {
         rnRForm.setRnrFormItemListWrapper(formItems);
@@ -122,9 +119,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         rnRForm.setComments(comments);
     }
 
-    private boolean validateTotalsMatch(RnRForm form) {
-        return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
-    }
 
     public void setComments(String comments) {
         rnRForm.setComments(comments);

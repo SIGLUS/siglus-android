@@ -29,6 +29,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
@@ -353,13 +354,17 @@ public class RnrFormRepository {
     }
 
     protected long lastRnrInventory(StockCard stockCard) throws LMISException {
+        return lastRnrInventory(stockCard.getProduct());
+    }
+
+    protected long lastRnrInventory(Product product) throws LMISException {
         List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.No, programCode);
         if (rnRForms.isEmpty() || rnRForms.size() == 1) {
             return 0;
         }
         List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
         for (RnrFormItem item : rnrFormItemListWrapper) {
-            if (item.getProduct().getId() == stockCard.getProduct().getId()) {
+            if (item.getProduct().getId() == product.getId()) {
                 return item.getInventory();
             }
         }

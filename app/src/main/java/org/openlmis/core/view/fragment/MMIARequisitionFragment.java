@@ -271,9 +271,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
             public void onSingleClick(View v) {
                 if (rnrFormList.isCompleted() && regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
                     presenter.setViewModels(rnrFormList.itemFormList, regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-                    if (!presenter.validateForm()) {
-                        showValidationAlert();
-                    } else if (!presenter.validateFormPeriod()) {
+                    if (!presenter.validateFormPeriod()) {
                         ToastUtil.show(R.string.msg_requisition_not_unique);
                     } else {
                         showSignDialog();
@@ -332,7 +330,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     TextWatcher commentTextWatcher = new SimpleTextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
-            highlightTotalDifference();
             presenter.setComments(s.toString());
         }
     };
@@ -340,20 +337,13 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     TextWatcher totalTextWatcher = new SimpleTextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
-            highlightTotalDifference();
         }
     };
 
     private void highlightTotalDifference() {
-        if (isHistoryForm() || hasEmptyColumn() || isTotalEqual() || etComment.getText().toString().length() >= 5) {
             regimeListView.deHighLightTotal();
             mmiaInfoListView.deHighLightTotal();
             tvMismatch.setVisibility(View.INVISIBLE);
-        } else {
-            regimeListView.highLightTotal();
-            mmiaInfoListView.highLightTotal();
-            tvMismatch.setVisibility(View.VISIBLE);
-        }
     }
 
     private boolean hasEmptyColumn() {

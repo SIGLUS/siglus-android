@@ -189,14 +189,23 @@ public class MMIARepository extends RnrFormRepository {
             RnrFormItem rnrFormItem = new RnrFormItem();
             rnrFormItem.setForm(form);
             rnrFormItem.setProduct(product);
-            for (RnrFormItem item : rnrFormItems) {
-                if (item.getProduct().getId() == product.getId()) {
-                    rnrFormItem = item;
-                    break;
-                }
+            RnrFormItem stockFormItem = getStockCardRnr(product, rnrFormItems);
+            if (stockFormItem == null) {
+                rnrFormItem.setInitialAmount(lastRnrInventory(product));
+            } else {
+                rnrFormItem = stockFormItem;
             }
             result.add(rnrFormItem);
         }
         return result;
+    }
+
+    private RnrFormItem getStockCardRnr(Product product, List<RnrFormItem> rnrStockFormItems) {
+        for (RnrFormItem item : rnrStockFormItems) {
+            if (item.getProduct().getId() == product.getId()) {
+                return  item;
+            }
+        }
+        return null;
     }
 }

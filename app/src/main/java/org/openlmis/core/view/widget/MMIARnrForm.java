@@ -178,6 +178,7 @@ public class MMIARnrForm extends LinearLayout {
         leftViewGroup.addView(leftView);
         setLeftViewColor(medicineType, leftView);
         ViewGroup rightView = inflateRightView();
+
         rightViewGroup.addView(rightView);
         setItemSize(leftView, rightView);
     }
@@ -271,12 +272,10 @@ public class MMIARnrForm extends LinearLayout {
             tvInitialAmount.setText(R.string.label_initial_amount);
             tvReceived.setText(R.string.label_received_mmia);
             etIssued.setText(R.string.label_issued_mmia);
-            etIssued.setEnabled(false);
             etAdjustment.setText(R.string.label_adjustment);
-            etAdjustment.setEnabled(false);
             etInventory.setText(R.string.label_inventory);
-            etInventory.setEnabled(false);
             tvValidate.setText(R.string.label_validate);
+            enableEditText(false, etIssued, etAdjustment, etInventory);
 
             inflate.setBackgroundResource(R.color.color_mmia_info_name);
 
@@ -284,7 +283,6 @@ public class MMIARnrForm extends LinearLayout {
             tvIssuedUnit.setText(item.getProduct().getStrength());
 
             boolean isArchived = item.getProduct().isArchived();
-
             tvInitialAmount.setText(String.valueOf(isArchived ? 0 : item.getInitialAmount()));
             tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
             etIssued.setText(getValue(isArchived, item.getIssued()));
@@ -294,6 +292,7 @@ public class MMIARnrForm extends LinearLayout {
             editTexts.add(etAdjustment);
             etInventory.setText(getValue(isArchived, item.getInventory()));
             editTexts.add(etInventory);
+            enableEditText(true, etIssued, etAdjustment, etInventory);
             setTextWatcher(etIssued, etAdjustment, etInventory, item);
 
             rightViewGroup.addView(inflate);
@@ -307,6 +306,12 @@ public class MMIARnrForm extends LinearLayout {
             }
         }
         return inflate;
+    }
+
+    private void enableEditText(Boolean enable, EditText etIssued, EditText etAdjustment, EditText etInventory) {
+        etIssued.setEnabled(enable);
+        etAdjustment.setEnabled(enable);
+        etInventory.setEnabled(enable);
     }
 
     private void setTextWatcher(EditText etIssued, EditText etAdjustment, EditText etInventory, RnrFormItem item) {
