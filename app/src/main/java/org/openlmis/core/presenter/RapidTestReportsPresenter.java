@@ -81,56 +81,79 @@ public class RapidTestReportsPresenter extends Presenter {
 
     protected void generateViewModelsForAllPeriods() throws LMISException {
         Optional<Period> period = periodService.getFirstStandardPeriod();
-        if (!period.isPresent()) {return;}
-        List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(RAPID_TEST_CODE);
-        isHaveFirstPeriod = isAllRapidTestFormInDBCompleted(rapidTestForms) ? false : true;
-        while (period.isPresent()) {
-            RapidTestReportViewModel rapidTestReportViewModel = getViewModel(period.get(), rapidTestForms);
-            viewModelList.add(rapidTestReportViewModel);
-            period = generateNextPeriod(rapidTestReportViewModel.getPeriod().getEnd());
-        }
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            RapidTestReportViewModel rapidTestReportViewModel = getViewModel(period.get(), rapidTestForms);
-            viewModelList.add(rapidTestReportViewModel);
-        }
+        if (period.isPresent()) {
+            List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(RAPID_TEST_CODE);
+            isHaveFirstPeriod = isAllRapidTestFormInDBCompleted(rapidTestForms) ? false : true;
+            while (period.isPresent()) {
+                RapidTestReportViewModel rapidTestReportViewModel = getViewModel(period.get(), rapidTestForms);
+                viewModelList.add(rapidTestReportViewModel);
+                period = generateNextPeriod(rapidTestReportViewModel.getPeriod().getEnd());
+            }
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+                RapidTestReportViewModel rapidTestReportViewModel = getViewModel(period.get(), rapidTestForms);
+                viewModelList.add(rapidTestReportViewModel);
+            }
 
-        RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size()-1) : null;
-        if (lastViewModel != null && (lastViewModel.status == Status.FIRST_MISSING && lastViewModel.getPeriod().getEnd().isAfterNow())) {
+            RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
+            if (lastViewModel != null && (lastViewModel.status == Status.FIRST_MISSING && lastViewModel.getPeriod().getEnd().isAfterNow())) {
 
-            DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
-            DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
+                DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+                DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
 
-            if (dateTime.getDayOfMonth() >= 18 && dateTime.getMonthOfYear() == endDateTime.getMonthOfYear()) {
-                Period currentPeriod = lastViewModel.getPeriod();
-                Period lastPeriod = new Period(currentPeriod.getBegin(), currentPeriod.getEnd());
-                List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(lastPeriod);
-                RapidTestReportViewModel rapidTestReportViewModel;
-                if (physicalInventories == null || physicalInventories.size() == 0) {
-                    rapidTestReportViewModel = new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+                if (dateTime.getDayOfMonth() >= 18 && dateTime.getMonthOfYear() == endDateTime.getMonthOfYear()) {
+                    Period currentPeriod = lastViewModel.getPeriod();
+                    Period lastPeriod = new Period(currentPeriod.getBegin(), currentPeriod.getEnd());
+                    List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(lastPeriod);
+                    RapidTestReportViewModel rapidTestReportViewModel;
+                    if (physicalInventories == null || physicalInventories.size() == 0) {
+                        rapidTestReportViewModel = new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+                    } else {
+                        rapidTestReportViewModel = new RapidTestReportViewModel(lastPeriod, Status.COMPLETE_INVENTORY);
+                    }
+                    viewModelList.set(viewModelList.size() - 1, rapidTestReportViewModel);
                 } else {
-                    rapidTestReportViewModel = new RapidTestReportViewModel(lastPeriod, Status.COMPLETE_INVENTORY);
+                    RapidTestReportViewModel rapidTest = new RapidTestReportViewModel(lastViewModel.getPeriod(), RapidTestReportViewModel.Status.CANNOT_DO_MONTHLY_INVENTORY);
+                    viewModelList.set(viewModelList.size() - 1, rapidTest);
                 }
-                viewModelList.set(viewModelList.size() - 1, rapidTestReportViewModel);
-            } else {
-                RapidTestReportViewModel rapidTest = new RapidTestReportViewModel(lastViewModel.getPeriod(), RapidTestReportViewModel.Status.CANNOT_DO_MONTHLY_INVENTORY);
-                viewModelList.set(viewModelList.size() - 1, rapidTest);
             }
         }
 
+        RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
         if (isRapidTestListCompleted(viewModelList)){
-            DateTime currentPeriod = lastViewModel != null ? lastViewModel.getPeriod().getEnd() : period.get().getBegin();
+            DateTime currentPeriod;
+            if (lastViewModel == null) {
+                if (period.isPresent()) {
+                    currentPeriod = period.get().getBegin();
+                } else  {
+                    currentPeriod = new DateTime( new DateTime(LMISApp.getInstance().getCurrentTimeMillis()));
+                }
+            } else {
+                currentPeriod = period.get().getEnd();
+            }
             Period periodLast = generateNextAvailablePeriod(currentPeriod);
             RapidTestReportViewModel rapidTest = generateRnrFormViewModelWithoutRnrForm(periodLast);
             if (rapidTest != null) {
                 viewModelList.add(rapidTest);
             }
         }
+        viewModelList = removeGreaterThanData(viewModelList);
         Collections.sort(viewModelList, new Comparator<RapidTestReportViewModel>() {
             @Override
             public int compare(RapidTestReportViewModel lhs, RapidTestReportViewModel rhs) {
                 return rhs.getPeriod().getBegin().toDate().compareTo(lhs.getPeriod().getBegin().toDate());
             }
         });
+    }
+
+    private List<RapidTestReportViewModel> removeGreaterThanData(List<RapidTestReportViewModel> list) {
+        if(list.size() > 13) {
+               if (list.get(0).status != Status.FIRST_MISSING &&
+                       list.get(1).status != Status.FIRST_MISSING) {
+               list.remove(0);
+               return removeGreaterThanData(list);
+           }
+        }
+        return list;
     }
 
     private Optional<Period> generateNextPeriod(DateTime beginDate) {
@@ -141,7 +164,7 @@ public class RapidTestReportsPresenter extends Presenter {
     private Period generateNextAvailablePeriod(DateTime beginDate) {
         DateTime  periodEndDate;
         Calendar date = Calendar.getInstance();
-        date.set(beginDate.getYear(), beginDate.getMonthOfYear(), Period.BEGIN_DAY);
+        date.set(beginDate.getYear(), beginDate.getMonthOfYear(), Period.INVENTORY_END_DAY_NEXT);
         periodEndDate = DateUtil.cutTimeStamp(new DateTime(date));
         Period period = new Period(beginDate, periodEndDate);
         return period;
