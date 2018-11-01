@@ -217,8 +217,8 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickAL(View view) {
-        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.AL_PROGRAM_CODE));
-//        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, Constants.AL_PROGRAM_CODE);
+        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.AL_PROGRAM));
+        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectAL, Constants.AL_PROGRAM_CODE);
     }
 
     public void syncData() {
@@ -227,12 +227,12 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickMMIAHistory(View view) {
-        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.MMIA_PROGRAM_CODE));
+        startActivity(RnRFormListActivity.getIntentToMe(this,  Constants.Program.MMIA_PROGRAM));
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectMMIA, Constants.MMIA_PROGRAM_CODE);
     }
 
     public void onClickVIAHistory(View view) {
-        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.VIA_PROGRAM_CODE));
+        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.VIA_PROGRAM));
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, Constants.VIA_PROGRAM_CODE);
     }
 

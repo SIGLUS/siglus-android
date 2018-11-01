@@ -7,6 +7,7 @@ public enum ScreenName {
     LoginScreen("Login Screen"),
     RapidTestScreen("Rapid Test Screen"),
     MMIARequisitionScreen("MMIA Requisition Screen"),
+    ALRequisitionScreen("AL Requisition Screen"),
     VIARequisitionScreen("VIA Requisition Screen"),
     RnRFormHistoryScreen("RnR Form History Screen"),
     StockCardOverviewScreen("StockCard Overview Screen"),

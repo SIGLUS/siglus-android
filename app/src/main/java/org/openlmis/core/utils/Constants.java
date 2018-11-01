@@ -18,9 +18,36 @@
 
 package org.openlmis.core.utils;
 
+import android.support.annotation.StyleRes;
+
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
+import org.openlmis.core.view.activity.BaseActivity;
 
 public final class Constants {
+
+    public enum Program {
+        MMIA_PROGRAM(MMIA_PROGRAM_CODE, R.string.mmia_list),
+        VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list),
+        AL_PROGRAM(AL_PROGRAM_CODE, R.string.al_report_list);
+
+
+        private String code;
+        private int title;
+
+        Program(String code, int title) {
+            this.code = code;
+            this.title = title;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public int getTitle() {
+            return title;
+        }
+    }
 
     // Don't change these program codes!!!
     public static final String MMIA_PROGRAM_CODE = "MMIA";

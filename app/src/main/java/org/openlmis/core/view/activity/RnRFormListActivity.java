@@ -77,12 +77,12 @@ public class RnRFormListActivity extends BaseReportListActivity {
     RnRFormListPresenter presenter;
     private ArrayList<RnRFormViewModel> data;
 
-    private String programCode;
+    private Constants.Program program;
     private RnRFormListAdapter adapter;
     @Inject
     private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
-    public static Intent getIntentToMe(Context context, String programCode) {
+    public static Intent getIntentToMe(Context context, Constants.Program programCode) {
         Intent intent = new Intent(context, RnRFormListActivity.class);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, programCode);
         return intent;
@@ -97,15 +97,15 @@ public class RnRFormListActivity extends BaseReportListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        programCode = getProgramCode();
+        program = getProgram();
 
-        setTitle(isMMIA() ? R.string.mmia_list : R.string.requisition_list);
+        setTitle(program.getTitle());
 
         if (!SharedPreferenceMgr.getInstance().hasDeletedOldRnr()) {
             tvArchivedOldData.setVisibility(View.GONE);
         }
 
-        presenter.setProgramCode(programCode);
+        presenter.setProgramCode(program.getCode());
 
         listView.setLayoutManager(new LinearLayoutManager(this));
         listView.setHasFixedSize(true);
@@ -116,16 +116,25 @@ public class RnRFormListActivity extends BaseReportListActivity {
         loadForms();
     }
 
-    private String getProgramCode() {
-        if (programCode == null) {
-            programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
+    private Constants.Program getProgram() {
+        if (program == null) {
+            program = (Constants.Program) getIntent().getSerializableExtra(Constants.PARAM_PROGRAM_CODE);
         }
-        return programCode;
+        return program;
     }
 
     @Override
     protected int getThemeRes() {
-        return isMMIA() ? R.style.AppTheme_AMBER : R.style.AppTheme_PURPLE;
+        if (program == null) program = getProgram();
+        switch (program) {
+            case VIA_PROGRAM:
+                return R.style.AppTheme_PURPLE;
+            case MMIA_PROGRAM:
+                return R.style.AppTheme_AMBER;
+            case AL_PROGRAM:
+                return R.style.AppTheme_LIGHT_BLUE;
+        }
+        return R.style.AppTheme_AMBER;
     }
 
     @Override
@@ -171,7 +180,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
                     break;
                 case RnRFormViewModel.TYPE_INVENTORY_DONE:
                     startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, model.getProgramCode()), Constants.REQUEST_SELECT_PERIOD_END);
-                    TrackRnREventUtil.trackRnRListEvent(TrackerActions.CreateRnR, programCode);
+                    TrackRnREventUtil.trackRnRListEvent(TrackerActions.CreateRnR, program.getCode());
                     break;
                 case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
                     rnrFormId = model.getId();
@@ -200,17 +209,34 @@ public class RnRFormListActivity extends BaseReportListActivity {
     }
 
     private void goToRequisitionPage(long rnrFormId) {
-        Intent intent = isMMIA() ? MMIARequisitionActivity.getIntentToMe(this, rnrFormId) : VIARequisitionActivity.getIntentToMe(this, rnrFormId);
+        Intent intent = null;
+        switch (program) {
+            case MMIA_PROGRAM:
+                intent = MMIARequisitionActivity.getIntentToMe(this, rnrFormId);
+                break;
+            case VIA_PROGRAM:
+                intent = VIARequisitionActivity.getIntentToMe(this, rnrFormId);
+                break;
+            case AL_PROGRAM:
+                intent = ALRequisitionActivity.getIntentToMe(this, rnrFormId);
+                break;
+        }
         startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }
 
-    private boolean isMMIA() {
-        return Constants.MMIA_PROGRAM_CODE.equals(getProgramCode());
-    }
-
     private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
-        Intent intent = isMMIA() ? createMMIARequisitionIntent(periodEndDate)
-                : VIARequisitionActivity.getIntentToMe(this, periodEndDate, isMissedPeriod);
+        Intent intent = null;
+        switch (program) {
+            case MMIA_PROGRAM:
+                intent = createMMIARequisitionIntent(periodEndDate);
+                break;
+            case VIA_PROGRAM:
+                intent = VIARequisitionActivity.getIntentToMe(this, periodEndDate, isMissedPeriod);
+                break;
+            case AL_PROGRAM:
+                intent = ALRequisitionActivity.getIntentToMe(this, periodEndDate);
+                break;
+        }
         startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }
 
@@ -218,6 +244,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
         RnRFormViewModel viewModel = data.size() > 1 ? data.get(data.size() - 2) : null;
         return MMIARequisitionActivity.getIntentToMe(this, periodEndDate, viewModel);
     }
+
 
     private void deleteRnRForm(RnRForm form) {
         try {
@@ -262,7 +289,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isPrepare = super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.action_create_emergency_rnr).setVisible(!isMMIA());
+        menu.findItem(R.id.action_create_emergency_rnr).setVisible(program.getCode().equals(Constants.VIA_PROGRAM_CODE));
         return isPrepare;
     }
 
