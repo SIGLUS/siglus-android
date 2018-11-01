@@ -18,10 +18,14 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,18 +37,15 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.SingleTextWatcher;
+import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ViewUtil;
-import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import lombok.Getter;
 
@@ -62,7 +63,7 @@ public class MMIARnrForm extends LinearLayout {
 
     @Getter
     private RnrFormHorizontalScrollView rnrItemsHorizontalScrollView;
-    private List<EditText> editTexts = new ArrayList<>();
+    private List<Pair<EditText, TextWatcher>> editTexts = new ArrayList<>();
 
     @Getter
     private View leftHeaderView;
@@ -77,6 +78,13 @@ public class MMIARnrForm extends LinearLayout {
     public MMIARnrForm(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
+    }
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+       for (Pair<EditText, TextWatcher> editText: editTexts) {
+           editText.first.removeTextChangedListener(editText.second);
+       }
     }
 
     private void init(Context context) {
@@ -130,10 +138,10 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     public boolean isCompleted() {
-        for (EditText editText : editTexts) {
-            if (TextUtils.isEmpty(editText.getText().toString()) || !isValidate(editText)) {
-                editText.setError(context.getString(R.string.hint_error_input));
-                editText.requestFocus();
+        for (Pair<EditText, TextWatcher> editText : editTexts) {
+            if (TextUtils.isEmpty(editText.first.getText().toString()) || !isValidate(editText.first)) {
+                editText.first.setError(context.getString(R.string.hint_error_input));
+                editText.first.requestFocus();
                 return false;
             }
         }
@@ -281,19 +289,25 @@ public class MMIARnrForm extends LinearLayout {
 
         } else {
             tvIssuedUnit.setText(item.getProduct().getStrength());
-
             boolean isArchived = item.getProduct().isArchived();
             tvInitialAmount.setText(String.valueOf(isArchived ? 0 : item.getInitialAmount()));
             tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
+            EditTextWatcher twIssued = new EditTextWatcher(item, etIssued);
+            EditTextWatcher twAdjustment= new EditTextWatcher(item, etAdjustment);
+            EditTextWatcher twInventory = new EditTextWatcher(item, etInventory);
+
+            etIssued.addTextChangedListener(twIssued);
+            etAdjustment.addTextChangedListener(twAdjustment);
+            etInventory.addTextChangedListener(twInventory);
+
             etIssued.setText(getValue(isArchived, item.getIssued()));
-            editTexts.add(etIssued);
+            editTexts.add(new Pair<>(etIssued, twIssued));
             etAdjustment.setText(getValue(isArchived, item.getAdjustment()));
             etAdjustment.setInputType(InputType.TYPE_CLASS_NUMBER| InputType.TYPE_NUMBER_FLAG_SIGNED);
-            editTexts.add(etAdjustment);
+            editTexts.add(new Pair<>(etAdjustment, twAdjustment));
             etInventory.setText(getValue(isArchived, item.getInventory()));
-            editTexts.add(etInventory);
+            editTexts.add(new Pair<>(etInventory, twInventory));
             enableEditText(true, etIssued, etAdjustment, etInventory);
-            setTextWatcher(etIssued, etAdjustment, etInventory, item);
 
             rightViewGroup.addView(inflate);
 
@@ -314,20 +328,6 @@ public class MMIARnrForm extends LinearLayout {
         etInventory.setEnabled(enable);
     }
 
-    private void setTextWatcher(EditText etIssued, EditText etAdjustment, EditText etInventory, RnrFormItem item) {
-        EditTextWatcher twIssued = new EditTextWatcher(item, etIssued);
-        EditTextWatcher twAdjustment= new EditTextWatcher(item, etAdjustment);
-        EditTextWatcher twInventory = new EditTextWatcher(item, etInventory);
-
-        etIssued.removeTextChangedListener(twIssued);
-        etAdjustment.removeTextChangedListener(twAdjustment);
-        etInventory.removeTextChangedListener(twInventory);
-
-        etIssued.addTextChangedListener(twIssued);
-        etAdjustment.addTextChangedListener(twAdjustment);
-        etInventory.addTextChangedListener(twInventory);
-
-    }
 
     private String getValue(Boolean isArchived, Long vaule) {
         if (isArchived) return String.valueOf(0);
@@ -347,7 +347,7 @@ public class MMIARnrForm extends LinearLayout {
         return (int) getResources().getDimension(R.dimen.divider);
     }
 
-    class EditTextWatcher extends SingleTextWatcher {
+    class EditTextWatcher extends SimpleTextWatcher {
         private final RnrFormItem item;
         private final EditText editText;
 
