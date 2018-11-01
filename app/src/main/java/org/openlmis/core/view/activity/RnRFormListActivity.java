@@ -44,6 +44,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ProgramUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
@@ -126,15 +127,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
     @Override
     protected int getThemeRes() {
         if (program == null) program = getProgram();
-        switch (program) {
-            case VIA_PROGRAM:
-                return R.style.AppTheme_PURPLE;
-            case MMIA_PROGRAM:
-                return R.style.AppTheme_AMBER;
-            case AL_PROGRAM:
-                return R.style.AppTheme_LIGHT_BLUE;
-        }
-        return R.style.AppTheme_AMBER;
+        return ProgramUtil.getThemeRes(program.getCode());
     }
 
     @Override

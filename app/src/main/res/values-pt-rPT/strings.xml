@@ -254,6 +254,7 @@
     <!--Rnr form historical list-->
     <string name="label_via_name">Requisição Balancete</string>
     <string name="label_mmia_name">MMIA</string>
+    <string name="label_al_name">AL lista de relatórios</string>
     <string name="btn_view_completed_Rapid_Test_inventory">Criar testes rápidos</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
@@ -282,8 +283,8 @@
     <string name="label_emergency_date">Requisição de Emergencia – %s</string>
     <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA a partir do dia 18 de %1$s</b>]]></string>
     <string name="label_training_can_not_create_mmia_rnr"><![CDATA[<b>Você poderá criar um MMIA no próximo período</b>]]></string>
-    <string name="label_can_not_create_via_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
-    <string name="label_training_can_not_create_via_rnr"><![CDATA[<b>Você poderá criar uma requisição no próximo período</b>]]></string>
+    <string name="label_can_not_create_report_rnr"><![CDATA[<b>Você será capaz de criar uma %1$s no dia 18 de %2$s</b>]]></string>
+    <string name="label_training_can_not_create_report_rnr"><![CDATA[<b>Você poderá criar uma %1$s no próximo período</b>]]></string>
     <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
     <string name="Rapid_Test_missed_period"><![CDATA[<b>testes rápidos está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>

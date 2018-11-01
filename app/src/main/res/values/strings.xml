@@ -82,6 +82,7 @@
 
     <!--MMIA-->
     <string name="label_mmia_title">MMIA - %1$s to %2$s</string>
+    <string name="label_AL_title">AL - %1$s to %2$s</string>
     <string name="label_rnrfrom_left_header">Medicine</string>
     <string name="label_regime_header_name">Therapeutic Regime</string>
     <string name="total">Total</string>
@@ -274,6 +275,7 @@
     <!-- Rnr form historical list -->
     <string name="label_via_name">Requisition Balancete</string>
     <string name="label_mmia_name">MMIA</string>
+    <string name="label_al_name">AL Report List</string>
     <string name="action_delete_rnr_form">Remove from tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b>No MMIA has been created.</b>]]> Complete your inventory before creating a MMIA</string>
     <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b>No Rapid Test has been created.</b>]]> Complete your inventory before creating a MMIA</string>
@@ -301,8 +303,8 @@
     <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>You will be able to create a MMIA on the 18th of %1$s</b>]]> </string>
     <string name="label_training_can_not_create_mmia_rnr"><![CDATA[<b>You will be able to create a MMIA in the next period</b>]]></string>
     <string name="label_training_can_not_create_rapid_Test_rnr"><![CDATA[<b>You will be able to create a Rapid Test in the next period</b>]]></string>
-    <string name="label_can_not_create_via_rnr"><![CDATA[<b>You will be able to create a requisition on the 18th of %1$s</b>]]> </string>
-    <string name="label_training_can_not_create_via_rnr"><![CDATA[<b>You will be able to create a requisition in the next period</b>]]> </string>
+    <string name="label_can_not_create_report_rnr"><![CDATA[<b>You will be able to create a %1$s on the 18th of %2$s</b>]]> </string>
+    <string name="label_training_can_not_create_report_rnr"><![CDATA[<b>You will be able to create a %1$s in the next period</b>]]> </string>
     <string name="label_previous_period_missing"><![CDATA[<b>The form cannot be created</b> until previous periods are closed.<br> Please close all previous periods]]></string>
     <string name="label_missed_period"><![CDATA[<b> is overdue and no inventory was taken.</b> A requisition will be automatically generated using the stock on hand amounts at the close of the period]]></string>
     <string name="Rapid_Test_missed_period"><![CDATA[<b>Rapid Test is overdue and no inventory was taken.</b> A requisition will be automatically generated using the stock on hand amounts at the close of the period]]></string>

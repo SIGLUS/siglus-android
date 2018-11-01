@@ -92,6 +92,11 @@
             android:label="@string/label_mmia_title"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".view.activity.ALRequisitionActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/label_AL_title"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".view.activity.ArchivedDrugsListActivity"
             android:label="@string/title_archived_drugs"
             android:screenOrientation="portrait"

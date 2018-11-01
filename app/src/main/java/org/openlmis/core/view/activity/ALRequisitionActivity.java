@@ -24,6 +24,7 @@ import android.content.Intent;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.fragment.ALRequisitionFragment;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
@@ -31,7 +32,7 @@ import java.util.Date;
 
 import roboguice.inject.ContentView;
 
-@ContentView(R.layout.activity_mmia_requisition)
+@ContentView(R.layout.activity_al_requisition)
 public class ALRequisitionActivity extends BaseActivity {
 
     @Override
@@ -46,7 +47,7 @@ public class ALRequisitionActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        ((MMIARequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
+        ((ALRequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
     }
 
     public static Intent getIntentToMe(Context context, long formId) {

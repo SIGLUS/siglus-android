@@ -66,7 +66,7 @@ public class ALRequisitionFragment extends BaseReportFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        containerView = inflater.inflate(R.layout.fragment_mmia_requisition, container, false);
+        containerView = inflater.inflate(R.layout.fragment_al_requisition, container, false);
         return containerView;
     }
 
@@ -83,6 +83,10 @@ public class ALRequisitionFragment extends BaseReportFragment {
     @Override
     protected String getNotifyDialogMsg() {
         return getString(R.string.msg_requisition_signature_message_notify_mmia);
+    }
+
+    public void onBackPressed() {
+        finish();
     }
 
 }

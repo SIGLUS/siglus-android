@@ -78,7 +78,8 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         if (baseView instanceof BaseRequisitionView) {
             this.view = (BaseRequisitionView) baseView;
         } else {
-            throw new ViewNotMatchException("required VIARequisitionView");
+            //TODO:  temp not tip it
+//            throw new ViewNotMatchException("required VIARequisitionView");
         }
     }
 
