@@ -43,15 +43,38 @@
                     android:layout_weight="2"
                     android:orientation="vertical">
 
-                    <Button
-                        android:id="@+id/btn_inventory"
-                        style="@style/Homepage.Button"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="20dp"
-                        android:background="@color/color_blue"
-                        android:onClick="onClickInventory"
-                        android:text="@string/button_inventory" />
+                        android:layout_weight="1"
+                        >
+                        <Button
+                            android:id="@+id/btn_inventory"
+                            style="@style/Homepage.Button"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="20dp"
+                            android:background="@color/color_blue"
+                            android:onClick="onClickInventory"
+                            android:text="@string/button_inventory" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        >
+                        <Button
+                            android:id="@+id/btn_al"
+                            style="@style/Homepage.Button"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="20dp"
+                            android:background="@color/color_light_blue"
+                            android:onClick="onClickAL"
+                            android:text="@string/button_AL" />
+                    </RelativeLayout>
+
                 </LinearLayout>
 
                 <LinearLayout

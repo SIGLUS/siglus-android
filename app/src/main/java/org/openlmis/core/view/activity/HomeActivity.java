@@ -216,6 +216,11 @@ public class HomeActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    public void onClickAL(View view) {
+        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.AL_PROGRAM_CODE));
+//        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, Constants.AL_PROGRAM_CODE);
+    }
+
     public void syncData() {
         Log.d("HomeActivity", "requesting immediate sync");
         syncService.requestSyncImmediately();

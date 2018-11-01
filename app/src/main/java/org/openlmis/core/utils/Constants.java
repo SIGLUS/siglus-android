@@ -27,6 +27,7 @@ public final class Constants {
     public static final String VIA_PROGRAM_CODE = "VIA";
     public static final String ESS_PROGRAM_CODE = "ESS_MEDS";
     public static final String RAPID_TEST_CODE = "RAPID_TEST";
+    public static final String AL_PROGRAM_CODE = "MALARIA";
 
     // Intent Params
     public static final String PARAM_STOCK_CARD_ID = "stockCardId";

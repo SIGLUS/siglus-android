@@ -96,6 +96,7 @@
     <string name="label_received_mmia">Entries</string>
     <string name="label_issued_mmia">Issues</string>
     <string name="label_adjustment">Adjustments</string>
+    <string name="button_AL">AL</string>
     <string name="button_inventory">Inventory</string>
     <string name="label_inventory">Inventory</string>
     <string name="label_validate">Expiration</string>
