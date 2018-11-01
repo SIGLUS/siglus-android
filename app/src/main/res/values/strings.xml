@@ -276,7 +276,7 @@
     <string name="label_mmia_name">MMIA</string>
     <string name="action_delete_rnr_form">Remove from tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b>No MMIA has been created.</b>]]> Complete your inventory before creating a MMIA</string>
-    <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b>No Rapid Test has been created.</b>]]> Complete your inventory before creating a MMIA</string>
+    <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b>No Rapid Test has been created.</b>]]> Complete your inventory before creating a Rapid Test</string>
     <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b>No %1$s has been created.</b>]]> Complete your inventory before creating a requisition</string>
     <string name="btn_view_uncompleted_physical_inventory">Complete Inventory</string>
     <string name="label_select_close_of_period"><![CDATA[Please select an inventory from the list below. Only inventories made on or between the <b>18th</b> and the <b>25th</b> of <b>%1$s</b> can be used to close the period. Today\'s date is <b>%2$s</b>]]></string>
