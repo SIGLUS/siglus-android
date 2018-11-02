@@ -60,7 +60,7 @@ public class RapidTestReportFormPresenterTest {
 
         //generate new view model
         TestSubscriber<RapidTestReportViewModel> subscriber1 = new TestSubscriber<>();
-        Observable<RapidTestReportViewModel> observable1 = rapidTestReportFormPresenter.loadViewModel(0L, period.getBegin());
+        Observable<RapidTestReportViewModel> observable1 = rapidTestReportFormPresenter.loadViewModel(0L, period);
         observable1.subscribe(subscriber1);
         subscriber1.awaitTerminalEvent();
 
@@ -89,7 +89,7 @@ public class RapidTestReportFormPresenterTest {
         when(programDataFormRepositoryMock.queryById(anyInt())).thenReturn(form);
         TestSubscriber<RapidTestReportViewModel> subscriber2 = new TestSubscriber<>();
         rapidTestReportFormPresenter.viewModel = null;
-        Observable<RapidTestReportViewModel> observable2 = rapidTestReportFormPresenter.loadViewModel(1L, period.getBegin());
+        Observable<RapidTestReportViewModel> observable2 = rapidTestReportFormPresenter.loadViewModel(1L, period);
         observable2.subscribe(subscriber2);
         subscriber2.awaitTerminalEvent();
 
