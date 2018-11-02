@@ -1,5 +1,6 @@
 package org.openlmis.core.view.holder;
 
+import android.annotation.SuppressLint;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.MenuItem;
@@ -47,6 +48,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         this.itemClickListener = itemClickListener;
     }
 
+    @SuppressLint("StringFormatMatches")
     public void populate(final RnRFormViewModel model) {
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_MISSED_PERIOD:
@@ -66,7 +68,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 break;
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
                 configHolder(model.getTitle(),
-                        Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())),
+                        Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName(), model.getName())),
                         R.drawable.ic_description, R.color.color_draft_title, color_white);
                 setupButton(model, context.getString(R.string.btn_view_uncompleted_physical_inventory));
                 break;

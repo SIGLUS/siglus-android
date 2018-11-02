@@ -259,9 +259,7 @@
     <string name="action_delete_rnr_form">Remover do tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
     <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b> Nenhum testes rápidos foi criada.</b>]]> Complete o seu inventário antes de criar um testes rápidos</string>
-    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma%1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição
-
-.</string>
+    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma %2$s </string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
     <string name="label_training_select_close_of_period"><![CDATA[Por favor, selecione um inventário da lista abaixo. A data de hoje é <b>%2$s</b>]]></string>

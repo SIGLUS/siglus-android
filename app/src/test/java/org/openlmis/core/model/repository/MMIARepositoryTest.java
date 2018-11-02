@@ -137,7 +137,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         assertThat(form.getRnrFormItemList().size(), is(2));
         RnrFormItem item = form.getRnrFormItemListWrapper().get(0);
         assertThat(item.getReceived(), is(20L));
-        assertThat(item.getInitialAmount(), is(10L));
+        assertThat(item.getInitialAmount(), is(0L));
     }
 
     @NonNull
@@ -222,7 +222,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
         assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
-        assertThat(rnrFormItemByPeriod.getInitialAmount(), is(100L));
+        assertThat(rnrFormItemByPeriod.getInitialAmount(), is(0L));
 
         stockCard.setLotOnHandListWrapper(Lists.<LotOnHand>newArrayList());
         rnrFormItemByPeriod = mmiaRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());

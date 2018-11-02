@@ -125,7 +125,7 @@ public class HomeActivityTest {
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
 
         assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
-        assertThat(startedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), is(Constants.MMIA_PROGRAM_CODE));
+        assertThat(startedIntent.getSerializableExtra(Constants.PARAM_PROGRAM_CODE), is(Constants.Program.MMIA_PROGRAM));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class HomeActivityTest {
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
 
         assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
-        assertThat(startedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), is(Constants.VIA_PROGRAM_CODE));
+        assertThat(startedIntent.getSerializableExtra(Constants.PARAM_PROGRAM_CODE), is(Constants.Program.VIA_PROGRAM));
     }
 
     private void verifyNextPage(String className) {

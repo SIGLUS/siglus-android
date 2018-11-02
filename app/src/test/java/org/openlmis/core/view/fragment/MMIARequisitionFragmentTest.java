@@ -244,38 +244,6 @@ public class MMIARequisitionFragmentTest {
     }
 
     @Test
-    public void shouldHighlightWhenTotalNotMatches() {
-        when(regimeListView.getTotal()).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(40L);
-
-        mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
-
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-
-        verify(regimeListView).highLightTotal();
-        verify(mmiaInfoListView).highLightTotal();
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.VISIBLE);
-    }
-
-    @Test
-    public void shouldHighlightWhenTotalNotMatchesAndNoCommentWithoutEmptyField() {
-        when(regimeListView.getTotal()).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(40L);
-        when(regimeListView.hasEmptyField()).thenReturn(false);
-        when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
-
-        mmiaRequisitionFragment.etComment.setText("");
-
-        mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
-
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.VISIBLE);
-    }
-
-    @Test
     public void shouldDeHighlightWhenTotalNotMatchesAndLessThanFiveWithEmptyField() {
         when(regimeListView.getTotal()).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(40L);

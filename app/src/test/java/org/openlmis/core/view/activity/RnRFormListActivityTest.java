@@ -74,7 +74,7 @@ public class RnRFormListActivityTest {
         });
 
         intent = new Intent();
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.MMIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.Program.MMIA_PROGRAM);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class, intent).create().get();
     }
 
@@ -92,7 +92,7 @@ public class RnRFormListActivityTest {
     @Test
     public void shouldSetViaTitleAndProgramCodeWhenProgramCodeIsVia() {
 
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.Program.VIA_PROGRAM);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class, intent).create().get();
 
         assertThat(rnRFormListActivity.getTitle()).isEqualTo(rnRFormListActivity.getResources().getString(R.string.requisition_list));
@@ -180,7 +180,7 @@ public class RnRFormListActivityTest {
     public void shouldStartVIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
         View view = mock(View.class);
 
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.Program.VIA_PROGRAM);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class, intent).create().get();
 
         RnRFormViewModel viewModel = generateRnRFormViewModel("ESS_MEDS", RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
@@ -239,7 +239,7 @@ public class RnRFormListActivityTest {
         data.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventoryDate);
         data.putExtra(Constants.PARAM_IS_MISSED_PERIOD, true);
 
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.Program.VIA_PROGRAM);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class, intent).create().get();
 
         rnRFormListActivity.onActivityResult(Constants.REQUEST_SELECT_PERIOD_END, Activity.RESULT_OK, data);

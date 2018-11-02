@@ -407,8 +407,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
         assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
-        assertThat(rnrFormItemByPeriod.getInventory(), is(100L));
-        assertThat(rnrFormItemByPeriod.getInitialAmount(), is(100L));
+        assertThat(rnrFormItemByPeriod.getInventory(), is(0L));
+        assertThat(rnrFormItemByPeriod.getInitialAmount(), is(0L));
 
         stockCard.setLotOnHandListWrapper(Lists.<LotOnHand>newArrayList());
         rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());

@@ -106,16 +106,11 @@ public class RapidTestReportsPresenterTest {
                 .thenReturn(newArrayList(programDataForm1, programDataForm2, programDataForm3, programDataForm4));
 
         presenter.generateViewModelsForAllPeriods();
-        assertThat(presenter.getViewModelList().size(), is(6));
-        assertNull(presenter.getViewModelList().get(5).getRapidTestForm().getStatus());
-        assertThat(presenter.getViewModelList().get(4).getRapidTestForm().getStatus(), is(ProgramDataForm.STATUS.SUBMITTED));
-        assertThat(presenter.getViewModelList().get(4).getStatus(), is(RapidTestReportViewModel.Status.INCOMPLETE));
-        assertThat(presenter.getViewModelList().get(3).getRapidTestForm().getStatus(), is(ProgramDataForm.STATUS.AUTHORIZED));
-        assertThat(presenter.getViewModelList().get(3).getStatus(), is(RapidTestReportViewModel.Status.SYNCED));
-        assertThat(presenter.getViewModelList().get(2).getRapidTestForm().getStatus(), is(ProgramDataForm.STATUS.AUTHORIZED));
-        assertThat(presenter.getViewModelList().get(2).getStatus(), is(RapidTestReportViewModel.Status.COMPLETED));
-        assertThat(presenter.getViewModelList().get(1).getRapidTestForm().getStatus(), is(ProgramDataForm.STATUS.DRAFT));
-        assertThat(presenter.getViewModelList().get(1).getStatus(), is(RapidTestReportViewModel.Status.INCOMPLETE));
-        assertNull(presenter.getViewModelList().get(0).getRapidTestForm().getStatus());
+        assertThat(presenter.getViewModelList().size(), is(13));
+        assertNull(presenter.getViewModelList().get(2).getRapidTestForm().getStatus());
+        assertThat(presenter.getViewModelList().get(2).getStatus(), is(RapidTestReportViewModel.Status.MISSING));
+        assertNull(presenter.getViewModelList().get(1).getRapidTestForm().getStatus());
+        assertThat(presenter.getViewModelList().get(1).getStatus(), is(RapidTestReportViewModel.Status.MISSING));
+        assertThat(presenter.getViewModelList().get(0).getStatus(), is(RapidTestReportViewModel.Status.MISSING));
     }
 }
