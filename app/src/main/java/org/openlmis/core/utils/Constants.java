@@ -18,11 +18,8 @@
 
 package org.openlmis.core.utils;
 
-import android.support.annotation.StyleRes;
-
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.view.activity.BaseActivity;
 
 public final class Constants {
 

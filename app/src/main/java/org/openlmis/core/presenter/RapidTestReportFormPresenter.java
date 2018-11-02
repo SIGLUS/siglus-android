@@ -2,7 +2,6 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
-import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Period;

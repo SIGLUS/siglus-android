@@ -102,7 +102,7 @@ public class StockService {
         return getTotalIssues(issuePerMonths) * 1f / issuePerMonths.size();
     }
 
-    private Boolean hasStockOutTotoalIssue (Long totalIssuesEachMonth) {
+    private Boolean hasStockOutTotoalIssue(Long totalIssuesEachMonth) {
         return  totalIssuesEachMonth == null;
     }
     private long getTotalIssues(List<Long> issuePerMonths) {

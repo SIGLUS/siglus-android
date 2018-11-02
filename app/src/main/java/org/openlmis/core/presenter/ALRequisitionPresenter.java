@@ -18,31 +18,10 @@
 
 package org.openlmis.core.presenter;
 
-import com.google.inject.Inject;
-
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.view.BaseView;
-
 import java.util.Date;
-import java.util.List;
-
-import roboguice.RoboGuice;
 import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 

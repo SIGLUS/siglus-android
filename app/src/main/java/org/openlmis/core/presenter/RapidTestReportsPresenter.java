@@ -147,8 +147,8 @@ public class RapidTestReportsPresenter extends Presenter {
 
     private List<RapidTestReportViewModel> removeGreaterThanData(List<RapidTestReportViewModel> list) {
         if(list.size() > 13) {
-               if (list.get(0).status != Status.FIRST_MISSING &&
-                       list.get(1).status != Status.FIRST_MISSING) {
+               if (list.get(0).status != Status.FIRST_MISSING
+                       && list.get(1).status != Status.FIRST_MISSING) {
                list.remove(0);
                return removeGreaterThanData(list);
            }

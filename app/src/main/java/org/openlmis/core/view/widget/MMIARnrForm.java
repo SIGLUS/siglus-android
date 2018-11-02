@@ -20,11 +20,8 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -63,7 +60,7 @@ public class MMIARnrForm extends LinearLayout {
 
     @Getter
     private RnrFormHorizontalScrollView rnrItemsHorizontalScrollView;
-    private List<Pair<EditText, TextWatcher>> editTexts = new ArrayList<>();
+    private List<Pair<EditText, EditTextWatcher>> editTexts = new ArrayList<Pair<EditText, EditTextWatcher>>();
 
     @Getter
     private View leftHeaderView;
@@ -82,7 +79,7 @@ public class MMIARnrForm extends LinearLayout {
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-       for (Pair<EditText, TextWatcher> editText: editTexts) {
+       for (Pair<EditText, EditTextWatcher> editText: editTexts) {
            editText.first.removeTextChangedListener(editText.second);
        }
     }
@@ -138,7 +135,7 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     public boolean isCompleted() {
-        for (Pair<EditText, TextWatcher> editText : editTexts) {
+        for (Pair<EditText, EditTextWatcher> editText : editTexts) {
             if (TextUtils.isEmpty(editText.first.getText().toString()) || !isValidate(editText.first)) {
                 editText.first.setError(context.getString(R.string.hint_error_input));
                 editText.first.requestFocus();
@@ -276,39 +273,16 @@ public class MMIARnrForm extends LinearLayout {
         TextView tvValidate = (TextView) inflate.findViewById(R.id.tv_validate);
 
         if (isHeaderView) {
-            tvIssuedUnit.setText(R.string.label_issued_unit);
-            tvInitialAmount.setText(R.string.label_initial_amount);
-            tvReceived.setText(R.string.label_received_mmia);
-            etIssued.setText(R.string.label_issued_mmia);
-            etAdjustment.setText(R.string.label_adjustment);
-            etInventory.setText(R.string.label_inventory);
-            tvValidate.setText(R.string.label_validate);
-            enableEditText(false, etIssued, etAdjustment, etInventory);
-
-            inflate.setBackgroundResource(R.color.color_mmia_info_name);
+            setHeaderView(inflate, tvIssuedUnit, tvInitialAmount, tvReceived, etIssued, etAdjustment, etInventory, tvValidate);
 
         } else {
             tvIssuedUnit.setText(item.getProduct().getStrength());
             boolean isArchived = item.getProduct().isArchived();
             tvInitialAmount.setText(String.valueOf(isArchived ? 0 : item.getInitialAmount()));
             tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
-            EditTextWatcher twIssued = new EditTextWatcher(item, etIssued);
-            EditTextWatcher twAdjustment= new EditTextWatcher(item, etAdjustment);
-            EditTextWatcher twInventory = new EditTextWatcher(item, etInventory);
-
-            etIssued.addTextChangedListener(twIssued);
-            etAdjustment.addTextChangedListener(twAdjustment);
-            etInventory.addTextChangedListener(twInventory);
-
-            etIssued.setText(getValue(isArchived, item.getIssued()));
-            editTexts.add(new Pair<>(etIssued, twIssued));
-            etAdjustment.setText(getValue(isArchived, item.getAdjustment()));
-            etAdjustment.setInputType(InputType.TYPE_CLASS_NUMBER| InputType.TYPE_NUMBER_FLAG_SIGNED);
-            editTexts.add(new Pair<>(etAdjustment, twAdjustment));
-            etInventory.setText(getValue(isArchived, item.getInventory()));
-            editTexts.add(new Pair<>(etInventory, twInventory));
-            enableEditText(true, etIssued, etAdjustment, etInventory);
-
+            editTexts.add(configEditText(item, etIssued, getValue(isArchived, item.getIssued())));
+            editTexts.add(configEditText(item, etAdjustment, getValue(isArchived, item.getAdjustment())));
+            editTexts.add(configEditText(item, etInventory, getValue(isArchived, item.getInventory())));
             rightViewGroup.addView(inflate);
 
             try {
@@ -320,6 +294,34 @@ public class MMIARnrForm extends LinearLayout {
             }
         }
         return inflate;
+    }
+
+    private void setHeaderView(ViewGroup inflate,
+                               TextView tvIssuedUnit,
+                               TextView tvInitialAmount,
+                               TextView tvReceived,
+                               EditText etIssued,
+                               EditText etAdjustment,
+                               EditText etInventory,
+                               TextView tvValidate) {
+        tvIssuedUnit.setText(R.string.label_issued_unit);
+        tvInitialAmount.setText(R.string.label_initial_amount);
+        tvReceived.setText(R.string.label_received_mmia);
+        etIssued.setText(R.string.label_issued_mmia);
+        etAdjustment.setText(R.string.label_adjustment);
+        etInventory.setText(R.string.label_inventory);
+        tvValidate.setText(R.string.label_validate);
+        enableEditText(false, etIssued, etAdjustment, etInventory);
+
+        inflate.setBackgroundResource(R.color.color_mmia_info_name);
+    }
+
+    private Pair<EditText, EditTextWatcher> configEditText(RnrFormItem item, EditText text, String value) {
+        text.setText(value);
+        text.setEnabled(true);
+        EditTextWatcher textWatcher = new EditTextWatcher(item, text);
+        text.addTextChangedListener(textWatcher);
+        return new Pair<>(text, textWatcher);
     }
 
     private void enableEditText(Boolean enable, EditText etIssued, EditText etAdjustment, EditText etInventory) {
