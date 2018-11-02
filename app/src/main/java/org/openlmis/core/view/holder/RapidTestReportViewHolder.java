@@ -124,6 +124,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
 
     public void setBlueButton() {
         btnReportEntry.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
+        btnReportEntry.setPadding(60,15,60,0);
         btnReportEntry.setTextColor(context.getResources().getColor(R.color.color_white));
     }
 

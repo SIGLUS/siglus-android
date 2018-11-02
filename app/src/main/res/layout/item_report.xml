@@ -36,7 +36,7 @@
             android:id="@+id/btn_create_patient_data_report"
             style="@style/ItemRnr.BtnView"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height_default"
+            android:layout_height="@dimen/button_height_form"
             android:layout_marginBottom="@dimen/margin_small"/>
     </LinearLayout>
 

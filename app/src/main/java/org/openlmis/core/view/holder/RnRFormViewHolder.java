@@ -19,6 +19,8 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
 
+import static org.openlmis.core.R.color.color_white;
+
 public class RnRFormViewHolder extends BaseViewHolder {
 
     private final RnRFormItemClickListener itemClickListener;
@@ -48,10 +50,14 @@ public class RnRFormViewHolder extends BaseViewHolder {
     public void populate(final RnRFormViewModel model) {
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_MISSED_PERIOD:
-                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_previous_period_missing)), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(),
+                        Html.fromHtml(context.getString(R.string.label_previous_period_missing)),
+                        R.drawable.ic_description, R.color.color_draft_title, color_white);
                 break;
             case RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD:
-                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_missed_period)), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(),
+                        Html.fromHtml(context.getString(R.string.label_missed_period)),
+                        R.drawable.ic_description, R.color.color_select_title, color_white);
                 setupButton(model, context.getString(R.string.btn_select_close_period));
                 setupButtonColor();
                 break;
@@ -59,7 +65,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 showCannotDoMonthlyInventory(model);
                 break;
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
-                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(),
+                        Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())),
+                        R.drawable.ic_description, R.color.color_draft_title, color_white);
                 setupButton(model, context.getString(R.string.btn_view_uncompleted_physical_inventory));
                 break;
             case RnRFormViewModel.TYPE_INVENTORY_DONE:
@@ -67,7 +75,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 populateRnrFormNotBeCreatedView(model);
                 break;
             case RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED:
-                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(),
+                        Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())),
+                        R.drawable.ic_description, R.color.color_draft_title, color_white);
                 setupButton(model, context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
                 break;
             case RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL:
@@ -82,14 +92,20 @@ public class RnRFormViewHolder extends BaseViewHolder {
     private void showCannotDoMonthlyInventory(RnRFormViewModel model) {
         boolean isTraining = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
         if (isTraining) {
-            configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_training_can_not_create_report_rnr)), R.drawable.ic_description, R.color.color_draft_title);
+            configHolder(model.getTitle(),
+                    Html.fromHtml(context.getString(R.string.label_training_can_not_create_report_rnr)),
+                    R.drawable.ic_description, R.color.color_draft_title,  color_white);
         } else {
-            configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_report_rnr, model.getName(), DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
+            configHolder(model.getTitle(),
+                    Html.fromHtml(context.getString(R.string.label_can_not_create_report_rnr, model.getName(), DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))),
+                    R.drawable.ic_description, R.color.color_draft_title, color_white);
         }
     }
 
     private void populateRnrFormNotBeCreatedView(RnRFormViewModel model) {
-        configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+        configHolder(model.getTitle(),
+                Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())),
+                R.drawable.ic_description, R.color.color_draft_title,  color_white);
         setupButton(model, context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
         setupButtonColor();
     }
@@ -100,7 +116,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
         if (model.getSyncServerErrorMessage() != null) {
             error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
         }
-        configHolder(model.getTitle(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red);
+        configHolder(model.getTitle(),
+                Html.fromHtml(error),
+                R.drawable.ic_error, R.color.color_red, color_white);
     }
 
     private boolean isOfMmia(RnRFormViewModel model) {
@@ -109,7 +127,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
     private void populateSyncedHistorical(RnRFormViewModel model) {
         RnRForm form = model.getForm();
-        configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())), R.drawable.ic_done_green, R.color.color_white);
+        configHolder(model.getTitle(),
+                Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())),
+                R.drawable.ic_done_green, color_white, R.color.color_text_primary);
         showDeleteMenu(form);
         setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
 
@@ -137,7 +157,8 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
     private void setupButtonColor() {
         btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
-        btnView.setTextColor(context.getResources().getColor(R.color.color_white));
+        btnView.setPadding(60,15,60,0);
+        btnView.setTextColor(context.getResources().getColor(color_white));
     }
 
     private void setupButton(RnRFormViewModel model, String buttonText) {
@@ -146,10 +167,11 @@ public class RnRFormViewHolder extends BaseViewHolder {
         btnView.setEnabled(true);
     }
 
-    private void configHolder(String period, Spanned text, int icDescription, int colorDraftTitle) {
+    private void configHolder(String period, Spanned text, int icDescription, int colorDraftTitle, int textColor) {
         tvPeriod.setText(period);
         tvPeriod.setCompoundDrawablesWithIntrinsicBounds(icDescription, 0, 0, 0);
         tvPeriod.setBackgroundResource(colorDraftTitle);
+        tvPeriod.setTextColor(context.getResources().getColor(textColor));
         tvMessage.setText(text);
 
         if (ivDelete != null) {

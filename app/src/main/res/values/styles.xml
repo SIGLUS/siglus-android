@@ -578,26 +578,26 @@
         <item name="android:padding">@dimen/padding_normal</item>
     </style>
 
-    <style name="ItemRnr.PeriodTextType2" parent="Text.Black.Regular">
-        <item name="android:padding">@dimen/padding_small</item>
+    <style name="ItemRnr.PeriodTextType2" parent="Text.Black.Normal">
+        <item name="android:padding">@dimen/padding_normal</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:drawablePadding">@dimen/padding_small</item>
     </style>
 
-    <style name="ItemRnr.MessageTextType1" parent="Text.Black.Small">
+    <style name="ItemRnr.MessageTextType1" parent="Text.Black.Regular">
         <item name="android:layout_marginStart">@dimen/margin_large</item>
         <item name="android:padding">@dimen/padding_normal</item>
         <item name="android:layout_marginBottom">@dimen/margin_small</item>
         <item name="android:gravity">start</item>
     </style>
 
-    <style name="ItemRnr.MessageTextType2" parent="Text.Black.Small">
+    <style name="ItemRnr.MessageTextType2" parent="Text.Black.Regular">
         <item name="android:layout_marginStart">@dimen/margin_medium</item>
         <item name="android:layout_marginEnd">@dimen/margin_medium</item>
         <item name="android:padding">@dimen/padding_small</item>
     </style>
 
-    <style name="ItemRnr.BtnView" parent="Text.Blue.Small">
+    <style name="ItemRnr.BtnView" parent="Text.Blue.Normal">
         <item name="android:layout_marginStart">@dimen/margin_medium</item>
         <item name="android:padding">@dimen/padding_small</item>
         <item name="android:textStyle">bold</item>
