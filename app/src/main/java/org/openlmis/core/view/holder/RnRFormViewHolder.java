@@ -157,7 +157,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
     private void setupButtonColor() {
         btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
-        btnView.setPadding(60,15,60,0);
+        btnView.setPadding(60,5,60,0);
         btnView.setTextColor(context.getResources().getColor(color_white));
     }
 

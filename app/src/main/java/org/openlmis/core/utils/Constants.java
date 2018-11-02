@@ -29,7 +29,7 @@ public final class Constants {
     public enum Program {
         MMIA_PROGRAM(MMIA_PROGRAM_CODE, R.string.mmia_list),
         VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list),
-        AL_PROGRAM(AL_PROGRAM_CODE, R.string.al_report_list);
+        AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name);
 
 
         private String code;
