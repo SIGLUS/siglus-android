@@ -1,18 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
+
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
-            android:layout_width="match_parent"
+
+        <RelativeLayout
+            android:layout_width="@dimen/al_view_width"
             android:layout_height="wrap_content"
-            android:text="AL will finish"
-            android:textSize="60dp"
-            />
+            android:background="@drawable/border_top_left_black">
 
+            <LinearLayout
+                android:id="@+id/al_title"
+                android:layout_width="@dimen/al_view_width"
+                android:layout_height="@dimen/al_view_list_height"
+                android:background="@drawable/border_bottom_black"
+                android:orientation="horizontal">
 
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/rapid_view_view_left_padding"
+                    android:text="Month/Year:   "
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_regular" />
 
-</FrameLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/font_size_regular"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/al_header"
+                android:layout_width="@dimen/al_view_width"
+                android:layout_height="@dimen/al_view_header_list_height"
+                android:layout_below="@+id/al_title"
+                android:background="@drawable/border_right_black">
+
+                <LinearLayout
+                    android:layout_width="@dimen/al_view_left_header_width"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_right_black_bold">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/border_bottom_black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_right_black_bold"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/AlReportList.age"
+                        android:text="@string/msg_product_code_6x1" />
+
+                    <include
+                        android:id="@+id/view_al_header_item"
+                        layout="@layout/view_al_header_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_right_black_bold"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/AlReportList.age"
+                        android:text="@string/msg_product_code_6x2" />
+
+                    <include
+                        android:id="@+id/view_al_header_item"
+                        layout="@layout/view_al_header_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_right_black_bold"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/AlReportList.age"
+                        android:text="@string/msg_product_code_6x3" />
+
+                    <include
+                        android:id="@+id/view_al_header_item"
+                        layout="@layout/view_al_header_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_right_black_bold"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/AlReportList.age"
+                        android:text="@string/msg_product_code_6x4" />
+
+                    <include
+                        android:id="@+id/view_al_header_item"
+                        layout="@layout/view_al_header_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="132dp"
+                android:layout_below="@+id/al_header">
+
+                <LinearLayout
+                    android:layout_width="@dimen/al_view_left_header_width"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_right_black_bold"
+                    android:orientation="vertical">
+
+                    <LinearLayout style="@style/AlReportList.titleContainer">
+
+                        <TextView
+                            style="@style/AlReportList.title"
+                            android:background="@color/color_green_light"
+                            android:text="HF" />
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/AlReportList.titleContainer">
+
+                        <TextView
+                            style="@style/AlReportList.title"
+                            android:background="@color/color_green_light"
+                            android:text="CHW" />
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/AlReportList.titleContainer">
+
+                        <TextView
+                            style="@style/AlReportList.title"
+                            android:background="@color/color_gray"
+                            android:text="Total" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_al_row_item_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_top_black_right_black_bold"
+                    android:overScrollMode="never" />
+            </LinearLayout>
+        </RelativeLayout>
+    </HorizontalScrollView>
+
+    <include
+        android:id="@+id/action_panel"
+        layout="@layout/view_action_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

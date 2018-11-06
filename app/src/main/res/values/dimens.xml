@@ -22,6 +22,7 @@
     <!--Font size-->
     <dimen name="font_size_tiny">10sp</dimen>
     <dimen name="font_size_small">10sp</dimen>
+    <dimen name="font_size_title_small">9sp</dimen>
     <dimen name="font_size_regular">14sp</dimen>
     <dimen name="font_size_normal">20sp</dimen>
     <dimen name="font_size_medium">20sp</dimen>
@@ -53,5 +54,11 @@
     <dimen name="rapid_view_Header_view">101dp</dimen>
     <dimen name="rapid_view_view_left_padding">12dp</dimen>
     <dimen name="rapid_view_border_width">2dp</dimen>
+
+    <!--RapidTest-->
+    <dimen name="al_view_width">1032dp</dimen>
+    <dimen name="al_view_list_height">44dp</dimen>
+    <dimen name="al_view_header_list_height">88dp</dimen>
+    <dimen name="al_view_left_header_width">100dp</dimen>
 
 </resources>
