@@ -139,7 +139,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="132dp"
-                android:layout_below="@+id/al_header">
+                android:layout_below="@+id/al_header"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="@dimen/al_view_left_header_width"
@@ -174,10 +175,10 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_al_row_item_list"
-                    android:layout_width="match_parent"
+                    android:layout_width="1000dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/border_top_black_right_black_bold"
-                    android:overScrollMode="never" />
+                    android:overScrollMode="never"
+                    android:background="@color/color_red"/>
             </LinearLayout>
         </RelativeLayout>
     </HorizontalScrollView>

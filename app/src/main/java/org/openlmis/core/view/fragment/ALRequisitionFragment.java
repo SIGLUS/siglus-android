@@ -18,6 +18,8 @@
 package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,19 +29,26 @@ import org.openlmis.core.presenter.ALRequisitionPresenter;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.adapter.ALReportAdapter;
+import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
+
 import java.util.Date;
+import roboguice.inject.InjectView;
 
 import roboguice.RoboGuice;
 import rx.functions.Action1;
 
-public class ALRequisitionFragment extends BaseFragment {
+public class ALRequisitionFragment extends BaseReportFragment {
 
     private long formId;
     protected View containerView;
     private Date periodEndDate;
     ALRequisitionPresenter presenter;
+    ALReportAdapter adapter;
 
-    private static final String TAG_MISMATCH = "mismatch";
+    @InjectView(R.id.rv_al_row_item_list)
+    RecyclerView rvALRowItemListView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +56,28 @@ public class ALRequisitionFragment extends BaseFragment {
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
         periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+        setUpRowItems();
+        rvALRowItemListView.setNestedScrollingEnabled(false);
+    }
+
+    @Override
+    protected String getSignatureDialogTitle() {
+        return null;
+    }
+
+    @Override
+    protected Action1<? super Void> getOnSignedAction() {
+        return null;
+    }
+
+    @Override
+    protected String getNotifyDialogMsg() {
+        return null;
+    }
+
+    @Override
+    protected BaseReportPresenter injectPresenter() {
+        return null;
     }
 
     @Override
@@ -54,21 +85,6 @@ public class ALRequisitionFragment extends BaseFragment {
         return null;
     }
 
-//    @Override
-//    protected String getSignatureDialogTitle() {
-//        return null;
-//    }
-//
-//    @Override
-//    protected Action1<? super Void> getOnSignedAction() {
-//        return null;
-//    }
-//
-//    @Override
-//    protected BaseReportPresenter injectPresenter() {
-//        presenter = RoboGuice.getInjector(getActivity()).getInstance(ALRequisitionPresenter.class);
-//        return presenter;
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,13 +102,11 @@ public class ALRequisitionFragment extends BaseFragment {
 
     }
 
-//    @Override
-//    protected String getNotifyDialogMsg() {
-//        return getString(R.string.msg_requisition_signature_message_notify_mmia);
-//    }
+    private void setUpRowItems() {
+        adapter = new ALReportAdapter();
+        rvALRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        rvALRowItemListView.setAdapter(adapter);
+    }
 
-//    public void onBackPressed() {
-//        finish();
-//    }
 
 }

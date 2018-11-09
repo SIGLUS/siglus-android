@@ -41,4 +41,12 @@ public class RegimenItem extends BaseModel{
     @SerializedName("patientsOnTreatment")
     @DatabaseField
     private Long amount;
+
+    @Expose
+    @DatabaseField
+    private Long hf;
+
+    @Expose
+    @DatabaseField
+    private Long chw;
 }

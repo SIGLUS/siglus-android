@@ -14,14 +14,15 @@
             android:layout_weight="1"
             android:background="@drawable/border_right_black"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Nº of treatments "
                 android:textColor="@color/color_black"
-                android:textSize="8sp"
+                android:textSize="@dimen/font_size_title_small"
                 android:textStyle="bold" />
 
             <TextView
@@ -45,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:text="Existent stock"
                 android:textColor="@color/color_black"
-                android:textSize="8sp"
+                android:textSize="@dimen/font_size_title_small"
                 android:textStyle="bold" />
 
             <TextView
@@ -53,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:text="at the end of Period"
                 android:textColor="@color/color_black"
-                android:textSize="8sp" />
+                android:textSize="@dimen/font_size_title_small" />
 
         </LinearLayout>
     </LinearLayout>
