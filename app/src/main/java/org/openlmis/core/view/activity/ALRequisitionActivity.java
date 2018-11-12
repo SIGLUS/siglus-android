@@ -25,8 +25,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.ALRequisitionFragment;
-import org.openlmis.core.view.fragment.MMIARequisitionFragment;
-import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
 import java.util.Date;
 
@@ -47,7 +45,7 @@ public class ALRequisitionActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
+        ((ALRequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
     }
 
     public static Intent getIntentToMe(Context context, long formId) {
@@ -56,8 +54,9 @@ public class ALRequisitionActivity extends BaseActivity {
         return intent;
     }
 
+
     public static Intent getIntentToMe(Context context, Date periodEndDate) {
-        Intent intent = new Intent(context, ALRequisitionActivity.class);
+        Intent intent = new Intent(context, MMIARequisitionActivity.class);
         intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, periodEndDate);
         return intent;
     }

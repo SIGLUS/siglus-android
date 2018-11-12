@@ -41,7 +41,7 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected void updateFormUI() {
+    public void updateFormUI() {
 
     }
 
@@ -53,5 +53,11 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     protected int getCompleteErrorMessage() {
         return 0;
+    }
+
+
+    public interface ALRequisitionView extends BaseRequisitionPresenter.BaseRequisitionView {
+
+        void setProcessButtonName(String buttonName);
     }
 }

@@ -171,6 +171,12 @@
     <string name="msg_del_requisition">Warning!!! \n Are you sure you want to delete this? This requisition is already synced to the server. If you click DELETE then this requisition will disappear on your tablet, but remain saved on the server.</string>
     <string name="msg_stock_movement_is_not_ready">Application is trying to sync down all the stock movements, Please wait for this process to complete before continuing.</string>
 
+    <!-- AL -->
+    <string name="msg_al_submit_tip">Your AL form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
+    <string name="msg_requisition_signature_message_notify_al">Please hand the device to the person responsible for approval and submission of AL</string>
+    <string name="msg_al_submit_signature">Enter your initials to approve AL information</string>
+    <string name="msg_approve_signature_al">Enter your initials and then approve the AL</string>
+
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>
     <string name="label_default">-</string>

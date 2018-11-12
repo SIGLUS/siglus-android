@@ -159,6 +159,13 @@
     <string name="btn_del">Apagar</string>
     <string name="msg_del_requisition">Aviso!!! \ n Tem certeza de que deseja apagar? Esta requisição já está sincronizada com o servidor. Se você clicar em APAGAR, em seguida, esta requisição vai desaparecer do seu tablet, mas permanecem guardada no servidor.</string>
     <string name="msg_stock_movement_is_not_ready">Aplicativo está tentando sincronizar para todos os movimentos de estoque, por favor aguarde até que este processo seja concluído antes de continuar</string>
+
+    <!-- AL -->
+    <string name="msg_al_submit_tip">A sua AL foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver conecção a internet.</string>
+    <string name="msg_requisition_signature_message_notify_al">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do AL</string>
+    <string name="msg_al_submit_signature">Insira as iniciais do seu nome e aprove as quantidades do AL</string>
+    <string name="msg_approve_signature_al">Insira as iniciais do seu nome e aprove o AL</string>
+
     <!--Stock Movement-->
     <string name="title_stock_movement">Ficha de Estoque</string>
     <string name="label_default">-</string>
