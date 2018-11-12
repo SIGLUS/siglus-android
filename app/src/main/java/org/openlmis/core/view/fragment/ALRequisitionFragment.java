@@ -56,7 +56,6 @@ public class ALRequisitionFragment extends BaseReportFragment {
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
         periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
-        setUpRowItems();
         rvALRowItemListView.setNestedScrollingEnabled(false);
     }
 
@@ -95,6 +94,7 @@ public class ALRequisitionFragment extends BaseReportFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setUpRowItems();
 
     }
 

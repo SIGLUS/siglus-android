@@ -25,6 +25,7 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
+import org.openlmis.core.persistence.migrations.AddALToRegimen;
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCategoryColumnToProductPrograms;
 import org.openlmis.core.persistence.migrations.AddCmmTable;
@@ -141,6 +142,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new ChangeMalariaTreatments());
             add(new CreatePTVProgramSchema());
             add(new AddMalariaSignature());
+            add(new AddALToRegimen());
         }
     };
     private static int instanceCount = 0;
