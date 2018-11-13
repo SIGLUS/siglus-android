@@ -2,30 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/al_view_width"
     android:layout_height="@dimen/al_view_list_height"
+    android:background="@drawable/border_bottom"
     android:orientation="horizontal">
+
     <EditText
         android:id="@+id/one_treatment"
-        style="@style/AlReportList.editText" />
+        style="@style/AlReportList.editText"
+        android:background="@drawable/border_right_black" />
+
     <EditText
         android:id="@+id/one_Stock"
-        style="@style/AlReportList.editText" />
+        style="@style/AlReportList.editText"
+        android:background="@drawable/border_right_black_bold" />
+
     <EditText
         android:id="@+id/two_treatment"
-        style="@style/AlReportList.editText" />
+        style="@style/AlReportList.editText"
+        android:background="@drawable/border_right_black" />
+
     <EditText
         android:id="@+id/two_Stock"
-        style="@style/AlReportList.editText" />
+        style="@style/AlReportList.editText"
+        android:background="@drawable/border_right_black_bold" />
+
     <EditText
         android:id="@+id/three_treatment"
-        style="@style/AlReportList.editText" />
+        style="@style/AlReportList.editText"
+        android:background="@drawable/border_right_black" />
+
     <EditText
         android:id="@+id/three_stock"
-        style="@style/AlReportList.editText" />
+        style="@style/AlReportList.editText"
+        android:background="@drawable/border_right_black_bold" />
+
     <EditText
         android:id="@+id/four_treatment"
-        style="@style/AlReportList.editText" />
+        style="@style/AlReportList.editText"
+        android:background="@drawable/border_right_black" />
+
     <EditText
         android:id="@+id/four_stock"
         style="@style/AlReportList.editText"
-        android:text="betta"/>
+        android:background="@drawable/border_right_black_bold" />
 </LinearLayout>

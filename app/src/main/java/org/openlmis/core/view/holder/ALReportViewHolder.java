@@ -59,6 +59,7 @@ public class ALReportViewHolder extends BaseViewHolder {
         if (viewModel.getItemType() != ALReportViewModel.ALItemType.Total) {
             this.quantityChangeListener = changeListener;
             configureEditTextWatch();
+            checkTips();
         }
     }
 
@@ -75,6 +76,7 @@ public class ALReportViewHolder extends BaseViewHolder {
 
     public void configureEditTextWatch() {
         for (EditText editText: edits) {
+            editText.setEnabled(true);
             ALReportViewHolder.EditTextWatcher textWatcher = new ALReportViewHolder.EditTextWatcher(editText);
             editText.removeTextChangedListener(textWatcher);
             editText.addTextChangedListener(textWatcher);
