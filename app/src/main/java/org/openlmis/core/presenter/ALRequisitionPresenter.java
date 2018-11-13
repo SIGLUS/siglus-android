@@ -18,46 +18,79 @@
 
 package org.openlmis.core.presenter;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.repository.ALRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import java.util.Date;
+
+import roboguice.RoboGuice;
 import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 
+    ALRequisitionView view;
+    private ALRepository alRepository;
+
     @Override
     protected RnrFormRepository initRnrFormRepository() {
-        return null;
+        alRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(ALRepository.class);
+        return alRepository;
     }
 
     @Override
     public void loadData(long formId, Date periodEndDate) {
+        this.periodEndDate = periodEndDate;
+        view.loading();
+        Subscription subscription = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
+        subscriptions.add(subscription);
 
     }
 
     @Override
     public void updateUIAfterSubmit() {
+        view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
 
     }
 
     @Override
     public void updateFormUI() {
+        if (rnRForm != null) {
+
+        }
 
     }
 
     @Override
     protected Observable<RnRForm> getRnrFormObservable(long formId) {
-        return null;
+        return Observable.create(new Observable.OnSubscribe<RnRForm>() {
+            @Override
+            public void call(Subscriber<? super RnRForm> subscriber) {
+                try {
+                    rnRForm = getRnrForm(formId);
+                    subscriber.onNext(rnRForm);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     @Override
     protected int getCompleteErrorMessage() {
-        return 0;
+        return R.string.hint_al_complete_failed;
     }
 
 
     public interface ALRequisitionView extends BaseRequisitionPresenter.BaseRequisitionView {
-
         void setProcessButtonName(String buttonName);
     }
 }
