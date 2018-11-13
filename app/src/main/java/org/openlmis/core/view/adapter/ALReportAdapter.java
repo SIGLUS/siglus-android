@@ -7,16 +7,22 @@ import android.view.ViewGroup;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.ALReportViewHolder;
 import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
+import org.openlmis.core.view.viewmodel.ALReportViewModel;
+import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Setter;
+
 
 public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
-    private List<ALReportItemViewModel> viewModels;
+    private ALReportViewModel alReportViewModel;
+    @Setter
+    private Boolean editable = true;
 
-    public ALReportAdapter() {
-        viewModels = new ArrayList<>();
+    public ALReportAdapter(ALReportViewModel viewModel) {
+        alReportViewModel = viewModel;
     }
 
     @Override
@@ -26,12 +32,18 @@ public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
 
     @Override
     public void onBindViewHolder(ALReportViewHolder holder, int position) {
-        ALReportItemViewModel viewModel = viewModels.get(position);
+        ALReportItemViewModel viewModel = alReportViewModel.itemViewModelList.get(position);
         holder.populate(viewModel);
     }
 
     @Override
     public int getItemCount() {
-        return viewModels.size();
+        return alReportViewModel.itemViewModelList.size();
+    }
+
+    public void refresh(ALReportViewModel viewModel, Boolean editable) {
+        alReportViewModel = viewModel;
+        this.editable = editable;
+        notifyDataSetChanged();
     }
 }

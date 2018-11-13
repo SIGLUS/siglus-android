@@ -24,6 +24,8 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.ALRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.view.viewmodel.ALReportViewModel;
+
 import java.util.Date;
 
 import roboguice.RoboGuice;
@@ -37,7 +39,7 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 
     ALRequisitionView view;
     private ALRepository alRepository;
-    ALR
+    protected ALReportViewModel alReportViewModel;
 
     @Override
     protected RnrFormRepository initRnrFormRepository() {
