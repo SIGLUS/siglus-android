@@ -4,6 +4,7 @@ import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 
+import java.io.PushbackInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,6 @@ public class ALReportViewModel implements Serializable {
     ALReportItemViewModel itemHF;
     ALReportItemViewModel itemCHW;
 
-
     private RnRForm form;
     public  List<ALReportItemViewModel> itemViewModelList = new ArrayList<>();
     Map<String, ALReportItemViewModel> itemViewModelMap = new HashMap<>();
@@ -44,7 +44,7 @@ public class ALReportViewModel implements Serializable {
     public static String DEFAULT_TOTAl_NULL = "";
 
 
-    public ALReportViewModel(Period period) {
+    public ALReportViewModel() {
         setupCategories();
         setItemViewModelMap();
     }
@@ -82,5 +82,43 @@ public class ALReportViewModel implements Serializable {
         }
     }
 
+    public void updateTotal(ALGridViewModel.ALColumnCode columnCode, ALGridViewModel.ALGridColumnCode gridColumnCode) {
+        clearCheckTip();
+        if (gridColumnCode == ALGridViewModel.ALGridColumnCode.treatment) {
+            Long hf = itemHF.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).treatmentsValue;
+            Long chf = itemCHW.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).treatmentsValue;
+            itemTotal.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).treatmentsValue = calculate(hf, chf);
+
+        } else {
+            Long hf = itemHF.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).existentStockValue;
+            Long chf = itemCHW.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).existentStockValue;
+            itemTotal.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).existentStockValue = calculate(hf, chf);
+        }
+    }
+
+    public boolean isComplete() {
+        if (!itemHF.isComplete()){
+            itemHF.showCheckTip = true;
+        } else if (!itemCHW.isComplete()){
+            itemCHW.showCheckTip = true;
+        }
+        return itemHF.showCheckTip == false &&
+                itemCHW.showCheckTip == false;
+    }
+
+    public void clearCheckTip() {
+        itemHF.showCheckTip = false;
+        itemCHW.showCheckTip = false;
+    }
+
+    private Long calculate(Long hf, Long chf) {
+        if (hf == null && chf == null) {
+            return null;
+        }
+        Long total = Long.valueOf(0);
+        total = hf == null ? total : total + hf;
+        total = chf == null ? total : total + chf;
+        return total;
+    }
 }
 

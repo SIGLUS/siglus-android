@@ -18,11 +18,13 @@ import lombok.Setter;
 
 public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
     private ALReportViewModel alReportViewModel;
+    private ALReportViewHolder.QuantityChangeListener quantityChangeListener;
     @Setter
     private Boolean editable = true;
 
-    public ALReportAdapter(ALReportViewModel viewModel) {
-        alReportViewModel = viewModel;
+    public ALReportAdapter(ALReportViewHolder.QuantityChangeListener quantityChangeListener) {
+        alReportViewModel = new ALReportViewModel();
+        this.quantityChangeListener = quantityChangeListener;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
     @Override
     public void onBindViewHolder(ALReportViewHolder holder, int position) {
         ALReportItemViewModel viewModel = alReportViewModel.itemViewModelList.get(position);
-        holder.populate(viewModel);
+        holder.populate(viewModel, quantityChangeListener);
     }
 
     @Override
@@ -41,9 +43,18 @@ public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
         return alReportViewModel.itemViewModelList.size();
     }
 
-    public void refresh(ALReportViewModel viewModel, Boolean editable) {
+    public void updateTotal() {
+        notifyItemChanged(getItemCount() - 1);
+    }
+
+    public void updateTip() {
+        notifyItemChanged(0);
+        notifyItemChanged(1);
+
+    }
+
+    public void refresh(ALReportViewModel viewModel) {
         alReportViewModel = viewModel;
-        this.editable = editable;
         notifyDataSetChanged();
     }
 }

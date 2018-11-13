@@ -20,24 +20,25 @@ public class ALGridViewModel {
         ThreeColumn("3*6"),
         FourColumn("4*6");
         private String columnCodeName;
-
         ALColumnCode(String code) {
             this.columnCodeName = code;
         }
-
         public String getColumnName() {
             return columnCodeName;
         }
     }
 
+    public enum ALGridColumnCode {
+        treatment,
+        existentStock
+    }
+
     ALColumnCode columnCode;
-    String treatmentsValue = "";
-    String existentStockValue = "";
+    Long treatmentsValue;
+    Long existentStockValue;
 
-
-    final static String COLUMN_CODE_PREFIX_TREATMENTS = "Consultas AL US/APE Malaria ";
+    public final static String COLUMN_CODE_PREFIX_TREATMENTS = "Consultas AL US/APE Malaria ";
     final static String COLUMN_CODE_PREFIX_STOCK = "Consultas AL STOCK Malaria ";
-
 
     ALGridViewModel(ALColumnCode columnCode) {
         this.columnCode = columnCode;
@@ -46,9 +47,9 @@ public class ALGridViewModel {
     public void setValue(RegimenItem regimen, Long value) {
         String regimenName = regimen.getRegimen().getName();
         if (regimenName.contains(COLUMN_CODE_PREFIX_TREATMENTS)) {
-            setTreatmentsValue(String.valueOf(value));
+            setTreatmentsValue(value);
         } else if (regimenName.contains(COLUMN_CODE_PREFIX_STOCK)) {
-            setExistentStockValue(String.valueOf(value));
+            setExistentStockValue(value);
         }
     }
 
@@ -61,8 +62,12 @@ public class ALGridViewModel {
     }
 
     public boolean isEmpty() {
-        return StringUtils.isEmpty(treatmentsValue)
-                && StringUtils.isEmpty(existentStockValue);
+        return StringUtils.isEmpty(getValue(treatmentsValue))
+                || StringUtils.isEmpty(getValue(existentStockValue));
+    }
+
+    public String getValue(Long vaule) {
+        return vaule == null ? "": String.valueOf(vaule.longValue());
     }
 
 }

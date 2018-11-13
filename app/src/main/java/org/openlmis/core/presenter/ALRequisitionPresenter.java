@@ -21,12 +21,19 @@ package org.openlmis.core.presenter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Regimen;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ALRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.viewmodel.ALReportViewModel;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -35,11 +42,12 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ALRequisitionPresenter extends BaseRequisitionPresenter {
+import static org.openlmis.core.view.viewmodel.ALGridViewModel.COLUMN_CODE_PREFIX_TREATMENTS;
 
+public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     ALRequisitionView view;
     private ALRepository alRepository;
-    protected ALReportViewModel alReportViewModel;
+    public ALReportViewModel alReportViewModel;
 
     @Override
     protected RnrFormRepository initRnrFormRepository() {
@@ -59,13 +67,13 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     public void updateUIAfterSubmit() {
         view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
-
     }
 
     @Override
     public void updateFormUI() {
         if (rnRForm != null) {
             view.refreshRequisitionForm(rnRForm);
+            alReportViewModel = new ALReportViewModel(rnRForm);
             view.setProcessButtonName(rnRForm.isDraft()?
                     context.getResources().getString(R.string.btn_submit) :
                     context.getResources().getString(R.string.btn_complete));
@@ -89,27 +97,77 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-//    public Observable<Void> getSaveFormObservable(final List<RnrFormItem> rnrFormItems, final List<RegimenItem> regimenItems, final List<BaseInfoItem> baseInfoItems, final String comment) {
-//        return Observable.create(new Observable.OnSubscribe<Void>() {
-//            @Override
-//            public void call(Subscriber<? super Void> subscriber) {
-//                try {
-//                    setViewModels(rnrFormItems, regimenItems, baseInfoItems, comment);
-//                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
-//                    subscriber.onCompleted();
-//                } catch (LMISException e) {
-//                    e.reportToFabric();
-//                    subscriber.onError(e);
-//                }
-//            }
-//        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-//    }
+    public Observable<Void> getSaveFormObservable() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    setViewModels();
+                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    public boolean isComplete() {
+        return alReportViewModel.isComplete();
+    }
+
+    public void setViewModels() {
+        List<RegimenItem> regimenItems =  new ArrayList<>();
+        for(ALGridViewModel gridViewModel : alReportViewModel.getItemTotal().rapidTestFormGridViewModelList) {
+            String columnName = gridViewModel.getColumnCode().getColumnName();
+            addTreatment(regimenItems, gridViewModel, columnName);
+            addStock(regimenItems, gridViewModel, columnName);
+        }
+        rnRForm.setRegimenItemListWrapper(regimenItems);
+    }
+
+
+    private void addTreatment(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) {
+        RegimenItem itemTreatment = new RegimenItem();
+        itemTreatment.setForm(rnRForm);
+        itemTreatment.setHf(alReportViewModel.getItemHF().rapidTestFormGridViewModelMap.get(columnName).getTreatmentsValue());
+        itemTreatment.setChw(alReportViewModel.getItemCHW().rapidTestFormGridViewModelMap.get(columnName).getTreatmentsValue());
+        itemTreatment.setAmount(gridViewModel.getTreatmentsValue());
+        Regimen regimenTreatment = new Regimen();
+        regimenTreatment.setName(COLUMN_CODE_PREFIX_TREATMENTS + columnName);
+        regimenTreatment.setType(getRegimenType(columnName));
+        itemTreatment.setRegimen(regimenTreatment);
+        regimenItems.add(itemTreatment);
+    }
+
+    private void addStock(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) {
+        RegimenItem itemStock = new RegimenItem();
+        itemStock.setForm(rnRForm);
+        itemStock.setHf(alReportViewModel.getItemHF().rapidTestFormGridViewModelMap.get(columnName).getExistentStockValue());
+        itemStock.setChw(alReportViewModel.getItemCHW().rapidTestFormGridViewModelMap.get(columnName).getExistentStockValue());
+        itemStock.setAmount(gridViewModel.getExistentStockValue());
+        Regimen regimenStock = new Regimen();
+        regimenStock.setName(COLUMN_CODE_PREFIX_TREATMENTS + columnName);
+        regimenStock.setType(getRegimenType(columnName));
+        itemStock.setRegimen(regimenStock);
+        regimenItems.add(itemStock);
+    }
+
+    private Regimen.RegimeType getRegimenType(String columnName) {
+        if (columnName.equals(ALGridViewModel.ALColumnCode.OneColumn.getColumnName()) ||
+                columnName.equals(ALGridViewModel.ALColumnCode.TwoColumn.getColumnName())) {
+            return Regimen.RegimeType.Paediatrics;
+        } else {
+            return Regimen.RegimeType.Adults;
+        }
+
+    }
 
     @Override
     protected int getCompleteErrorMessage() {
         return R.string.hint_al_complete_failed;
     }
-
 
     public interface ALRequisitionView extends BaseRequisitionPresenter.BaseRequisitionView {
         void setProcessButtonName(String buttonName);

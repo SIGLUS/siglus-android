@@ -837,4 +837,15 @@
         <item name="android:layout_weight">1</item>
         <item name="android:background">@drawable/border_bottom_black</item>
     </style>
+    <style name="AlReportList.editText">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:textSize">@dimen/font_size_regular</item>
+        <item name="android:textColor">@color/color_black</item>
+        <item name="android:inputType">number</item>
+        <item name="android:paddingLeft">@dimen/padding_small</item>
+        <item name="android:paddingRight">@dimen/padding_small</item>
+    </style>
 </resources>

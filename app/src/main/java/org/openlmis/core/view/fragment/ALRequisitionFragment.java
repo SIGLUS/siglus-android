@@ -35,6 +35,8 @@ import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ALReportAdapter;
+import org.openlmis.core.view.holder.ALReportViewHolder;
+import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
@@ -89,6 +91,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
         }
 
         initUI();
+        setUpRowItems();
         if (isSavedInstanceState && presenter.getRnRForm() != null) {
             presenter.updateFormUI();
         } else {
@@ -119,9 +122,9 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
             @Override
             public void onSingleClick(View v) {
                 loading();
-//                Subscription subscription = presenter.getSaveFormObservable(rnrFormList.itemFormList, regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString())
-//                        .subscribe(getOnSavedSubscriber());
-//                subscriptions.add(subscription);
+                Subscription subscription = presenter.getSaveFormObservable()
+                        .subscribe(getOnSavedSubscriber());
+                subscriptions.add(subscription);
             }
         };
     }
@@ -153,14 +156,16 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
-//                if (rnrFormList.isCompleted() && regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
-//                    presenter.setViewModels(rnrFormList.itemFormList, regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-//                    if (!presenter.validateFormPeriod()) {
-//                        ToastUtil.show(R.string.msg_requisition_not_unique);
-//                    } else {
-//                        showSignDialog();
-//                    }
-//                }
+                if (presenter.isComplete()) {
+                    presenter.setViewModels();
+                    if (!presenter.validateFormPeriod()) {
+                        ToastUtil.show(R.string.msg_requisition_not_unique);
+                    } else {
+                        showSignDialog();
+                    }
+                } else {
+                    adapter.updateTip();
+                }
             }
         };
     }
@@ -208,22 +213,31 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
 
     }
 
-
-    private void setUpRowItems() {
-        adapter = new ALReportAdapter();
-        rvALRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvALRowItemListView.setAdapter(adapter);
-    }
-
-
     @Override
     public void refreshRequisitionForm(RnRForm rnRForm) {
-
+        adapter.refresh(presenter.alReportViewModel);
     }
 
     @Override
     protected void finish() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
+    }
+
+    private void setUpRowItems() {
+        adapter = new ALReportAdapter(getQuantityChangeListener());
+        rvALRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvALRowItemListView.setAdapter(adapter);
+    }
+
+
+    private ALReportViewHolder.QuantityChangeListener getQuantityChangeListener() {
+        return new ALReportViewHolder.QuantityChangeListener() {
+            @Override
+                 public void updateTotal(ALGridViewModel.ALColumnCode columnCode, ALGridViewModel.ALGridColumnCode gridColumnCode){
+                presenter.alReportViewModel.updateTotal(columnCode, gridColumnCode);
+                adapter.updateTotal();
+            }
+        };
     }
 }

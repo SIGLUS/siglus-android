@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="@dimen/al_view_width"
     android:layout_height="@dimen/al_view_list_height"
     android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/tv_movement_date"
-        style="@style/AllStockHistory.ItemTable.Grid"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:gravity="center" />
+    <EditText
+        android:id="@+id/one_treatment"
+        style="@style/AlReportList.editText" />
+    <EditText
+        android:id="@+id/one_Stock"
+        style="@style/AlReportList.editText" />
+    <EditText
+        android:id="@+id/two_treatment"
+        style="@style/AlReportList.editText" />
+    <EditText
+        android:id="@+id/two_Stock"
+        style="@style/AlReportList.editText" />
+    <EditText
+        android:id="@+id/three_treatment"
+        style="@style/AlReportList.editText" />
+    <EditText
+        android:id="@+id/three_stock"
+        style="@style/AlReportList.editText" />
+    <EditText
+        android:id="@+id/four_treatment"
+        style="@style/AlReportList.editText" />
+    <EditText
+        android:id="@+id/four_stock"
+        style="@style/AlReportList.editText"
+        android:text="betta"/>
 </LinearLayout>

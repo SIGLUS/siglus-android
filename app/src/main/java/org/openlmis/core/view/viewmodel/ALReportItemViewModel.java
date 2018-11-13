@@ -16,23 +16,20 @@ import lombok.Data;
 
 @Data
 public class ALReportItemViewModel implements Serializable {
-
-
     ALGridViewModel gridOne = new ALGridViewModel(ALGridViewModel.ALColumnCode.OneColumn);
     ALGridViewModel gridTwo = new ALGridViewModel(ALGridViewModel.ALColumnCode.TwoColumn);
     ALGridViewModel gridThree = new ALGridViewModel(ALGridViewModel.ALColumnCode.ThreeColumn);
     ALGridViewModel gridFour = new ALGridViewModel(ALGridViewModel.ALColumnCode.FourColumn);
 
     public List<ALGridViewModel> rapidTestFormGridViewModelList = Arrays.asList(gridOne, gridTwo, gridThree, gridFour);
-
     public Map<String, ALGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
-
     private ALReportViewModel.ALItemType itemType;
+    public boolean showCheckTip = false;
 
     public ALReportItemViewModel(ALReportViewModel.ALItemType itemType) {
         this.itemType = itemType;
         for (ALGridViewModel viewModel : rapidTestFormGridViewModelList) {
-            rapidTestFormGridViewModelMap.put(StringUtils.upperCase(viewModel.getColumnCode().name()), viewModel);
+            rapidTestFormGridViewModelMap.put(viewModel.getColumnCode().name(), viewModel);
         }
     }
 
@@ -42,24 +39,12 @@ public class ALReportItemViewModel implements Serializable {
         rapidTestFormGridViewModelMap.get(columnName).setValue(regimen, value);
     }
 
-//    public void setColumnValue(ProgramDataColumn column, int value) {
-//        String[] columnNames = column.getCode().split("_");
-//        String columnName = columnNames[1];
-//        rapidTestFormGridViewModelMap.get(columnName).setValue(column, value);
-//    }
-//
-//    public void updateUnjustifiedColumn() {
-//        for (RapidTestFormGridViewModel viewModel: rapidTestFormGridViewModelList) {
-//            if(viewModel.isAddUnjustified()) {
-//                viewModel.unjustifiedValue = "0";
-//            }
-//        }
-//    }
-//
-//    public void setAPEItem() {
-//        for (RapidTestFormGridViewModel viewModel: rapidTestFormGridViewModelList) {
-//            viewModel.isAPE = true;
-//        }
-//    }
-
+    public Boolean isComplete() {
+        for (ALGridViewModel viewModel : rapidTestFormGridViewModelList) {
+            if (viewModel.treatmentsValue == null || viewModel.existentStockValue == null) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
