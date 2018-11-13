@@ -1,18 +1,17 @@
 package org.openlmis.core.view.holder;
 import android.view.View;
 
-import org.openlmis.core.view.viewmodel.ALReportViewModel;
-import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
+import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
 
 public class ALReportViewHolder extends BaseViewHolder {
 
-    private ALReportViewModel viewModel;
+    private ALReportItemViewModel viewModel;
 
     public ALReportViewHolder(View itemView) {
         super(itemView);
     }
 
-    public void populate(final ALReportViewModel alReportViewModel) {
+    public void populate(final ALReportItemViewModel alReportViewModel) {
         viewModel = alReportViewModel;
     }
 }

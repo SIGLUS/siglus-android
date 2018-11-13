@@ -6,14 +6,14 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.ALReportViewHolder;
-import org.openlmis.core.view.viewmodel.ALReportViewModel;
+import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
-    private List<ALReportViewModel> viewModels;
+    private List<ALReportItemViewModel> viewModels;
 
     public ALReportAdapter() {
         viewModels = new ArrayList<>();
@@ -26,7 +26,7 @@ public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
 
     @Override
     public void onBindViewHolder(ALReportViewHolder holder, int position) {
-        ALReportViewModel viewModel = viewModels.get(position);
+        ALReportItemViewModel viewModel = viewModels.get(position);
         holder.populate(viewModel);
     }
 

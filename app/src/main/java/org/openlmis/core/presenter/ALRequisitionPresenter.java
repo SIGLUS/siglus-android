@@ -37,6 +37,7 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 
     ALRequisitionView view;
     private ALRepository alRepository;
+    ALR
 
     @Override
     protected RnrFormRepository initRnrFormRepository() {
@@ -62,9 +63,11 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     public void updateFormUI() {
         if (rnRForm != null) {
-
+            view.refreshRequisitionForm(rnRForm);
+            view.setProcessButtonName(rnRForm.isDraft()?
+                    context.getResources().getString(R.string.btn_submit) :
+                    context.getResources().getString(R.string.btn_complete));
         }
-
     }
 
     @Override
@@ -83,6 +86,22 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
+
+//    public Observable<Void> getSaveFormObservable(final List<RnrFormItem> rnrFormItems, final List<RegimenItem> regimenItems, final List<BaseInfoItem> baseInfoItems, final String comment) {
+//        return Observable.create(new Observable.OnSubscribe<Void>() {
+//            @Override
+//            public void call(Subscriber<? super Void> subscriber) {
+//                try {
+//                    setViewModels(rnrFormItems, regimenItems, baseInfoItems, comment);
+//                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
+//                    subscriber.onCompleted();
+//                } catch (LMISException e) {
+//                    e.reportToFabric();
+//                    subscriber.onError(e);
+//                }
+//            }
+//        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+//    }
 
     @Override
     protected int getCompleteErrorMessage() {
