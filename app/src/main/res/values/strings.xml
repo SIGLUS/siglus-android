@@ -387,6 +387,7 @@
     <string name="app_name_in_ci">SIGLUS CI</string>
     <string name="app_name_in_uat">SIGLUS UAT</string>
     <string name="app_name_in_showcase">SIGLUS SHOWCASE</string>
+    <string name="app_name_in_dev">SIGLUS DEV</string>
     <string name="app_name_in_prd">SIGLUS</string>
     <string name="app_name_in_qa">SIGLUS QA</string>
     <string name="app_name_in_training">SIGLUS TREINO II</string>

@@ -63,6 +63,9 @@ android {
         local {
             applicationId 'org.openlmis.core.local'
         }
+        dev {
+            applicationId 'org.openlmis.core.dev'
+        }
         qa {
             applicationId 'org.openlmis.core.qa'
         }
