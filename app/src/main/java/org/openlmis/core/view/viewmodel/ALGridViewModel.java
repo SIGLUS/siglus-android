@@ -15,10 +15,10 @@ import lombok.Data;
 @Data
 public class ALGridViewModel {
     public enum ALColumnCode {
-        OneColumn("1*6"),
-        TwoColumn("2*6"),
-        ThreeColumn("3*6"),
-        FourColumn("4*6");
+        OneColumn("1x6"),
+        TwoColumn("2x6"),
+        ThreeColumn("3x6"),
+        FourColumn("4x6");
         private String columnCodeName;
         ALColumnCode(String code) {
             this.columnCodeName = code;
@@ -38,7 +38,7 @@ public class ALGridViewModel {
     Long existentStockValue;
 
     public final static String COLUMN_CODE_PREFIX_TREATMENTS = "Consultas AL US/APE Malaria ";
-    final static String COLUMN_CODE_PREFIX_STOCK = "Consultas AL STOCK Malaria ";
+    public final static String COLUMN_CODE_PREFIX_STOCK = "Consultas AL STOCK Malaria ";
 
     ALGridViewModel(ALColumnCode columnCode) {
         this.columnCode = columnCode;
