@@ -89,7 +89,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private static final List<Migration> MIGRATIONS = new ArrayList<Migration>() {
         {
             add(new CreateInitTables());
-            add(new CreateDummyRegimes());
             add(new AddSignatureFieldInStockMovementItemTable());
             add(new AddFacilityIdToUser());
             add(new AddSyncTagToStockMovementItem());
@@ -111,6 +110,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddParentCodeToProgramTable());
             add(new UpdateRegimenType());
             add(new AddIsCustomColumnToRegime());
+            add(new CreateDummyRegimes());
             add(new CreateRegimeShortCodeTable());
             add(new ChangeProgramTableName());
             add(new CreateProductProgramsTable());

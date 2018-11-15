@@ -57,5 +57,14 @@ public class CreateDummyRegimes extends Migration {
         execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('016','AZT60+3TC+LPV/r(2DFC + LPV/r)','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
         execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('017','ABC+3TC+LPV/r','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
         execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('018','ABC+3TC+EFZ','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('019','Consultas AL US/APE Malaria 1x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('020','Consultas AL STOCK Malaria 1x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('021','Consultas AL US/APE Malaria 2x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('022','Consultas AL STOCK Malaria 2x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('023','Consultas AL US/APE Malaria 3x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('024','Consultas AL STOCK Malaria 3x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('025','Consultas AL US/APE Malaria 4x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('026','Consultas AL STOCK Malaria 4x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
     }
 }

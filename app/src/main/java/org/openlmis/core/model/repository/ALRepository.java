@@ -21,6 +21,7 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
@@ -38,6 +39,9 @@ public class ALRepository extends RnrFormRepository {
     ProductRepository productRepository;
 
     @Inject
+    RegimenRepository regimenRepository;
+
+    @Inject
     ProductProgramRepository productProgramRepository;
 
     @Inject
@@ -51,4 +55,7 @@ public class ALRepository extends RnrFormRepository {
         return new ArrayList<>();
     }
 
+    public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category) throws LMISException {
+        return regimenRepository.getByNameAndCategory(name, category);
+    }
 }
