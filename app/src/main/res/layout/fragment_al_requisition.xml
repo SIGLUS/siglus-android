@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <HorizontalScrollView
         android:id="@+id/scrollView"
@@ -30,9 +32,11 @@
                     android:textSize="@dimen/font_size_regular" />
 
                 <TextView
+                    android:id="@+id/al_monthTitle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
+                    android:gravity="left|center"
+                    android:padding="@dimen/rapid_view_view_left_padding"
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/font_size_regular"
                     android:textStyle="bold" />
@@ -176,15 +180,14 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_al_row_item_list"
-                    android:layout_width="1000dp"
+                    android:layout_width="932dp"
                     android:layout_height="match_parent"
-                    android:overScrollMode="never"
-                    android:background="@color/color_red"/>
+                    android:overScrollMode="never" />
             </LinearLayout>
         </RelativeLayout>
     </HorizontalScrollView>
 
-    <include
+    <org.openlmis.core.view.widget.ActionPanelView
         android:id="@+id/action_panel"
         layout="@layout/view_action_panel"
         android:layout_width="match_parent"
