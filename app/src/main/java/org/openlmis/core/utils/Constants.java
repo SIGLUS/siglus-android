@@ -26,7 +26,8 @@ public final class Constants {
     public enum Program {
         MMIA_PROGRAM(MMIA_PROGRAM_CODE, R.string.mmia_list),
         VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list),
-        AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name);
+        AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name),
+        PTV_PROGRAM(AL_PROGRAM_CODE, R.string.label_ptv_name);
 
 
         private String code;
@@ -52,6 +53,7 @@ public final class Constants {
     public static final String ESS_PROGRAM_CODE = "ESS_MEDS";
     public static final String RAPID_TEST_CODE = "RAPID_TEST";
     public static final String AL_PROGRAM_CODE = "MALARIA";
+    public static final String PTV_PROGRAM_CODE = "PTV";
 
     // Intent Params
     public static final String PARAM_STOCK_CARD_ID = "stockCardId";

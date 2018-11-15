@@ -236,6 +236,11 @@ public class HomeActivity extends BaseActivity {
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, Constants.VIA_PROGRAM_CODE);
     }
 
+    public void onClickPtvStockCard(View view) {
+        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.PTV_PROGRAM));
+        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectPTV, Constants.PTV_PROGRAM_CODE);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

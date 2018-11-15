@@ -283,6 +283,7 @@
     <string name="label_via_name">Requisition Balancete</string>
     <string name="label_mmia_name">MMIA</string>
     <string name="label_al_name">AL Reports</string>
+    <string name="label_ptv_name">PTV Reports</string>
     <string name="action_delete_rnr_form">Remove from tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b>No MMIA has been created.</b>]]> Complete your inventory before creating a MMIA</string>
     <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b>No Rapid Test has been created.</b>]]> Complete your inventory before creating a Rapid Test</string>

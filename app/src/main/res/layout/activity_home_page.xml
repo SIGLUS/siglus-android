@@ -114,6 +114,17 @@
                         android:layout_height="0dp"
                         android:layout_marginTop="10dp"
                         android:layout_weight="1"
+                        android:background="@color/color_pink"
+                        android:onClick="onClickPtvStockCard"
+                        android:text="@string/label_ptv" />
+
+                    <Button
+                        android:id="@+id/btn_ptv_card"
+                        style="@style/Homepage.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
                         android:background="@color/color_teal"
                         android:onClick="onClickKitStockCard"
                         android:text="@string/label_kits_stock_cards" />
