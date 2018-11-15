@@ -27,7 +27,7 @@ public final class Constants {
         MMIA_PROGRAM(MMIA_PROGRAM_CODE, R.string.mmia_list),
         VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list),
         AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name),
-        PTV_PROGRAM(AL_PROGRAM_CODE, R.string.label_ptv_name);
+        PTV_PROGRAM(PTV_PROGRAM_CODE, R.string.label_ptv_name);
 
 
         private String code;

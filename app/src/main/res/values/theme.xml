@@ -59,6 +59,11 @@
         <item name="background">@color/color_light_blue</item>
     </style>
 
+    <style name="AppTheme.PINK">
+        <item name="android:actionBarStyle">@style/MyActionBar.PINK</item>
+        <item name="actionBarStyle">@style/MyActionBar.PINK</item>
+    </style>
+
     <style name="MyActionBar.PINK">
         <item name="android:background">@color/color_pink</item>
         <item name="background">@color/color_pink</item>

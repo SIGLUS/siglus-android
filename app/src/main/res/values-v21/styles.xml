@@ -21,6 +21,10 @@
         <!--   darker variant for the status bar and contextual app bars -->
         <item name="colorPrimaryDark">@color/color_dark_blue</item>
     </style>
+    <style name="AppTheme.PINK">
+        <item name="colorPrimary">@color/color_pink</item>
+        <item name="colorPrimaryDark">@color/color_pink_dark</item>
+    </style>
 
     <style name="AppTheme.PURPLE">
         <item name="colorPrimary">@color/color_purple</item>

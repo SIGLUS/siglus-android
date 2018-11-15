@@ -12,6 +12,8 @@ public final class ProgramUtil {
                 return R.style.AppTheme_PURPLE;
             case Constants.RAPID_TEST_CODE:
                 return R.style.AppTheme_BlueGray;
+            case Constants.PTV_PROGRAM_CODE:
+                return R.style.AppTheme_PINK;
             case Constants.AL_PROGRAM_CODE:
             default:
                 return R.style.AppTheme_LIGHT_BLUE;
