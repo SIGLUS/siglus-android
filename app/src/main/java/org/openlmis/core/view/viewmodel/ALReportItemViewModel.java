@@ -29,13 +29,13 @@ public class ALReportItemViewModel implements Serializable {
     public ALReportItemViewModel(ALReportViewModel.ALItemType itemType) {
         this.itemType = itemType;
         for (ALGridViewModel viewModel : rapidTestFormGridViewModelList) {
-            rapidTestFormGridViewModelMap.put(viewModel.getColumnCode().name(), viewModel);
+            rapidTestFormGridViewModelMap.put(viewModel.getColumnCode().getColumnName(), viewModel);
         }
     }
 
     public void setColumnValue(RegimenItem regimen, Long value) {
        String regimenName = regimen.getRegimen().getName();
-       String columnName = regimenName.substring(regimenName.length()-2, regimenName.length());
+       String columnName = regimenName.substring(regimenName.length()-3, regimenName.length());
         rapidTestFormGridViewModelMap.get(columnName).setValue(regimen, value);
     }
 

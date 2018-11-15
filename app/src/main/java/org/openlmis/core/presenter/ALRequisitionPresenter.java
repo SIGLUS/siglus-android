@@ -21,13 +21,16 @@ package org.openlmis.core.presenter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ALRepository;
+import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.viewmodel.ALReportViewModel;
 
@@ -42,6 +45,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static org.openlmis.core.view.viewmodel.ALGridViewModel.COLUMN_CODE_PREFIX_STOCK;
 import static org.openlmis.core.view.viewmodel.ALGridViewModel.COLUMN_CODE_PREFIX_TREATMENTS;
 
 public class ALRequisitionPresenter extends BaseRequisitionPresenter {
@@ -53,6 +57,16 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     protected RnrFormRepository initRnrFormRepository() {
         alRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(ALRepository.class);
         return alRepository;
+    }
+
+    @Override
+    public void attachView(BaseView baseView) throws ViewNotMatchException {
+        if (baseView instanceof ALRequisitionPresenter.ALRequisitionView) {
+            this.view = (ALRequisitionPresenter.ALRequisitionView) baseView;
+        } else {
+            throw new ViewNotMatchException(ALRequisitionPresenter.ALRequisitionView.class.getName());
+        }
+        super.attachView(baseView);
     }
 
     @Override
@@ -72,8 +86,8 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     public void updateFormUI() {
         if (rnRForm != null) {
-            view.refreshRequisitionForm(rnRForm);
             alReportViewModel = new ALReportViewModel(rnRForm);
+            view.refreshRequisitionForm(rnRForm);
             view.setProcessButtonName(rnRForm.isDraft()?
                     context.getResources().getString(R.string.btn_submit) :
                     context.getResources().getString(R.string.btn_complete));
@@ -117,7 +131,7 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
         return alReportViewModel.isComplete();
     }
 
-    public void setViewModels() {
+    public void setViewModels() throws LMISException {
         List<RegimenItem> regimenItems =  new ArrayList<>();
         for(ALGridViewModel gridViewModel : alReportViewModel.getItemTotal().rapidTestFormGridViewModelList) {
             String columnName = gridViewModel.getColumnCode().getColumnName();
@@ -128,28 +142,24 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     }
 
 
-    private void addTreatment(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) {
+    private void addTreatment(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) throws LMISException {
         RegimenItem itemTreatment = new RegimenItem();
         itemTreatment.setForm(rnRForm);
         itemTreatment.setHf(alReportViewModel.getItemHF().rapidTestFormGridViewModelMap.get(columnName).getTreatmentsValue());
         itemTreatment.setChw(alReportViewModel.getItemCHW().rapidTestFormGridViewModelMap.get(columnName).getTreatmentsValue());
         itemTreatment.setAmount(gridViewModel.getTreatmentsValue());
-        Regimen regimenTreatment = new Regimen();
-        regimenTreatment.setName(COLUMN_CODE_PREFIX_TREATMENTS + columnName);
-        regimenTreatment.setType(getRegimenType(columnName));
+        Regimen regimenTreatment = alRepository.getByNameAndCategory(COLUMN_CODE_PREFIX_TREATMENTS + columnName, getRegimenType(columnName));
         itemTreatment.setRegimen(regimenTreatment);
         regimenItems.add(itemTreatment);
     }
 
-    private void addStock(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) {
+    private void addStock(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) throws LMISException {
         RegimenItem itemStock = new RegimenItem();
         itemStock.setForm(rnRForm);
         itemStock.setHf(alReportViewModel.getItemHF().rapidTestFormGridViewModelMap.get(columnName).getExistentStockValue());
         itemStock.setChw(alReportViewModel.getItemCHW().rapidTestFormGridViewModelMap.get(columnName).getExistentStockValue());
         itemStock.setAmount(gridViewModel.getExistentStockValue());
-        Regimen regimenStock = new Regimen();
-        regimenStock.setName(COLUMN_CODE_PREFIX_TREATMENTS + columnName);
-        regimenStock.setType(getRegimenType(columnName));
+        Regimen regimenStock = alRepository.getByNameAndCategory(COLUMN_CODE_PREFIX_STOCK + columnName, getRegimenType(columnName));
         itemStock.setRegimen(regimenStock);
         regimenItems.add(itemStock);
     }

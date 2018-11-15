@@ -25,14 +25,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.ALRequisitionPresenter;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ALReportAdapter;
 import org.openlmis.core.view.holder.ALReportViewHolder;
@@ -56,10 +60,13 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     ALReportAdapter adapter;
 
     @InjectView(R.id.scrollView)
-    ScrollView scrollView;
+    HorizontalScrollView scrollView;
 
     @InjectView(R.id.rv_al_row_item_list)
     RecyclerView rvALRowItemListView;
+
+    @InjectView(R.id.al_monthTitle)
+    TextView monthTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +78,8 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
 
     @Override
     protected BaseReportPresenter injectPresenter() {
-        return RoboGuice.getInjector(getActivity()).getInstance(ALRequisitionPresenter.class);
+        presenter =  RoboGuice.getInjector(getActivity()).getInstance(ALRequisitionPresenter.class);
+        return presenter;
     }
 
     @Override
@@ -157,7 +165,13 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
             @Override
             public void onSingleClick(View v) {
                 if (presenter.isComplete()) {
-                    presenter.setViewModels();
+                    try {
+                        presenter.setViewModels();
+                    } catch (LMISException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                    scrollView.requestFocus();
                     if (!presenter.validateFormPeriod()) {
                         ToastUtil.show(R.string.msg_requisition_not_unique);
                     } else {
@@ -215,6 +229,9 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
 
     @Override
     public void refreshRequisitionForm(RnRForm rnRForm) {
+        getActivity().setTitle(getString(R.string.label_AL_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()), DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
+        monthTitle.setText(DateUtil.formatDateWithLongMonthAndYear(rnRForm.getPeriodEnd()));
+        scrollView.setVisibility(View.VISIBLE);
         adapter.refresh(presenter.alReportViewModel);
     }
 

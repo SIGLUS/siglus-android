@@ -56,7 +56,7 @@ public class ALRequisitionActivity extends BaseActivity {
 
 
     public static Intent getIntentToMe(Context context, Date periodEndDate) {
-        Intent intent = new Intent(context, MMIARequisitionActivity.class);
+        Intent intent = new Intent(context, ALRequisitionActivity.class);
         intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, periodEndDate);
         return intent;
     }

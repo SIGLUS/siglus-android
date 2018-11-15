@@ -43,6 +43,7 @@ public class ALReportViewHolder extends BaseViewHolder {
     @InjectView(R.id.four_stock)
     EditText fourStock;
 
+    private List<Pair<EditText, EditTextWatcher>> editTexts = new ArrayList<>();
     private List<EditText> edits = Arrays.asList(oneTreatment, oneStock,
             twoTreatment, twoStock,
             threeTreatment,threeStock,
@@ -64,6 +65,11 @@ public class ALReportViewHolder extends BaseViewHolder {
     }
 
     public void setEditTextValue() {
+        for (Pair<EditText, EditTextWatcher> editText: editTexts ) {
+            if (editText.first != null) {
+                editText.first.removeTextChangedListener(editText.second);
+            }
+        }
         oneTreatment.setText(getValue(viewModel.getGridOne().getTreatmentsValue()));
         oneStock.setText(getValue(viewModel.getGridOne().getExistentStockValue()));
         twoTreatment.setText(getValue(viewModel.getGridTwo().getTreatmentsValue()));
@@ -78,15 +84,15 @@ public class ALReportViewHolder extends BaseViewHolder {
         for (EditText editText: edits) {
             editText.setEnabled(true);
             ALReportViewHolder.EditTextWatcher textWatcher = new ALReportViewHolder.EditTextWatcher(editText);
-            editText.removeTextChangedListener(textWatcher);
             editText.addTextChangedListener(textWatcher);
+            editTexts.add(new Pair(editText, textWatcher));
         }
     }
 
     public void checkTips() {
         if (viewModel.showCheckTip == false) return;
         for (EditText editText: edits) {
-            if (editText.getText().length() > 0) {
+            if (editText.getText().length() == 0) {
                 editText.setError(context.getString(R.string.hint_error_input));
                 editText.requestFocus();
                 return;
