@@ -92,6 +92,9 @@ public class RnRFormViewModel {
             case Constants.AL_PROGRAM_CODE:
                 this.name = LMISApp.getContext().getString(R.string.label_al_name);
                 break;
+            case Constants.PTV_PROGRAM_CODE:
+                this.name = LMISApp.getContext().getString(R.string.label_ptv_name);
+                break;
             default:
                 this.name = StringUtils.EMPTY;
                 break;
