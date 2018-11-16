@@ -31,7 +31,7 @@ import java.util.Date;
 
 import roboguice.inject.ContentView;
 
-@ContentView(R.layout.activity_al_requisition)
+@ContentView(R.layout.activity_ptv_requisition)
 public class PTVRequisitionActivity extends BaseActivity {
 
     @Override
