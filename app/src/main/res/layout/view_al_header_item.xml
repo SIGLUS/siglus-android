@@ -14,8 +14,8 @@
             android:layout_weight="1"
             android:background="@drawable/border_right_black"
             android:orientation="vertical"
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp">
+            android:paddingTop="8dp"
+            android:paddingLeft="6dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -39,7 +39,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:paddingTop="8dp"
+            android:paddingLeft="6dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -53,7 +54,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="12dp"
                 android:text="at the end of Period"
-                android:layout_gravity="left|center"
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/font_size_title_small" />
 
