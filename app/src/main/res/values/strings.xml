@@ -178,6 +178,9 @@
     <string name="msg_al_submit_signature">Enter your initials to approve AL information</string>
     <string name="msg_approve_signature_al">Enter your initials and then approve the AL</string>
 
+    <!-- PTV -->
+    <string name="label_ptv_title">PTV - %1$s to %2$s</string>
+
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>
     <string name="label_default">-</string>

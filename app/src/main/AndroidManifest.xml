@@ -67,6 +67,10 @@
             android:label="@string/title_patient_data_report_form"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".view.activity.PTVRequisitionActivity"
+            android:label="@string/label_ptv_name"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.activity.PTVDataReportFormActivity"
             android:label="@string/title_patient_ptv_report_form"
             android:screenOrientation="portrait" />

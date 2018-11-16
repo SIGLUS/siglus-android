@@ -213,6 +213,9 @@ public class RnRFormListActivity extends BaseReportListActivity {
             case AL_PROGRAM:
                 intent = ALRequisitionActivity.getIntentToMe(this, rnrFormId);
                 break;
+            case PTV_PROGRAM:
+                intent = PTVRequisitionActivity.getIntentToMe(this, rnrFormId);
+
         }
         startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }
@@ -229,6 +232,8 @@ public class RnRFormListActivity extends BaseReportListActivity {
             case AL_PROGRAM:
                 intent = ALRequisitionActivity.getIntentToMe(this, periodEndDate);
                 break;
+            case PTV_PROGRAM:
+                intent = PTVRequisitionActivity.getIntentToMe(this, periodEndDate);
         }
         startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }

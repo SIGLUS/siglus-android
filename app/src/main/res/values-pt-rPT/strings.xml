@@ -167,6 +167,9 @@
     <string name="msg_al_submit_signature">Insira as iniciais do seu nome e aprove as quantidades do AL</string>
     <string name="msg_approve_signature_al">Insira as iniciais do seu nome e aprove o AL</string>
 
+    <!-- PTV -->
+    <string name="label_ptv_title">PTV - %1$s a %2$s</string>
+
     <!--Stock Movement-->
     <string name="title_stock_movement">Ficha de Estoque</string>
     <string name="label_default">-</string>
