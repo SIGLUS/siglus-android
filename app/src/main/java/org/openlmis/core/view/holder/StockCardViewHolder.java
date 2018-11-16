@@ -48,17 +48,17 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     public enum StockOnHandStatus {
 
-        REGULAR_STOCK("regularStock", "Regular Stock", R.color.color_regular_stock, R.color.color_stock_status),
-        LOW_STOCK("lowStock", "Low Stock", R.color.color_low_stock, R.color.color_stock_status),
-        STOCK_OUT("stockOut", "Stock Out", R.color.color_stock_out, R.color.color_stock_status),
-        OVER_STOCK("overStock", "Over Stock",R.color.color_over_stock, R.color.color_stock_status);
+        REGULAR_STOCK("regularStock", R.string.Regular_stock, R.color.color_regular_stock, R.color.color_stock_status),
+        LOW_STOCK("lowStock", R.string.Low_stock, R.color.color_low_stock, R.color.color_stock_status),
+        STOCK_OUT("stockOut", R.string.Stock_out, R.color.color_stock_out, R.color.color_stock_status),
+        OVER_STOCK("overStock",R.string.Overstock, R.color.color_over_stock, R.color.color_stock_status);
 
         private String messageKey;
-        private String description;
+        private int description;
         private @ColorRes int bgColor;
         private @ColorRes int color;
 
-        StockOnHandStatus(String key, String desc, @ColorRes int bgColor, @ColorRes int color) {
+        StockOnHandStatus(String key, int desc, @ColorRes int bgColor, @ColorRes int color) {
             this.messageKey = key;
             this.description = desc;
             this.bgColor = bgColor;
@@ -69,7 +69,7 @@ public class StockCardViewHolder extends BaseViewHolder {
             return messageKey;
         }
 
-        public String getDescription() {
+        public int getDescription() {
             return description;
         }
 
@@ -146,7 +146,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     private void initStockOnHandWarning(final InventoryViewModel viewModel) {
 
         StockOnHandStatus stockOnHandStatus = viewModel.getStockOnHandLevel();
-        tvStockStatus.setText(stockOnHandStatus.description);
+        tvStockStatus.setText(context.getResources().getString(stockOnHandStatus.description));
         tvStockStatus.setTextColor(context.getResources().getColor(stockOnHandStatus.getColor()));
         tvStockStatus.setBackgroundColor(context.getResources().getColor(stockOnHandStatus.getBgColor()));
 

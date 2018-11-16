@@ -171,6 +171,10 @@
     <string name="label_ptv_title">PTV - %1$s a %2$s</string>
 
     <!--Stock Movement-->
+    <string name="Overstock">Stock acumulados</string>
+    <string name="Regular_stock">Stock regular</string>
+    <string name="Low_stock"> Eminência de ruptura</string>
+    <string name="Stock_out">Ruptura de stock</string>
     <string name="title_stock_movement">Ficha de Estoque</string>
     <string name="label_default">-</string>
     <string name="label_movement_date">Data do Movimento</string>
