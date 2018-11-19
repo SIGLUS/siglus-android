@@ -3,22 +3,16 @@ import android.text.Editable;
 import android.util.Pair;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
 import org.openlmis.core.view.viewmodel.ALReportViewModel;
-import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
-import org.openlmis.core.view.widget.MMIARnrForm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import roboguice.inject.InjectView;
 
@@ -43,11 +37,8 @@ public class ALReportViewHolder extends BaseViewHolder {
     @InjectView(R.id.four_stock)
     EditText fourStock;
 
-    private List<Pair<EditText, EditTextWatcher>> editTexts = new ArrayList<>();
-    private List<EditText> edits = Arrays.asList(oneTreatment, oneStock,
-            twoTreatment, twoStock,
-            threeTreatment,threeStock,
-            fourTreatment, fourStock);
+    private List<Pair<EditText, EditTextWatcher>> editPairWatcher = new ArrayList<>();
+    private List<EditText> editTexts = new ArrayList<>();
 
 
     public ALReportViewHolder(View itemView) {
@@ -56,20 +47,22 @@ public class ALReportViewHolder extends BaseViewHolder {
 
     public void populate(final ALReportItemViewModel alReportViewModel, QuantityChangeListener changeListener) {
         this.viewModel = alReportViewModel;
+        removeTextWatcher();
         setEditTextValue();
         if (viewModel.getItemType() != ALReportViewModel.ALItemType.Total) {
             this.quantityChangeListener = changeListener;
             configureEditTextWatch();
             checkTips();
+        } else {
+            for (EditText editText : editTexts) {
+                editText.setEnabled(false);
+                editText.setError(null);
+            }
         }
+
     }
 
     public void setEditTextValue() {
-        for (Pair<EditText, EditTextWatcher> editText: editTexts ) {
-            if (editText.first != null) {
-                editText.first.removeTextChangedListener(editText.second);
-            }
-        }
         oneTreatment.setText(getValue(viewModel.getGridOne().getTreatmentsValue()));
         oneStock.setText(getValue(viewModel.getGridOne().getExistentStockValue()));
         twoTreatment.setText(getValue(viewModel.getGridTwo().getTreatmentsValue()));
@@ -78,23 +71,25 @@ public class ALReportViewHolder extends BaseViewHolder {
         threeStock.setText(getValue(viewModel.getGridThree().getExistentStockValue()));
         fourTreatment.setText(getValue(viewModel.getGridFour().getTreatmentsValue()));
         fourStock.setText(getValue(viewModel.getGridFour().getExistentStockValue()));
+        editTexts = Arrays.asList(oneTreatment, oneStock, twoTreatment, twoStock,
+                threeTreatment,threeStock, fourTreatment, fourStock);
     }
 
     public void configureEditTextWatch() {
-        for (EditText editText: edits) {
+        for (EditText editText: editTexts) {
             editText.setEnabled(true);
+            editText.setError(null);
             ALReportViewHolder.EditTextWatcher textWatcher = new ALReportViewHolder.EditTextWatcher(editText);
             editText.addTextChangedListener(textWatcher);
-            editTexts.add(new Pair(editText, textWatcher));
+            editPairWatcher.add(new Pair(editText, textWatcher));
         }
     }
 
     public void checkTips() {
         if (viewModel.showCheckTip == false) return;
-        for (EditText editText: edits) {
+        for (EditText editText: editTexts) {
             if (editText.getText().length() == 0) {
                 editText.setError(context.getString(R.string.hint_error_input));
-                editText.requestFocus();
                 return;
             }
         }
@@ -162,6 +157,15 @@ public class ALReportViewHolder extends BaseViewHolder {
             }
             return editText;
         }
+    }
+
+    private  void removeTextWatcher() {
+        for (Pair<EditText, EditTextWatcher> editText: editPairWatcher) {
+            if (editText.first != null) {
+                editText.first.removeTextChangedListener(editText.second);
+            }
+        }
+        editPairWatcher.clear();
     }
 
     public interface QuantityChangeListener {

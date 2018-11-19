@@ -97,6 +97,8 @@ public class ALReportViewModel implements Serializable {
     }
 
     public boolean isComplete() {
+        itemHF.showCheckTip = false;
+        itemCHW.showCheckTip = false;
         if (!itemHF.isComplete()){
             itemHF.showCheckTip = true;
         } else if (!itemCHW.isComplete()){

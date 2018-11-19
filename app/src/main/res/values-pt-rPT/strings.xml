@@ -162,6 +162,7 @@
 
     <!-- AL -->
     <string name="msg_al_submit_tip">A sua AL foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver conecção a internet.</string>
+    <string name="msg_uncomplete_hint"> Por favor, complete as informações do AL.</string>
     <string name="hint_al_complete_failed">Não foi possível completar o AL, por favor, contacte o administrador.</string>
     <string name="msg_requisition_signature_message_notify_al">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do AL</string>
     <string name="msg_al_submit_signature">Insira as iniciais do seu nome e aprove as quantidades do AL</string>

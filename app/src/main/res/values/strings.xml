@@ -173,6 +173,7 @@
 
     <!-- AL -->
     <string name="msg_al_submit_tip">Your AL form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
+    <string name="msg_uncomplete_hint"> Please Complete AL information. </string>
     <string name="hint_al_complete_failed">Unable to complete AL form, Please contact your administrator.</string>
     <string name="msg_requisition_signature_message_notify_al">Please hand the device to the person responsible for approval and submission of AL</string>
     <string name="msg_al_submit_signature">Enter your initials to approve AL information</string>

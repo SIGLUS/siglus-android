@@ -179,6 +179,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
                     }
                 } else {
                     adapter.updateTip();
+                    ToastUtil.showForLongTime(R.string.msg_uncomplete_hint);
                 }
             }
         };
@@ -244,6 +245,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     private void setUpRowItems() {
         adapter = new ALReportAdapter(getQuantityChangeListener());
         rvALRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvALRowItemListView.setNestedScrollingEnabled(false);
         rvALRowItemListView.setAdapter(adapter);
     }
 
