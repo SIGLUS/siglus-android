@@ -143,24 +143,39 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 
 
     private void addTreatment(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) throws LMISException {
-        RegimenItem itemTreatment = new RegimenItem();
-        itemTreatment.setForm(rnRForm);
+        RegimenItem itemTreatment = getRegimenItem(COLUMN_CODE_PREFIX_TREATMENTS + columnName, getRegimenType(columnName));
         itemTreatment.setHf(alReportViewModel.getItemHF().rapidTestFormGridViewModelMap.get(columnName).getTreatmentsValue());
         itemTreatment.setChw(alReportViewModel.getItemCHW().rapidTestFormGridViewModelMap.get(columnName).getTreatmentsValue());
         itemTreatment.setAmount(gridViewModel.getTreatmentsValue());
-        Regimen regimenTreatment = alRepository.getByNameAndCategory(COLUMN_CODE_PREFIX_TREATMENTS + columnName, getRegimenType(columnName));
-        itemTreatment.setRegimen(regimenTreatment);
         regimenItems.add(itemTreatment);
     }
 
+    private RegimenItem getRegimenItem(String name, Regimen.RegimeType category) throws LMISException {
+        RegimenItem regimenItem = getRegimenItemFromFormList(name);
+        if (regimenItem == null) {
+            RegimenItem newRegimenItem = new RegimenItem();
+            Regimen regimen = alRepository.getByNameAndCategory(name, category);
+            newRegimenItem.setRegimen(regimen);
+            newRegimenItem.setForm(rnRForm);
+            return newRegimenItem;
+        }
+        return regimenItem;
+    }
+
+    private RegimenItem getRegimenItemFromFormList(String name) {
+        for (RegimenItem regimenItem: rnRForm.getRegimenItemList()) {
+            if (regimenItem.getRegimen().getName().equals(name)) {
+                return regimenItem;
+            }
+        }
+        return  null;
+    }
+
     private void addStock(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) throws LMISException {
-        RegimenItem itemStock = new RegimenItem();
-        itemStock.setForm(rnRForm);
+        RegimenItem itemStock = getRegimenItem(COLUMN_CODE_PREFIX_STOCK + columnName, getRegimenType(columnName));
         itemStock.setHf(alReportViewModel.getItemHF().rapidTestFormGridViewModelMap.get(columnName).getExistentStockValue());
         itemStock.setChw(alReportViewModel.getItemCHW().rapidTestFormGridViewModelMap.get(columnName).getExistentStockValue());
         itemStock.setAmount(gridViewModel.getExistentStockValue());
-        Regimen regimenStock = alRepository.getByNameAndCategory(COLUMN_CODE_PREFIX_STOCK + columnName, getRegimenType(columnName));
-        itemStock.setRegimen(regimenStock);
         regimenItems.add(itemStock);
     }
 

@@ -43,10 +43,12 @@ public class RegimenItem extends BaseModel{
     private Long amount;
 
     @Expose
+    @SerializedName("hf")
     @DatabaseField
     private Long hf;
 
     @Expose
+    @SerializedName("chw")
     @DatabaseField
     private Long chw;
 }
