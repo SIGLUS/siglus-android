@@ -68,6 +68,7 @@ import org.openlmis.core.persistence.migrations.CreateMalariaTreatments;
 import org.openlmis.core.persistence.migrations.CreatePTVProgramSchema;
 import org.openlmis.core.persistence.migrations.CreatePatientDataReportTable;
 import org.openlmis.core.persistence.migrations.CreateProductProgramsTable;
+import org.openlmis.core.persistence.migrations.CreateProgramBasicDataFormTable;
 import org.openlmis.core.persistence.migrations.CreateProgramDataColumnsTable;
 import org.openlmis.core.persistence.migrations.CreateProgramDataFormSignatureTable;
 import org.openlmis.core.persistence.migrations.CreateProgramDataFormTable;
@@ -143,6 +144,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreatePTVProgramSchema());
             add(new AddMalariaSignature());
             add(new AddALToRegimen());
+            add(new CreateProgramBasicDataFormTable());
         }
     };
     private static int instanceCount = 0;

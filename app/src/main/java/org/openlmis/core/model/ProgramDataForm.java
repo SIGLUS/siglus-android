@@ -63,6 +63,10 @@ public class ProgramDataForm extends BaseModel {
     @SerializedName("programDataFormItems")
     private List<ProgramDataFormItem> programDataFormItemListWrapper;
 
+    @Expose
+    @SerializedName("programDataFormBasicItems")
+    private List<ProgramDataFormBasicItem> formBasicItems;
+
     @ForeignCollectionField()
     private ForeignCollection<ProgramDataFormSignature> signatures;
 
