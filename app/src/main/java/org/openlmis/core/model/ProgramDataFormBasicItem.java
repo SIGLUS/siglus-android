@@ -51,4 +51,7 @@ public class ProgramDataFormBasicItem extends BaseModel {
     @SerializedName("stockInHand")
     @DatabaseField
     private Long inventory;
+
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private ProgramDataForm form;
 }

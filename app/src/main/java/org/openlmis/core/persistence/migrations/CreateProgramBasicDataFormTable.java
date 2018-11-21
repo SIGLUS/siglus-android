@@ -7,6 +7,7 @@ public class CreateProgramBasicDataFormTable extends Migration {
     public void up() {
         execSQL("CREATE TABLE `program_data_Basic_items` " +
                 "(`code` VARCHAR , " +
+                "`form_id` BIGINT , " +
                 "`name` VARCHAR , " +
                 "`initialAmount` BIGINT , " +
                 "`received` BIGINT , " +
