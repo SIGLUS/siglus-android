@@ -71,8 +71,8 @@ public class ALReportViewHolder extends BaseViewHolder {
         threeStock.setText(getValue(viewModel.getGridThree().getExistentStockValue()));
         fourTreatment.setText(getValue(viewModel.getGridFour().getTreatmentsValue()));
         fourStock.setText(getValue(viewModel.getGridFour().getExistentStockValue()));
-        editTexts = Arrays.asList(oneTreatment, oneStock, twoTreatment, twoStock,
-                threeTreatment,threeStock, fourTreatment, fourStock);
+        editTexts = Arrays.asList(oneTreatment, twoTreatment, threeTreatment, fourTreatment, oneStock, twoStock,
+                threeStock, fourStock);
     }
 
     public void configureEditTextWatch() {

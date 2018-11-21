@@ -11,19 +11,9 @@
         android:background="@drawable/border_right_black" />
 
     <EditText
-        android:id="@+id/one_Stock"
-        style="@style/AlReportList.editText"
-        android:background="@drawable/border_right_black_bold" />
-
-    <EditText
         android:id="@+id/two_treatment"
         style="@style/AlReportList.editText"
         android:background="@drawable/border_right_black" />
-
-    <EditText
-        android:id="@+id/two_Stock"
-        style="@style/AlReportList.editText"
-        android:background="@drawable/border_right_black_bold" />
 
     <EditText
         android:id="@+id/three_treatment"
@@ -31,12 +21,22 @@
         android:background="@drawable/border_right_black" />
 
     <EditText
-        android:id="@+id/three_stock"
+        android:id="@+id/four_treatment"
         style="@style/AlReportList.editText"
         android:background="@drawable/border_right_black_bold" />
 
     <EditText
-        android:id="@+id/four_treatment"
+        android:id="@+id/one_Stock"
+        style="@style/AlReportList.editText"
+        android:background="@drawable/border_right_black" />
+
+    <EditText
+        android:id="@+id/two_Stock"
+        style="@style/AlReportList.editText"
+        android:background="@drawable/border_right_black" />
+
+    <EditText
+        android:id="@+id/three_stock"
         style="@style/AlReportList.editText"
         android:background="@drawable/border_right_black" />
 

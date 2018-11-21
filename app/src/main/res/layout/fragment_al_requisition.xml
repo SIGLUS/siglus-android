@@ -69,7 +69,7 @@
 
                     <TextView
                         style="@style/AlReportList.age"
-                        android:text="@string/msg_product_code_6x1" />
+                        android:text="@string/msg_treatments_month" />
 
                     <include
                         android:id="@+id/view_al_header_item"
@@ -89,7 +89,7 @@
 
                     <TextView
                         style="@style/AlReportList.age"
-                        android:text="@string/msg_product_code_6x2" />
+                        android:text="@string/msg_existing_stock_month" />
 
                     <include
                         android:id="@+id/view_al_header_item"
@@ -100,45 +100,6 @@
                         android:layout_weight="1" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_right_black_bold"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AlReportList.age"
-                        android:text="@string/msg_product_code_6x3" />
-
-                    <include
-                        android:id="@+id/view_al_header_item"
-                        layout="@layout/view_al_header_item"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_weight="1" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_right_black_bold"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AlReportList.age"
-                        android:text="@string/msg_product_code_6x4" />
-
-                    <include
-                        android:id="@+id/view_al_header_item"
-                        layout="@layout/view_al_header_item"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_weight="1" />
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
