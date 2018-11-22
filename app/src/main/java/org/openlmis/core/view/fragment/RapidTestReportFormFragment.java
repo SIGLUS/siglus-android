@@ -26,6 +26,7 @@ import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
+import org.openlmis.core.view.widget.RapidTestRnrForm;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
@@ -37,6 +38,9 @@ import rx.functions.Action1;
 public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
+
+    @InjectView(R.id.rapid_test_rnr_form)
+    protected RapidTestRnrForm rnrBasicItemListView;
 
     @InjectView(R.id.vg_rapid_test_report_empty_header)
     ViewGroup emptyHeaderView;

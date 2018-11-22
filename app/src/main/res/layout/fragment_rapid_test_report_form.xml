@@ -23,10 +23,16 @@
                 android:layout_height="1000dp"
                 android:paddingTop="@dimen/margin_tiny">
 
+                <org.openlmis.core.view.widget.RapidTestRnrForm
+                    android:id="@+id/rapid_test_rnr_form"
+                    android:layout_width="@dimen/rapid_view_basic_form_width"
+                    android:layout_height="wrap_content" />
+
                 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/rl_rapid_test_form"
                     android:layout_width="@dimen/rapid_view_width"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/rapid_test_rnr_form"
                     android:background="@drawable/border_left_black_bold">
 
                     <LinearLayout
@@ -388,11 +394,11 @@
                                 android:id="@+id/rv_observation_content"
                                 android:layout_width="450dp"
                                 android:layout_height="wrap_content"
-                                android:paddingTop="8dp"
+                                android:background="@null"
                                 android:gravity="left|top"
                                 android:inputType="textMultiLine"
                                 android:paddingLeft="@dimen/rapid_view_view_left_padding"
-                                android:background="@null"/>
+                                android:paddingTop="8dp" />
                         </LinearLayout>
                     </LinearLayout>
                 </RelativeLayout>
