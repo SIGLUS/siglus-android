@@ -4,10 +4,14 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
+import com.google.inject.Inject;
 
 import java.util.List;
 
 public class RnrFormHelper {
+
+    @Inject
+    FormHelper formHelper;
 
     public void initRnrFormItemWithoutMovement(RnrFormItem rnrFormItem, long lastRnrInventory) throws LMISException {
         rnrFormItem.setReceived(0);
@@ -19,29 +23,15 @@ public class RnrFormHelper {
     }
 
     public void assignTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {
-        long totalReceived = 0;
-        long totalIssued = 0;
-        long totalAdjustment = 0;
-
-        for (StockMovementItem item : stockMovementItems) {
-            if (MovementReasonManager.MovementType.RECEIVE == item.getMovementType()) {
-                totalReceived += item.getMovementQuantity();
-            } else if (MovementReasonManager.MovementType.ISSUE == item.getMovementType()) {
-                totalIssued += item.getMovementQuantity();
-            } else if (MovementReasonManager.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
-                totalAdjustment -= item.getMovementQuantity();
-            } else if (MovementReasonManager.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
-                totalAdjustment += item.getMovementQuantity();
-            }
-        }
-        rnrFormItem.setReceived(totalReceived);
-        rnrFormItem.setIssued(totalIssued);
-        rnrFormItem.setAdjustment(totalAdjustment);
+        FormHelper.StockMovementModifiedItem modifiedItem =  formHelper.assignTotalValues(stockMovementItems);
+        rnrFormItem.setReceived(modifiedItem.totalReceived);
+        rnrFormItem.setIssued(modifiedItem.totalIssued);
+        rnrFormItem.setAdjustment(modifiedItem.totalAdjustment);
 
         Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
         rnrFormItem.setInventory(inventory);
 
-        rnrFormItem.setCalculatedOrderQuantity(calculatedOrderQuantity(totalIssued, inventory));
+        rnrFormItem.setCalculatedOrderQuantity(calculatedOrderQuantity(modifiedItem.totalIssued, inventory));
     }
 
     private long calculatedOrderQuantity(long totalIssued, Long inventory) {

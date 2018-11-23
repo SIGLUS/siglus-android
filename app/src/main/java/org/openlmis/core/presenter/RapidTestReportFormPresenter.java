@@ -6,6 +6,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.repository.ProgramBasicItemsRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.utils.Constants;
@@ -23,6 +24,9 @@ import rx.schedulers.Schedulers;
 public class RapidTestReportFormPresenter extends BaseReportPresenter {
     @Inject
     ProgramDataFormRepository programDataFormRepository;
+
+    @Inject
+    ProgramBasicItemsRepository programBasicItemsRepository;
 
     @Inject
     ProgramRepository programRepository;

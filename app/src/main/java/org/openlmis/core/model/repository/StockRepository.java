@@ -245,16 +245,20 @@ public class StockRepository {
     }
 
     protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) throws LMISException {
+        return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(),rnRForm.getPeriodEnd());
+    }
+
+    protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd) throws LMISException {
         String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
                 + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("
                 + " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode IN ("
-                + " SELECT programCode FROM programs WHERE parentCode= '" + rnRForm.getProgram().getProgramCode() + "'"
-                + " OR programCode='" + rnRForm.getProgram().getProgramCode() + "')))"
+                + " SELECT programCode FROM programs WHERE parentCode= '" + programCode + "'"
+                + " OR programCode='" + programCode + "')))"
                 + " AND id NOT IN ("
                 + " SELECT stockCard_id FROM stock_items WHERE stockCard_id NOT IN ("
                 + " SELECT stockCard_id FROM stock_items"
-                + " WHERE movementDate <= '" + DateUtil.formatDateTime(rnRForm.getPeriodEnd()) + "'"
-                + " AND createdTime <= '" + DateUtil.formatDateTime(rnRForm.getPeriodEnd()) + "'))";
+                + " WHERE movementDate <= '" + DateUtil.formatDateTime(periodEnd) + "'"
+                + " AND createdTime <= '" + DateUtil.formatDateTime(periodEnd) + "'))";
 
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
         List<StockCard> stockCardList = new ArrayList<>();

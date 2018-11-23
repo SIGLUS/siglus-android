@@ -54,6 +54,7 @@ public final class Constants {
     public static final String RAPID_TEST_CODE = "RAPID_TEST";
     public static final String AL_PROGRAM_CODE = "MALARIA";
     public static final String PTV_PROGRAM_CODE = "PTV";
+    public static final String TEST_KIT_PROGRAM_CODE = "TEST_KIT";
 
     // Intent Params
     public static final String PARAM_STOCK_CARD_ID = "stockCardId";

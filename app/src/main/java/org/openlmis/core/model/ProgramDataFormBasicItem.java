@@ -13,14 +13,9 @@ import lombok.NoArgsConstructor;
 @DatabaseTable(tableName = "program_data_Basic_items")
 public class ProgramDataFormBasicItem extends BaseModel {
     @Expose
-    @SerializedName("code")
-    @DatabaseField
-    String code;
-
-    @Expose
-    @SerializedName("name")
-    @DatabaseField
-    String name;
+    @SerializedName("productCode")
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private Product product;
 
     @Expose
     @SerializedName("beginningBalance")
