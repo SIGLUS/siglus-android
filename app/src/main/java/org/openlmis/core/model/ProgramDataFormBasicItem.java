@@ -22,6 +22,9 @@ public class ProgramDataFormBasicItem extends BaseModel {
     @DatabaseField
     private Long initialAmount;
 
+    @DatabaseField(defaultValue = "false")
+    private Boolean isCustomAmount;
+
     @Expose
     @SerializedName("quantityReceived")
     @DatabaseField

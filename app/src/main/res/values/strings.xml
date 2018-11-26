@@ -144,6 +144,7 @@
     <string name="label_request_amount">Quantity Requested</string>
     <string name="label_approved_amount">Quantity Approved</string>
     <string name="label_fnm">FNM</string>
+    <string name="label_product_codes">Product Codes</string>
     <string name="label_product_name">Product Name</string>
     <string name="msg_low_stock_warning">Your product has low stock.</string>
     <string name="msg_over_stock_warning">Your product is overstock.</string>
@@ -518,6 +519,7 @@
     <string name="drug_name">Drug Name</string>
     <string name="entries">Entries</string>
     <string name="losses_and_adjustments">Losses and Adjustments</string>
+    <string name="loss_and_adjustment">Loss and Adjustment</string>
     <string name="requisition">Requisition</string>
     <string name="final_stock">Final Stock</string>
     <string name="loading_report_information">Loading report information</string>

@@ -76,20 +76,8 @@ public class ProgramBasicItemsRepository {
         this.context = context;
     }
 
-    private List<ProgramDataFormBasicItem> createInitProgramForm(ProgramDataForm form, Date periodEnd) throws LMISException {
-        try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    form.setFormBasicItems(generateDataFormBasicItems(form, TEST_KIT_PROGRAM_CODE, periodEnd));
-                    return null;
-                }
-            });
-        } catch (SQLException e) {
-            throw new LMISException(e);
-        }
-
-        return null;
+    public List<ProgramDataFormBasicItem> createInitProgramForm(ProgramDataForm form, Date periodEnd) throws LMISException {
+        return generateDataFormBasicItems(form, TEST_KIT_PROGRAM_CODE, periodEnd);
     }
 
     private List<ProgramDataFormBasicItem> generateDataFormBasicItems(ProgramDataForm form, String programCode, Date periodEnd) throws LMISException {
@@ -121,7 +109,10 @@ public class ProgramBasicItemsRepository {
             } else {
                 rapidItem = stockFormItem;
             }
-            rapidItem.setInitialAmount(lastProgramInventory(product, rapidTestForms));
+
+            Long lastInventory = lastProgramInventory(product, rapidTestForms);
+            rapidItem.setIsCustomAmount(lastInventory == null);
+            rapidItem.setInitialAmount(lastInventory);
             result.add(rapidItem);
         }
         return result;

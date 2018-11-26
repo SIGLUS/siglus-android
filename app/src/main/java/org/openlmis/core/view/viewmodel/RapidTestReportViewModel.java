@@ -8,6 +8,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.Signature;
@@ -43,6 +44,8 @@ public class RapidTestReportViewModel implements Serializable {
 
     List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
     Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
+
+    List<ProgramDataFormBasicItem> basicItems = new ArrayList<>();
 
     private ProgramDataForm rapidTestForm = new ProgramDataForm();
 
@@ -177,6 +180,7 @@ public class RapidTestReportViewModel implements Serializable {
         rapidTestForm.setPeriodEnd(period.getEnd().toDate());
         rapidTestForm.setObservataion(observataion);
         rapidTestForm.getProgramDataFormItemListWrapper().clear();
+        rapidTestForm.setFormBasicItems(basicItems);
         convertFormItemViewModelToDataModel();
     }
 

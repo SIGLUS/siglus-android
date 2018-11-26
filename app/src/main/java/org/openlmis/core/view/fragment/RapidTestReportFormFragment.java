@@ -263,6 +263,10 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     public void updateUI() {
         RapidTestReportViewModel viewModel = presenter.getViewModel();
+
+        if (viewModel.getBasicItems().size() > 0) {
+            rnrBasicItemListView.initView(viewModel.getBasicItems());
+        }
         populateFormData(viewModel);
         updateObservation(viewModel);
         updateActionPanel();
