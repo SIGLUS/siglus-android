@@ -20,7 +20,7 @@ public class ProgramDataFormBasicItem extends BaseModel {
     @Expose
     @SerializedName("beginningBalance")
     @DatabaseField
-    private long initialAmount;
+    private Long initialAmount;
 
     @Expose
     @SerializedName("quantityReceived")
@@ -30,12 +30,12 @@ public class ProgramDataFormBasicItem extends BaseModel {
     @Expose
     @SerializedName("quantityDispensed")
     @DatabaseField
-    private Long issued;
+    private long issued;
 
     @Expose
     @SerializedName("totalLossesAndAdjustments")
     @DatabaseField
-    private Long adjustment;
+    private long adjustment;
 
     @Expose
     @SerializedName("expirationDate")
