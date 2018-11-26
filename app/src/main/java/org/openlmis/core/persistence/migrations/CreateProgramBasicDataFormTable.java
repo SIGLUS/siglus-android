@@ -8,6 +8,7 @@ public class CreateProgramBasicDataFormTable extends Migration {
         execSQL("CREATE TABLE `program_data_Basic_items` " +
                 "(`code` VARCHAR , " +
                 "`form_id` BIGINT , " +
+                "`isCustomAmount` BOOLEAN DEFAULT 0, " +
                 "`name` VARCHAR , " +
                 "`initialAmount` BIGINT , " +
                 "`received` BIGINT , " +
