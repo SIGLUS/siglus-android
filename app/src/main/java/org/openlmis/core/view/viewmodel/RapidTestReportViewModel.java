@@ -187,7 +187,7 @@ public class RapidTestReportViewModel implements Serializable {
         rapidTestForm.getProgramDataFormItemListWrapper().clear();
 
         rapidTestForm.getFormBasicItemListWrapper().clear();
-        rapidTestForm.getFormBasicItemListWrapper().addAll(basicItems);
+        rapidTestForm.setFormBasicItemListWrapper(basicItems);
         convertFormItemViewModelToDataModel();
     }
 

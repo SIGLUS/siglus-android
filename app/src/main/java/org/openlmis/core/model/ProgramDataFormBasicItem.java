@@ -6,10 +6,12 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @DatabaseTable(tableName = "program_data_Basic_items")
 public class ProgramDataFormBasicItem extends BaseModel {
     @Expose
@@ -52,4 +54,5 @@ public class ProgramDataFormBasicItem extends BaseModel {
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private ProgramDataForm form;
+
 }
