@@ -39,6 +39,10 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
 
+    @InjectView(R.id.rapid_view_basic_item_header)
+    LinearLayout rnrBasicItemHeader;
+
+
     @InjectView(R.id.rapid_test_rnr_form)
     protected RapidTestRnrForm rnrBasicItemListView;
 
@@ -265,7 +269,12 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         RapidTestReportViewModel viewModel = presenter.getViewModel();
 
         if (viewModel.getBasicItems().size() > 0) {
+            rnrBasicItemHeader.setVisibility(View.VISIBLE);
+            rnrBasicItemListView.setVisibility(View.VISIBLE);
             rnrBasicItemListView.initView(viewModel.getBasicItems());
+        } else {
+            rnrBasicItemHeader.setVisibility(View.GONE);
+            rnrBasicItemListView.setVisibility(View.GONE);
         }
         populateFormData(viewModel);
         updateObservation(viewModel);

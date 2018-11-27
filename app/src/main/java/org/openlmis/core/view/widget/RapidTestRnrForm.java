@@ -102,7 +102,7 @@ public class RapidTestRnrForm extends LinearLayout {
         TextView tvReceived = (TextView) inflate.findViewById(R.id.tv_received);
         TextView tvIssue = (TextView) inflate.findViewById(R.id.tv_issue);
         TextView tvAdjustment = (TextView) inflate.findViewById(R.id.tv_adjustment);
-        TextView tvValidate = (TextView) inflate.findViewById(R.id.tv_validate);
+        TextView tvValidate = (TextView) inflate.findViewById(R.id.tv_expire);
         EditText etInventory = (EditText) inflate.findViewById(R.id.et_inventory);
 
         if (isHeaderView) {
@@ -122,7 +122,6 @@ public class RapidTestRnrForm extends LinearLayout {
                 etStock.setEnabled(false);
             }
             configEditText(item, etInventory, String.valueOf(getValue(item.getInventory())));
-            viewGroup.addView(inflate);
 
             try {
                 if (!(TextUtils.isEmpty(item.getValidate()))) {
@@ -132,6 +131,7 @@ public class RapidTestRnrForm extends LinearLayout {
                 new LMISException(e).reportToFabric();
             }
         }
+        viewGroup.addView(inflate);
         return inflate;
     }
 
