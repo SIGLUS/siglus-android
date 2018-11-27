@@ -38,6 +38,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -45,6 +46,7 @@ import lombok.Getter;
 public class RapidTestRnrForm extends LinearLayout {
     private Context context;
     private ViewGroup viewGroup;
+    private List<EditText> editTexts = new ArrayList<>();
     public List<ProgramDataFormBasicItem> itemFormList;
     private LayoutInflater layoutInflater;
 
@@ -134,8 +136,19 @@ public class RapidTestRnrForm extends LinearLayout {
         return inflate;
     }
 
+    public boolean isCompleted() {
+        for (EditText editText : editTexts) {
+            if (TextUtils.isEmpty(editText.getText().toString())) {
+                editText.setError(context.getString(R.string.hint_error_input));
+                editText.requestFocus();
+                return false;
+            }
+        }
+        return true;
+    }
 
     private void configEditText(ProgramDataFormBasicItem item, EditText editText, String value) {
+        editTexts.add(editText);
         editText.setText(value);
         editText.setEnabled(true);
         RapidTestRnrForm.EditTextWatcher textWatcher = new RapidTestRnrForm.EditTextWatcher(item, editText);

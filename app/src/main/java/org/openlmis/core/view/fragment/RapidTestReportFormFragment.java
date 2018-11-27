@@ -169,8 +169,10 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
             private String showErrorMessage() {
                 String errorMessage = "";
-                if (presenter.getViewModel().isFormEmpty()) {
-                    errorMessage = getString(R.string.error_empty_rapid_test);
+                if (! rnrBasicItemListView.isCompleted()) {
+                    errorMessage = getString(R.string.error_empty_rapid_test_product);
+                } else if (presenter.getViewModel().isFormEmpty()) {
+                    errorMessage = getString(R.string.error_empty_rapid_test_list);
                 } else if (!presenter.getViewModel().validatePositive()) {
                     errorMessage = getString(R.string.error_positive_larger_than_consumption);
                 } else if (!presenter.getViewModel().validateUnjustified()) {

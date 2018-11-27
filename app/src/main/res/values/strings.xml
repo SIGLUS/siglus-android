@@ -475,7 +475,8 @@
     <string name="error_rapid_test_unjustified">The number of unjustified cannot be empty.</string>
     <string name="error_rapid_test_ape">The number of APES cannot be empty.</string>
     <string name="error_rapid_test_only_ape">Rapid test report cannot be APE only.</string>
-    <string name="error_empty_rapid_test">Rapid test report cannot be empty.</string>
+    <string name="error_empty_rapid_test_product">Rapid test report product info cannot be empty.</string>
+    <string name="error_empty_rapid_test_list">Rapid test report list cannot be empty.</string>
     <string name="btn_edit">EDIT</string>
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - No adjustment will be made</string>
     <string name="msg_physical_inventory_lot_review_positive_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Positive adjustment</font>]]> of <![CDATA[<font color="#000">%2$s</font>]]> will be made</string>

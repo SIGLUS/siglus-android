@@ -428,7 +428,8 @@
     <string name="error_rapid_test_unjustified">O número de injustificado não pode estar vazio.</string>
     <string name="error_rapid_test_ape">O número de APES não pode estar vazio.</string>
     <string name="error_rapid_test_only_ape">O relatório de teste rápido não pode ser apenas APE.</string>
-    <string name="error_empty_rapid_test">O relatório de teste rápido não pode estar vazio.</string>
+    <string name="error_empty_rapid_test_product">As informações rápidas do produto de relatório de teste não podem estar vazias.</string>
+    <string name="error_empty_rapid_test_list">Lista rápida de relatórios de teste não pode estar vazia.</string>
     <string name="btn_edit">EDITAR</string>
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
     <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\"> Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>

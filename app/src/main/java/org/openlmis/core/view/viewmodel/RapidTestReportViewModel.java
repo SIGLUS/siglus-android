@@ -265,7 +265,7 @@ public class RapidTestReportViewModel implements Serializable {
 
     public boolean isFormEmpty() {
         for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-            if (!itemViewModel.isEmpty()) {
+            if (!itemViewModel.isEmpty() && !itemViewModel.issueReason.getCode().endsWith("TOTAL")) {
                 return false;
             }
         }
