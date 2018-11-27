@@ -35,6 +35,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
@@ -63,6 +64,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(Date.class, new DateAdapter()).setDateFormat(DateFormat.LONG)
                 .registerTypeAdapter(ProgramDataFormItem.class, new ProgramDataFormItemAdapter())
+                .registerTypeAdapter(ProgramDataFormBasicItem.class, new programDataFormBasicItemAdapter())
                 .create();
         jsonParser = new JsonParser();
     }
@@ -88,6 +90,11 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
         for (ProgramDataFormSignature signature : programDataForm.getSignaturesWrapper()) {
             signature.setForm(programDataForm);
         }
+
+        for (ProgramDataFormBasicItem basicItem: programDataForm.getFormBasicItemListWrapper()) {
+            basicItem.setForm(programDataForm);
+        }
+
         return programDataForm;
     }
 
@@ -117,6 +124,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
         root.addProperty("periodEnd", periodEnd);
         root.addProperty("submittedTime", submittedTime);
         root.add("programDataFormItems", jsonParser.parse(gson.toJson(programDataForm.getProgramDataFormItemListWrapper())));
+        root.add("programDataFormBasicItems", jsonParser.parse(gson.toJson(programDataForm.getFormBasicItemListWrapper())));
         root.add("programDataFormSignatures", jsonParser.parse(gson.toJson(programDataForm.getSignaturesWrapper())));
         return root;
     }

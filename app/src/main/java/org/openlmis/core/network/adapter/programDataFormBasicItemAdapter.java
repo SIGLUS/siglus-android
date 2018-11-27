@@ -1,7 +1,5 @@
 package org.openlmis.core.network.adapter;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -17,6 +15,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProductRepository;
 
@@ -24,7 +23,7 @@ import java.lang.reflect.Type;
 
 import roboguice.RoboGuice;
 
-public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDeserializer<RnrFormItem> {
+public class programDataFormBasicItemAdapter implements JsonSerializer<ProgramDataFormBasicItem>, JsonDeserializer<ProgramDataFormBasicItem> {
 
     private final Gson gson;
 
@@ -32,23 +31,23 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
     public ProductRepository productRepository;
 
 
-    public RnrFormItemAdapter() {
+    public programDataFormBasicItemAdapter() {
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
         gson = new GsonBuilder()
                 .registerTypeAdapter(Product.class, new ProductAdapter())
                 .excludeFieldsWithoutExposeAnnotation().create();
     }
 
+
     @Override
-    public JsonElement serialize(RnrFormItem src, Type typeOfSrc, JsonSerializationContext context) {
-        JsonObject jsonObject = gson.toJsonTree(src).getAsJsonObject();
-        jsonObject.addProperty("reasonForRequestedQuantity", "reason");
-        return jsonObject;
+    public ProgramDataFormBasicItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        return gson.fromJson(json.toString(), ProgramDataFormBasicItem.class);
     }
 
     @Override
-    public RnrFormItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return gson.fromJson(json.toString(), RnrFormItem.class);
+    public JsonElement serialize(ProgramDataFormBasicItem src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonObject jsonObject = gson.toJsonTree(src).getAsJsonObject();
+        return jsonObject;
     }
 
     class ProductAdapter implements JsonDeserializer<Product>, JsonSerializer<Product> {
@@ -65,8 +64,11 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
 
         @Override
         public JsonElement serialize(Product src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonParser jsonParser = new JsonParser();
             String parseCode = src.getCode().contains(" ") ? "\""+src.getCode()+"\"" : src.getCode();
-            return new JsonParser().parse(parseCode);
+            JsonObject result = (JsonObject) jsonParser.parse(parseCode);
+            result.addProperty("name", src.getPrimaryName());
+            return result;
         }
     }
 }

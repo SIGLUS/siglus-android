@@ -110,7 +110,7 @@ public class RapidTestReportViewModel implements Serializable {
         observataion = programDataForm.getObservataion();
 
         if (programDataForm.getFormBasicItemListWrapper() != null){
-            basicItems = programDataForm.getFormBasicItemListWrapper();
+            basicItems.addAll(programDataForm.getFormBasicItemListWrapper());
         }
 
         setupCategories();
@@ -185,8 +185,6 @@ public class RapidTestReportViewModel implements Serializable {
         rapidTestForm.setPeriodEnd(period.getEnd().toDate());
         rapidTestForm.setObservataion(observataion);
         rapidTestForm.getProgramDataFormItemListWrapper().clear();
-
-        rapidTestForm.getFormBasicItemListWrapper().clear();
         rapidTestForm.setFormBasicItemListWrapper(basicItems);
         convertFormItemViewModelToDataModel();
     }
