@@ -12,6 +12,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.persistence.DbUtil;
@@ -27,6 +28,7 @@ public class ProgramDataFormRepository {
 
     private final GenericDao<ProgramDataForm> genericDao;
     private final GenericDao<ProgramDataFormItem> programDataFormItemGenericDao;
+    private final GenericDao<ProgramDataFormBasicItem> ProgramDataFormBasicItemGenericDao;
     private final GenericDao<ProgramDataColumn> programDataColumnGenericDao;
     private final Context context;
 
@@ -42,6 +44,7 @@ public class ProgramDataFormRepository {
         genericDao = new GenericDao<>(ProgramDataForm.class, context);
         programDataFormItemGenericDao = new GenericDao<>(ProgramDataFormItem.class, context);
         programDataColumnGenericDao = new GenericDao<>(ProgramDataColumn.class, context);
+        ProgramDataFormBasicItemGenericDao= new GenericDao<>(ProgramDataFormBasicItem.class, context);
     }
 
     public void batchCreateOrUpdate(final ProgramDataForm form) throws SQLException {
@@ -51,6 +54,7 @@ public class ProgramDataFormRepository {
                 genericDao.createOrUpdate(form);
                 Log.d("---|show items size|---", "" + form.getProgramDataFormItemListWrapper().size());
                 saveFormItems(form);
+                saveFormBasicItems(form);
                 saveSignatures(form.getSignaturesWrapper());
                 return null;
             }
@@ -95,11 +99,30 @@ public class ProgramDataFormRepository {
         }
     }
 
+    private void saveFormBasicItems(final ProgramDataForm form) throws LMISException {
+        deleteFormBasicItems(form.getId());
+        for (ProgramDataFormBasicItem item : form.getFormBasicItemListWrapper()) {
+            ProgramDataFormBasicItemGenericDao.create(item);
+        }
+    }
+
     public ProgramDataColumn getProgramDataColumnByCode(final String columnCode) throws LMISException {
         return dbUtil.withDao(ProgramDataColumn.class, new DbUtil.Operation<ProgramDataColumn, ProgramDataColumn>() {
             @Override
             public ProgramDataColumn operate(Dao<ProgramDataColumn, String> dao) throws SQLException, LMISException {
                 return dao.queryBuilder().where().eq("code", columnCode).queryForFirst();
+            }
+        });
+    }
+
+    private void deleteFormBasicItems(final long formId) throws LMISException {
+        dbUtil.withDao(ProgramDataFormBasicItem.class, new DbUtil.Operation<ProgramDataFormBasicItem, Void>() {
+            @Override
+            public Void operate(Dao<ProgramDataFormBasicItem, String> dao) throws SQLException, LMISException {
+                DeleteBuilder<ProgramDataFormBasicItem, String> deleteBuilder = dao.deleteBuilder();
+                deleteBuilder.where().eq("form_id", formId);
+                deleteBuilder.delete();
+                return null;
             }
         });
     }
