@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
+
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProgramDataForm;
@@ -148,10 +149,12 @@ public class ProgramBasicItemsRepository {
         if (rapidTestForms.isEmpty() || rapidTestForms.size() == 1) {
             return null;
         }
-        List<ProgramDataFormBasicItem> programBasicItems = rapidTestForms.get(rapidTestForms.size() - 2).getFormBasicItems();
-        for (ProgramDataFormBasicItem item : programBasicItems) {
-            if (item.getProduct().getId() == product.getId()) {
-                return item.getInventory();
+        List<ProgramDataFormBasicItem> programBasicItems = rapidTestForms.get(rapidTestForms.size() - 2).getFormBasicItemListWrapper();
+        if (programBasicItems != null) {
+            for (ProgramDataFormBasicItem item : programBasicItems) {
+                if (item.getProduct().getId() == product.getId()) {
+                    return item.getInventory();
+                }
             }
         }
         return null;
