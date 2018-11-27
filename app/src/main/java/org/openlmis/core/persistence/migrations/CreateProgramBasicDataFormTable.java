@@ -16,6 +16,9 @@ public class CreateProgramBasicDataFormTable extends Migration {
                 "`issued` BIGINT , " +
                 "`adjustment` BIGINT , " +
                 "`validate` VARCHAR , " +
+                "`createdAt` VARCHAR NOT NULL , " +
+                "`updatedAt` VARCHAR NOT NULL , " +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "`inventory` BIGINT  )");
     }
 }
