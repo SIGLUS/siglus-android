@@ -291,9 +291,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     private void updateScrollView() {
         RapidTestReportViewModel viewModel = presenter.getViewModel();
         if (viewModel.isDraft()){
-            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        } else {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        } else {
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         }
 
     }

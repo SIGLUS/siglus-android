@@ -66,9 +66,7 @@ public class programDataFormBasicItemAdapter implements JsonSerializer<ProgramDa
         public JsonElement serialize(Product src, Type typeOfSrc, JsonSerializationContext context) {
             JsonParser jsonParser = new JsonParser();
             String parseCode = src.getCode().contains(" ") ? "\""+src.getCode()+"\"" : src.getCode();
-            JsonObject result = (JsonObject) jsonParser.parse(parseCode);
-            result.addProperty("name", src.getPrimaryName());
-            return result;
+            return jsonParser.parse(parseCode);
         }
     }
 }
