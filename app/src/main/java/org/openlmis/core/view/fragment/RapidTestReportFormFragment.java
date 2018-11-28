@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.rapid_view_basic_item_header)
     LinearLayout rnrBasicItemHeader;
 
+    @InjectView(R.id.rapid_test)
+    HorizontalScrollView scrollView;
 
     @InjectView(R.id.rapid_test_rnr_form)
     protected RapidTestRnrForm rnrBasicItemListView;
@@ -281,9 +284,19 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         populateFormData(viewModel);
         updateObservation(viewModel);
         updateActionPanel();
+        updateScrollView();
         loaded();
     }
 
+    private void updateScrollView() {
+        RapidTestReportViewModel viewModel = presenter.getViewModel();
+        if (viewModel.isDraft()){
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        } else {
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        }
+
+    }
     private void updateObservation(RapidTestReportViewModel viewModel) {
         observationContent.setFocusableInTouchMode(viewModel.isEditable());
         observationContent.setText(viewModel.getObservataion());
