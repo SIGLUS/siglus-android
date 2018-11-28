@@ -55,7 +55,7 @@
     <dimen name="rapid_view_view_left_padding">12dp</dimen>
     <dimen name="rapid_view_border_width">2dp</dimen>
     <dimen name="rapid_view_basic_form_width">830dp</dimen>
-    <dimen name="rapid_view_basic_form_item_width">116dp</dimen>
+    <dimen name="rapid_view_basic_form_item_width">120dp</dimen>
     <dimen name="rapid_view_basic_form_item_stock_width">70dp</dimen>
 
     <!--RapidTest-->

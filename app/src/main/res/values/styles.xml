@@ -760,6 +760,15 @@
 
     <style name="RapidTestForm" />
 
+    <style name="RapidTestForm.productList">
+        <item name="android:textSize">@dimen/font_size_regular</item>
+        <item name="android:textColor">@color/color_black</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:layout_gravity">center</item>
+
+    </style>
+
     <style name="RapidTestForm.RowHeading">
         <item name="android:textSize">@dimen/font_size_regular</item>
         <item name="android:textColor">@color/color_black</item>
