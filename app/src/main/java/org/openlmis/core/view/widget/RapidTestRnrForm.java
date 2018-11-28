@@ -33,7 +33,6 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 
@@ -46,7 +45,7 @@ import lombok.Getter;
 public class RapidTestRnrForm extends LinearLayout {
     private Context context;
     private ViewGroup viewGroup;
-    private List<EditText> editTexts = new ArrayList<>();
+    private List<Pair<EditText, SimpleTextWatcher>> editTextConfigures = new ArrayList<>();
     public List<ProgramDataFormBasicItem> itemFormList;
     private LayoutInflater layoutInflater;
 
@@ -65,6 +64,10 @@ public class RapidTestRnrForm extends LinearLayout {
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        for (Pair<EditText, SimpleTextWatcher> editTextConfigure: editTextConfigures) {
+            editTextConfigure.first.removeTextChangedListener(editTextConfigure.second);
+        }
+
     }
 
     private void init(Context context) {
@@ -137,7 +140,8 @@ public class RapidTestRnrForm extends LinearLayout {
     }
 
     public boolean isCompleted() {
-        for (EditText editText : editTexts) {
+        for (Pair<EditText, SimpleTextWatcher> editTextConfigure : editTextConfigures) {
+            EditText editText = editTextConfigure.first;
             if (TextUtils.isEmpty(editText.getText().toString())) {
                 editText.setError(context.getString(R.string.hint_error_input));
                 editText.requestFocus();
@@ -148,11 +152,11 @@ public class RapidTestRnrForm extends LinearLayout {
     }
 
     private void configEditText(ProgramDataFormBasicItem item, EditText editText, String value) {
-        editTexts.add(editText);
         editText.setText(value);
         editText.setEnabled(true);
         RapidTestRnrForm.EditTextWatcher textWatcher = new RapidTestRnrForm.EditTextWatcher(item, editText);
         editText.addTextChangedListener(textWatcher);
+        editTextConfigures.add(new Pair<>(editText, textWatcher));
     }
 
     private String getValue(Long vaule) {

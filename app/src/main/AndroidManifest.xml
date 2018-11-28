@@ -60,6 +60,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.RapidTestReportFormActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_rapid_test_form"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
