@@ -19,27 +19,28 @@ import lombok.Setter;
 @Setter
 @DatabaseTable(tableName = "reports_type")
 public class ReportTypeForm extends BaseModel {
-    @Getter
+
+    @Expose
     @SerializedName("code")
     @DatabaseField
     private String code;
 
-    @Getter
+    @Expose
     @SerializedName("name")
     @DatabaseField
     private String name;
 
-    @Getter
+    @Expose
     @SerializedName("description")
     @DatabaseField
     private String description;
 
-    @Getter
+    @Expose
     @SerializedName("active")
     @DatabaseField
     public boolean active;
 
-    @Getter
+    @Expose
     @SerializedName("startTime")
     @DatabaseField
     public Date startTime;
