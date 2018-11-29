@@ -165,7 +165,6 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putString(KEY_LAST_SYNC_PRODUCT_TIME, lastSyncProductTime).apply();
     }
 
-
     public boolean isNeedShowProductsUpdateBanner() {
         return sharedPreferences.getBoolean(KEY_SHOW_PRODUCT_UPDATE_BANNER, false);
     }
