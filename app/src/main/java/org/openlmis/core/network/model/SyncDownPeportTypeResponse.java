@@ -8,5 +8,5 @@ import lombok.Data;
 
 @Data
 public class SyncDownPeportTypeResponse {
-    private List<ReportTypeForm> reportTypeForms;
+    List<ReportTypeForm> reportTypes;
 }

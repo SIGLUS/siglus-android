@@ -36,6 +36,7 @@ import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
@@ -87,6 +88,8 @@ public class SyncDownManager {
     @Inject
     ProgramDataFormRepository programDataFormRepository;
     @Inject
+    ReportTypeFormRepository reportTypeFormRepository;
+    @Inject
     StockService stockService;
     @Inject
     SyncStockCardsLastYearSilently syncStockCardsLastYearSilently;
@@ -133,7 +136,8 @@ public class SyncDownManager {
 
     private void fetchAndSaveReportType() throws LMISException {
         SyncDownPeportTypeResponse response = lmisRestApi.fetchReportTypeForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
-        Log.e("1", String.valueOf(response));
+        reportTypeFormRepository.batchCreateOrUpdateReportTypes(response.getReportTypes());
+
     }
 
     private void syncDownRapidTests(Subscriber<? super SyncProgress> subscriber) throws LMISException {

@@ -14,7 +14,7 @@ public class CreateReportTypeTable extends Migration {
                 + "`name` VARCHAR, "
                 + "`description` VARCHAR, "
                 + "`active` BOOLEAN, "
-                + "`inActiveTime` VARCHAR NOT NULL, "
+                + "`startTime` VARCHAR NOT NULL, "
                 + "`createdAt` VARCHAR NOT NULL, "
                 + "`updatedAt` VARCHAR NOT NULL)");
 
