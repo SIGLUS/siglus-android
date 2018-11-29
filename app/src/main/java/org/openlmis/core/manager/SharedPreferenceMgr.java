@@ -21,16 +21,21 @@ package org.openlmis.core.manager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 
+import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import roboguice.RoboGuice;
@@ -64,6 +69,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_HAS_DELETED_OLD_STOCK_MOVEMENT = "has_deleted_old_stock_movement";
     public static final String KEY_HAS_DELETED_OLD_RNR = "has_deleted_old_rnr";
     public static final String KEY_HAS_SYNCED_DOWN_RAPID_TESTS = "syncedRapidTests";
+    public static final String LATEST_SYNCED_DOWN_REPORT_TYPE = "syncedReport";
     public static final String MONTH_OFFSET_DEFINED_OLD_DATA = "month_offset_that_defined_old_data";
     public static final String KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR = "stock_card_last_year_sync_error";
     final int MONTH_OFFSET = 13;
@@ -131,6 +137,24 @@ public class SharedPreferenceMgr {
 
     public void setRequisitionDataSynced(boolean requisitionDataSynced) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, requisitionDataSynced).apply();
+    }
+
+    public void setReportTypesData(List<ReportTypeForm> reportTypeFormList) {
+        Gson gson = new Gson();
+        String json = gson.toJson(reportTypeFormList);
+
+        sharedPreferences.edit().putString(SharedPreferenceMgr.LATEST_SYNCED_DOWN_REPORT_TYPE, json).apply();
+    }
+
+    public List<ReportTypeForm> getReportTypesData() {
+        String json = sharedPreferences.getString(SharedPreferenceMgr.LATEST_SYNCED_DOWN_REPORT_TYPE,null);
+        if (json != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<ReportTypeForm>>(){}.getType();
+            return gson.fromJson(json, type);
+        }
+        return null;
+
     }
 
     public boolean isNeedsInventory() {

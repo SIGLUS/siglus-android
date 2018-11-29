@@ -136,6 +136,7 @@ public class SyncDownManager {
 
     private void fetchAndSaveReportType() throws LMISException {
         SyncDownPeportTypeResponse response = lmisRestApi.fetchReportTypeForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
+        sharedPreferenceMgr.setReportTypesData(response.getReportTypes());
         reportTypeFormRepository.batchCreateOrUpdateReportTypes(response.getReportTypes());
 
     }
