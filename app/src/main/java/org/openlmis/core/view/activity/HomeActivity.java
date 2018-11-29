@@ -29,6 +29,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,6 +45,7 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.persistence.ExportSqliteOpenHelper;
@@ -58,6 +60,9 @@ import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
@@ -90,6 +95,12 @@ public class HomeActivity extends BaseActivity {
 
     @InjectView(R.id.btn_patient_data)
     Button btnPatientData;
+
+    @InjectView(R.id.btn_ptv_card)
+    Button btnPTVReport;
+
+    @InjectView(R.id.btn_al)
+    Button btnALReport;
 
     @InjectResource(R.integer.back_twice_interval)
     int BACK_TWICE_INTERVAL;
@@ -139,6 +150,7 @@ public class HomeActivity extends BaseActivity {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_patient_data)) {
             btnPatientData.setVisibility(View.GONE);
         }
+        updateButtonConfigView();
     }
 
     private void registerSyncStartReceiver() {
@@ -193,6 +205,38 @@ public class HomeActivity extends BaseActivity {
         unregisterReceiver(syncErrorReceiver);
         super.onDestroy();
     }
+
+    private void updateButtonConfigView() {
+       List reportTypes = sharedPreferenceMgr.getReportTypesData();
+       List<Pair<String, Button>> ButtonConfigs= Arrays.asList(new Pair<>(Constants.VIA_REPORT, btnVIAList),
+               new Pair<>(Constants.MMIA_REPORT, btnMMIAList),
+               new Pair<>(Constants.AL_REPORT, btnALReport),
+               new Pair<>(Constants.PTV_REPORT, btnPTVReport),
+               new Pair<>(Constants.RAPID_REPORT,btnRapidTestReport));
+       for (Pair<String, Button> buttonConfig: ButtonConfigs) {
+           ReportTypeForm reportType = getReportType(buttonConfig.first, reportTypes);
+           Button button = buttonConfig.second;
+           button.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
+       }
+
+       if (btnPTVReport.getVisibility() == View.VISIBLE && btnMMIAList.getVisibility() == View.VISIBLE) {
+           if (getReportType(Constants.PTV_REPORT, reportTypes).active == false) {
+               btnPTVReport.setVisibility(View.GONE);
+           } else if (getReportType(Constants.MMIA_REPORT, reportTypes).active == false) {
+               btnMMIAList.setVisibility(View.GONE);
+           }
+       }
+    }
+
+    private ReportTypeForm getReportType(String code,  List<ReportTypeForm> reportTypes) {
+        for (ReportTypeForm typeForm: reportTypes){
+            if (typeForm.getCode().equalsIgnoreCase(code)) {
+                return typeForm;
+            }
+        }
+        return null;
+    }
+
 
     public void onClickStockCard(View view) {
         startActivity(StockCardListActivity.class);
@@ -255,6 +299,7 @@ public class HomeActivity extends BaseActivity {
     protected void setSyncedTime() {
         if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
             syncTimeView.showLastSyncTime();
+            updateButtonConfigView();
         } else {
             syncTimeView.setSyncStockCardLastYearText();
         }

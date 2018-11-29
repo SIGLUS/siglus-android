@@ -56,6 +56,13 @@ public final class Constants {
     public static final String PTV_PROGRAM_CODE = "PTV";
     public static final String TEST_KIT_PROGRAM_CODE = "TEST_KIT";
 
+     //Don't change these reportTypes codes!!!
+    public static final String MMIA_REPORT = "MMIA";
+    public static final String VIA_REPORT = "VIA";
+    public static final String RAPID_REPORT = "TEST_KIT";
+    public static final String AL_REPORT = "MALARIA";
+    public static final String PTV_REPORT = "PTV";
+
     // Intent Params
     public static final String PARAM_STOCK_CARD_ID = "stockCardId";
     public static final String PARAM_STOCK_NAME = "stockName";
