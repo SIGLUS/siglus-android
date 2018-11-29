@@ -371,13 +371,14 @@ public class RnrFormRepository {
     }
 
     private List<RnRForm> list(String programCode, final boolean isWithEmergency) throws LMISException {
-        final List<Long> programIds = programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
+
+        final long programId = programRepository.queryByCode(programCode).getId();
 
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
                 Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
-                where.in("program_id", programIds);
+                where.in("program_id", programId);
 
                 if (!isWithEmergency) {
                     where.and().eq("emergency", false);
