@@ -20,6 +20,7 @@ package org.openlmis.core.service;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -41,6 +42,7 @@ import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
+import org.openlmis.core.network.model.SyncDownPeportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
@@ -103,6 +105,7 @@ public class SyncDownManager {
             @Override
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
+                    syncDownReportType(subscriber);
                     syncDownProducts(subscriber);
                     syncDownLastMonthStockCards(subscriber);
                     syncDownRequisition(subscriber);
@@ -115,6 +118,22 @@ public class SyncDownManager {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+    }
+
+    private void syncDownReportType(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        try {
+            subscriber.onNext(SyncProgress.SyncingReportType);
+            fetchAndSaveReportType();
+            subscriber.onNext(SyncProgress.ReportTypeSynced);
+        } catch (LMISException e) {
+            e.reportToFabric();
+            throw new LMISException(errorMessage(R.string.msg_sync_report_type_failed));
+        }
+    }
+
+    private void fetchAndSaveReportType() throws LMISException {
+        SyncDownPeportTypeResponse response = lmisRestApi.fetchReportTypeForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
+        Log.e("1", String.valueOf(response));
     }
 
     private void syncDownRapidTests(Subscriber<? super SyncProgress> subscriber) throws LMISException {
@@ -424,12 +443,14 @@ public class SyncDownManager {
     }
 
     public enum SyncProgress {
+        SyncingReportType(R.string.msg_fetching_products),
         SyncingProduct(R.string.msg_fetching_products),
         SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
         SyncingRequisition(R.string.msg_sync_requisition_data),
         SyncingRapidTests,
 
         ProductSynced,
+        ReportTypeSynced,
         StockCardsLastMonthSynced,
         RequisitionSynced,
         StockCardsLastYearSynced,

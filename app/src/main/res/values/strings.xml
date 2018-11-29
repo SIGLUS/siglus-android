@@ -22,10 +22,12 @@
     <string name="msg_user_not_facility">No facility for this user, please contact your administrator.</string>
     <string name="msg_save_products_failed">Save products to local Database failed</string>
     <string name="msg_sync_products_list_failed">Download of products from the server failed, please login again.</string>
+    <string name="msg_sync_report_type_failed">Download of report types from the server failed, please login again.</string>
     <string name="msg_save_kit_products_failed">Save Kit failed because there are some products which do not exist</string>
     <string name="init_product_error">Initial Data Error,Please Retry</string>
     <string name="msg_sync_stock_movements_data">Synchronizing stock movement data</string>
     <string name="msg_fetching_products">Downloading product list…</string>
+    <string name="msg_fetching_Report_Type">Downloading Report type…</string>
     <string name="msg_sync_requisition_data">Synchronizing requisition data</string>
     <string name="msg_sync_requisition_failed">Download of requisition data failed, please login again.</string>
     <string name="msg_sync_stock_movement_failed">Download of stock movement data failed, please login again.</string>

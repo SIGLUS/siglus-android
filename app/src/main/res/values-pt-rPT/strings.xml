@@ -19,10 +19,12 @@
     <string name="msg_user_not_facility">Nenhum Centro de Saúde para esse usuário, por favor, contacte o administrador</string>
     <string name="msg_save_products_failed">Falha ao guardar produtos na base de dados local</string>
     <string name="msg_sync_products_list_failed">Descarregamento de produtos a partir do servidor falhou, por favor entre novamente.</string>
+    <string name="msg_sync_report_type_failed">O download de tipos de relatórios do servidor falhou, por favor, faça o login novamente.</string>
     <string name="msg_save_kit_products_failed">Gravar Kit falhou porque há alguns produtos que não existem</string>
     <string name="init_product_error">Erro nos dados iniciais. Tente de novo.</string>
     <string name="msg_sync_stock_movements_data">Sincronizando dados de movimentos de estoque</string>
     <string name="msg_fetching_products">Descarregando lista de produtos…</string>
+    <string name="msg_fetching_Report_Type">Download do tipo de relatório ...</string>
     <string name="msg_sync_requisition_data">Sincronizando dados de requisição</string>
     <string name="msg_sync_requisition_failed">Descarregamento de dados de requisição a partir do servidor falhou, por favor entre novamente.</string>
     <string name="msg_sync_stock_movement_failed">Falha no descarregamentp de dados de movimentos de estoque, faça o login novamente.</string>
