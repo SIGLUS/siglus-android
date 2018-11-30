@@ -135,8 +135,6 @@ public class RnRFormListPresenter extends Presenter {
 
         if ( typeForm.active == true) {
             generateViewModelsByCurrentDate(rnRFormViewModels, typeForm);
-        } else {
-            generateInactiveFormListViewModels(rnRFormViewModels);
         }
 
         populateSyncErrorsOnViewModels(rnRFormViewModels);
@@ -147,13 +145,17 @@ public class RnRFormListPresenter extends Presenter {
                 return rhs.getPeriodEndMonth().compareTo(lhs.getPeriodEndMonth());
             }
         });
+
+        generateInactiveFormListViewModels(rnRFormViewModels, typeForm);
+
         return rnRFormViewModels;
     }
 
-    private void generateInactiveFormListViewModels(List<RnRFormViewModel> rnRFormViewModels) {
-        rnRFormViewModels.add(RnRFormViewModel.buildInactive(programCode));
+    private void generateInactiveFormListViewModels(List<RnRFormViewModel> rnRFormViewModels, ReportTypeForm typeForm) {
+        if (typeForm.active == false) {
+            rnRFormViewModels.add(RnRFormViewModel.buildInactive(programCode));
+        }
     }
-
 
 
     private void generateViewModelsByCurrentDate(List<RnRFormViewModel> rnRFormViewModels, ReportTypeForm typeForm) throws LMISException {

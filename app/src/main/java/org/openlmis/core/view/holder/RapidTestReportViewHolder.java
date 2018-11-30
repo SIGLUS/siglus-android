@@ -41,8 +41,10 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
 
     public void populate(final RapidTestReportViewModel rapidTestReportViewModel) {
         Period period = rapidTestReportViewModel.getPeriod();
-        String periodStr =  LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(period.getBegin().toDate()), DateUtil.formatDateWithoutDay(period.getEnd().toDate()));
-        tvPeriod.setText(periodStr);
+        if (period != null) {
+            String periodStr = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(period.getBegin().toDate()), DateUtil.formatDateWithoutDay(period.getEnd().toDate()));
+            tvPeriod.setText(periodStr);
+        }
         viewModel = rapidTestReportViewModel;
         switch (viewModel.getStatus()) {
             case MISSING:
@@ -78,6 +80,12 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
                 setBlueButton();
                 btnReportEntry.setText(context.getString(R.string.btn_view_completed_Rapid_Test_inventory));
                 btnReportEntry.setOnClickListener(goToSelectPeriod());
+                break;
+            case INACTIVE:
+                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.inactive_status)));
+                tvPeriod.setText(context.getString(R.string.inactive));
+                setWhiteHeader();
+                setBlueButton();
                 break;
             case INCOMPLETE:
                 setGrayHeader();

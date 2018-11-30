@@ -353,7 +353,8 @@ public class RapidTestReportViewModel implements Serializable {
         FIRST_MISSING(false, 4),
         UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD(false, 5),
         CANNOT_DO_MONTHLY_INVENTORY(false, 6),
-        COMPLETE_INVENTORY(false, 7);
+        COMPLETE_INVENTORY(false, 7),
+        INACTIVE(false, 8);
 
 
         @Getter

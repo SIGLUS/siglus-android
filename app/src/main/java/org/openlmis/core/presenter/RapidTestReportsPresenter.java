@@ -10,8 +10,11 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.service.ProgramDataFormPeriodService;
 import org.openlmis.core.utils.DateUtil;
@@ -19,6 +22,7 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
+import org.openlmis.core.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,15 +30,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import lombok.Getter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static org.openlmis.core.model.ProgramDataForm.STATUS.DRAFT;
+import static org.openlmis.core.utils.Constants.RAPID_REPORT;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
 import static org.openlmis.core.view.viewmodel.RapidTestReportViewModel.Status;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class RapidTestReportsPresenter extends Presenter {
 
@@ -50,6 +58,9 @@ public class RapidTestReportsPresenter extends Presenter {
 
     @Inject
     private StockMovementRepository stockMovementRepository;
+
+    @Inject
+    ReportTypeFormRepository reportTypeFormRepository;
 
     @Inject
     InventoryRepository inventoryRepository;
@@ -80,6 +91,8 @@ public class RapidTestReportsPresenter extends Presenter {
 
     protected void generateViewModelsForAllPeriods() throws LMISException {
         Optional<Period> period = periodService.getFirstStandardPeriod();
+        ReportTypeForm typeForm = reportTypeFormRepository.queryByCode(Constants.RAPID_REPORT);
+
         if (period.isPresent()) {
             List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(RAPID_TEST_CODE);
             isHaveFirstPeriod = isAllRapidTestFormInDBCompleted(rapidTestForms) ? false : true;
@@ -93,8 +106,9 @@ public class RapidTestReportsPresenter extends Presenter {
                 viewModelList.add(rapidTestReportViewModel);
             }
 
+            removeInactiveData(viewModelList, typeForm);
             RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
-            if (lastViewModel != null && (lastViewModel.status == Status.FIRST_MISSING && lastViewModel.getPeriod().getEnd().isAfterNow())) {
+            if (typeForm.active && lastViewModel != null && (lastViewModel.status == Status.FIRST_MISSING && lastViewModel.getPeriod().getEnd().isAfterNow())) {
 
                 DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
                 DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
@@ -111,14 +125,14 @@ public class RapidTestReportsPresenter extends Presenter {
                     }
                     viewModelList.set(viewModelList.size() - 1, rapidTestReportViewModel);
                 } else {
-                    RapidTestReportViewModel rapidTest = new RapidTestReportViewModel(lastViewModel.getPeriod(), RapidTestReportViewModel.Status.CANNOT_DO_MONTHLY_INVENTORY);
+                    RapidTestReportViewModel rapidTest = new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.CANNOT_DO_MONTHLY_INVENTORY);
                     viewModelList.set(viewModelList.size() - 1, rapidTest);
                 }
             }
         }
 
         RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
-        if (isRapidTestListCompleted(viewModelList)){
+        if (isRapidTestListCompleted(viewModelList) && typeForm.active){
             DateTime currentPeriod;
             if (lastViewModel == null) {
                 if (period.isPresent()) {
@@ -136,12 +150,44 @@ public class RapidTestReportsPresenter extends Presenter {
             }
         }
         viewModelList = removeGreaterThanData(viewModelList);
+        viewModelList = new ArrayList(from(viewModelList).filter(new Predicate<RapidTestReportViewModel>() {
+            @Override
+            public boolean apply(@Nullable RapidTestReportViewModel rapidTestReportViewModel) {
+                DateTime reportStartDate = new DateTime(typeForm.startTime);
+                return rapidTestReportViewModel.getPeriod().getBegin().isAfter(reportStartDate);
+            }
+        }).toList());
+
         Collections.sort(viewModelList, new Comparator<RapidTestReportViewModel>() {
             @Override
             public int compare(RapidTestReportViewModel lhs, RapidTestReportViewModel rhs) {
                 return rhs.getPeriod().getBegin().toDate().compareTo(lhs.getPeriod().getBegin().toDate());
             }
         });
+        addInactiveDate(viewModelList, typeForm);
+    }
+
+    private void addInactiveDate(List<RapidTestReportViewModel> list, ReportTypeForm typeForm) {
+    if (typeForm.isActive() == false) {
+        RapidTestReportViewModel rapidTestReportViewModel = new RapidTestReportViewModel(null, Status.INACTIVE);
+        list.add(rapidTestReportViewModel);
+     }
+    }
+
+    private void removeInactiveData(List<RapidTestReportViewModel> list, ReportTypeForm typeForm){
+        if (typeForm.active == false ) {
+            List<RapidTestReportViewModel> needBeDeleteList = new ArrayList<>();
+            for (int i = list.size(); i > 0; i--) {
+                 RapidTestReportViewModel viewModel = list.get(i);
+                 if (viewModel.status == Status.MISSING || viewModel.status == Status.FIRST_MISSING) {
+                     needBeDeleteList.add(viewModel);
+                 } else {
+                     break;
+                 }
+            }
+            list.removeAll(needBeDeleteList);
+
+        }
     }
 
     private List<RapidTestReportViewModel> removeGreaterThanData(List<RapidTestReportViewModel> list) {
