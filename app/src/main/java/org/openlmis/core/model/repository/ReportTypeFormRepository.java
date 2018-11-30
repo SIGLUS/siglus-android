@@ -45,6 +45,7 @@ public class ReportTypeFormRepository {
         if (existingReportType == null) {
             genericDao.create(reportTypeForm);
         } else {
+            reportTypeForm.setId(existingReportType.getId());
             genericDao.update(reportTypeForm);
         }
     }

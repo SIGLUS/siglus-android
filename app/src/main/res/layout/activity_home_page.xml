@@ -39,13 +39,14 @@
 
                 <LinearLayout
                     android:layout_width="0dp"
+                    android:layout_marginTop="20dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:orientation="vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
                         >
                         <Button
@@ -53,15 +54,16 @@
                             style="@style/Homepage.Button"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="0dp"
                             android:background="@color/color_blue"
                             android:onClick="onClickInventory"
                             android:text="@string/button_inventory" />
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rl_al"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
                         >
                         <Button

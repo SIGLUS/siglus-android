@@ -35,6 +35,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.google.inject.Inject;
 
@@ -101,6 +102,9 @@ public class HomeActivity extends BaseActivity {
 
     @InjectView(R.id.btn_al)
     Button btnALReport;
+
+    @InjectView(R.id.rl_al)
+    RelativeLayout viewAl;
 
     @InjectResource(R.integer.back_twice_interval)
     int BACK_TWICE_INTERVAL;
@@ -216,7 +220,11 @@ public class HomeActivity extends BaseActivity {
        for (Pair<String, Button> buttonConfig: ButtonConfigs) {
            ReportTypeForm reportType = getReportType(buttonConfig.first, reportTypes);
            Button button = buttonConfig.second;
-           button.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
+           if (button != btnALReport) {
+               button.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
+           } else {
+               viewAl.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
+           }
        }
 
        if (btnPTVReport.getVisibility() == View.VISIBLE && btnMMIAList.getVisibility() == View.VISIBLE) {

@@ -11,6 +11,7 @@ public class CreateReportTypeTable extends Migration {
     public void up() {
         execSQL("CREATE TABLE `reports_type` "
                 + "(`code` VARCHAR, "
+                + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`name` VARCHAR, "
                 + "`description` VARCHAR, "
                 + "`active` BOOLEAN, "
