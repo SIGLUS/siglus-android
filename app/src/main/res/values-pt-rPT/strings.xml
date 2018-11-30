@@ -491,6 +491,9 @@
     <string name="malaria_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e apresentação do Relatório Malaria</string>
     <string name="last_year_stock_cards_sync">Os cartões de estoque do ano passado estão sincronizando</string>
     <string name="sync_stock_card_last_year_error">Erro ao baixar cartões de estoque do ano passado. Por favor tente novamente</string>
+    <string name="inactive_status">seu status está inativo</string>
+    <string name="inactive">inativo</string>
+
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
         <item>Últimos 14 dias</item>

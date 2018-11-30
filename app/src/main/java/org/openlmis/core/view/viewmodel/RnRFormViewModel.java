@@ -43,6 +43,7 @@ public class RnRFormViewModel {
     public static final int TYPE_CANNOT_DO_MONTHLY_INVENTORY = 70;
     public static final int TYPE_FIRST_MISSED_PERIOD = 80;
     public static final int TYPE_MISSED_PERIOD = 90;
+    public static final int TYPE_INACTIVE = 100;
 
     int type;
     String syncedTime;
@@ -143,6 +144,13 @@ public class RnRFormViewModel {
         rnRFormViewModel.type = TYPE_FIRST_MISSED_PERIOD;
         rnRFormViewModel.periodEndMonth = new DateTime(endDate);
         rnRFormViewModel.title = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutYear(startDate), DateUtil.formatDateWithoutDay(endDate));
+        return rnRFormViewModel;
+    }
+
+    public static RnRFormViewModel buildInactive(String programCode) {
+        RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
+        rnRFormViewModel.setProgramCode(programCode);
+        rnRFormViewModel.type = TYPE_INACTIVE;
         return rnRFormViewModel;
     }
 }

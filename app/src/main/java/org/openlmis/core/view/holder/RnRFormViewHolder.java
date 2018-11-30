@@ -88,6 +88,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
             case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
                 populateSyncedHistorical(model);
                 break;
+            case RnRFormViewModel.TYPE_INACTIVE:
+                populateRnrFormInActiveCreatedView(model);
+                break;
         }
     }
 
@@ -110,6 +113,13 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 R.drawable.ic_description, R.color.color_draft_title,  color_white);
         setupButton(model, context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
         setupButtonColor();
+    }
+
+    private void populateRnrFormInActiveCreatedView(RnRFormViewModel model) {
+        String inActive = context.getString(R.string.inactive_status);
+        configHolder(context.getString(R.string.inactive),
+                Html.fromHtml(inActive),
+                R.drawable.ic_error, R.color.color_red, color_white);
     }
 
     private void populateRnrFormUnsyncedMessage(RnRFormViewModel model) {

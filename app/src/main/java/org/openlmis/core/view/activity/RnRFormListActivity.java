@@ -106,6 +106,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
             tvArchivedOldData.setVisibility(View.GONE);
         }
 
+        presenter.setViewProgram(program);
         presenter.setProgramCode(program.getCode());
 
         listView.setLayoutManager(new LinearLayoutManager(this));

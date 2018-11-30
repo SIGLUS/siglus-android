@@ -24,23 +24,28 @@ import org.openlmis.core.R;
 public final class Constants {
 
     public enum Program {
-        MMIA_PROGRAM(MMIA_PROGRAM_CODE, R.string.mmia_list),
-        VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list),
-        AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name),
-        PTV_PROGRAM(PTV_PROGRAM_CODE, R.string.label_ptv_name);
+        MMIA_PROGRAM(MMIA_PROGRAM_CODE, R.string.mmia_list, MMIA_REPORT),
+        VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list, VIA_REPORT),
+        AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name, AL_REPORT),
+        PTV_PROGRAM(PTV_PROGRAM_CODE, R.string.label_ptv_name, PTV_REPORT),
+        RAPID_TEST_PROGRAM(TEST_KIT_PROGRAM_CODE, R.string.title_rapid_test_reports, RAPID_REPORT);
 
 
         private String code;
+        private String reportType;
         private int title;
 
-        Program(String code, int title) {
+        Program(String code, int title, String reportType) {
             this.code = code;
             this.title = title;
+            this.reportType = reportType;
         }
 
         public String getCode() {
             return code;
         }
+
+        public String getReportType() {return reportType; }
 
         public int getTitle() {
             return title;
