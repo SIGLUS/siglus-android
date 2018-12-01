@@ -153,7 +153,7 @@ public class RnRFormListPresenter extends Presenter {
 
     private void generateInactiveFormListViewModels(List<RnRFormViewModel> rnRFormViewModels, ReportTypeForm typeForm) {
         if (typeForm.active == false) {
-            rnRFormViewModels.add(RnRFormViewModel.buildInactive(programCode));
+            rnRFormViewModels.add(0, RnRFormViewModel.buildInactive(programCode));
         }
     }
 
