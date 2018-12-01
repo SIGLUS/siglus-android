@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -90,8 +91,14 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     protected void generateViewModelsForAllPeriods() throws LMISException {
-        Optional<Period> period = periodService.getFirstStandardPeriod();
         ReportTypeForm typeForm = reportTypeFormRepository.queryByCode(Constants.RAPID_REPORT);
+        Optional<Period> period = periodService.getFirstStandardPeriod();
+        DateTime startPeriodTime = new DateTime(typeForm.startTime);
+
+        if (startPeriodTime.isAfter(period.get().getBegin()) && period != null) {
+           Period reportPeriod = new Period(startPeriodTime);
+           period = Optional.of(reportPeriod);
+        }
 
         if (period.isPresent()) {
             List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(RAPID_TEST_CODE);
@@ -150,14 +157,6 @@ public class RapidTestReportsPresenter extends Presenter {
             }
         }
         viewModelList = removeGreaterThanData(viewModelList);
-        viewModelList = new ArrayList(from(viewModelList).filter(new Predicate<RapidTestReportViewModel>() {
-            @Override
-            public boolean apply(@Nullable RapidTestReportViewModel rapidTestReportViewModel) {
-                DateTime reportStartDate = new DateTime(typeForm.startTime);
-                return rapidTestReportViewModel.getPeriod().getBegin().isAfter(reportStartDate);
-            }
-        }).toList());
-
         Collections.sort(viewModelList, new Comparator<RapidTestReportViewModel>() {
             @Override
             public int compare(RapidTestReportViewModel lhs, RapidTestReportViewModel rhs) {
@@ -170,14 +169,14 @@ public class RapidTestReportsPresenter extends Presenter {
     private void addInactiveDate(List<RapidTestReportViewModel> list, ReportTypeForm typeForm) {
     if (typeForm.isActive() == false) {
         RapidTestReportViewModel rapidTestReportViewModel = new RapidTestReportViewModel(null, Status.INACTIVE);
-        list.add(rapidTestReportViewModel);
+        list.add(0, rapidTestReportViewModel);
      }
     }
 
     private void removeInactiveData(List<RapidTestReportViewModel> list, ReportTypeForm typeForm){
         if (typeForm.active == false ) {
             List<RapidTestReportViewModel> needBeDeleteList = new ArrayList<>();
-            for (int i = list.size(); i > 0; i--) {
+            for (int i = list.size()-1; i >= 0; i--) {
                  RapidTestReportViewModel viewModel = list.get(i);
                  if (viewModel.status == Status.MISSING || viewModel.status == Status.FIRST_MISSING) {
                      needBeDeleteList.add(viewModel);
