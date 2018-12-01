@@ -45,7 +45,6 @@ public class MMIAInfoList extends LinearLayout {
     private Context context;
     EditText totalPatientsView = null;
     private List<EditText> editTexts = new ArrayList<>();
-    private BaseInfoItem totalPatientsItem;
     private LayoutInflater layoutInflater;
     private List<BaseInfoItem> dataList;
     private boolean hasDataChanged = false;
@@ -108,15 +107,12 @@ public class MMIAInfoList extends LinearLayout {
             tvName.setText(item.getName());
             editTexts.add(etValue);
             etValue.setText(item.getValue());
-
             if (isTotalPatient(item)) {
-                totalPatientsItem = item;
-
                 totalPatientsView = etValue;
-                totalPatientsView.setEnabled(false);
             } else {
                 etValue.addTextChangedListener(new EditTextWatcher(item));
             }
+            etValue.addTextChangedListener(new EditTextWatcher(item));
             setTotalViewBackground(item, etValue);
         }
         addView(view);
@@ -150,10 +146,6 @@ public class MMIAInfoList extends LinearLayout {
         return dataList;
     }
 
-    public void highLightTotal() {
-        totalPatientsView.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
-    }
-
     public void deHighLightTotal() {
         totalPatientsView.setBackground(getResources().getDrawable(R.color.color_page_gray));
     }
@@ -165,10 +157,6 @@ public class MMIAInfoList extends LinearLayout {
             }
         }
         return false;
-    }
-
-    public void addPatientTotalViewTextChangedListener(TextWatcher totalTextWatcher) {
-        totalPatientsView.addTextChangedListener(totalTextWatcher);
     }
 
     class EditTextWatcher implements android.text.TextWatcher {
@@ -193,11 +181,6 @@ public class MMIAInfoList extends LinearLayout {
         public void afterTextChanged(Editable editable) {
             hasDataChanged = true;
             item.setValue(editable.toString());
-            if (totalPatientsView != null) {
-                String total = String.valueOf(getTotal());
-                totalPatientsItem.setValue(total);
-                totalPatientsView.setText(total);
-            }
         }
     }
 

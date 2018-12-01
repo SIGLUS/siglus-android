@@ -214,7 +214,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     protected void bindListeners() {
         etComment.addTextChangedListener(commentTextWatcher);
         tvRegimeTotal.addTextChangedListener(totalTextWatcher);
-        mmiaInfoListView.addPatientTotalViewTextChangedListener(totalTextWatcher);
 
         actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
         scrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -398,10 +397,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     @Override
     protected String getNotifyDialogMsg() {
         return getString(R.string.msg_requisition_signature_message_notify_mmia);
-    }
-
-    private boolean isTotalEqual() {
-        return regimeListView.getTotal() == mmiaInfoListView.getTotal();
     }
 
     @Override
