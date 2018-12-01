@@ -157,16 +157,12 @@ public class SyncDownManager {
     }
 
     private void fetchAndSaveRapidTests() throws LMISException {
-        try {
-            SyncDownProgramDataResponse syncDownProgramDataResponse = lmisRestApi.fetchProgramDataForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
-        } catch (Exception e){
-
+        SyncDownProgramDataResponse syncDownProgramDataResponse = lmisRestApi.fetchProgramDataForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
+        if (syncDownProgramDataResponse == null) {
+            throw new LMISException("Can't get SyncDownRapidTestsResponse, you can check json parse to POJO logic");
         }
-//        if (syncDownProgramDataResponse == null) {
-//            throw new LMISException("Can't get SyncDownRapidTestsResponse, you can check json parse to POJO logic");
-//        }
-//
-//        programDataFormRepository.batchSaveForms(syncDownProgramDataResponse.getProgramDataForms());
+
+        programDataFormRepository.batchSaveForms(syncDownProgramDataResponse.getProgramDataForms());
     }
 
     public void syncDownServerData() {
