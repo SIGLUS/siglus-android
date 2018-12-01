@@ -84,8 +84,8 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
             case INACTIVE:
                 tvReportStatus.setText(Html.fromHtml(context.getString(R.string.inactive_status)));
                 tvPeriod.setText(context.getString(R.string.inactive));
-                setWhiteHeader();
-                setBlueButton();
+                btnReportEntry.setVisibility(View.INVISIBLE);
+                setRedHeader();
                 break;
             case INCOMPLETE:
                 setGrayHeader();
