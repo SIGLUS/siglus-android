@@ -20,7 +20,6 @@ package org.openlmis.core.service;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -43,7 +42,7 @@ import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
-import org.openlmis.core.network.model.SyncDownPeportTypeResponse;
+import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
@@ -135,7 +134,7 @@ public class SyncDownManager {
     }
 
     private void fetchAndSaveReportType() throws LMISException {
-        SyncDownPeportTypeResponse response = lmisRestApi.fetchReportTypeForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
+        SyncDownReportTypeResponse response = lmisRestApi.fetchReportTypeForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
         sharedPreferenceMgr.setReportTypesData(response.getReportTypes());
         reportTypeFormRepository.batchCreateOrUpdateReportTypes(response.getReportTypes());
 

@@ -7,6 +7,6 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class SyncDownPeportTypeResponse {
+public class SyncDownReportTypeResponse {
     List<ReportTypeForm> reportTypes;
 }

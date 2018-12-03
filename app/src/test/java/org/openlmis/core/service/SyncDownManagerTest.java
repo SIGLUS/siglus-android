@@ -5,9 +5,11 @@ import android.content.SharedPreferences;
 
 import com.google.inject.AbstractModule;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
@@ -17,6 +19,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -24,6 +27,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
+import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -34,10 +38,12 @@ import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
+import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -72,6 +78,7 @@ import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsL
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastYearSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingProduct;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRapidTests;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingReportType;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRequisition;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastMonth;
 //import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastYear;
@@ -130,9 +137,11 @@ public class SyncDownManagerTest {
     public void shouldSyncDownServerData() throws Exception {
         //given
         mockSyncDownLatestProductResponse();
+        mockReportResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
         mockRapidTestsResponse();
+
 
         //when
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
@@ -141,19 +150,21 @@ public class SyncDownManagerTest {
         subscriber.assertNoErrors();
 
         //then
-        assertThat(subscriber.syncProgresses.get(0), is(SyncingProduct));
-        assertThat(subscriber.syncProgresses.get(1), is(ProductSynced));
-        assertThat(subscriber.syncProgresses.get(2), is(SyncingStockCardsLastMonth));
-        assertThat(subscriber.syncProgresses.get(3), is(StockCardsLastMonthSynced));
-        assertThat(subscriber.syncProgresses.get(4), is(SyncingRequisition));
-        assertThat(subscriber.syncProgresses.get(5), is(RequisitionSynced));
-        assertThat(subscriber.syncProgresses.get(6), is(SyncingRapidTests));
-        assertThat(subscriber.syncProgresses.get(7), is(RapidTestsSynced));
+        assertThat(subscriber.syncProgresses.get(0), is(SyncingReportType));
+        assertThat(subscriber.syncProgresses.get(1), is(SyncingProduct));
+        assertThat(subscriber.syncProgresses.get(2), is(ProductSynced));
+        assertThat(subscriber.syncProgresses.get(3), is(SyncingStockCardsLastMonth));
+        assertThat(subscriber.syncProgresses.get(4), is(StockCardsLastMonthSynced));
+        assertThat(subscriber.syncProgresses.get(5), is(SyncingRequisition));
+        assertThat(subscriber.syncProgresses.get(6), is(RequisitionSynced));
+        assertThat(subscriber.syncProgresses.get(7), is(SyncingRapidTests));
+        assertThat(subscriber.syncProgresses.get(8), is(RapidTestsSynced));
     }
 
     @Test
     public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
         //given
+        mockReportResponse();
         mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -170,12 +181,13 @@ public class SyncDownManagerTest {
         laterEnterSubscriber.assertNoTerminalEvent();
 
         //then
-        assertThat(firstEnterSubscriber.syncProgresses.size(), is(8));
+        assertThat(firstEnterSubscriber.syncProgresses.size(), is(9));
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }
 
     @Test
     public void shouldSyncDownNewLatestProductList() throws Exception {
+        mockReportResponse();
         mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -337,6 +349,13 @@ public class SyncDownManagerTest {
         when(lmisRestApi.fetchProgramDataForms(anyLong())).thenReturn(getRapidTestsResponse());
     }
 
+    private void mockReportResponse() throws ParseException, LMISException {
+        createdPreferences = LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
+        when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
+        when(lmisRestApi.fetchReportTypeForms(anyLong())).thenReturn(getReportTypeResponse());
+    }
+
+
     private SyncDownProgramDataResponse getRapidTestsResponse() {
         ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
                 .setProgram(new Program())
@@ -352,6 +371,25 @@ public class SyncDownManagerTest {
         SyncDownProgramDataResponse syncDownProgramDataResponse = new SyncDownProgramDataResponse();
         syncDownProgramDataResponse.setProgramDataForms(newArrayList(programDataForm1, programDataForm2));
         return syncDownProgramDataResponse;
+    }
+
+    private SyncDownReportTypeResponse getReportTypeResponse() {
+        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        ReportTypeForm reportTypeMMIA = new ReportTypeBuilder()
+                .setActive(true)
+                .setCode(Constants.MMIA_REPORT)
+                .setName(Constants.MMIA_REPORT)
+                .setStartTime(dateTime.toDate())
+                .build();
+        ReportTypeForm reportTypeVIA = new ReportTypeBuilder()
+                .setActive(true)
+                .setCode(Constants.VIA_REPORT)
+                .setName(Constants.VIA_REPORT)
+                .setStartTime(dateTime.toDate())
+                .build();
+        SyncDownReportTypeResponse syncDownReportTypeResponse = new SyncDownReportTypeResponse();
+        syncDownReportTypeResponse.setReportTypes(newArrayList(reportTypeMMIA, reportTypeVIA));
+        return syncDownReportTypeResponse;
     }
 
     private void verifyLastMonthStockCardsSynced() throws LMISException, SQLException {

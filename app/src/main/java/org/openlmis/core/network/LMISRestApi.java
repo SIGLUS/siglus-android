@@ -29,7 +29,7 @@ import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
-import org.openlmis.core.network.model.SyncDownPeportTypeResponse;
+import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
@@ -91,7 +91,7 @@ public interface LMISRestApi {
     SyncDownProgramDataResponse fetchProgramDataForms(@Path("facilityId") Long facilityId) throws LMISException;
 
     @GET("/rest-api/report-types/mapping/{facilityId}")
-    SyncDownPeportTypeResponse fetchReportTypeForms(@Path("facilityId") Long facilityId) throws LMISException;
+    SyncDownReportTypeResponse fetchReportTypeForms(@Path("facilityId") Long facilityId) throws LMISException;
 
     @POST("/rest-api/programData")
     Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
