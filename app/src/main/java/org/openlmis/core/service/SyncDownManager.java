@@ -37,6 +37,7 @@ import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.ServiceFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
@@ -45,6 +46,7 @@ import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
+import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
@@ -89,6 +91,8 @@ public class SyncDownManager {
     @Inject
     ReportTypeFormRepository reportTypeFormRepository;
     @Inject
+    ServiceFormRepository serviceFormRepository;
+    @Inject
     StockService stockService;
     @Inject
     SyncStockCardsLastYearSilently syncStockCardsLastYearSilently;
@@ -107,6 +111,7 @@ public class SyncDownManager {
             @Override
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
+                    syncDownService(subscriber);
                     syncDownReportType(subscriber);
                     syncDownProducts(subscriber);
                     syncDownLastMonthStockCards(subscriber);
@@ -138,6 +143,23 @@ public class SyncDownManager {
         sharedPreferenceMgr.setReportTypesData(response.getReportTypes());
         reportTypeFormRepository.batchCreateOrUpdateReportTypes(response.getReportTypes());
 
+    }
+
+    private void syncDownService(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        try {
+            subscriber.onNext(SyncProgress.SyncingServiceList);
+            fetchAndSaveService();
+            subscriber.onNext(SyncProgress.ServiceSynced);
+        } catch (LMISException e) {
+            e.reportToFabric();
+            throw new LMISException(errorMessage(R.string.msg_service_lists));
+        }
+    }
+
+    private void fetchAndSaveService() throws LMISException {
+        //ToDo backend interface
+//        SyncDownServiceResponse response = lmisRestApi.fetchPTVService(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
+//        serviceFormRepository.batchCreateOrUpdateServiceList(response.getServices());
     }
 
     private void syncDownRapidTests(Subscriber<? super SyncProgress> subscriber) throws LMISException {
@@ -446,6 +468,7 @@ public class SyncDownManager {
     }
 
     public enum SyncProgress {
+        SyncingServiceList(R.string.msg_service_lists),
         SyncingReportType(R.string.msg_fetching_products),
         SyncingProduct(R.string.msg_fetching_products),
         SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
@@ -453,6 +476,7 @@ public class SyncDownManager {
         SyncingRapidTests,
 
         ProductSynced,
+        ServiceSynced,
         ReportTypeSynced,
         StockCardsLastMonthSynced,
         RequisitionSynced,
