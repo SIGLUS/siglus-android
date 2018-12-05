@@ -8,6 +8,7 @@ import com.j256.ormlite.dao.Dao;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.ServiceItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
@@ -22,6 +23,9 @@ public class RnrFormItemRepository {
 
     @Inject
     private ProgramRepository programRepository;
+
+    @Inject
+    private ServiceItemRepository serviceItemRepository;
 
 
     @Inject
@@ -39,6 +43,16 @@ public class RnrFormItemRepository {
     }
 
     public void batchCreateOrUpdate(final List<RnrFormItem> rnrFormItemList) throws LMISException {
+        batchCreateOrUpdateItems(rnrFormItemList);
+        for (RnrFormItem item : rnrFormItemList) {
+            List<ServiceItem> serviceItems = item.getServiceItemListWrapper();
+            if (serviceItems.size() > 0) {
+                serviceItemRepository.batchCreateOrUpdate(serviceItems);
+            }
+        }
+    }
+
+    private void batchCreateOrUpdateItems(final List<RnrFormItem> rnrFormItemList) throws LMISException {
         dbUtil.withDaoAsBatch(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, Void>() {
             @Override
             public Void operate(Dao<RnrFormItem, String> dao) throws SQLException {
@@ -51,6 +65,17 @@ public class RnrFormItemRepository {
     }
 
     public void deleteFormItems(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
+        batchDeleteItems(rnrFormItemListWrapper);
+
+        for (RnrFormItem item : rnrFormItemListWrapper) {
+            List<ServiceItem> serviceItems = item.getServiceItemListWrapper();
+            if (serviceItems.size() > 0) {
+                serviceItemRepository.deleteServiceItems(serviceItems);
+            }
+        }
+    }
+
+    private void batchDeleteItems(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
         dbUtil.withDaoAsBatch(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, Void>() {
             @Override
             public Void operate(Dao<RnrFormItem, String> dao) throws SQLException {
