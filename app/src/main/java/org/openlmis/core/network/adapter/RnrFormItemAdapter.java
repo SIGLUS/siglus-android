@@ -18,6 +18,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.ServiceItem;
 import org.openlmis.core.model.repository.ProductRepository;
 
 import java.lang.reflect.Type;
@@ -36,6 +37,7 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
         gson = new GsonBuilder()
                 .registerTypeAdapter(Product.class, new ProductAdapter())
+                .registerTypeAdapter(ServiceItem.class, new ServiceItemAdapter())
                 .excludeFieldsWithoutExposeAnnotation().create();
     }
 
