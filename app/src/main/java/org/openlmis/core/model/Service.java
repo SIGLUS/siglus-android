@@ -28,7 +28,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@DatabaseTable(tableName = "Services")
+@DatabaseTable(tableName = "services")
 public class Service extends BaseModel {
 
     @Expose
