@@ -34,6 +34,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.ALRequisitionPresenter;
 import org.openlmis.core.presenter.BaseReportPresenter;
+import org.openlmis.core.presenter.PTVRequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
@@ -55,8 +56,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
     private long formId;
     protected View containerView;
     private Date periodEndDate;
-    ALRequisitionPresenter presenter;
-    ALReportAdapter adapter;
+    PTVRequisitionPresenter presenter;
 
     @InjectView(R.id.scrollView)
     HorizontalScrollView scrollView;
@@ -77,7 +77,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
 
     @Override
     protected BaseReportPresenter injectPresenter() {
-        presenter =  RoboGuice.getInjector(getActivity()).getInstance(ALRequisitionPresenter.class);
+        presenter =  RoboGuice.getInjector(getActivity()).getInstance(PTVRequisitionPresenter.class);
         return presenter;
     }
 
@@ -108,14 +108,14 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
 
     protected void initUI() {
         scrollView.setVisibility(View.INVISIBLE);
-//        if (isHistoryForm()) {
-//            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-//            actionPanelView.setVisibility(View.GONE);
-//        } else {
-//            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-//            actionPanelView.setVisibility(View.VISIBLE);
-//        }
-//        bindListeners();
+        if (isHistoryForm()) {
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            actionPanelView.setVisibility(View.GONE);
+        } else {
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+            actionPanelView.setVisibility(View.VISIBLE);
+        }
+        bindListeners();
     }
 
 
@@ -177,7 +177,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
                         showSignDialog();
                     }
                 } else {
-                    adapter.updateTip();
+                    // ToDo tip
                 }
             }
         };
@@ -231,7 +231,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
         getActivity().setTitle(getString(R.string.label_ptv_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()), DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
         monthTitle.setText(DateUtil.formatDateWithLongMonthAndYear(rnRForm.getPeriodEnd()));
         scrollView.setVisibility(View.VISIBLE);
-        adapter.refresh(presenter.alReportViewModel);
+        //ToDo refresh Items
     }
 
     @Override
@@ -241,19 +241,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
     }
 
     private void setUpRowItems() {
-        adapter = new ALReportAdapter(getQuantityChangeListener());
-        rvALRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvALRowItemListView.setAdapter(adapter);
+
     }
 
-
-    private ALReportViewHolder.QuantityChangeListener getQuantityChangeListener() {
-        return new ALReportViewHolder.QuantityChangeListener() {
-            @Override
-                 public void updateTotal(ALGridViewModel.ALColumnCode columnCode, ALGridViewModel.ALGridColumnCode gridColumnCode){
-                presenter.alReportViewModel.updateTotal(columnCode, gridColumnCode);
-                adapter.updateTotal();
-            }
-        };
-    }
 }
