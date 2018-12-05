@@ -41,6 +41,7 @@ public class Service extends BaseModel {
     @DatabaseField
     private String code;
 
+    @Expose
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     Program program;
 

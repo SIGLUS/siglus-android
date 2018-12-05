@@ -9,8 +9,9 @@ public class CreateServiceTable extends Migration {
         execSQL("CREATE TABLE `services` "
                 + "(`name` VARCHAR , "
                 + "`code` VARCHAR , "
-                + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "`createdAt` VARCHAR NOT NULL, "
+                + "`program_id` BIGINT , "
+                + "`id` INTEGER PRIMARY KEY AUTOINCREMENT , "
+                + "`createdAt` VARCHAR NOT NULL , "
                 + "`updatedAt` VARCHAR NOT NULL)");
     }
 }
