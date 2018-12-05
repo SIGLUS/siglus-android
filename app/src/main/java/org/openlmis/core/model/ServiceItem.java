@@ -32,7 +32,7 @@ import lombok.Setter;
 public class ServiceItem extends BaseModel{
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private RnRForm form;
+    private RnrFormItem formItem;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Service service;

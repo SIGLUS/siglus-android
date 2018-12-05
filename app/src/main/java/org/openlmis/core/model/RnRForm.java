@@ -70,13 +70,6 @@ public class RnRForm extends BaseModel {
     private List<RegimenItem> regimenItemListWrapper;
 
     @ForeignCollectionField()
-    private ForeignCollection<ServiceItem> serviceItemList;
-
-    @Expose
-    @SerializedName("services")
-    private List<ServiceItem> serviceItemListWrapper;
-
-    @ForeignCollectionField()
     private ForeignCollection<BaseInfoItem> baseInfoItemList;
 
     @Expose
@@ -235,11 +228,6 @@ public class RnRForm extends BaseModel {
     public List<RegimenItem> getRegimenItemListWrapper() {
         regimenItemListWrapper = ListUtil.wrapOrEmpty(regimenItemList, regimenItemListWrapper);
         return regimenItemListWrapper;
-    }
-
-    public List<ServiceItem> getServiceItemListWrapper() {
-        serviceItemListWrapper = ListUtil.wrapOrEmpty(serviceItemList, serviceItemListWrapper);
-        return serviceItemListWrapper;
     }
 
     public List<RnRFormSignature> getSignaturesWrapper() {
