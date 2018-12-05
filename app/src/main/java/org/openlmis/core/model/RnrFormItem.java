@@ -47,7 +47,7 @@ public class RnrFormItem extends BaseModel{
     @Expose
     @SerializedName("beginningBalance")
     @DatabaseField
-    private long initialAmount;
+    private Long initialAmount;
 
     @Expose
     @SerializedName("quantityReceived")
@@ -87,7 +87,7 @@ public class RnrFormItem extends BaseModel{
     @Expose
     @SerializedName("calculatedOrderQuantity")
     @DatabaseField
-    private long calculatedOrderQuantity;
+    private Long calculatedOrderQuantity;
 
     @Expose
     @DatabaseField
