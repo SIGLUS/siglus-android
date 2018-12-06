@@ -66,5 +66,8 @@ public class CreateDummyRegimes extends Migration {
         execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('024','Consultas AL STOCK Malaria 3x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
         execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('025','Consultas AL US/APE Malaria 4x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
         execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('026','Consultas AL STOCK Malaria 4x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
+
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('PTV Crianças','PTV Crianças OpA+','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('PTV Mulheres','PTV Mulheres OpA+','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
     }
 }

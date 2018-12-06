@@ -27,6 +27,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
@@ -71,6 +72,20 @@ public class PTVRepository extends RnrFormRepository {
         List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
         fillAllPTVProduct(form, rnrFormItems);
         return rnrFormItems;
+    }
+
+    @Override
+    protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+        List<RegimenItem> regimenItems = new ArrayList<>();
+        List<String> regimenCodes = Arrays.asList(Constants.PTV_REGIME_ADULT, Constants.PTV_REGIME_CHILD);
+        for (String regimenCode: regimenCodes) {
+            RegimenItem newRegimenItem = new RegimenItem();
+            Regimen regimen = regimenRepository.getByCode(regimenCode);
+            newRegimenItem.setRegimen(regimen);
+            newRegimenItem.setForm(form);
+            regimenItems.add(newRegimenItem);
+        }
+        return regimenItems;
     }
 
     @Override

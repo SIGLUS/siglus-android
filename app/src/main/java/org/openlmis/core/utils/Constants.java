@@ -68,6 +68,10 @@ public final class Constants {
     public static final String AL_REPORT = "MALARIA";
     public static final String PTV_REPORT = "PTV";
 
+    public static final String PTV_REGIME_CHILD = "PTV Crianças";
+    public static final String PTV_REGIME_ADULT = "PTV Mulheres";
+
+
     // Intent Params
     public static final String PARAM_STOCK_CARD_ID = "stockCardId";
     public static final String PARAM_STOCK_NAME = "stockName";

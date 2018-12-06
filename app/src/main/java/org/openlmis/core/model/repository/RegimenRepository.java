@@ -54,6 +54,15 @@ public class RegimenRepository {
         });
     }
 
+    public Regimen getByCode(final String code) throws LMISException {
+        return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
+            @Override
+            public Regimen operate(Dao<Regimen, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("code", code).queryForFirst();
+            }
+        });
+    }
+
     public void create(Regimen regimen) throws LMISException {
         regimenGenericDao.create(regimen);
     }
