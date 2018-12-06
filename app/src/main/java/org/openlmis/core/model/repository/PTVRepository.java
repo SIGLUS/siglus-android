@@ -18,18 +18,26 @@
 
 package org.openlmis.core.model.repository;
 
+import android.app.Service;
 import android.content.Context;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.helper.FormHelper;
 import org.openlmis.core.utils.Constants;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class PTVRepository extends RnrFormRepository {
@@ -44,20 +52,76 @@ public class PTVRepository extends RnrFormRepository {
     RegimenRepository regimenRepository;
 
     @Inject
+    ServiceFormRepository serviceFormRepository;
+
+    @Inject
     ProductProgramRepository productProgramRepository;
+
+    @Inject
+    FormHelper formHelper;
 
     @Inject
     public PTVRepository(Context context) {
         super(context);
-
+        programCode = Constants.PTV_PROGRAM_CODE;
     }
 
     @Override
     public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) throws LMISException {
-        return new ArrayList<>();
+        List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
+        fillAllPTVProduct(form, rnrFormItems);
+        return rnrFormItems;
     }
 
-    public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category) throws LMISException {
-        return regimenRepository.getByNameAndCategory(name, category);
+    @Override
+    protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsByCreatedDate(stockCard.getId(), startDate, endDate);
+
+        if (stockMovementItems.isEmpty()) {
+            rnrFormItem.setReceived(0);
+            rnrFormItem.setIssued((long) 0);
+        } else {
+            FormHelper.StockMovementModifiedItem modifiedItem =  formHelper.assignTotalValues(stockMovementItems);
+            rnrFormItem.setReceived(modifiedItem.getTotalReceived());
+            rnrFormItem.setIssued(modifiedItem.getTotalIssued());
+        }
+        rnrFormItem.setProduct(stockCard.getProduct());
+        return rnrFormItem;
+    }
+
+    protected ArrayList<RnrFormItem> fillAllPTVProduct(RnRForm form, List<RnrFormItem> rnrFormItems) throws LMISException {
+        List<Product> products;
+        List<String> programCodes = Arrays.asList(Constants.PTV_PROGRAM_CODE);
+        List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
+        products = productRepository.queryProductsByProductIds(productIds);
+        ArrayList<RnrFormItem> result = new ArrayList<>();
+
+        for (Product product : products) {
+            RnrFormItem rnrFormItem = new RnrFormItem();
+            rnrFormItem.setForm(form);
+            rnrFormItem.setProduct(product);
+            RnrFormItem stockFormItem = getStockCardRnr(product, rnrFormItems);
+            if (stockFormItem != null) {
+                rnrFormItem = stockFormItem;
+            } else {
+                rnrFormItem.setReceived(0);
+                rnrFormItem.setIssued((long) 0);
+            }
+            rnrFormItem.setInitialAmount(lastRnrInventory(product));
+            rnrFormItem.setRequestAmount((long) 0);
+            rnrFormItem.setApprovedAmount((long) 0);
+            result.add(rnrFormItem);
+        }
+        return result;
+    }
+
+    private RnrFormItem getStockCardRnr(Product product, List<RnrFormItem> rnrStockFormItems) {
+        for (RnrFormItem item : rnrStockFormItems) {
+            if (item.getProduct().getId() == product.getId()) {
+                return  item;
+            }
+        }
+        return null;
     }
 }
