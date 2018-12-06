@@ -99,11 +99,11 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
 
         initUI();
         setUpRowItems();
-//        if (isSavedInstanceState && presenter.getRnRForm() != null) {
-//            presenter.updateFormUI();
-//        } else {
-//            presenter.loadData(formId, periodEndDate);
-//        }
+        if (isSavedInstanceState && presenter.getRnRForm() != null) {
+            presenter.updateFormUI();
+        } else {
+            presenter.loadData(formId, periodEndDate);
+        }
     }
 
     protected void initUI() {

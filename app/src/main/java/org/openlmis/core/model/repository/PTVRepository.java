@@ -18,7 +18,6 @@
 
 package org.openlmis.core.model.repository;
 
-import android.app.Service;
 import android.content.Context;
 
 import com.google.inject.Inject;
@@ -30,6 +29,8 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.Service;
+import org.openlmis.core.model.ServiceItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.helper.FormHelper;
@@ -110,6 +111,8 @@ public class PTVRepository extends RnrFormRepository {
         List<String> programCodes = Arrays.asList(Constants.PTV_PROGRAM_CODE);
         List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
         products = productRepository.queryProductsByProductIds(productIds);
+        Program program = programRepository.queryByCode(Constants.PTV_PROGRAM_CODE);
+        List<Service> services = serviceFormRepository.listAllActiveWithProgram(program);
         ArrayList<RnrFormItem> result = new ArrayList<>();
 
         for (Product product : products) {
@@ -126,9 +129,21 @@ public class PTVRepository extends RnrFormRepository {
             rnrFormItem.setInitialAmount(lastRnrInventory(product));
             rnrFormItem.setRequestAmount((long) 0);
             rnrFormItem.setApprovedAmount((long) 0);
+            rnrFormItem.setServiceItemListWrapper(getServiceItem(rnrFormItem, services));
             result.add(rnrFormItem);
         }
         return result;
+    }
+
+    private List<ServiceItem> getServiceItem(RnrFormItem rnrFormItem, List<Service> services) {
+        List<ServiceItem> serviceItems = new ArrayList<>();
+        for (Service service : services) {
+            ServiceItem serviceItem = new ServiceItem();
+            serviceItem.setService(service);
+            serviceItem.setFormItem(rnrFormItem);
+            serviceItems.add(serviceItem);
+        }
+        return serviceItems;
     }
 
     private RnrFormItem getStockCardRnr(Product product, List<RnrFormItem> rnrStockFormItems) {

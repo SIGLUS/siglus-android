@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Service;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
@@ -61,6 +62,15 @@ public class ServiceFormRepository {
             @Override
             public List<Service> operate(Dao<Service, String> dao) throws SQLException, LMISException {
                 return dao.queryBuilder().where().eq("active", true).query();
+            }
+        });
+        return activeService;
+    }
+    public List<Service> listAllActiveWithProgram(Program program) throws LMISException {
+        List<Service> activeService = dbUtil.withDao(Service.class, new DbUtil.Operation<Service, List<Service>>() {
+            @Override
+            public List<Service> operate(Dao<Service, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().eq("active", true).and().eq("program_id", program.getId()).query();
             }
         });
         return activeService;
