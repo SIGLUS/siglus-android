@@ -175,6 +175,15 @@
 
     <!-- PTV -->
     <string name="label_ptv_title">PTV - %1$s a %2$s</string>
+    <string name="registration">Cadastro</string>
+    <string name="medicines">Medicamentos</string>
+    <string name="dispensation">Dispensação</string>
+    <string name="PatientAndService">Nome do Paciente / Serviço HF</string>
+    <string name="initialStockLevel">Nível inicial de estoque</string>
+    <string name="totalPtv">TOTAIS / Parciais</string>
+    <string name="typePatient">Tipo de paciente</string>
+    <string name="totalWomen">Total de mulheres:</string>
+    <string name="TotalChildren">Total de crianças:</string>
 
     <!--Stock Movement-->
     <string name="Overstock">Stock acumulados</string>
@@ -189,7 +198,7 @@
     <string name="label_negative_adjustment">Ajustes Negativos</string>
     <string name="label_positive_adjustment">Ajustes Positivos</string>
     <string name="label_stock_existence">Estoque Existente</string>
-    <string name="label_requested">Pedidos</string>
+    <string name="label_requested">Pedgidos</string>
     <string name="label_signature">Rúbrica</string>
     <string name="btn_cancel">CANCELAR</string>
     <string name="btn_do_not_remove">Cancelar</string>

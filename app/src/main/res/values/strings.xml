@@ -186,6 +186,15 @@
 
     <!-- PTV -->
     <string name="label_ptv_title">PTV - %1$s to %2$s</string>
+    <string name="registration">Registration</string>
+    <string name="medicines">Medicines</string>
+    <string name="dispensation">Dispensation</string>
+    <string name="PatientAndService">Patient Name / HF Service</string>
+    <string name="initialStockLevel">Initial Stock Level</string>
+    <string name="totalPtv">TOTALS/Partials</string>
+    <string name="typePatient">Type of Patient</string>
+    <string name="totalWomen">Total Women:</string>
+    <string name="TotalChildren">Total de Children:</string>
 
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>

@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -64,6 +65,9 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
     @InjectView(R.id.rv_al_row_item_list)
     RecyclerView rvALRowItemListView;
 
+    @InjectView(R.id.ptv_table)
+    LinearLayout ptvTable;
+
     @InjectView(R.id.al_monthTitle)
     TextView monthTitle;
 
@@ -83,7 +87,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        containerView = inflater.inflate(R.layout.fragment_al_requisition, container, false);
+        containerView = inflater.inflate(R.layout.fragment_ptv_requisition, container, false);
         return containerView;
     }
 

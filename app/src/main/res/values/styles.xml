@@ -820,6 +820,16 @@
         <item name="tabTextAppearance">@style/TextAppearance.Design.Tab</item>
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
     </style>
+    <style name="PTVReportList" />
+    <style name="PTVReportList.tableTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center|center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/color_black</item>
+        <item name="android:textSize">@dimen/font_size_regular</item>
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="AlReportList" />
     <style name="AlReportList.age">
         <item name="android:layout_width">match_parent</item>

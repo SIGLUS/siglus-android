@@ -58,10 +58,16 @@
     <dimen name="rapid_view_basic_form_item_width">120dp</dimen>
     <dimen name="rapid_view_basic_form_item_stock_width">70dp</dimen>
 
-    <!--RapidTest-->
+    <!--AL-->
     <dimen name="al_view_width">1032dp</dimen>
     <dimen name="al_view_list_height">44dp</dimen>
     <dimen name="al_view_header_list_height">88dp</dimen>
     <dimen name="al_view_left_header_width">100dp</dimen>
+
+    <!--PTV-->
+    <dimen name="ptv_view_left_header_width">100dp</dimen>
+    <dimen name="ptv_view_right_header_width">175dp</dimen>
+    <dimen name="ptv_view_item_width">130dp</dimen>
+    <dimen name="ptv_view_item_height">44dp</dimen>
 
 </resources>
