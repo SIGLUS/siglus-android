@@ -42,6 +42,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ALReportAdapter;
 import org.openlmis.core.view.holder.ALReportViewHolder;
 import org.openlmis.core.view.viewmodel.ALGridViewModel;
+import org.openlmis.core.view.widget.PTVTestRnrForm;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
@@ -62,11 +63,8 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
     @InjectView(R.id.scrollView)
     HorizontalScrollView scrollView;
 
-    @InjectView(R.id.rv_al_row_item_list)
-    RecyclerView rvALRowItemListView;
-
     @InjectView(R.id.ptv_table)
-    LinearLayout ptvTable;
+    PTVTestRnrForm ptvTable;
 
     @InjectView(R.id.al_monthTitle)
     TextView monthTitle;
@@ -115,9 +113,15 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
         if (isHistoryForm()) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             actionPanelView.setVisibility(View.GONE);
+            ptvTable.initView(presenter.ptvReportViewModel);
         } else {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             actionPanelView.setVisibility(View.VISIBLE);
+        }
+        if (!presenter.ptvReportViewModel.isEmpty()) {
+            ptvTable.initView(presenter.ptvReportViewModel);
+        } else {
+            scrollView.setVisibility(View.GONE);
         }
         bindListeners();
     }

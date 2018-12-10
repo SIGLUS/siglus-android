@@ -85,13 +85,13 @@
                         android:text="@string/dispensation" />
                 </LinearLayout>
             </LinearLayout>
-            <LinearLayout
+            <org.openlmis.core.view.widget.PTVTestRnrForm
                 android:id="@+id/ptv_table"
                 android:layout_width="@dimen/ptv_view_left_header_width"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_below="@id/ptv_table_header">
-            </LinearLayout>
+            </org.openlmis.core.view.widget.PTVTestRnrForm>
 
         </RelativeLayout>
     </HorizontalScrollView>
