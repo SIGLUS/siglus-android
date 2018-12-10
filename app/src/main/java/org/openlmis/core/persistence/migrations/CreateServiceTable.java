@@ -10,6 +10,7 @@ public class CreateServiceTable extends Migration {
                 + "(`name` VARCHAR , "
                 + "`code` VARCHAR , "
                 + "`program_id` BIGINT , "
+                + "`active` BOOLEAN, "
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT , "
                 + "`createdAt` VARCHAR NOT NULL , "
                 + "`updatedAt` VARCHAR NOT NULL)");

@@ -41,7 +41,7 @@ public class ServiceFormRepository {
     public void createOrUpdate(Service service) throws LMISException {
         Service existingService = queryByCode(service.getCode());
         if (existingService == null) {
-            genericDao.create(existingService);
+            genericDao.create(service);
         } else {
             service.setId(existingService.getId());
             genericDao.update(service);

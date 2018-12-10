@@ -10,5 +10,6 @@ import lombok.Data;
 
 @Data
 public class SyncDownServiceResponse {
-    List<Service> services;
+    List<Service> latestServices;
+    String latestUpdatedTime;
 }

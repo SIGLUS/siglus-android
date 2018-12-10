@@ -59,6 +59,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_STOCK_SYNC_END_TIME = "sync_stock_end_time";
     public static final String KEY_STOCK_SYNC_CURRENT_INDEX = "sync_stock_current_index";
     public static final String KEY_LAST_SYNC_PRODUCT_TIME = "last_sync_product_time";
+    public static final String KEY_LAST_SYNC_SERVICE_TIME = "last_sync_service_time";
     public static final String KEY_SHOW_PRODUCT_UPDATE_BANNER = "show_product_update_banner";
     public static final String KEY_PRODUCT_UPDATE_BANNER_TEXT = "product_update_banner_text";
     public static final String LATEST_PHYSICAL_INVENTORY_TIME = "latest_physical_inventory_time";
@@ -179,6 +180,14 @@ public class SharedPreferenceMgr {
 
     public void setIsNeedsInventory(boolean isNeedsInventory) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_NEEDS_INVENTORY, isNeedsInventory).apply();
+    }
+
+    public String getLastSyncServiceTime() {
+        return sharedPreferences.getString(KEY_LAST_SYNC_SERVICE_TIME, null);
+    }
+
+    public void setKeyLastSyncServiceTime(String lastSyncProductTime) {
+        sharedPreferences.edit().putString(KEY_LAST_SYNC_SERVICE_TIME, lastSyncProductTime).apply();
     }
 
     public String getLastSyncProductTime() {

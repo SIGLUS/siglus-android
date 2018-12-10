@@ -157,9 +157,8 @@ public class SyncDownManager {
     }
 
     private void fetchAndSaveService() throws LMISException {
-        //ToDo backend interface
-//        SyncDownServiceResponse response = lmisRestApi.fetchPTVService(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
-//        serviceFormRepository.batchCreateOrUpdateServiceList(response.getServices());
+        SyncDownServiceResponse response = lmisRestApi.fetchPTVService(sharedPreferenceMgr.getLastSyncServiceTime(),Constants.PTV_PROGRAM_CODE);
+        serviceFormRepository.batchCreateOrUpdateServiceList(response.getLatestServices());
     }
 
     private void syncDownRapidTests(Subscriber<? super SyncProgress> subscriber) throws LMISException {

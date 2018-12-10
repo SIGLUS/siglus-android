@@ -94,8 +94,8 @@ public interface LMISRestApi {
     @GET("/rest-api/report-types/mapping/{facilityId}")
     SyncDownReportTypeResponse fetchReportTypeForms(@Path("facilityId") Long facilityId) throws LMISException;
 
-    //ToDo: wait backend interface
-    SyncDownServiceResponse fetchPTVService(@Path("facilityId") Long facilityId) throws LMISException;
+    @GET("/rest-api/services")
+    SyncDownServiceResponse fetchPTVService(@Query("afterUpdatedTime") String afterUpdatedTime, @Query("programCode") String programCode) throws LMISException;
 
     @POST("/rest-api/programData")
     Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;

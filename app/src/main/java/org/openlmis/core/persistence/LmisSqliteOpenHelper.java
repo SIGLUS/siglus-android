@@ -76,6 +76,7 @@ import org.openlmis.core.persistence.migrations.CreateProgramDataItemsTable;
 import org.openlmis.core.persistence.migrations.CreateRegimeShortCodeTable;
 import org.openlmis.core.persistence.migrations.CreateReportTypeTable;
 import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
+import org.openlmis.core.persistence.migrations.CreateServiceTable;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
 import org.openlmis.core.persistence.migrations.UpdateAvgColumn;
 import org.openlmis.core.persistence.migrations.UpdateCategoryColumnForMMIAProducts;
@@ -147,6 +148,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddALToRegimen());
             add(new CreateProgramBasicDataFormTable());
             add(new CreateReportTypeTable());
+            add(new CreateServiceTable());
         }
     };
     private static int instanceCount = 0;
