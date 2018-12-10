@@ -7,13 +7,11 @@
 
     <TextView
         android:id="@+id/tv_name"
-        style="@style/PTVReportList.itemTitle"
-        android:layout_width="@dimen/ptv_view_item_width" />
+        style="@style/PTVReportList.itemTitle"/>
 
     <EditText
         android:id="@+id/et_initial_stock"
-        style="@style/PTVReportList.item"
-        android:layout_width="@dimen/ptv_view_item_width" />
+        style="@style/PTVReportList.item" />
     <LinearLayout
         android:id="@+id/ll_services"
         android:layout_width="match_parent"
@@ -21,19 +19,15 @@
         android:orientation="vertical" />
     <TextView
         android:id="@+id/tv_total"
-        style="@style/PTVReportList.item"
-        android:layout_width="@dimen/ptv_view_item_width" />
+        style="@style/PTVReportList.item" />
     <TextView
         android:id="@+id/tv_entry"
-        style="@style/PTVReportList.item"
-        android:layout_width="@dimen/ptv_view_item_width" />
+        style="@style/PTVReportList.item" />
     <EditText
         android:id="@+id/et_adjustment"
-        style="@style/PTVReportList.item"
-        android:layout_width="@dimen/ptv_view_item_width" />
+        style="@style/PTVReportList.item" />
     <EditText
         android:id="@+id/et_finalStock"
-        style="@style/PTVReportList.item"
-        android:layout_width="@dimen/ptv_view_item_width" />
+        style="@style/PTVReportList.item" />
 
 </LinearLayout>

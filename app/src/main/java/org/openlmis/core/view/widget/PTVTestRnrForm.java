@@ -2,6 +2,7 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -159,7 +160,6 @@ public class PTVTestRnrForm extends LinearLayout {
         tvReceived.setText(R.string.entries);
         etAdjustment.setText(R.string.loss_and_adjustment);
         etFinalStock.setText(R.string.final_stock);
-
         etStock.setEnabled(false);
         etAdjustment.setEnabled(false);
         etFinalStock.setEnabled(false);
@@ -167,6 +167,30 @@ public class PTVTestRnrForm extends LinearLayout {
             int serviceIndex = etService.getId();
             Service serviceCurrent = viewModel.getServices().get(serviceIndex);
             etService.setText(serviceCurrent.getName());
+        }
+        setHeaderViewTextStyle(etStock, services, tvTotal, tvReceived, etAdjustment, etFinalStock);
+    }
+
+    private void setHeaderViewTextStyle(EditText etStock,
+                                        List<EditText> services,
+                                        TextView tvTotal,
+                                        TextView tvReceived,
+                                        EditText etAdjustment,
+                                        EditText etFinalStock) {
+        float fontSize = getResources().getDimension(R.dimen.font_size_small);
+        etStock.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
+        etStock.setTypeface(Typeface.DEFAULT_BOLD);
+        tvTotal.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
+        tvTotal.setTypeface(Typeface.DEFAULT_BOLD);
+        tvReceived.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
+        tvReceived.setTypeface(Typeface.DEFAULT_BOLD);
+        etAdjustment.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
+        etAdjustment.setTypeface(Typeface.DEFAULT_BOLD);
+        etFinalStock.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
+        etFinalStock.setTypeface(Typeface.DEFAULT_BOLD);
+        for (EditText etService : services) {
+            etService.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
+            etService.setTypeface(Typeface.DEFAULT_BOLD);
         }
     }
 
