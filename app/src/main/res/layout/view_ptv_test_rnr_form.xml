@@ -3,9 +3,8 @@
 
     <LinearLayout
         android:id="@+id/ptv_from_list"
-        android:layout_width="821dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:orientation="vertical" />
+        android:orientation="horizontal" />
 
 </merge>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,11 @@ public class PTVTestRnrForm extends LinearLayout {
 
     public PTVTestRnrForm(Context context) {
         super(context);
+        init(context);
+    }
+
+    public PTVTestRnrForm(Context context, AttributeSet attrs) {
+        super(context, attrs);
         init(context);
     }
 
@@ -65,7 +71,6 @@ public class PTVTestRnrForm extends LinearLayout {
         for (RnrFormItem basicItem : itemFormList) {
             addView(basicItem, false);
         }
-
     }
 
     private ViewGroup inflateView() {
@@ -121,6 +126,7 @@ public class PTVTestRnrForm extends LinearLayout {
                 if (serviceItem != null) {
                     etService.setText(getValue(serviceItem.getAmount()));
                 }
+                editTexts.add(etService);
                 configEditText(item, etService, tvTotal);
             }
             tvTotal.setText(getValue(item.getCalculatedOrderQuantity()));
@@ -165,7 +171,7 @@ public class PTVTestRnrForm extends LinearLayout {
     }
 
     private ServiceItem getServiceItem(RnrFormItem item, String code) {
-        for (ServiceItem serviceItem : item.getServiceItemList()) {
+        for (ServiceItem serviceItem : item.getServiceItemListWrapper()) {
             if (serviceItem.getService().getCode().equals(code)) {
                 return serviceItem;
             }
@@ -189,12 +195,11 @@ public class PTVTestRnrForm extends LinearLayout {
         List<EditText> editTexts = editTextsLists.get(0);
         for (int i = 0; i < editTexts.size(); i++) {
             for (List<EditText> editTextList : editTextsLists) {
-                EditText editText = editTexts.get(i);
+                EditText editText = editTextList.get(i);
                 if (TextUtils.isEmpty(editText.getText().toString())) {
                     editText.setError(context.getString(R.string.hint_error_input));
                     return false;
                 }
-
             }
         }
         return true;
@@ -218,7 +223,7 @@ public class PTVTestRnrForm extends LinearLayout {
                     item.setInitialAmount(getEditValue(etText));
                     break;
                 case R.id.et_adjustment:
-                    item.setInitialAmount(getEditValue(etText));
+                    item.setAdjustment(getEditValue(etText));
                     break;
                 case R.id.et_finalStock:
                     item.setInventory(getEditValue(etText));
@@ -235,7 +240,10 @@ public class PTVTestRnrForm extends LinearLayout {
             if (serviceItem != null) {
                 serviceItem.setAmount(getEditValue(etText));
             }
-            this.tvTotal.setText(getValue(getTotal()));
+
+            Long total = getTotal();
+            this.tvTotal.setText(getValue(total));
+            item.setCalculatedOrderQuantity(total);
         }
 
         private Long getTotal() {
@@ -261,4 +269,3 @@ public class PTVTestRnrForm extends LinearLayout {
         }
     }
 }
-

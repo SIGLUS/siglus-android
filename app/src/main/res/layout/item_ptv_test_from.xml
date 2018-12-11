@@ -8,12 +8,12 @@
     <TextView
         android:id="@+id/tv_name"
         style="@style/PTVReportList.itemTitle"
-        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+        android:layout_width="@dimen/ptv_view_item_width" />
 
     <EditText
         android:id="@+id/et_initial_stock"
         style="@style/PTVReportList.item"
-        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+        android:layout_width="@dimen/ptv_view_item_width" />
     <LinearLayout
         android:id="@+id/ll_services"
         android:layout_width="match_parent"
@@ -22,18 +22,18 @@
     <TextView
         android:id="@+id/tv_total"
         style="@style/PTVReportList.item"
-        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+        android:layout_width="@dimen/ptv_view_item_width" />
     <TextView
         android:id="@+id/tv_entry"
         style="@style/PTVReportList.item"
-        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+        android:layout_width="@dimen/ptv_view_item_width" />
     <EditText
         android:id="@+id/et_adjustment"
         style="@style/PTVReportList.item"
-        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+        android:layout_width="@dimen/ptv_view_item_width" />
     <EditText
         android:id="@+id/et_finalStock"
         style="@style/PTVReportList.item"
-        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+        android:layout_width="@dimen/ptv_view_item_width" />
 
 </LinearLayout>

@@ -26,7 +26,7 @@ public class PTVReportViewModel implements Serializable {
     }
 
     public Boolean isEmpty() {
-        return this.form.getBaseInfoItemListWrapper().size() == 0;
+        return this.form.getRnrFormItemListWrapper().size() == 0;
     }
 }
 

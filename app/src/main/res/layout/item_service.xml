@@ -6,6 +6,6 @@
     <EditText
         android:id="@+id/et_service"
         style="@style/PTVReportList.item"
-        android:layout_width="@dimen/rapid_view_basic_form_item_width"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/ptv_view_item_width"
+        android:layout_height="@dimen/ptv_view_item_height" />
 </LinearLayout>

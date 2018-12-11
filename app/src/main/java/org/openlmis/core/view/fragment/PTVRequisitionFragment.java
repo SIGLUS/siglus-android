@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.presenter.ALRequisitionPresenter;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.PTVRequisitionPresenter;
 import org.openlmis.core.utils.Constants;
@@ -43,7 +43,10 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.widget.PTVTestRnrForm;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -51,7 +54,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class PTVRequisitionFragment extends BaseReportFragment implements ALRequisitionPresenter.ALRequisitionView {
+public class PTVRequisitionFragment extends BaseReportFragment implements PTVRequisitionPresenter.PTVRequisitionView {
 
     private long formId;
     protected View containerView;
@@ -66,6 +69,12 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
 
     @InjectView(R.id.ptv_monthTitle)
     TextView monthTitle;
+
+    @InjectView(R.id.ptv_table_header)
+    LinearLayout llTableHeader;
+
+    @InjectView(R.id.ptv_title)
+    LinearLayout llTitle;
 
     @InjectView(R.id.ll_medicines)
     LinearLayout medicines;
@@ -107,7 +116,6 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
         }
 
         initUI();
-        setUpRowItems();
         if (isSavedInstanceState && presenter.getRnRForm() != null) {
             presenter.updateFormUI();
         } else {
@@ -133,7 +141,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
         PTVRequisitionFragment.EditTextWatcher parentTextWatcher = new PTVRequisitionFragment.EditTextWatcher(totalParent);
         totalParent.addTextChangedListener(parentTextWatcher);
         PTVRequisitionFragment.EditTextWatcher childTextWatcher = new PTVRequisitionFragment.EditTextWatcher(totalChild);
-        totalParent.addTextChangedListener(childTextWatcher);
+        totalChild.addTextChangedListener(childTextWatcher);
     }
 
     private void bindListeners() {
@@ -180,7 +188,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
-                if (ptvTable.isCompleted()) {
+                if (ptvTable.isCompleted() && completeRegimen()) {
                     scrollView.requestFocus();
                     if (!presenter.validateFormPeriod()) {
                         ToastUtil.show(R.string.msg_requisition_not_unique);
@@ -245,6 +253,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
 
         if (!presenter.ptvReportViewModel.isEmpty()) {
             ptvTable.initView(presenter.ptvReportViewModel);
+            refreshRegimenValue(rnRForm);
             refreshUI(rnRForm);
         } else {
             scrollView.setVisibility(View.GONE);
@@ -252,8 +261,38 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
     }
 
     private void refreshUI(RnRForm rnRForm) {
-        medicines.getLayoutParams().width = (int) getResources().getDimension(R.dimen.rapid_view_border_width) *
+        int medicineWidth = (int) (getResources().getDimension(R.dimen.ptv_view_item_width) +1) *
                 rnRForm.getRnrFormItemListWrapper().size();
+        int viewWidth = (int) (getResources().getDimension(R.dimen.ptv_view_item_width) +
+                                getResources().getDimension(R.dimen.ptv_view_right_header_width) +
+                                medicineWidth);
+        medicines.getLayoutParams().width = (int) getResources().getDimension(R.dimen.ptv_view_item_width) *
+                rnRForm.getRnrFormItemListWrapper().size();
+        llTitle.getLayoutParams().width = viewWidth;
+        llTableHeader.getLayoutParams().width = viewWidth;
+    }
+
+    private void refreshRegimenValue(RnRForm rnRForm) {
+        RegimenItem regimenAdult= getRegimenItem(Constants.PTV_REGIME_ADULT);
+        totalParent.setText(getValue(regimenAdult.getAmount()));
+        RegimenItem regimenChild= getRegimenItem(Constants.PTV_REGIME_CHILD);
+        totalChild.setText(getValue(regimenChild.getAmount()));
+    }
+
+    private boolean completeRegimen() {
+        List<EditText> editTexts = Arrays.asList(totalParent, totalChild);
+
+        for (EditText editText : editTexts) {
+            if (TextUtils.isEmpty(editText.getText().toString())) {
+                editText.setError(getString(R.string.hint_error_input));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String getValue(Long vaule) {
+        return vaule == null ? "" : String.valueOf(vaule.longValue());
     }
 
     @Override
@@ -262,8 +301,13 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
         getActivity().finish();
     }
 
-    private void setUpRowItems() {
-
+    private RegimenItem getRegimenItem(String code) {
+        for (RegimenItem regimenItem: presenter.ptvReportViewModel.getForm().getRegimenItemListWrapper()) {
+            if (regimenItem.getRegimen().getCode().equals(code)) {
+                return regimenItem;
+            }
+        }
+        return null;
     }
 
     class EditTextWatcher extends SimpleTextWatcher {
@@ -283,21 +327,12 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
                     }
                     break;
                 case R.id.et_total_child:
-                    RegimenItem regimenChild = getRegimenItem(Constants.PTV_REGIME_ADULT);
+                    RegimenItem regimenChild = getRegimenItem(Constants.PTV_REGIME_CHILD);
                     if (regimenChild != null ) {
                         regimenChild.setAmount(getEditValue(etText));
                     }
                     break;
             }
-        }
-
-        private RegimenItem getRegimenItem(String code) {
-            for (RegimenItem regimenItem: presenter.ptvReportViewModel.getForm().getRegimenItemList()) {
-                if (regimenItem.getRegimen().getCode().equals(code)) {
-                    return regimenItem;
-                }
-            }
-            return null;
         }
 
         private Long getEditValue(Editable etText) {
