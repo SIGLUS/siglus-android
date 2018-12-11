@@ -126,13 +126,30 @@ public class PTVRepository extends RnrFormRepository {
                 rnrFormItem.setReceived(0);
                 rnrFormItem.setIssued((long) 0);
             }
-            rnrFormItem.setInitialAmount(lastRnrInventory(product));
+            Long lastInventory = getLastRnrInventory(product);
+            rnrFormItem.setIsCustomAmount(lastInventory == null);
+            rnrFormItem.setInitialAmount(lastInventory);
             rnrFormItem.setRequestAmount((long) 0);
             rnrFormItem.setApprovedAmount((long) 0);
             rnrFormItem.setServiceItemListWrapper(getServiceItem(rnrFormItem, services));
             result.add(rnrFormItem);
         }
         return result;
+    }
+
+
+    private Long getLastRnrInventory(Product product) throws LMISException {
+        List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.No, programCode);
+        if (rnRForms.isEmpty() || rnRForms.size() == 1) {
+            return null;
+        }
+        List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
+        for (RnrFormItem item : rnrFormItemListWrapper) {
+            if (item.getProduct().getId() == product.getId()) {
+                return item.getInventory();
+            }
+        }
+        return null;
     }
 
     private List<ServiceItem> getServiceItem(RnrFormItem rnrFormItem, List<Service> services) {
