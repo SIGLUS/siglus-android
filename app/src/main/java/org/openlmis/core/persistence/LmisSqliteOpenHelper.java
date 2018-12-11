@@ -30,6 +30,7 @@ import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCategoryColumnToProductPrograms;
 import org.openlmis.core.persistence.migrations.AddCmmTable;
 import org.openlmis.core.persistence.migrations.AddCreatedTimeToStockMovement;
+import org.openlmis.core.persistence.migrations.AddCustomAmountToRnrFormTable;
 import org.openlmis.core.persistence.migrations.AddDoneColumnToDraftInventoryTable;
 import org.openlmis.core.persistence.migrations.AddEmergencyColumnToRnr;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
@@ -149,6 +150,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateProgramBasicDataFormTable());
             add(new CreateReportTypeTable());
             add(new CreateServiceTable());
+            add(new AddCustomAmountToRnrFormTable());
         }
     };
     private static int instanceCount = 0;
