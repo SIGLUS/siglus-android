@@ -49,7 +49,7 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
     public JsonElement serialize(RnrFormItem rnrFormItem, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = gson.toJsonTree(rnrFormItem).getAsJsonObject();
         jsonObject.addProperty("reasonForRequestedQuantity", "reason");
-        jsonObject.add("services", jsonParser.parse(gson.toJson(rnrFormItem.getServiceItemListWrapper())));
+        jsonObject.add("serviceItems", jsonParser.parse(gson.toJson(rnrFormItem.getServiceItemListWrapper())));
         return jsonObject;
     }
 

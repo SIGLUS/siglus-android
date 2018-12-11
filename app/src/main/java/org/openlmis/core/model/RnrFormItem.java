@@ -102,7 +102,7 @@ public class RnrFormItem extends BaseModel{
     private ForeignCollection<ServiceItem> serviceItemList;
 
     @Expose
-    @SerializedName("services")
+    @SerializedName("serviceItems")
     private List<ServiceItem> serviceItemListWrapper;
 
     public List<ServiceItem> getServiceItemListWrapper() {
