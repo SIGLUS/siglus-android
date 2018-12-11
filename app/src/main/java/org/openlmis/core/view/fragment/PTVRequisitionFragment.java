@@ -20,28 +20,26 @@ package org.openlmis.core.view.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.ALRequisitionPresenter;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.PTVRequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.ALReportAdapter;
-import org.openlmis.core.view.holder.ALReportViewHolder;
-import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.widget.PTVTestRnrForm;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
@@ -66,8 +64,17 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
     @InjectView(R.id.ptv_table)
     PTVTestRnrForm ptvTable;
 
-    @InjectView(R.id.al_monthTitle)
+    @InjectView(R.id.ptv_monthTitle)
     TextView monthTitle;
+
+    @InjectView(R.id.ll_medicines)
+    LinearLayout medicines;
+
+    @InjectView(R.id.et_total_parent)
+    EditText totalParent;
+
+    @InjectView(R.id.et_total_child)
+    EditText totalChild;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,19 +120,21 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
         if (isHistoryForm()) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             actionPanelView.setVisibility(View.GONE);
-            ptvTable.initView(presenter.ptvReportViewModel);
         } else {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             actionPanelView.setVisibility(View.VISIBLE);
         }
-        if (!presenter.ptvReportViewModel.isEmpty()) {
-            ptvTable.initView(presenter.ptvReportViewModel);
-        } else {
-            scrollView.setVisibility(View.GONE);
-        }
+
         bindListeners();
+        addRegimenListeners();
     }
 
+    private void addRegimenListeners() {
+        PTVRequisitionFragment.EditTextWatcher parentTextWatcher = new PTVRequisitionFragment.EditTextWatcher(totalParent);
+        totalParent.addTextChangedListener(parentTextWatcher);
+        PTVRequisitionFragment.EditTextWatcher childTextWatcher = new PTVRequisitionFragment.EditTextWatcher(totalChild);
+        totalParent.addTextChangedListener(childTextWatcher);
+    }
 
     private void bindListeners() {
         actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
@@ -171,13 +180,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
-                if (presenter.isComplete()) {
-                    try {
-                        presenter.setViewModels();
-                    } catch (LMISException e) {
-                        e.printStackTrace();
-                        return;
-                    }
+                if (ptvTable.isCompleted()) {
                     scrollView.requestFocus();
                     if (!presenter.validateFormPeriod()) {
                         ToastUtil.show(R.string.msg_requisition_not_unique);
@@ -185,7 +188,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
                         showSignDialog();
                     }
                 } else {
-                    // ToDo tip
+                    ToastUtil.showForLongTime(R.string.msg_uncompleted_ptv_hint);
                 }
             }
         };
@@ -203,14 +206,14 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
 
     @Override
     public void completeSuccess() {
-        ToastUtil.showForLongTime(R.string.msg_al_submit_tip);
+        ToastUtil.showForLongTime(R.string.msg_ptv_submit_tip);
         finish();
 
     }
     @Override
     protected String getSignatureDialogTitle() {
-        return presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_al_submit_signature) :
-                getResources().getString(R.string.msg_approve_signature_al);
+        return presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_ptv_submit_signature) :
+                getResources().getString(R.string.msg_approve_signature_ptv);
     }
 
     @Override
@@ -239,7 +242,18 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
         getActivity().setTitle(getString(R.string.label_ptv_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()), DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
         monthTitle.setText(DateUtil.formatDateWithLongMonthAndYear(rnRForm.getPeriodEnd()));
         scrollView.setVisibility(View.VISIBLE);
-        //ToDo refresh Items
+
+        if (!presenter.ptvReportViewModel.isEmpty()) {
+            ptvTable.initView(presenter.ptvReportViewModel);
+            refreshUI(rnRForm);
+        } else {
+            scrollView.setVisibility(View.GONE);
+        }
+    }
+
+    private void refreshUI(RnRForm rnRForm) {
+        medicines.getLayoutParams().width = (int) getResources().getDimension(R.dimen.rapid_view_border_width) *
+                rnRForm.getRnrFormItemListWrapper().size();
     }
 
     @Override
@@ -250,6 +264,51 @@ public class PTVRequisitionFragment extends BaseReportFragment implements ALRequ
 
     private void setUpRowItems() {
 
+    }
+
+    class EditTextWatcher extends SimpleTextWatcher {
+        private final EditText editText;
+
+        public EditTextWatcher(EditText editText) {
+            this.editText = editText;
+        }
+
+        @Override
+        public void afterTextChanged(Editable etText) {
+            switch (editText.getId()) {
+                case R.id.et_total_parent:
+                    RegimenItem regimenAdult= getRegimenItem(Constants.PTV_REGIME_ADULT);
+                    if (regimenAdult != null ) {
+                        regimenAdult.setAmount(getEditValue(etText));
+                    }
+                    break;
+                case R.id.et_total_child:
+                    RegimenItem regimenChild = getRegimenItem(Constants.PTV_REGIME_ADULT);
+                    if (regimenChild != null ) {
+                        regimenChild.setAmount(getEditValue(etText));
+                    }
+                    break;
+            }
+        }
+
+        private RegimenItem getRegimenItem(String code) {
+            for (RegimenItem regimenItem: presenter.ptvReportViewModel.getForm().getRegimenItemList()) {
+                if (regimenItem.getRegimen().getCode().equals(code)) {
+                    return regimenItem;
+                }
+            }
+            return null;
+        }
+
+        private Long getEditValue(Editable etText) {
+            Long editText;
+            try {
+                editText = Long.valueOf(etText.toString());
+            } catch (NumberFormatException e) {
+                editText = null;
+            }
+            return editText;
+        }
     }
 
 }

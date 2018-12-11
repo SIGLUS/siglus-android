@@ -27,7 +27,7 @@
     <string name="init_product_error">Initial Data Error,Please Retry</string>
     <string name="msg_sync_stock_movements_data">Synchronizing stock movement data</string>
     <string name="msg_fetching_products">Downloading product list…</string>
-    <string name="msg_service_lists">Baixando lista de serviços ...</string>
+    <string name="msg_service_lists">Downloading list of services...</string>
     <string name="msg_fetching_Report_Type">Downloading Report type…</string>
     <string name="msg_sync_requisition_data">Synchronizing requisition data</string>
     <string name="msg_sync_requisition_failed">Download of requisition data failed, please login again.</string>
@@ -186,6 +186,8 @@
 
     <!-- PTV -->
     <string name="label_ptv_title">PTV - %1$s to %2$s</string>
+    <string name="msg_uncompleted_ptv_hint"> Please Complete PTV information. </string>
+    <string name="msg_ptv_submit_tip">Your AL form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="registration">Registration</string>
     <string name="medicines">Medicines</string>
     <string name="dispensation">Dispensation</string>

@@ -68,6 +68,7 @@
     <dimen name="ptv_view_left_header_width">100dp</dimen>
     <dimen name="ptv_view_right_header_width">175dp</dimen>
     <dimen name="ptv_view_item_width">130dp</dimen>
+    <dimen name="ptv_view_item_left_width">100dp</dimen>
     <dimen name="ptv_view_item_height">44dp</dimen>
 
 </resources>

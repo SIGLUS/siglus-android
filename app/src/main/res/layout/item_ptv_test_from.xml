@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_right_black"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/PTVReportList.itemTitle"
+        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+
+    <EditText
+        android:id="@+id/et_initial_stock"
+        style="@style/PTVReportList.item"
+        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+    <LinearLayout
+        android:id="@+id/ll_services"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+    <TextView
+        android:id="@+id/tv_total"
+        style="@style/PTVReportList.item"
+        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+    <TextView
+        android:id="@+id/tv_entry"
+        style="@style/PTVReportList.item"
+        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+    <EditText
+        android:id="@+id/et_adjustment"
+        style="@style/PTVReportList.item"
+        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+    <EditText
+        android:id="@+id/et_finalStock"
+        style="@style/PTVReportList.item"
+        android:layout_width="@dimen/rapid_view_basic_form_item_width" />
+
+</LinearLayout>

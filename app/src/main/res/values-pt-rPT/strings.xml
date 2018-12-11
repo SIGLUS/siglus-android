@@ -175,6 +175,8 @@
 
     <!-- PTV -->
     <string name="label_ptv_title">PTV - %1$s a %2$s</string>
+    <string name="msg_uncompleted_ptv_hint"> Por favor, complete as informações do PTV.</string>
+    <string name="msg_ptv_submit_tip">A sua PTV foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver conecção a internet.</string>
     <string name="registration">Cadastro</string>
     <string name="medicines">Medicamentos</string>
     <string name="dispensation">Dispensação</string>

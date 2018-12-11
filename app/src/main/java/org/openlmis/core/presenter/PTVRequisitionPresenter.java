@@ -77,7 +77,7 @@ public class PTVRequisitionPresenter extends BaseRequisitionPresenter {
         if (rnRForm != null) {
             ptvReportViewModel = new PTVReportViewModel(rnRForm);
             view.refreshRequisitionForm(rnRForm);
-            view.setProcessButtonName(rnRForm.isDraft()?
+            view.setProcessButtonName(rnRForm.isDraft() ?
                     context.getResources().getString(R.string.btn_submit) :
                     context.getResources().getString(R.string.btn_complete));
         }
@@ -105,7 +105,6 @@ public class PTVRequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    setViewModels();
                     rnrFormRepository.createOrUpdateWithItems(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -114,14 +113,6 @@ public class PTVRequisitionPresenter extends BaseRequisitionPresenter {
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    public boolean isComplete() {
-        return false;
-    }
-
-    public void setViewModels() throws LMISException {
-
     }
 
     @Override
