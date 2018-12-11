@@ -299,7 +299,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
     private void updateObservation(RapidTestReportViewModel viewModel) {
         observationContent.setFocusableInTouchMode(viewModel.isEditable());
-        observationContent.setText(viewModel.getObservataion());
+        observationContent.setText(viewModel.getObservation());
     }
 
     private void populateFormData(RapidTestReportViewModel viewModel) {
@@ -318,7 +318,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                presenter.getViewModel().setObservataion(editable.toString());
+                presenter.getViewModel().setObservation(editable.toString());
             }
         });
     }

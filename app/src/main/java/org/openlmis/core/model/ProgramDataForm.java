@@ -54,7 +54,7 @@ public class ProgramDataForm extends BaseModel {
     @Getter
     @Expose
     @DatabaseField(defaultValue = "")
-    private String observataion;
+    private String observation;
 
     @ForeignCollectionField
     private ForeignCollection<ProgramDataFormItem> programDataFormItemList;

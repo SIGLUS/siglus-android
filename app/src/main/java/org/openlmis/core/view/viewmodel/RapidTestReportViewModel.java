@@ -34,7 +34,7 @@ import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidT
 @Data
 public class RapidTestReportViewModel implements Serializable {
     Period period;
-    String observataion;
+    String observation;
     public Status status;
     private Date syncedTime;
 
@@ -57,7 +57,7 @@ public class RapidTestReportViewModel implements Serializable {
     public RapidTestReportViewModel(Period period) {
         this.period = period;
         status = Status.MISSING;
-        observataion = "";
+        observation = "";
         setupCategories();
         setItemViewModelMap();
     }
@@ -65,7 +65,7 @@ public class RapidTestReportViewModel implements Serializable {
     public RapidTestReportViewModel(Period period, Status statusInput) {
         this.period = period;
         status = statusInput;
-        observataion = "";
+        observation = "";
         setupCategories();
         setItemViewModelMap();
     }
@@ -109,7 +109,7 @@ public class RapidTestReportViewModel implements Serializable {
         DateTime beginDateTime = new DateTime(programDataForm.getPeriodBegin());
         DateTime endDateTime = new DateTime(programDataForm.getPeriodEnd());
         period = new Period(beginDateTime, endDateTime);
-        observataion = programDataForm.getObservataion();
+        observation = programDataForm.getObservation();
 
         if (programDataForm.getFormBasicItemListWrapper() != null){
             basicItems.addAll(programDataForm.getFormBasicItemListWrapper());
@@ -185,7 +185,7 @@ public class RapidTestReportViewModel implements Serializable {
         rapidTestForm.setProgram(program);
         rapidTestForm.setPeriodBegin(period.getBegin().toDate());
         rapidTestForm.setPeriodEnd(period.getEnd().toDate());
-        rapidTestForm.setObservataion(observataion);
+        rapidTestForm.setObservation(observation);
         rapidTestForm.getProgramDataFormItemListWrapper().clear();
         rapidTestForm.setFormBasicItemListWrapper(basicItems);
         convertFormItemViewModelToDataModel();
