@@ -30,7 +30,7 @@ public class ServiceItemRepository {
             @Override
             public Void operate(Dao<ServiceItem, String> dao) throws SQLException, LMISException {
                 for (ServiceItem serviceItem : serviceItemList) {
-                    dao.create(serviceItem);
+                    dao.createOrUpdate(serviceItem);
                 }
                 return null;
             }
