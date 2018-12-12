@@ -219,10 +219,12 @@ public class PTVTestRnrForm extends LinearLayout {
         List<EditText> editTexts = editTextsLists.get(0);
         for (int i = 0; i < editTexts.size(); i++) {
             for (List<EditText> editTextList : editTextsLists) {
-                EditText editText = editTextList.get(i);
-                if (TextUtils.isEmpty(editText.getText().toString())) {
-                    editText.setError(context.getString(R.string.hint_error_input));
-                    return false;
+                if (i < editTextList.size() -1) {
+                    EditText editText = editTextList.get(i);
+                    if (TextUtils.isEmpty(editText.getText().toString())) {
+                        editText.setError(context.getString(R.string.hint_error_input));
+                        return false;
+                    }
                 }
             }
         }

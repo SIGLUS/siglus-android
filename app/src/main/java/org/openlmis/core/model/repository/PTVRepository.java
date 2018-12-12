@@ -71,8 +71,7 @@ public class PTVRepository extends RnrFormRepository {
     @Override
     public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) throws LMISException {
         List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
-        fillAllPTVProduct(form, rnrFormItems);
-        return rnrFormItems;
+        return fillAllPTVProduct(form, rnrFormItems);
     }
 
     @Override
