@@ -57,8 +57,10 @@ public class ServiceItemAdapter implements JsonDeserializer<ServiceItem>, JsonSe
     @Override
     public JsonElement serialize(ServiceItem src, Type typeOfSrc, JsonSerializationContext context) {
         JsonParser jsonParser = new JsonParser();
-        JsonObject result = jsonParser.parse(gson.toJson(src.getService())).getAsJsonObject();
-        result.addProperty("patientsOnTreatment", src.getAmount());
+        JsonObject result = jsonParser.parse(gson.toJson(src)).getAsJsonObject();
+        Service service = src.getService();
+        result.addProperty("name", service.getName());
+        result.addProperty("code", service.getCode());
         return result;
     }
 }
