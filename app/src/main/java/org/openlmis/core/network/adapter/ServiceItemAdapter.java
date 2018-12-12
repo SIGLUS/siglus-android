@@ -27,7 +27,7 @@ import roboguice.RoboGuice;
 
 import static org.openlmis.core.model.Regimen.RegimeType;
 
-public class ServiceItemAdapter implements JsonDeserializer<ServiceItem> {
+public class ServiceItemAdapter implements JsonDeserializer<ServiceItem>, JsonSerializer<ServiceItem> {
 
     private final Gson gson;
 
@@ -52,5 +52,13 @@ public class ServiceItemAdapter implements JsonDeserializer<ServiceItem> {
             throw new JsonParseException("can not find service by code");
         }
         return null;
+    }
+
+    @Override
+    public JsonElement serialize(ServiceItem src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonParser jsonParser = new JsonParser();
+        JsonObject result = jsonParser.parse(gson.toJson(src.getService())).getAsJsonObject();
+        result.addProperty("patientsOnTreatment", src.getAmount());
+        return result;
     }
 }
