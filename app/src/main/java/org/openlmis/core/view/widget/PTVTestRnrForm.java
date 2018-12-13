@@ -130,7 +130,7 @@ public class PTVTestRnrForm extends LinearLayout {
                 editTexts.add(etService);
                 configEditText(item, etService, tvTotal);
             }
-            tvTotal.setText(getValue(item.getCalculatedOrderQuantity()));
+            tvTotal.setText(getValue(item.getTotalServiceQuantity()));
             tvReceived.setText(getValue(item.getReceived()));
             etAdjustment.setText(getValue(item.getAdjustment()));
             etFinalStock.setText(getValue(item.getInventory()));
@@ -269,7 +269,7 @@ public class PTVTestRnrForm extends LinearLayout {
 
             Long total = getTotal();
             this.tvTotal.setText(getValue(total));
-            item.setCalculatedOrderQuantity(total);
+            item.setTotalServiceQuantity(total);
         }
 
         private Long getTotal() {

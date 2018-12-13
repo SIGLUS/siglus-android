@@ -89,6 +89,11 @@ public class RnrFormItem extends BaseModel{
     @DatabaseField
     private Long calculatedOrderQuantity;
 
+    @Expose
+    @SerializedName("totalServiceQuantity")
+    @DatabaseField
+    private Long totalServiceQuantity;
+
     @DatabaseField(defaultValue = "false")
     private Boolean isCustomAmount;
 
