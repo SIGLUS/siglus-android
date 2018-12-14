@@ -7,7 +7,9 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -16,6 +18,9 @@ import org.openlmis.core.utils.DateUtil;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class RequisitionPeriodService {
 
@@ -28,13 +33,22 @@ public class RequisitionPeriodService {
     @Inject
     private StockMovementRepository stockMovementRepository;
 
-    public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
-        List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode);
+    @Inject
+    private ReportTypeFormRepository reportTypeFormRepository;
 
+    public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
+        return  generateNextPeriod(programCode, physicalInventoryDate, reportTypeFormRepository.getReportType(programCode));
+    }
+
+    public Period generateNextPeriod(String programCode, Date physicalInventoryDate, ReportTypeForm typeForm) throws LMISException {
+        List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode, typeForm);
+        return generateNextPeriod(rnRForms, programCode, physicalInventoryDate);
+    }
+
+    public Period generateNextPeriod(List<RnRForm> rnRForms, String programCode, Date physicalInventoryDate) throws LMISException {
         if (rnRForms.isEmpty()) {
             return generatePeriodBasedOnDefaultDates(physicalInventoryDate, programCode);
         }
-
         RnRForm lastRnR = rnRForms.get(rnRForms.size() - 1);
         return generatePeriodBasedOnPreviousRnr(lastRnR, physicalInventoryDate);
     }
@@ -73,6 +87,7 @@ public class RequisitionPeriodService {
 
     private DateTime calculatePeriodBeginDate(String programCode) throws LMISException {
         DateTime initializeDateTime = new DateTime(stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode));
+
         int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 
         Calendar currentBeginDate = Calendar.getInstance();
@@ -88,7 +103,24 @@ public class RequisitionPeriodService {
         if (initializeDayOfMonth < Period.INVENTORY_BEGIN_DAY) {
             periodBeginDate = periodBeginDate.minusMonths(1);
         }
+
+        DateTime reportStartTime = reportTypePeriod(programCode);
+        if (reportStartTime.isAfter(initializeDateTime)){
+            periodBeginDate = reportStartTime;
+        }
         return periodBeginDate;
+    }
+
+    private DateTime reportTypePeriod(String programCode) throws LMISException {
+        DateTime startTime = new DateTime(reportTypeFormRepository.getReportType(programCode).getStartTime());
+        Calendar currentBeginDate = Calendar.getInstance();
+        int initializeDayOfMonth = startTime.getDayOfMonth();
+       if (initializeDayOfMonth < Period.BEGIN_DAY ){
+            currentBeginDate.set(startTime.getYear(), startTime.getMonthOfYear() - 1, Period.BEGIN_DAY);
+        } else {
+            currentBeginDate.set(startTime.getYear(), startTime.getMonthOfYear(), Period.BEGIN_DAY);
+        }
+        return DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
     }
 
     private DateTime defaultEndDateTo20th(DateTime periodBeginDate) {
@@ -98,10 +130,15 @@ public class RequisitionPeriodService {
     }
 
     public boolean hasMissedPeriod(String programCode) throws LMISException {
-        List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode);
+        ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
+        return hasMissedPeriod(programCode, reportTypeForm);
+    }
+
+    public boolean hasMissedPeriod(String programCode,  ReportTypeForm reportTypeForm) throws LMISException {
+        List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode, reportTypeForm);
 
         if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
-            DateTime nextPeriodInScheduleEnd = generateNextPeriod(programCode, null).getEnd();
+            DateTime nextPeriodInScheduleEnd = generateNextPeriod(rnRForms, programCode, null).getEnd();
 
             DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
                     .withDate(nextPeriodInScheduleEnd.getYear(),
@@ -117,6 +154,13 @@ public class RequisitionPeriodService {
     public int getMissedPeriodOffsetMonth(String programCode) throws LMISException {
         DateTime nextPeriodInScheduleBegin = generateNextPeriod(programCode, null).getBegin();
 
+        DateTime currentMonthInventoryBeginDate;
+        currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();
+        return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(), currentMonthInventoryBeginDate.toDate());
+    }
+
+    public int getMissedPeriodOffsetMonth(String programCode, ReportTypeForm typeForm) throws LMISException {
+        DateTime nextPeriodInScheduleBegin = generateNextPeriod(programCode, null, typeForm).getBegin();
         DateTime currentMonthInventoryBeginDate;
         currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();
         return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(), currentMonthInventoryBeginDate.toDate());

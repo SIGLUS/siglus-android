@@ -11,7 +11,6 @@ import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ReportTypeForm;
-import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
@@ -28,10 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import lombok.Getter;
 import rx.Observable;
@@ -41,7 +37,6 @@ import rx.schedulers.Schedulers;
 import static org.openlmis.core.model.Period.BEGIN_DAY;
 import static org.openlmis.core.model.Period.END_DAY;
 import static org.openlmis.core.model.ProgramDataForm.STATUS.DRAFT;
-import static org.openlmis.core.utils.Constants.RAPID_REPORT;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
 import static org.openlmis.core.view.viewmodel.RapidTestReportViewModel.Status;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
@@ -95,7 +90,7 @@ public class RapidTestReportsPresenter extends Presenter {
     protected void generateViewModelsForAllPeriods() throws LMISException {
         ReportTypeForm typeForm = reportTypeFormRepository.queryByCode(Constants.RAPID_REPORT);
         Optional<Period> period = periodService.getFirstStandardPeriod();
-        DateTime startPeriodTime = new DateTime(typeForm.startTime);
+        DateTime startPeriodTime = new DateTime(typeForm.getStartTime());
 
         if (period.isPresent() && startPeriodTime.isAfter(period.get().getBegin())) {
             Period reportPeriod = getRapidTestPeriod(startPeriodTime);

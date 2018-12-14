@@ -33,6 +33,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
@@ -80,6 +81,9 @@ public class RnrFormRepository {
 
     @Inject
     ProgramRepository programRepository;
+
+    @Inject
+    ReportTypeFormRepository reportTypeFormRepository;
 
     @Inject
     RnrFormHelper rnrFormHelper;
@@ -169,7 +173,12 @@ public class RnrFormRepository {
     }
 
     public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode) throws LMISException {
-        return list(programCode, includeEmergency.Emergency());
+        ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
+        return listInclude(includeEmergency, programCode, reportTypeForm);
+    }
+
+    public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode, ReportTypeForm reportTypeForm) throws LMISException {
+        return list(programCode, includeEmergency.Emergency(), reportTypeForm);
     }
 
     public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
@@ -180,13 +189,14 @@ public class RnrFormRepository {
 
     public RnRForm queryUnAuthorized() throws LMISException {
         final Program program = programRepository.queryByCode(programCode);
+        ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
         if (program == null) {
             throw new LMISException("Program cannot be null !");
         }
         RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
             @Override
             public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("program_id", program.getId()).and().ne("status", RnRForm.STATUS.AUTHORIZED).queryForFirst();
+                return dao.queryBuilder().where().eq("program_id", program.getId()).and().between("periodBegin", reportTypeForm.getStartTime(), new Date()).and().ne("status", RnRForm.STATUS.AUTHORIZED).queryForFirst();
             }
         });
         assignCategoryForRnrItems(rnRForm);
@@ -264,8 +274,8 @@ public class RnrFormRepository {
         }
         Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
-        if(hasRequisitionData()){
-            for(RnRForm rnrForm: list) {
+        if (hasRequisitionData()) {
+            for (RnRForm rnrForm : list) {
                 if (rnrForm.getPeriodEnd().before(dueDateShouldDataLivedInDB)) {
                     return true;
                 }
@@ -368,6 +378,24 @@ public class RnrFormRepository {
             }
         }
         return 0;
+    }
+
+    private List<RnRForm> list(String programCode, final boolean isWithEmergency, ReportTypeForm typeForm) throws LMISException {
+
+        final long programId = programRepository.queryByCode(programCode).getId();
+
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
+            @Override
+            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
+                Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
+                where.in("program_id", programId).and().between("periodBegin", typeForm.getStartTime(), new Date());
+
+                if (!isWithEmergency) {
+                    where.and().eq("emergency", false);
+                }
+                return where.query();
+            }
+        });
     }
 
     private List<RnRForm> list(String programCode, final boolean isWithEmergency) throws LMISException {
