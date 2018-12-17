@@ -12,8 +12,11 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
+import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.ProgramDataFormPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
@@ -28,6 +31,7 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +39,8 @@ import static org.mockito.Mockito.when;
 public class RapidTestReportsPresenterTest {
 
     private ProgramDataFormRepository programDataFormRepository;
+
+    private ReportTypeFormRepository reportTypeFormRepository;
 
     private ProgramDataFormPeriodService periodService;
 
@@ -45,12 +51,14 @@ public class RapidTestReportsPresenterTest {
     public void setUp() {
 
         programDataFormRepository = mock(ProgramDataFormRepository.class);
+        reportTypeFormRepository = mock(ReportTypeFormRepository.class);
         periodService = mock(ProgramDataFormPeriodService.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
                 bind(ProgramDataFormRepository.class).toInstance(programDataFormRepository);
+                bind(ReportTypeFormRepository.class).toInstance(reportTypeFormRepository);
                 bind(ProgramDataFormPeriodService.class).toInstance(periodService);
             }
         });
@@ -104,6 +112,14 @@ public class RapidTestReportsPresenterTest {
                 .build();
         when(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
                 .thenReturn(newArrayList(programDataForm1, programDataForm2, programDataForm3, programDataForm4));
+        ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
+                setActive(true).
+                setCode(Constants.RAPID_REPORT).
+                setName(Constants.RAPID_TEST_CODE).
+                setStartTime(new DateTime(DateUtil.parseString("2016-09-10", DateUtil.DB_DATE_FORMAT)).toDate()).
+                build();
+        when(reportTypeFormRepository.queryByCode(Constants.RAPID_REPORT))
+                .thenReturn(reportTypeForm);
 
         presenter.generateViewModelsForAllPeriods();
         assertThat(presenter.getViewModelList().size(), is(13));
