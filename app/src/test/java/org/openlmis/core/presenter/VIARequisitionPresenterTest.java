@@ -418,7 +418,7 @@ public class VIARequisitionPresenterTest {
 
         ArrayList<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
         RnrFormItem rnrFormItem = createRnrFormItem(1);
-        rnrFormItem.setInitialAmount(1000);
+        rnrFormItem.setInitialAmount((long) 1000);
         rnrFormItem.setCalculatedOrderQuantity(400L);
         rnrFormItemListWrapper.add(rnrFormItem);
 
@@ -457,7 +457,7 @@ public class VIARequisitionPresenterTest {
 
         ArrayList<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
         RnrFormItem rnrFormItem = createRnrFormItem(1);
-        rnrFormItem.setInitialAmount(1000);
+        rnrFormItem.setInitialAmount((long) 1000);
         rnrFormItem.setCalculatedOrderQuantity(400L);
         rnrFormItemListWrapper.add(rnrFormItem);
 
@@ -492,7 +492,7 @@ public class VIARequisitionPresenterTest {
 
         List<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
         RnrFormItem rnrFormItem = createRnrFormItem(1);
-        rnrFormItem.setInitialAmount(1000);
+        rnrFormItem.setInitialAmount((long) 1000);
         rnrFormItem.setCalculatedOrderQuantity(500L);
         rnrFormItemListWrapper.add(rnrFormItem);
 

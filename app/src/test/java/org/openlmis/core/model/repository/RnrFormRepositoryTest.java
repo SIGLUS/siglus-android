@@ -312,12 +312,12 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(rnrFormItem.getProduct(), is(product));
         assertThat(rnrFormItem.getCategory(), is("Adult"));
-        assertEquals(stockExistence, rnrFormItem.getInitialAmount());
+        assertEquals(stockExistence, rnrFormItem.getInitialAmount().longValue());
         assertEquals(issueQuantity, rnrFormItem.getIssued().longValue());
         assertEquals(receiveQuantity, rnrFormItem.getReceived());
         assertEquals(expectAdjustment, rnrFormItem.getAdjustment().longValue());
         assertEquals(expectInventoryQuantity, rnrFormItem.getInventory().longValue());
-        assertEquals(expectOrderQuantity, rnrFormItem.getCalculatedOrderQuantity());
+        assertEquals(expectOrderQuantity, rnrFormItem.getCalculatedOrderQuantity().longValue());
     }
 
     @Test
