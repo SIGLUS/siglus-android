@@ -74,12 +74,7 @@ public class ReportTypeFormRepository {
     }
 
     public String getReportTypeCode(final String programCode) {
-        List<Constants.Program> programs =  Arrays.asList(Constants.Program.VIA_PROGRAM,
-                Constants.Program.MMIA_PROGRAM,
-                Constants.Program.AL_PROGRAM,
-                Constants.Program.PTV_PROGRAM,
-                Constants.Program.RAPID_TEST_PROGRAM);
-        for (Constants.Program program : programs) {
+        for (Constants.Program program : Constants.PROGRAMES) {
             if (program.getCode().equals(programCode)) {
                 return program.getReportType();
             }

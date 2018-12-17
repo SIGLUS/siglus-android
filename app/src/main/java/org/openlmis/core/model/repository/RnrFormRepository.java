@@ -43,6 +43,7 @@ import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -182,7 +183,7 @@ public class RnrFormRepository {
     }
 
     public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
-        List<RnRForm> unsyncedRnr = listUnsynced();
+        List<RnRForm> unsyncedRnr = listNotSynchronizedFromStarTime();
         deleteDeactivatedAndUnsupportedProductItems(unsyncedRnr);
         return unsyncedRnr;
     }
@@ -293,6 +294,14 @@ public class RnrFormRepository {
         });
     }
 
+    protected List<RnRForm> listNotSynchronizedFromStarTime() throws LMISException {
+        List<RnRForm> rnRForms = new ArrayList<>();
+        for (Constants.Program program : Constants.PROGRAMES) {
+            rnRForms.addAll(listNotSynchronizedFromReportStartTime(program.getCode()));
+        }
+        return rnRForms;
+    }
+
     protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
         RnrFormItem rnrFormItem = new RnrFormItem();
         List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsByCreatedDate(stockCard.getId(), startDate, endDate);
@@ -393,6 +402,23 @@ public class RnrFormRepository {
                 if (!isWithEmergency) {
                     where.and().eq("emergency", false);
                 }
+                return where.query();
+            }
+        });
+    }
+
+    private List<RnRForm> listNotSynchronizedFromReportStartTime(String programCode) throws LMISException {
+        final long programId = programRepository.queryByCode(programCode).getId();
+        final ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
+
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
+            @Override
+            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
+                Where<RnRForm, String> where = dao.queryBuilder().where().eq("program_id", programId).and().
+                        eq("synced", false).and().
+                        eq("status", RnRForm.STATUS.AUTHORIZED).and().
+                        between("periodBegin", reportTypeForm.getStartTime(), new Date());
+
                 return where.query();
             }
         });

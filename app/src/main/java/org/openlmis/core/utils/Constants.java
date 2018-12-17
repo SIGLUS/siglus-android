@@ -21,6 +21,9 @@ package org.openlmis.core.utils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
+import java.util.Arrays;
+import java.util.List;
+
 public final class Constants {
 
     public enum Program {
@@ -60,6 +63,12 @@ public final class Constants {
     public static final String AL_PROGRAM_CODE = "MALARIA";
     public static final String PTV_PROGRAM_CODE = "PTV";
     public static final String TEST_KIT_PROGRAM_CODE = "TEST_KIT";
+
+    public static final List<Constants.Program> PROGRAMES = Arrays.asList(Constants.Program.VIA_PROGRAM,
+                    Constants.Program.MMIA_PROGRAM,
+                    Constants.Program.AL_PROGRAM,
+                    Constants.Program.PTV_PROGRAM,
+                    Constants.Program.RAPID_TEST_PROGRAM);
 
      //Don't change these reportTypes codes!!!
     public static final String MMIA_REPORT = "MMIA";
