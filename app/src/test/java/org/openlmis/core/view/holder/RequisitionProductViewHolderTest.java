@@ -42,6 +42,7 @@ public class RequisitionProductViewHolderTest {
     private VIARequisitionPresenter presenter;
     private Program program;
     private RnRForm form;
+    private RnrFormItem formItem;
 
     @Before
     public void setUp() {
@@ -53,6 +54,14 @@ public class RequisitionProductViewHolderTest {
         form = RnRForm.init(program, DateUtil.today());
         form.setPeriodBegin(Date.valueOf("2015-04-21"));
         form.setPeriodEnd(Date.valueOf("2015-05-20"));
+        formItem = new RnrFormItemBuilder().setProduct(
+                new ProductBuilder().setPrimaryName("productName").setCode("08S42").build())
+                .setInitialAmount(10)
+                .setIssued((long) 10)
+                .setAdjustment((long) 10)
+                .setInventory((long) 10)
+                .setCalculatedOrderQuantity(10)
+                .build();
 
         presenter = mock(VIARequisitionPresenter.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
@@ -67,9 +76,6 @@ public class RequisitionProductViewHolderTest {
 
     @Test
     public void shouldSetProductNameAndCode() {
-        RnrFormItem formItem = new RnrFormItemBuilder().setProduct(
-                new ProductBuilder().setPrimaryName("productName").setCode("08S42").build())
-                .build();
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
         viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
 
@@ -79,11 +85,7 @@ public class RequisitionProductViewHolderTest {
 
     @Test
     public void shouldSetDelIconForNewAddedProduct() throws Exception {
-        RnrFormItem formItem = new RnrFormItemBuilder().setProduct(
-                new ProductBuilder().setPrimaryName("productName").setCode("08S42").build())
-                .build();
         formItem.setManualAdd(true);
-
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
         viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
 
@@ -92,10 +94,6 @@ public class RequisitionProductViewHolderTest {
 
     @Test
     public void shouldNotShowDelIconForOldProduct() throws Exception {
-        RnrFormItem formItem = new RnrFormItemBuilder().setProduct(
-                new ProductBuilder().setPrimaryName("productName").setCode("08S42").build()).setRnrForm(new RnRForm())
-                .build();
-
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
         viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
 
@@ -106,11 +104,10 @@ public class RequisitionProductViewHolderTest {
     public void shouldShowDialogWhenClickDelIcon() throws Exception {
         VIARequisitionActivity viaRequisitionActivity = Robolectric.setupActivity(VIARequisitionActivity.class);
         Product product = new Product();
-        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product).setRequestAmount(100L).build();
 
-        viewHolder.populate(new RequisitionFormItemViewModel(rnrFormItem), presenter, viaRequisitionActivity);
+        viewHolder.populate(new RequisitionFormItemViewModel(formItem), presenter, viaRequisitionActivity);
 
-        viewHolder.showDelConfirmDialog(rnrFormItem);
+        viewHolder.showDelConfirmDialog(formItem);
 
         SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) viaRequisitionActivity.getFragmentManager().findFragmentByTag("del_confirm_dialog");
         assertNotNull(del_confirm_dialog);
