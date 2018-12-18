@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.stubbing.OngoingStubbing;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
@@ -13,15 +14,19 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.model.repository.InventoryRepository;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -38,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -49,6 +55,7 @@ public class RnRFormListPresenterTest {
     SyncErrorsRepository syncErrorsRepository;
     private RnrFormRepository rnrFormRepository;
     private StockRepository stockRepository;
+    private ReportTypeFormRepository reportTypeFormRepository;
     private SharedPreferenceMgr sharedPreferenceMgr;
     private Period periodFebToMar;
     private Period periodMarToApl;
@@ -62,13 +69,14 @@ public class RnRFormListPresenterTest {
     private Program program;
 
     @Before
-    public void setUp() {
+    public void setUp() throws LMISException {
         rnrFormRepository = mock(RnrFormRepository.class);
         stockRepository = mock(StockRepository.class);
         syncErrorsRepository = mock(SyncErrorsRepository.class);
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         requisitionPeriodService = mock(RequisitionPeriodService.class);
         inventoryRepository = mock(InventoryRepository.class);
+        reportTypeFormRepository = mock(ReportTypeFormRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
@@ -79,6 +87,7 @@ public class RnRFormListPresenterTest {
                 bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
                 bind(RequisitionPeriodService.class).toInstance(requisitionPeriodService);
                 bind(InventoryRepository.class).toInstance(inventoryRepository);
+                bind(ReportTypeFormRepository.class).toInstance(reportTypeFormRepository);
             }
         });
 
@@ -93,16 +102,33 @@ public class RnRFormListPresenterTest {
         rnRForm1 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, periodFebToMar.getBegin().toDate(), periodFebToMar.getEnd().toDate(), program);
         rnRForm2 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, periodMarToApl.getBegin().toDate(), periodMarToApl.getEnd().toDate(), program);
         rnRForm3 = createRnrFormByPeriod(RnRForm.STATUS.DRAFT, periodAplToMay.getBegin().toDate(), periodAplToMay.getEnd().toDate(), program);
+
+        ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
+                setActive(true).
+                setCode(Constants.VIA_REPORT).
+                setName(Constants.VIA_PROGRAM_CODE).
+                setStartTime(new DateTime(DateUtil.parseString("2016-02-5", DateUtil.DB_DATE_FORMAT)).toDate())
+                .build();
+         when(reportTypeFormRepository.queryByCode(Constants.VIA_REPORT)).thenReturn(reportTypeForm);
+
     }
 
     @Test
     public void shouldBuildFormListViewModels() throws LMISException {
         presenter.setProgramCode("MMIA");
+        presenter.setViewProgram(Constants.Program.MMIA_PROGRAM);
         Collections.reverse(rnRForms);
-        when(rnrFormRepository.listInclude(any(RnRForm.Emergency.class), anyString())).thenReturn(rnRForms);
+        when(rnrFormRepository.listInclude(any(RnRForm.Emergency.class), anyString(), anyObject())).thenReturn(rnRForms);
         when(syncErrorsRepository.getBySyncTypeAndObjectId(any(SyncType.class), anyLong()))
                 .thenReturn(Arrays.asList(new SyncError("Error1", SyncType.RnRForm, 1), new SyncError("Error2", SyncType.RnRForm, 1)));
 
+        ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
+                setActive(true).
+                setCode(Constants.MMIA_REPORT).
+                setName(Constants.MMIA_PROGRAM_CODE).
+                setStartTime(new DateTime(DateUtil.parseString("2016-02-5", DateUtil.DB_DATE_FORMAT)).toDate())
+                .build();
+        when(reportTypeFormRepository.queryByCode(Constants.MMIA_REPORT)).thenReturn(reportTypeForm);
         List<RnRFormViewModel> resultViewModels = presenter.buildFormListViewModels();
         assertThat(resultViewModels.size()).isEqualTo(3);
         assertThat(resultViewModels.get(0).getSyncServerErrorMessage()).isEqualTo("Error2");
@@ -120,6 +146,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1CanNotDoInventoryAnd2HistoricalViewModelsWhenThereIsNoMissedRnrAndTwoRnrDoneAndItIs17May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -141,6 +168,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1CanDoInventoryAnd2HistoricalViewModelsAndSortCorrectlyWhenThereIsNoMissedRnrAndTwoRnrDoneAndItIs20May() throws Exception {
         presenter.setProgramCode(program.getProgramCode());
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
 
         when(rnrFormRepository.listInclude(RnRForm.Emergency.Yes, program.getProgramCode())).thenReturn(newArrayList(rnRForm1, rnRForm2));
@@ -162,6 +190,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1InventoryDoneAnd2HistoricalViewModelsAndSortCorrectlyWhenThereIsNoMissedRnrAndTwoRnrDoneAndInventoryDoneForThisPeriod() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -184,6 +213,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1CreatedNotCompletedAndTwoHistoricalViewModelsAndSortCorrectlyWhenThereIsNoMissedRnrAndTwoRnrDoneAndItIs20May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -207,6 +237,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1CanNotDoInventoryViewModelsWhenThereIsNoMissedRnrAndThereIsNoHistoricalRnrAndItIs17May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -223,6 +254,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1CanDoInventoryViewModelsWhenThereIsNoMissedRnrAndThereIsNoHistoricalRnrAndItIs18May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -241,6 +273,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1InventoryDoneViewModelsWhenThereIsNoMissedRnrAndThereIsNoHistoricalRnrAndItIs18May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -259,6 +292,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1CreatedNotCompletedViewModelsWhenThereIsNoMissedRnrAndThereIsOneDraftRnrAndItIs18May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -277,6 +311,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1SelectPeriodAnd1MissedPeriodAnd1HistoricalRnRViewModelsWhenThereIsOneRnrDoneAndMissed2RnrAndThereIsNoInventoryIsDoneForTheFirstMissedRnrItIs17May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -301,6 +336,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1CreateRnrFormAnd1MissedPeriodAnd1HistoricalViewModelsWhenThereIsNoRnrInDBAndMissed2RnrAndThereInventoryIsDoneForTheFirstMissedRnrItIs17May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -325,6 +361,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1SelectPeriodAnd2MissedPeriodAnd1HistoricalViewModelsWhenThereIsNoRnrInDBAndMissed3RnrAndItIs18May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -351,6 +388,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate2MissedPeriodAnd1HistoricalAnd1CreatedNotCpmletedViewModelsWhenThereIs1RnrDoneAnd1DraftRnrAndMissed2RnrAndItIs18May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
         Period periodMayToJun = new Period(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)), new DateTime(DateUtil.parseString("2016-06-18", DateUtil.DB_DATE_FORMAT)));
@@ -378,6 +416,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1SelectPeriodAnd2MissedPeriodViewModelsWhenThereIsNoRnrInDBAndMissed3RnrAndThereIsNoInventoryIsDoneForTheFirstMissedRnrItIs17May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -402,6 +441,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1CreateRnrFormAnd2MissedPeriodViewModelsWhenThereIsNoRnrInDBAndMissed3RnrAndThereInventoryIsDoneForTheFirstMissedRnrItIs17May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
@@ -426,6 +466,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldGenerate1SelectPeriodAnd3MissedPeriodViewModelsWhenThereIsNoRnrInDBAndMissed3RnrAndThereIsNoInventoryIsDoneForTheFirstMissedRnrItIs18May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        presenter.setViewProgram(Constants.Program.VIA_PROGRAM);
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
