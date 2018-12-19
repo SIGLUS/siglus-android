@@ -72,7 +72,6 @@ public class HomeActivityTest {
     private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     @Ignore
-    @Before
     public void setUp() {
         testApp = (LMISTestApp) RuntimeEnvironment.application;
         warningDialogFragmentBuilder = mock(WarningDialogFragmentBuilder.class);

@@ -11,12 +11,16 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -44,6 +48,7 @@ public class RequisitionPeriodServiceTest {
     private Program programMMIA;
     private InventoryRepository mockInventoryRepository;
     private StockMovementRepository mockStockMovementRepository;
+    private ReportTypeFormRepository mockReportTypeFormRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -52,12 +57,22 @@ public class RequisitionPeriodServiceTest {
         mockStockRepository = mock(StockRepository.class);
         mockInventoryRepository = mock(InventoryRepository.class);
         mockStockMovementRepository = mock(StockMovementRepository.class);
+        mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
+
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         requisitionPeriodService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RequisitionPeriodService.class);
 
         programMMIA = new Program("MMIA", "MMIA", null, false, null);
         programMMIA.setId(1l);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
+        ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
+                setActive(true).
+                setCode(Constants.MMIA_REPORT).
+                setName(Constants.MMIA_PROGRAM_CODE).
+                setStartTime(new DateTime(DateUtil.parseString("2015-01-01", DateUtil.DB_DATE_FORMAT)).toDate()).
+                build();
+        when(mockReportTypeFormRepository.queryByCode(Constants.MMIA_REPORT))
+                .thenReturn(reportTypeForm);
     }
 
     @Test
