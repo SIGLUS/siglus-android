@@ -161,13 +161,6 @@ public class LoginPresenter extends Presenter {
 
     protected void saveUserDataToLocalDatabase(UserResponse response) throws LMISException {
         userRepository.createOrUpdate(response.getUserInformation());
-
-        if (response.getFacilitySupportedPrograms() != null) {
-            for (Program program : response.getFacilitySupportedPrograms()) {
-                programRepository.createOrUpdate(program);
-            }
-        }
-
     }
 
     private void onLoginSuccess(UserResponse userResponse) {
