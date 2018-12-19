@@ -48,6 +48,7 @@ import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.utils.Constants;
@@ -111,6 +112,7 @@ public class SyncDownManager {
             @Override
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
+                    SyncDownPrograms(subscriber);
                     syncDownService(subscriber);
                     syncDownReportType(subscriber);
                     syncDownProducts(subscriber);
@@ -138,11 +140,26 @@ public class SyncDownManager {
         }
     }
 
+    private void SyncDownPrograms(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        try {
+            subscriber.onNext(SyncProgress.SyncingPrograms);
+            fetchAndSaveprogram();
+            subscriber.onNext(SyncProgress.ProgramSynced);
+        } catch (LMISException e) {
+            e.reportToFabric();
+            throw new LMISException(errorMessage(R.string.msg_sync_program_failed));
+        }
+    }
+
+    private void fetchAndSaveprogram() throws LMISException {
+        SyncUpProgramResponse response = lmisRestApi.fetchPrograms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
+        programRepository.updateProgramWithRegimen(response.getPrograms());
+    }
+
     private void fetchAndSaveReportType() throws LMISException {
         SyncDownReportTypeResponse response = lmisRestApi.fetchReportTypeForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
         sharedPreferenceMgr.setReportTypesData(response.getReportTypes());
         reportTypeFormRepository.batchCreateOrUpdateReportTypes(response.getReportTypes());
-
     }
 
     private void syncDownService(Subscriber<? super SyncProgress> subscriber) throws LMISException {
@@ -469,6 +486,7 @@ public class SyncDownManager {
     public enum SyncProgress {
         SyncingServiceList(R.string.msg_service_lists),
         SyncingReportType(R.string.msg_fetching_products),
+        SyncingPrograms(R.string.msg_fetching_programs),
         SyncingProduct(R.string.msg_fetching_products),
         SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
         SyncingRequisition(R.string.msg_sync_requisition_data),
@@ -476,6 +494,7 @@ public class SyncDownManager {
 
         ProductSynced,
         ServiceSynced,
+        ProgramSynced,
         ReportTypeSynced,
         StockCardsLastMonthSynced,
         RequisitionSynced,

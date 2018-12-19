@@ -16,44 +16,17 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
+package org.openlmis.core.network.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import org.openlmis.core.model.Program;
+
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@DatabaseTable(tableName = "regimes")
-public class Regimen extends BaseModel {
-
-    public enum RegimeType {
-        Adults,
-        Paediatrics,
-    }
-
-    @Expose
-    @SerializedName("name")
-    @DatabaseField
-    private String name;
-
-    @Expose
-    @SerializedName("code")
-    @DatabaseField
-    private String code;
-
-    @Expose
-    @SerializedName("categoryName")
-    @DatabaseField
-    private RegimeType type;
-
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private Program program;
-
-    @DatabaseField
-    private boolean isCustom;
+public class SyncUpProgramResponse {
+     List<Program> programs;
 }

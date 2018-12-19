@@ -24,6 +24,8 @@
     <string name="init_product_error">Erro nos dados iniciais. Tente de novo.</string>
     <string name="msg_sync_stock_movements_data">Sincronizando dados de movimentos de estoque</string>
     <string name="msg_fetching_products">Descarregando lista de produtos…</string>
+    <string name="msg_fetching_programs">Descarregando lista programa…</string>
+    <string name="msg_sync_program_failed">Download do programa o servidor falhou, por favor, faça o login novamente.</string>
     <string name="msg_service_lists">Downloading service list…</string>
     <string name="msg_fetching_Report_Type">Download do tipo de relatório ...</string>
     <string name="msg_sync_requisition_data">Sincronizando dados de requisição</string>

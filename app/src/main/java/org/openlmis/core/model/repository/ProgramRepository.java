@@ -24,10 +24,12 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -44,6 +46,9 @@ public class ProgramRepository {
 
     @Inject
     ProductRepository productRepository;
+
+    @Inject
+    RegimenRepository regimenRepository;
 
     @Inject
     DbUtil dbUtil;
@@ -75,6 +80,42 @@ public class ProgramRepository {
             genericDao.update(program);
         } else {
             genericDao.create(program);
+        }
+    }
+
+    public void updateProgramWithRegimen(final List<Program> programs) throws LMISException {
+        regimenRepository.deleteAllNoCustomRegimens();
+        deleteAllPrograms();
+        createProgramWithRegimen(programs);
+    }
+
+    private void deleteAllPrograms() throws LMISException {
+        dbUtil.withDao(Program.class, new DbUtil.Operation<Program, Program>() {
+            @Override
+            public Program operate(Dao<Program, String> dao) throws SQLException, LMISException {
+                DeleteBuilder<Program, String> deleteBuilder = dao.deleteBuilder();
+                deleteBuilder.delete();
+                return null;
+            }
+        });
+    }
+
+    private void createProgramWithRegimen(final List<Program> programs) throws LMISException {
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    genericDao.create(programs);
+                    for (Program program : programs) {
+                        for (Regimen regimen : program.getRegimens()) {
+                            regimenRepository.create(regimen);
+                        }
+                    }
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            throw new LMISException(e);
         }
     }
 

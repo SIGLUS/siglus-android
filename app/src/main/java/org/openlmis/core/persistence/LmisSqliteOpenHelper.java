@@ -47,8 +47,8 @@ import org.openlmis.core.persistence.migrations.AddLotsTable;
 import org.openlmis.core.persistence.migrations.AddLowStockAvgColumnToStockCardTable;
 import org.openlmis.core.persistence.migrations.AddMalariaSignature;
 import org.openlmis.core.persistence.migrations.AddManualAddColumnToRnrFormItemsTable;
-import org.openlmis.core.persistence.migrations.AddNewPrograms;
 import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
+import org.openlmis.core.persistence.migrations.AddProgramToRegimen;
 import org.openlmis.core.persistence.migrations.AddRapidTestColumnsTemplate;
 import org.openlmis.core.persistence.migrations.AddRapidTestProgram;
 import org.openlmis.core.persistence.migrations.AddRequestedColumnToStockItems;
@@ -113,6 +113,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new UpdateCreateTimeAndUpdateTime());
             add(new AddInventoryTable());
             add(new AddParentCodeToProgramTable());
+            add(new AddProgramToRegimen());
             add(new UpdateRegimenType());
             add(new AddIsCustomColumnToRegime());
             add(new CreateDummyRegimes());
@@ -120,7 +121,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new ChangeProgramTableName());
             add(new CreateProductProgramsTable());
             add(new AddIsEmergencyColumnToProgram());
-            add(new AddNewPrograms());
             add(new ConvertEssMedsToVIAProgram());
             add(new AddEmergencyColumnToRnr());
             add(new AddCategoryColumnToProductPrograms());

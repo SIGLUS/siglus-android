@@ -35,6 +35,7 @@ import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
@@ -42,6 +43,7 @@ import org.openlmis.core.model.Service;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.ProductAdapter;
+import org.openlmis.core.network.adapter.ProgramAdapter;
 import org.openlmis.core.network.adapter.ProgramDataFormAdapter;
 import org.openlmis.core.network.adapter.ReportTypeAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
@@ -173,6 +175,7 @@ public class LMISRestManager {
                 .registerTypeAdapter(ProgramDataForm.class, new ProgramDataFormAdapter())
                 .registerTypeAdapter(ReportTypeForm.class, new ReportTypeAdapter())
                 .registerTypeAdapter(Service.class, new ServiceAdapter())
+                .registerTypeAdapter(Program.class, new ProgramAdapter())
                 .create());
     }
 

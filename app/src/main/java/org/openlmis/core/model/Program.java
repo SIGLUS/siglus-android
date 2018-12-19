@@ -19,6 +19,7 @@
 package org.openlmis.core.model;
 
 
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -37,12 +38,15 @@ import lombok.Setter;
 @DatabaseTable(tableName = "programs")
 public class Program extends BaseModel {
 
+    @SerializedName("code")
     @DatabaseField
     String programCode;
 
+    @SerializedName("name")
     @DatabaseField
     String programName;
 
+    @SerializedName("parentCode")
     @DatabaseField
     String parentCode;
 
@@ -51,4 +55,7 @@ public class Program extends BaseModel {
 
     @ForeignCollectionField(columnName = "products")
     private Collection<Product> products;
+
+    @ForeignCollectionField(columnName = "regimens")
+    private Collection<Regimen> regimens;
 }

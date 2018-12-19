@@ -27,6 +27,8 @@
     <string name="init_product_error">Initial Data Error,Please Retry</string>
     <string name="msg_sync_stock_movements_data">Synchronizing stock movement data</string>
     <string name="msg_fetching_products">Downloading product list…</string>
+    <string name="msg_fetching_programs">Downloading programs…</string>
+    <string name="msg_sync_program_failed">Download of program the server failed, please login again.</string>
     <string name="msg_service_lists">Downloading list of services...</string>
     <string name="msg_fetching_Report_Type">Downloading Report type…</string>
     <string name="msg_sync_requisition_data">Synchronizing requisition data</string>

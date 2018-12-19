@@ -23,8 +23,10 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;
@@ -59,6 +61,18 @@ public class RegimenRepository {
             @Override
             public Regimen operate(Dao<Regimen, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("code", code).queryForFirst();
+            }
+        });
+    }
+
+    public void deleteAllNoCustomRegimens() throws LMISException {
+        dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
+            @Override
+            public Regimen operate(Dao<Regimen, String> dao) throws SQLException, LMISException {
+                DeleteBuilder<Regimen, String> deleteBuilder = dao.deleteBuilder();
+                deleteBuilder.where().eq("isCustom", false);
+                deleteBuilder.delete();
+                return null;
             }
         });
     }

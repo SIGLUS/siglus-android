@@ -234,6 +234,7 @@ public class LoginPresenter extends Presenter {
             @Override
             public void onNext(SyncProgress progress) {
                 switch (progress) {
+                    case SyncingPrograms:
                     case SyncingServiceList:
                     case SyncingReportType:
                     case SyncingProduct:

@@ -1,5 +1,5 @@
 CREATE TABLE `users` (`facilityCode` VARCHAR , `facilityName` VARCHAR , `password` VARCHAR , `userFirstName` VARCHAR , `userLastName` VARCHAR , `username` VARCHAR , `createdAt` VARCHAR NOT NULL , `updatedAt` VARCHAR NOT NULL , `id` INTEGER PRIMARY KEY AUTOINCREMENT )
-CREATE TABLE `program` (`programCode` VARCHAR , `programName` VARCHAR , `createdAt` VARCHAR NOT NULL , `updatedAt` VARCHAR NOT NULL , `id` INTEGER PRIMARY KEY AUTOINCREMENT )
+CREATE TABLE `program` (`programCode` VARCHAR , `programName` VARCHAR , `createdAt` VARCHAR NOT NULL , `updatedAt` VARCHAR NOT NULL , `id` INTEGER PRIMARY KEY )
 CREATE TABLE `products` (`code` VARCHAR , `primaryName` VARCHAR , `program_id` BIGINT , `strength` VARCHAR , `type` VARCHAR , `createdAt` VARCHAR NOT NULL , `updatedAt` VARCHAR NOT NULL , `id` INTEGER PRIMARY KEY AUTOINCREMENT )
 CREATE TABLE `stock_cards` (`expireDates` VARCHAR , `product_id` BIGINT , `stockOnHand` BIGINT , `createdAt` VARCHAR NOT NULL , `updatedAt` VARCHAR NOT NULL , `id` INTEGER PRIMARY KEY AUTOINCREMENT )
 CREATE TABLE `stock_items` (`documentNumber` VARCHAR , `movementDate` VARCHAR NOT NULL , `stockCard_id` BIGINT , `movementType` VARCHAR , `reason` VARCHAR ,`movementQuantity` BIGINT , `stockOnHand` BIGINT , `createdAt` VARCHAR NOT NULL , `updatedAt` VARCHAR NOT NULL , `id` INTEGER PRIMARY KEY AUTOINCREMENT )

@@ -34,6 +34,7 @@ import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.network.model.UserResponse;
 
@@ -96,6 +97,9 @@ public interface LMISRestApi {
 
     @GET("/rest-api/services")
     SyncDownServiceResponse fetchPTVService(@Query("afterUpdatedTime") String afterUpdatedTime, @Query("programCode") String programCode) throws LMISException;
+
+    @GET("/rest-api/programs/{facilityId}")
+    SyncUpProgramResponse fetchPrograms(@Path("facilityId") Long facilityId) throws LMISException;
 
     @POST("/rest-api/programData")
     Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
