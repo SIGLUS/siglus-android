@@ -408,8 +408,18 @@ public class RnrFormRepository {
     }
 
     private List<RnRForm> listNotSynchronizedFromReportStartTime(String programCode) throws LMISException {
-        final long programId = programRepository.queryByCode(programCode).getId();
-        final ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
+        long programId;
+        ReportTypeForm reportTypeForm;
+
+        try {
+            programId = programRepository.queryByCode(programCode).getId();
+            reportTypeForm = reportTypeFormRepository.getReportType(programCode);
+        } catch (LMISException e) {
+            return new ArrayList<>();
+        }
+        if(reportTypeForm == null) {
+            return new ArrayList<>();
+        }
 
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
