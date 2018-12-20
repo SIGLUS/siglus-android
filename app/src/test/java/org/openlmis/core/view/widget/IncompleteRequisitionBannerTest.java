@@ -13,6 +13,9 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.builder.ReportTypeBuilder;
+import org.openlmis.core.model.builder.ReportTypeFormBuilder;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.RuntimeEnvironment;
@@ -31,16 +34,25 @@ public class IncompleteRequisitionBannerTest {
 
     protected IncompleteRequisitionBanner incompleteRequisitionBanner;
     RequisitionPeriodService requisitionPeriodService;
+    ReportTypeFormRepository mockReportTypeFormRepository;
 
     @Before
     public void setUp() throws Exception {
         requisitionPeriodService = mock(RequisitionPeriodService.class);
+        mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {
                 binder.bind(RequisitionPeriodService.class).toInstance(requisitionPeriodService);
+                binder.bind(ReportTypeFormRepository.class).toInstance(mockReportTypeFormRepository);
             }
         });
+        ReportTypeBuilder reportTypeFormBuilder = new ReportTypeBuilder();
+
+        when(mockReportTypeFormRepository.getReportType(Constants.MMIA_PROGRAM_CODE)).
+                thenReturn(reportTypeFormBuilder.getMMIAReportTypeForm());
+        when(mockReportTypeFormRepository.getReportType(Constants.VIA_PROGRAM_CODE)).
+                thenReturn(reportTypeFormBuilder.getMMIAReportTypeForm());
     }
 
     @Test

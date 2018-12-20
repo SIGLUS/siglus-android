@@ -1,6 +1,9 @@
 package org.openlmis.core.model.builder;
 
+import org.joda.time.DateTime;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.utils.Constants;
 
 import java.util.Date;
 
@@ -9,6 +12,26 @@ public class ReportTypeBuilder {
 
     public ReportTypeBuilder() {
         reportTypeForm = new ReportTypeForm();
+    }
+
+    public ReportTypeForm getMMIAReportTypeForm() {
+        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        return this
+                .setActive(true)
+                .setCode(Constants.MMIA_PROGRAM_CODE)
+                .setName(Constants.MMIA_REPORT)
+                .setStartTime(dateTime.toDate())
+                .build();
+    }
+
+    public ReportTypeForm getVIAReportTypeForm() {
+        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        return this
+                .setActive(true)
+                .setCode(Constants.VIA_PROGRAM_CODE)
+                .setName(Constants.VIA_REPORT)
+                .setStartTime(dateTime.toDate())
+                .build();
     }
 
     public ReportTypeBuilder setActive(Boolean active) {
