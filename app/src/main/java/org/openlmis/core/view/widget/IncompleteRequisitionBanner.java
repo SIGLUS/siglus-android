@@ -16,6 +16,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.Constants;
 
@@ -29,6 +31,9 @@ public class IncompleteRequisitionBanner extends LinearLayout {
 
     @Inject
     RequisitionPeriodService requisitionPeriodService;
+
+    @Inject
+    private ReportTypeFormRepository reportTypeFormRepository;
 
     protected Context context;
 
@@ -52,8 +57,10 @@ public class IncompleteRequisitionBanner extends LinearLayout {
 
     public void setIncompleteRequisitionBanner() {
         try {
-            int periodOffsetMonthMmia = requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
-            int periodOffsetMonthVia = requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
+            ReportTypeForm mmiaReportTypeForm = reportTypeFormRepository.getReportType(Constants.MMIA_PROGRAM_CODE);
+            ReportTypeForm viaReportTypeForm = reportTypeFormRepository.getReportType(Constants.VIA_PROGRAM_CODE);
+            int periodOffsetMonthMmia = mmiaReportTypeForm == null? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
+            int periodOffsetMonthVia = viaReportTypeForm == null? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
             if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0) {
                 this.setVisibility(View.GONE);
                 return;
