@@ -49,7 +49,7 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDese
         }
 
         try {
-            Regimen regimen = regimenRepository.getByNameAndCategory(json.getAsJsonObject().get("name").getAsString(), regimeType);
+            Regimen regimen = regimenRepository.getByCode(json.getAsJsonObject().get("code").getAsString());
             if (regimen == null) {
                 regimen = createRegimen(json);
             }
