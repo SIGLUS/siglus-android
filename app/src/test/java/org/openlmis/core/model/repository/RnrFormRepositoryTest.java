@@ -106,7 +106,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
 
-        Program programMMIA = new Program("MMIA", "MMIA", null, false, null);
+        Program programMMIA = new Program("MMIA", "MMIA", null, false, null, null);
         programMMIA.setId(1l);
 
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
@@ -287,7 +287,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm form = new RnRForm();
         form.setPeriodBegin(DateUtil.parseString("9/21/2015", DateUtil.SIMPLE_DATE_FORMAT));
         form.setPeriodEnd(DateUtil.parseString("10/20/2015", DateUtil.SIMPLE_DATE_FORMAT));
-        form.setProgram(new Program("mmia", "mmia", null, false, null));
+        form.setProgram(new Program("mmia", "mmia", null, false, null, null));
 
         DateTime dateTime = new DateTime();
         dateTime.millisOfDay();

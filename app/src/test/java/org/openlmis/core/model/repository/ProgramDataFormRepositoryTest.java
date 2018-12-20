@@ -44,7 +44,7 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
 
         programDataFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramDataFormRepository.class);
 
-        programRapidTest = new Program("RapidTest", "Rapid Test", null, false, null);
+        programRapidTest = new Program("RapidTest", "Rapid Test", null, false, null, null);
         programRapidTest.setId(1L);
     }
 

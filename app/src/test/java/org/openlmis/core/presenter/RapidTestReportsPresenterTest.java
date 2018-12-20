@@ -87,7 +87,7 @@ public class RapidTestReportsPresenterTest {
         when(fifthPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(sixthPeriod));
         when(sixthPeriod.generateNextAvailablePeriod()).thenReturn(emptyOptional);
 
-        Program programRapidTest = new Program("RapidTest", "Rapid Test", null, false, null);
+        Program programRapidTest = new Program(Constants.RAPID_TEST_CODE, "Rapid Test", null, false, null, null);
         ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
                 .setPeriod(DateUtil.parseString("2016-10-21", DateUtil.DB_DATE_FORMAT))
                 .setStatus(ProgramDataForm.STATUS.SUBMITTED)

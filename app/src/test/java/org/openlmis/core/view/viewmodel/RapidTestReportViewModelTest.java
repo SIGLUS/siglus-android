@@ -42,7 +42,7 @@ public class RapidTestReportViewModelTest {
         List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(itemViewModel);
         viewModel.setItemViewModelList(itemViewModelList);
 
-        Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null);
+        Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null, null);
         viewModel.convertFormViewModelToDataModel(program);
 
         verify(itemViewModel).convertToDataModel();
@@ -92,7 +92,7 @@ public class RapidTestReportViewModelTest {
         this.viewModel.setRapidTestForm(rapidTestForm);
         this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().add(new ProgramDataFormItem("name", new ProgramDataColumnBuilder().setCode("code").build(), 100));
 
-        Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null);
+        Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null, null);
         this.viewModel.convertFormViewModelToDataModel(program);
 
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().size(), is(2));

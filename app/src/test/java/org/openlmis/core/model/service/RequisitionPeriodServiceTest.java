@@ -62,7 +62,7 @@ public class RequisitionPeriodServiceTest {
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         requisitionPeriodService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RequisitionPeriodService.class);
 
-        programMMIA = new Program("MMIA", "MMIA", null, false, null);
+        programMMIA = new Program("MMIA", "MMIA", null, false, null,null);
         programMMIA.setId(1l);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
         ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
