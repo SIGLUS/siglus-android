@@ -18,6 +18,8 @@
 
 package org.openlmis.core.network.adapter;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -40,6 +42,7 @@ import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
@@ -75,7 +78,12 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
         ProgramDataForm programDataForm = gson.fromJson(json.toString(), ProgramDataForm.class);
 
         try {
-            Program program = programRepository.queryByCode(json.getAsJsonObject().get("programCode").getAsString());
+            String programCode = json.getAsJsonObject().get("programCode").getAsString();
+            if (programCode.equals(Constants.RAPID_TEST_OLD_CODE)) {
+                programCode = Constants.RAPID_TEST_CODE;
+            }
+                    
+            Program program = programRepository.queryByCode(programCode);
             programDataForm.setProgram(program);
         } catch (LMISException e) {
             e.reportToFabric();

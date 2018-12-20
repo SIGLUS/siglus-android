@@ -59,7 +59,8 @@ public final class Constants {
     public static final String MMIA_PROGRAM_CODE = "MMIA";
     public static final String VIA_PROGRAM_CODE = "VIA";
     public static final String ESS_PROGRAM_CODE = "ESS_MEDS";
-    public static final String RAPID_TEST_CODE = "RAPID_TEST";
+    public static final String RAPID_TEST_CODE = "TEST_KIT";
+    public static final String RAPID_TEST_OLD_CODE = "RAPID_TEST";
     public static final String AL_PROGRAM_CODE = "MALARIA";
     public static final String PTV_PROGRAM_CODE = "PTV";
     public static final String TEST_KIT_PROGRAM_CODE = "TEST_KIT";
