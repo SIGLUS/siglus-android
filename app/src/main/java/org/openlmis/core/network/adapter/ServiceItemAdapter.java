@@ -51,7 +51,7 @@ public class ServiceItemAdapter implements JsonDeserializer<ServiceItem>, JsonSe
             e.reportToFabric();
             throw new JsonParseException("can not find service by code");
         }
-        return null;
+        return serviceItem;
     }
 
     @Override
