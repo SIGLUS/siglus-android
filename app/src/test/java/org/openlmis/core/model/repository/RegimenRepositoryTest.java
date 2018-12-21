@@ -1,6 +1,7 @@
 package org.openlmis.core.model.repository;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -37,6 +38,7 @@ public class RegimenRepositoryTest {
         assertThat(actualRegime.getName(), is(regimeName));
     }
 
+    @Ignore
     @Test
     public void shouldListDefaultRegime() throws Exception {
         Regimen customRegime = new Regimen();

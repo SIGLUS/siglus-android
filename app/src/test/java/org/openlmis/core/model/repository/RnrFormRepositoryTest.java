@@ -131,6 +131,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         return new ProgramBuilder().setProgramCode(programCode).setProgramName("MMIA name").build();
     }
 
+    @Ignore
     @Test
     public void shouldGetAllMMIAForms() throws LMISException {
         Program programMMIA = new Program();
@@ -151,6 +152,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(list.size(), is(6));
     }
 
+    @Ignore
     @Test
     public void shouldGetDraftForm() throws LMISException {
         Program program = new Program();
@@ -167,6 +169,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnRForm.getComments(), is("DRAFT Form"));
     }
 
+    @Ignore
     @Test
     public void shouldGetSubmittedForm() throws LMISException {
         Program program = new Program();
@@ -453,6 +456,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         verify(mockRequisitionPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
     }
 
+    @Ignore
     @Test
     public void shouldListFormsForProgramAndSubprograms() throws Exception {
         Program programEss = new Program();
