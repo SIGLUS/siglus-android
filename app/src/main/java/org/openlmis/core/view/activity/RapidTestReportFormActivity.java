@@ -10,8 +10,6 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.RapidTestReportFormFragment;
 
-import java.io.Serializable;
-
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_rapid_test_report_form)

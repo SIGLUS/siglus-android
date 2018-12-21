@@ -23,30 +23,16 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.RegimenItem;
-import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRFormSignature;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.Service;
 import org.openlmis.core.model.repository.ProgramRepository;
-import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 
 import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.List;
 
 import roboguice.RoboGuice;
 

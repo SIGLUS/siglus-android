@@ -26,7 +26,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;

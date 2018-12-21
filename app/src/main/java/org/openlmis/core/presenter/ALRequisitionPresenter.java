@@ -22,13 +22,10 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ALRepository;
-import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.ALGridViewModel;
@@ -88,8 +85,8 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
         if (rnRForm != null) {
             alReportViewModel = new ALReportViewModel(rnRForm);
             view.refreshRequisitionForm(rnRForm);
-            view.setProcessButtonName(rnRForm.isDraft()?
-                    context.getResources().getString(R.string.btn_submit) :
+            view.setProcessButtonName(rnRForm.isDraft()
+                    ? context.getResources().getString(R.string.btn_submit) :
                     context.getResources().getString(R.string.btn_complete));
         }
     }
@@ -132,8 +129,8 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     public void setViewModels() throws LMISException {
-        List<RegimenItem> regimenItems =  new ArrayList<>();
-        for(ALGridViewModel gridViewModel : alReportViewModel.getItemTotal().rapidTestFormGridViewModelList) {
+        List<RegimenItem> regimenItems = new ArrayList<>();
+        for (ALGridViewModel gridViewModel : alReportViewModel.getItemTotal().rapidTestFormGridViewModelList) {
             String columnName = gridViewModel.getColumnCode().getColumnName();
             addTreatment(regimenItems, gridViewModel, columnName);
             addStock(regimenItems, gridViewModel, columnName);
@@ -163,12 +160,12 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     private RegimenItem getRegimenItemFromFormList(String name) {
-        for (RegimenItem regimenItem: rnRForm.getRegimenItemList()) {
+        for (RegimenItem regimenItem : rnRForm.getRegimenItemList()) {
             if (regimenItem.getRegimen().getName().equals(name)) {
                 return regimenItem;
             }
         }
-        return  null;
+        return null;
     }
 
     private void addStock(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) throws LMISException {

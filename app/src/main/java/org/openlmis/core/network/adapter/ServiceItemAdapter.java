@@ -14,11 +14,8 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.Service;
 import org.openlmis.core.model.ServiceItem;
-import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.ServiceFormRepository;
 
 import java.lang.reflect.Type;

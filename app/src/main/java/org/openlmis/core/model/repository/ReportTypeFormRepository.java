@@ -5,21 +5,13 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Product;
-import org.openlmis.core.model.ProductProgram;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.utils.Constants;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ReportTypeFormRepository {

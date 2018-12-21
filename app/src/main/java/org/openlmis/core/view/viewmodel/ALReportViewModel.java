@@ -1,10 +1,8 @@
 package org.openlmis.core.view.viewmodel;
-import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 
-import java.io.PushbackInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

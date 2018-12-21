@@ -2,15 +2,9 @@ package org.openlmis.core.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-
-import org.openlmis.core.utils.ListUtil;
-
 import java.util.Date;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;

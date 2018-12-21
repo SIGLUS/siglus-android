@@ -22,25 +22,19 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
-import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.helper.FormHelper;
-import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
 import static org.openlmis.core.utils.Constants.TEST_KIT_PROGRAM_CODE;

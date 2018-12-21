@@ -1,14 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.ProgramDataColumn;
-import org.openlmis.core.model.ProgramDataFormItem;
-import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Data;
 

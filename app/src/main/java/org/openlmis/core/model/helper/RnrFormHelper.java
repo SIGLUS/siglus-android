@@ -1,7 +1,6 @@
 package org.openlmis.core.model.helper;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
 import com.google.inject.Inject;

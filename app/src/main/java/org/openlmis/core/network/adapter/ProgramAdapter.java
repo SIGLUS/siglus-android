@@ -19,21 +19,14 @@
 package org.openlmis.core.network.adapter;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.repository.ProgramRepository;
-
 import java.lang.reflect.Type;
-
-import roboguice.RoboGuice;
 
 public class ProgramAdapter implements JsonDeserializer<Program> {
 

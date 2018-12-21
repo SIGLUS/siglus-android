@@ -36,7 +36,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.helper.FormHelper;
 import org.openlmis.core.utils.Constants;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
