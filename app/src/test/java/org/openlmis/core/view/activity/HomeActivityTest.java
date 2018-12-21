@@ -74,7 +74,7 @@ public class HomeActivityTest {
 
     private HomeActivity homeActivity;
     private LMISTestApp testApp;
-    protected SharedPreferenceMgr sharedPreferenceMgr;
+    private SharedPreferenceMgr mockSharedPreferenceMgr;
     private InternetCheck internetCheck;
     private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
@@ -83,27 +83,20 @@ public class HomeActivityTest {
         testApp = (LMISTestApp) RuntimeEnvironment.application;
         warningDialogFragmentBuilder = mock(WarningDialogFragmentBuilder.class);
         internetCheck = new InternetCheckMockForHomeActivity(true, warningDialogFragmentBuilder);
+        mockSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
                 bind(InternetCheck.class).toInstance(internetCheck);
                 bind(WarningDialogFragmentBuilder.class).toInstance(warningDialogFragmentBuilder);
+                bind(SharedPreferenceMgr.class).toInstance(mockSharedPreferenceMgr);
             }
         });
-        configureDefaultReport();
+        when(mockSharedPreferenceMgr.getReportTypesData()).
+                thenReturn(newArrayList(new ReportTypeBuilder().getMMIAReportTypeForm()));
         homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
     }
 
-    private  void configureDefaultReport() {
-        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
-        ReportTypeForm reportTypeMMIA = new ReportTypeBuilder()
-                .setActive(true)
-                .setCode(Constants.MMIA_REPORT)
-                .setName(Constants.MMIA_REPORT)
-                .setStartTime(dateTime.toDate())
-                .build();
-        sharedPreferenceMgr.setReportTypesData(newArrayList(reportTypeMMIA));
-    }
     @Test
     public void shouldGoToStockCardsPage() {
         homeActivity.btnStockCard.performClick();
@@ -246,6 +239,7 @@ public class HomeActivityTest {
             @Override
             protected void configure() {
                 bind(InternetCheck.class).toInstance(internetCheck);
+                bind(SharedPreferenceMgr.class).toInstance(mockSharedPreferenceMgr);
             }
         });
         homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
