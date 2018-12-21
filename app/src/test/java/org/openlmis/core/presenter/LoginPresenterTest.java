@@ -149,7 +149,6 @@ public class LoginPresenterTest {
         loginCB.getValue().success(userResponse, retrofitResponse);
 
         verify(userRepository).createOrUpdate(any(User.class));
-        verify(programRepository, times(2)).createOrUpdate(any(Program.class));
     }
 
     @Test
@@ -301,7 +300,6 @@ public class LoginPresenterTest {
         presenter.saveUserDataToLocalDatabase(userResponse);
 
         verify(userRepository).createOrUpdate(user);
-        verify(programRepository, times(3)).createOrUpdate(any(Program.class));
     }
 
     public class MyTestModule extends AbstractModule {
