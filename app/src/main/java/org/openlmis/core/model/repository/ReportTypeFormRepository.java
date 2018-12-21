@@ -30,13 +30,14 @@ public class ReportTypeFormRepository {
         dbUtil.withDaoAsBatch(ReportTypeForm.class, new DbUtil.Operation<ReportTypeForm, Void>() {
             @Override
             public Void operate(Dao<ReportTypeForm, String> dao) throws SQLException, LMISException {
-                for (ReportTypeForm reportTypeForm : reportTypeFormList ){
+                for (ReportTypeForm reportTypeForm : reportTypeFormList) {
                     createOrUpdate(reportTypeForm);
                 }
                 return null;
             }
         });
     }
+
     public void createOrUpdate(ReportTypeForm reportTypeForm) throws LMISException {
         ReportTypeForm existingReportType = queryByCode(reportTypeForm.getCode());
         if (existingReportType == null) {

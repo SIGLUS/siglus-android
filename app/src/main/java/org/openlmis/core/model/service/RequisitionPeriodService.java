@@ -19,9 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
-
 public class RequisitionPeriodService {
 
     @Inject
@@ -37,7 +34,7 @@ public class RequisitionPeriodService {
     private ReportTypeFormRepository reportTypeFormRepository;
 
     public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
-        return  generateNextPeriod(programCode, physicalInventoryDate, reportTypeFormRepository.getReportType(programCode));
+        return generateNextPeriod(programCode, physicalInventoryDate, reportTypeFormRepository.getReportType(programCode));
     }
 
     public Period generateNextPeriod(String programCode, Date physicalInventoryDate, ReportTypeForm typeForm) throws LMISException {
@@ -105,7 +102,7 @@ public class RequisitionPeriodService {
         }
 
         DateTime reportStartTime = reportTypePeriod(programCode);
-        if (reportStartTime.isAfter(initializeDateTime)){
+        if (reportStartTime.isAfter(initializeDateTime)) {
             periodBeginDate = reportStartTime;
         }
         return periodBeginDate;
@@ -115,7 +112,7 @@ public class RequisitionPeriodService {
         DateTime startTime = new DateTime(reportTypeFormRepository.getReportType(programCode).getStartTime());
         Calendar currentBeginDate = Calendar.getInstance();
         int initializeDayOfMonth = startTime.getDayOfMonth();
-       if (initializeDayOfMonth < Period.BEGIN_DAY ){
+        if (initializeDayOfMonth < Period.BEGIN_DAY) {
             currentBeginDate.set(startTime.getYear(), startTime.getMonthOfYear() - 1, Period.BEGIN_DAY);
         } else {
             currentBeginDate.set(startTime.getYear(), startTime.getMonthOfYear(), Period.BEGIN_DAY);
@@ -134,7 +131,7 @@ public class RequisitionPeriodService {
         return hasMissedPeriod(programCode, reportTypeForm);
     }
 
-    public boolean hasMissedPeriod(String programCode,  ReportTypeForm reportTypeForm) throws LMISException {
+    public boolean hasMissedPeriod(String programCode, ReportTypeForm reportTypeForm) throws LMISException {
         List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode, reportTypeForm);
 
         if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {

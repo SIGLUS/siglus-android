@@ -19,10 +19,7 @@ import org.openlmis.core.model.ServiceItem;
 import org.openlmis.core.model.repository.ServiceFormRepository;
 
 import java.lang.reflect.Type;
-
 import roboguice.RoboGuice;
-
-import static org.openlmis.core.model.Regimen.RegimeType;
 
 public class ServiceItemAdapter implements JsonDeserializer<ServiceItem>, JsonSerializer<ServiceItem> {
 

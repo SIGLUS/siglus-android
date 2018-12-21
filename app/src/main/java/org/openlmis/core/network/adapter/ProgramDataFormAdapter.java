@@ -80,7 +80,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
             if (programCode.equals(Constants.RAPID_TEST_OLD_CODE)) {
                 programCode = Constants.RAPID_TEST_CODE;
             }
-                    
+
             Program program = programRepository.queryByCode(programCode);
             programDataForm.setProgram(program);
         } catch (LMISException e) {
@@ -97,7 +97,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
             signature.setForm(programDataForm);
         }
 
-        for (ProgramDataFormBasicItem basicItem: programDataForm.getFormBasicItemListWrapper()) {
+        for (ProgramDataFormBasicItem basicItem : programDataForm.getFormBasicItemListWrapper()) {
             basicItem.setForm(programDataForm);
         }
 
