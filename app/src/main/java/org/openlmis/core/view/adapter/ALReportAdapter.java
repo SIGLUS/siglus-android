@@ -8,10 +8,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.view.holder.ALReportViewHolder;
 import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
 import org.openlmis.core.view.viewmodel.ALReportViewModel;
-import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Setter;
 
