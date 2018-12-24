@@ -26,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -203,8 +202,8 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     }
     @Override
     protected String getSignatureDialogTitle() {
-        return presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_al_submit_signature) :
-                getResources().getString(R.string.msg_approve_signature_al);
+        return presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_al_submit_signature)
+                : getResources().getString(R.string.msg_approve_signature_al);
     }
 
     @Override
