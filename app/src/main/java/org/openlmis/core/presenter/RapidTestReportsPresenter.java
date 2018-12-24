@@ -135,6 +135,18 @@ public class RapidTestReportsPresenter extends Presenter {
         }
 
         RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
+        addCompletedColumn(typeForm, period, lastViewModel);
+        viewModelList = removeGreaterThanData(viewModelList);
+        Collections.sort(viewModelList, new Comparator<RapidTestReportViewModel>() {
+            @Override
+            public int compare(RapidTestReportViewModel lhs, RapidTestReportViewModel rhs) {
+                return rhs.getPeriod().getBegin().toDate().compareTo(lhs.getPeriod().getBegin().toDate());
+            }
+        });
+        addInactiveDate(viewModelList, typeForm);
+    }
+
+    private void addCompletedColumn(ReportTypeForm typeForm, Optional<Period> period, RapidTestReportViewModel lastViewModel) throws LMISException {
         if (isRapidTestListCompleted(viewModelList) && typeForm.active) {
             DateTime currentPeriod;
             if (lastViewModel == null) {
@@ -152,14 +164,6 @@ public class RapidTestReportsPresenter extends Presenter {
                 viewModelList.add(rapidTest);
             }
         }
-        viewModelList = removeGreaterThanData(viewModelList);
-        Collections.sort(viewModelList, new Comparator<RapidTestReportViewModel>() {
-            @Override
-            public int compare(RapidTestReportViewModel lhs, RapidTestReportViewModel rhs) {
-                return rhs.getPeriod().getBegin().toDate().compareTo(lhs.getPeriod().getBegin().toDate());
-            }
-        });
-        addInactiveDate(viewModelList, typeForm);
     }
 
     private void addInactiveDate(List<RapidTestReportViewModel> list, ReportTypeForm typeForm) {
@@ -262,8 +266,8 @@ public class RapidTestReportsPresenter extends Presenter {
             public boolean apply(ProgramDataForm programDataForm) {
                 DateTime programDateTime = new DateTime(programDataForm.getPeriodBegin());
                 DateTime viewModelDateTime = new DateTime(viewModel.getPeriod().getBegin());
-                return programDateTime.getMonthOfYear() == viewModelDateTime.getMonthOfYear() &&
-                        programDateTime.getYear() == viewModelDateTime.getYear();
+                return programDateTime.getMonthOfYear() == viewModelDateTime.getMonthOfYear()
+                        && programDateTime.getYear() == viewModelDateTime.getYear();
             }
         });
         if (existingProgramDataForm.isPresent()) {
