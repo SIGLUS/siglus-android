@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
 
 import roboguice.RoboGuice;
 
-public class programDataFormBasicItemAdapter implements JsonSerializer<ProgramDataFormBasicItem>, JsonDeserializer<ProgramDataFormBasicItem> {
+public class ProgramDataFormBasicItemAdapter implements JsonSerializer<ProgramDataFormBasicItem>, JsonDeserializer<ProgramDataFormBasicItem> {
 
     private final Gson gson;
 
@@ -30,7 +30,7 @@ public class programDataFormBasicItemAdapter implements JsonSerializer<ProgramDa
     public ProductRepository productRepository;
 
 
-    public programDataFormBasicItemAdapter() {
+    public ProgramDataFormBasicItemAdapter() {
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
         gson = new GsonBuilder()
                 .registerTypeAdapter(Product.class, new ProductAdapter())

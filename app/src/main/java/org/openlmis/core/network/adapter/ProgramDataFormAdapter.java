@@ -65,7 +65,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(Date.class, new DateAdapter()).setDateFormat(DateFormat.LONG)
                 .registerTypeAdapter(ProgramDataFormItem.class, new ProgramDataFormItemAdapter())
-                .registerTypeAdapter(ProgramDataFormBasicItem.class, new programDataFormBasicItemAdapter())
+                .registerTypeAdapter(ProgramDataFormBasicItem.class, new ProgramDataFormBasicItemAdapter())
                 .create();
         jsonParser = new JsonParser();
     }
