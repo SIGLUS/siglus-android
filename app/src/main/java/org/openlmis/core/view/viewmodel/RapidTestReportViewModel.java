@@ -1,7 +1,5 @@
 package org.openlmis.core.view.viewmodel;
 
-import android.provider.Telephony;
-
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
@@ -28,8 +26,11 @@ import java.util.Map;
 import lombok.Data;
 import lombok.Getter;
 
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.*;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.*;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.consumption;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.positive;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.unjustified;
 
 @Data
 public class RapidTestReportViewModel implements Serializable {
@@ -297,11 +298,11 @@ public class RapidTestReportViewModel implements Serializable {
 
     public void updateAPEWaring() {
         for (RapidTestFormGridViewModel viewModel : itemRealTotal.rapidTestFormGridViewModelList) {
-            RapidTestFormGridViewModel APEViewModel = itemAPEs.rapidTestFormGridViewModelMap.get(viewModel.getColumnCode().name().toUpperCase());
+            RapidTestFormGridViewModel apeViewModel = itemAPEs.rapidTestFormGridViewModelMap.get(viewModel.getColumnCode().name().toUpperCase());
             if (!viewModel.isEmpty()) {
-                APEViewModel.isNeedAllAPEValue = true;
+                apeViewModel.isNeedAllAPEValue = true;
             } else {
-                APEViewModel.isNeedAllAPEValue = false;
+                apeViewModel.isNeedAllAPEValue = false;
             }
         }
     }

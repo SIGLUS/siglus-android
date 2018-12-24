@@ -111,39 +111,43 @@ public class PTVTestRnrForm extends LinearLayout {
                     etFinalStock);
 
         } else {
-            List<EditText> editTexts = new ArrayList<>();
-            tvName.setText(item.getProduct().getPrimaryName());
-            etStock.setText(String.valueOf(getValue(item.getInitialAmount())));
-            if (item.getIsCustomAmount()) {
-                configEditText(item, etStock, tvTotal);
-                editTexts.add(etStock);
-            } else {
-                etStock.setEnabled(false);
-            }
-            for (EditText etService : services) {
-                int serviceIndex = etService.getId();
-                Service serviceCurrent = viewModel.getServices().get(serviceIndex);
-                ServiceItem serviceItem = getServiceItem(item, serviceCurrent.getCode());
-                if (serviceItem != null) {
-                    etService.setText(getValue(serviceItem.getAmount()));
-                }
-                editTexts.add(etService);
-                configEditText(item, etService, tvTotal);
-            }
-            tvTotal.setText(getValue(item.getTotalServiceQuantity()));
-            tvReceived.setText(getValue(item.getReceived()));
-            etAdjustment.setText(getValue(item.getAdjustment()));
-            etFinalStock.setText(getValue(item.getInventory()));
-
-            configEditText(item, etAdjustment, tvTotal);
-            configEditText(item, etFinalStock, tvTotal);
-            editTexts.add(etAdjustment);
-            editTexts.add(etFinalStock);
-            editTextsLists.add(editTexts);
+            configureDataView(item, tvName, etStock, services, tvTotal, tvReceived, etAdjustment, etFinalStock);
 
         }
         viewGroup.addView(inflate);
         return inflate;
+    }
+
+    private void configureDataView(RnrFormItem item, TextView tvName, EditText etStock, List<EditText> services, TextView tvTotal, TextView tvReceived, EditText etAdjustment, EditText etFinalStock) {
+        List<EditText> editTexts = new ArrayList<>();
+        tvName.setText(item.getProduct().getPrimaryName());
+        etStock.setText(String.valueOf(getValue(item.getInitialAmount())));
+        if (item.getIsCustomAmount()) {
+            configEditText(item, etStock, tvTotal);
+            editTexts.add(etStock);
+        } else {
+            etStock.setEnabled(false);
+        }
+        for (EditText etService : services) {
+            int serviceIndex = etService.getId();
+            Service serviceCurrent = viewModel.getServices().get(serviceIndex);
+            ServiceItem serviceItem = getServiceItem(item, serviceCurrent.getCode());
+            if (serviceItem != null) {
+                etService.setText(getValue(serviceItem.getAmount()));
+            }
+            editTexts.add(etService);
+            configEditText(item, etService, tvTotal);
+        }
+        tvTotal.setText(getValue(item.getTotalServiceQuantity()));
+        tvReceived.setText(getValue(item.getReceived()));
+        etAdjustment.setText(getValue(item.getAdjustment()));
+        etFinalStock.setText(getValue(item.getInventory()));
+
+        configEditText(item, etAdjustment, tvTotal);
+        configEditText(item, etFinalStock, tvTotal);
+        editTexts.add(etAdjustment);
+        editTexts.add(etFinalStock);
+        editTextsLists.add(editTexts);
     }
 
 
