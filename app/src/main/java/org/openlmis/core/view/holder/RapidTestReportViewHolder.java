@@ -22,8 +22,6 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
 
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
-
 public class RapidTestReportViewHolder extends BaseViewHolder {
     @InjectView(R.id.tv_period)
     TextView tvPeriod;
@@ -48,68 +46,97 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
         viewModel = rapidTestReportViewModel;
         switch (viewModel.getStatus()) {
             case MISSING:
-                String finishPreviousForm;
-                finishPreviousForm = context.getString(R.string.label_previous_period_missing);
-                setGrayHeader();
-                btnReportEntry.setVisibility(View.INVISIBLE);
-                tvReportStatus.setText(Html.fromHtml(finishPreviousForm));
+                configMissingHolder();
                 break;
             case CANNOT_DO_MONTHLY_INVENTORY:
-                finishPreviousForm = context.getString(R.string.label_training_can_not_create_rapid_Test_rnr);
-                setGrayHeader();
-                btnReportEntry.setVisibility(View.INVISIBLE);
-                tvReportStatus.setText(Html.fromHtml(finishPreviousForm));
+                configCannotDoMonthlyHolder();
                 break;
             case FIRST_MISSING:
-                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.Rapid_Test_missed_period)));
-                setGrayHeader();
-                setBlueButton();
-                btnReportEntry.setText(context.getString(R.string.btn_select_close_period));
-                btnReportEntry.setOnClickListener(goToSelectPeriod());
+                configFirstMissingOrUncomleteHolder(R.string.Rapid_Test_missed_period, R.string.btn_select_close_period, goToSelectPeriod());
                 break;
             case UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
-                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_uncompleted_rapid_physical_inventory_message)));
-                setGrayHeader();
-                setBlueButton();
-                btnReportEntry.setText(context.getString(R.string.btn_view_uncompleted_physical_inventory));
-                btnReportEntry.setOnClickListener(goToInventory());
+                configFirstMissingOrUncomleteHolder(R.string.label_uncompleted_rapid_physical_inventory_message, R.string.btn_view_uncompleted_physical_inventory, goToInventory());
                 break;
             case COMPLETE_INVENTORY:
-                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, "Rapid Test")));
-                setGrayHeader();
-                setBlueButton();
-                btnReportEntry.setText(context.getString(R.string.btn_view_completed_Rapid_Test_inventory));
-                btnReportEntry.setOnClickListener(goToSelectPeriod());
+                configCompleteInventoryHolder();
                 break;
             case INACTIVE:
-                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.inactive_status)));
-                tvPeriod.setText(context.getString(R.string.inactive));
-                btnReportEntry.setVisibility(View.INVISIBLE);
-                setRedHeader();
+                configInactiveHolder();
                 break;
             case INCOMPLETE:
-                setGrayHeader();
-                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_incomplete_requisition, context.getString(R.string.title_rapid_test_reports))));
-                setWhiteButton();
-                btnReportEntry.setText(context.getString(R.string.btn_view_incomplete_requisition, context.getString(R.string.title_rapid_test_reports)));
-                btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());
+                configIncompleteHolder();
                 break;
             case COMPLETED:
-                String error;
-                error = context.getString(R.string.label_unsynced_requisition, context.getString(R.string.title_rapid_test_reports));
-                setRedHeader();
-                tvReportStatus.setText(Html.fromHtml(error));
+                configCompletedHolder();
                 break;
             case SYNCED:
-                setWhiteHeader();
-                tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_submitted_message, context.getString(R.string.title_rapid_test_reports), DateUtil.formatDate(rapidTestReportViewModel.getSyncedTime()))));
-                setWhiteButton();
-                btnReportEntry.setText(context.getString(R.string.btn_view_requisition, context.getString(R.string.title_rapid_test_reports)));
-                btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());
+                configSyncHolder(rapidTestReportViewModel);
                 break;
             default:
                 break;
         }
+    }
+
+    private void configCompleteInventoryHolder() {
+        tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, "Rapid Test")));
+        setGrayHeader();
+        setBlueButton();
+        btnReportEntry.setText(context.getString(R.string.btn_view_completed_Rapid_Test_inventory));
+        btnReportEntry.setOnClickListener(goToSelectPeriod());
+    }
+
+    private void configFirstMissingOrUncomleteHolder(int rapid_test_missed_period, int btn_select_close_period, SingleClickButtonListener singleClickButtonListener) {
+        tvReportStatus.setText(Html.fromHtml(context.getString(rapid_test_missed_period)));
+        setGrayHeader();
+        setBlueButton();
+        btnReportEntry.setText(context.getString(btn_select_close_period));
+        btnReportEntry.setOnClickListener(singleClickButtonListener);
+    }
+
+    private void configCannotDoMonthlyHolder() {
+        String finishPreviousForm;
+        finishPreviousForm = context.getString(R.string.label_training_can_not_create_rapid_Test_rnr);
+        setGrayHeader();
+        btnReportEntry.setVisibility(View.INVISIBLE);
+        tvReportStatus.setText(Html.fromHtml(finishPreviousForm));
+    }
+
+    private void configMissingHolder() {
+        String finishPreviousForm;
+        finishPreviousForm = context.getString(R.string.label_previous_period_missing);
+        setGrayHeader();
+        btnReportEntry.setVisibility(View.INVISIBLE);
+        tvReportStatus.setText(Html.fromHtml(finishPreviousForm));
+    }
+
+    private void configInactiveHolder() {
+        tvReportStatus.setText(Html.fromHtml(context.getString(R.string.inactive_status)));
+        tvPeriod.setText(context.getString(R.string.inactive));
+        btnReportEntry.setVisibility(View.INVISIBLE);
+        setRedHeader();
+    }
+
+    private void configIncompleteHolder() {
+        setGrayHeader();
+        tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_incomplete_requisition, context.getString(R.string.title_rapid_test_reports))));
+        setWhiteButton();
+        btnReportEntry.setText(context.getString(R.string.btn_view_incomplete_requisition, context.getString(R.string.title_rapid_test_reports)));
+        btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());
+    }
+
+    private void configCompletedHolder() {
+        String error;
+        error = context.getString(R.string.label_unsynced_requisition, context.getString(R.string.title_rapid_test_reports));
+        setRedHeader();
+        tvReportStatus.setText(Html.fromHtml(error));
+    }
+
+    private void configSyncHolder(RapidTestReportViewModel rapidTestReportViewModel) {
+        setWhiteHeader();
+        tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_submitted_message, context.getString(R.string.title_rapid_test_reports), DateUtil.formatDate(rapidTestReportViewModel.getSyncedTime()))));
+        setWhiteButton();
+        btnReportEntry.setText(context.getString(R.string.btn_view_requisition, context.getString(R.string.title_rapid_test_reports)));
+        btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());
     }
 
     public void setWhiteHeader() {
@@ -132,7 +159,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
 
     public void setBlueButton() {
         btnReportEntry.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
-        btnReportEntry.setPadding(60,5,60,0);
+        btnReportEntry.setPadding(60, 5, 60, 0);
         btnReportEntry.setTextColor(context.getResources().getColor(R.color.color_white));
     }
 
@@ -174,7 +201,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
             public void onSingleClick(View v) {
                 ((BaseActivity) context).loading();
                 if (viewModel.getRapidTestForm() == null) {
-                    ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, RapidTestReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod(),viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
+                    ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, RapidTestReportViewModel.DEFAULT_FORM_ID, viewModel.getPeriod(), viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
                 } else {
                     ((Activity) context).startActivityForResult(RapidTestReportFormActivity.getIntentToMe(context, viewModel.getRapidTestForm().getId(), viewModel.getPeriod(), viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
                 }
