@@ -116,21 +116,7 @@ public class RapidTestReportsPresenter extends Presenter {
                 DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
                 DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
 
-                if (dateTime.getDayOfMonth() >= 18 && dateTime.getMonthOfYear() == endDateTime.getMonthOfYear()) {
-                    Period currentPeriod = lastViewModel.getPeriod();
-                    Period lastPeriod = new Period(currentPeriod.getBegin(), currentPeriod.getEnd());
-                    List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(lastPeriod);
-                    RapidTestReportViewModel rapidTestReportViewModel;
-                    if (physicalInventories == null || physicalInventories.size() == 0) {
-                        rapidTestReportViewModel = new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
-                    } else {
-                        rapidTestReportViewModel = new RapidTestReportViewModel(lastPeriod, Status.COMPLETE_INVENTORY);
-                    }
-                    viewModelList.set(viewModelList.size() - 1, rapidTestReportViewModel);
-                } else {
-                    RapidTestReportViewModel rapidTest = new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.CANNOT_DO_MONTHLY_INVENTORY);
-                    viewModelList.set(viewModelList.size() - 1, rapidTest);
-                }
+                addLastRapidTestViewModel(lastViewModel, dateTime, endDateTime);
             }
         }
 
@@ -144,6 +130,24 @@ public class RapidTestReportsPresenter extends Presenter {
             }
         });
         addInactiveDate(viewModelList, typeForm);
+    }
+
+    private void addLastRapidTestViewModel(RapidTestReportViewModel lastViewModel, DateTime dateTime, DateTime endDateTime) throws LMISException {
+        if (dateTime.getDayOfMonth() >= 18 && dateTime.getMonthOfYear() == endDateTime.getMonthOfYear()) {
+            Period currentPeriod = lastViewModel.getPeriod();
+            Period lastPeriod = new Period(currentPeriod.getBegin(), currentPeriod.getEnd());
+            List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(lastPeriod);
+            RapidTestReportViewModel rapidTestReportViewModel;
+            if (physicalInventories == null || physicalInventories.size() == 0) {
+                rapidTestReportViewModel = new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+            } else {
+                rapidTestReportViewModel = new RapidTestReportViewModel(lastPeriod, Status.COMPLETE_INVENTORY);
+            }
+            viewModelList.set(viewModelList.size() - 1, rapidTestReportViewModel);
+        } else {
+            RapidTestReportViewModel rapidTest = new RapidTestReportViewModel(lastViewModel.getPeriod(), Status.CANNOT_DO_MONTHLY_INVENTORY);
+            viewModelList.set(viewModelList.size() - 1, rapidTest);
+        }
     }
 
     private void addCompletedColumn(ReportTypeForm typeForm, Optional<Period> period, RapidTestReportViewModel lastViewModel) throws LMISException {
