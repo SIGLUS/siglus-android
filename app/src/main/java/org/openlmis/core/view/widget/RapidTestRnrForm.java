@@ -64,7 +64,7 @@ public class RapidTestRnrForm extends LinearLayout {
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        for (Pair<EditText, SimpleTextWatcher> editTextConfigure: editTextConfigures) {
+        for (Pair<EditText, SimpleTextWatcher> editTextConfigure : editTextConfigures) {
             editTextConfigure.first.removeTextChangedListener(editTextConfigure.second);
         }
 
@@ -119,7 +119,7 @@ public class RapidTestRnrForm extends LinearLayout {
             tvReceived.setText(String.valueOf(item.getReceived()));
             tvIssue.setText(String.valueOf(item.getIssued()));
             tvAdjustment.setText(String.valueOf(item.getAdjustment()));
-            if (item.getIsCustomAmount() == true) {
+            if (item.getIsCustomAmount()) {
                 configEditText(item, etStock, String.valueOf(getValue(item.getInitialAmount())));
             } else {
                 etStock.setText(String.valueOf(getValue(item.getInitialAmount())));

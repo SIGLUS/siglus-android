@@ -114,7 +114,7 @@ public class PTVTestRnrForm extends LinearLayout {
             List<EditText> editTexts = new ArrayList<>();
             tvName.setText(item.getProduct().getPrimaryName());
             etStock.setText(String.valueOf(getValue(item.getInitialAmount())));
-            if (item.getIsCustomAmount() == true) {
+            if (item.getIsCustomAmount()) {
                 configEditText(item, etStock, tvTotal);
                 editTexts.add(etStock);
             } else {
@@ -219,7 +219,7 @@ public class PTVTestRnrForm extends LinearLayout {
         List<EditText> editTexts = editTextsLists.get(0);
         for (int i = 0; i < editTexts.size(); i++) {
             for (List<EditText> editTextList : editTextsLists) {
-                if (i < editTextList.size() -1) {
+                if (i < editTextList.size() - 1) {
                     EditText editText = editTextList.get(i);
                     if (TextUtils.isEmpty(editText.getText().toString())) {
                         editText.setError(context.getString(R.string.hint_error_input));
@@ -281,7 +281,7 @@ public class PTVTestRnrForm extends LinearLayout {
                     haveValue = true;
                 }
             }
-            return haveValue == true ? total : null;
+            return haveValue ? total : null;
         }
 
         private Long getEditValue(Editable etText) {
