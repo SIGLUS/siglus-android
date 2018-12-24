@@ -103,8 +103,8 @@ public class ALReportViewModel implements Serializable {
         } else if (!itemCHW.isComplete()) {
             itemCHW.showCheckTip = true;
         }
-        return itemHF.showCheckTip == false &&
-                itemCHW.showCheckTip == false;
+        return !itemHF.showCheckTip
+                && !itemCHW.showCheckTip;
     }
 
     public void clearCheckTip() {

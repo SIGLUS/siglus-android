@@ -1,4 +1,5 @@
 package org.openlmis.core.view.holder;
+
 import android.text.Editable;
 import android.util.Pair;
 import android.view.View;
@@ -76,7 +77,7 @@ public class ALReportViewHolder extends BaseViewHolder {
     }
 
     public void configureEditTextWatch() {
-        for (EditText editText: editTexts) {
+        for (EditText editText : editTexts) {
             editText.setEnabled(true);
             editText.setError(null);
             ALReportViewHolder.EditTextWatcher textWatcher = new ALReportViewHolder.EditTextWatcher(editText);
@@ -86,8 +87,8 @@ public class ALReportViewHolder extends BaseViewHolder {
     }
 
     public void checkTips() {
-        if (viewModel.showCheckTip == false) return;
-        for (EditText editText: editTexts) {
+        if (!viewModel.showCheckTip) return;
+        for (EditText editText : editTexts) {
             if (editText.getText().length() == 0) {
                 editText.setError(context.getString(R.string.hint_error_input));
                 return;
@@ -96,7 +97,7 @@ public class ALReportViewHolder extends BaseViewHolder {
     }
 
     private String getValue(Long vaule) {
-        return vaule == null ? "": String.valueOf(vaule.longValue());
+        return vaule == null ? "" : String.valueOf(vaule.longValue());
     }
 
     class EditTextWatcher extends SimpleTextWatcher {
@@ -112,36 +113,36 @@ public class ALReportViewHolder extends BaseViewHolder {
             ALGridViewModel gridViewModel = viewModel.getGridOne();
             ALGridViewModel.ALGridColumnCode gridColumnCode = ALGridViewModel.ALGridColumnCode.treatment;
             switch (editText.getId()) {
-                case  R.id.one_treatment:
+                case R.id.one_treatment:
                     gridViewModel = viewModel.getGridOne();
                     break;
-                case  R.id.one_Stock:
+                case R.id.one_Stock:
                     gridViewModel = viewModel.getGridOne();
                     gridColumnCode = ALGridViewModel.ALGridColumnCode.existentStock;
                     break;
-                case  R.id.two_treatment:
+                case R.id.two_treatment:
                     gridViewModel = viewModel.getGridTwo();
                     break;
-                case  R.id.two_Stock:
+                case R.id.two_Stock:
                     gridViewModel = viewModel.getGridTwo();
                     gridColumnCode = ALGridViewModel.ALGridColumnCode.existentStock;
                     break;
-                case  R.id.three_treatment:
+                case R.id.three_treatment:
                     gridViewModel = viewModel.getGridThree();
                     break;
-                case  R.id.three_stock:
+                case R.id.three_stock:
                     gridViewModel = viewModel.getGridThree();
                     gridColumnCode = ALGridViewModel.ALGridColumnCode.existentStock;
                     break;
-                case  R.id.four_treatment:
+                case R.id.four_treatment:
                     gridViewModel = viewModel.getGridFour();
                     break;
-                case  R.id.four_stock:
+                case R.id.four_stock:
                     gridViewModel = viewModel.getGridFour();
                     gridColumnCode = ALGridViewModel.ALGridColumnCode.existentStock;
                     break;
             }
-            if(gridColumnCode == ALGridViewModel.ALGridColumnCode.treatment) {
+            if (gridColumnCode == ALGridViewModel.ALGridColumnCode.treatment) {
                 gridViewModel.setTreatmentsValue(getEditValue(etText));
             } else {
                 gridViewModel.setExistentStockValue(getEditValue(etText));
@@ -151,7 +152,8 @@ public class ALReportViewHolder extends BaseViewHolder {
 
         private Long getEditValue(Editable etText) {
             Long editText;
-            try { editText = Long.valueOf(etText.toString());
+            try {
+                editText = Long.valueOf(etText.toString());
             } catch (NumberFormatException e) {
                 editText = null;
             }
@@ -159,8 +161,8 @@ public class ALReportViewHolder extends BaseViewHolder {
         }
     }
 
-    private  void removeTextWatcher() {
-        for (Pair<EditText, EditTextWatcher> editText: editPairWatcher) {
+    private void removeTextWatcher() {
+        for (Pair<EditText, EditTextWatcher> editText : editPairWatcher) {
             if (editText.first != null) {
                 editText.first.removeTextChangedListener(editText.second);
             }
