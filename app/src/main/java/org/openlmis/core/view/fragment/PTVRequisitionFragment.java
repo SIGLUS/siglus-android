@@ -43,7 +43,6 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.widget.PTVTestRnrForm;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -95,7 +94,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
     @Override
     protected BaseReportPresenter injectPresenter() {
-        presenter =  RoboGuice.getInjector(getActivity()).getInstance(PTVRequisitionPresenter.class);
+        presenter = RoboGuice.getInjector(getActivity()).getInstance(PTVRequisitionPresenter.class);
         return presenter;
     }
 
@@ -218,10 +217,11 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         finish();
 
     }
+
     @Override
     protected String getSignatureDialogTitle() {
-        return presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_ptv_submit_signature) :
-                getResources().getString(R.string.msg_approve_signature_ptv);
+        return presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_ptv_submit_signature)
+                : getResources().getString(R.string.msg_approve_signature_ptv);
     }
 
     @Override
@@ -261,21 +261,21 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
     }
 
     private void refreshUI(RnRForm rnRForm) {
-        int medicineWidth = (int) (getResources().getDimension(R.dimen.ptv_view_item_width) +
-        getResources().getDimension(R.dimen.border_width)) *
-                rnRForm.getRnrFormItemListWrapper().size();
-        int viewWidth = (int) (getResources().getDimension(R.dimen.ptv_view_item_width) +
-                                getResources().getDimension(R.dimen.ptv_view_right_header_width) +
-                                medicineWidth);
+        int medicineWidth = (int) (getResources().getDimension(R.dimen.ptv_view_item_width)
+                + getResources().getDimension(R.dimen.border_width))
+                * rnRForm.getRnrFormItemListWrapper().size();
+        int viewWidth = (int) (getResources().getDimension(R.dimen.ptv_view_item_width)
+                + getResources().getDimension(R.dimen.ptv_view_right_header_width)
+                + medicineWidth);
         medicines.getLayoutParams().width = medicineWidth;
         llTitle.getLayoutParams().width = viewWidth;
         llTableHeader.getLayoutParams().width = viewWidth;
     }
 
     private void refreshRegimenValue(RnRForm rnRForm) {
-        RegimenItem regimenAdult= getRegimenItem(Constants.PTV_REGIME_ADULT);
+        RegimenItem regimenAdult = getRegimenItem(Constants.PTV_REGIME_ADULT);
         totalParent.setText(getValue(regimenAdult.getAmount()));
-        RegimenItem regimenChild= getRegimenItem(Constants.PTV_REGIME_CHILD);
+        RegimenItem regimenChild = getRegimenItem(Constants.PTV_REGIME_CHILD);
         totalChild.setText(getValue(regimenChild.getAmount()));
     }
 
@@ -302,7 +302,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
     }
 
     private RegimenItem getRegimenItem(String code) {
-        for (RegimenItem regimenItem: presenter.ptvReportViewModel.getForm().getRegimenItemListWrapper()) {
+        for (RegimenItem regimenItem : presenter.ptvReportViewModel.getForm().getRegimenItemListWrapper()) {
             if (regimenItem.getRegimen().getCode().equals(code)) {
                 return regimenItem;
             }
@@ -321,14 +321,14 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         public void afterTextChanged(Editable etText) {
             switch (editText.getId()) {
                 case R.id.et_total_parent:
-                    RegimenItem regimenAdult= getRegimenItem(Constants.PTV_REGIME_ADULT);
-                    if (regimenAdult != null ) {
+                    RegimenItem regimenAdult = getRegimenItem(Constants.PTV_REGIME_ADULT);
+                    if (regimenAdult != null) {
                         regimenAdult.setAmount(getEditValue(etText));
                     }
                     break;
                 case R.id.et_total_child:
                     RegimenItem regimenChild = getRegimenItem(Constants.PTV_REGIME_CHILD);
-                    if (regimenChild != null ) {
+                    if (regimenChild != null) {
                         regimenChild.setAmount(getEditValue(etText));
                     }
                     break;

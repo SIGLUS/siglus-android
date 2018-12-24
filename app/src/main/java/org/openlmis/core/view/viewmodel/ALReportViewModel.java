@@ -1,4 +1,5 @@
 package org.openlmis.core.view.viewmodel;
+
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -33,7 +34,7 @@ public class ALReportViewModel implements Serializable {
     ALReportItemViewModel itemCHW;
 
     private RnRForm form;
-    public  List<ALReportItemViewModel> itemViewModelList = new ArrayList<>();
+    public List<ALReportItemViewModel> itemViewModelList = new ArrayList<>();
     Map<String, ALReportItemViewModel> itemViewModelMap = new HashMap<>();
 
     private ProgramDataForm rapidTestForm = new ProgramDataForm();
@@ -71,12 +72,12 @@ public class ALReportViewModel implements Serializable {
 
     private void setFormItemViewModels(RnRForm form) {
         List<RegimenItem> regimenItems = form.getRegimenItemListWrapper();
-        if (regimenItems.size() > 0 ) {
-           for (RegimenItem regimen : regimenItems) {
-             itemHF.setColumnValue(regimen, regimen.getHf());
-             itemCHW.setColumnValue(regimen, regimen.getChw());
-             itemTotal.setColumnValue(regimen, regimen.getAmount());
-           }
+        if (regimenItems.size() > 0) {
+            for (RegimenItem regimen : regimenItems) {
+                itemHF.setColumnValue(regimen, regimen.getHf());
+                itemCHW.setColumnValue(regimen, regimen.getChw());
+                itemTotal.setColumnValue(regimen, regimen.getAmount());
+            }
         }
     }
 
@@ -97,9 +98,9 @@ public class ALReportViewModel implements Serializable {
     public boolean isComplete() {
         itemHF.showCheckTip = false;
         itemCHW.showCheckTip = false;
-        if (!itemHF.isComplete()){
+        if (!itemHF.isComplete()) {
             itemHF.showCheckTip = true;
-        } else if (!itemCHW.isComplete()){
+        } else if (!itemCHW.isComplete()) {
             itemCHW.showCheckTip = true;
         }
         return itemHF.showCheckTip == false &&
