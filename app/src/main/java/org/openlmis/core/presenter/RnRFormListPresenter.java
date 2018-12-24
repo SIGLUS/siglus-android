@@ -116,7 +116,7 @@ public class RnRFormListPresenter extends Presenter {
 
         generateRnrViewModelByRnrFormsInDB(rnRFormViewModels, rnRForms);
 
-        if (typeForm.active == true) {
+        if (typeForm.active) {
             generateViewModelsByCurrentDate(rnRFormViewModels, typeForm);
         }
 

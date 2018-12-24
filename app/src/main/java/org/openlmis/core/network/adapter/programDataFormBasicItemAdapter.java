@@ -16,7 +16,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProductRepository;
 
 import java.lang.reflect.Type;

@@ -86,8 +86,8 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
             alReportViewModel = new ALReportViewModel(rnRForm);
             view.refreshRequisitionForm(rnRForm);
             view.setProcessButtonName(rnRForm.isDraft()
-                    ? context.getResources().getString(R.string.btn_submit) :
-                    context.getResources().getString(R.string.btn_complete));
+                    ? context.getResources().getString(R.string.btn_submit)
+                    : context.getResources().getString(R.string.btn_complete));
         }
     }
 
@@ -177,8 +177,8 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     private Regimen.RegimeType getRegimenType(String columnName) {
-        if (columnName.equals(ALGridViewModel.ALColumnCode.OneColumn.getColumnName()) ||
-                columnName.equals(ALGridViewModel.ALColumnCode.TwoColumn.getColumnName())) {
+        if (columnName.equals(ALGridViewModel.ALColumnCode.OneColumn.getColumnName())
+                || columnName.equals(ALGridViewModel.ALColumnCode.TwoColumn.getColumnName())) {
             return Regimen.RegimeType.Paediatrics;
         } else {
             return Regimen.RegimeType.Adults;

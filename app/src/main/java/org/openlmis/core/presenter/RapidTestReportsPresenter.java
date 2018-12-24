@@ -40,7 +40,6 @@ import static org.openlmis.core.model.ProgramDataForm.STATUS.DRAFT;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
 import static org.openlmis.core.view.viewmodel.RapidTestReportViewModel.Status;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class RapidTestReportsPresenter extends Presenter {
 
@@ -164,14 +163,14 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     private void addInactiveDate(List<RapidTestReportViewModel> list, ReportTypeForm typeForm) {
-        if (typeForm.isActive() == false) {
+        if (!typeForm.isActive()) {
             RapidTestReportViewModel rapidTestReportViewModel = new RapidTestReportViewModel(null, Status.INACTIVE);
             list.add(0, rapidTestReportViewModel);
         }
     }
 
     private void removeInactiveData(List<RapidTestReportViewModel> list, ReportTypeForm typeForm) {
-        if (typeForm.active == false) {
+        if (!typeForm.active) {
             List<RapidTestReportViewModel> needBeDeleteList = new ArrayList<>();
             for (int i = list.size() - 1; i >= 0; i--) {
                 RapidTestReportViewModel viewModel = list.get(i);
@@ -261,10 +260,10 @@ public class RapidTestReportsPresenter extends Presenter {
         Optional<ProgramDataForm> existingProgramDataForm = from(rapidTestForms).firstMatch(new Predicate<ProgramDataForm>() {
             @Override
             public boolean apply(ProgramDataForm programDataForm) {
-                DateTime programeDateTime = new DateTime(programDataForm.getPeriodBegin());
+                DateTime programDateTime = new DateTime(programDataForm.getPeriodBegin());
                 DateTime viewModelDateTime = new DateTime(viewModel.getPeriod().getBegin());
-                return programeDateTime.getMonthOfYear() == viewModelDateTime.getMonthOfYear() &&
-                        programeDateTime.getYear() == viewModelDateTime.getYear();
+                return programDateTime.getMonthOfYear() == viewModelDateTime.getMonthOfYear() &&
+                        programDateTime.getYear() == viewModelDateTime.getYear();
             }
         });
         if (existingProgramDataForm.isPresent()) {

@@ -211,12 +211,12 @@ public class HomeActivity extends BaseActivity {
 
     private void updateButtonConfigView() {
        List reportTypes = sharedPreferenceMgr.getReportTypesData();
-       List<Pair<String, Button>> ButtonConfigs= Arrays.asList(new Pair<>(Constants.VIA_REPORT, btnVIAList),
+       List<Pair<String, Button>> buttonConfigs= Arrays.asList(new Pair<>(Constants.VIA_REPORT, btnVIAList),
                new Pair<>(Constants.MMIA_REPORT, btnMMIAList),
                new Pair<>(Constants.AL_REPORT, btnALReport),
                new Pair<>(Constants.PTV_REPORT, btnPTVReport),
                new Pair<>(Constants.RAPID_REPORT,btnRapidTestReport));
-       for (Pair<String, Button> buttonConfig: ButtonConfigs) {
+       for (Pair<String, Button> buttonConfig: buttonConfigs) {
            ReportTypeForm reportType = getReportType(buttonConfig.first, reportTypes);
            Button button = buttonConfig.second;
            if (button != btnALReport) {
@@ -227,9 +227,9 @@ public class HomeActivity extends BaseActivity {
        }
 
        if (btnPTVReport.getVisibility() == View.VISIBLE && btnMMIAList.getVisibility() == View.VISIBLE) {
-           if (getReportType(Constants.PTV_REPORT, reportTypes).active == false) {
+           if (!getReportType(Constants.PTV_REPORT, reportTypes).active) {
                btnPTVReport.setVisibility(View.GONE);
-           } else if (getReportType(Constants.MMIA_REPORT, reportTypes).active == false) {
+           } else if (!getReportType(Constants.MMIA_REPORT, reportTypes).active) {
                btnMMIAList.setVisibility(View.GONE);
            }
        }

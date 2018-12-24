@@ -77,9 +77,9 @@ public class PTVRequisitionPresenter extends BaseRequisitionPresenter {
         if (rnRForm != null) {
             ptvReportViewModel = new PTVReportViewModel(rnRForm);
             view.refreshRequisitionForm(rnRForm);
-            view.setProcessButtonName(rnRForm.isDraft() ?
-                    context.getResources().getString(R.string.btn_submit) :
-                    context.getResources().getString(R.string.btn_complete));
+            view.setProcessButtonName(rnRForm.isDraft()
+                    ? context.getResources().getString(R.string.btn_submit)
+                    : context.getResources().getString(R.string.btn_complete));
         }
     }
 

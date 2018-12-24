@@ -18,7 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -31,7 +30,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.LotRepository;
