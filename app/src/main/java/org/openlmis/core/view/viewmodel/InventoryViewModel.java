@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
-import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.holder.StockCardViewHolder.StockOnHandStatus;
 
 import lombok.Data;

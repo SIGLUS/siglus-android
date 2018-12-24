@@ -10,8 +10,6 @@ import java.util.List;
 
 import lombok.Data;
 
-import static org.openlmis.core.view.viewmodel.RapidTestReportViewModel.DEFAULT_TOTAl_NULL;
-
 @Data
 public class RapidTestFormGridViewModel {
 
