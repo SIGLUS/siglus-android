@@ -125,6 +125,9 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
         String submittedTime = DateUtil.formatDate(programDataForm.getSubmittedTime(), DateUtil.ISO_BASIC_DATE_TIME_FORMAT);
 
         root.addProperty("facilityId", facilityId);
+        if (programCode.equals(Constants.RAPID_TEST_CODE)) {
+            programCode = Constants.RAPID_TEST_OLD_CODE;
+        }
         root.addProperty("programCode", programCode);
         root.addProperty("periodBegin", periodBegin);
         root.addProperty("periodEnd", periodEnd);
