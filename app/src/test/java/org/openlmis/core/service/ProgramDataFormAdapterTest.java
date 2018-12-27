@@ -95,7 +95,7 @@ public class ProgramDataFormAdapterTest {
         JsonElement jsonElement = programDataAdapter.serialize(programDataForm, null, null);
 
         assertThat(jsonElement.getAsJsonObject().get("facilityId").getAsInt(), is(123));
-        assertThat(jsonElement.getAsJsonObject().get("programCode").getAsString(), is(Constants.RAPID_TEST_CODE));
+        assertThat(jsonElement.getAsJsonObject().get("programCode").getAsString(), is(Constants.RAPID_TEST_OLD_CODE));
         assertThat(jsonElement.getAsJsonObject().get("periodBegin").getAsString(), is("2016-03-21"));
         assertThat(jsonElement.getAsJsonObject().get("periodEnd").getAsString(), is("2016-04-20"));
         assertThat(jsonElement.getAsJsonObject().get("submittedTime").getAsString(), startsWith("20161125T120300.000"));
