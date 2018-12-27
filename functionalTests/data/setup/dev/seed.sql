@@ -15,3 +15,5 @@
 \i data/setup/dev/V14__create_kits.sql
 \i data/setup/dev/V15__create_malaria_kits.sql
 \i data/setup/dev/V16__add_rapid_test_template.sql
+\i data/setup/dev/V17__reportType.sql
+\i data/setup/dev/V18__programs_supported.sql

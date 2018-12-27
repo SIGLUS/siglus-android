@@ -21,6 +21,7 @@ DELETE FROM requisition_periods;
 
 DELETE FROM patient_quantification_line_items;
 DELETE FROM requisition_line_item_losses_adjustments;
+DELETE FROM programs_supported;
 
 DELETE FROM comments;
 DELETE FROM regimen_line_items;
@@ -80,5 +81,6 @@ DELETE FROM email_attachments_relation;
 DELETE FROM email_attachments;
 DELETE FROM email_notifications;
 DELETE FROM sync_up_hashes;
+DELETE FROM reports_type;
 
 DELETE FROM supplemental_programs;
