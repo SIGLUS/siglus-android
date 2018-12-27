@@ -1,5 +1,5 @@
 ALTER TABLE products ALTER COLUMN strength TYPE varchar(50);
-
+DROP VIEW vw_stock_movements_integration;
 INSERT INTO products (code, primaryName, dispensingUnit, dosesPerDispensingUnit, packSize, active, fullSupply, tracer, packRoundingThreshold, roundToZero, strength, formId, nos, isbasic) values
 ('01A01', 'Digoxina 0,25mg Comp', '1', 1,1,TRUE,TRUE,FALSE,0,FALSE, '0,25mg', (SELECT id from product_forms where code='Comprimidos'), FALSE, TRUE),
 ('01A02', 'Digoxina; 2,5mg/50mL; Gotas Orais', '1', 1,1,TRUE,TRUE,FALSE,0,FALSE, '2,5mg/50mL', (SELECT id from product_forms where code='Gotas Orais'), FALSE, FALSE),
