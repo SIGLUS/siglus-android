@@ -101,5 +101,5 @@ INSERT INTO programs_supported (facilityId, programId, active, startDate, report
 ((SELECT id FROM facilities WHERE code = 'F_CORE'), (SELECT id FROM programs WHERE code = 'TB'),TRUE,'1/21/2016', null, null, null),
 ((SELECT id FROM facilities WHERE code = 'F_CORE'), (SELECT id FROM programs WHERE code = 'MALARIA'),TRUE,'1/21/2016', null, null, null),
 ((SELECT id FROM facilities WHERE code = 'F_CORE'), (SELECT id FROM programs WHERE code = 'PTV'),TRUE,'1/21/2016', null, null, null),
-((SELECT id FROM facilities WHERE code = 'F_CORE'), (SELECT id FROM programs WHERE code = 'TEST_KIT'),TRUE,'1/21/2016', null, null, null),
+((SELECT id FROM facilities WHERE code = 'F_CORE'), (SELECT id FROM programs WHERE code = 'TEST_KIT'),TRUE,'1/21/2016', (SELECT id FROM reports_type WHERE code = 'TEST_KIT'),'1/21/2016',TRUE),
 ((SELECT id FROM facilities WHERE code = 'F_CORE'), (SELECT id FROM programs WHERE code = 'NUTRITION'),TRUE,'1/21/2016', null, null, null);
