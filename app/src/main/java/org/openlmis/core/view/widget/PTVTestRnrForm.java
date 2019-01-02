@@ -171,6 +171,7 @@ public class PTVTestRnrForm extends LinearLayout {
             int serviceIndex = etService.getId();
             Service serviceCurrent = viewModel.getServices().get(serviceIndex);
             etService.setText(serviceCurrent.getName());
+            etService.setEnabled(false);
         }
         setHeaderViewTextStyle(etStock, services, tvTotal, tvReceived, etAdjustment, etFinalStock);
     }
