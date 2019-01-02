@@ -27,6 +27,7 @@ import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 
+import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -162,8 +163,10 @@ public class LMISRestManager {
     }
 
     private void addDeviceInfoToRequestHeader(RequestFacade request) {
+        String versionCode = String.valueOf(BuildConfig.VERSION_CODE);
         String deviceInfo = "OS: " + Build.VERSION.RELEASE
-                + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL;
+                + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL
+                + " VersionCode: " + versionCode;
         request.addHeader("DeviceInfo", deviceInfo);
     }
 
