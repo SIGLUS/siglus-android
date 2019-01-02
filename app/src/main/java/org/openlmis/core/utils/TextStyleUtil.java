@@ -89,7 +89,7 @@ public final class TextStyleUtil {
         return new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                String speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+                String speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\" -_×÷'\"€£¥₩~`•√Π÷×¶∆£¢^°©®™℅]";
                 Pattern pattern = Pattern.compile(speChat);
                 Matcher matcher = pattern.matcher(source.toString());
                 if (matcher.find()) return "";
@@ -98,4 +98,16 @@ public final class TextStyleUtil {
         };
     }
 
+    public static InputFilter getEditTextInhibitInputNumber() {
+        return new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                String speChat = "[\\d]";
+                Pattern pattern = Pattern.compile(speChat);
+                Matcher matcher = pattern.matcher(source.toString());
+                if (matcher.find()) return "";
+                else return null;
+            }
+        };
+    }
 }

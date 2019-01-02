@@ -92,6 +92,7 @@ public class SignatureDialog extends BaseDialogFragment {
         btnSign.setOnClickListener(singleClickButtonListener);
         etSignature.setFilters(new InputFilter[]{TextStyleUtil.getEditTextInhibitInputSpace(),
                 TextStyleUtil.getEditTextInhibitInputSpeChat(),
+                TextStyleUtil.getEditTextInhibitInputNumber(),
                 new InputFilter.LengthFilter(5)});
     }
 
