@@ -21,6 +21,7 @@ package org.openlmis.core.network;
 
 import android.content.Context;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 
 import com.google.gson.GsonBuilder;
@@ -157,6 +158,7 @@ public class LMISRestManager {
                     request.addHeader("UserName", user.getUsername());
                     request.addHeader("FacilityName", user.getFacilityName());
                 }
+                request.addHeader("UniqueId", getAndroidId());
                 addDeviceInfoToRequestHeader(request);
             }
         };
@@ -180,6 +182,10 @@ public class LMISRestManager {
                 .registerTypeAdapter(Service.class, new ServiceAdapter())
                 .registerTypeAdapter(Program.class, new ProgramAdapter())
                 .create());
+    }
+
+    private String getAndroidId() {
+        return Settings.Secure.getString(LMISApp.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     class APIErrorHandler implements ErrorHandler {
