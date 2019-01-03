@@ -25,7 +25,6 @@ import android.view.MotionEvent;
 import com.google.inject.AbstractModule;
 
 import org.hamcrest.core.Is;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,7 +35,8 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.utils.Constants;
@@ -84,6 +84,8 @@ public class HomeActivityTest {
         warningDialogFragmentBuilder = mock(WarningDialogFragmentBuilder.class);
         internetCheck = new InternetCheckMockForHomeActivity(true, warningDialogFragmentBuilder);
         mockSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
+
+        UserInfoMgr.getInstance().setUser(new User("user", "password"));
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
@@ -163,10 +165,9 @@ public class HomeActivityTest {
         Assert.assertThat(LMISApp.lastOperateTime, Is.is(not(0L)));
     }
 
-    // TODO:
-    @Ignore
     @Test
     public void shouldNotLogOutOrResetTimeIfNotTimeOut() throws Exception {
+        UserInfoMgr.getInstance().setUser(new User("user", "password"));
         testApp.setCurrentTimeMillis(10000L);
         homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
@@ -201,7 +202,6 @@ public class HomeActivityTest {
         assertThat(warningMessage, equalTo(homeActivity.getString(R.string.msg_back_twice_to_exit)));
     }
 
-    @Ignore
     @Test
     public void shouldFinishMainActivityAndStartLoginActivityWhenSighOutClicked() {
         MenuItem signoutAction = new RoboMenuItem(R.id.action_sign_out);
