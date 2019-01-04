@@ -18,6 +18,7 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
@@ -414,7 +415,7 @@ public class RnrFormRepository {
         try {
             programId = programRepository.queryByCode(programCode).getId();
             reportTypeForm = reportTypeFormRepository.getReportType(programCode);
-        } catch (LMISException e) {
+        } catch (Exception e) {
             return new ArrayList<>();
         }
         if(reportTypeForm == null) {
