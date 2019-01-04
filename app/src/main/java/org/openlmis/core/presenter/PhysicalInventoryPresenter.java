@@ -2,7 +2,6 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
@@ -80,11 +79,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                 if (viewModel.getStockCardId() == draftInventory.getStockCard().getId()) {
                     ((PhysicalInventoryViewModel) viewModel).setDraftInventory(draftInventory);
                 }
-            }
-
-            // This auto populate is added for tester
-            if (LMISApp.getInstance().isQAEnabled()) {
-                populateLotMovementModelWithExistingSoh(viewModel);
             }
         }
     }
