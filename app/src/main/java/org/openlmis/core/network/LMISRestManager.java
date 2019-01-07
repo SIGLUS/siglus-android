@@ -167,9 +167,9 @@ public class LMISRestManager {
     private void addDeviceInfoToRequestHeader(RequestFacade request) {
         String versionCode = String.valueOf(BuildConfig.VERSION_CODE);
         String deviceInfo = "OS: " + Build.VERSION.RELEASE
-                + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL
-                + " VersionCode: " + versionCode;
+                + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL;
         request.addHeader("DeviceInfo", deviceInfo);
+        request.addHeader("VersionCode", versionCode);
     }
 
     private GsonConverter registerTypeAdapter() {
