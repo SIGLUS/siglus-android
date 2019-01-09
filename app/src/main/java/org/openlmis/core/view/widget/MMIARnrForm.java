@@ -132,6 +132,19 @@ public class MMIARnrForm extends LinearLayout {
         // Solution View
         addViewByMedicineType(filterRnrFormItem(itemFormList, Product.MEDICINE_TYPE_SOLUTION));
         addDividerView(Product.MEDICINE_TYPE_SOLUTION);
+
+        //fill others type items
+        fillOtherTypeItem();
+
+    }
+
+    public void fillOtherTypeItem() {
+        List<RnrFormItem> otherItems = filterRnrFormItem(itemFormList, Product.MEDICINE_TYPE_OTHER);
+        for (RnrFormItem rnrFormItem: otherItems) {
+            rnrFormItem.setIssued((long) 0);
+            rnrFormItem.setAdjustment((long) 0);
+            rnrFormItem.setInventory((long) 0);
+        }
     }
 
     public boolean isCompleted() {
