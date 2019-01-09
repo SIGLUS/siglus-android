@@ -9,7 +9,6 @@ import com.google.gson.JsonParseException;
 import org.openlmis.core.model.ReportTypeForm;
 
 import java.lang.reflect.Type;
-import java.text.DateFormat;
 import java.util.Date;
 
 
@@ -19,7 +18,7 @@ public class ReportTypeAdapter implements JsonDeserializer<ReportTypeForm> {
 
     public ReportTypeAdapter() {
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapter(Date.class, new DateAdapter()).setDateFormat(DateFormat.LONG)
+                .registerTypeAdapter(Date.class, new ReportDateAdapter())
                 .create();
     }
 
