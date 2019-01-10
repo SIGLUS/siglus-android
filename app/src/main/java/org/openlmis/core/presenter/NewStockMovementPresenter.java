@@ -31,6 +31,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -47,6 +48,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.OnErrorNotImplementedException;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -85,35 +87,52 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     public void saveStockMovement() {
-        Subscription subscription = getSaveMovementObservable().subscribe(new Action1<StockMovementViewModel>() {
-            @Override
-            public void call(StockMovementViewModel viewModel) {
-                view.goToStockCard();
-            }
-        });
+        Subscription subscription = getSaveMovementObservable().subscribe(successAction, errorAction);
         subscriptions.add(subscription);
     }
+
+    protected Action1<StockMovementViewModel> successAction = new Action1<StockMovementViewModel>() {
+        @Override
+        public void call(StockMovementViewModel viewModel) {
+            view.goToStockCard();
+        }
+    };
+
+    protected Action1<Throwable> errorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            ToastUtil.show(throwable.getMessage());
+        }
+    };
+
 
     protected Observable<StockMovementViewModel> getSaveMovementObservable() {
         return Observable.create(new Observable.OnSubscribe<StockMovementViewModel>() {
             @Override
             public void call(Subscriber<? super StockMovementViewModel> subscriber) {
-                convertViewModelToDataModelAndSave();
-                subscriber.onNext(viewModel);
-                subscriber.onCompleted();
+                if (convertViewModelToDataModelAndSave()){
+                    subscriber.onNext(viewModel);
+                    subscriber.onCompleted();
+                } else {
+                    subscriber.onError(new Exception(String.valueOf(R.string.msg_invalid_stock_movement)));
+                }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private void convertViewModelToDataModelAndSave() {
+    private Boolean convertViewModelToDataModelAndSave() {
         viewModel.populateStockExistence(stockCard.getStockOnHand());
         StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
         stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
 
-        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-        if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
-            SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+        if (stockMovementItem.getCreatedAt().after(getLastMovementCreateDate())) {
+            stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+            if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
+                SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+            }
+            return true;
         }
+        return false;
     }
 
     private void loadExistingLotMovementViewModels(final MovementReasonManager.MovementType movementType) {
@@ -184,6 +203,8 @@ public class NewStockMovementPresenter extends Presenter {
     public Date getLastMovementDate() {
         return stockCard.getLastStockMovementDate();
     }
+
+    public Date getLastMovementCreateDate() {return stockCard.getLastStockMovementCreatedTime();}
 
     public interface NewStockMovementView extends BaseView {
 

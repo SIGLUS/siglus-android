@@ -145,6 +145,18 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
         }).getMovementDate();
     }
 
+    public Date getLastStockMovementCreatedTime() {
+        if (getStockMovementItemsWrapper().isEmpty()) {
+            return null;
+        }
+        return Collections.max(getStockMovementItemsWrapper(), new Comparator<StockMovementItem>() {
+            @Override
+            public int compare(StockMovementItem lhs, StockMovementItem rhs) {
+                return lhs.getCreatedTime().compareTo(rhs.getCreatedTime());
+            }
+        }).getCreatedTime();
+    }
+
     public List<LotOnHand> getNonEmptyLotOnHandList() {
         return FluentIterable.from(getLotOnHandListWrapper()).filter(new Predicate<LotOnHand>() {
             @Override
