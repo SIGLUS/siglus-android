@@ -125,7 +125,8 @@ public class NewStockMovementPresenter extends Presenter {
         StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
         stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
 
-        if (stockMovementItem.getCreatedAt().after(getLastMovementCreateDate())) {
+        Date lastMovementDate = getLastMovementCreateDate();
+        if (lastMovementDate == null || stockMovementItem.getCreatedAt().after(lastMovementDate)) {
             stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
             if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
                 SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
