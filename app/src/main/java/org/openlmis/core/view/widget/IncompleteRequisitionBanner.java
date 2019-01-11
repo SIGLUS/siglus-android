@@ -2,7 +2,6 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,25 +59,25 @@ public class IncompleteRequisitionBanner extends LinearLayout {
             ReportTypeForm mmiaReportTypeForm = reportTypeFormRepository.getReportType(Constants.MMIA_PROGRAM_CODE);
             ReportTypeForm viaReportTypeForm = reportTypeFormRepository.getReportType(Constants.VIA_PROGRAM_CODE);
             ReportTypeForm ptvReportTypeForm = reportTypeFormRepository.getReportType(Constants.PTV_REPORT);
-            int periodOffsetMonthMmia = (mmiaReportTypeForm == null || viaReportTypeForm.active == false) ?
-                    0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
-            int periodOffsetMonthVia = (viaReportTypeForm == null || viaReportTypeForm.active == false) ?
-                    0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
-            int periodOffsetMonthPTV = (ptvReportTypeForm == null || ptvReportTypeForm.active == false) ?
-                    0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.PTV_PROGRAM_CODE);
+            int periodOffsetMonthMmia = (mmiaReportTypeForm == null || !mmiaReportTypeForm.active)
+                    ? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
+            int periodOffsetMonthVia = (viaReportTypeForm == null || !viaReportTypeForm.active)
+                    ? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
+            int periodOffsetMonthPTV = (ptvReportTypeForm == null || !ptvReportTypeForm.active)
+                    ? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.PTV_PROGRAM_CODE);
             String tipMessage = "";
 
             if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0 && periodOffsetMonthPTV == 0) {
                 this.setVisibility(View.GONE);
                 return;
             } else if (periodOffsetMonthVia > 0 && (periodOffsetMonthPTV > 0 || periodOffsetMonthMmia > 0)) {
-                tipMessage = periodOffsetMonthMmia > 0 ? getResources().getString(R.string.via_and_mmia_requisition_alert) :
-                        getResources().getString(R.string.via_and_ptv_requisition_alert);
+                tipMessage = periodOffsetMonthMmia > 0 ? getResources().getString(R.string.via_and_mmia_requisition_alert)
+                        : getResources().getString(R.string.via_and_ptv_requisition_alert);
             } else if (periodOffsetMonthVia > 0) {
                 tipMessage = getResources().getString(R.string.via_requisition_alert);
             } else {
-                tipMessage = periodOffsetMonthMmia > 0 ? getResources().getString(R.string.mmia_requisition_alert) :
-                        getResources().getString(R.string.ptv_requisition_alert);
+                tipMessage = periodOffsetMonthMmia > 0 ? getResources().getString(R.string.mmia_requisition_alert)
+                        : getResources().getString(R.string.ptv_requisition_alert);
             }
             txMissedRequisition.setText(tipMessage);
             this.setVisibility(VISIBLE);
