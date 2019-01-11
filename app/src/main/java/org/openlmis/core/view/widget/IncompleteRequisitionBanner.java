@@ -59,27 +59,28 @@ public class IncompleteRequisitionBanner extends LinearLayout {
         try {
             ReportTypeForm mmiaReportTypeForm = reportTypeFormRepository.getReportType(Constants.MMIA_PROGRAM_CODE);
             ReportTypeForm viaReportTypeForm = reportTypeFormRepository.getReportType(Constants.VIA_PROGRAM_CODE);
-            int periodOffsetMonthMmia = mmiaReportTypeForm == null? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
-            int periodOffsetMonthVia = viaReportTypeForm == null? 0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
-            if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0) {
+            ReportTypeForm ptvReportTypeForm = reportTypeFormRepository.getReportType(Constants.PTV_REPORT);
+            int periodOffsetMonthMmia = (mmiaReportTypeForm == null || viaReportTypeForm.active == false) ?
+                    0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
+            int periodOffsetMonthVia = (viaReportTypeForm == null || viaReportTypeForm.active == false) ?
+                    0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
+            int periodOffsetMonthPTV = (ptvReportTypeForm == null || ptvReportTypeForm.active == false) ?
+                    0 : requisitionPeriodService.getIncompletePeriodOffsetMonth(Constants.PTV_PROGRAM_CODE);
+            String tipMessage = "";
+
+            if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0 && periodOffsetMonthPTV == 0) {
                 this.setVisibility(View.GONE);
                 return;
-            } else if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 1) {
-                String periodRange = getPeriodRangeForIncompleteRequisition(Constants.VIA_PROGRAM_CODE);
-                txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.via_and_mmia_requisition_alert, periodRange)));
-            } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 1) {
-                String periodRange = getPeriodRangeForIncompleteRequisition(Constants.VIA_PROGRAM_CODE);
-                txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.via_requisition_alert, periodRange)));
-            } else if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 0) {
-                String periodRange = getPeriodRangeForIncompleteRequisition(Constants.MMIA_PROGRAM_CODE);
-                txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.mmia_requisition_alert, periodRange)));
-            } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia > 1) {
-                txMissedRequisition.setText(getResources().getString(R.string.via_requisition_for_multiple_periods_alert));
-            } else if (periodOffsetMonthMmia > 1 && periodOffsetMonthVia == 0) {
-                txMissedRequisition.setText(getResources().getString(R.string.mmia_requisition_for_multiple_periods_alert));
+            } else if (periodOffsetMonthVia > 0 && (periodOffsetMonthPTV > 0 || periodOffsetMonthMmia > 0)) {
+                tipMessage = periodOffsetMonthMmia > 0 ? getResources().getString(R.string.via_and_mmia_requisition_alert) :
+                        getResources().getString(R.string.via_and_ptv_requisition_alert);
+            } else if (periodOffsetMonthVia > 0) {
+                tipMessage = getResources().getString(R.string.via_requisition_alert);
             } else {
-                txMissedRequisition.setText(getResources().getString(R.string.via_and_mmia_requisitions_for_multiple_periods_alert));
+                tipMessage = periodOffsetMonthMmia > 0 ? getResources().getString(R.string.mmia_requisition_alert) :
+                        getResources().getString(R.string.ptv_requisition_alert);
             }
+            txMissedRequisition.setText(tipMessage);
             this.setVisibility(VISIBLE);
         } catch (LMISException e) {
             e.printStackTrace();

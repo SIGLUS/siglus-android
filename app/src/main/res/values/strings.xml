@@ -414,13 +414,14 @@
     <string name="app_name_in_prd">SIGLUS</string>
     <string name="app_name_in_qa">SIGLUS QA</string>
     <string name="app_name_in_training">SIGLUS TREINO II</string>
+
     <!--Incomplete Requisition Banner-->
-    <string name="via_and_mmia_requisition_alert">Your MMIA and VIA requisitions for <![CDATA[<b>%1$s</b>]]> have not been completed</string>
-    <string name="via_requisition_alert">Your VIA requisition for <![CDATA[<b>%1$s</b>]]> has not been completed</string>
-    <string name="mmia_requisition_alert">Your MMIA for <![CDATA[<b>%1$s</b>]]> has not been completed</string>
-    <string name="via_requisition_for_multiple_periods_alert">Your VIA requisitions for multiple periods have not been completed</string>
-    <string name="mmia_requisition_for_multiple_periods_alert">Your MMIA for multiple periods have not been completed</string>
-    <string name="via_and_mmia_requisitions_for_multiple_periods_alert">Your MMIA and VIA requisitions for multiple periods have not been completed</string>
+    <string name="via_and_mmia_requisition_alert">Your VIA and MMIA requisitions have not been completed</string>
+    <string name="via_requisition_alert">Your VIA requisition has not been completed</string>
+    <string name="mmia_requisition_alert">Your MMIA has not been completed</string>
+    <string name="via_and_ptv_requisition_alert">Your VIA and PTV requisitions  have not been completed</string>
+    <string name="ptv_requisition_alert">Your PTV has not been completed</string>
+
     <string name="missed_requisition_time_range">%1$s to %2$s</string>
 
     <!-- Add products to requisition form -->
