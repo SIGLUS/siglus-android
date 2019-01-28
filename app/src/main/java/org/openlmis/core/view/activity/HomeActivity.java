@@ -183,7 +183,6 @@ public class HomeActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             syncTimeView.showSyncProgressBarAndHideIcon();
-            setSyncedTime();
         }
     };
 
