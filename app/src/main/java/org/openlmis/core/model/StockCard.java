@@ -78,7 +78,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     private List<LotOnHand> lotOnHandListWrapper;
 
     @DatabaseField
-    private float avgMonthlyConsumption = 0;
+    private float avgMonthlyConsumption = -1;
 
     @Override
     public int compareTo(@NonNull StockCard another) {
