@@ -100,6 +100,7 @@ public class NewStockMovementPresenter extends Presenter {
     protected Action1<Throwable> errorAction = new Action1<Throwable>() {
         @Override
         public void call(Throwable throwable) {
+            view.loaded();
             ToastUtil.show(throwable.getMessage());
         }
     };
@@ -113,7 +114,7 @@ public class NewStockMovementPresenter extends Presenter {
                     subscriber.onNext(viewModel);
                     subscriber.onCompleted();
                 } else {
-                    subscriber.onError(new Exception(String.valueOf(R.string.msg_invalid_stock_movement)));
+                    subscriber.onError(new Exception(LMISApp.getContext().getResources().getString(R.string.msg_invalid_stock_movement)));
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
