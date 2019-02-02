@@ -402,7 +402,7 @@
     <string name="msg_empty_quantity">Quantidade não pode estar em branco</string>
     <string name="msg_empty_signature">Rúbrica não pode estar em branco</string>
     <string name="msg_invalid_quantity">A quantidade não pode ser maior que o estoque existente</string>
-    <string name="msg_invalid_stock_movement">Stock movement date must later than last stock movement</string>
+    <string name="msg_invalid_stock_movement">A data de movimento das ações deve ser posterior ao último movimento de estoque</string>
 
     <!--Lot management-->
     <string name="label_lot_number">Qual é o número do lote?</string>

@@ -447,7 +447,7 @@
     <string name="msg_empty_quantity">Quantity cannot be blank</string>
     <string name="msg_empty_signature">Signature cannot be blank</string>
     <string name="msg_invalid_quantity">Quantity cannot be larger than stock on hand</string>
-    <string name="msg_invalid_stock_movement">A data de movimento das ações deve ser posterior ao último movimento de estoque</string>
+    <string name="msg_invalid_stock_movement">Stock movement date must later than last stock movement</string>
 
     <!--Lot management-->
     <string name="label_lot_number">What is the lot number?</string>
