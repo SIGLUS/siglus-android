@@ -98,6 +98,9 @@ public class StockService {
                 break;
             }
         }
+        if (issuePerMonths.size() < 1) {
+            return  -1;
+        }
 
         return getTotalIssues(issuePerMonths) * 1f / issuePerMonths.size();
     }
