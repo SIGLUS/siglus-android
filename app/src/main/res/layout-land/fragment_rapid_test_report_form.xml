@@ -407,7 +407,7 @@
                                 android:background="@color/color_rapid_test_form_total_header"
                                 android:gravity="center"
                                 android:maxLines="1"
-                                android:text="Observation"
+                                android:text="@string/hint_mmia_comment"
                                 android:textColor="@color/color_black"
                                 android:textSize="@dimen/font_size_regular" />
                         </LinearLayout>
