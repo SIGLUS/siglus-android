@@ -437,7 +437,7 @@
     <string name="error_lot_without_number_already_exists">Um lote com um nome de lote gerado automaticamente e a mesma data de expiração já foi criado</string>
     <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
     <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE UM NÚMERO DE LOTE</string>
-    <string name="title_rapid_test_reports">Relatórios de testes rápidos</string>
+    <string name="title_rapid_test_reports">Relatório de Testes Rápidos</string>
     <string name="msg_report_missing"><![CDATA[<b>Nenhum relatório de teste rápido foi criado </b>]]></string>
     <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE TESTE RÁPIDO</string>
     <string name="title_rapid_test_form">Relatório de testes rápido</string>
