@@ -194,6 +194,7 @@
     <string name="typePatient">Tipo de paciente</string>
     <string name="totalWomen">Total de mulheres:</string>
     <string name="TotalChildren">Total de crianças:</string>
+    <string name="msg_requisition_signature_message_notify_ptv">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do PTV</string>
 
     <!--Stock Movement-->
     <string name="Overstock">Stock acumulado</string>

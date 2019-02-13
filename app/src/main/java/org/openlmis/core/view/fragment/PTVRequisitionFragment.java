@@ -241,7 +241,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
     @Override
     protected String getNotifyDialogMsg() {
-        return getString(R.string.msg_requisition_signature_message_notify_al);
+        return getString(R.string.msg_requisition_signature_message_notify_ptv);
 
     }
 
