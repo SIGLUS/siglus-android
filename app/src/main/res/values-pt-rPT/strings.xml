@@ -5,7 +5,7 @@
     <string name="title_login">Entrar</string>
     <string name="title_init_inventory">Inventário inicial</string>
     <string name="title_physical_inventory">Inventário</string>
-    <string name="title_stock_cards">Visão geral de estoque</string>
+    <string name="title_stock_cards">Visão geral de stock</string>
     <string name="title_kit_stock_cards">Visão geral de Kits</string>
     <string name="title_unpack_kit">Desembalar Kit</string>
     <string name="title_requisition">Criar Requisição Balancete para Via clássica</string>
@@ -44,11 +44,11 @@
     <string name="btn_done">VERIFICADO</string>
     <string name="msg_remove_expire_date">Tem certeza que quer remover esta data de expiração?</string>
     <string name="msg_save_before_exit">Por favor, grave o inventário inicial, antes de sair da aplicação</string>
-    <string name="btn_no_stock">No stock</string>
-    <string name="btn_add_product">Add Products</string>
+    <string name="btn_no_stock">Sem stock</string>
+    <string name="btn_add_product">Adicionar produtos</string>
     <string name="title_basic_products">Basic Products</string>
     <!--Home Page-->
-    <string name="label_stock_cards">Visão Geral da Ficha de estoque</string>
+    <string name="label_stock_cards">Visão geral da ficha de stock</string>
     <string name="label_kits_stock_cards">KITS</string>
     <string name="label_mmia">Elaborar MMIA</string>
     <string name="label_sync">Sincronizar dados</string>
@@ -74,13 +74,13 @@
     <string name="initial_stock_movement_sync_failed">Sincronização Inicial  das fichas de estoque falhou, por favor tente novamente.</string>
     <string name="initial_sync_failed">Sincronização inicial falhou</string>
     <!-- Bulk Movements -->
-    <string name="label_soh_amount">Stock on Hand</string>
+    <string name="label_soh_amount">Stock Existente</string>
     <string name="hint_soh_amount">Quantidade</string>
     <string name="tv_batch">Lote &amp; data de validade</string>
     <string name="msg_error_basic_products">Todos os produtos básicos devem ser configurados para continuar</string>
     <!--MMIA-->
     <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
-    <string name="label_rnrfrom_left_header">Medicamento</string>
+    <string name="label_rnrfrom_left_header">Produto</string>
     <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
     <string name="total">Total</string>
     <string name="ape">APEs</string>
@@ -139,7 +139,7 @@
     <string name="label_request_amount">Quantidade Pedida</string>
     <string name="label_approved_amount">Qtd. Autorizada pelo Responsável Clínico</string>
     <string name="label_fnm">FNM</string>
-    <string name="label_product_codes">ódigos de produtos</string>
+    <string name="label_product_codes">FNM</string>
     <string name="label_product_name">MEDICAMENTO</string>
     <string name="msg_low_stock_warning">Este produto tem estoque em risco. Por favor, verifique as quantidades do produto.</string>
     <string name="msg_over_stock_warning">Este produto tem estoque acumulado. Por favor, verifique as quantidades do produto.</string>
@@ -181,8 +181,8 @@
     <string name="msg_ptv_submit_tip">A sua PTV foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver conecção a internet.</string>
     <string name="registration">Cadastro</string>
     <string name="medicines">Medicamentos</string>
-    <string name="dispensation">Dispensação</string>
-    <string name="PatientAndService">Nome do Paciente / Serviço HF</string>
+    <string name="dispensation">Dispensas</string>
+    <string name="PatientAndService">Nome do paciente/ ou serviço da US</string>
     <string name="initialStockLevel">Nível inicial de estoque</string>
     <string name="totalPtv">TOTAIS / Parciais</string>
     <string name="typePatient">Tipo de paciente</string>
@@ -190,7 +190,7 @@
     <string name="TotalChildren">Total de crianças:</string>
 
     <!--Stock Movement-->
-    <string name="Overstock">Stock acumulados</string>
+    <string name="Overstock">Stock acumulado</string>
     <string name="Regular_stock">Stock regular</string>
     <string name="Low_stock"> Eminência de ruptura</string>
     <string name="Stock_out">Ruptura de stock</string>
@@ -483,11 +483,11 @@
     <string name="total_child">Total de Crianças</string>
     <string name="service_name">Nome do Serviço</string>
     <string name="signature">Assinatura</string>
-    <string name="initial_stock">Estoque Inicial</string>
+    <string name="initial_stock">Stock Inicial</string>
     <string name="drug_name">Nome da Droga</string>
-    <string name="entries">Ingressos</string>
+    <string name="entries">Entradas</string>
     <string name="losses_and_adjustments">Perdas e Ajustes</string>
-    <string name="loss_and_adjustment">Perda e Ajuste</string>
+    <string name="loss_and_adjustment">Perdas e Ajustes</string>
     <string name="requisition">Requisição</string>
     <string name="final_stock">estoque final</string>
     <string name="loading_report_information">Carregando informações do relatório</string>
