@@ -26,7 +26,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:paddingLeft="@dimen/rapid_view_view_left_padding"
-                    android:text="Month/Year:   "
+                    android:text="@string/month_year"
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/font_size_regular" />
 

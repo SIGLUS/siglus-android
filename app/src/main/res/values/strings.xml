@@ -185,6 +185,12 @@
     <string name="msg_requisition_signature_message_notify_al">Please hand the device to the person responsible for approval and submission of AL</string>
     <string name="msg_al_submit_signature">Enter your initials to approve AL information</string>
     <string name="msg_approve_signature_al">Enter your initials and then approve the AL</string>
+    <string name="month_year">Month/Year:   </string>
+
+    <!-- Rapid Test -->
+    <string name="balance_test_report">Balancete of the rapid tests in the Health Facility</string>
+    <string name="attention_report_in_kit">(Attention: Reported in Kits)</string>
+    <string name="unjustified">unjustified</string>
 
     <!-- PTV -->
     <string name="label_ptv_title">PTV - %1$s to %2$s</string>

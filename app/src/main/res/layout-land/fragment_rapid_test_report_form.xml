@@ -34,7 +34,7 @@
                         android:layout_height="match_parent"
                         android:gravity="left|center"
                         android:paddingLeft="@dimen/rapid_view_view_left_padding"
-                        android:text="Banlance dos Testes Rapid na Unidade Sanitaria"
+                        android:text="@string/balance_test_report"
                         android:textColor="@color/color_black"
                         android:textSize="@dimen/font_size_regular" />
 
@@ -43,7 +43,7 @@
                         android:layout_height="match_parent"
                         android:gravity="left|center"
                         android:paddingLeft="@dimen/rapid_view_view_left_padding"
-                        android:text="(atencao reportado em kits)"
+                        android:text="@string/attention_report_in_kit"
                         android:textColor="@color/color_black"
                         android:textSize="@dimen/font_size_small" />
 
@@ -160,7 +160,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:maxLines="1"
-                                    android:text="Injustificado"
+                                    android:text="@string/unjustified"
                                     android:textColor="@color/color_black"
                                     android:textSize="@dimen/font_size_small" />
 
@@ -229,7 +229,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:maxLines="1"
-                                    android:text="Injustificado"
+                                    android:text="@string/unjustified"
                                     android:textColor="@color/color_black"
                                     android:textSize="@dimen/font_size_small" />
 
@@ -299,7 +299,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:maxLines="1"
-                                    android:text="Injustificado"
+                                    android:text="@string/unjustified"
                                     android:textColor="@color/color_black"
                                     android:textSize="@dimen/font_size_small" />
 
@@ -368,7 +368,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:maxLines="1"
-                                    android:text="Injustificado"
+                                    android:text="@string/unjustified"
                                     android:textColor="@color/color_black"
                                     android:textSize="@dimen/font_size_title_small" />
 
