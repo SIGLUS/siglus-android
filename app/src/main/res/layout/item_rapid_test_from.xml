@@ -45,12 +45,6 @@
         android:layout_width="156dp"
         android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/tv_expire"
-        style="@style/RapidTestForm.productList"
-        android:layout_width="97dp"
-        android:layout_height="wrap_content" />
-
     <EditText
         android:id="@+id/et_inventory"
         style="@style/RapidTestForm.productList"
@@ -59,5 +53,11 @@
         android:background="@null"
         android:inputType="numberSigned"
         android:enabled="false" />
+
+    <TextView
+        android:id="@+id/tv_expire"
+        style="@style/RapidTestForm.productList"
+        android:layout_width="97dp"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
