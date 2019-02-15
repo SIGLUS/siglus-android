@@ -34,6 +34,7 @@ android {
             versionCode androidVersionCode.toInteger()
             versionName semanticVersion
         }
+        buildConfigField "boolean", "MONITOR_DEVICE_ID", "true"
     }
 
     signingConfigs {
@@ -68,6 +69,7 @@ android {
         }
         qa {
             applicationId 'org.openlmis.core.qa'
+            buildConfigField "boolean", "MONITOR_DEVICE_ID", "false"
         }
         uat {
             applicationId 'org.openlmis.core.uat'
