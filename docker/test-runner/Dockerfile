@@ -86,8 +86,8 @@ ENV PATH /usr/local/rbenv/bin:/usr/local/rbenv/shims:$PATH
 
 RUN eval "$(rbenv init -)"; rbenv install 2.2.1 \
 &&  eval "$(rbenv init -)"; rbenv global 2.2.1 \
-&&  eval "$(rbenv init -)"; gem update --system \
-&&  eval "$(rbenv init -)"; gem install bundle
+&&  eval "$(rbenv init -)"; gem update --conservative || (gem i "rubygems-update:~>2.7" --no-document && update_rubygems) \
+&&  eval "$(rbenv init -)"; gem install bundle --conservative
 
 RUN git clone https://github.com/SIGLUS/lmis-moz-mobile.git /lmis-mobile
 
