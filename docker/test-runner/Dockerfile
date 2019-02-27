@@ -56,6 +56,7 @@ RUN mkdir -p $ANDROID_HOME/licenses/ && \
   echo "count=0" > ~/.android/repositories.cfg
 
 RUN yes | sdkmanager --licenses
+RUN yes | sdkmanager "platforms;android-27"
 
 RUN sdkmanager "tools" \
               "build-tools;27.0.3" \
