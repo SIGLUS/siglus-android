@@ -195,7 +195,7 @@
     <!-- PTV -->
     <string name="label_ptv_title">PTV - %1$s to %2$s</string>
     <string name="msg_uncompleted_ptv_hint"> Please Complete PTV information. </string>
-    <string name="msg_ptv_submit_tip">Your AL form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
+    <string name="msg_ptv_submit_tip">Your PTV form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="registration">Registration</string>
     <string name="medicines">Medicines</string>
     <string name="dispensation">Dispensation</string>
