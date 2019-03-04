@@ -1,4 +1,4 @@
-@malaria
+@malaria ~@ignore
 Feature: Add values to malaria program chart for US and APE and Save Information
 
   Scenario: 01 - Save information on Patient data malaria program

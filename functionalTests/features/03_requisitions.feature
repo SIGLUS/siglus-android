@@ -1,4 +1,4 @@
-@requisitions @dev
+@requisitions @dev ~@ignore
 Feature: Log in and make a requisition for basic products
 
   Scenario: 03 - Requisitions

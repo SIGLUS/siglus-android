@@ -1,4 +1,4 @@
-@mmia @dev
+@mmia @dev ~@ignore
 Feature: Log in and make movements with initialized products
 
   Scenario: 04 - MMIA

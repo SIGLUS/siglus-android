@@ -1,4 +1,4 @@
-@rapid @dev
+@rapid @dev ~@ignore
 Feature: Rapid Test
 
   Scenario: Create Rapid Test Report and sync
