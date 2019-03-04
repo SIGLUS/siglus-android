@@ -38,14 +38,14 @@ public class CreateDummyRegimes extends Migration {
     @Override
     public void up() {
         String formatDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
-        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('019','Consultas AL US/APE Malaria 1x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
-        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('020','Consultas AL STOCK Malaria 1x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
-        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('021','Consultas AL US/APE Malaria 2x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
-        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('022','Consultas AL STOCK Malaria 2x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
-        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('023','Consultas AL US/APE Malaria 3x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
-        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('024','Consultas AL STOCK Malaria 3x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
-        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('025','Consultas AL US/APE Malaria 4x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
-        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('026','Consultas AL STOCK Malaria 4x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('AL US/APE Malaria 1x6','Consultas AL US/APE Malaria 1x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('AL STOCK Malaria 1x6','Consultas AL STOCK Malaria 1x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('AL US/APE Malaria 2x6','Consultas AL US/APE Malaria 2x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('AL STOCK Malaria 2x6','Consultas AL STOCK Malaria 2x6','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('AL US/APE Malaria 3x6','Consultas AL US/APE Malaria 3x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('AL STOCK Malaria 3x6','Consultas AL STOCK Malaria 3x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('AL US/APE Malaria 4x6','Consultas AL US/APE Malaria 4x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('AL STOCK Malaria 4x6','Consultas AL STOCK Malaria 4x6','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
 
         execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('PTV Crianças','PTV Crianças OpA+','Paediatrics','" + formatDate + "' , '" + formatDate + "' , '1')");
         execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ,`isCustom` ) VALUES ('PTV Mulheres','PTV Mulheres OpA+','Adults','" + formatDate + "' , '" + formatDate + "' , '1')");
