@@ -78,6 +78,7 @@ public class ProductPresenter extends Presenter {
                     if (regimen == null) {
                         regimen = new Regimen();
                         regimen.setType(regimeType);
+                        regimen.setCode(regimeType + regimenName);
                         regimen.setName(regimenName);
                         regimen.setCustom(true);
                         regimenRepository.create(regimen);
