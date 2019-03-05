@@ -82,12 +82,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         boolean isSyncStockSuccessful = syncUpManager.syncStockCards();
         if (isSyncStockSuccessful) {
             sharedPreferenceMgr.setStockLastSyncTime();
+            syncUpManager.syncArchivedProducts();
         }
 
         syncUpManager.syncRapidTestForms();
         syncUpManager.syncUpUnSyncedStockCardCodes();
         syncUpManager.syncAppVersion();
-        syncUpManager.syncArchivedProducts();
         syncUpManager.syncUpCmms();
 
         if(!sharedPreferenceMgr.shouldSyncLastYearStockData()) {
