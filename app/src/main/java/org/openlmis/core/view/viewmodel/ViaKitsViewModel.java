@@ -22,9 +22,9 @@ public class ViaKitsViewModel {
 
     private List<RnrFormItem> kitItems = new ArrayList<>();
 
-    public static final String US_KIT = "SCOD10";
+    public static final String US_KIT = "26A01";
 
-    public static final String APE_KIT = "SCOD12";
+    public static final String APE_KIT = "26A02";
 
     public void convertRnrKitItemsToViaKit(List<RnrFormItem> rnrKitItems) {
         kitItems = rnrKitItems;
