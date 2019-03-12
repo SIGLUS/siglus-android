@@ -138,7 +138,6 @@ public class LMISRestManager {
 
     protected OkHttpClient getOkHttpClient() {
         OkHttpClient httpClient = new OkHttpClient();
-        httpClient.setConnectTimeout(0, TimeUnit.MINUTES);
         httpClient.setReadTimeout(20, TimeUnit.MINUTES);
         httpClient.setConnectTimeout(30, TimeUnit.SECONDS);
         httpClient.setWriteTimeout(60, TimeUnit.SECONDS);
