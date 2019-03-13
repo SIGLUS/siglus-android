@@ -363,12 +363,12 @@ public class VIARequisitionPresenterTest {
         when(rnRForm.getRnrItems(IsKit.No)).thenReturn(new ArrayList<RnrFormItem>());
 
         RnrFormItem rnrKitItem1 = new RnrFormItemBuilder()
-                .setProduct(new ProductBuilder().setCode("SCOD10").build())
+                .setProduct(new ProductBuilder().setCode("26A01").build())
                 .setReceived(100)
                 .setIssued((long) 50)
                 .build();
         RnrFormItem rnrKitItem2 = new RnrFormItemBuilder()
-                .setProduct(new ProductBuilder().setCode("SCOD12").build())
+                .setProduct(new ProductBuilder().setCode("26A02").build())
                 .setReceived(300)
                 .setIssued((long) 110)
                 .build();
