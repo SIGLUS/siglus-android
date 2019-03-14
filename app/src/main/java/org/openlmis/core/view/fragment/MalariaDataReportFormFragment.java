@@ -151,7 +151,7 @@ public class MalariaDataReportFormFragment extends BaseReportFragment implements
     private void showConfirmLeaveDialog() {
         new AlertDialog.Builder(getActivity())
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setMessage("Are you sure you want to leave?")
+                .setMessage(R.string.ifLeave)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

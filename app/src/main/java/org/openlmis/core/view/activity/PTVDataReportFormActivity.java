@@ -200,7 +200,7 @@ public class PTVDataReportFormActivity extends BaseActivity {
     private void showConfirmLeaveDialog() {
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setMessage("Are you sure you want to leave?")
+                .setMessage(R.string.ifLeave)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

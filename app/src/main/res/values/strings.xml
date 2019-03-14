@@ -569,6 +569,7 @@
     <string name="sync_stock_card_last_year_error">Error downloading stock cards from last year. Please retry</string>
     <string name="inactive_status">your status is inactive.</string>
     <string name="inactive">inactive</string>
+    <string name="ifLeave">Are you sure you want to leave?</string>
 
     <string-array name="movement_date_items_array">
         <item>Last 7 days</item>

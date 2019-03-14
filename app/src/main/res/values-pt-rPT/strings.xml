@@ -74,7 +74,7 @@
     <string name="initial_stock_movement_sync_failed">Sincronização Inicial  das fichas de estoque falhou, por favor tente novamente.</string>
     <string name="initial_sync_failed">Sincronização inicial falhou</string>
     <!-- Bulk Movements -->
-    <string name="label_soh_amount">Stock Existente</string>
+    <string name="label_soh_amount">Stock existente</string>
     <string name="hint_soh_amount">Quantidade</string>
     <string name="tv_batch">Lote &amp; data de validade</string>
     <string name="msg_error_basic_products">Todos os produtos básicos devem ser configurados para continuar</string>
@@ -100,7 +100,7 @@
     <string name="label_issued_unit">Unidade de Saída</string>
     <string name="hint_error_input">Entrada inválida</string>
     <string name="btn_save">Guardar</string>
-    <string name="msg_back_confirm">Tem certeza de que deseja encerrar sem guardar seu trabalho? Se você clicar em \"Sim\", o rascunho será excluído.</string>
+    <string name="msg_back_confirm">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar \"SIM\", o rascunho será APAGADO.</string>
     <string name="msg_regime_del_confirm">Tem a certeza que pretende remover este regime?</string>
     <string name="btn_positive">Sim</string>
     <string name="btn_negative">Não</string>
@@ -155,7 +155,7 @@
     <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
     <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
     <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
-    <string name="msg_requisition_signature_message_notify_rapid_test">Por favor, entregue o dispositivo à pessoa responsável pela aprovação e envio do teste rápido</string>
+    <string name="msg_requisition_signature_message_notify_rapid_test">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de testes rápidos.</string>
     <string name="btn_continue">Continuar</string>
     <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
     <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$s</b> Fechados <i>%2$s</i>. São<b>%3$s</b> <i>%4$s</i> em cada kit.<br/>]]></string>
@@ -171,7 +171,7 @@
     <string name="msg_uncomplete_hint"> Por favor, complete as informações do AL.</string>
     <string name="hint_al_complete_failed">Não foi possível completar o AL, por favor, contacte o administrador.</string>
     <string name="hint_ptv_complete_failed">Não foi possível completar o PTV, por favor, contacte o administrador.</string>
-    <string name="msg_requisition_signature_message_notify_al">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do AL</string>
+    <string name="msg_requisition_signature_message_notify_al">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de consumo de AL.</string>
     <string name="msg_al_submit_signature">Insira as iniciais do seu nome e aprove as quantidades do AL</string>
     <string name="msg_approve_signature_al">Insira as iniciais do seu nome e aprove o AL</string>
     <string name="month_year">Mês/Ano:   </string>
@@ -370,7 +370,7 @@
     <string name="app_update_suffix">Actualizar</string>
     <string name="select_to_install">Selecione instalar</string>
     <string name="update_available">Atualização disponível</string>
-    <string name="action_wipe_data">Voltar a sincronização dados do servidor</string>
+    <string name="action_wipe_data">Limpar e importar dados do servidor</string>
     <string name="message_warning_wipe_data">Esta operação irá remover todos os dados provenientes do dispositivo &amp; amp; descarregue dados previamente submetidos de volta para o tablet, \ n AVISO todos movimentos ou dados não sincronizados serão perdidos. Você quer continuar?</string>
     <string name="message_wipe_no_connection">Rede indisponível, por favor, tente novamente quando a rede estiver disponível.</string>
     <!--Select Emergency Products-->
@@ -469,7 +469,7 @@
     <string name="amount_field_cannot_be_empty">O campo de quantidade não pode estar vazio</string>
     <string name="amount_cannot_be_less_or_equal_to_zero">O valor não pode ser inferior ou igual a zero</string>
     <string name="succesfully_saved">Salvo com sucesso</string>
-    <string name="btn_bulk_add_new_lot">Adicionar lote</string>
+    <string name="btn_bulk_add_new_lot">Adicionar Lote</string>
     <string name="btn_create_malaria_report">Criar relatório de dados do paciente</string>
     <string name="msg_us_ape">US/APE</string>
     <string name="msg_patient_data_report_missing">Nenhum relatório de dados do paciente foi criado</string>
@@ -507,16 +507,17 @@
     <string name="continue_editing_ptv">Continue editando o Relatório PTV</string>
     <string name="header_ptv_name">Nome do Paciente / Serviço HF</string>
     <string name="ptv_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e apresentação do Relatório PTV</string>
-    <string name="msg_ptv_submit_signature">Insira suas iniciais e, em seguida, aprova os montantes do Relatório PTV</string>
-    <string name="msg_approve_signature_ptv">Insira suas iniciais e, em seguida, aprova o Relatório PTV</string>
+    <string name="msg_ptv_submit_signature">Insira as iniciais do seu nome e, em seguida, aprova os montantes do Relatório PTV</string>
+    <string name="msg_approve_signature_ptv">Insira as iniciais do seu nome e, em seguida, aprove os dados do PTV</string>
     <string name="submit_for_approval">Enviar para aprovação</string>
-    <string name="msg_malaria_submit_signature">Insira suas iniciais e, em seguida, aprova os montantes do Relatório Malaria</string>
-    <string name="msg_approve_signature_malaria">Insira suas iniciais e, em seguida, aprova o Relatório Malaria</string>
+    <string name="msg_malaria_submit_signature">Insira as iniciais do seu nome e, em seguida, aprova os montantes do Relatório AL</string>
+    <string name="msg_approve_signature_malaria">Insira as iniciais do seu nome e, em seguida, aprove os dados do mapa de Consumo de AL</string>
     <string name="malaria_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e apresentação do Relatório Malaria</string>
     <string name="last_year_stock_cards_sync">Os cartões de estoque do ano passado estão sincronizando</string>
     <string name="sync_stock_card_last_year_error">Erro ao baixar cartões de estoque do ano passado. Por favor tente novamente</string>
     <string name="inactive_status">seu status está inativo</string>
     <string name="inactive">inativo</string>
+    <string name="ifLeave">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar "SIM", o rascunho será APAGADO?</string>
 
     <string-array name="movement_date_items_array">
         <item>Últimos 7 dias</item>
