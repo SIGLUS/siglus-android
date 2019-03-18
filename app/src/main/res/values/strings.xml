@@ -39,7 +39,7 @@
     <string name="version_number"><![CDATA[Version <b>%1$s</b>]]> </string>
 
     <!-- Init Inventory -->
-    <string name="hint_quantity_in_stock">Stock on Hand</string>
+    <string name="hint_quantity_in_stock">Stock Existente</string>
     <string name="label_expire_date">Expiration Date</string>
     <string name="label_dummy_product">Paracetamol</string>
     <string name="label_dummy_unit">500mg</string>
@@ -53,7 +53,7 @@
     <string name="title_basic_products">Basic Products</string>
 
     <!-- Bulk Movements -->
-    <string name="label_soh_amount">Stock on Hand</string>
+    <string name="label_soh_amount">Stock Existente</string>
     <string name="hint_soh_amount">Amount</string>
     <string name="tv_batch">Batch &amp; expiry date</string>
     <string name="msg_error_basic_products">All the basic products have to be set up in order to continue</string>
@@ -215,7 +215,7 @@
     <string name="label_document_no">Document Number</string>
     <string name="label_negative_adjustment">Negative Adjustment</string>
     <string name="label_positive_adjustment">Positive Adjustment</string>
-    <string name="label_stock_existence">Stock on Hand</string>
+    <string name="label_stock_existence">Stock Existente</string>
     <string name="label_requested">Requested</string>
     <string name="label_signature">Signature</string>
     <string name="btn_cancel">CANCEL</string>
@@ -284,7 +284,7 @@
 
     <!-- Physical Inventory Page -->
     <string name="label_physical_inventory_stock_on_hand">Current stock on hand:</string>
-    <string name="label_physical_inventory_title_stock_on_hand">Stock on hand</string>
+    <string name="label_physical_inventory_title_stock_on_hand">Stock Existente</string>
 
     <!-- Unpack Kit -->
     <string name="kit_number">Unpacking: %1$s %2$s kit</string>
@@ -515,7 +515,7 @@
     <string name="label_view_movements">View movements:</string>
     <string name="batch_dummy">16B283S - Jul 2018</string>
     <string name="label_dummy_sho_amount">80</string>
-    <string name="sho">Stock on Hand</string>
+    <string name="sho">Stock Existente</string>
     <string name="amount_field_cannot_be_empty">The amount field cannot be empty</string>
     <string name="amount_cannot_be_less_or_equal_to_zero">The amount cannot be less or equal than zero</string>
     <string name="succesfully_saved">Successfully Saved</string>
