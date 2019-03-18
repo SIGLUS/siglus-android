@@ -119,7 +119,7 @@
                         <TextView
                             style="@style/AlReportList.title"
                             android:background="@color/color_green_light"
-                            android:text="HF" />
+                            android:text="@string/label_via_kit_hf" />
                     </LinearLayout>
 
                     <LinearLayout style="@style/AlReportList.titleContainer">
@@ -127,7 +127,7 @@
                         <TextView
                             style="@style/AlReportList.title"
                             android:background="@color/color_green_light"
-                            android:text="CHW" />
+                            android:text="@string/label_via_kit_chw" />
                     </LinearLayout>
 
                     <LinearLayout style="@style/AlReportList.titleContainer">
@@ -135,7 +135,7 @@
                         <TextView
                             style="@style/AlReportList.title"
                             android:background="@color/color_gray"
-                            android:text="Total" />
+                            android:text="@string/total" />
                     </LinearLayout>
                 </LinearLayout>
 
