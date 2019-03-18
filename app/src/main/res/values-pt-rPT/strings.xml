@@ -209,7 +209,7 @@
     <string name="label_negative_adjustment">Ajustes Negativos</string>
     <string name="label_positive_adjustment">Ajustes Positivos</string>
     <string name="label_stock_existence">Estoque Existente</string>
-    <string name="label_requested">Pedgidos</string>
+    <string name="label_requested">Pedidos</string>
     <string name="label_signature">Rúbrica</string>
     <string name="btn_cancel">CANCELAR</string>
     <string name="btn_do_not_remove">Cancelar</string>
