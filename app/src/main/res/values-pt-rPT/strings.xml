@@ -35,7 +35,7 @@
     <string name="msg_download_archived_products_fail">Descarregamento de produtos arquivados a partir do servidor falhou, por favor entre novamente.</string>
     <string name="version_number"><![CDATA[Versão <b>%1$s</b>]]></string>
     <!--Init Inventory-->
-    <string name="hint_quantity_in_stock">Estoque Existente</string>
+    <string name="hint_quantity_in_stock">Stock Existente</string>
     <string name="label_expire_date">Prazos de Validade</string>
     <string name="label_dummy_product">Paracetamol</string>
     <string name="label_dummy_unit">500mg</string>
@@ -208,7 +208,7 @@
     <string name="label_document_no">No. de Documento</string>
     <string name="label_negative_adjustment">Ajustes Negativos</string>
     <string name="label_positive_adjustment">Ajustes Positivos</string>
-    <string name="label_stock_existence">Estoque Existente</string>
+    <string name="label_stock_existence">Stock Existente</string>
     <string name="label_requested">Pedidos</string>
     <string name="label_signature">Rúbrica</string>
     <string name="btn_cancel">CANCELAR</string>
@@ -270,8 +270,8 @@
     <string name="msg_regular_stock">Estoque regular</string>
     <string name="msg_stock_out">Stock Out</string>
     <!--Physical Inventory Page-->
-    <string name="label_physical_inventory_stock_on_hand">Estoque existente actual</string>
-    <string name="label_physical_inventory_title_stock_on_hand">Estoque Existente</string>
+    <string name="label_physical_inventory_stock_on_hand">Stock existente actual</string>
+    <string name="label_physical_inventory_title_stock_on_hand">Stock Existente</string>
     <!--Unpack Kit-->
     <string name="kit_number">Desembalando: %1$s %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantidade recebida</string>
@@ -408,7 +408,7 @@
     <string name="msg_empty_movement_reason">Razão do movimento não pode estar em branco</string>
     <string name="msg_empty_quantity">Quantidade não pode estar em branco</string>
     <string name="msg_empty_signature">Rúbrica não pode estar em branco</string>
-    <string name="msg_invalid_quantity">A quantidade não pode ser maior que o estoque existente</string>
+    <string name="msg_invalid_quantity">A quantidade não pode ser maior que o stock existente</string>
     <string name="msg_invalid_stock_movement">A data de movimento das ações deve ser posterior ao último movimento de estoque</string>
 
     <!--Lot management-->
@@ -421,9 +421,9 @@
     <string name="title_add_new_lot">Adicionar novo lote para</string>
     <string name="hint_lot_info"><![CDATA[Número de lote & prazo de validade]]></string>
     <string name="hint_lot_amount">Quantidade</string>
-    <string name="hint_soh_of_lot">Estoque existente do lote</string>
-    <string name="label_existing_soh_of_lot">Estoque existente de um lote</string>
-    <string name="label_new_added_lot">Lote recentemente adicionado, não tem nenhum estoque existente</string>
+    <string name="hint_soh_of_lot">Stock existente do lote</string>
+    <string name="label_existing_soh_of_lot">Stock existente de um lote</string>
+    <string name="label_new_added_lot">Lote recentemente adicionado, não tem nenhum stock existente</string>
     <string name="empty_lot_warning">Por favor, adicione um novo lote</string>
     <string name="alert_add_lot_amount">Digite um valor maior que 0 em pelo menos um lote</string>
     <string name="btn_remove_lot">REMOVER LOTE</string>
