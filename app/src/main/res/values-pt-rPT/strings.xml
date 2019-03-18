@@ -295,8 +295,8 @@
     <!--Rnr form historical list-->
     <string name="label_via_name">Requisição Balancete</string>
     <string name="label_mmia_name">MMIA</string>
-    <string name="label_al_name">AL rápidos</string>
-    <string name="label_ptv_name">PTV rápidos</string>
+    <string name="label_al_name">AL</string>
+    <string name="label_ptv_name">PTV</string>
     <string name="btn_view_completed_Rapid_Test_inventory">Criar testes rápidos</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
@@ -444,7 +444,7 @@
     <string name="error_lot_without_number_already_exists">Um lote com um nome de lote gerado automaticamente e a mesma data de expiração já foi criado</string>
     <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
     <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE UM NÚMERO DE LOTE</string>
-    <string name="title_rapid_test_reports">Relatório de Testes Rápidos</string>
+    <string name="title_rapid_test_reports">Testes Rápidos</string>
     <string name="msg_report_missing"><![CDATA[<b>Nenhum relatório de teste rápido foi criado </b>]]></string>
     <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE TESTE RÁPIDO</string>
     <string name="title_rapid_test_form">Relatório de testes rápido</string>

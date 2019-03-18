@@ -311,8 +311,8 @@
     <!-- Rnr form historical list -->
     <string name="label_via_name">Requisition Balancete</string>
     <string name="label_mmia_name">MMIA</string>
-    <string name="label_al_name">AL Reports</string>
-    <string name="label_ptv_name">PTV Reports</string>
+    <string name="label_al_name">AL</string>
+    <string name="label_ptv_name">PTV</string>
     <string name="action_delete_rnr_form">Remove from tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b>No MMIA has been created.</b>]]> Complete your inventory before creating a MMIA</string>
     <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b>No Rapid Test has been created.</b>]]> Complete your inventory before creating a Rapid Test</string>
@@ -491,7 +491,7 @@
     <string name="error_lot_without_number_already_exists">A lot with an auto generated lot name and the same expiry date has already been created</string>
     <string name="title_generate_lot_number">Auto generate lot number for new lot?</string>
     <string name="btn_confirm_generate_lot_number">AUTO GENERATE LOT NUMBER</string>
-    <string name="title_rapid_test_reports">Rapid Test Reports</string>
+    <string name="title_rapid_test_reports">Rapid Test</string>
     <string name="msg_report_missing"><![CDATA[<b>No rapid test report has been created</b>]]></string>
     <string name="btn_create_rapid_test_period">CREATE RAPID TEST REPORT</string>
     <string name="title_rapid_test_form">Rapid Test Report</string>
