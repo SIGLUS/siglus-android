@@ -34,13 +34,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_marginRight="@dimen/kit_width"
             android:layout_centerVertical="true"
             tools:text="Unpacking: 1 US kit" />
 
         <TextView
             android:id="@+id/tv_total"
             style="@style/Inventory.TextTotal"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/kit_width"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
