@@ -156,11 +156,11 @@ public class StockCardViewHolder extends BaseViewHolder {
                 tvStockOnHand.setTypeface(null, Typeface.NORMAL);
                 break;
             case LOW_STOCK:
-                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_warning_text));
+                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_low_stock));
                 tvStockOnHand.setTypeface(null, Typeface.NORMAL);
                 break;
             case STOCK_OUT:
-                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_over_stock));
+                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_stock_out));
                 tvStockOnHand.setTypeface(null, Typeface.BOLD);
                 break;
             default:
