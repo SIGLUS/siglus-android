@@ -204,6 +204,8 @@ public class MMIARequisitionPresenterTest {
         List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
         Regimen regimen = new Regimen();
         regimen.setId(12);
+        regimen.setType(Regimen.RegimeType.Paediatrics);
+        regimen.setName("test");
         RegimenItem regimenItem = new RegimenItem();
         regimenItem.setRegimen(regimen);
         regimenItemListWrapper.add(regimenItem);
@@ -238,6 +240,8 @@ public class MMIARequisitionPresenterTest {
     public void shouldReturnTrueWhenHasExist() throws Exception {
         Regimen regimen = new Regimen();
         regimen.setId(100L);
+        regimen.setType(Regimen.RegimeType.Adults);
+        regimen.setName("test");
         RegimenItem regimenItem = new RegimenItem();
         regimenItem.setRegimen(regimen);
         presenter.getRnRForm().getRegimenItemListWrapper().add(regimenItem);

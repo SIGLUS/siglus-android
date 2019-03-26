@@ -145,11 +145,16 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     public boolean isRegimeItemExists(Regimen regimen) {
         for (RegimenItem item : rnRForm.getRegimenItemListWrapper()) {
-            if (regimen.getId() == item.getRegimen().getId()) {
+            Regimen itemRegimen = item.getRegimen();
+            if (equalRegimen(regimen, itemRegimen)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean equalRegimen(Regimen regimen, Regimen regimenExist) {
+        return regimen.getName().equals(regimenExist.getName()) && regimen.getType().equals(regimenExist.getType());
     }
 
     private RegimenItem createRegimenItem(Regimen regimen) throws LMISException {
