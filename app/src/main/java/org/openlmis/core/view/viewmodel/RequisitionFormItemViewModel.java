@@ -57,22 +57,28 @@ public class RequisitionFormItemViewModel {
         this.fmn = (item.getProduct().getCode());
         this.productName = item.getProduct().getPrimaryName();
 
-        long issued = item.getIssued() == null ? 0 : item.getIssued().longValue();
+        long issued = ignoreNullValue(item.getIssued());
+        long initialAmount = ignoreNullValue(item.getInitialAmount());
+        long inventory = ignoreNullValue(item.getInventory());
+        long calculatedOrderQuantity = ignoreNullValue(item.getCalculatedOrderQuantity());
         long received = item.getReceived();
-        long initialAmount = item.getInitialAmount() == null ? 0 : item.getInitialAmount().longValue();
         long theoretical = initialAmount + received - issued;
-        long inventory = item.getInventory() == null ? 0 : item.getInventory().longValue();
         long different = inventory - theoretical;
-        this.initAmount = String.valueOf(item.getInitialAmount());
+
+        this.initAmount = String.valueOf(initialAmount);
         this.received = String.valueOf(received);
         this.issued = String.valueOf(issued);
         this.theoretical = String.valueOf(theoretical);
         this.total = "-";
         this.inventory = String.valueOf(inventory);
         this.different = String.valueOf(different);
-        this.totalRequest = String.valueOf(item.getCalculatedOrderQuantity());
+        this.totalRequest = String.valueOf(calculatedOrderQuantity);
         this.adjustedTotalRequest = totalRequest;
         inflateTotalAmount();
+    }
+
+    private long ignoreNullValue(Long item) {
+        return item == null ? 0 : item.longValue();
     }
 
     private void inflateTotalAmount() {
