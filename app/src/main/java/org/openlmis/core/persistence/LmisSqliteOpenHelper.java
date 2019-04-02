@@ -107,16 +107,13 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddSyncErrorsMessageTable());
             add(new AddActiveColumnToProductTable());
             add(new AddIsKitColumnToProduct());
-            add(new AddIsHIVColumnToProductsTable());
             add(new CreateKitProductsTable());
             add(new UpdateProductsFalseValueToZero());
             add(new UpdateCreateTimeAndUpdateTime());
             add(new AddInventoryTable());
             add(new AddParentCodeToProgramTable());
-            add(new AddProgramToRegimen());
             add(new UpdateRegimenType());
             add(new AddIsCustomColumnToRegime());
-            add(new CreateDummyRegimes());
             add(new CreateRegimeShortCodeTable());
             add(new ChangeProgramTableName());
             add(new CreateProductProgramsTable());
@@ -147,12 +144,15 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new ChangeMalariaTreatments());
             add(new CreatePTVProgramSchema());
             add(new AddMalariaSignature());
+            add(new AddIsHIVColumnToProductsTable());
             add(new AddALToRegimen());
+            add(new CreateDummyRegimes());
             add(new CreateProgramBasicDataFormTable());
             add(new CreateReportTypeTable());
             add(new CreateServiceTable());
             add(new AddCustomAmountAndTotalToRnrFormTable());
             add(new AddServiceItemTable());
+            add(new AddProgramToRegimen());
         }
     };
     private static int instanceCount = 0;
