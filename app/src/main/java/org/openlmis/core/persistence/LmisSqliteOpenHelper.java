@@ -47,6 +47,7 @@ import org.openlmis.core.persistence.migrations.AddLotsTable;
 import org.openlmis.core.persistence.migrations.AddLowStockAvgColumnToStockCardTable;
 import org.openlmis.core.persistence.migrations.AddMalariaSignature;
 import org.openlmis.core.persistence.migrations.AddManualAddColumnToRnrFormItemsTable;
+import org.openlmis.core.persistence.migrations.AddNewPrograms;
 import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
 import org.openlmis.core.persistence.migrations.AddProgramToRegimen;
 import org.openlmis.core.persistence.migrations.AddRapidTestColumnsTemplate;
@@ -94,6 +95,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private static final List<Migration> MIGRATIONS = new ArrayList<Migration>() {
         {
             add(new CreateInitTables());
+            add(new CreateDummyRegimes());
             add(new AddSignatureFieldInStockMovementItemTable());
             add(new AddFacilityIdToUser());
             add(new AddSyncTagToStockMovementItem());
@@ -118,6 +120,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new ChangeProgramTableName());
             add(new CreateProductProgramsTable());
             add(new AddIsEmergencyColumnToProgram());
+            add(new AddNewPrograms());
             add(new ConvertEssMedsToVIAProgram());
             add(new AddEmergencyColumnToRnr());
             add(new AddCategoryColumnToProductPrograms());
@@ -146,7 +149,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddMalariaSignature());
             add(new AddIsHIVColumnToProductsTable());
             add(new AddALToRegimen());
-            add(new CreateDummyRegimes());
             add(new CreateProgramBasicDataFormTable());
             add(new CreateReportTypeTable());
             add(new CreateServiceTable());
