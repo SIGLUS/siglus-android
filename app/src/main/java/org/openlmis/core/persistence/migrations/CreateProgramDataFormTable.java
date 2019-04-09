@@ -9,7 +9,6 @@ public class CreateProgramDataFormTable extends Migration {
                 "(`submittedTime` VARCHAR , " +
                 "`periodBegin` VARCHAR , " +
                 "`periodEnd` VARCHAR , " +
-                "`observation` VARCHAR DEFAULT '' , " +
                 "`program_id` BIGINT , " +
                 "`status` VARCHAR DEFAULT 'DRAFT' , " +
                 "`synced` SMALLINT , " +
