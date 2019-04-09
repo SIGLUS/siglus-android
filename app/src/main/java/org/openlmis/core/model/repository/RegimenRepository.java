@@ -76,6 +76,26 @@ public class RegimenRepository {
         });
     }
 
+    public void batchSave(List<Regimen> regimens) {
+        try {
+            for (Regimen regimen : regimens) {
+                createOrUpdate(regimen);
+            }
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
+    private void createOrUpdate(Regimen regimen) throws LMISException {
+        Regimen existingRegimen = getByCode(regimen.getCode());
+        if (existingRegimen == null) {
+            create(regimen);
+        } else {
+            regimen.setId(existingRegimen.getId());
+            regimenGenericDao.update(regimen);
+        }
+    }
+
     public void create(Regimen regimen) throws LMISException {
         regimenGenericDao.create(regimen);
     }

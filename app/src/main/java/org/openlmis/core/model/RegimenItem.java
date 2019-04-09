@@ -34,7 +34,7 @@ public class RegimenItem extends BaseModel{
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RnRForm form;
 
-    @DatabaseField(foreign = true, foreignColumnName = "code", columnName ="regimen_code", foreignAutoRefresh = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Regimen regimen;
 
     @Expose

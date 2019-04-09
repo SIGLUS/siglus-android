@@ -37,6 +37,7 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -84,32 +85,17 @@ public class ProgramRepository {
     }
 
     public void updateProgramWithRegimen(final List<Program> programs) throws LMISException {
-        regimenRepository.deleteAllNoCustomRegimens();
-        deleteAllPrograms();
-        createProgramWithRegimen(programs);
+        createOrUpdateProgramWithRegimen(programs);
     }
 
-    private void deleteAllPrograms() throws LMISException {
-        dbUtil.withDao(Program.class, new DbUtil.Operation<Program, Program>() {
-            @Override
-            public Program operate(Dao<Program, String> dao) throws SQLException, LMISException {
-                DeleteBuilder<Program, String> deleteBuilder = dao.deleteBuilder();
-                deleteBuilder.delete();
-                return null;
-            }
-        });
-    }
-
-    private void createProgramWithRegimen(final List<Program> programs) throws LMISException {
+    private void createOrUpdateProgramWithRegimen(final List<Program> programs) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    genericDao.create(programs);
                     for (Program program : programs) {
-                        for (Regimen regimen : program.getRegimens()) {
-                            regimenRepository.create(regimen);
-                        }
+                        createOrUpdate(program);
+                        regimenRepository.batchSave(new ArrayList(program.getRegimens()));
                     }
                     return null;
                 }

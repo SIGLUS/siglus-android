@@ -84,6 +84,7 @@ import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForIni
 import org.openlmis.core.persistence.migrations.UpdateAvgColumn;
 import org.openlmis.core.persistence.migrations.UpdateCategoryColumnForMMIAProducts;
 import org.openlmis.core.persistence.migrations.UpdateCreateTimeAndUpdateTime;
+import org.openlmis.core.persistence.migrations.UpdateCustomRegimes;
 import org.openlmis.core.persistence.migrations.UpdateProductsFalseValueToZero;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 
@@ -147,6 +148,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new ChangeMalariaTreatments());
             add(new CreatePTVProgramSchema());
             add(new AddMalariaSignature());
+            add(new UpdateCustomRegimes());
             add(new AddIsHIVColumnToProductsTable());
             add(new AddALToRegimen());
             add(new CreateProgramBasicDataFormTable());
