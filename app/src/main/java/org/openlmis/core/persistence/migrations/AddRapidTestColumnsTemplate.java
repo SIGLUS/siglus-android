@@ -29,16 +29,6 @@ public class AddRapidTestColumnsTemplate extends Migration {
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
                 "'" + formatDate + "', " +
                 "'" + formatDate + "')");
-
-        execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
-                + "VALUES (" +
-                "'UNJUSTIFIED_HIVDETERMINE', " +
-                "'', " +
-                "'', " +
-                "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
-                "'" + formatDate + "', " +
-                "'" + formatDate + "')");
-
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
                 "'CONSUME_HIVUNIGOLD', " +
@@ -56,16 +46,6 @@ public class AddRapidTestColumnsTemplate extends Migration {
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
                 "'" + formatDate + "', " +
                 "'" + formatDate + "')");
-
-        execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
-                + "VALUES (" +
-                "'UNJUSTIFIED_HIVUNIGOLD', " +
-                "'', " +
-                "'', " +
-                "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
-                "'" + formatDate + "', " +
-                "'" + formatDate + "')");
-
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
                 "'CONSUME_SYPHILLIS', " +
@@ -83,15 +63,6 @@ public class AddRapidTestColumnsTemplate extends Migration {
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
                 "'" + formatDate + "', " +
                 "'" + formatDate + "')");
-
-        execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
-                + "VALUES (" +
-                "'UNJUSTIFIED_SYPHILLIS', " +
-                "'', " +
-                "'', " +
-                "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
-                "'" + formatDate + "', " +
-                "'" + formatDate + "')");
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
                 "'CONSUME_MALARIA', " +
@@ -104,15 +75,6 @@ public class AddRapidTestColumnsTemplate extends Migration {
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
                 "'POSITIVE_MALARIA', " +
-                "'', " +
-                "'', " +
-                "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
-                "'" + formatDate + "', " +
-                "'" + formatDate + "')");
-
-        execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
-                + "VALUES (" +
-                "'UNJUSTIFIED_MALARIA', " +
                 "'', " +
                 "'', " +
                 "(SELECT id FROM programs WHERE programCode = 'RAPID_TEST'), " +
