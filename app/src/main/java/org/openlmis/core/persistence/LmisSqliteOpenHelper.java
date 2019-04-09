@@ -87,6 +87,7 @@ import org.openlmis.core.persistence.migrations.UpdateCreateTimeAndUpdateTime;
 import org.openlmis.core.persistence.migrations.UpdateCustomRegimes;
 import org.openlmis.core.persistence.migrations.UpdateProductsFalseValueToZero;
 import org.openlmis.core.persistence.migrations.UpdateProgramDataFormTable;
+import org.openlmis.core.persistence.migrations.UpdateRapidTestCode;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 
@@ -161,6 +162,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddCustomAmountAndTotalToRnrFormTable());
             add(new AddServiceItemTable());
             add(new AddProgramToRegimen());
+            add(new UpdateRapidTestCode());
         }
     };
     private static int instanceCount = 0;
