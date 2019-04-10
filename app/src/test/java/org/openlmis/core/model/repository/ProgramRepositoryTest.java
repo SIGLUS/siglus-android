@@ -49,8 +49,8 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         int size = programRepository.list().size();
         //given
         Program program = new Program();
-        program.setProgramCode("TB");
-        program.setProgramName("TB");
+        program.setProgramCode("TB_TEST");
+        program.setProgramName("TB_TEST");
         program.setProducts(products);
 
         ArrayList<Program> programs = new ArrayList<Program>();
