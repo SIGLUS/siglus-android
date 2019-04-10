@@ -24,12 +24,10 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
-import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
