@@ -91,6 +91,10 @@ public class StockRepository {
 
     public void createOrUpdate(final StockCard stockCard) {
         try {
+            StockCard existStockCard = queryStockCardByProductId(stockCard.getProduct().getId());
+            if (existStockCard != null) {
+                stockCard.setId(existStockCard.getId());
+            }
             genericDao.createOrUpdate(stockCard);
         } catch (LMISException e) {
             e.reportToFabric();
