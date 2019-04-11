@@ -30,10 +30,12 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
@@ -67,6 +69,10 @@ public class LoginPresenter extends Presenter {
 
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    ReportTypeFormRepository reportTypeFormRepository;
+
     @Inject
     SyncStockCardsLastYearSilently syncStockCardsLastYearSilently;
 
@@ -116,6 +122,7 @@ public class LoginPresenter extends Presenter {
     }
 
     private void authorizeAndLoginUserLocal(User user) {
+        setDefaultReportType();
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             if (userRepository.getLocalUser() == null) {
                 TrainingEnvironmentHelper.getInstance().setUpData();
@@ -130,6 +137,17 @@ public class LoginPresenter extends Presenter {
 
         UserInfoMgr.getInstance().setUser(localUser);
         syncLocalUserData(getSyncLocalUserDataSubscriber());
+    }
+
+    private void setDefaultReportType() {
+        if (sharedPreferenceMgr.getInstance().getReportTypesData() == null) {
+            try {
+                List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
+                sharedPreferenceMgr.getInstance().setReportTypesData(reportTypeForms);
+            } catch (LMISException e) {
+                e.reportToFabric();
+            }
+        }
     }
 
     private void authorizeAndLoginUserRemote(final User user) {

@@ -57,7 +57,7 @@ public class ReportTypeFormRepository {
         });
     }
 
-    protected List<ReportTypeForm> listAll() throws LMISException {
+    public List<ReportTypeForm> listAll() throws LMISException {
         return genericDao.queryForAll();
     }
 
