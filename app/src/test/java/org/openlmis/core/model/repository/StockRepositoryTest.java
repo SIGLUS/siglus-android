@@ -321,7 +321,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldDeleteDataOver13Months() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2016-08-11", DateUtil.DB_DATE_FORMAT).getTime());
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
 
         StockMovementItem stockMovementItem = createMovementItem(MovementReasonManager.MovementType.POSITIVE_ADJUST, 100L, stockCard, new Date(), new Date(), true);
 

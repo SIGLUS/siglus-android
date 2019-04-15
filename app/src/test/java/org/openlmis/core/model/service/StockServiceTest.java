@@ -12,9 +12,11 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -50,6 +52,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     private StockCard stockCard;
 
     private StockRepository mockedStockRepository;
+    private ProductRepository productRepository;
     private CmmRepository mockedCmmRepository;
 
     @Before
@@ -57,6 +60,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         mockedStockRepository = mock(StockRepository.class);
         mockedCmmRepository = mock(CmmRepository.class);
         stockService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockService.class);
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
 
         Date today = DateUtil.today();
         lastFirstMonthDate = DateUtil.generatePreviousMonthDateBy(today);
@@ -64,6 +68,23 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         lastThirdMonthDate = DateUtil.generatePreviousMonthDateBy(lastSecondMonthDate);
         lastForthMonthDate = DateUtil.generatePreviousMonthDateBy(lastThirdMonthDate);
         stockCard = new StockCard();
+        stockCard.setProduct(getRandomProduct());
+    }
+
+    private Product getRandomProduct() throws LMISException {
+
+        try {
+            Product product = new Product();
+            int random =(int)(Math.random() * 10000000);
+            product.setId(random);
+            product.setCode(String.valueOf(random));
+            Program program = new Program("MMIA", "MMIA", null, false, null,null);
+            product.setProgram(program);
+            productRepository.createOrUpdate(product);
+            return  product;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Test
@@ -100,6 +121,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     public void shouldCalculateAverageMonthlyConsumptionWithStockOutCorrectly() throws LMISException {
         //given
         StockCard stockCard = new StockCard();
+        stockCard.setProduct(getRandomProduct());
         stockCard.setStockOnHand(200);
         stockService.stockRepository.createOrUpdate(stockCard);
 
@@ -123,6 +145,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     public void shouldCalculateAverageMonthlyConsumptionWithContinuedStockOutCorrectly() throws LMISException {
         //given
         StockCard stockCard = new StockCard();
+        stockCard.setProduct(getRandomProduct());
         stockCard.setStockOnHand(200);
         stockService.stockRepository.createOrUpdate(stockCard);
 
@@ -168,6 +191,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldCalculateAverageMonthlyConsumptionLessThanZeroWhenOnlyTwoValidPeriod() throws Exception {
         StockCard stockCard = new StockCard();
+        stockCard.setProduct(getRandomProduct());
         stockCard.setStockOnHand(300);
         stockService.stockRepository.createOrUpdate(stockCard);
 
@@ -229,6 +253,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         stockService.stockRepository.createOrUpdate(stockCard);
 
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
+
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);
 

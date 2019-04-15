@@ -67,7 +67,7 @@ public class StockMovementRepositoryTest {
     @Test
     public void shouldListUnSyncedStockMovementItems() throws LMISException, ParseException {
         //given one movement was saved but NOT SYNCED
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
         assertThat(stockCard.getForeignStockMovementItems().size(), is(1));
         assertThat(stockMovementRepository.listUnSynced().size(), is(1));
 
@@ -83,7 +83,7 @@ public class StockMovementRepositoryTest {
 
     @Test
     public void shouldListLastFiveStockMovementsOrderByDateInDescOrder() throws Exception {
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1000, stockCard, DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-11", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1001, stockCard, DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1002, stockCard, DateUtil.parseString("2015-12-14", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), false);
@@ -98,7 +98,7 @@ public class StockMovementRepositoryTest {
 
     @Test
     public void shouldQueryStockMovementsByMovementDate() throws Exception {
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1000, stockCard, DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-11", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1001, stockCard, DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1002, stockCard, DateUtil.parseString("2015-12-14", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), false);
@@ -111,7 +111,7 @@ public class StockMovementRepositoryTest {
 
     @Test
     public void shouldQueryStockMovementsByCreatedDate() throws Exception {
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1000, stockCard, DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-11", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1001, stockCard, DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1002, stockCard, DateUtil.parseString("2015-12-14", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), false);
@@ -123,7 +123,7 @@ public class StockMovementRepositoryTest {
 
     @Test
     public void shouldQueryStockMovementHistory() throws Exception {
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1000, stockCard, DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-11", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1001, stockCard, DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1002, stockCard, DateUtil.parseString("2015-12-14", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), false);
@@ -139,7 +139,7 @@ public class StockMovementRepositoryTest {
 
     @Test
     public void shouldGetFirstStockMovement() throws Exception {
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1000, stockCard, DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-11", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1001, stockCard, DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-12", DateUtil.DB_DATE_FORMAT), false);
         createMovementItem(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, 1002, stockCard, DateUtil.parseString("2015-12-14", DateUtil.DB_DATE_FORMAT), DateUtil.parseString("2015-12-13", DateUtil.DB_DATE_FORMAT), false);
@@ -216,22 +216,20 @@ public class StockMovementRepositoryTest {
 
     @Test
     public void shouldGetFirstMovement() throws Exception {
-        StockCard stockCard = new StockCard();
-        stockRepository.createOrUpdate(stockCard);
-        StockCard stockCard2 = new StockCard();
-        stockRepository.createOrUpdate(stockCard2);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
+        StockCard stockCard2 = saveStockCardWithOneMovement(stockRepository, productRepository);
 
         createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-01-01").toDate(), new DateTime("2017-01-01").toDate(), false);
         createMovementItem(ISSUE, 100, stockCard2, new DateTime("2016-01-01").toDate(), new DateTime("2016-01-01").toDate(), false);
         createMovementItem(ISSUE, 100, stockCard2, new DateTime("2018-03-02").toDate(), new DateTime("2018-03-02").toDate(), false);
 
         StockMovementItem stockMovementItem = stockMovementRepository.getFirstStockMovement();
-        assertEquals(stockCard2.getStockMovementItemsWrapper().get(0), stockMovementItem);
+        assertTrue(stockMovementItem.getMovementDate().before(new DateTime("2016-01-01").toDate()));
     }
 
     @Test
     public void shouldBatchUpdateStockMovements() throws LMISException, ParseException {
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
 
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementQuantity(100);

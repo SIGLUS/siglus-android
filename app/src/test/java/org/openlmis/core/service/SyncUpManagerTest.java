@@ -101,6 +101,7 @@ public class SyncUpManagerTest {
     private SyncUpManager syncUpManager;
     private ProgramDataFormRepository mockedProgramDataFormRepository;
     private MalariaProgramRepository mockedMalariaprogramRepository;
+    private ProductRepository productRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -119,6 +120,7 @@ public class SyncUpManagerTest {
         syncUpManager.lmisRestApi = mockedLmisRestApi;
 
         stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
 
         User user = new User("user", "123");
         user.setFacilityCode("FC1");
@@ -210,7 +212,7 @@ public class SyncUpManagerTest {
     @NonNull
     private StockCard createTestStockCardData() throws LMISException, ParseException {
         ProductRepository productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
-        StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository, productRepository);
 
         Product product = new Product();
         product.setCode("PD1");

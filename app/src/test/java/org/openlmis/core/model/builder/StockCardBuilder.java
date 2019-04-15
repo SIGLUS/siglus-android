@@ -3,8 +3,10 @@ package org.openlmis.core.model.builder;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 
@@ -19,8 +21,17 @@ public class StockCardBuilder {
         stockCard = new StockCard();
     }
 
-    public static StockCard saveStockCardWithOneMovement(StockRepository stockRepository) throws LMISException, ParseException {
+    public static StockCard saveStockCardWithOneMovement(StockRepository stockRepository, ProductRepository productRepository) throws LMISException, ParseException {
         StockCard stockCard = new StockCard();
+        Product product = new Product();
+        int random =(int)(Math.random() * 10000000);
+        product.setId(random);
+        product.setCode(String.valueOf(random));
+        Program program = new Program("MMIA", "MMIA", null, false, null,null);
+        product.setProgram(program);
+        productRepository.createOrUpdate(product);
+
+        stockCard.setProduct(product);
         stockCard.setStockOnHand(90L);
         stockRepository.createOrUpdate(stockCard);
 

@@ -18,6 +18,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.builder.StockMovementViewModelBuilder;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -46,6 +47,7 @@ public class StockMovementViewHolderTest {
 
     private StockMovementViewHolder viewHolder;
     private StockMovementViewModel viewModel;
+    private ProductRepository productRepository;
     private StockCard stockCard;
     private View itemView;
 
@@ -66,8 +68,9 @@ public class StockMovementViewHolderTest {
                 .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "issue description")).build();
 
         StockRepository stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
 
-        stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
+        stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository, productRepository);
     }
 
     @Test
