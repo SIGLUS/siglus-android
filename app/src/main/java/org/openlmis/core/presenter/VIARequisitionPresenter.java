@@ -426,13 +426,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                 if (rnrFormItem.getProduct().isArchived()) {
                     rnrFormItem.getProduct().setArchived(false);
                     productRepository.updateProduct(rnrFormItem.getProduct());
-                } else {
-                    StockCard newStockCard = new StockCard();
-                    newStockCard.setProduct(rnrFormItem.getProduct());
-                    stockRepository.createOrUpdateStockCardWithStockMovement(newStockCard);
                 }
-                rnrFormItem.setForm(rnRForm);
-                rnRForm.getRnrFormItemListWrapper().add(rnrFormItem);
             }
         } catch (LMISException e) {
             e.reportToFabric();
