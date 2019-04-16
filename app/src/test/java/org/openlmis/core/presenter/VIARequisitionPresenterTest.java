@@ -577,29 +577,6 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldAddNewlyAddedProductsOnVIAFormAsStockCards() throws Exception {
-        RnRForm rnRForm = new RnRForm();
-        rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
-        rnRForm.setRnrFormItemListWrapper(newArrayList(createRnrFormItem(1)));
-        presenter.rnRForm = rnRForm;
-
-        RnrFormItem item1 = createRnrFormItem(2);
-        RnrFormItem item2 = createRnrFormItem(3);
-        RnrFormItem item3 = createRnrFormItem(4);
-        when(mockRnrFormItemRepository.listAllNewRnrItems()).thenReturn(newArrayList(item1, item2, item3));
-
-        presenter.createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems();
-
-        ArgumentCaptor<StockCard> captor = ArgumentCaptor.forClass(StockCard.class);
-        verify(mockStockRepository, times(3)).createOrUpdateStockCardWithStockMovement(captor.capture());
-        List<StockCard> captorAllValues = captor.getAllValues();
-        assertThat((captorAllValues.get(0)).getProduct().getId(), is(2L));
-        assertThat((captorAllValues.get(1)).getProduct().getId(), is(3L));
-        assertThat((captorAllValues.get(2)).getProduct().getId(), is(4L));
-        assertThat(rnRForm.getRnrFormItemListWrapper().size(), is(4));
-    }
-
-    @Test
     public void shouldDeleteNewRnrFormItem() throws Exception {
         Product product = new Product();
         RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product).setRequestAmount(100L).build();
