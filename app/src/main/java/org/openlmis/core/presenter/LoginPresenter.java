@@ -61,6 +61,8 @@ import rx.schedulers.Schedulers;
 
 public class LoginPresenter extends Presenter {
 
+    private static final String TAG = LoginPresenter.class.getSimpleName();
+
     LoginView view;
 
 
@@ -180,7 +182,7 @@ public class LoginPresenter extends Presenter {
     }
 
     private void onLoginSuccess(UserResponse userResponse) {
-        Log.d("Login Presenter", "Log in successful, setting up sync account");
+        Log.d(TAG, "Log in successful, setting up sync account");
         syncService.createSyncAccount(userResponse.getUserInformation());
 
         try {
@@ -285,6 +287,13 @@ public class LoginPresenter extends Presenter {
         return new Subscriber<List<StockCard>>() {
             @Override
             public void onCompleted() {
+                Log.d(TAG,"getSyncLastYearStockCardSubscriber onCompleted");
+                try {
+                    syncDownManager.fetchKitChangeProduct();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override
