@@ -132,6 +132,8 @@ public class SyncDownManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
+
+
     private void syncDownReportType(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         try {
             subscriber.onNext(SyncProgress.SyncingReportType);
@@ -215,11 +217,18 @@ public class SyncDownManager {
                     syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     Log.d(TAG,"syncDownServerData onCompleted");
-                    try {
-                        fetchKitChangeProduct();
-                    } catch (LMISException e) {
-                        e.printStackTrace();
-                    }
+                    new Thread ( new Runnable() {
+                        @Override
+                        public void run() {
+                            // This code will run in another thread. Usually as soon as start() gets called!
+                            try {
+                                fetchKitChangeProduct();
+                            } catch (LMISException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        }).start();
+
                     sendSyncFinishedBroadcast();
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
@@ -399,14 +408,13 @@ public class SyncDownManager {
     public void fetchKitChangeProduct () throws  LMISException {
         SyncDownKitChangeDraftProductsResponse responseAgain = getSyncDownKitChangeProductResponse();
         List<Product> productList = new ArrayList<>();
-        for (ProductAndSupportedPrograms productAndSupportedPrograms: responseAgain.getLatestProducts()) {
+        for (ProductAndSupportedPrograms productAndSupportedPrograms: responseAgain.getKitChangeProducts()) {
             Product product = productAndSupportedPrograms.getProduct();
             productProgramRepository.batchSave(productAndSupportedPrograms.getProductPrograms());
             updateDeactivateProductNotifyList(product);
             productList.add(product);
         }
         productRepository.batchCreateOrUpdateProducts(productList);
-        sharedPreferenceMgr.setLastSyncProductTime(responseAgain.getLatestUpdatedTime());
     }
 
     private SyncDownKitChangeDraftProductsResponse getSyncDownKitChangeProductResponse() throws LMISException {

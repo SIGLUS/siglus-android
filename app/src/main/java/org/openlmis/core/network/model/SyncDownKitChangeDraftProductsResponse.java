@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 public class SyncDownKitChangeDraftProductsResponse {
-    List<ProductAndSupportedPrograms> latestProducts;
+    List<ProductAndSupportedPrograms> kitChangeProducts;
     String latestUpdatedTime;
 }

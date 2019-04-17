@@ -179,7 +179,7 @@ public class ProductRepository {
             product.setId(existingProduct.getId());
             product.setArchived(existingProduct.isArchived());
             updateProduct(product);
-            if (!(existingProduct.isKit() == product.isKit())) {//isKit changed
+            if (existingProduct.isKit() != product.isKit()) {//isKit changed
                 stockRepository.deletedData(product, product.isKit());
             }
 
