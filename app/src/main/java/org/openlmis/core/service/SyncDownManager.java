@@ -20,6 +20,7 @@ package org.openlmis.core.service;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -42,6 +43,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
+import org.openlmis.core.network.model.SyncDownKitChangeDraftProductsResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
@@ -70,6 +72,7 @@ import rx.schedulers.Schedulers;
 public class SyncDownManager {
     private static final int DAYS_OF_MONTH = 30;
     private static final int MONTHS_OF_YEAR = 12;
+    private static final String TAG = SyncDownManager.class.getSimpleName();
 
     private boolean isSyncing = false;
 
@@ -128,6 +131,8 @@ public class SyncDownManager {
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
+
+
 
     private void syncDownReportType(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         try {
@@ -211,6 +216,19 @@ public class SyncDownManager {
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
                     syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+                    Log.d(TAG,"syncDownServerData onCompleted");
+                    new Thread ( new Runnable() {
+                        @Override
+                        public void run() {
+                            // This code will run in another thread. Usually as soon as start() gets called!
+                            try {
+                                fetchKitChangeProduct();
+                            } catch (LMISException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        }).start();
+
                     sendSyncFinishedBroadcast();
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
@@ -385,6 +403,22 @@ public class SyncDownManager {
 
     private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws LMISException {
         return lmisRestApi.fetchLatestProducts(sharedPreferenceMgr.getLastSyncProductTime());
+    }
+
+    public void fetchKitChangeProduct () throws  LMISException {
+        SyncDownKitChangeDraftProductsResponse responseAgain = getSyncDownKitChangeProductResponse();
+        List<Product> productList = new ArrayList<>();
+        for (ProductAndSupportedPrograms productAndSupportedPrograms: responseAgain.getKitChangeProducts()) {
+            Product product = productAndSupportedPrograms.getProduct();
+            productProgramRepository.batchSave(productAndSupportedPrograms.getProductPrograms());
+            updateDeactivateProductNotifyList(product);
+            productList.add(product);
+        }
+        productRepository.batchCreateOrUpdateProducts(productList);
+    }
+
+    private SyncDownKitChangeDraftProductsResponse getSyncDownKitChangeProductResponse() throws LMISException {
+        return lmisRestApi.fetchKitChangeDraftProductsAgain(sharedPreferenceMgr.getLastSyncProductTime());
     }
 
     private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {

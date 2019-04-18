@@ -19,6 +19,7 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
@@ -49,6 +50,7 @@ import java.util.concurrent.Callable;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class StockRepository {
+    private static final String TAG = StockRepository.class.getSimpleName();
     @Inject
     DbUtil dbUtil;
     @Inject
@@ -322,6 +324,42 @@ public class StockRepository {
 
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotItems);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockMovementItems);
+    }
+
+    public void deletedData(Product product, boolean fromKitToNormal) throws  LMISException {
+        Log.d(TAG,"deletedData, product = " + product);
+        Log.d(TAG,"deletedData, fromKitToNormal = " + fromKitToNormal);
+        Log.d(TAG,"deletedData, fromKitToNormal = " + fromKitToNormal);
+        StockCard stockCard = queryStockCardByProductCode(product.getCode());
+        Log.d(TAG,"deletedData, stockCard = " + stockCard);
+
+        String rawSqlDeleteLotMovmentItem = "DELETE FROM lot_movement_items " +
+                "where lot_id IN ( select id from lots where product_id="+product.getId()+");";
+        String rawSqlDeleteLotOnHand = "delete from lots_on_hand " +
+                "where lot_id IN ( select id from lots where product_id="+product.getId()+");";
+        String rawSqlDeleteLots = "delete from lots " +
+                "where product_id="+product.getId() +";";
+
+        String rawSqlDeleteStockCard = "delete from stock_cards " +
+                "where product_id="+product.getId() +";";
+        String rawSqlDeleteKitProducts = "delete from kit_products " +
+                "where kitCode=\""+product.getCode() +"\";";
+
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotMovmentItem);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotOnHand);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLots);
+        if (stockCard != null) {
+            String rawSqlDeleteStockItem = "delete from stock_items " +
+                    "where stockCard_id=" + stockCard.getId() + ";";
+            String rawSqlDeleteCmm = "delete from cmm " +
+                    "where stockCard_id=" + stockCard.getId() + ";";
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockItem);
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteCmm);
+        }
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockCard);
+        if (fromKitToNormal) {
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteKitProducts);
+        }
     }
 
     public StockCard queryStockCardByProductCode(String productCode) throws LMISException {

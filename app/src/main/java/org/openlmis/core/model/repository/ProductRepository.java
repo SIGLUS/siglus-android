@@ -53,6 +53,10 @@ public class ProductRepository {
     @Inject
     DbUtil dbUtil;
 
+
+    @Inject
+    StockRepository stockRepository;
+
     @Inject
     public ProductRepository(Context context) {
         genericDao = new GenericDao<>(Product.class, context);
@@ -175,6 +179,10 @@ public class ProductRepository {
             product.setId(existingProduct.getId());
             product.setArchived(existingProduct.isArchived());
             updateProduct(product);
+            if (existingProduct.isKit() != product.isKit()) {//isKit changed
+                stockRepository.deletedData(product, product.isKit());
+            }
+
         } else {
             genericDao.create(product);
         }

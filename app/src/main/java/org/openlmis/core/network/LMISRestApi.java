@@ -28,6 +28,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.network.model.SyncDownKitChangeDraftProductsResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
@@ -88,6 +89,9 @@ public interface LMISRestApi {
 
     @GET("/rest-api/latest-products")
     SyncDownLatestProductsResponse fetchLatestProducts(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
+
+    @GET("/rest-api/temp86-notice-kit-change")
+    SyncDownKitChangeDraftProductsResponse fetchKitChangeDraftProductsAgain(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
 
     @GET("/rest-api/programData/facilities/{facilityId}")
     SyncDownProgramDataResponse fetchProgramDataForms(@Path("facilityId") Long facilityId) throws LMISException;
