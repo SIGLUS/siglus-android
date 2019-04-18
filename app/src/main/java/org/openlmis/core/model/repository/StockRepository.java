@@ -333,26 +333,26 @@ public class StockRepository {
         StockCard stockCard = queryStockCardByProductCode(product.getCode());
         Log.d(TAG,"deletedData, stockCard = " + stockCard);
 
-        String rawSqlDeleteLotMovmentItem = "DELETE FROM lot_movement_items " +
-                "where lot_id IN ( select id from lots where product_id="+product.getId()+");";
-        String rawSqlDeleteLotOnHand = "delete from lots_on_hand " +
-                "where lot_id IN ( select id from lots where product_id="+product.getId()+");";
-        String rawSqlDeleteLots = "delete from lots " +
-                "where product_id="+product.getId() +";";
+        String rawSqlDeleteLotMovmentItem = "DELETE FROM lot_movement_items "
+                + "where lot_id IN ( select id from lots where product_id="+product.getId()+");";
+        String rawSqlDeleteLotOnHand = "delete from lots_on_hand "
+                + "where lot_id IN ( select id from lots where product_id="+product.getId()+");";
+        String rawSqlDeleteLots = "delete from lots "
+                + "where product_id="+product.getId() +";";
 
-        String rawSqlDeleteStockCard = "delete from stock_cards " +
-                "where product_id="+product.getId() +";";
-        String rawSqlDeleteKitProducts = "delete from kit_products " +
-                "where kitCode=\""+product.getCode() +"\";";
+        String rawSqlDeleteStockCard = "delete from stock_cards "
+                + "where product_id="+product.getId() +";";
+        String rawSqlDeleteKitProducts = "delete from kit_products "
+                + "where kitCode=\""+product.getCode() +"\";";
 
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotMovmentItem);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotOnHand);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLots);
         if (stockCard != null) {
-            String rawSqlDeleteStockItem = "delete from stock_items " +
-                    "where stockCard_id=" + stockCard.getId() + ";";
-            String rawSqlDeleteCmm = "delete from cmm " +
-                    "where stockCard_id=" + stockCard.getId() + ";";
+            String rawSqlDeleteStockItem = "delete from stock_items "
+                    + "where stockCard_id=" + stockCard.getId() + ";";
+            String rawSqlDeleteCmm = "delete from cmm "
+                    + "where stockCard_id=" + stockCard.getId() + ";";
             LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockItem);
             LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteCmm);
         }

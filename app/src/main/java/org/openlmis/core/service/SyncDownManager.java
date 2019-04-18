@@ -217,7 +217,7 @@ public class SyncDownManager {
                     syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     Log.d(TAG,"syncDownServerData onCompleted");
-                    new Thread ( new Runnable() {
+                    new Thread(new Runnable() {
                         @Override
                         public void run() {
                             // This code will run in another thread. Usually as soon as start() gets called!
@@ -405,7 +405,7 @@ public class SyncDownManager {
         return lmisRestApi.fetchLatestProducts(sharedPreferenceMgr.getLastSyncProductTime());
     }
 
-    public void fetchKitChangeProduct () throws  LMISException {
+    public void fetchKitChangeProduct() throws LMISException {
         SyncDownKitChangeDraftProductsResponse responseAgain = getSyncDownKitChangeProductResponse();
         List<Product> productList = new ArrayList<>();
         for (ProductAndSupportedPrograms productAndSupportedPrograms: responseAgain.getKitChangeProducts()) {
