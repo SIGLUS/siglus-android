@@ -104,10 +104,6 @@ public class RapidTestReportsPresenter extends Presenter {
                 viewModelList.add(rapidTestReportViewModel);
                 period = generateNextPeriod(rapidTestReportViewModel.getPeriod().getEnd());
             }
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-                RapidTestReportViewModel rapidTestReportViewModel = getViewModel(period.get(), rapidTestForms);
-                viewModelList.add(rapidTestReportViewModel);
-            }
 
             removeInactiveData(viewModelList, typeForm);
             RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
