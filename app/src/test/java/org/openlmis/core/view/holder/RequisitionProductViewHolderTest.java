@@ -89,7 +89,7 @@ public class RequisitionProductViewHolderTest {
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
         viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
 
-        assertThat(viewHolder.ivDelete.getVisibility()).isEqualTo(View.INVISIBLE);
+        assertThat(viewHolder.ivDelete.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
