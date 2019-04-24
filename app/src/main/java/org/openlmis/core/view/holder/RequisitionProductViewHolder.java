@@ -63,8 +63,8 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
     }
 
     public Boolean hideDeleteIconInVIAPage() {
-        return !presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
-                || (presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency());
+        return (presenter.getRnRForm() != null) && (!presenter.getRnRForm().isDraft()
+                || presenter.getRnRForm().isEmergency());
     }
 
     protected void showDelConfirmDialog(final RnrFormItem item) {
