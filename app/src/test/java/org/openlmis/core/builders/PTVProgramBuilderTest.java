@@ -10,16 +10,17 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PTVProgram;
 import org.openlmis.core.model.PTVProgramStockInformation;
+import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.Period;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.RoboGuice;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,13 +48,15 @@ public class PTVProgramBuilderTest {
         expectedPTVProgram.setStatus(ViaReportStatus.MISSING);
         expectedPTVProgram.setCreatedBy("");
         expectedPTVProgram.setVerifiedBy("");
-        expectedPTVProgram.setPatientDispensations(patientDispensationBuilder.buildInitialPatientDispensations(expectedPTVProgram));
+        List<PatientDispensation> patientDispensations = patientDispensationBuilder.buildInitialPatientDispensations(expectedPTVProgram);
+        expectedPTVProgram.setPatientDispensations(patientDispensations);
         when(ptvProgramStockInformationBuilder.buildPTVProgramStockInformation(expectedPTVProgram)).thenReturn(new ArrayList<PTVProgramStockInformation>());
-        expectedPTVProgram.setPtvProgramStocksInformation(ptvProgramStockInformationBuilder.buildPTVProgramStockInformation(expectedPTVProgram));
+        List<PTVProgramStockInformation> ptvProgramStocksInformation = ptvProgramStockInformationBuilder.buildPTVProgramStockInformation(expectedPTVProgram);
+        expectedPTVProgram.setPtvProgramStocksInformation(ptvProgramStocksInformation);
 
         PTVProgram actualPTVProgram = ptvProgramBuilder.buildInitialPTVProgram(period);
 
-        assertThat(actualPTVProgram, is(expectedPTVProgram));
+        assertEquals(actualPTVProgram, expectedPTVProgram);
     }
 
     public class MyTestModule extends AbstractModule {
