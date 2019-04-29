@@ -326,10 +326,9 @@ public class StockRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockMovementItems);
     }
 
-    public void deletedData(Product product, boolean fromKitToNormal) throws  LMISException {
+    public void deletedData(Product product, boolean isFromKitToNormal) throws  LMISException {
         Log.d(TAG,"deletedData, product = " + product);
-        Log.d(TAG,"deletedData, fromKitToNormal = " + fromKitToNormal);
-        Log.d(TAG,"deletedData, fromKitToNormal = " + fromKitToNormal);
+        Log.d(TAG,"deletedData, isFromKitToNormal = " + isFromKitToNormal);
         StockCard stockCard = queryStockCardByProductCode(product.getCode());
         Log.d(TAG,"deletedData, stockCard = " + stockCard);
 
@@ -357,7 +356,7 @@ public class StockRepository {
             LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteCmm);
         }
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockCard);
-        if (fromKitToNormal) {
+        if (isFromKitToNormal) {
             LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteKitProducts);
         }
     }

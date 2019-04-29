@@ -217,18 +217,7 @@ public class SyncDownManager {
                     syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     Log.d(TAG,"syncDownServerData onCompleted");
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // This code will run in another thread. Usually as soon as start() gets called!
-                            try {
-                                fetchKitChangeProduct();
-                            } catch (LMISException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        }).start();
-
+                    syncChangeKit();
                     sendSyncFinishedBroadcast();
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
@@ -244,6 +233,20 @@ public class SyncDownManager {
             public void onNext(SyncProgress syncProgress) {
             }
         });
+    }
+
+    private void syncChangeKit() {
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    Log.d(TAG," sync the kit change.");
+                    fetchKitChangeProduct();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).subscribeOn(Schedulers.newThread()).subscribeOn(Schedulers.io()).subscribe();
     }
 
     @NonNull
