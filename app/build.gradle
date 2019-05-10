@@ -216,6 +216,10 @@ dependencies {
             'com.natpryce:make-it-easy:4.0.1'
 }
 
+configurations.all {
+    resolutionStrategy.force 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
+    resolutionStrategy.force 'com.squareup.okhttp:okhttp:2.2.0'
+}
 task bundleInstall(type: Exec) {
     workingDir "$projectDir/../functionalTests"
     executable 'bundle'
