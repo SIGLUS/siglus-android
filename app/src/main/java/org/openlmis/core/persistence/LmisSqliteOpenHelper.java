@@ -169,7 +169,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new UpdateRapidTestColumnsTemplate());
             add(new UpdateRapidTestCode());
             add(new UpdateReportType());
-            add(new ChangeMalariaTreatmentsAgain());
+            //add(new ChangeMalariaTreatmentsAgain());
         }
     };
     private static int instanceCount = 0;
