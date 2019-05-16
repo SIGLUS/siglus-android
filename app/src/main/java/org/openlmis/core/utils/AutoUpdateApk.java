@@ -342,10 +342,9 @@ public class AutoUpdateApk {
 
         @Override
         protected void onProgressUpdate(Long... values) {
-            builder.setProgress(100,(int)((values[0]/values[1])*100),false);
+            builder.setProgress(100,(int)((values[0]*1.0/values[1])*100),false);
             builder.setContentText("Download Progress: " +(int)((values[0]*1.0/values[1])*100) +"%");
-            notification = builder.build();
-            notificationManager.notify(NOTIFICATION_ID,notification);
+            notificationManager.notify(NOTIFICATION_ID,builder.build());
         }
 
         protected void onPreExecute() {
@@ -367,7 +366,7 @@ public class AutoUpdateApk {
 
                 builder.setContentTitle("Download Completed")
                         .setContentText("Click to install")
-                        .setProgress(0,0,false)
+                        .setProgress(0,0,true)
                         .setAutoCancel(true);
                 String update_file = preferences.getString(UPDATE_FILE, "");
                 Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
