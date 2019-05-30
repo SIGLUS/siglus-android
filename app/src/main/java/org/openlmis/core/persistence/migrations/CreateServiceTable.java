@@ -6,7 +6,7 @@ public class CreateServiceTable extends Migration {
 
     @Override
     public void up() {
-        execSQL("CREATE TABLE `services` "
+        execSQL("CREATE TABLE IF NOT EXISTS `services` "
                 + "(`name` VARCHAR , "
                 + "`code` VARCHAR , "
                 + "`program_id` BIGINT , "

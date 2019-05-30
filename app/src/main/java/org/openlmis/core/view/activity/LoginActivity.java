@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.text.Html;
 import android.text.InputType;
@@ -40,12 +41,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+
+import java.io.File;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -60,6 +66,8 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @InjectView(R.id.btn_login)
     public Button btnLogin;
+    @InjectView(R.id.btn_export_data)
+    public Button btnExport;
 
     @InjectView(R.id.ly_username)
     public TextInputLayout lyUserName;
@@ -132,6 +140,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
         ivVisibilityPwd.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
+        btnExport.setOnClickListener(this);
 
         String lastLoginUser = SharedPreferenceMgr.getInstance().getLastLoginUser();
         etUsername.setEnabled(true);
@@ -226,11 +235,36 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
             case R.id.iv_visibility_pwd:
                 setPwdVisibility();
                 break;
+            case R.id.btn_export_data:
+                exportDB();
             default:
                 break;
         }
     }
 
+
+    private void exportDB() {
+        File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
+        File currentXML = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//shared_prefs//LMISPreference.xml");
+        File tempBackup = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_copy");
+        File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
+        File externalBackupXML = new File(Environment.getExternalStorageDirectory(), "LMISPreference");
+        try {
+            FileUtil.copy(currentDB, tempBackup);
+            ExportSqliteOpenHelper.removePrivateUserInfo(this);
+            FileUtil.copy(tempBackup, externalBackup);
+            FileUtil.copy(currentXML, externalBackupXML);
+            ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
+        } catch (Exception e) {
+            new LMISException(e).reportToFabric();
+            ToastUtil.show(e.getMessage());
+        } finally {
+            if (tempBackup.canRead()) {
+                tempBackup.delete();
+            }
+        }
+
+    }
     @Override
     public void loaded() {
         super.loaded();
