@@ -143,6 +143,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                     for (InventoryViewModel viewModel : inventoryViewModelList) {
                         viewModel.setSignature(sign);
                         StockCard stockCard = viewModel.getStockCard();
+
                         stockCard.setStockOnHand(viewModel.getLotListQuantityTotalAmount());
 
                         if (stockCard.getStockOnHand() == 0) {

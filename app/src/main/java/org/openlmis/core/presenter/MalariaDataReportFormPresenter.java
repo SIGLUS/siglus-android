@@ -164,7 +164,25 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
 
     @Override
     protected void addSignature(String signature) {
-
+        MalariaProgram malariaProgram = null;
+        try {
+            malariaProgram = getMalariaProgram();
+            malariaProgram.setStatus(status);
+            if (status.equals(ViaReportStatus.SUBMITTED)) {
+                malariaProgram.setVerifiedBy(signature);
+            } else {
+                malariaProgram.setCreatedBy(signature);
+            }
+            patientDataService.save(malariaProgram);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (LMISException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isSubmittedForApproval() {

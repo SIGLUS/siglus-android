@@ -41,9 +41,9 @@ public class RapidTestFormItemViewModel {
     RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Syphillis);
     RapidTestFormGridViewModel gridMalaria = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Malaria);
 
-    public List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = Arrays.asList(gridHIVDetermine, gridHIVUnigold, gridSyphillis, gridMalaria);
+     List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = Arrays.asList(gridHIVDetermine, gridHIVUnigold, gridSyphillis, gridMalaria);
 
-    public Map<String, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
+     Map<String, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
 
     public RapidTestFormItemViewModel(MovementReasonManager.MovementReason issueReason) {
         this.issueReason = issueReason;
