@@ -75,7 +75,15 @@ public class SelectPeriodPresenter extends Presenter {
     }
 
     private void generateDefaultInventoryDates(Period periodInSchedule, List<Inventory> inventories) {
-        DateTime inventoryDate = new DateTime().secondOfDay().withMaximumValue().withDate(periodInSchedule.getEnd().getYear(), periodInSchedule.getEnd().getMonthOfYear(), Period.INVENTORY_BEGIN_DAY);
+        DateTime inventoryDate = new DateTime()
+                .secondOfDay()
+                .withMaximumValue()
+                // Year, Month, Days
+                .withDate(periodInSchedule.getEnd().getYear(),
+                        periodInSchedule.getEnd().getMonthOfYear(),
+                        Period.INVENTORY_BEGIN_DAY)
+                // Hours, Min, Seconds
+                .withTime(23,59,59,0);
         for (int i = 0; i < Period.INVENTORY_END_DAY_NEXT - Period.INVENTORY_BEGIN_DAY; i++) {
             Inventory inventory = new Inventory();
             inventory.setCreatedAt(inventoryDate.toDate());
