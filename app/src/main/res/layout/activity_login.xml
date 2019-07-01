@@ -89,14 +89,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_large"
                         android:text="@string/btn_login" />
-                    <Button
-                        android:id="@+id/btn_export_data"
-                        style="@style/Button.Blue"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:layout_marginTop="@dimen/margin_large"
-                        android:text="@string/btn_export_data" />
 
                 </LinearLayout>
 

@@ -97,7 +97,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
-    private static final String TAG = LmisSqliteOpenHelper.class.getSimpleName();
 
     private static final List<Migration> MIGRATIONS = new ArrayList<Migration>() {
         {
@@ -176,27 +175,26 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private LmisSqliteOpenHelper(Context context) {
         super(context, "lmis_db", null, MIGRATIONS.size());
         ++instanceCount;
-        Log.d(TAG, "Instance Created : total count : " + instanceCount);
+        Log.d("LmisSqliteOpenHelper", "Instance Created : total count : " + instanceCount);
     }
 
     public static synchronized LmisSqliteOpenHelper getInstance(Context context) {
         if (_helperInstance == null) {
             _helperInstance = new LmisSqliteOpenHelper(context);
         }
-        Log.d(TAG,"LmisSqliteOpenHelper.getInstance version = "+_helperInstance.getDBVersion());
         return _helperInstance;
     }
 
     public static void closeHelper() {
         _helperInstance = null;
         --instanceCount;
-        Log.d(TAG, "Instance Destroyed : total count : " + instanceCount);
+        Log.d("LmisSqliteOpenHelper", "Instance Destroyed : total count : " + instanceCount);
     }
 
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         for (Migration migration : MIGRATIONS) {
-            Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
+            Log.i("DB Creation", "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
             migration.setSQLiteDatabase(database);
             migration.up();
         }
@@ -204,10 +202,9 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        Log.d(TAG,"onUpgrade oldVersion="+oldVersion+",newVersion="+newVersion);
         for (int currentVersion = oldVersion; currentVersion < newVersion; currentVersion++) {
             Migration migration = MIGRATIONS.get(currentVersion);
-            Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
+            Log.i("DB Migration", "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
             migration.setSQLiteDatabase(database);
             migration.up();
         }

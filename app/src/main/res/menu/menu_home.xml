@@ -23,9 +23,4 @@
         android:orderInCategory="103"
         android:showAsAction="never"
         android:title="@string/action_export_data" />
-    <item
-        android:id="@+id/action_export_log"
-        android:orderInCategory="104"
-        android:showAsAction="never"
-        android:title="@string/action_export_log" />
 </menu>

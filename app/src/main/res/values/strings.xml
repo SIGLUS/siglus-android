@@ -17,7 +17,6 @@
     <string name="hint_username">User Name</string>
     <string name="hint_password">Password</string>
     <string name="btn_login">LOG IN</string>
-    <string name="btn_export_data">Export Data..</string>
     <string name="msg_empty_user">User name and password cannot be blank</string>
     <string name="msg_invalid_user">Username or Password is incorrect.</string>
     <string name="msg_user_not_facility">No facility for this user, please contact your administrator.</string>
@@ -482,7 +481,6 @@
     <string name="alert_soonest_expire">Your movement includes a batch that is not the first to expire</string>
     <string name="msg_export_data_success">Data are successfully exported and saved to <![CDATA[<b>%1$s</b>]]></string>
     <string name="action_export_data">Export all app data</string>
-    <string name="action_export_log">Export all app log</string>
 
     <string name="msg_has_archived_old_data">Historical data beyond 13-months are archived on the web portal.</string>
     <string name="label_movement_detail">Movement Details</string>

@@ -60,14 +60,9 @@ import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
@@ -361,9 +356,6 @@ public class HomeActivity extends BaseActivity {
             case R.id.action_export_db:
                 exportDB();
                 return true;
-            case R.id.action_export_log:
-                runLogcat();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -386,54 +378,6 @@ public class HomeActivity extends BaseActivity {
                 tempBackup.delete();
             }
         }
-    }
-
-    private void runLogcat() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                AtomicBoolean run = new AtomicBoolean(true);
-                try {
-
-                    //create text file in SDCard
-                    File sdCard = Environment.getExternalStorageDirectory();
-                    File dir = new File (sdCard.getAbsolutePath() + "/myLogcat");
-                    dir.mkdirs();
-                    File file = new File(dir, "logcat.txt");
-
-                    //Runtime.getRuntime().exec("logcat -c");
-                    Process process = Runtime.getRuntime().exec("logcat -f "+file);
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                    StringBuilder log = new StringBuilder();
-                    String line = "";
-                    Log.e("HomeActivity","while...run.get()."+run.get());
-                    while (run.get()) {
-                        line = bufferedReader.readLine();
-                        //Log.e("log cat task...","while...out.");
-                        if (line != null) {
-                            Log.e("HomeActivity","while....");
-                            log.append(line);
-                            //publishProgress(log.toString());
-
-                            //to write logcat in text file
-                            FileOutputStream fOut = new FileOutputStream(file);
-                            OutputStreamWriter osw = new OutputStreamWriter(fOut);
-
-                            // Write the string to the file
-                            osw.write(log.toString());
-                            osw.flush();
-                            osw.close();
-                        }
-                        //Thread.sleep(10);
-                        //Log.e("HomeActivity","while...out.");
-                    }
-                    Log.e("HomeActivity","ouet....while....");
-                } catch(Exception ex){
-                    Log.e("HomeActivity","exception = ", ex);
-                }
-            }
-        }).start();
-
     }
 
     public static Intent getIntentToMe(Context context) {
