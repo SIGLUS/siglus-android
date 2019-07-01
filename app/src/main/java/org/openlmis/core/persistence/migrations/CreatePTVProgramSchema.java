@@ -1,5 +1,8 @@
 package org.openlmis.core.persistence.migrations;
 
+import android.database.Cursor;
+import android.util.Log;
+
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.persistence.Migration;
 import org.openlmis.core.utils.DateUtil;
@@ -9,7 +12,7 @@ import java.util.Date;
 public class CreatePTVProgramSchema extends Migration {
     @Override
     public void up() {
-        execSQL("CREATE TABLE `ptv_program` ("
+        execSQL("CREATE TABLE IF NOT EXISTS `ptv_program` ("
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`startPeriod` VARCHAR NOT NULL, "
                 + "`endPeriod` VARCHAR NOT NULL, "
@@ -21,7 +24,7 @@ public class CreatePTVProgramSchema extends Migration {
                 + "CONSTRAINT unique_period_cst"
                 + " UNIQUE (startPeriod, endPeriod) ON CONFLICT REPLACE);");
 
-        execSQL("CREATE TABLE `patient_dispensation` ("
+        execSQL("CREATE TABLE IF NOT EXISTS `patient_dispensation` ("
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`type` VARCHAR, "
                 + "`total` BIGINT, "
@@ -30,14 +33,14 @@ public class CreatePTVProgramSchema extends Migration {
                 + "`updatedAt` VARCHAR NOT NULL, "
                 + "FOREIGN KEY (ptvProgramId) REFERENCES ptv_program(id));");
 
-        execSQL("CREATE TABLE `health_facility_service` ("
+        execSQL("CREATE TABLE IF NOT EXISTS `health_facility_service` ("
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`name` VARCHAR NOT NULL, "
                 + "`peripheral` INTEGER NOT NULL, "
                 + "`createdAt` VARCHAR NOT NULL, "
                 + "`updatedAt` VARCHAR NOT NULL);");
 
-        execSQL("CREATE TABLE `ptv_program_stock_information` ("
+        execSQL("CREATE TABLE IF NOT EXISTS `ptv_program_stock_information` ("
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`initialStock` BIGINT, "
                 + "`entries` BIGINT, "
@@ -50,7 +53,7 @@ public class CreatePTVProgramSchema extends Migration {
                 + "FOREIGN KEY (productId) REFERENCES product(id), "
                 + "FOREIGN KEY (ptvProgramId) REFERENCES ptv_program(id));");
 
-        execSQL("CREATE TABLE `service_dispensation` ("
+        execSQL("CREATE TABLE IF NOT EXISTS `service_dispensation` ("
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`quantity` BIGINT, "
                 + "`signature` VARCHAR, "
@@ -64,9 +67,38 @@ public class CreatePTVProgramSchema extends Migration {
         insertData();
     }
 
-    private void insertData(){
-        String formattedDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
+    private void insertData() {
 
+//        {// delete the table first and then insert the new data.
+//            execSQL("DROP TABLE health_facility_service");
+//            insert();
+//        }
+
+        Cursor cursor = null;
+        try {
+            cursor  = query("health_facility_service",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+            if (cursor !=null && cursor.moveToFirst() && cursor.getCount() != 8) {
+                insert();
+            }
+        }catch ( Exception e ) {
+            if (cursor!=null) {
+                cursor.close();
+            }
+        } finally {
+            if (cursor!=null) {
+                cursor.close();
+            }
+        }
+
+    }
+    private void insert() {
+        String formattedDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
         execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('1', 'CPN', '0', '" + formattedDate + "', '" + formattedDate + "');");
         execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('2', 'Maternity', '0', '" + formattedDate + "', '" + formattedDate + "');");
         execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('3', 'CCR', '0', '" + formattedDate + "', '" + formattedDate + "');");

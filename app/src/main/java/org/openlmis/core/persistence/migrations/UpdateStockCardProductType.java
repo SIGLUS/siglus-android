@@ -15,7 +15,9 @@ public class UpdateStockCardProductType extends Migration {
                 + "`updatedAt` VARCHAR NOT NULL, "
                 + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "`avgMonthlyConsumption` REAL);");
-        execSQL("INSERT OR IGNORE INTO stock_cards (expireDates, product_id, stockOnHand, createdAt, updatedAt, id, avgMonthlyConsumption) SELECT expireDates, product_id, stockOnHand, createdAt, updatedAt, id, avgMonthlyConsumption from stock_cards2 ;");
+        execSQL("INSERT OR IGNORE INTO stock_cards " +
+                "(expireDates, product_id, stockOnHand, createdAt, updatedAt, id, avgMonthlyConsumption) " +
+                "SELECT expireDates, product_id, stockOnHand, createdAt, updatedAt, id, avgMonthlyConsumption from stock_cards2 ;");
         execSQL("DROP TABLE `stock_cards2`;");
     }
 }
