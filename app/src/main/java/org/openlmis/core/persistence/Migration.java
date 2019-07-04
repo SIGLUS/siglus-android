@@ -53,7 +53,7 @@ public abstract class Migration {
         }
     }
 
-    protected Cursor query (String table, String[] columns, String selection,
+    protected Cursor query(String table, String[] columns, String selection,
                            String[] selectionArgs, String groupBy, String having,
                            String orderBy) {
         return db.query(table, columns,selection,selectionArgs,groupBy,having,orderBy);
