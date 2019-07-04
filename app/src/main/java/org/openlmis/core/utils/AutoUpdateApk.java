@@ -86,10 +86,6 @@ public class AutoUpdateApk {
     // 3-4 hours in dev.mode, 1-2 days for stable releases
     private long updateInterval = 3 * HOURS; // how often to check
 
-//    private static boolean mobile_updates = false; // download updates over wifi
-    // only
-
-//    private final static Handler updateHandler = new Handler();
     protected final static String UPDATE_FILE = "updateFile";
     protected final static String SILENT_FAILED = "silent_failed";
     private final static String MD5_TIME = "md5_time";
@@ -172,71 +168,81 @@ public class AutoUpdateApk {
                 return null;
             }
             //step 2 download the apk file ..
-            Log.d(TAG,"first resultGetApkInfo="+resultGetApkInfo.length);
-            if (resultGetApkInfo.length > 1 && resultGetApkInfo[0].equalsIgnoreCase("have update")) {
-                if (!retrieved.contains(resultGetApkInfo[1])) {
-                    synchronized (retrieved) {
-                        if (!retrieved.contains(resultGetApkInfo[1])) {
-                            retrieved.add(resultGetApkInfo[1]);
-                            OkHttpClient httpClient = new OkHttpClient();
-                            Call call = httpClient.newCall(new Request.Builder().url((server != null) ? server + resultGetApkInfo[1]
-                                    : resultGetApkInfo[1]).get().build());
-                            Log_d(TAG, "server + result[1]=" + (server + resultGetApkInfo[1]));
-                            try {
-                                initNotification();
-                                Response response = call.execute();
-                                if (response.code() == 200) {
-                                    InputStream inputStream = null;
-                                    String fname = resultGetApkInfo[1]
-                                            .substring(resultGetApkInfo[1].lastIndexOf('/') + 1)
-                                            + ".apk";
-                                    try {
-                                        inputStream = response.body().byteStream();
-                                        FileOutputStream output = context
-                                                .openFileOutput(fname,
-                                                        Context.MODE_WORLD_READABLE);
-                                        long downloaded = 0;
-                                        long target = response.body().contentLength();
-                                        publishProgress(0L, target);
-                                        byte[] data = new byte[1024];
-                                        int count = 0;
+            return downloadApk(resultGetApkInfo);
+        }
 
-                                        while ((count = inputStream.read(data)) != -1) {
-                                            downloaded += count;
-                                            output.write(data, 0, count);
-                                            publishProgress(downloaded, target);
-                                        }
-                                        output.flush();
-                                        output.close();
-                                        inputStream.close();
-                                        resultGetApkInfo[1] = fname;
-                                        String versionCodeFromServer = resultGetApkInfo[2];
-                                        if (resultGetApkInfo.length > 2 && versionCodeFromServer != null) {
-                                            updateVersionCode(versionCodeFromServer);
-                                        }
-                                        return resultGetApkInfo;
-                                    } catch (IOException ignore) {
-                                        Log.d(TAG, "ignore  = ", ignore);
-                                    } finally {
-                                        if (inputStream != null) {
-                                            inputStream.close();
-                                        }
-                                    }
-                                } else {
-                                    Log.e(TAG, "response !=200 = " + response.code());
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Log.e(TAG, "response download Apk Filed = " + e.getMessage());
-                            } finally {
-                                Log_d(TAG, "finally server + result[1]=" + (server + resultGetApkInfo[1]));
-                                Log_d(TAG, "finally server + result[2]=" + resultGetApkInfo[2]);
-                            }
+
+        private boolean isValidResponse(String [] info) {
+            return info.length > 1 && info[0].equalsIgnoreCase("have update") && !retrieved.contains(info[1]);
+        }
+
+        private String[] processResponse(Response response, String [] resultGetApkInfo) throws IOException {
+            if (response.code() == 200) {
+                InputStream inputStream = null;
+                String fname = resultGetApkInfo[1]
+                        .substring(resultGetApkInfo[1].lastIndexOf('/') + 1)
+                        + ".apk";
+                try {
+                    inputStream = response.body().byteStream();
+                    FileOutputStream output = context
+                            .openFileOutput(fname,
+                                    Context.MODE_WORLD_READABLE);
+                    long downloaded = 0;
+                    long target = response.body().contentLength();
+                    publishProgress(0L, target);
+                    byte[] data = new byte[1024];
+                    int count = 0;
+
+                    while ((count = inputStream.read(data)) != -1) {
+                        downloaded += count;
+                        output.write(data, 0, count);
+                        publishProgress(downloaded, target);
+                    }
+                    output.flush();
+                    output.close();
+                    inputStream.close();
+                    resultGetApkInfo[1] = fname;
+                    String versionCodeFromServer = resultGetApkInfo[2];
+                    if (resultGetApkInfo.length > 2 && versionCodeFromServer != null) {
+                        updateVersionCode(versionCodeFromServer);
+                    }
+                    return resultGetApkInfo;
+                } catch (IOException ignore) {
+                    Log.d(TAG, "ignore  = ", ignore);
+                } finally {
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                }
+            } else {
+                Log.e(TAG, "response !=200 = " + response.code());
+            }
+            return null;
+        }
+
+        private String [] downloadApk(String [] resultGetApkInfo) {
+            if (isValidResponse(resultGetApkInfo)) {
+                synchronized (retrieved) {
+                    if (!retrieved.contains(resultGetApkInfo[1])) {
+                        retrieved.add(resultGetApkInfo[1]);
+                        OkHttpClient httpClient = new OkHttpClient();
+                        Call call = httpClient.newCall(new Request.Builder().url((server != null) ? server + resultGetApkInfo[1]
+                                : resultGetApkInfo[1]).get().build());
+                        Log_d(TAG, "server + result[1]=" + (server + resultGetApkInfo[1]));
+                        try {
+                            initNotification();
+                            Response response = call.execute();
+                            return processResponse(response,resultGetApkInfo);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "response download Apk Filed = " + e.getMessage());
+                        } finally {
+                            Log_d(TAG, "finally server + result[1]=" + (server + resultGetApkInfo[1]));
+                            Log_d(TAG, "finally server + result[2]=" + resultGetApkInfo[2]);
                         }
                     }
                 }
             }
-
             return null;
         }
 
@@ -315,7 +321,7 @@ public class AutoUpdateApk {
         long now = System.currentTimeMillis();
         if (forced || (last_update + updateInterval) < now) {
             try {
-               PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(),0);
+                PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(),0);
                 versionCode = packageInfo.versionCode;
             } catch (NameNotFoundException e) {
                 e.printStackTrace();

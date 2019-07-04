@@ -19,7 +19,6 @@
 package org.openlmis.core.persistence;
 
 import android.content.res.AssetManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -52,13 +51,6 @@ public abstract class Migration {
             db.execSQL(sql);
         }
     }
-
-    protected Cursor query(String table, String[] columns, String selection,
-                           String[] selectionArgs, String groupBy, String having,
-                           String orderBy) {
-        return db.query(table, columns,selection,selectionArgs,groupBy,having,orderBy);
-    }
-
     protected void execSQLScript(String filename) {
         AssetManager manager = LMISApp.getContext().getResources().getAssets();
 

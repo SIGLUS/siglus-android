@@ -64,40 +64,11 @@ public class CreatePTVProgramSchema extends Migration {
                 + "FOREIGN KEY (serviceId) REFERENCES health_facility_service(id), "
                 + "FOREIGN KEY (ptvProgramStockInformationId) REFERENCES ptv_program_stock_information(id));");
 
-        insertData();
+        insert();
     }
 
-    private void insertData() {
-
-//        {// delete the table first and then insert the new data.
-//            execSQL("DROP TABLE health_facility_service");
-//            insert();
-//        }
-
-        Cursor cursor = null;
-        try {
-            cursor  = query("health_facility_service",
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null);
-            if (cursor !=null && cursor.moveToFirst() && cursor.getCount() != 8) {
-                insert();
-            }
-        }catch ( Exception e ) {
-            if (cursor!=null) {
-                cursor.close();
-            }
-        } finally {
-            if (cursor!=null) {
-                cursor.close();
-            }
-        }
-
-    }
     private void insert() {
+        execSQL("DELETE FROM health_facility_service ");
         String formattedDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
         execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('1', 'CPN', '0', '" + formattedDate + "', '" + formattedDate + "');");
         execSQL("INSERT INTO health_facility_service (`id`, `name`, `peripheral`, `createdAt`, `updatedAt`) values ('2', 'Maternity', '0', '" + formattedDate + "', '" + formattedDate + "');");
