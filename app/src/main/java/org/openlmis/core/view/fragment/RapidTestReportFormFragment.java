@@ -89,7 +89,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         updateHeaderSize();
         setUpRowItems();
         addObservationChange();
-        rvReportRowItemListView.setNestedScrollingEnabled(false);
+        //TODO
+//        rvReportRowItemListView.setNestedScrollingEnabled(false);
         if (isSavedInstanceState && presenter.getViewModel() != null) {
             updateUI();
         } else {

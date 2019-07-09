@@ -2,6 +2,7 @@ package org.openlmis.core.view.holder;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,7 +18,7 @@ public class RapidTestReportRowViewHolder extends BaseViewHolder {
     TextView tvRowHeader;
 
     @InjectView(R.id.rv_rapid_report_grid_item_list)
-    RecyclerView rvRapidReportGridListView;
+    RapidRecyclerView rvRapidReportGridListView;
 
     RapidTestReportGridAdapter adapter;
 
@@ -34,6 +35,15 @@ public class RapidTestReportRowViewHolder extends BaseViewHolder {
         adapter = new RapidTestReportGridAdapter(viewModel.getRapidTestFormGridViewModelList(), context, !isTotal(viewModel) && editable, isTotal(viewModel) ? null : quantityChangeListener);
         rvRapidReportGridListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         rvRapidReportGridListView.setAdapter(adapter);
+//        rvRapidReportGridListView.stopScroll();
+//        rvRapidReportGridListView.setLayoutFrozen(true);
+        rvRapidReportGridListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.d("RapidTest", "newState = "+newState);
+            }
+        });
     }
 
     public void setUpHeader(RapidTestFormItemViewModel viewModel) {

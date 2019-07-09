@@ -12,9 +12,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:weightSum="4"
         android:paddingTop="@dimen/margin_tiny">
 
-        <include layout="@layout/fragment_rapid_test_report_form_top" />
+        <include layout="@layout/fragment_rapid_test_report_form_top"
+
+            />
 
         <include layout="@layout/fragment_rapid_test_report_form_body" />
     </LinearLayout>
