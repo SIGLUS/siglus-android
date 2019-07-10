@@ -5,144 +5,192 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
+    <LinearLayout
+        android:id="@+id/ptv_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/al_view_list_height"
+        android:background="@drawable/border_bottom_black"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="@dimen/rapid_view_view_left_padding"
+            android:text="Month/Year:   11 >"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/font_size_regular" />
+
+        <TextView
+            android:id="@+id/ptv_monthTitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left|center"
+            android:padding="@dimen/rapid_view_view_left_padding"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/font_size_regular"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ptv_table_header"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_below="@id/ptv_title"
+        android:background="@drawable/border_bottom_black"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="@dimen/ptv_view_item_width"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            android:background="@drawable/border_right_black"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingTop="8dp">
+
+            <TextView
+                style="@style/PTVReportList.tableTitle"
+                android:text="@string/registration" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_medicines"
+            android:layout_width="@dimen/ptv_view_left_header_width"
+            android:layout_height="match_parent"
+            android:background="@drawable/border_right_black"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingTop="8dp">
+
+            <TextView
+                style="@style/PTVReportList.tableTitle"
+                android:text="@string/medicines" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/ptv_view_right_header_width"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingTop="8dp">
+
+            <TextView
+                style="@style/PTVReportList.tableTitle"
+                android:text="@string/dispensation" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:background="@drawable/border_black"
+        android:id="@+id/ptv_left_title"
+        android:layout_width="@dimen/ptv_view_right_header_width"
+        android:layout_height="300dp"
+        android:layout_below="@id/ptv_table_header"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/PTVReportList.itemTitle"
+            android:layout_width="@dimen/ptv_view_right_header_width"
+            android:text="@string/PatientAndService" />
+
+        <TextView
+            style="@style/PTVReportList.itemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/initialStockLevel" />
+
+        <TextView
+            style="@style/PTVReportList.itemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/totalPtv" />
+
+        <TextView
+            style="@style/PTVReportList.itemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/entries" />
+
+        <TextView
+            style="@style/PTVReportList.itemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/loss_and_adjustment" />
+    </LinearLayout>
+
     <HorizontalScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/ptv_table_header"
+        android:layout_toEndOf="@id/ptv_left_title">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_black">
+            android:background="@drawable/border_black"
+            android:orientation="horizontal">
+
+            <org.openlmis.core.view.widget.PTVTestRnrForm
+                android:id="@+id/ptv_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
 
             <LinearLayout
-                android:id="@+id/ptv_title"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/al_view_list_height"
-                android:background="@drawable/border_bottom_black"
-                android:orientation="horizontal">
+                android:layout_width="@dimen/ptv_view_right_header_width"
+                android:layout_height="300dp"
+                android:orientation="vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:id="@+id/tv_name"
+                    style="@style/PTVReportList.itemTitle"
+                    android:layout_width="@dimen/ptv_view_right_header_width"
+                    android:text="@string/typePatient" />
+
+                <TextView
+                    style="@style/PTVReportList.regimen_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="@string/total_woman" />
+
+                <EditText
+                    android:id="@+id/et_total_parent"
+                    style="@style/PTVReportList.regimen_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:gravity="center"
-                    android:paddingLeft="@dimen/rapid_view_view_left_padding"
-                    android:text="@string/month_year"
-                    android:textColor="@color/color_black"
+                    android:inputType="number"
+                    android:padding="@dimen/margin_small"
                     android:textSize="@dimen/font_size_regular" />
 
                 <TextView
-                    android:id="@+id/ptv_monthTitle"
+                    style="@style/PTVReportList.regimen_item"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="left|center"
-                    android:padding="@dimen/rapid_view_view_left_padding"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_regular"
-                    android:textStyle="bold" />
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/ptv_table_header"
-                android:layout_width="wrap_content"
-                android:layout_height="44dp"
-                android:background="@drawable/border_bottom_black"
-                android:layout_below="@id/ptv_title"
-                android:orientation="horizontal">
-                <LinearLayout
-                    android:layout_width="@dimen/ptv_view_item_width"
-                    android:layout_marginLeft="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/border_right_black"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingLeft="6dp">
-
-                    <TextView
-                        style="@style/PTVReportList.tableTitle"
-                        android:text="@string/registration" />
-
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/ll_medicines"
-                    android:layout_width="@dimen/ptv_view_left_header_width"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/border_right_black"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingLeft="6dp">
-
-                    <TextView
-                        style="@style/PTVReportList.tableTitle"
-                        android:text="@string/medicines" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="@dimen/ptv_view_right_header_width"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingLeft="6dp">
-
-                    <TextView
-                        style="@style/PTVReportList.tableTitle"
-                        android:text="@string/dispensation" />
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ptv_table_header"
-                android:orientation="horizontal">
-
-                <org.openlmis.core.view.widget.PTVTestRnrForm
-                    android:id="@+id/ptv_table"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                </org.openlmis.core.view.widget.PTVTestRnrForm>
-                <LinearLayout
-                    android:layout_width="@dimen/ptv_view_right_header_width"
-                    android:layout_height="300dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/tv_name"
-                        style="@style/PTVReportList.itemTitle"
-                        android:layout_width="@dimen/ptv_view_right_header_width"
-                        android:text="@string/typePatient"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
-                        style="@style/PTVReportList.regimen_item"
-                        android:text="@string/total_woman"/>
-                    <EditText
-                        android:id="@+id/et_total_parent"
-                        style="@style/PTVReportList.regimen_item"
-                        android:textSize="@dimen/font_size_regular"
-                        android:padding="@dimen/margin_small"
-                        android:layout_marginTop="15dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:inputType="number"/>
+                    android:layout_marginTop="25dp"
+                    android:text="@string/total_child" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
-                        style="@style/PTVReportList.regimen_item"
-                        android:text="@string/total_child"/>
-                    <EditText
-                        android:id="@+id/et_total_child"
-                        style="@style/PTVReportList.regimen_item"
-                        android:textSize="@dimen/font_size_regular"
-                        android:padding="@dimen/margin_small"
-                        android:layout_marginTop="15dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:inputType="number"/>
-                </LinearLayout>
+                <EditText
+                    android:id="@+id/et_total_child"
+                    style="@style/PTVReportList.regimen_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:padding="@dimen/margin_small"
+                    android:textSize="@dimen/font_size_regular" />
             </LinearLayout>
-        </RelativeLayout>
+        </LinearLayout>
     </HorizontalScrollView>
 
     <org.openlmis.core.view.widget.ActionPanelView
