@@ -44,13 +44,9 @@ import lombok.Getter;
 
 public class RapidTestRnrForm extends LinearLayout {
     private Context context;
-    private ViewGroup viewGroup;
     private List<Pair<EditText, SimpleTextWatcher>> editTextConfigures = new ArrayList<>();
     public List<ProgramDataFormBasicItem> itemFormList;
     private LayoutInflater layoutInflater;
-
-    @Getter
-    private View headerView;
 
     public RapidTestRnrForm(Context context) {
         super(context);
@@ -67,30 +63,22 @@ public class RapidTestRnrForm extends LinearLayout {
         for (Pair<EditText, SimpleTextWatcher> editTextConfigure : editTextConfigures) {
             editTextConfigure.first.removeTextChangedListener(editTextConfigure.second);
         }
-
     }
 
     private void init(Context context) {
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
-        View container = layoutInflater.inflate(R.layout.view_rapid_test_rnr_form, this, true);
-        viewGroup = (ViewGroup) container.findViewById(R.id.program_from_list);
     }
 
     public void initView(List<ProgramDataFormBasicItem> itemFormList) {
         this.itemFormList = itemFormList;
-        addHeaderView();
         addItemView(itemFormList);
-    }
-
-    private void addHeaderView() {
-        addView(null, true);
     }
 
     private void addItemView(List<ProgramDataFormBasicItem> itemFormList) {
         this.itemFormList = itemFormList;
         for (ProgramDataFormBasicItem basicItem : itemFormList) {
-            addView(basicItem, false);
+            addView(basicItem);
         }
 
     }
@@ -99,7 +87,7 @@ public class RapidTestRnrForm extends LinearLayout {
         return (ViewGroup) layoutInflater.inflate(R.layout.item_rapid_test_from, this, false);
     }
 
-    private ViewGroup addView(ProgramDataFormBasicItem item, boolean isHeaderView) {
+    private ViewGroup addView(ProgramDataFormBasicItem item) {
         ViewGroup inflate = inflateView();
         TextView tvIssuedUnit = (TextView) inflate.findViewById(R.id.tv_code);
         TextView tvName = (TextView) inflate.findViewById(R.id.tv_name);
@@ -110,32 +98,28 @@ public class RapidTestRnrForm extends LinearLayout {
         TextView tvValidate = (TextView) inflate.findViewById(R.id.tv_expire);
         EditText etInventory = (EditText) inflate.findViewById(R.id.et_inventory);
 
-        if (isHeaderView) {
-            setHeaderView(inflate, tvIssuedUnit, tvName, etStock, tvReceived, tvIssue, tvAdjustment, tvValidate, etInventory);
-
+        tvIssuedUnit.setText(item.getProduct().getCode());
+        tvName.setText(item.getProduct().getPrimaryName());
+        tvReceived.setText(String.valueOf(item.getReceived()));
+        tvIssue.setText(String.valueOf(item.getIssued()));
+        tvAdjustment.setText(String.valueOf(item.getAdjustment()));
+        if (item.getIsCustomAmount()) {
+            configEditText(item, etStock, String.valueOf(getValue(item.getInitialAmount())));
         } else {
-            tvIssuedUnit.setText(item.getProduct().getCode());
-            tvName.setText(item.getProduct().getPrimaryName());
-            tvReceived.setText(String.valueOf(item.getReceived()));
-            tvIssue.setText(String.valueOf(item.getIssued()));
-            tvAdjustment.setText(String.valueOf(item.getAdjustment()));
-            if (item.getIsCustomAmount()) {
-                configEditText(item, etStock, String.valueOf(getValue(item.getInitialAmount())));
-            } else {
-                etStock.setText(String.valueOf(getValue(item.getInitialAmount())));
-                etStock.setEnabled(false);
-            }
-            configEditText(item, etInventory, String.valueOf(getValue(item.getInventory())));
-
-            try {
-                if (!(TextUtils.isEmpty(item.getValidate()))) {
-                    tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
-                }
-            } catch (ParseException e) {
-                new LMISException(e).reportToFabric();
-            }
+            etStock.setText(String.valueOf(getValue(item.getInitialAmount())));
+            etStock.setEnabled(false);
         }
-        viewGroup.addView(inflate);
+        configEditText(item, etInventory, String.valueOf(getValue(item.getInventory())));
+
+        try {
+            if (!(TextUtils.isEmpty(item.getValidate()))) {
+                tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
+            }
+        } catch (ParseException e) {
+            new LMISException(e).reportToFabric();
+        }
+
+        addView(inflate);
         return inflate;
     }
 
@@ -163,30 +147,6 @@ public class RapidTestRnrForm extends LinearLayout {
         return vaule == null ? "" : String.valueOf(vaule.longValue());
 
     }
-
-    private void setHeaderView(ViewGroup inflate,
-                               TextView tvIssuedUnit,
-                               TextView tvName,
-                               EditText etStock,
-                               TextView tvReceived,
-                               TextView tvIssue,
-                               TextView tvAdjustment,
-                               TextView tvValidate,
-                               EditText etInventory) {
-        tvIssuedUnit.setText(R.string.label_product_codes);
-        tvName.setText(R.string.label_product_name);
-        etStock.setText(R.string.initial_stock);
-        tvReceived.setText(R.string.entries);
-        tvIssue.setText(R.string.ISSUE);
-        tvAdjustment.setText(R.string.loss_and_adjustment);
-        tvValidate.setText(R.string.label_validate);
-        etInventory.setText(R.string.label_inventory);
-
-        etStock.setEnabled(false);
-        etInventory.setEnabled(false);
-
-    }
-
     class EditTextWatcher extends SimpleTextWatcher {
         private final ProgramDataFormBasicItem item;
         private final EditText editText;

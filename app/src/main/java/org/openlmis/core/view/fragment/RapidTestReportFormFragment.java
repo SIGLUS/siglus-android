@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,9 +42,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.rapid_view_basic_item_header)
     LinearLayout rnrBasicItemHeader;
 
-//    @InjectView(R.id.rapid_test)
-//    HorizontalScrollView scrollView;
-
     @InjectView(R.id.rapid_test_rnr_form)
     protected RapidTestRnrForm rnrBasicItemListView;
 
@@ -57,6 +53,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     @InjectView(R.id.rv_observation_content)
     EditText observationContent;
+
+    @InjectView(R.id.rapid_view_basic_item_header_static)
+    LinearLayout rapidTestHeaderStatic;
 
     RapidTestReportFormPresenter presenter;
 
@@ -108,6 +107,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         calculateRowHeaderAndGridSize();
         emptyHeaderView.getLayoutParams().width = ROW_HEADER_WIDTH;
         observationHeader.getLayoutParams().width = (int) (ROW_HEADER_WIDTH + getResources().getDimension(R.dimen.rapid_view_border_width));
+//        rapidTestHeaderStatic.getChildAt(1).getLayoutParams().width = rnrBasicItemListView.getChildAt(1).getWidth();
     }
 
     private void calculateRowHeaderAndGridSize() {
@@ -285,19 +285,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         populateFormData(viewModel);
         updateObservation(viewModel);
         updateActionPanel();
-//        updateScrollView();
         loaded();
     }
 
-//    private void updateScrollView() {
-//        RapidTestReportViewModel viewModel = presenter.getViewModel();
-//        if (viewModel.isDraft()){
-//            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-//        } else {
-//            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-//        }
-
-//    }
     private void updateObservation(RapidTestReportViewModel viewModel) {
         observationContent.setFocusableInTouchMode(viewModel.isEditable());
         observationContent.setText(viewModel.getObservation());

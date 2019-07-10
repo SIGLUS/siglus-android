@@ -67,3 +67,12 @@ node_modules/
 package-lock.json
 *.swp
 **/**/.irb-history
+
+.project
+.vscode/
+.settings/
+app/.classpath
+app/.project
+app/.settings/
+contractTests/.project
+contractTests/.settings

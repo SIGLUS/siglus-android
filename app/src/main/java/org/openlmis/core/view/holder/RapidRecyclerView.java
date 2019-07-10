@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 public class RapidRecyclerView extends RecyclerView {
+    private static  final String TAG= RapidRecyclerView.class.getSimpleName();
     public RapidRecyclerView(Context context) {
         super(context);
     }
@@ -31,5 +32,11 @@ public class RapidRecyclerView extends RecyclerView {
             //stop to scroll
         }
         return super.onTouchEvent(e);
+    }
+
+    @Override
+    public void addOnScrollListener(OnScrollListener listener) {
+        super.addOnScrollListener(listener);
+        Log.d(TAG,"addOnScrollListener");
     }
 }

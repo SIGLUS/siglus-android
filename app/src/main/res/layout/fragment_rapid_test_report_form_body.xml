@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_weight="3"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="140dp"
+    android:layout_weight="6">
 
-    <ScrollView
+
+    <LinearLayout
+        android:id="@+id/vg_rapid_test_report_header_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="44dp"
+        android:background="@drawable/border_top_black"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left|center"
+            android:paddingLeft="@dimen/rapid_view_view_left_padding"
+            android:text="@string/title_rapid_test_form"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/font_size_regular"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/action_panel"
+        android:layout_below="@+id/vg_rapid_test_report_header_title">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/rl_rapid_test_form"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rapid_test_rnr_form"
             android:background="@drawable/border_left_black_bold">
-
-            <LinearLayout
-                android:id="@+id/vg_rapid_test_report_header_title"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@drawable/border_top_black"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="left|center"
-                    android:paddingLeft="@dimen/rapid_view_view_left_padding"
-                    android:text="@string/title_rapid_test_form"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_regular"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/vg_rapid_test_report_header"
                 android:layout_width="@dimen/rapid_view_width"
                 android:layout_height="88dp"
-                android:layout_below="@+id/vg_rapid_test_report_header_title"
                 android:background="@drawable/border_left_black_bold"
                 android:orientation="horizontal">
 
@@ -324,7 +325,6 @@
                             android:textSize="@dimen/font_size_title_small" />
 
                     </LinearLayout>
-
                 </LinearLayout>
 
             </LinearLayout>
@@ -334,7 +334,6 @@
                 android:layout_width="@dimen/rapid_view_width"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/vg_rapid_test_report_header"
-                android:background="#f00"
                 android:overScrollMode="never"
                 tools:listitem="@layout/recycler_view_item" />
 
@@ -383,5 +382,5 @@
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
-    </ScrollView>
-</HorizontalScrollView>
+    </HorizontalScrollView>
+</RelativeLayout>

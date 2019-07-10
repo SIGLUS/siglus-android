@@ -14,6 +14,7 @@ import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
 import roboguice.inject.InjectView;
 
 public class RapidTestReportRowViewHolder extends BaseViewHolder {
+    private static final String TAG= RapidTestReportRowViewHolder.class.getSimpleName();
     @InjectView(R.id.tv_row_header)
     TextView tvRowHeader;
 
@@ -41,7 +42,13 @@ public class RapidTestReportRowViewHolder extends BaseViewHolder {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                Log.d("RapidTest", "newState = "+newState);
+                Log.d(TAG, "newState = "+newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.d(TAG, "dx = "+dx+",dy="+dy);
             }
         });
     }
