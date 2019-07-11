@@ -25,6 +25,7 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -241,7 +242,9 @@ public class SyncDownManager {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     Log.d(TAG," sync the kit change.");
-                    fetchKitChangeProduct();
+                    if (BuildConfig.VERSION_CODE == 86) {
+                        fetchKitChangeProduct();
+                    }
                 } catch (LMISException e) {
                     e.printStackTrace();
                 }

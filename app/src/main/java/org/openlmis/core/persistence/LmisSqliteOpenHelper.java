@@ -184,7 +184,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         if (_helperInstance == null) {
             _helperInstance = new LmisSqliteOpenHelper(context);
         }
-        Log.d(TAG,"LmisSqliteOpenHelper.getInstance version = "+_helperInstance.getDBVersion());
         return _helperInstance;
     }
 
