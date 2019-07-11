@@ -1,68 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bottom_border_black_bold"
-        android:orientation="horizontal">
+    android:layout_height="match_parent"
+    android:background="@drawable/bottom_border_black_bold"
+    android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_right_black"
-            android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingLeft="6dp">
+    <TextView
+        style="@style/AlReportList.numberTitle"
+        android:text="@string/msg_product_code_6x1" />
 
-            <TextView
-                style="@style/AlReportList.numberTitle"
-                android:text="@string/msg_product_code_6x1" />
+    <TextView
+        style="@style/AlReportList.numberTitle"
+        android:text="@string/msg_product_code_6x2" />
 
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_right_black"
-            android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingLeft="6dp">
+    <TextView
+        style="@style/AlReportList.numberTitle"
+        android:text="@string/msg_product_code_6x3" />
 
-            <TextView
-                style="@style/AlReportList.numberTitle"
-                android:text="@string/msg_product_code_6x2" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/border_right_black"
-            android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingLeft="6dp">
-
-            <TextView
-                style="@style/AlReportList.numberTitle"
-                android:text="@string/msg_product_code_6x3" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingLeft="6dp">
-
-            <TextView
-                style="@style/AlReportList.numberTitle"
-                android:text="@string/msg_product_code_6x4" />
-        </LinearLayout>
-
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+    <TextView
+        style="@style/AlReportList.numberTitle"
+        android:text="@string/msg_product_code_6x4" />
+</LinearLayout>
 

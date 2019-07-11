@@ -6,18 +6,16 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <HorizontalScrollView
         android:id="@+id/rapid_test"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/new_movement_panel"
-        android:layout_below="@id/title_panel">
+        android:layout_height="match_parent">
 
         <ScrollView
             android:layout_width="@dimen/rapid_view_width"
             android:layout_height="match_parent">
 
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout
                 android:id="@+id/rl_rapid_test_report"
                 android:layout_width="@dimen/rapid_view_width"
                 android:layout_height="1200dp"
@@ -57,7 +55,7 @@
                     android:background="@drawable/border_black_right_left"
                     android:layout_marginBottom="14dp"/>
 
-                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                <RelativeLayout
                     android:id="@+id/rl_rapid_test_form"
                     android:layout_width="@dimen/rapid_view_width"
                     android:layout_height="wrap_content"

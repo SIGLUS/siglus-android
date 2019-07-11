@@ -879,8 +879,10 @@
     </style>
     <style name="AlReportList.title">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">left|center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/bottom_border_black</item>
         <item name="android:paddingLeft">@dimen/rapid_view_view_left_padding</item>
         <item name="android:textSize">@dimen/font_size_regular</item>
         <item name="android:textColor">@color/color_black</item>
@@ -897,6 +899,7 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center|center</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/border_black_right_left</item>
         <item name="android:textColor">@color/color_black</item>
         <item name="android:textSize">@dimen/font_size_title_small</item>
         <item name="android:textStyle">bold</item>
