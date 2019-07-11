@@ -49,10 +49,10 @@ public class PTVTestRnrForm extends LinearLayout {
         viewGroup = (ViewGroup) container.findViewById(R.id.ptv_from_list);
     }
 
-    public void initView(PTVReportViewModel viewModel) {
+    public void initView(PTVReportViewModel viewModel, ViewGroup leftHeader) {
         this.viewModel = viewModel;
         editTextsLists.clear();
-        addHeaderView();
+        addHeaderView(leftHeader);
         addItemView(viewModel.form.getRnrFormItemListWrapper());
     }
 
@@ -64,13 +64,13 @@ public class PTVTestRnrForm extends LinearLayout {
 
     }
 
-    private void addHeaderView() {
-        addView(null, true);
+    private void addHeaderView(ViewGroup leftHeader) {
+        addView(null, true,leftHeader);
     }
 
     private void addItemView(List<RnrFormItem> itemFormList) {
         for (RnrFormItem basicItem : itemFormList) {
-            addView(basicItem, false);
+            addView(basicItem, false, null);
         }
     }
 
@@ -90,8 +90,9 @@ public class PTVTestRnrForm extends LinearLayout {
         return etServices;
     }
 
-    private ViewGroup addView(RnrFormItem item, boolean isHeaderView) {
-        ViewGroup inflate = inflateView();
+    private ViewGroup addView(RnrFormItem item, boolean isHeaderView,ViewGroup leftHeader) {
+        ViewGroup inflate =  inflateView();
+//        ViewGroup inflate = isHeaderVieww? leftHeader : inflateView();
         TextView tvName = (TextView) inflate.findViewById(R.id.tv_name);
         EditText etStock = (EditText) inflate.findViewById(R.id.et_initial_stock);
         ViewGroup service = (ViewGroup) inflate.findViewById(R.id.ll_services);

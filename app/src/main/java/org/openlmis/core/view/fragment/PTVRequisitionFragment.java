@@ -84,9 +84,13 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
     @InjectView(R.id.et_total_child)
     EditText totalChild;
 
+    private ViewGroup leftHeader;
+    private LayoutInflater layoutInflater;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        layoutInflater = LayoutInflater.from(getActivity());
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
         periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
     }
@@ -250,9 +254,10 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         getActivity().setTitle(getString(R.string.label_ptv_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()), DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
         monthTitle.setText(DateUtil.formatDateWithLongMonthAndYear(rnRForm.getPeriodEnd()));
         scrollView.setVisibility(View.VISIBLE);
+        leftHeader = (ViewGroup)layoutInflater.inflate(R.layout.item_ptv_test_from,null,false);
 
         if (!presenter.ptvReportViewModel.isEmpty()) {
-            ptvTable.initView(presenter.ptvReportViewModel);
+            ptvTable.initView(presenter.ptvReportViewModel,leftHeader);
             refreshRegimenValue(rnRForm);
             refreshUI(rnRForm);
         } else {
@@ -270,6 +275,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         medicines.getLayoutParams().width = medicineWidth;
         llTitle.getLayoutParams().width = viewWidth;
         llTableHeader.getLayoutParams().width = viewWidth;
+        leftHeader.getLayoutParams().width = viewWidth;
     }
 
     private void refreshRegimenValue(RnRForm rnRForm) {
