@@ -130,7 +130,7 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 
     public void setViewModels() throws LMISException {
         List<RegimenItem> regimenItems = new ArrayList<>();
-        for (ALGridViewModel gridViewModel : alReportViewModel.getItemTotal().rapidTestFormGridViewModelList) {
+        for (ALGridViewModel gridViewModel : alReportViewModel.getItemTotal().getAlGridViewModelList()) {
             String columnName = gridViewModel.getColumnCode().getColumnName();
             addTreatment(regimenItems, gridViewModel, columnName);
             addStock(regimenItems, gridViewModel, columnName);
@@ -141,8 +141,8 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 
     private void addTreatment(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) throws LMISException {
         RegimenItem itemTreatment = getRegimenItem(COLUMN_CODE_PREFIX_TREATMENTS + columnName, getRegimenType(columnName));
-        itemTreatment.setHf(alReportViewModel.getItemHF().rapidTestFormGridViewModelMap.get(columnName).getTreatmentsValue());
-        itemTreatment.setChw(alReportViewModel.getItemCHW().rapidTestFormGridViewModelMap.get(columnName).getTreatmentsValue());
+        itemTreatment.setHf(alReportViewModel.getItemHF().getAlGridViewModelMap().get(columnName).getTreatmentsValue());
+        itemTreatment.setChw(alReportViewModel.getItemCHW().getAlGridViewModelMap().get(columnName).getTreatmentsValue());
         itemTreatment.setAmount(gridViewModel.getTreatmentsValue());
         regimenItems.add(itemTreatment);
     }
@@ -170,8 +170,8 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 
     private void addStock(List<RegimenItem> regimenItems, ALGridViewModel gridViewModel, String columnName) throws LMISException {
         RegimenItem itemStock = getRegimenItem(COLUMN_CODE_PREFIX_STOCK + columnName, getRegimenType(columnName));
-        itemStock.setHf(alReportViewModel.getItemHF().rapidTestFormGridViewModelMap.get(columnName).getExistentStockValue());
-        itemStock.setChw(alReportViewModel.getItemCHW().rapidTestFormGridViewModelMap.get(columnName).getExistentStockValue());
+        itemStock.setHf(alReportViewModel.getItemHF().getAlGridViewModelMap().get(columnName).getExistentStockValue());
+        itemStock.setChw(alReportViewModel.getItemCHW().getAlGridViewModelMap().get(columnName).getExistentStockValue());
         itemStock.setAmount(gridViewModel.getExistentStockValue());
         regimenItems.add(itemStock);
     }

@@ -25,7 +25,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -58,8 +57,8 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     ALRequisitionPresenter presenter;
     ALReportAdapter adapter;
 
-    @InjectView(R.id.scrollView)
-    HorizontalScrollView scrollView;
+//    @InjectView(R.id.scrollView)
+//    HorizontalScrollView scrollView;
 
     @InjectView(R.id.rv_al_row_item_list)
     RecyclerView rvALRowItemListView;
@@ -107,12 +106,12 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     }
 
     protected void initUI() {
-        scrollView.setVisibility(View.INVISIBLE);
+//        scrollView.setVisibility(View.INVISIBLE);
         if (isHistoryForm()) {
-            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+//            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             actionPanelView.setVisibility(View.GONE);
         } else {
-            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+//            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             actionPanelView.setVisibility(View.VISIBLE);
         }
         bindListeners();
@@ -170,7 +169,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
                         e.printStackTrace();
                         return;
                     }
-                    scrollView.requestFocus();
+//                    scrollView.requestFocus();
                     if (!presenter.validateFormPeriod()) {
                         ToastUtil.show(R.string.msg_requisition_not_unique);
                     } else {
@@ -231,7 +230,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     public void refreshRequisitionForm(RnRForm rnRForm) {
         getActivity().setTitle(getString(R.string.label_AL_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()), DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
         monthTitle.setText(DateUtil.formatDateWithLongMonthAndYear(rnRForm.getPeriodEnd()));
-        scrollView.setVisibility(View.VISIBLE);
+//        scrollView.setVisibility(View.VISIBLE);
         adapter.refresh(presenter.alReportViewModel);
     }
 
@@ -243,11 +242,10 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
 
     private void setUpRowItems() {
         adapter = new ALReportAdapter(getQuantityChangeListener());
-        rvALRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvALRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
         rvALRowItemListView.setNestedScrollingEnabled(false);
         rvALRowItemListView.setAdapter(adapter);
     }
-
 
     private ALReportViewHolder.QuantityChangeListener getQuantityChangeListener() {
         return new ALReportViewHolder.QuantityChangeListener() {

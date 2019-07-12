@@ -1,137 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:layout_height="match_parent">
 
-    <HorizontalScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_top_left_black"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/al_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/al_view_list_height"
+            android:background="@drawable/border_bottom_black"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingLeft="@dimen/rapid_view_view_left_padding"
+                android:text="@string/month_year"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_regular" />
+
+            <TextView
+                android:id="@+id/al_monthTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="left|center"
+                android:padding="@dimen/rapid_view_view_left_padding"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_regular"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_top_left_black">
+            android:layout_below="@+id/al_title"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/al_title"
-                android:layout_width="@dimen/al_view_width"
-                android:layout_height="@dimen/al_view_list_height"
-                android:background="@drawable/border_bottom_black"
-                android:orientation="horizontal">
+                android:id="@+id/al_left_header"
+                android:layout_width="@dimen/al_view_left_header_width"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/al_scroll"
+                android:layout_alignBottom="@+id/al_scroll"
+                android:background="@drawable/border_right_black_bold"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:paddingLeft="@dimen/rapid_view_view_left_padding"
-                    android:text="@string/month_year"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_regular" />
+                    style="@style/AlReportList.title.lefttop"
+                    android:background="#fff" />
 
                 <TextView
-                    android:id="@+id/al_monthTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="left|center"
-                    android:padding="@dimen/rapid_view_view_left_padding"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/font_size_regular"
-                    android:textStyle="bold" />
+                    style="@style/AlReportList.title"
+                    android:background="@color/color_green_light"
+                    android:text="@string/label_via_kit_hf" />
+
+                <TextView
+                    style="@style/AlReportList.title"
+                    android:background="@color/color_green_light"
+                    android:text="@string/label_via_kit_chw" />
+
+                <TextView
+                    style="@style/AlReportList.title"
+                    android:background="@color/color_gray"
+                    android:text="@string/total" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/al_header"
-                android:layout_width="@dimen/al_view_width"
-                android:layout_height="@dimen/al_view_header_list_height"
-                android:layout_below="@+id/al_title"
-                android:background="@drawable/border_right_black">
-
-                <TextView
-                    android:layout_width="@dimen/al_view_left_header_width"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/border_black_right_left" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_right_black_bold"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AlReportList.age"
-                        android:text="@string/msg_treatments_month" />
-
-                    <include
-                        android:id="@+id/view_al_header_item"
-                        layout="@layout/view_al_header_item"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_weight="1" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_right_black_bold"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AlReportList.age"
-                        android:text="@string/msg_existing_stock_month" />
-
-                    <include
-                        android:id="@+id/view_al_header_item"
-                        layout="@layout/view_al_header_item"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_weight="1" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
+            <HorizontalScrollView
+                android:id="@+id/al_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/al_header"
-                android:orientation="horizontal">
+                android:layout_toEndOf="@id/al_left_header">
 
-                <LinearLayout
-                    android:layout_width="@dimen/al_view_left_header_width"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/border_right_black_bold"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AlReportList.title"
-                        android:background="@color/color_green_light"
-                        android:text="@string/label_via_kit_hf" />
-
-                    <TextView
-                        style="@style/AlReportList.title"
-                        android:background="@color/color_green_light"
-                        android:text="@string/label_via_kit_chw" />
-
-                    <TextView
-                        style="@style/AlReportList.title"
-                        android:background="@color/color_gray"
-                        android:text="@string/total" />
-                </LinearLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_al_row_item_list"
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:overScrollMode="never" />
-            </LinearLayout>
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/al_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/al_view_header_list_height"
+                        android:layout_alignStart="@id/rv_al_row_item_list_container"
+                        android:layout_alignEnd="@+id/rv_al_row_item_list_container"
+                        android:background="@drawable/border_right_black">
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_right_black_bold"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/AlReportList.age"
+                                android:text="@string/msg_treatments_month" />
+
+                            <include
+                                android:id="@+id/view_al_header_item"
+                                layout="@layout/view_al_header_item"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_weight="1" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_right_black_bold"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/AlReportList.age"
+                                android:text="@string/msg_existing_stock_month" />
+
+                            <include
+                                android:id="@+id/view_al_header_item"
+                                layout="@layout/view_al_header_item"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_weight="1" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rv_al_row_item_list_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/al_header">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_al_row_item_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never" />
+                    </RelativeLayout>
+                </RelativeLayout>
+            </HorizontalScrollView>
         </RelativeLayout>
-    </HorizontalScrollView>
+    </LinearLayout>
 
     <org.openlmis.core.view.widget.ActionPanelView
         android:id="@+id/action_panel"

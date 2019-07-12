@@ -9,14 +9,9 @@ import org.openlmis.core.view.holder.ALReportViewHolder;
 import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
 import org.openlmis.core.view.viewmodel.ALReportViewModel;
 
-import lombok.Setter;
-
-
 public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
     private ALReportViewModel alReportViewModel;
     private ALReportViewHolder.QuantityChangeListener quantityChangeListener;
-    @Setter
-    private Boolean editable = true;
 
     public ALReportAdapter(ALReportViewHolder.QuantityChangeListener quantityChangeListener) {
         alReportViewModel = new ALReportViewModel();
@@ -30,13 +25,13 @@ public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
 
     @Override
     public void onBindViewHolder(ALReportViewHolder holder, int position) {
-        ALReportItemViewModel viewModel = alReportViewModel.itemViewModelList.get(position);
+        ALReportItemViewModel viewModel = alReportViewModel.getItemViewModelList().get(position);
         holder.populate(viewModel, quantityChangeListener);
     }
 
     @Override
     public int getItemCount() {
-        return alReportViewModel.itemViewModelList.size();
+        return alReportViewModel.getItemViewModelList().size();
     }
 
     public void updateTotal() {

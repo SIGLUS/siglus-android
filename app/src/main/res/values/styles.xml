@@ -888,6 +888,10 @@
         <item name="android:textColor">@color/color_black</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="AlReportList.title.lefttop" parent="AlReportList.title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/al_view_list_height</item>
+    </style>
     <style name="AlReportList.titleContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
