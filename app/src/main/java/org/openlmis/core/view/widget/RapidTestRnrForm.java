@@ -24,7 +24,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -39,8 +38,6 @@ import org.openlmis.core.utils.SimpleTextWatcher;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Getter;
 
 public class RapidTestRnrForm extends LinearLayout {
     private Context context;

@@ -151,6 +151,7 @@
                         android:padding="@dimen/margin_small"
                         android:textSize="@dimen/font_size_regular" />
                 </LinearLayout>
+
             </LinearLayout>
         </RelativeLayout>
     </HorizontalScrollView>

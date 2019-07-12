@@ -154,7 +154,7 @@ public class RnRFormListPresenter extends Presenter {
 
     private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
         if (isCanNotCreateRnr(currentPeriod)) {
-            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD);
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {

@@ -26,12 +26,13 @@ public class ALGridViewModel {
         existentStock
     }
 
-    ALColumnCode columnCode;
-    Long treatmentsValue;
-    Long existentStockValue;
+    private ALColumnCode columnCode;
+    private Long treatmentsValue;
+    private Long existentStockValue;
 
     public final static String COLUMN_CODE_PREFIX_TREATMENTS = "Consultas AL US/APE Malaria ";
     public final static String COLUMN_CODE_PREFIX_STOCK = "Consultas AL STOCK Malaria ";
+    public final static int SUFFIX_LENGTH = "1x6".length();
 
     ALGridViewModel(ALColumnCode columnCode) {
         this.columnCode = columnCode;

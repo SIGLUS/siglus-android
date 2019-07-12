@@ -1,6 +1,5 @@
 package org.openlmis.core.view.viewmodel;
 
-import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 
@@ -29,15 +28,13 @@ public class ALReportViewModel implements Serializable {
         }
     }
 
-    ALReportItemViewModel itemTotal;
-    ALReportItemViewModel itemHF;
-    ALReportItemViewModel itemCHW;
+    private ALReportItemViewModel itemTotal;
+    private ALReportItemViewModel itemHF;
+    private ALReportItemViewModel itemCHW;
 
     private RnRForm form;
-    public List<ALReportItemViewModel> itemViewModelList = new ArrayList<>();
-    Map<String, ALReportItemViewModel> itemViewModelMap = new HashMap<>();
-
-    private ProgramDataForm rapidTestForm = new ProgramDataForm();
+    private List<ALReportItemViewModel> itemViewModelList = new ArrayList<>();
+    private Map<String, ALReportItemViewModel> itemViewModelMap = new HashMap<>();
 
     public static long DEFAULT_FORM_ID = 0;
     public static String DEFAULT_TOTAl_NULL = "";
@@ -84,32 +81,32 @@ public class ALReportViewModel implements Serializable {
     public void updateTotal(ALGridViewModel.ALColumnCode columnCode, ALGridViewModel.ALGridColumnCode gridColumnCode) {
         clearCheckTip();
         if (gridColumnCode == ALGridViewModel.ALGridColumnCode.treatment) {
-            Long hf = itemHF.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).treatmentsValue;
-            Long chf = itemCHW.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).treatmentsValue;
-            itemTotal.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).treatmentsValue = calculate(hf, chf);
+            Long hf = itemHF.getAlGridViewModelMap().get(columnCode.getColumnName()).getTreatmentsValue();
+            Long chf = itemCHW.getAlGridViewModelMap().get(columnCode.getColumnName()).getTreatmentsValue();
+            itemTotal.getAlGridViewModelMap().get(columnCode.getColumnName()).setTreatmentsValue(calculate(hf, chf));
 
         } else {
-            Long hf = itemHF.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).existentStockValue;
-            Long chf = itemCHW.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).existentStockValue;
-            itemTotal.rapidTestFormGridViewModelMap.get(columnCode.getColumnName()).existentStockValue = calculate(hf, chf);
+            Long hf = itemHF.getAlGridViewModelMap().get(columnCode.getColumnName()).getExistentStockValue();
+            Long chf = itemCHW.getAlGridViewModelMap().get(columnCode.getColumnName()).getExistentStockValue();
+            itemTotal.getAlGridViewModelMap().get(columnCode.getColumnName()).setExistentStockValue(calculate(hf, chf));
         }
     }
 
     public boolean isComplete() {
-        itemHF.showCheckTip = false;
-        itemCHW.showCheckTip = false;
+        itemHF.setShowCheckTip(false);
+        itemCHW.setShowCheckTip(false);
         if (!itemHF.isComplete()) {
-            itemHF.showCheckTip = true;
+            itemHF.setShowCheckTip(true);
         } else if (!itemCHW.isComplete()) {
-            itemCHW.showCheckTip = true;
+            itemCHW.setShowCheckTip(true);
         }
-        return !itemHF.showCheckTip
-                && !itemCHW.showCheckTip;
+        return !itemHF.isShowCheckTip()
+                && !itemCHW.isShowCheckTip();
     }
 
     public void clearCheckTip() {
-        itemHF.showCheckTip = false;
-        itemCHW.showCheckTip = false;
+        itemHF.setShowCheckTip(false);
+        itemCHW.setShowCheckTip(false);
     }
 
     private Long calculate(Long hf, Long chf) {

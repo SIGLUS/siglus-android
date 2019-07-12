@@ -7,7 +7,6 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-
     <LinearLayout
         android:id="@+id/rl_rapid_test_report"
         android:layout_width="wrap_content"

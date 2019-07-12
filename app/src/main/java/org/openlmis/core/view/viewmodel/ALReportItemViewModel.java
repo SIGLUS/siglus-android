@@ -1,4 +1,5 @@
 package org.openlmis.core.view.viewmodel;
+
 import org.openlmis.core.model.RegimenItem;
 
 import java.io.Serializable;
@@ -9,34 +10,36 @@ import java.util.Map;
 
 import lombok.Data;
 
+import static org.openlmis.core.view.viewmodel.ALGridViewModel.SUFFIX_LENGTH;
+
 @Data
 public class ALReportItemViewModel implements Serializable {
-    ALGridViewModel gridOne = new ALGridViewModel(ALGridViewModel.ALColumnCode.OneColumn);
-    ALGridViewModel gridTwo = new ALGridViewModel(ALGridViewModel.ALColumnCode.TwoColumn);
-    ALGridViewModel gridThree = new ALGridViewModel(ALGridViewModel.ALColumnCode.ThreeColumn);
-    ALGridViewModel gridFour = new ALGridViewModel(ALGridViewModel.ALColumnCode.FourColumn);
+    private ALGridViewModel gridOne = new ALGridViewModel(ALGridViewModel.ALColumnCode.OneColumn);
+    private ALGridViewModel gridTwo = new ALGridViewModel(ALGridViewModel.ALColumnCode.TwoColumn);
+    private ALGridViewModel gridThree = new ALGridViewModel(ALGridViewModel.ALColumnCode.ThreeColumn);
+    private ALGridViewModel gridFour = new ALGridViewModel(ALGridViewModel.ALColumnCode.FourColumn);
 
-    public List<ALGridViewModel> rapidTestFormGridViewModelList = Arrays.asList(gridOne, gridTwo, gridThree, gridFour);
-    public Map<String, ALGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
+    private List<ALGridViewModel> alGridViewModelList = Arrays.asList(gridOne, gridTwo, gridThree, gridFour);
+    private Map<String, ALGridViewModel> alGridViewModelMap = new HashMap<>();
     private ALReportViewModel.ALItemType itemType;
-    public boolean showCheckTip = false;
+    private boolean showCheckTip = false;
 
     public ALReportItemViewModel(ALReportViewModel.ALItemType itemType) {
         this.itemType = itemType;
-        for (ALGridViewModel viewModel : rapidTestFormGridViewModelList) {
-            rapidTestFormGridViewModelMap.put(viewModel.getColumnCode().getColumnName(), viewModel);
+        for (ALGridViewModel viewModel : alGridViewModelList) {
+            alGridViewModelMap.put(viewModel.getColumnCode().getColumnName(), viewModel);
         }
     }
 
     public void setColumnValue(RegimenItem regimen, Long value) {
-       String regimenName = regimen.getRegimen().getName();
-       String columnName = regimenName.substring(regimenName.length()-3, regimenName.length());
-        rapidTestFormGridViewModelMap.get(columnName).setValue(regimen, value);
+        String regimenName = regimen.getRegimen().getName();
+        String columnName = regimenName.substring(regimenName.length() - SUFFIX_LENGTH, regimenName.length());
+        alGridViewModelMap.get(columnName).setValue(regimen, value);
     }
 
     public Boolean isComplete() {
-        for (ALGridViewModel viewModel : rapidTestFormGridViewModelList) {
-            if (viewModel.treatmentsValue == null || viewModel.existentStockValue == null) {
+        for (ALGridViewModel viewModel : alGridViewModelList) {
+            if (viewModel.getTreatmentsValue() == null || viewModel.getExistentStockValue() == null) {
                 return false;
             }
         }
