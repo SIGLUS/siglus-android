@@ -59,11 +59,9 @@
 
                 <TextView
                     style="@style/AlReportList.title"
-                    android:background="@color/color_green_light"
                     android:text="@string/label_via_kit_hf" />
                 <TextView
                     style="@style/AlReportList.title"
-                    android:background="@color/color_green_light"
                     android:text="@string/label_via_kit_chw" />
 
                 <TextView
