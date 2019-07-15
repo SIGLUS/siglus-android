@@ -45,6 +45,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:weightSum="5"
                 android:id="@+id/al_left_header"
                 android:layout_width="@dimen/al_view_left_header_width"
                 android:layout_height="wrap_content"
