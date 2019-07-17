@@ -13,7 +13,7 @@
         <LinearLayout
             style="@style/MMIA.FormContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="50dp">
 
             <org.openlmis.core.view.widget.MMIARnrForm
                 android:id="@+id/rnr_form_list"
@@ -119,12 +119,12 @@
         android:id="@+id/mmia_rnr_items_header_freeze"
         style="@style/MMIA.RnrTable.Header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="100dp">
 
         <LinearLayout
             android:id="@+id/mmia_rnr_items_header_freeze_left"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:layout_weight="2"
             android:orientation="vertical"
             android:showDividers="middle" />
@@ -132,7 +132,7 @@
         <HorizontalScrollView
             android:id="@+id/mmia_rnr_items_header_freeze_right"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="3"
             android:scrollbars="none" />
     </LinearLayout>

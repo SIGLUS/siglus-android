@@ -50,7 +50,10 @@ public class RapidTestRnrForm extends LinearLayout {
     private LayoutInflater layoutInflater;
 
     @Getter
-    private View headerView;
+    private ViewGroup leftHeaderScrollView;
+    private ViewGroup leftHeaderLinearlayout;
+    @Getter
+    private ViewGroup topRightScrollView;
 
     public RapidTestRnrForm(Context context) {
         super(context);
@@ -75,6 +78,9 @@ public class RapidTestRnrForm extends LinearLayout {
         layoutInflater = LayoutInflater.from(context);
         View container = layoutInflater.inflate(R.layout.view_rapid_test_rnr_form, this, true);
         viewGroup = (ViewGroup) container.findViewById(R.id.program_from_list);
+        leftHeaderLinearlayout = (ViewGroup) container.findViewById(R.id.rapid_test_top_left_layout);
+        leftHeaderScrollView = (ViewGroup) container.findViewById(R.id.rapid_test_top_left_scrollview);
+        topRightScrollView = (ViewGroup) container.findViewById(R.id.rapid_test_top_scrollview);
     }
 
     public void initView(List<ProgramDataFormBasicItem> itemFormList) {
@@ -99,9 +105,13 @@ public class RapidTestRnrForm extends LinearLayout {
         return (ViewGroup) layoutInflater.inflate(R.layout.item_rapid_test_from, this, false);
     }
 
+    private ViewGroup getTopLeftInflateView() {
+        return (ViewGroup) layoutInflater.inflate(R.layout.item_rapid_test_top_left, this, false);
+    }
+
     private ViewGroup addView(ProgramDataFormBasicItem item, boolean isHeaderView) {
         ViewGroup inflate = inflateView();
-        TextView tvIssuedUnit = (TextView) inflate.findViewById(R.id.tv_code);
+        ViewGroup topLeftInflate = getTopLeftInflateView();
         TextView tvName = (TextView) inflate.findViewById(R.id.tv_name);
         EditText etStock = (EditText) inflate.findViewById(R.id.et_stock);
         TextView tvReceived = (TextView) inflate.findViewById(R.id.tv_received);
@@ -109,12 +119,13 @@ public class RapidTestRnrForm extends LinearLayout {
         TextView tvAdjustment = (TextView) inflate.findViewById(R.id.tv_adjustment);
         TextView tvValidate = (TextView) inflate.findViewById(R.id.tv_expire);
         EditText etInventory = (EditText) inflate.findViewById(R.id.et_inventory);
+        TextView leftHeaderText = topLeftInflate.findViewById(R.id.left_tv_code);
 
         if (isHeaderView) {
-            setHeaderView(inflate, tvIssuedUnit, tvName, etStock, tvReceived, tvIssue, tvAdjustment, tvValidate, etInventory);
+            setHeaderView(inflate, tvName, etStock, tvReceived, tvIssue, tvAdjustment, tvValidate, etInventory, leftHeaderText);
 
         } else {
-            tvIssuedUnit.setText(item.getProduct().getCode());
+            leftHeaderText.setText(item.getProduct().getCode());
             tvName.setText(item.getProduct().getPrimaryName());
             tvReceived.setText(String.valueOf(item.getReceived()));
             tvIssue.setText(String.valueOf(item.getIssued()));
@@ -135,6 +146,7 @@ public class RapidTestRnrForm extends LinearLayout {
                 new LMISException(e).reportToFabric();
             }
         }
+        leftHeaderLinearlayout.addView(topLeftInflate);
         viewGroup.addView(inflate);
         return inflate;
     }
@@ -165,15 +177,15 @@ public class RapidTestRnrForm extends LinearLayout {
     }
 
     private void setHeaderView(ViewGroup inflate,
-                               TextView tvIssuedUnit,
                                TextView tvName,
                                EditText etStock,
                                TextView tvReceived,
                                TextView tvIssue,
                                TextView tvAdjustment,
                                TextView tvValidate,
-                               EditText etInventory) {
-        tvIssuedUnit.setText(R.string.label_product_codes);
+                               EditText etInventory,
+                               TextView leftHeaderText) {
+        leftHeaderText.setText(R.string.label_product_codes);
         tvName.setText(R.string.label_product_name);
         etStock.setText(R.string.initial_stock);
         tvReceived.setText(R.string.entries);

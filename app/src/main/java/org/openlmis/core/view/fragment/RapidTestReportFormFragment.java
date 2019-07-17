@@ -7,13 +7,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+
 import org.openlmis.core.model.Period;
+
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -28,6 +33,7 @@ import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.RapidTestRnrForm;
+import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
@@ -43,8 +49,10 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.rapid_view_basic_item_header)
     LinearLayout rnrBasicItemHeader;
 
-    @InjectView(R.id.rapid_test)
-    HorizontalScrollView scrollView;
+    @InjectView(R.id.rapid_test_top_scrollview)
+    RnrFormHorizontalScrollView rapidTestTopScrollView;
+//    @InjectView(R.id.rapid_test_top_left_scrollview);
+//    ScrollView rapidTestTo
 
     @InjectView(R.id.rapid_test_rnr_form)
     protected RapidTestRnrForm rnrBasicItemListView;
@@ -79,7 +87,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
         Period period = (Period) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
-        if(period != null) {
+        if (period != null) {
             getActivity().setTitle(getString(R.string.label_rapid_test_title,
                     DateUtil.formatDateWithoutYear(period.getBegin().toDate()),
                     DateUtil.formatDateWithoutYear(period.getEnd().toDate())));
@@ -163,7 +171,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
             @Override
             public void onSingleClick(View v) {
                 String errorMessage = showErrorMessage();
-                if (!StringUtils.isEmpty(errorMessage)){
+                if (!StringUtils.isEmpty(errorMessage)) {
                     ToastUtil.show(errorMessage);
                     return;
                 }
@@ -172,7 +180,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
             private String showErrorMessage() {
                 String errorMessage = "";
-                if (! rnrBasicItemListView.isCompleted()) {
+                if (!rnrBasicItemListView.isCompleted()) {
                     errorMessage = getString(R.string.error_empty_rapid_test_product);
                 } else if (presenter.getViewModel().isFormEmpty()) {
                     errorMessage = getString(R.string.error_empty_rapid_test_list);
@@ -284,19 +292,25 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         populateFormData(viewModel);
         updateObservation(viewModel);
         updateActionPanel();
-        updateScrollView();
+//        updateScrollView();
         loaded();
+        initListener();
     }
 
-    private void updateScrollView() {
-        RapidTestReportViewModel viewModel = presenter.getViewModel();
-        if (viewModel.isDraft()){
-            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        } else {
-            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        }
+    private void initListener() {
+
+
+
+        rapidTestTopScrollView.setOnScrollChangedListener(new RnrFormHorizontalScrollView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(int l, int t, int oldl, int oldt) {
+                Log.e("caopeng", "rnrItemsHeaderFreezeRight(" + l + "," + t + "," + oldl + "," + oldt + ")");
+                rnrBasicItemListView.getLeftHeaderScrollView().scrollBy(l - oldl, 0);
+            }
+        });
 
     }
+
     private void updateObservation(RapidTestReportViewModel viewModel) {
         observationContent.setFocusableInTouchMode(viewModel.isEditable());
         observationContent.setText(viewModel.getObservation());

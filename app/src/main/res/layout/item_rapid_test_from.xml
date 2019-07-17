@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/ItemRnr.Container"
-    android:layout_width="@dimen/rapid_view_basic_form_width"
+    android:layout_width="wrap_content"
     android:layout_height="44dp"
     android:background="@drawable/border_bottom_black">
 
-    <TextView
-        android:id="@+id/tv_code"
-        style="@style/RapidTestForm.productList"
-        android:layout_width="@dimen/rapid_view_basic_form_item_width"
-        android:layout_height="wrap_content" />
+    <!--<TextView-->
+        <!--android:id="@+id/tv_code"-->
+        <!--style="@style/RapidTestForm.productList"-->
+        <!--android:layout_width="@dimen/rapid_view_basic_form_item_width"-->
+        <!--android:layout_height="wrap_content" />-->
 
     <TextView
         android:id="@+id/tv_name"
