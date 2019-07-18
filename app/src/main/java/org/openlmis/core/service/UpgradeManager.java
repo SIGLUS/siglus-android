@@ -14,9 +14,9 @@ public class UpgradeManager {
     private AutoUpdateApk autoUpdateApk = new AutoUpdateApk(LMISApp.getContext(), "", upgradeServerUrl);
 
     public void triggerUpgrade() {
-        if (Period.isWithinSubmissionWindow(DateTime.now())) {
-            return; //skip self auto upgrade if it's within 18th-25th of a month
-        }
+//        if (Period.isWithinSubmissionWindow(DateTime.now())) {
+//            return; //skip self auto upgrade if it's within 18th-25th of a month
+//        }
         autoUpdateApk.checkUpdatesManually();
     }
 }
