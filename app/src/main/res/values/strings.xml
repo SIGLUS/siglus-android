@@ -365,7 +365,6 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_request_signature_sign">Approve</string>
     <string name="label_physical_inventory_signature_title">Enter your initials to sign all inventory movements</string>
-    <string name="label_add_new_product_signature_title" translatable="false">Enter your initials to sign this new products</string>
     <string name="hint_signature_error_message">Enter more than 2 characters as your initials (maximum 5 characters)</string>
     <string name="dialog_unpack_kit_signature">Please enter your initials to confirm the amounts entered &amp; unpack the kit</string>
 

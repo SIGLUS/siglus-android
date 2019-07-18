@@ -213,7 +213,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         initialInventoryPresenter.getInventoryViewModelList().add(model2);
         initialInventoryPresenter.getDefaultViewModelList().add(model);
         initialInventoryPresenter.getDefaultViewModelList().add(model2);
-        initialInventoryPresenter.initOrArchiveBackStockCards("default");
+        initialInventoryPresenter.initOrArchiveBackStockCards();
 
         verify(stockRepositoryMock, times(1)).updateStockCardWithProduct(any(StockCard.class));
         verify(stockRepositoryMock, times(1)).addStockMovementAndUpdateStockCard(any(StockMovementItem.class));
@@ -236,7 +236,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
         initialInventoryPresenter.getInventoryViewModelList().addAll(inventoryViewModelList);
         initialInventoryPresenter.getDefaultViewModelList().addAll(inventoryViewModelList);
-        initialInventoryPresenter.initOrArchiveBackStockCards("default");
+        initialInventoryPresenter.initOrArchiveBackStockCards();
 
         assertFalse(archivedStockCard.getProduct().isArchived());
         verify(stockRepositoryMock, times(1)).updateStockCardWithProduct(archivedStockCard);
@@ -250,7 +250,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
         initialInventoryPresenter.getInventoryViewModelList().add(model);
         initialInventoryPresenter.getDefaultViewModelList().add(model);
-        initialInventoryPresenter.initOrArchiveBackStockCards("default");
+        initialInventoryPresenter.initOrArchiveBackStockCards();
 
         ArgumentCaptor<StockMovementItem> argument = ArgumentCaptor.forClass(StockMovementItem.class);
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(argument.capture());

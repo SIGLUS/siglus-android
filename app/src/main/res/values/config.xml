@@ -1,5 +1,5 @@
 <resources>
-    <string name="upgrade_server_url">http://10.0.2.2:8090</string>
+    <string name="upgrade_server_url">http://52.69.16.156:8090</string>
 
     <string-array name="medicine_adult">
         <item>08S42</item>

@@ -24,7 +24,6 @@ import android.util.Log;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -290,9 +289,7 @@ public class LoginPresenter extends Presenter {
             public void onCompleted() {
                 Log.d(TAG,"getSyncLastYearStockCardSubscriber onCompleted");
                 try {
-                    if (BuildConfig.VERSION_CODE == 86) {
-                        syncDownManager.fetchKitChangeProduct();
-                    }
+                    syncDownManager.fetchKitChangeProduct();
                 } catch (LMISException e) {
                     e.printStackTrace();
                 }

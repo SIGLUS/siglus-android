@@ -82,17 +82,6 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public boolean selectedProductIsNoBasic() {
-        for (InventoryViewModel modelList: inventoryViewModelList) {
-            if (modelList.isChecked()) {
-                return !modelList.getProduct().isBasic();
-            }else {
-                continue;
-            }
-        }
-        return false;
-    }
-
     @Nullable
     private InventoryViewModel convertProductToStockCardViewModel(Product product) {
         try {
@@ -117,35 +106,24 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                initOrArchiveBackStockCards(null);
+                initOrArchiveBackStockCards();
                 subscriber.onNext(null);
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Object> initStockCardObservable(String sig) {
-        return Observable.create(new Observable.OnSubscribe<Object>() {
-            @Override
-            public void call(Subscriber<? super Object> subscriber) {
-                initOrArchiveBackStockCards(sig);
-                subscriber.onNext(null);
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public void initOrArchiveBackStockCards(String sig) {
+    void initOrArchiveBackStockCards() {
         defaultViewModelList.clear();
         defaultViewModelList.addAll(inventoryViewModelList);
         for (InventoryViewModel inventoryViewModel : defaultViewModelList) {
             if (inventoryViewModel.isChecked()) {
-                initOrArchiveBackStockCard(inventoryViewModel,sig);
+                initOrArchiveBackStockCard(inventoryViewModel);
             }
         }
     }
 
-    private void initOrArchiveBackStockCard(InventoryViewModel inventoryViewModel,String sig) {
+    private void initOrArchiveBackStockCard(InventoryViewModel inventoryViewModel) {
         try {
             if (inventoryViewModel.getProduct().isArchived()) {
                 StockCard stockCard = inventoryViewModel.getStockCard();
@@ -153,19 +131,16 @@ public class InitialInventoryPresenter extends InventoryPresenter {
                 stockRepository.updateStockCardWithProduct(stockCard);
                 return;
             }
-            createStockCardAndInventoryMovementWithLot(inventoryViewModel,sig);
+            createStockCardAndInventoryMovementWithLot(inventoryViewModel);
         } catch (LMISException e) {
             e.reportToFabric();
         }
     }
 
-    private void createStockCardAndInventoryMovementWithLot(InventoryViewModel model,String sig) throws LMISException {
+    private void createStockCardAndInventoryMovementWithLot(InventoryViewModel model) throws LMISException {
         StockCard stockCard = new StockCard();
         stockCard.setProduct(model.getProduct());
         StockMovementItem movementItem = new StockMovementItem(stockCard, model);
-        if (!model.getProduct().isBasic()) {
-            movementItem.setSignature(sig);
-        }
         stockCard.setStockOnHand(movementItem.getStockOnHand());
         stockRepository.addStockMovementAndUpdateStockCard(movementItem);
     }

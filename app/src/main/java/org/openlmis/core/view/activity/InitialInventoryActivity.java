@@ -3,12 +3,10 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InitialInventoryPresenter;
 import org.openlmis.core.utils.Constants;
@@ -16,17 +14,14 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder;
-import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscription;
-import rx.functions.Action1;
 
 @ContentView(R.layout.activity_initial_inventory)
 public class InitialInventoryActivity extends InventoryActivity {
-    private static final String TAG = InitialInventoryActivity.class.getSimpleName();
 
     @InjectView(R.id.layout_action_buttons)
     private LinearLayout llSave;
@@ -66,30 +61,17 @@ public class InitialInventoryActivity extends InventoryActivity {
         btnDone.setOnClickListener(new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {
-                if (presenter.selectedProductIsNoBasic() && validateInventory()) {
-                    showSignDialog();
+                btnDone.setEnabled(false);
+                if (validateInventory()) {
+                    loading();
+                    Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
+                    subscriptions.add(subscription);
                 } else {
                     btnDone.setEnabled(true);
                 }
             }
         });
     }
-
-    private  void showSignDialog() {
-        SignatureDialog signatureDialog = new SignatureDialog();
-        signatureDialog.setArguments(SignatureDialog.getBundleToMe(getString(R.string.label_add_new_product_signature_title)));
-        signatureDialog.setDelegate(signatureDialogDelegate);
-        signatureDialog.show(getFragmentManager());
-    }
-
-    private SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-        public void onSign(String sign) {
-            Log.d(TAG,"signatureDialogDelegate sign  = " +sign);
-            loading();
-            Subscription subscription = presenter.initStockCardObservable(sign).subscribe(onNextMainPageAction);
-            subscriptions.add(subscription);
-        }
-    };
 
     @Override
     protected void initRecyclerView() {
