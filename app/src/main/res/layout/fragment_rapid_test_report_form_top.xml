@@ -11,8 +11,8 @@
 
         <LinearLayout
             android:id="@+id/rapid_view_basic_item_header"
-            android:layout_width="@dimen/rapid_view_basic_form_width"
-            android:layout_height="44dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/repid_view_top_item_line_heigh"
             android:background="@drawable/border_black"
             android:orientation="horizontal">
 

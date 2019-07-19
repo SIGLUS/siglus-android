@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_gravity="center"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    style="@style/ItemRnr.Container.TopLeft"
+    android:layout_height="@dimen/repid_view_top_item_line_heigh">
 
     <TextView
-        android:layout_weight="1"
         android:id="@+id/left_tv_code"
         style="@style/RapidTestForm.productList"
         android:layout_width="@dimen/rapid_view_basic_form_item_width"

@@ -2,14 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/ItemRnr.Container"
     android:layout_width="wrap_content"
-    android:layout_height="44dp"
+    android:layout_height="@dimen/repid_view_top_item_line_heigh"
     android:background="@drawable/border_bottom_black">
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_code"-->
-        <!--style="@style/RapidTestForm.productList"-->
-        <!--android:layout_width="@dimen/rapid_view_basic_form_item_width"-->
-        <!--android:layout_height="wrap_content" />-->
 
     <TextView
         android:id="@+id/tv_name"
@@ -23,8 +17,8 @@
         android:layout_width="97dp"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:inputType="number"
-        android:enabled="false" />
+        android:enabled="false"
+        android:inputType="number" />
 
     <TextView
         android:id="@+id/tv_received"
@@ -51,8 +45,8 @@
         android:layout_width="97dp"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:inputType="numberSigned"
-        android:enabled="false" />
+        android:enabled="false"
+        android:inputType="numberSigned" />
 
     <TextView
         android:id="@+id/tv_expire"

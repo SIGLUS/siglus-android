@@ -380,7 +380,6 @@
 
         <org.openlmis.core.view.widget.ActionPanelView
             android:id="@+id/action_panel"
-            android:background="#f00"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rv_observation_row_item_list"

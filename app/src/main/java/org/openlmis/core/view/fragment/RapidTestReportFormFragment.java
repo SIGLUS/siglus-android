@@ -12,13 +12,10 @@ import org.openlmis.core.model.Period;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -51,8 +48,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     @InjectView(R.id.rapid_test_top_scrollview)
     RnrFormHorizontalScrollView rapidTestTopScrollView;
-//    @InjectView(R.id.rapid_test_top_left_scrollview);
-//    ScrollView rapidTestTo
 
     @InjectView(R.id.rapid_test_rnr_form)
     protected RapidTestRnrForm rnrBasicItemListView;
@@ -292,19 +287,14 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         populateFormData(viewModel);
         updateObservation(viewModel);
         updateActionPanel();
-//        updateScrollView();
         loaded();
         initListener();
     }
 
     private void initListener() {
-
-
-
         rapidTestTopScrollView.setOnScrollChangedListener(new RnrFormHorizontalScrollView.OnScrollChangedListener() {
             @Override
             public void onScrollChanged(int l, int t, int oldl, int oldt) {
-                Log.e("caopeng", "rnrItemsHeaderFreezeRight(" + l + "," + t + "," + oldl + "," + oldt + ")");
                 rnrBasicItemListView.getLeftHeaderScrollView().scrollBy(l - oldl, 0);
             }
         });

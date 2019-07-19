@@ -544,6 +544,10 @@
     <style name="ItemRnr.Container" parent="Divider.Vertical">
         <item name="android:orientation">horizontal</item>
     </style>
+    <style name="ItemRnr.Container.TopLeft" parent="ItemRnr.Container">
+        <item name="android:background">@color/color_green_light</item>
+        <item name="android:divider">@drawable/divider_vertical_rapid_test_top_left</item>
+    </style>
 
     <style name="ItemRnr.AmountText" parent="Text.Gray.Regular">
         <item name="android:gravity">center</item>
