@@ -55,6 +55,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.vg_rapid_test_report_empty_header)
     ViewGroup emptyHeaderView;
 
+    @InjectView(R.id.vg_rapid_test_report_empty_header_1)
+    ViewGroup vg_rapid_test_report_empty_header_1;
+
     @InjectView(R.id.rv_observation_header)
     LinearLayout observationHeader;
 
@@ -109,6 +112,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     private void updateHeaderSize() {
         calculateRowHeaderAndGridSize();
         emptyHeaderView.getLayoutParams().width = ROW_HEADER_WIDTH;
+        vg_rapid_test_report_empty_header_1.getLayoutParams().width = ROW_HEADER_WIDTH;
         observationHeader.getLayoutParams().width = (int) (ROW_HEADER_WIDTH + getResources().getDimension(R.dimen.rapid_view_border_width));
     }
 

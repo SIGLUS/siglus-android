@@ -25,14 +25,20 @@ public class RapidTestReportRowViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void populate(RapidTestFormItemViewModel viewModel, Boolean editable, RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
+    public void populate(RapidTestFormItemViewModel viewModel, Boolean editable,
+                         RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
         setUpHeader(viewModel);
         setUpGridListView(viewModel, editable, quantityChangeListener);
     }
 
-    public void setUpGridListView(RapidTestFormItemViewModel viewModel, Boolean editable, RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
-        adapter = new RapidTestReportGridAdapter(viewModel.getRapidTestFormGridViewModelList(), context, !isTotal(viewModel) && editable, isTotal(viewModel) ? null : quantityChangeListener);
-        rvRapidReportGridListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+    public void setUpGridListView(RapidTestFormItemViewModel viewModel, Boolean editable,
+                                  RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
+        adapter = new RapidTestReportGridAdapter(viewModel.getRapidTestFormGridViewModelList(),
+                context,
+                !isTotal(viewModel) && editable, isTotal(viewModel) ? null : quantityChangeListener);
+        rvRapidReportGridListView.setLayoutManager(new LinearLayoutManager(context,
+                LinearLayoutManager.HORIZONTAL,
+                false));
         rvRapidReportGridListView.setAdapter(adapter);
     }
 
