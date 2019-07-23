@@ -54,20 +54,22 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/al_left_header_top"
                     style="@style/AlReportList.title.lefttop"
-                    android:background="#fff" />
+                    android:background="@android:color/white" />
 
                 <TextView
+                    android:id="@+id/al_left_header_hf"
                     style="@style/AlReportList.title"
-                    android:background="@color/color_green_light"
                     android:text="@string/label_via_kit_hf" />
 
                 <TextView
+                    android:id="@+id/al_left_header_chw"
                     style="@style/AlReportList.title"
-                    android:background="@color/color_green_light"
                     android:text="@string/label_via_kit_chw" />
 
                 <TextView
+                    android:id="@+id/al_left_header_total"
                     style="@style/AlReportList.title"
                     android:background="@color/color_gray"
                     android:text="@string/total" />
@@ -90,7 +92,6 @@
                         android:layout_alignStart="@id/rv_al_row_item_list_container"
                         android:layout_alignEnd="@+id/rv_al_row_item_list_container"
                         android:background="@drawable/border_right_black">
-
 
                         <LinearLayout
                             android:layout_width="0dp"
