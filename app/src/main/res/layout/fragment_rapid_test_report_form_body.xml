@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rapid_body_header"
     android:layout_width="wrap_content"
@@ -26,7 +25,7 @@
 
     </LinearLayout>
 
-    <org.openlmis.core.view.widget.RnrFormHorizontalScrollView
+    <HorizontalScrollView
         android:id="@+id/rapid_test_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +42,7 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_rapid_report_row_item_list"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/rapid_view_width"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/vg_rapid_test_report_header"
                 android:background="@drawable/border_top_black_right_black_bold"
@@ -62,7 +61,7 @@
                 <LinearLayout
                     android:id="@+id/rv_observation_header"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/border_right_black_bold"
                     android:minHeight="44dp">
 
@@ -79,14 +78,14 @@
 
                 <LinearLayout
                     android:id="@+id/rv_observation_content_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/border_right_black_bold"
                     android:minHeight="44dp">
 
                     <EditText
                         android:id="@+id/rv_observation_content"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:gravity="left|top"
@@ -103,7 +102,7 @@
                 android:layout_below="@+id/rv_observation_row_item_list"
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
-    </org.openlmis.core.view.widget.RnrFormHorizontalScrollView>
+    </HorizontalScrollView>
 
     <FrameLayout
         android:id="@+id/vg_rapid_test_report_empty_header_1"
@@ -111,11 +110,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/vg_rapid_test_report_header_title"
         android:layout_alignBottom="@+id/rapid_test_body"
-        android:background="@color/color_rapid_test_form_row_header">
+        android:background="@drawable/border_right_rapid_test_header">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/vg_rapid_test_report_empty_header"

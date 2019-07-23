@@ -12,6 +12,7 @@ import org.openlmis.core.model.Period;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -123,9 +124,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     private void calculateRowHeaderAndGridSize() {
-        int totalWidthWithoutBorders = (int) (getResources().getDimension(R.dimen.rapid_view_width)
-                - getResources().getDimension(R.dimen.rapid_view_Header_view)
-                - getResources().getDimension(R.dimen.rapid_view_border_width));
+        int totalWidthWithoutBorders = (int) (getResources().getDimension(R.dimen.rapid_view_width));
         GRID_SIZE = totalWidthWithoutBorders / 4;
         ROW_HEADER_WIDTH = (int) getResources().getDimension(R.dimen.rapid_view_Header_view);
     }
@@ -320,6 +319,13 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 rapidTestBodyLeftListView.scrollBy(dx, dy);
+            }
+        });
+        // disable the touch event
+        rapidTestBodyLeftListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
             }
         });
     }

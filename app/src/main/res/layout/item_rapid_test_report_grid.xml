@@ -4,49 +4,49 @@
     android:layout_height="match_parent"
     android:background="@drawable/border_left_black_bold"
     android:orientation="horizontal">
+
     <LinearLayout
         android:id="@+id/et_warning_border"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@null"
-        >
+        android:background="@null">
 
-    <EditText
-        android:id="@+id/et_consume_rapid_test_report_grid"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@null"
-        android:gravity="center"
-        android:inputType="number"/>
+        <EditText
+            android:id="@+id/et_consume_rapid_test_report_grid"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
+            android:inputType="number" />
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/color_black" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/color_black" />
 
-    <EditText
-        android:id="@+id/et_positive_rapid_test_report_grid"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@null"
-        android:gravity="center"
-        android:inputType="number"/>
+        <EditText
+            android:id="@+id/et_positive_rapid_test_report_grid"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
+            android:inputType="number" />
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/color_black" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/color_black" />
 
-    <EditText
-        android:id="@+id/et_unjustified_rapid_test_report_grid"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@null"
-        android:gravity="center"
-        android:inputType="number"/>
-</LinearLayout>
+        <EditText
+            android:id="@+id/et_unjustified_rapid_test_report_grid"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
+            android:inputType="number" />
+    </LinearLayout>
 
 </LinearLayout>
