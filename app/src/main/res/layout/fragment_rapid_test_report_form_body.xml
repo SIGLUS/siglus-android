@@ -30,7 +30,8 @@
         android:id="@+id/rapid_test_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vg_rapid_test_report_header_title">
+        android:layout_below="@+id/vg_rapid_test_report_header_title"
+        android:layout_toEndOf="@+id/vg_rapid_test_report_empty_header_1">
 
         <RelativeLayout
             android:id="@+id/rl_rapid_test_form"
@@ -107,10 +108,29 @@
     <FrameLayout
         android:id="@+id/vg_rapid_test_report_empty_header_1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/vg_rapid_test_report_header_title"
-        android:layout_alignStart="@+id/rapid_test_body"
-        android:background="#f00">
+        android:layout_alignBottom="@+id/rapid_test_body"
+        android:background="@color/color_rapid_test_form_row_header">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/vg_rapid_test_report_empty_header"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/repid_view_item_two_line_heigh"
+                android:background="@drawable/border_top_black"
+                android:orientation="horizontal" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rapid_test_body_left_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/vg_rapid_test_report_empty_header" />
+        </RelativeLayout>
+
 
     </FrameLayout>
 </RelativeLayout>

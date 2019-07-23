@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/repid_view_body_item_line_heigh">
+
+    <TextView
+        android:id="@+id/rapid_body_left_title"
+        style="@style/RapidTestForm.RowHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="left|center"
+        android:paddingLeft="@dimen/rapid_view_view_left_padding"
+        android:text="Farmácia Pública" />
+</RelativeLayout>

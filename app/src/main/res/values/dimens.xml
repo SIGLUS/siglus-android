@@ -59,6 +59,7 @@
     <dimen name="rapid_view_basic_form_item_stock_width">70dp</dimen>
     <dimen name="repid_view_top_item_line_heigh">44dp</dimen>
     <dimen name="repid_view_item_line_heigh">44dp</dimen>
+    <dimen name="repid_view_body_item_line_heigh">50dp</dimen>
     <dimen name="repid_view_item_two_line_heigh">88dp</dimen>
 
     <!--AL-->

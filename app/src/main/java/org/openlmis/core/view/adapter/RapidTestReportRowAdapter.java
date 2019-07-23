@@ -33,7 +33,6 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestRep
     @Override
     public RapidTestReportRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rapid_test_report_row, parent, false);
-        ((LinearLayout) itemView).getChildAt(0).getLayoutParams().width = RapidTestReportFormFragment.ROW_HEADER_WIDTH;
         return new RapidTestReportRowViewHolder(itemView);
     }
 
