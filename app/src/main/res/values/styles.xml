@@ -545,7 +545,7 @@
         <item name="android:orientation">horizontal</item>
     </style>
     <style name="ItemRnr.Container.TopLeft" parent="ItemRnr.Container">
-        <item name="android:background">@drawable/border_right_rapid_test_header</item>
+        <item name="android:background">@drawable/border_right_bottom_rapid_test_header</item>
     </style>
 
     <style name="ItemRnr.AmountText" parent="Text.Gray.Regular">

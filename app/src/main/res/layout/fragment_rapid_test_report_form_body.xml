@@ -110,7 +110,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/vg_rapid_test_report_header_title"
         android:layout_alignBottom="@+id/rapid_test_body"
-        android:background="@drawable/border_right_rapid_test_header">
+        android:background="@drawable/border_right_bottom_rapid_test_header">
 
         <RelativeLayout
             android:layout_width="match_parent"

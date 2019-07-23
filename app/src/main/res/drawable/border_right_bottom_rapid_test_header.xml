@@ -3,7 +3,7 @@
     <item>
         <shape>
             <padding
-                android:bottom="0dp"
+                android:bottom="1dp"
                 android:left="0dp"
                 android:right="1dp"
                 android:top="0dp" />
