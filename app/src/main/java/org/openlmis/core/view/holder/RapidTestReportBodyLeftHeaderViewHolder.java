@@ -25,6 +25,8 @@ public class RapidTestReportBodyLeftHeaderViewHolder extends BaseViewHolder {
         if (isTotal(viewModel) || isAPEs(viewModel)) {
             mTitle.setBackgroundResource(R.drawable.border_top_rapid_test_body_left_ape);
 //            mTitle.setBackgroundColor(LMISApp.getInstance().getResources().getColor(R.color.color_rapid_test_form_total_header));
+        } else {
+            mTitle.setBackgroundResource(R.drawable.border_top_rapid_test_body_left);
         }
         Log.e(TAG, "caopeng setUpHeader =" + viewModel.getIssueReason().getDescription());
     }
