@@ -4,10 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.fragment.RapidTestReportFormFragment;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.holder.RapidTestReportRowViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;

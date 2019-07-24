@@ -10,7 +10,6 @@ import android.text.TextWatcher;
 
 import org.openlmis.core.model.Period;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
