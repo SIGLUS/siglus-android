@@ -165,13 +165,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
 
-    <FrameLayout
+    <org.openlmis.core.view.widget.PTVTestLeftHeader
         android:id="@+id/ptv_left_header"
-        android:layout_width="40dp"
+        android:layout_width="@dimen/ptv_view_item_width"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ptv_title"
-        android:layout_alignBottom="@+id/scrollView"
-        android:background="#f00">
-
-    </FrameLayout>
+        android:layout_alignBottom="@+id/scrollView" />
 </RelativeLayout>

@@ -40,6 +40,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.widget.PTVTestLeftHeader;
 import org.openlmis.core.view.widget.PTVTestRnrForm;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
@@ -83,6 +84,9 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
     @InjectView(R.id.et_total_child)
     EditText totalChild;
+
+    @InjectView(R.id.ptv_left_header)
+    PTVTestLeftHeader ptv_left_header;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -134,6 +138,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
         bindListeners();
         addRegimenListeners();
+//        ptv_left_header.initView(null);
     }
 
     private void addRegimenListeners() {
@@ -253,6 +258,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
         if (!presenter.ptvReportViewModel.isEmpty()) {
             ptvTable.initView(presenter.ptvReportViewModel);
+            ptv_left_header.initView(presenter.ptvReportViewModel);
             refreshRegimenValue(rnRForm);
             refreshUI(rnRForm);
         } else {
