@@ -209,33 +209,33 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void updateButtonConfigView() {
-       List reportTypes = sharedPreferenceMgr.getReportTypesData();
-       List<Pair<String, Button>> buttonConfigs= Arrays.asList(new Pair<>(Constants.VIA_REPORT, btnVIAList),
-               new Pair<>(Constants.MMIA_REPORT, btnMMIAList),
-               new Pair<>(Constants.AL_REPORT, btnALReport),
-               new Pair<>(Constants.PTV_REPORT, btnPTVReport),
-               new Pair<>(Constants.RAPID_REPORT,btnRapidTestReport));
-       for (Pair<String, Button> buttonConfig: buttonConfigs) {
-           ReportTypeForm reportType = getReportType(buttonConfig.first, reportTypes);
-           Button button = buttonConfig.second;
-           if (button != btnALReport) {
-               button.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
-           } else {
-               viewAl.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
-           }
-       }
+        List reportTypes = sharedPreferenceMgr.getReportTypesData();
+        List<Pair<String, Button>> buttonConfigs = Arrays.asList(new Pair<>(Constants.VIA_REPORT, btnVIAList),
+                new Pair<>(Constants.MMIA_REPORT, btnMMIAList),
+                new Pair<>(Constants.AL_REPORT, btnALReport),
+                new Pair<>(Constants.PTV_REPORT, btnPTVReport),
+                new Pair<>(Constants.RAPID_REPORT, btnRapidTestReport));
+        for (Pair<String, Button> buttonConfig : buttonConfigs) {
+            ReportTypeForm reportType = getReportType(buttonConfig.first, reportTypes);
+            Button button = buttonConfig.second;
+            if (button != btnALReport) {
+                button.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
+            } else {
+                viewAl.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
+            }
+        }
 
-       if (btnPTVReport.getVisibility() == View.VISIBLE && btnMMIAList.getVisibility() == View.VISIBLE) {
-           if (!getReportType(Constants.PTV_REPORT, reportTypes).active) {
-               btnPTVReport.setVisibility(View.GONE);
-           } else if (!getReportType(Constants.MMIA_REPORT, reportTypes).active) {
-               btnMMIAList.setVisibility(View.GONE);
-           }
-       }
+        if (btnPTVReport.getVisibility() == View.VISIBLE && btnMMIAList.getVisibility() == View.VISIBLE) {
+            if (!getReportType(Constants.PTV_REPORT, reportTypes).active) {
+                btnPTVReport.setVisibility(View.GONE);
+            } else if (!getReportType(Constants.MMIA_REPORT, reportTypes).active) {
+                btnMMIAList.setVisibility(View.GONE);
+            }
+        }
     }
 
-    private ReportTypeForm getReportType(String code,  List<ReportTypeForm> reportTypes) {
-        for (ReportTypeForm typeForm: reportTypes){
+    private ReportTypeForm getReportType(String code, List<ReportTypeForm> reportTypes) {
+        for (ReportTypeForm typeForm : reportTypes) {
             if (typeForm.getCode().equalsIgnoreCase(code)) {
                 return typeForm;
             }
@@ -277,7 +277,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickMMIAHistory(View view) {
-        startActivity(RnRFormListActivity.getIntentToMe(this,  Constants.Program.MMIA_PROGRAM));
+        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.MMIA_PROGRAM));
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectMMIA, Constants.MMIA_PROGRAM_CODE);
     }
 
@@ -295,7 +295,7 @@ public class HomeActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         incompleteRequisitionBanner.setIncompleteRequisitionBanner();
-        if(sharedPreferenceMgr.isStockCardLastYearSyncError()) {
+        if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
             syncTimeView.setSyncStockCardLastYearError();
         } else {
             setSyncedTime();

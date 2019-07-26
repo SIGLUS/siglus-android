@@ -36,9 +36,13 @@ public class TrainingEnvironmentHelper {
         SharedPreferenceMgr.getInstance().setRapidTestsDataSynced(true);
         SharedPreferenceMgr.getInstance().setRnrLastSyncTime();
         SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
+        SharedPreferenceMgr.getInstance().setKeyHasCopiedTrainingDb(true);
     }
 
     private void setUpDataForTrainingEnvironment() {
+        if (SharedPreferenceMgr.getInstance().hasCopiedTrainingDb()) {
+            return;
+        }
         File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
         try {
             AssetManager assetManager = LMISApp.getContext().getAssets();

@@ -73,6 +73,7 @@ public class SharedPreferenceMgr {
     public static final String LATEST_SYNCED_DOWN_REPORT_TYPE = "syncedReport";
     public static final String MONTH_OFFSET_DEFINED_OLD_DATA = "month_offset_that_defined_old_data";
     public static final String KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR = "stock_card_last_year_sync_error";
+    public static final String KEY_HAS_COPIED_TRAINING_DB = "has_copied_training_db";
     final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
 
@@ -148,10 +149,11 @@ public class SharedPreferenceMgr {
     }
 
     public List<ReportTypeForm> getReportTypesData() {
-        String json = sharedPreferences.getString(SharedPreferenceMgr.LATEST_SYNCED_DOWN_REPORT_TYPE,null);
+        String json = sharedPreferences.getString(SharedPreferenceMgr.LATEST_SYNCED_DOWN_REPORT_TYPE, null);
         if (json != null) {
             Gson gson = new Gson();
-            Type type = new TypeToken<List<ReportTypeForm>>(){}.getType();
+            Type type = new TypeToken<List<ReportTypeForm>>() {
+            }.getType();
             return gson.fromJson(json, type);
         }
         return null;
@@ -255,6 +257,14 @@ public class SharedPreferenceMgr {
 
     public void setStockLastSyncTime() {
         sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_STOCKCARD, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+    }
+
+    public void setKeyHasCopiedTrainingDb(boolean hasCopiedTrainingDb) {
+        sharedPreferences.edit().putBoolean(KEY_HAS_COPIED_TRAINING_DB, hasCopiedTrainingDb);
+    }
+
+    public boolean hasCopiedTrainingDb() {
+        return sharedPreferences.getBoolean(KEY_HAS_COPIED_TRAINING_DB, false);
     }
 
     public boolean hasSyncedUpLatestMovementLastDay() {
