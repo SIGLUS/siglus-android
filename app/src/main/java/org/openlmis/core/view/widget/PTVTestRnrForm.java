@@ -221,8 +221,8 @@ public class PTVTestRnrForm extends LinearLayout {
     }
 
     public boolean isCompleted() {
-        for (List<EditText> editTextList: editTextsLists) {
-            for (EditText editText: editTextList) {
+        for (List<EditText> editTextList : editTextsLists) {
+            for (EditText editText : editTextList) {
                 if (TextUtils.isEmpty(editText.getText().toString())) {
                     editText.setError(context.getString(R.string.hint_error_input));
                     return false;
