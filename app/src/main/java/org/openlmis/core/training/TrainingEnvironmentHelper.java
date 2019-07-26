@@ -40,15 +40,13 @@ public class TrainingEnvironmentHelper {
     }
 
     private void setUpDataForTrainingEnvironment() {
-        if (SharedPreferenceMgr.getInstance().hasCopiedTrainingDb()) {
-            return;
-        }
         File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
         try {
             AssetManager assetManager = LMISApp.getContext().getAssets();
             InputStream inputStream = assetManager.open("lmis_training.db");
             FileUtil.copyInputStreamToFile(inputStream, currentDB);
             TrainingSqliteOpenHelper.getInstance(LMISApp.getContext()).updateTimeInDB();
+            SharedPreferenceMgr.getInstance().setKeyHasCopiedTrainingDb(true);
         } catch (IOException | SQLException e) {
             new LMISException(e).reportToFabric();
         }

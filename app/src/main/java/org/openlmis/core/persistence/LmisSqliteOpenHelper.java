@@ -25,8 +25,6 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.persistence.migrations.AddALToRegimen;
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCategoryColumnToProductPrograms;
@@ -94,8 +92,6 @@ import org.openlmis.core.persistence.migrations.UpdateRapidTestColumnsTemplate;
 import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
-import org.openlmis.core.training.TrainingEnvironmentHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -184,9 +180,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     }
 
     public static synchronized LmisSqliteOpenHelper getInstance(Context context) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)){
-            TrainingEnvironmentHelper.getInstance().setUpData();
-        }
         if (_helperInstance == null) {
             _helperInstance = new LmisSqliteOpenHelper(context);
         }
