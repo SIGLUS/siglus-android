@@ -291,7 +291,13 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        incompleteRequisitionBanner.setIncompleteRequisitionBanner();
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            incompleteRequisitionBanner.setIncompleteRequisitionBanner();
+        } else {
+            incompleteRequisitionBanner.setVisibility(View.GONE);
+        }
+
         if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
             syncTimeView.setSyncStockCardLastYearError();
         } else {
