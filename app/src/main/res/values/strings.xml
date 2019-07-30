@@ -457,6 +457,7 @@
     <string name="msg_invalid_stock_movement">Stock movement date must later than last stock movement</string>
 
     <!--Lot management-->
+    <string name="lots_has_expire">Lot has expire</string>
     <string name="label_lot_number">What is the lot number?</string>
     <string name="hint_lot_number">Lot number</string>
     <string name="label_add_lot_expire">When does the lot expire?</string>
