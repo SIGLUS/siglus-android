@@ -86,7 +86,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
     EditText totalChild;
 
     @InjectView(R.id.ptv_left_header)
-    PTVTestLeftHeader ptv_left_header;
+    PTVTestLeftHeader ptvTestLeftHeader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,7 +138,6 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
         bindListeners();
         addRegimenListeners();
-//        ptv_left_header.initView(null);
     }
 
     private void addRegimenListeners() {
@@ -258,7 +257,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
         if (!presenter.ptvReportViewModel.isEmpty()) {
             ptvTable.initView(presenter.ptvReportViewModel);
-            ptv_left_header.initView(presenter.ptvReportViewModel);
+            ptvTestLeftHeader.initView(presenter.ptvReportViewModel);
             refreshRegimenValue(rnRForm);
             refreshUI(rnRForm);
         } else {

@@ -48,7 +48,7 @@
             <LinearLayout
                 android:id="@+id/ptv_table_header"
                 android:layout_width="wrap_content"
-                android:layout_height="44dp"
+                android:layout_height="@dimen/al_view_list_height"
                 android:background="@drawable/border_bottom_black"
                 android:orientation="horizontal">
 

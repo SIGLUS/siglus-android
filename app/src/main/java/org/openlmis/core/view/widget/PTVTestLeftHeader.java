@@ -52,7 +52,7 @@ public class PTVTestLeftHeader extends FrameLayout {
         return (ViewGroup) layoutInflater.inflate(R.layout.fragment_ptv_left_header, this, false);
     }
 
-    public ViewGroup initView(PTVReportViewModel viewModel) {
+    public void initView(PTVReportViewModel viewModel) {
         this.viewModel = viewModel;
         ViewGroup inflate = inflateView();
         TextView tvName = (TextView) inflate.findViewById(R.id.tv_name);
@@ -65,7 +65,6 @@ public class PTVTestLeftHeader extends FrameLayout {
         EditText etFinalStock = (EditText) inflate.findViewById(R.id.et_finalStock);
         setHeaderView(tvName, etStock, services, tvTotal, tvReceived, etAdjustment, etFinalStock);
         addView(inflate);
-        return inflate;
     }
 
     private List<EditText> addService(ViewGroup service) {
