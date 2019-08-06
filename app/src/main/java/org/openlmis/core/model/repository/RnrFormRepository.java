@@ -95,6 +95,9 @@ public class RnrFormRepository {
     private Context context;
     protected String programCode;
 
+    private List<RnRForm> rnRForms;
+    private List<RnrFormItem> rnrFormItemListWrapper;
+
     @Inject
     private RequisitionPeriodService requisitionPeriodService;
     @Inject
@@ -234,6 +237,12 @@ public class RnrFormRepository {
     public List<RnrFormItem> generateRnrFormItems(final RnRForm form, List<StockCard> stockCards) throws LMISException {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
         List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(form.getProgram().getProgramCode());
+        //为避免超时，在进入循环之前对以下两个变量赋值
+        rnRForms = listInclude(RnRForm.Emergency.No, programCode);
+        //避免出现越界异常，需要条件判断
+        if (rnRForms.size() > 1) {
+            rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
+        }
         for (StockCard stockCard : stockCards) {
             RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(), form.getPeriodEnd());
             rnrFormItem.setForm(form);
@@ -376,14 +385,11 @@ public class RnrFormRepository {
     }
 
     protected long lastRnrInventory(Product product) throws LMISException {
-        List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.No, programCode);
-        if (rnRForms.isEmpty() || rnRForms.size() == 1) {
-            return 0;
-        }
-        List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
-        for (RnrFormItem item : rnrFormItemListWrapper) {
-            if (item.getProduct().getId() == product.getId()) {
-                return item.getInventory();
+        if (rnrFormItemListWrapper != null) {
+            for (RnrFormItem item : rnrFormItemListWrapper) {
+                if (item.getProduct().getId() == product.getId()) {
+                    return item.getInventory();
+                }
             }
         }
         return 0;
