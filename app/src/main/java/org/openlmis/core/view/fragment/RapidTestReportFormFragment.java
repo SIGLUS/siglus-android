@@ -7,7 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+
 import org.openlmis.core.model.Period;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +80,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
         DateTime periodBegin = (DateTime) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
         Period period = (Period) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
-        if(period != null) {
+        if (period != null) {
             getActivity().setTitle(getString(R.string.label_rapid_test_title,
                     DateUtil.formatDateWithoutYear(period.getBegin().toDate()),
                     DateUtil.formatDateWithoutYear(period.getEnd().toDate())));
@@ -87,14 +89,12 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
         updateHeaderSize();
         setUpRowItems();
-        addObservationChange();
-        //TODO
-//        rvReportRowItemListView.setNestedScrollingEnabled(false);
         if (isSavedInstanceState && presenter.getViewModel() != null) {
             updateUI();
         } else {
             loadForm(formId, period);
         }
+        addObservationChange();
     }
 
     @Nullable
@@ -164,7 +164,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
             @Override
             public void onSingleClick(View v) {
                 String errorMessage = showErrorMessage();
-                if (!StringUtils.isEmpty(errorMessage)){
+                if (!StringUtils.isEmpty(errorMessage)) {
                     ToastUtil.show(errorMessage);
                     return;
                 }
@@ -173,7 +173,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
             private String showErrorMessage() {
                 String errorMessage = "";
-                if (! rnrBasicItemListView.isCompleted()) {
+                if (!rnrBasicItemListView.isCompleted()) {
                     errorMessage = getString(R.string.error_empty_rapid_test_product);
                 } else if (presenter.getViewModel().isFormEmpty()) {
                     errorMessage = getString(R.string.error_empty_rapid_test_list);

@@ -30,8 +30,12 @@ public class InitialInventoryLotListView extends BaseLotListView {
             public void onSingleClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_complete:
-                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
-                            addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), viewModel.getMovementType()));
+                        if (addLotDialogFragment.validate()
+                                && addLotDialogFragment.isAdded()
+                                && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
+                            addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(),
+                                    addLotDialogFragment.getExpiryDate(),
+                                    viewModel.getMovementType()));
                             addLotDialogFragment.dismiss();
                         }
                         break;

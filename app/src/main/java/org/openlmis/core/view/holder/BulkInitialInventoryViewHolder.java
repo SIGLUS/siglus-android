@@ -87,10 +87,10 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
         sumLotQuantities();
 
         btnAddNewLot.setOnClickListener(showNewLotDialogListener());
-        if(!inventoryViewModel.isBasic()){
+        if (!inventoryViewModel.isBasic()) {
             btnNoStock.setVisibility(View.GONE);
             btnRemoveProduct.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             btnNoStock.setVisibility(View.VISIBLE);
             btnRemoveProduct.setVisibility(View.GONE);
         }
@@ -125,7 +125,10 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
                     case R.id.btn_complete:
                         if (addBulkLotDialogFragment.validate() && !addBulkLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
                             AddBulkLotDialogFragment.IS_OCCUPIED = false;
-                            addNewLot(new LotMovementViewModel(addBulkLotDialogFragment.getLotNumber(), addBulkLotDialogFragment.getExpiryDate(), viewModel.getMovementType(), addBulkLotDialogFragment.getQuantity()));
+                            addNewLot(new LotMovementViewModel(addBulkLotDialogFragment.getLotNumber(),
+                                    addBulkLotDialogFragment.getExpiryDate(),
+                                    viewModel.getMovementType(),
+                                    addBulkLotDialogFragment.getQuantity()));
                             addBulkLotDialogFragment.dismiss();
                         }
                         break;
@@ -236,10 +239,13 @@ public class BulkInitialInventoryViewHolder extends BaseViewHolder {
                 btnAddNewLot.setEnabled(true);
                 AddBulkLotDialogFragment.IS_OCCUPIED = false;
                 String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getProduct().getCode(), expiryDate);
-                if (getLotNumbers().contains(lotNumber)) {
+                if (getLotNumbers().contains(lotNumber) || !addBulkLotDialogFragment.validate()) {
                     ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
                 } else {
-                    addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY, addBulkLotDialogFragment.getQuantity()));
+                    addNewLot(new LotMovementViewModel(lotNumber,
+                            expiryDate,
+                            MovementReasonManager.MovementType.PHYSICAL_INVENTORY,
+                            addBulkLotDialogFragment.getQuantity()));
 
                 }
             }
