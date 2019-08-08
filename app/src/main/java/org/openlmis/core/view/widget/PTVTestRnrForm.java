@@ -2,7 +2,6 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -49,10 +48,9 @@ public class PTVTestRnrForm extends LinearLayout {
         viewGroup = (ViewGroup) container.findViewById(R.id.ptv_from_list);
     }
 
-    public void initView(PTVReportViewModel viewModel, ViewGroup leftHeader) {
+    public void initView(PTVReportViewModel viewModel) {
         this.viewModel = viewModel;
         editTextsLists.clear();
-        addHeaderView(leftHeader);
         addItemView(viewModel.form.getRnrFormItemListWrapper());
     }
 
@@ -64,13 +62,9 @@ public class PTVTestRnrForm extends LinearLayout {
 
     }
 
-    private void addHeaderView(ViewGroup leftHeader) {
-        addView(null, true,leftHeader);
-    }
-
     private void addItemView(List<RnrFormItem> itemFormList) {
         for (RnrFormItem basicItem : itemFormList) {
-            addView(basicItem, false, null);
+            addView(basicItem);
         }
     }
 
@@ -90,9 +84,8 @@ public class PTVTestRnrForm extends LinearLayout {
         return etServices;
     }
 
-    private ViewGroup addView(RnrFormItem item, boolean isHeaderView,ViewGroup leftHeader) {
-        ViewGroup inflate =  inflateView();
-//        ViewGroup inflate = isHeaderVieww? leftHeader : inflateView();
+    private ViewGroup addView(RnrFormItem item) {
+        ViewGroup inflate = inflateView();
         TextView tvName = (TextView) inflate.findViewById(R.id.tv_name);
         EditText etStock = (EditText) inflate.findViewById(R.id.et_initial_stock);
         ViewGroup service = (ViewGroup) inflate.findViewById(R.id.ll_services);
@@ -102,19 +95,7 @@ public class PTVTestRnrForm extends LinearLayout {
         EditText etAdjustment = (EditText) inflate.findViewById(R.id.et_adjustment);
         EditText etFinalStock = (EditText) inflate.findViewById(R.id.et_finalStock);
 
-        if (isHeaderView) {
-            setHeaderView(tvName,
-                    etStock,
-                    services,
-                    tvTotal,
-                    tvReceived,
-                    etAdjustment,
-                    etFinalStock);
-
-        } else {
-            configureDataView(item, tvName, etStock, services, tvTotal, tvReceived, etAdjustment, etFinalStock);
-
-        }
+        configureDataView(item, tvName, etStock, services, tvTotal, tvReceived, etAdjustment, etFinalStock);
         viewGroup.addView(inflate);
         return inflate;
     }
@@ -151,55 +132,6 @@ public class PTVTestRnrForm extends LinearLayout {
         editTextsLists.add(editTexts);
     }
 
-
-    private void setHeaderView(TextView tvName,
-                               EditText etStock,
-                               List<EditText> services,
-                               TextView tvTotal,
-                               TextView tvReceived,
-                               EditText etAdjustment,
-                               EditText etFinalStock) {
-        tvName.setText(R.string.PatientAndService);
-        etStock.setText(R.string.initialStockLevel);
-        tvTotal.setText(R.string.totalPtv);
-        tvReceived.setText(R.string.entries);
-        etAdjustment.setText(R.string.loss_and_adjustment);
-        etFinalStock.setText(R.string.final_stock);
-        etStock.setEnabled(false);
-        etAdjustment.setEnabled(false);
-        etFinalStock.setEnabled(false);
-        for (EditText etService : services) {
-            int serviceIndex = etService.getId();
-            Service serviceCurrent = viewModel.getServices().get(serviceIndex);
-            etService.setText(serviceCurrent.getName());
-            etService.setEnabled(false);
-        }
-        setHeaderViewTextStyle(etStock, services, tvTotal, tvReceived, etAdjustment, etFinalStock);
-    }
-
-    private void setHeaderViewTextStyle(EditText etStock,
-                                        List<EditText> services,
-                                        TextView tvTotal,
-                                        TextView tvReceived,
-                                        EditText etAdjustment,
-                                        EditText etFinalStock) {
-        float fontSize = getResources().getDimension(R.dimen.font_size_small);
-        etStock.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
-        etStock.setTypeface(Typeface.DEFAULT_BOLD);
-        tvTotal.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
-        tvTotal.setTypeface(Typeface.DEFAULT_BOLD);
-        tvReceived.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
-        tvReceived.setTypeface(Typeface.DEFAULT_BOLD);
-        etAdjustment.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
-        etAdjustment.setTypeface(Typeface.DEFAULT_BOLD);
-        etFinalStock.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
-        etFinalStock.setTypeface(Typeface.DEFAULT_BOLD);
-        for (EditText etService : services) {
-            etService.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, fontSize);
-            etService.setTypeface(Typeface.DEFAULT_BOLD);
-        }
-    }
-
     private ServiceItem getServiceItem(RnrFormItem item, String code) {
         for (ServiceItem serviceItem : item.getServiceItemListWrapper()) {
             if (serviceItem.getService().getCode().equals(code)) {
@@ -222,8 +154,8 @@ public class PTVTestRnrForm extends LinearLayout {
     }
 
     public boolean isCompleted() {
-        for (List<EditText> editTextList: editTextsLists) {
-            for (EditText editText: editTextList) {
+        for (List<EditText> editTextList : editTextsLists) {
+            for (EditText editText : editTextList) {
                 if (TextUtils.isEmpty(editText.getText().toString())) {
                     editText.setError(context.getString(R.string.hint_error_input));
                     return false;

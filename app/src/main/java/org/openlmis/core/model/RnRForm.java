@@ -29,6 +29,8 @@ import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
+import org.openlmis.core.view.widget.MMIARegimeList;
+import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.Collection;
@@ -68,6 +70,12 @@ public class RnRForm extends BaseModel {
     @Expose
     @SerializedName("regimens")
     private List<RegimenItem> regimenItemListWrapper;
+
+    @ForeignCollectionField()
+    private ForeignCollection<RegimenItemThreeLines> regimenThreeLineList;
+    @Expose
+    @SerializedName("therapeuticLines")
+    private List<RegimenItemThreeLines> regimenThreeLinesWrapper;
 
     @ForeignCollectionField()
     private ForeignCollection<BaseInfoItem> baseInfoItemList;
@@ -162,15 +170,40 @@ public class RnRForm extends BaseModel {
         return monthOffset > 0 || (monthOffset == 0 && today.getDayOfMonth() >= Period.INVENTORY_END_DAY_NEXT);
     }
 
-    public static long calculateTotalRegimenAmount(Collection<RegimenItem> list) {
+    public static long calculateTotalRegimenAmount(Collection<RegimenItem> list, MMIARegimeList.COUNTTYPE counttype) {
         long totalRegimenNumber = 0;
-        for (RegimenItem item : list) {
-            if (item.getAmount() != null) {
-                totalRegimenNumber += item.getAmount();
+        if (MMIARegimeList.COUNTTYPE.PHARMACY == counttype) {
+            for (RegimenItem item : list) {
+                if (item.getPharmacy() != null) {
+                    totalRegimenNumber += item.getPharmacy();
+                }
+            }
+        } else if (MMIARegimeList.COUNTTYPE.AMOUNT == counttype) {
+            for (RegimenItem item : list) {
+                if (item.getAmount() != null) {
+                    totalRegimenNumber += item.getAmount();
+                }
             }
         }
-
         return totalRegimenNumber;
+    }
+
+    public static long caculateTotalRegimenTypeAmount(Collection<RegimenItemThreeLines> list, MMIARegimeThreeLineList.COUNTTYPE counttype) {
+        long totalNumber = 0;
+        if (MMIARegimeThreeLineList.COUNTTYPE.PATIENTSAMOUNT == counttype) {
+            for (RegimenItemThreeLines item : list) {
+                if (item.getPatientsAmount() != null) {
+                    totalNumber += item.getPatientsAmount();
+                }
+            }
+        } else if (MMIARegimeThreeLineList.COUNTTYPE.PHARMACYAMOUNT == counttype) {
+            for (RegimenItemThreeLines item : list) {
+                if (item.getPharmacyAmount() != null) {
+                    totalNumber += item.getPharmacyAmount();
+                }
+            }
+        }
+        return totalNumber;
     }
 
     public List<RnrFormItem> getRnrFormItemListWrapper() {
@@ -230,6 +263,11 @@ public class RnRForm extends BaseModel {
         return regimenItemListWrapper;
     }
 
+    public List<RegimenItemThreeLines> getRegimenThreeLineListWrapper() {
+        regimenThreeLinesWrapper = ListUtil.wrapOrEmpty(regimenThreeLineList, regimenThreeLinesWrapper);
+        return regimenThreeLinesWrapper;
+    }
+
     public List<RnRFormSignature> getSignaturesWrapper() {
         signaturesWrapper = ListUtil.wrapOrEmpty(signatures, signaturesWrapper);
         return signaturesWrapper;
@@ -244,6 +282,9 @@ public class RnRForm extends BaseModel {
         }
         for (BaseInfoItem item : rnRForm.getBaseInfoItemListWrapper()) {
             item.setRnRForm(rnRForm);
+        }
+        for (RegimenItemThreeLines itemThreeLines : rnRForm.getRegimenThreeLineListWrapper()) {
+            itemThreeLines.setForm(rnRForm);
         }
     }
 

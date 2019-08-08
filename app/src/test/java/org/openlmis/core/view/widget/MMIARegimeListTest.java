@@ -89,7 +89,7 @@ public class MMIARegimeListTest {
 
         when(presenter.getRnRForm()).thenReturn(rnRForm);
 
-        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application), presenter);
+        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application),new TextView(RuntimeEnvironment.application), presenter);
 
         assertNull(mmiaRegimeList.getChildAt(1).findViewById(R.id.image_view_del));
     }
@@ -110,7 +110,7 @@ public class MMIARegimeListTest {
 
         when(presenter.getRnRForm()).thenReturn(rnRForm);
 
-        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application), presenter);
+        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application),new TextView(RuntimeEnvironment.application), presenter);
 
         assertEquals(4, mmiaRegimeList.getChildCount());
     }
@@ -123,7 +123,7 @@ public class MMIARegimeListTest {
 
         when(presenter.getRnRForm()).thenReturn(rnRForm);
 
-        mmiaRegimeList.initView(new TextView(LMISTestApp.getContext()), presenter);
+        mmiaRegimeList.initView(new TextView(LMISTestApp.getContext()),new TextView(LMISTestApp.getContext()), presenter);
 
         assertThat(mmiaRegimeList.getChildAt(1).findViewById(R.id.image_view_del).getVisibility(), is(View.VISIBLE));
     }

@@ -22,7 +22,6 @@ import java.lang.reflect.Type;
 
 import roboguice.RoboGuice;
 
-import static org.openlmis.core.model.Regimen.RegimeType;
 
 public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDeserializer<RegimenItem> {
 
@@ -39,14 +38,6 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDese
     @Override
     public RegimenItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         RegimenItem regimenItem = gson.fromJson(json, RegimenItem.class);
-
-        RegimeType regimeType = null;
-        String categoryName = json.getAsJsonObject().get("categoryName").getAsString();
-        if(categoryName.equals(RegimeType.Adults.toString())) {
-            regimeType = RegimeType.Adults;
-        } else if (categoryName.equals(RegimeType.Paediatrics.toString())) {
-            regimeType = RegimeType.Paediatrics;
-        }
 
         try {
             Regimen regimen = regimenRepository.getByCode(json.getAsJsonObject().get("code").getAsString());
@@ -75,6 +66,7 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDese
         result.addProperty("patientsOnTreatment", src.getAmount());
         result.addProperty("hf", src.getHf());
         result.addProperty("chw", src.getChw());
+        result.addProperty("comunitaryPharmacy", src.getPharmacy());
         return result;
     }
 }

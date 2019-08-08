@@ -2,6 +2,7 @@ package org.openlmis.core.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
@@ -20,7 +21,8 @@ public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
 
     @Override
     public ALReportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ALReportViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_al_report_row, parent, false));
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_al_report_row, parent, false);
+        return new ALReportViewHolder(itemView);
     }
 
     @Override

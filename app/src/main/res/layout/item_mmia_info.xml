@@ -6,16 +6,16 @@
     android:layout_height="wrap_content">
 
     <TextView
+        android:gravity="start|center_vertical"
         android:id="@+id/tv_name"
         style="@style/ItemMMIA.Label"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
-        android:labelFor="@+id/et_value"
         tools:text="hello world" />
 
     <EditText
-        android:id="@id/et_value"
+        android:id="@+id/et_value"
         style="@style/ItemMMIA.EditText"
         android:layout_width="0dp"
         android:layout_height="match_parent"

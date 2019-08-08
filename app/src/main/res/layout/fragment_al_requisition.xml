@@ -45,7 +45,6 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:weightSum="5"
                 android:id="@+id/al_left_header"
                 android:layout_width="@dimen/al_view_left_header_width"
                 android:layout_height="wrap_content"
@@ -55,17 +54,22 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/al_left_header_top"
                     style="@style/AlReportList.title.lefttop"
-                    android:background="#fff" />
+                    android:background="@android:color/white" />
 
                 <TextView
+                    android:id="@+id/al_left_header_hf"
                     style="@style/AlReportList.title"
                     android:text="@string/label_via_kit_hf" />
+
                 <TextView
+                    android:id="@+id/al_left_header_chw"
                     style="@style/AlReportList.title"
                     android:text="@string/label_via_kit_chw" />
 
                 <TextView
+                    android:id="@+id/al_left_header_total"
                     style="@style/AlReportList.title"
                     android:background="@color/color_gray"
                     android:text="@string/total" />
@@ -86,9 +90,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/al_view_header_list_height"
                         android:layout_alignStart="@id/rv_al_row_item_list_container"
-                        android:layout_alignEnd="@+id/rv_al_row_item_list_container"
-                        android:background="@drawable/border_right_black">
-
+                        android:layout_alignEnd="@+id/rv_al_row_item_list_container">
 
                         <LinearLayout
                             android:layout_width="0dp"

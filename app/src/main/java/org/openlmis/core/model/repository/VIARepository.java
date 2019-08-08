@@ -40,8 +40,8 @@ public class VIARepository extends RnrFormRepository {
     }
 
     @Override
-    protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
-        BaseInfoItem newPatients = new BaseInfoItem(ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form);
+    protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form,MMIARepository.REPORT_TYPE type) {
+        BaseInfoItem newPatients = new BaseInfoItem(ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form,"");
         List<BaseInfoItem> baseInfoItemList = new ArrayList<>();
         baseInfoItemList.add(newPatients);
         return baseInfoItemList;

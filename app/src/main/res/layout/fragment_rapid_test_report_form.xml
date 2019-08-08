@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rapid_test_view"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/rl_rapid_test_report"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/margin_tiny"
-        android:weightSum="10">
+    <include layout="@layout/fragment_rapid_test_report_form_top" />
 
-        <include layout="@layout/fragment_rapid_test_report_form_top" />
-
-        <include layout="@layout/fragment_rapid_test_report_form_body" />
-    </LinearLayout>
-    <org.openlmis.core.view.widget.ActionPanelView
-        android:id="@+id/action_panel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+    <include layout="@layout/fragment_rapid_test_report_form_body" />
 </RelativeLayout>

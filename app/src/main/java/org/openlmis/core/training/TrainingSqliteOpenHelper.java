@@ -33,6 +33,12 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
+    private synchronized void getConnection() throws SQLException {
+        if (null == dbConnection) {
+            dbConnection = new TrainingSqliteOpenHelper(LMISApp.getContext()).getConnectionSource().getReadWriteConnection();
+        }
+    }
+
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
 
@@ -44,7 +50,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     }
 
     public void updateTimeInDB() throws SQLException {
-        dbConnection = new TrainingSqliteOpenHelper(LMISApp.getContext()).getConnectionSource().getReadWriteConnection();
+        getConnection();
         updateLotExpirationDate();
         updateProgramDataFromPeriodsAndSubmitTime();
         updateRnRFormPeriods();

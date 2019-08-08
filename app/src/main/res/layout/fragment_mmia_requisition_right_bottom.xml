@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <org.openlmis.core.view.widget.MMIAInfoList
+        android:id="@+id/mmia_info_list"
+        style="@style/MMIA.RegimeList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/ly_comment"
+        style="@style/MMIA.CommentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small">
+
+        <EditText
+            android:id="@+id/et_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_mmia_comment"
+            android:maxLength="500"
+            android:minHeight="50dp" />
+
+        <TextView
+            android:id="@+id/tv_total_mismatch"
+            style="@style/MMIA.MismatchText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_reason_for_total_not_match"
+            android:visibility="invisible" />
+    </android.support.design.widget.TextInputLayout>
+</LinearLayout>

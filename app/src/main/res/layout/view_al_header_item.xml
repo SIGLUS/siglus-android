@@ -6,7 +6,7 @@
     android:orientation="horizontal">
 
     <TextView
-        style="@style/AlReportList.numberTitle"
+        style="@style/AlReportList.numberTitle.Firsts"
         android:text="@string/msg_product_code_6x1" />
 
     <TextView

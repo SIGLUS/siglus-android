@@ -39,7 +39,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProgramRepository;
-import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 
 import java.lang.reflect.Type;
@@ -53,8 +52,6 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
 
     @Inject
     public ProgramRepository programRepository;
-    @Inject
-    RnrFormRepository rnrFormRepository;
     @Inject
     RnrFormSignatureRepository signatureRepository;
 
@@ -106,6 +103,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
         root.add("products", jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
         root.add("regimens", jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
         root.add("patientQuantifications", jsonParser.parse(gson.toJson(rnRForm.getBaseInfoItemListWrapper())));
+        root.add("therapeuticLines", jsonParser.parse(gson.toJson(rnRForm.getRegimenThreeLineListWrapper())));
         root.add("rnrSignatures", jsonParser.parse(gson.toJson(signatureList)));
         root.addProperty("agentCode", UserInfoMgr.getInstance().getUser().getFacilityCode());
         root.addProperty("programCode", programCode);

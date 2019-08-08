@@ -53,14 +53,20 @@ public class BaseInfoItem extends BaseModel {
     @DatabaseField(foreign = true)
     private RnRForm rnRForm;
 
+    @Expose
+    @SerializedName("tableName")
+    @DatabaseField
+    private String tableName;
+
 
     public BaseInfoItem() {
 
     }
 
-    public BaseInfoItem(String name, TYPE type, RnRForm form) {
+    public BaseInfoItem(String name, TYPE type, RnRForm form, String tableName) {
         this.name = name;
         this.type = type;
         this.rnRForm = form;
+        this.tableName = tableName;
     }
 }
