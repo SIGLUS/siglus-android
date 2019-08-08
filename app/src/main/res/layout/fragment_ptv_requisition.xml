@@ -35,10 +35,12 @@
     <HorizontalScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/ptv_title">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ptv_title"
+        android:layout_toEndOf="@+id/ptv_left_header">
 
         <RelativeLayout
+            android:id="@+id/scrollView_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/border_black">
@@ -46,7 +48,7 @@
             <LinearLayout
                 android:id="@+id/ptv_table_header"
                 android:layout_width="wrap_content"
-                android:layout_height="44dp"
+                android:layout_height="@dimen/al_view_list_height"
                 android:background="@drawable/border_bottom_black"
                 android:orientation="horizontal">
 
@@ -102,7 +104,7 @@
                     android:id="@+id/ptv_table"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"/>
+                    android:orientation="horizontal" />
 
                 <LinearLayout
                     android:layout_width="@dimen/ptv_view_right_header_width"
@@ -162,4 +164,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
+
+    <org.openlmis.core.view.widget.PTVTestLeftHeader
+        android:id="@+id/ptv_left_header"
+        android:layout_width="@dimen/ptv_view_item_width"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ptv_title"
+        android:layout_alignBottom="@+id/scrollView" />
 </RelativeLayout>

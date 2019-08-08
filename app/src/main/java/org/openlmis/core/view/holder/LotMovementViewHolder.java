@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.InitialInventoryActivity;
@@ -22,6 +25,8 @@ import org.openlmis.core.view.activity.UnpackKitActivity;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+
+import java.util.Calendar;
 
 import roboguice.inject.InjectView;
 
@@ -85,11 +90,23 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
     private void populateAmountField(LotMovementViewModel viewModel) {
         final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
-        etLotAmount.removeTextChangedListener(textWatcher);
-        etLotAmount.setText(viewModel.getQuantity());
-        etLotAmount.addTextChangedListener(textWatcher);
-        etLotAmount.setHint(LMISApp.getInstance().getString(R.string.hint_lot_amount));
-        lyLotAmount.setErrorEnabled(false);
+        if (DateUtil.parseString(viewModel.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)
+                .before(Calendar.getInstance().getTime())) {
+            lyLotAmount.setErrorEnabled(true);
+            etLotAmount.setInputType(InputType.TYPE_CLASS_TEXT);
+            etLotAmount.setText(R.string.lots_has_expire);
+            etLotAmount.setTextColor(context.getResources().getColor(R.color.color_red));
+            etLotAmount.setGravity(Gravity.CENTER_HORIZONTAL);
+            etLotAmount.setEnabled(false);
+            etLotAmount.setBackgroundResource(R.drawable.border_bg_warning_red);
+        } else {
+            etLotAmount.setMaxLines(9);
+            etLotAmount.removeTextChangedListener(textWatcher);
+            etLotAmount.setText(viewModel.getQuantity());
+            etLotAmount.addTextChangedListener(textWatcher);
+            etLotAmount.setHint(LMISApp.getInstance().getString(R.string.hint_lot_amount));
+            lyLotAmount.setErrorEnabled(false);
+        }
 
         if (!viewModel.isValid()) {
             setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));

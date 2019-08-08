@@ -39,7 +39,7 @@ public class VIARepositoryTest {
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         form.setSynced(false);
 
-        List<BaseInfoItem> baseInfoItems = viaRepository.generateBaseInfoItems(form);
+        List<BaseInfoItem> baseInfoItems = viaRepository.generateBaseInfoItems(form,MMIARepository.REPORT_TYPE.OLD);
 
         assertThat(baseInfoItems.size(), is(1));
         assertThat(baseInfoItems.get(0).getName(), is(VIARepository.ATTR_CONSULTATION));

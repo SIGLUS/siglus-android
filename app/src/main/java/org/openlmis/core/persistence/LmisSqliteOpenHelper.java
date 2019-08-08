@@ -52,7 +52,10 @@ import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
 import org.openlmis.core.persistence.migrations.AddProgramToRegimen;
 import org.openlmis.core.persistence.migrations.AddRapidTestColumnsTemplate;
 import org.openlmis.core.persistence.migrations.AddRapidTestProgram;
+import org.openlmis.core.persistence.migrations.AddRegimeDisplayOrder;
+import org.openlmis.core.persistence.migrations.AddRegimePharmacy;
 import org.openlmis.core.persistence.migrations.AddRequestedColumnToStockItems;
+import org.openlmis.core.persistence.migrations.AddRnrBaseInfoItem;
 import org.openlmis.core.persistence.migrations.AddServiceItemTable;
 import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
 import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
@@ -77,6 +80,7 @@ import org.openlmis.core.persistence.migrations.CreateProgramDataFormSignatureTa
 import org.openlmis.core.persistence.migrations.CreateProgramDataFormTable;
 import org.openlmis.core.persistence.migrations.CreateProgramDataItemsTable;
 import org.openlmis.core.persistence.migrations.CreateRegimeShortCodeTable;
+import org.openlmis.core.persistence.migrations.CreateRegimeThreeLineTable;
 import org.openlmis.core.persistence.migrations.CreateReportTypeTable;
 import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
 import org.openlmis.core.persistence.migrations.CreateServiceTable;
@@ -168,7 +172,10 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new UpdateRapidTestColumnsTemplate());
             add(new UpdateRapidTestCode());
             add(new UpdateReportType());
-            //add(new ChangeMalariaTreatmentsAgain());
+            add(new AddRegimePharmacy());
+            add(new AddRnrBaseInfoItem());
+            add(new CreateRegimeThreeLineTable());
+            add(new AddRegimeDisplayOrder());
         }
     };
     private static int instanceCount = 0;
@@ -184,7 +191,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         if (_helperInstance == null) {
             _helperInstance = new LmisSqliteOpenHelper(context);
         }
-        Log.d(TAG,"LmisSqliteOpenHelper.getInstance version = "+_helperInstance.getDBVersion());
         return _helperInstance;
     }
 
@@ -205,7 +211,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        Log.d(TAG,"onUpgrade oldVersion="+oldVersion+",newVersion="+newVersion);
+        Log.d(TAG, "onUpgrade oldVersion=" + oldVersion + ",newVersion=" + newVersion);
         for (int currentVersion = oldVersion; currentVersion < newVersion; currentVersion++) {
             Migration migration = MIGRATIONS.get(currentVersion);
             Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");

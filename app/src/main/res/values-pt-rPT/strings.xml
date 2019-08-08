@@ -83,6 +83,7 @@
     <string name="label_rnrfrom_left_header">Produto</string>
     <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
     <string name="total">Total</string>
+    <string name="total_title">Total doentes</string>
     <string name="ape">APEs</string>
     <string name="label_mmia_info_header_name">TIPO</string>
     <string name="label_mmia_speed_info_header">Número de pacientes em TARV</string>
@@ -235,6 +236,28 @@
     <string name="label_total_patients">Total de pacientes em TARV na US</string>
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>
+
+    <string name="table_trav">Type of patients in TRAV</string>
+    <string name="table_trav_label_new">Novos</string>
+    <string name="table_trav_label_maintenance">Manutenção</string>
+    <string name="table_trav_label_alteration">Alteração</string>
+    <string name="table_trav_label_transit">Trânsito</string>
+    <string name="table_trav_label_transfers">Transferências</string>
+    <string name="table_dispensed">Months dispensed</string> <!-- TODO -->
+    <string name="table_dispensed_label_dt">Dispensa para 3 Meses (DT)</string>
+    <string name="table_dispensed_label_dispense">Month dispense</string> <!-- TODO -->
+    <string name="table_dispensed_label_therapeutic">#Meses de terapêutica dispensados</string>
+    <string name="table_patients">age range of TRAV patients</string><!-- TODO -->
+    <string name="table_patients_adults">Adultos</string>
+    <string name="table_patients_0to4">Pediátricos 0 aos 4 anos</string>
+    <string name="table_patients_5to9">Pediátricos 5 aos 9 anos</string>
+    <string name="table_patients_10to14">Pediátricos 10 aos 14 anos</string>
+    <string name="table_prophylaxis">prophylaxis</string>
+    <string name="table_prophylaxis_ppe">PPE</string>
+    <string name="table_prophylaxis_prep">PrEP</string>
+    <string name="table_prophylaxis_child">Criança Exposta</string>
+    <string name="table_prophylaxis_total">Total de pacientes em TARV na US</string>
+
     <string name="hint_has_not_new_data">Estás no fim da lista</string>
     <string name="RECEIVE">Entradas</string>
     <string name="ISSUE">Saídas</string>
@@ -412,6 +435,7 @@
     <string name="msg_invalid_stock_movement">A data de movimento das ações deve ser posterior ao último movimento de estoque</string>
 
     <!--Lot management-->
+    <string name="lots_has_expire">Lot has expire</string>
     <string name="label_lot_number">Qual é o número do lote?</string>
     <string name="hint_lot_number">Número do lote</string>
     <string name="label_add_lot_expire">Quando é que o lote expira?</string>

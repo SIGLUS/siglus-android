@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import org.openlmis.core.model.Period;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -24,11 +25,13 @@ import org.openlmis.core.presenter.RapidTestReportFormPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.adapter.RapidTestReportBodyLeftHeaderAdapter;
 import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.RapidTestRnrForm;
+import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
@@ -44,11 +47,17 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.rapid_view_basic_item_header)
     LinearLayout rnrBasicItemHeader;
 
+    @InjectView(R.id.rapid_test_top_scrollview)
+    RnrFormHorizontalScrollView rapidTestTopScrollView;
+
     @InjectView(R.id.rapid_test_rnr_form)
     protected RapidTestRnrForm rnrBasicItemListView;
 
     @InjectView(R.id.vg_rapid_test_report_empty_header)
     ViewGroup emptyHeaderView;
+
+    @InjectView(R.id.vg_rapid_test_report_body_left_header)
+    ViewGroup rapidTestBodyLeftHeader;
 
     @InjectView(R.id.rv_observation_header)
     LinearLayout observationHeader;
@@ -56,12 +65,13 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.rv_observation_content)
     EditText observationContent;
 
-    @InjectView(R.id.rapid_view_basic_item_header_static)
-    LinearLayout rapidTestHeaderStatic;
-
     RapidTestReportFormPresenter presenter;
 
     RapidTestReportRowAdapter adapter;
+
+    RapidTestReportBodyLeftHeaderAdapter rapidBodyLeftAdapter;
+    @InjectView(R.id.rapid_test_body_left_list)
+    RecyclerView rapidTestBodyLeftListView;
 
     public static int ROW_HEADER_WIDTH = -1;
 
@@ -89,6 +99,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
         updateHeaderSize();
         setUpRowItems();
+        setUpBodyLeftItems();
+        addObservationChange();
+        rvReportRowItemListView.setNestedScrollingEnabled(false);
         if (isSavedInstanceState && presenter.getViewModel() != null) {
             updateUI();
         } else {
@@ -106,14 +119,12 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     private void updateHeaderSize() {
         calculateRowHeaderAndGridSize();
         emptyHeaderView.getLayoutParams().width = ROW_HEADER_WIDTH;
+        rapidTestBodyLeftHeader.getLayoutParams().width = ROW_HEADER_WIDTH;
         observationHeader.getLayoutParams().width = (int) (ROW_HEADER_WIDTH + getResources().getDimension(R.dimen.rapid_view_border_width));
-//        rapidTestHeaderStatic.getChildAt(1).getLayoutParams().width = rnrBasicItemListView.getChildAt(1).getWidth();
     }
 
     private void calculateRowHeaderAndGridSize() {
-        int totalWidthWithoutBorders = (int) (getResources().getDimension(R.dimen.rapid_view_width)
-                - getResources().getDimension(R.dimen.rapid_view_Header_view)
-                - getResources().getDimension(R.dimen.rapid_view_border_width));
+        int totalWidthWithoutBorders = (int) (getResources().getDimension(R.dimen.rapid_view_width));
         GRID_SIZE = totalWidthWithoutBorders / 4;
         ROW_HEADER_WIDTH = (int) getResources().getDimension(R.dimen.rapid_view_Header_view);
     }
@@ -128,6 +139,13 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         adapter = new RapidTestReportRowAdapter(getQuantityChangeListener());
         rvReportRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvReportRowItemListView.setAdapter(adapter);
+    }
+
+    private void setUpBodyLeftItems() {
+        rapidBodyLeftAdapter = new RapidTestReportBodyLeftHeaderAdapter();
+        rapidTestBodyLeftListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rapidTestBodyLeftListView.setAdapter(rapidBodyLeftAdapter);
+
     }
 
     private RapidTestReportGridViewHolder.QuantityChangeListener getQuantityChangeListener() {
@@ -240,6 +258,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     public void updateUIAfterSubmit() {
         adapter.setEditable(false);
         adapter.notifyDataSetChanged();
+        rapidBodyLeftAdapter.notifyDataSetChanged();
         updateButtonName();
     }
 
@@ -286,6 +305,29 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         updateObservation(viewModel);
         updateActionPanel();
         loaded();
+        initListener();
+    }
+
+    private void initListener() {
+        rapidTestTopScrollView.setOnScrollChangedListener(new RnrFormHorizontalScrollView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(int l, int t, int oldl, int oldt) {
+                rnrBasicItemListView.getLeftHeaderScrollView().scrollBy(l - oldl, 0);
+            }
+        });
+        rvReportRowItemListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                rapidTestBodyLeftListView.scrollBy(dx, dy);
+            }
+        });
+        // disable the touch event
+        rapidTestBodyLeftListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
     }
 
     private void updateObservation(RapidTestReportViewModel viewModel) {
@@ -295,6 +337,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     private void populateFormData(RapidTestReportViewModel viewModel) {
         adapter.refresh(viewModel.getItemViewModelList(), viewModel.isEditable());
+        rapidBodyLeftAdapter.refresh(viewModel.getItemViewModelList());
     }
 
     private void addObservationChange() {

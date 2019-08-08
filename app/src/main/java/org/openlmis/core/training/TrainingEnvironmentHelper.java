@@ -36,6 +36,7 @@ public class TrainingEnvironmentHelper {
         SharedPreferenceMgr.getInstance().setRapidTestsDataSynced(true);
         SharedPreferenceMgr.getInstance().setRnrLastSyncTime();
         SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
+        SharedPreferenceMgr.getInstance().setKeyHasCopiedTrainingDb(true);
     }
 
     private void setUpDataForTrainingEnvironment() {
@@ -45,6 +46,7 @@ public class TrainingEnvironmentHelper {
             InputStream inputStream = assetManager.open("lmis_training.db");
             FileUtil.copyInputStreamToFile(inputStream, currentDB);
             TrainingSqliteOpenHelper.getInstance(LMISApp.getContext()).updateTimeInDB();
+            SharedPreferenceMgr.getInstance().setKeyHasCopiedTrainingDb(true);
         } catch (IOException | SQLException e) {
             new LMISException(e).reportToFabric();
         }

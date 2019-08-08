@@ -158,7 +158,7 @@ public class LMISRestManager {
                     request.addHeader("FacilityName", user.getFacilityName());
                 }
 
-                if(BuildConfig.MONITOR_DEVICE_ID) {
+                if (BuildConfig.MONITOR_DEVICE_ID) {
                     request.addHeader("UniqueId", getAndroidId());
                 }
 

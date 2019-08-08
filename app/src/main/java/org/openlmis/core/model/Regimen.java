@@ -56,4 +56,9 @@ public class Regimen extends BaseModel {
 
     @DatabaseField
     private boolean isCustom;
+
+    @Expose
+    @SerializedName("displayOrder")
+    @DatabaseField
+    private Long displayOrder;
 }

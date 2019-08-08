@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/vg_rapid_test_report_header"
+    android:layout_width="@dimen/rapid_view_width"
+    android:layout_height="@dimen/repid_view_item_two_line_heigh"
+    android:layout_below="@+id/vg_rapid_test_report_header_title"
+    android:background="@drawable/border_right_black_bold"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_top_black"
+            android:gravity="center"
+            android:text="HIV Determine"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/font_size_regular"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_top_black"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Consumo"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Positivo"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/unjustified"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_left_black_bold"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_top_black"
+            android:gravity="center"
+            android:text="HIV Unigold"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/font_size_regular"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_top_black"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Consumo"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Positivo"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/unjustified"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_left_black_bold"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_top_black"
+            android:gravity="center"
+            android:text="@string/label_column_syphillis"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/font_size_regular"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_top_black"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Consumo"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Positivo"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/unjustified"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/border_left_black_bold"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_top_black"
+            android:gravity="center"
+            android:text="Malaria"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/font_size_regular"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_top_black"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Consumo"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Positivo"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_small" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/border_right_black"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/unjustified"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_title_small" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

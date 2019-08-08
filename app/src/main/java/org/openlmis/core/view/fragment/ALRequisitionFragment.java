@@ -25,6 +25,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -42,6 +44,7 @@ import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
+
 import roboguice.inject.InjectView;
 
 import roboguice.RoboGuice;
@@ -57,14 +60,28 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     ALRequisitionPresenter presenter;
     ALReportAdapter adapter;
 
-//    @InjectView(R.id.scrollView)
-//    HorizontalScrollView scrollView;
-
     @InjectView(R.id.rv_al_row_item_list)
     RecyclerView rvALRowItemListView;
 
     @InjectView(R.id.al_monthTitle)
     TextView monthTitle;
+
+    @InjectView(R.id.al_header)
+    LinearLayout al_header;
+    @InjectView(R.id.al_left_header_top)
+    TextView al_header_top;
+    @InjectView(R.id.al_left_header_chw)
+    TextView al_header_chw;
+    @InjectView(R.id.al_left_header_hf)
+    TextView al_header_hf;
+    @InjectView(R.id.al_left_header_total)
+    TextView al_header_total;
+    @InjectView(R.id.rv_al_row_item_list_container)
+    RelativeLayout al_item_container;
+    @InjectView(R.id.al_left_header)
+    LinearLayout al_left_header;
+
+    public static int LIST_ITEM_HEIGHT = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,13 +93,14 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
 
     @Override
     protected BaseReportPresenter injectPresenter() {
-        presenter =  RoboGuice.getInjector(getActivity()).getInstance(ALRequisitionPresenter.class);
+        presenter = RoboGuice.getInjector(getActivity()).getInstance(ALRequisitionPresenter.class);
         return presenter;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         containerView = inflater.inflate(R.layout.fragment_al_requisition, container, false);
+//        updateHeaderSize();
         return containerView;
     }
 
@@ -98,11 +116,20 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
 
         initUI();
         setUpRowItems();
+        updateHeaderSize();
         if (isSavedInstanceState && presenter.getRnRForm() != null) {
             presenter.updateFormUI();
         } else {
             presenter.loadData(formId, periodEndDate);
         }
+    }
+
+    private void updateHeaderSize() {
+        al_header_top.setHeight(al_header.getLayoutParams().height);
+        LIST_ITEM_HEIGHT = al_item_container.getHeight() / 3;
+        al_header_chw.setHeight(LIST_ITEM_HEIGHT);
+        al_header_hf.setHeight(LIST_ITEM_HEIGHT);
+        al_header_total.setHeight(LIST_ITEM_HEIGHT);
     }
 
     protected void initUI() {
@@ -199,6 +226,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
         finish();
 
     }
+
     @Override
     protected String getSignatureDialogTitle() {
         return presenter.isDraftOrDraftMissed() ? getResources().getString(R.string.msg_al_submit_signature)
@@ -242,7 +270,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
 
     private void setUpRowItems() {
         adapter = new ALReportAdapter(getQuantityChangeListener());
-        rvALRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
+        rvALRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         rvALRowItemListView.setNestedScrollingEnabled(false);
         rvALRowItemListView.setAdapter(adapter);
     }
@@ -250,7 +278,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     private ALReportViewHolder.QuantityChangeListener getQuantityChangeListener() {
         return new ALReportViewHolder.QuantityChangeListener() {
             @Override
-                 public void updateTotal(ALGridViewModel.ALColumnCode columnCode, ALGridViewModel.ALGridColumnCode gridColumnCode){
+            public void updateTotal(ALGridViewModel.ALColumnCode columnCode, ALGridViewModel.ALGridColumnCode gridColumnCode) {
                 presenter.alReportViewModel.updateTotal(columnCode, gridColumnCode);
                 adapter.updateTotal();
             }
