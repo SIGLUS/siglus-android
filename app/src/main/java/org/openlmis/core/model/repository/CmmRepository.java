@@ -53,7 +53,7 @@ public class CmmRepository {
         return FluentIterable.from(cmmDao.queryForAll()).filter(new Predicate<Cmm>() {
             @Override
             public boolean apply(Cmm cmm) {
-                return !cmm.isSynced() && cmm.getStockCard() != null;
+                return !cmm.isSynced();
             }
         }).toList();
     }

@@ -214,7 +214,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         scrollView.setVisibility(View.VISIBLE);
         rnrFormList.initView(form.getRnrFormItemListWrapper());
         List<RegimenItemThreeLines> dataList = form.getRegimenThreeLineListWrapper();
-        if (dataList!=null && !dataList.isEmpty()) {
+        if (dataList != null && !dataList.isEmpty()) {
             mmiaRegimeThreeLineListView.initView(mmiaRegimeThreeLineTotal, mmiaRegimeThreeLinePharmacy, dataList);
         } else {
             mmiaThreaPeuticLayout.setVisibility(View.GONE);
