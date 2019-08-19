@@ -435,7 +435,7 @@
     <string name="msg_invalid_stock_movement">A data de movimento das ações deve ser posterior ao último movimento de estoque</string>
 
     <!--Lot management-->
-    <string name="lots_has_expire">Lot has expire</string>
+    <string name="lots_has_expire">Lot has expired, it cannot be issued</string>
     <string name="label_lot_number">Qual é o número do lote?</string>
     <string name="hint_lot_number">Número do lote</string>
     <string name="label_add_lot_expire">Quando é que o lote expira?</string>

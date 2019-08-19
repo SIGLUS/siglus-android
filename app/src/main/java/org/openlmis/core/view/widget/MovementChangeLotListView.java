@@ -9,7 +9,9 @@ import org.openlmis.core.view.viewmodel.BaseStockMovementViewModel;
 public class MovementChangeLotListView extends BaseLotListView{
     LotMovementAdapter.MovementChangedListener movementChangedListener;
 
-    public void initLotListView(BaseStockMovementViewModel viewModel, LotMovementAdapter.MovementChangedListener listener) {
+
+    public void initLotListView(BaseStockMovementViewModel viewModel,
+                                LotMovementAdapter.MovementChangedListener listener) {
         movementChangedListener = listener;
         super.initLotListView(viewModel);
     }

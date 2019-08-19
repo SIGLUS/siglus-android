@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -90,15 +91,16 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
     private void populateAmountField(LotMovementViewModel viewModel) {
         final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
-        if (viewModel.isExpiredLot()) {
+        if (viewModel.isExpiredLot() && viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE) {
             lyLotAmount.setErrorEnabled(true);
             etLotAmount.setInputType(InputType.TYPE_CLASS_TEXT);
-            etLotAmount.setText(R.string.lots_has_expire);
-            etLotAmount.setTextColor(context.getResources().getColor(R.color.color_red));
-            etLotAmount.setGravity(Gravity.CENTER_HORIZONTAL);
             etLotAmount.setEnabled(false);
-            etLotAmount.setBackgroundResource(R.drawable.border_bg_warning_red);
+            etLotAmount.setHint(getString(R.string.lots_has_expire));
+            etLotAmount.setHintTextColor(context.getResources().getColor(R.color.color_red));
+            etLotAmount.setGravity(Gravity.CENTER_HORIZONTAL);
+            lyLotAmount.setError(getString(R.string.lots_has_expire));
         } else {
+            etLotAmount.setEnabled(true);
             etLotAmount.setMaxLines(9);
             etLotAmount.removeTextChangedListener(textWatcher);
             etLotAmount.setText(viewModel.getQuantity());

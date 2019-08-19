@@ -77,7 +77,8 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     @Override
     public void initNewLotListView() {
         newLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        newLotMovementAdapter = new NewMovementLotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementAdapter = new NewMovementLotMovementAdapter(viewModel.getNewLotMovementViewModelList(),
+                viewModel.getProduct().getProductNameWithCodeAndStrength());
         newLotListView.setAdapter(newLotMovementAdapter);
         newLotMovementAdapter.setMovementChangeListener(movementChangedListener);
     }
