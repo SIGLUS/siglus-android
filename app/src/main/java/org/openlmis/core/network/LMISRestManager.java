@@ -156,6 +156,7 @@ public class LMISRestManager {
                     request.addHeader("Authorization", basic);
                     request.addHeader("UserName", user.getUsername());
                     request.addHeader("FacilityName", user.getFacilityName());
+                    request.addHeader("FacilityId", user.getFacilityId());
                 }
 
                 if (BuildConfig.MONITOR_DEVICE_ID) {
