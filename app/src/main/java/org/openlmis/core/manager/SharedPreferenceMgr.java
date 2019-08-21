@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -32,6 +33,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -142,7 +144,7 @@ public class SharedPreferenceMgr {
     }
 
     public void setReportTypesData(List<ReportTypeForm> reportTypeFormList) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setDateFormat(DateUtil.DATE_TIME_FORMAT).create();
         String json = gson.toJson(reportTypeFormList);
 
         sharedPreferences.edit().putString(SharedPreferenceMgr.LATEST_SYNCED_DOWN_REPORT_TYPE, json).apply();
@@ -151,7 +153,7 @@ public class SharedPreferenceMgr {
     public List<ReportTypeForm> getReportTypesData() {
         String json = sharedPreferences.getString(SharedPreferenceMgr.LATEST_SYNCED_DOWN_REPORT_TYPE, null);
         if (json != null) {
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().setDateFormat(DateUtil.DATE_TIME_FORMAT).create();
             Type type = new TypeToken<List<ReportTypeForm>>() {
             }.getType();
             return gson.fromJson(json, type);
