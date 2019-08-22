@@ -93,7 +93,7 @@ public class LotMovementViewModel implements Serializable {
                 && !StringUtils.isBlank(expiryDate)
                 && !StringUtils.isBlank(quantity)
                 && Long.parseLong(quantity) > 0;
-        return valid || isExpiredLot();
+        return valid || !isExpiredLot();
     }
 
     public boolean validateLotWithNoEmptyFields() {
@@ -101,7 +101,7 @@ public class LotMovementViewModel implements Serializable {
                 && !StringUtils.isBlank(lotNumber)
                 && !StringUtils.isBlank(expiryDate)
                 && !StringUtils.isBlank(quantity);
-        return valid || isExpiredLot();
+        return valid || !isExpiredLot();
     }
 
 

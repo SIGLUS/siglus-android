@@ -55,11 +55,20 @@ public class RegimenRepositoryTest {
         assertThat(regimens.size(), is(19));
     }
 
+    //TODO add adult
     @Test
-    public void shouldListRegimeShortCode() throws Exception {
-        List<RegimeShortCode> regimeShortCodes = repository.listRegimeShortCode();
-        assertThat(regimeShortCodes.size(), is(20));
-        assertThat(regimeShortCodes.get(0).getShortCode(), is("3TC 150mg"));
-        assertThat(regimeShortCodes.get(19).getCode(), is("08S17"));
+    public void shouldListRegimeShortCodeAdults() throws Exception {
+        List<RegimeShortCode> regimeShortCodes = repository.listRegimeShortCode(Regimen.RegimeType.Adults);
+        assertThat(regimeShortCodes.size(), is(16));
+        assertThat(regimeShortCodes.get(0).getShortCode(), is("ABC+3TC+DTG"));
+        assertThat(regimeShortCodes.get(15).getCode(), is("08S19"));
+    }
+
+    @Test
+    public void shouldListRegimeShortCodePaediatrics() throws Exception {
+        List<RegimeShortCode> regimeShortCodes = repository.listRegimeShortCode(Regimen.RegimeType.Paediatrics);
+        assertThat(regimeShortCodes.size(), is(2));
+        assertThat(regimeShortCodes.get(0).getShortCode(), is("ABC 60mg+3TC 30mg"));
+        assertThat(regimeShortCodes.get(1).getCode(), is("08S01B"));
     }
 }

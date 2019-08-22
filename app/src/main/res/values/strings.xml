@@ -419,7 +419,7 @@
     <!--Select Drugs-->
     <string name="title_select_drugs">Create regime</string>
     <string name="hint_no_product_has_checked">Please select product</string>
-    <string name="hint_more_than_limit_product_has_checked">You can only select 5 products for regime</string>
+    <string name="hint_more_than_limit_product_has_checked">You can only select 1 products for regime</string>
 
     <!-- update notification text-->
     <string name="app_update_suffix"> update</string>

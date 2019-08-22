@@ -61,4 +61,9 @@ public class Regimen extends BaseModel {
     @SerializedName("displayOrder")
     @DatabaseField
     private Long displayOrder;
+
+    @Expose
+    @SerializedName("active")
+    @DatabaseField
+    private boolean active;
 }

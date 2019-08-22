@@ -27,6 +27,7 @@ import com.j256.ormlite.support.ConnectionSource;
 
 import org.openlmis.core.persistence.migrations.AddALToRegimen;
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
+import org.openlmis.core.persistence.migrations.AddActiveToRegimes;
 import org.openlmis.core.persistence.migrations.AddCategoryColumnToProductPrograms;
 import org.openlmis.core.persistence.migrations.AddCmmTable;
 import org.openlmis.core.persistence.migrations.AddCreatedTimeToStockMovement;
@@ -93,6 +94,7 @@ import org.openlmis.core.persistence.migrations.UpdateProductsFalseValueToZero;
 import org.openlmis.core.persistence.migrations.UpdateProgramDataFormTable;
 import org.openlmis.core.persistence.migrations.UpdateRapidTestCode;
 import org.openlmis.core.persistence.migrations.UpdateRapidTestColumnsTemplate;
+import org.openlmis.core.persistence.migrations.UpdateRegimeShortCodeTable;
 import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
@@ -176,6 +178,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddRnrBaseInfoItem());
             add(new CreateRegimeThreeLineTable());
             add(new AddRegimeDisplayOrder());
+            add(new UpdateRegimeShortCodeTable());
+            add(new AddActiveToRegimes());
         }
     };
     private static int instanceCount = 0;

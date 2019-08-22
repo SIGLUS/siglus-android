@@ -20,6 +20,8 @@ import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import roboguice.util.Strings;
 import rx.Observable;
 import rx.Subscriber;
@@ -46,15 +48,15 @@ public class ProductPresenter extends Presenter {
     public void attachView(BaseView v) throws ViewNotMatchException {
     }
 
-    public Observable<List<RegimeProductViewModel>> loadRegimeProducts() {
+    public Observable<List<RegimeProductViewModel>> loadRegimeProducts(Regimen.RegimeType type) {
         return Observable.create(new Observable.OnSubscribe<List<RegimeProductViewModel>>() {
             @Override
             public void call(final Subscriber<? super List<RegimeProductViewModel>> subscriber) {
                 try {
-                    List<RegimeShortCode> regimeShortCodes = regimenRepository.listRegimeShortCode();
+                    List<RegimeShortCode> regimeShortCodes = regimenRepository.listRegimeShortCode(type);
                     List<RegimeProductViewModel> regimeProductViewModels = new ArrayList<>();
                     for (RegimeShortCode item : regimeShortCodes) {
-                        RegimeProductViewModel regimeProductViewModel = new RegimeProductViewModel(item.getShortCode(), productRepository.getByCode(item.getCode()).getPrimaryName());
+                        RegimeProductViewModel regimeProductViewModel = new RegimeProductViewModel(item.getShortCode());
                         regimeProductViewModels.add(regimeProductViewModel);
                     }
                     subscriber.onNext(regimeProductViewModels);
@@ -73,22 +75,30 @@ public class ProductPresenter extends Presenter {
         return Observable.create(new Observable.OnSubscribe<Regimen>() {
             @Override
             public void call(Subscriber<? super Regimen> subscriber) {
-                try {
-                    Regimen regimen = regimenRepository.getByNameAndCategory(regimenName, regimeType);
-                    if (regimen == null) {
-                        regimen = new Regimen();
-                        regimen.setType(regimeType);
-                        regimen.setCode(regimeType + regimenName);
-                        regimen.setName(regimenName);
-                        regimen.setCustom(true);
-                        regimenRepository.create(regimen);
+                Regimen regimen = from(viewModels).transform(new Function<RegimeProductViewModel, Regimen>() {
+                    @Nullable
+                    @Override
+                    public Regimen apply(@Nullable RegimeProductViewModel regimeProductViewModel) {
+                        try {
+                            Regimen regimen = regimenRepository.getByNameAndCategory(regimenName, regimeType);
+                            if (regimen == null) {
+                                regimen = new Regimen();
+                                regimen.setType(regimeType);
+                                regimen.setCode(regimeType + regimenName);
+                                regimen.setName(regimenName);
+                                regimen.setCustom(true);
+                                regimenRepository.create(regimen);
+                            }
+                            return regimen;
+                        } catch (LMISException e) {
+                            e.printStackTrace();
+                            subscriber.onError(e);
+                            return null;
+                        }
                     }
-                    subscriber.onNext(regimen);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                }
+                }).get(0);
+                subscriber.onNext(regimen);
+                subscriber.onCompleted();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }

@@ -388,7 +388,7 @@
     <!--Select Drugs-->
     <string name="title_select_drugs">Criar regime</string>
     <string name="hint_no_product_has_checked">Por favor, selecione um produto</string>
-    <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 5 produtos para regime</string>
+    <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 1 produtos para regime</string>
     <!--update notification text-->
     <string name="app_update_suffix">Actualizar</string>
     <string name="select_to_install">Selecione instalar</string>

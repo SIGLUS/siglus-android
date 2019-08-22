@@ -79,6 +79,7 @@ public class RegimenRepository {
     public void batchSave(List<Regimen> regimens) {
         try {
             for (Regimen regimen : regimens) {
+                if (!regimen.isActive()) continue;
                 createOrUpdate(regimen);
             }
         } catch (LMISException e) {
@@ -112,11 +113,14 @@ public class RegimenRepository {
         });
     }
 
-    public List<RegimeShortCode> listRegimeShortCode() throws LMISException {
+    public List<RegimeShortCode> listRegimeShortCode(Regimen.RegimeType type) throws LMISException {
         return dbUtil.withDao(RegimeShortCode.class, new DbUtil.Operation<RegimeShortCode, List<RegimeShortCode>>() {
             @Override
             public List<RegimeShortCode> operate(Dao<RegimeShortCode, String> dao) throws SQLException {
-                return dao.queryBuilder().query();
+                return dao.queryBuilder()
+                        .where()
+                        .eq("type", type)
+                        .query();
             }
         });
     }
