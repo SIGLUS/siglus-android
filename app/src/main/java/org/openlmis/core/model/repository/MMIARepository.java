@@ -22,6 +22,7 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
+import com.j256.ormlite.stmt.query.In;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -184,7 +185,7 @@ public class MMIARepository extends RnrFormRepository {
             return FluentIterable.from(attrs).transform(new Function<String, BaseInfoItem>() {
                 @Override
                 public BaseInfoItem apply(String attr) {
-                    return new BaseInfoItem(attr, BaseInfoItem.TYPE.INT, form, "");
+                    return new BaseInfoItem(attr, BaseInfoItem.TYPE.INT, form, "", 0);
                 }
             }).toList();
         }
@@ -207,13 +208,44 @@ public class MMIARepository extends RnrFormRepository {
         mAttrs.put(ATTR_TABLE_PROPHYLAXIS_CHILD, ATTR_TABLE_PROPHYLAXIS);
         mAttrs.put(ATTR_TABLE_PROPHYLAXIS_TOTAL, ATTR_TABLE_PROPHYLAXIS);
 
+        initDisplayOrder();
 
         return FluentIterable.from(mAttrs.keySet()).transform(new Function<String, BaseInfoItem>() {
             @Override
             public BaseInfoItem apply(String key) {
-                return new BaseInfoItem(key, BaseInfoItem.TYPE.INT, form, mAttrs.get(key));
+                return new BaseInfoItem(key, BaseInfoItem.TYPE.INT, form, mAttrs.get(key), getDisplayOrder(key));
             }
         }).toList();
+    }
+
+
+    Map<String, Integer> displayOrderMap = new HashMap<String, Integer>();
+
+    private void initDisplayOrder() {
+        displayOrderMap.put(ATTR_TABLE_TRAV, 0);
+        displayOrderMap.put(ATTR_TABLE_TRAV_NEW, 1);
+        displayOrderMap.put(ATTR_TABLE_TRAV_MAINTENANCE, 2);
+        displayOrderMap.put(ATTR_TABLE_TRAV_ALTERATION, 3);
+        displayOrderMap.put(ATTR_TABLE_TRAV_TRANSIT, 4);
+        displayOrderMap.put(ATTR_TABLE_TRAV_TRANSFER, 5);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED, 6);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DT, 7);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DISPENSE, 8);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_THERAPEUTIC, 9);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS, 10);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS_ADULTS, 11);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS_0TO4, 12);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS_5TO9, 13);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS_10TO14, 14);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS, 15);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_PPE, 16);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_PREP, 17);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_CHILD, 18);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_TOTAL, 19);
+    }
+
+    private int getDisplayOrder(String attrName) {
+        return displayOrderMap.get(attrName);
     }
 
     public long getTotalPatients(RnRForm form) {

@@ -33,8 +33,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.presenter.MMIARequisitionPresenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,9 +120,19 @@ public class MMIAInfoList extends LinearLayout {
         tableHeader.setText(tableName);
         linearLayout.removeView(tableHeader);
         addView(tableHeader);
+        sortedByDisplayOrder(list);
         for (BaseInfoItem item : list) {
             addTableViewItem(item);
         }
+    }
+
+    private void sortedByDisplayOrder(List<BaseInfoItem> list) {
+        Collections.sort(list, new Comparator<BaseInfoItem>() {
+            @Override
+            public int compare(BaseInfoItem o1, BaseInfoItem o2) {
+                return o1.getDisplayOrder() - o2.getDisplayOrder();
+            }
+        });
     }
 
 

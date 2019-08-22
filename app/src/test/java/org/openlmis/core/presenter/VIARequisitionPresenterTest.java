@@ -236,7 +236,7 @@ public class VIARequisitionPresenterTest {
         form.setStatus(status);
         form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
         form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>() {{
-            add(new BaseInfoItem(VIARepository.ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form,""));
+            add(new BaseInfoItem(VIARepository.ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form,"",0));
         }});
         return form;
     }
