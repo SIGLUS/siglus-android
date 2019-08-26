@@ -23,7 +23,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
 import org.openlmis.core.view.fragment.ConfirmGenerateLotNumberDialogFragment;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -105,7 +104,6 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         }
 
         try {
-            datePicker.setMinDate(Calendar.getInstance().getTimeInMillis());
             int dayIdentifier = Resources.getSystem().getIdentifier("day", "id", "android");
             ViewGroup pickers = (ViewGroup) datePickerLayout.getChildAt(0);
             for (int i = 0; i < pickers.getChildCount(); i++) {

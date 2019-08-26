@@ -308,7 +308,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     protected boolean validateForm() {
-        if (rnRForm.isEmergency()) {
+        if (rnRForm != null && rnRForm.isEmergency()) {
             return validateRnrFormItems();
         } else {
             return view.validateConsultationNumber() && validateRnrFormItems();

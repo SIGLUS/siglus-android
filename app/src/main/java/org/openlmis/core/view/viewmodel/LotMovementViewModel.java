@@ -92,7 +92,7 @@ public class LotMovementViewModel implements Serializable {
                 && !StringUtils.isBlank(expiryDate)
                 && !StringUtils.isBlank(quantity)
                 && Long.parseLong(quantity) > 0;
-        return valid || !isExpiredLot();
+        return valid || (getMovementType() == MovementReasonManager.MovementType.ISSUE && !isExpiredLot());
     }
 
     public boolean validateLotWithNoEmptyFields() {
@@ -100,7 +100,7 @@ public class LotMovementViewModel implements Serializable {
                 && !StringUtils.isBlank(lotNumber)
                 && !StringUtils.isBlank(expiryDate)
                 && !StringUtils.isBlank(quantity);
-        return valid || !isExpiredLot();
+        return valid || (getMovementType() == MovementReasonManager.MovementType.ISSUE && !isExpiredLot());
     }
 
 
@@ -130,10 +130,16 @@ public class LotMovementViewModel implements Serializable {
     }
 
     public int getAdjustmentQuantity() {
-        if (StringUtils.isBlank(lotSoh)) {
-            return Integer.parseInt(quantity);
+        int returnInt = 0;
+        try {
+            if (StringUtils.isBlank(lotSoh)) {
+                returnInt = Integer.parseInt(quantity);
+            }
+            returnInt = (Integer.parseInt(this.getQuantity()) - Integer.parseInt(this.getLotSoh()));
+        } catch (NumberFormatException e) {
+            new LMISException(e).reportToFabric();
         }
-        return (Integer.parseInt(this.getQuantity()) - Integer.parseInt(this.getLotSoh()));
+        return returnInt;
     }
 
     @Override

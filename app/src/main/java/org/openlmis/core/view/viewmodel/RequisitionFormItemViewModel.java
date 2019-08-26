@@ -22,6 +22,7 @@ import android.text.TextUtils;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnrFormItem;
 
 import java.util.List;
@@ -97,13 +98,17 @@ public class RequisitionFormItemViewModel {
     }
 
     public RnrFormItem toRnrFormItem() {
-        if (!TextUtils.isEmpty(requestAmount)) {
-            item.setRequestAmount(Long.valueOf(this.requestAmount));
+        try {
+            if (!TextUtils.isEmpty(requestAmount)) {
+                item.setRequestAmount(Long.valueOf(this.requestAmount));
+            }
+            if (!TextUtils.isEmpty(approvedAmount)) {
+                item.setApprovedAmount(Long.valueOf(approvedAmount));
+            }
+            item.setCalculatedOrderQuantity(Long.valueOf(this.adjustedTotalRequest));
+        } catch (NumberFormatException e) {
+            new LMISException(e).reportToFabric();
         }
-        if (!TextUtils.isEmpty(approvedAmount)) {
-            item.setApprovedAmount(Long.valueOf(approvedAmount));
-        }
-        item.setCalculatedOrderQuantity(Long.valueOf(this.adjustedTotalRequest));
         return item;
     }
 
