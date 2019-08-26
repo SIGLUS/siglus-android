@@ -107,6 +107,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         } else {
             loadForm(formId, period);
         }
+        addObservationChange();
     }
 
     @Nullable

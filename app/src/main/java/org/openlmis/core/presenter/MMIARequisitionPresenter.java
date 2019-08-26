@@ -27,6 +27,7 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMIARepository;
@@ -112,10 +113,20 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
 
-    public void setViewModels(List<RnrFormItem> formItems, List<RegimenItem> regimenItemList, List<BaseInfoItem> baseInfoItemList, String comments) {
+    private void getSortedList() {
+
+    }
+
+
+    public void setViewModels(List<RnrFormItem> formItems,
+                              List<RegimenItem> regimenItemList,
+                              List<BaseInfoItem> baseInfoItemList,
+                              List<RegimenItemThreeLines> regimenItemthreeList,
+                              String comments) {
         rnRForm.setRnrFormItemListWrapper(formItems);
         rnRForm.setRegimenItemListWrapper(regimenItemList);
         rnRForm.setBaseInfoItemListWrapper(baseInfoItemList);
+        rnRForm.setRegimenThreeLinesWrapper(regimenItemthreeList);
         rnRForm.setComments(comments);
     }
 
@@ -180,12 +191,16 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public Observable<Void> getSaveFormObservable(final List<RnrFormItem> rnrFormItems, final List<RegimenItem> regimenItems, final List<BaseInfoItem> baseInfoItems, final String comment) {
+    public Observable<Void> getSaveFormObservable(final List<RnrFormItem> rnrFormItems,
+                                                  final List<RegimenItem> regimenItems,
+                                                  final List<BaseInfoItem> baseInfoItems,
+                                                  final List<RegimenItemThreeLines> threeLineItems,
+                                                  final String comment) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    setViewModels(rnrFormItems, regimenItems, baseInfoItems, comment);
+                    setViewModels(rnrFormItems, regimenItems, baseInfoItems, threeLineItems, comment);
                     rnrFormRepository.createOrUpdateWithItems(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

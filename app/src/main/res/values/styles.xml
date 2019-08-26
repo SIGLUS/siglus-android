@@ -267,6 +267,30 @@
 
     <style name="MMIA" />
 
+    <style name="MMIA.Regime" parent="MMIA" />
+
+    <style name="MMIA.Regime.Total" parent="MMIA.Regime" />
+
+    <style name="MMIA.Regime.Total.Label">
+        <item name="android:gravity">end</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="MMIA.Regime.Total.Edit">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
+        <item name="android:inputType">number</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:background">@drawable/border_bg_light_right_gray</item>
+    </style>
+
+    <style name="MMIA.Regime.Total.Edit.End" parent="MMIA.Regime.Total.Edit">
+        <item name="android:layout_alignParentEnd">true</item>
+    </style>
+
     <style name="MMIA.FormContainer">
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
@@ -311,6 +335,9 @@
         <item name="android:freezesText">true</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:padding">4dp</item>
+        <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:minHeight">30dp</item>
     </style>
 
     <style name="MMIA.SpreadList">
@@ -467,6 +494,13 @@
     <style name="ItemRegime.Text" parent="MMIA.SpreadList" />
 
     <style name="ItemRegime.EditText" parent="ItemMMIA.EditText" />
+
+    <style name="ItemRegime.EditText.TotalTitle">
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+        <item name="android:minHeight">@dimen/mmia_ragime_title_minHeight</item>
+        <item name="android:padding">4dp</item>
+    </style>
 
     <style name="ItemRequisition" />
 
@@ -675,6 +709,7 @@
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/cancel_button_background</item>
     </style>
+
     <style name="FormAction.CancelBtn.Bulk.Inventory" parent="Text.Blue.Regular">
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/cancel_button_background</item>
@@ -823,7 +858,9 @@
         <item name="tabTextAppearance">@style/TextAppearance.Design.Tab</item>
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
     </style>
+
     <style name="PTVReportList" />
+
     <style name="PTVReportList.tableTitle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -833,6 +870,7 @@
         <item name="android:textSize">@dimen/font_size_regular</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="PTVReportList.itemTitle">
         <item name="android:textSize">@dimen/font_size_small</item>
         <item name="android:textStyle">bold</item>
@@ -845,6 +883,7 @@
         <item name="android:paddingRight">@dimen/margin_small</item>
         <item name="android:layout_gravity">center</item>
     </style>
+
     <style name="PTVReportList.item">
         <item name="android:textSize">@dimen/font_size_regular</item>
         <item name="android:layout_height">@dimen/ptv_view_item_height</item>
@@ -870,6 +909,7 @@
     </style>
 
     <style name="AlReportList" />
+
     <style name="AlReportList.age">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
@@ -880,6 +920,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/bottom_border_black</item>
     </style>
+
     <style name="AlReportList.title">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -891,16 +932,19 @@
         <item name="android:textColor">@color/color_black</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="AlReportList.title.lefttop" parent="AlReportList.title">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/al_view_list_height</item>
     </style>
+
     <style name="AlReportList.titleContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:background">@drawable/border_bottom_black</item>
     </style>
+
     <style name="AlReportList.numberTitle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -911,6 +955,7 @@
         <item name="android:textSize">@dimen/font_size_title_small</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="AlReportList.numberTitle.Firsts">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -920,6 +965,7 @@
         <item name="android:textSize">@dimen/font_size_title_small</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="AlReportList.editText">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>

@@ -79,8 +79,12 @@ public class StockCardListActivity extends SearchBarActivity {
 
     @Override
     public boolean onSearchStart(String query) {
-        stockCardFragment.onSearch(query);
-        return true;
+        if (stockCardFragment != null) {
+            stockCardFragment.onSearch(query);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static Intent getIntentToMe(Context context) {
@@ -91,7 +95,9 @@ public class StockCardListActivity extends SearchBarActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        stockCardFragment.onActivityResult(requestCode, resultCode, data);
+        if (stockCardFragment != null) {
+            stockCardFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     protected StockCardListFragment createFragment() {

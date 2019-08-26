@@ -13,10 +13,6 @@ import roboguice.inject.InjectView;
 
 
 public class SelectRegimeProductsViewHolder extends BaseViewHolder {
-
-    @InjectView(R.id.tv_product_name)
-    TextView productName;
-
     @InjectView(R.id.tv_short_code)
     TextView tvShortCode;
 
@@ -44,7 +40,6 @@ public class SelectRegimeProductsViewHolder extends BaseViewHolder {
             }
         });
         checkBox.setChecked(viewModel.isChecked());
-        productName.setText(viewModel.getEntireName());
         tvShortCode.setText(viewModel.getShortCode());
     }
 

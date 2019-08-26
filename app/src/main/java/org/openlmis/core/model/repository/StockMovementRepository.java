@@ -46,7 +46,8 @@ public class StockMovementRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("synced", false).query();
+                return dao.queryBuilder().where().eq("synced", false)
+                        .and().isNotNull("stockCard_id").query();
             }
         });
     }

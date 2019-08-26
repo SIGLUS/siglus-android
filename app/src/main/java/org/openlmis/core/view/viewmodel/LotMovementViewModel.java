@@ -10,6 +10,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Calendar;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -91,7 +92,7 @@ public class LotMovementViewModel implements Serializable {
                 && !StringUtils.isBlank(expiryDate)
                 && !StringUtils.isBlank(quantity)
                 && Long.parseLong(quantity) > 0;
-        return valid;
+        return valid || !isExpiredLot();
     }
 
     public boolean validateLotWithNoEmptyFields() {
@@ -99,7 +100,20 @@ public class LotMovementViewModel implements Serializable {
                 && !StringUtils.isBlank(lotNumber)
                 && !StringUtils.isBlank(expiryDate)
                 && !StringUtils.isBlank(quantity);
-        return valid;
+        return valid || !isExpiredLot();
+    }
+
+
+    public boolean isExpiredLot() {
+        Calendar nowCalender = Calendar.getInstance();
+        Calendar expireCalender = Calendar.getInstance();
+        expireCalender.setTime(DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        expireCalender.add(Calendar.MONTH, 1);
+
+        expireCalender.before(nowCalender);
+
+        return DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)
+                .before(Calendar.getInstance().getTime());
     }
 
     public boolean isNewAdded() {
@@ -133,6 +147,7 @@ public class LotMovementViewModel implements Serializable {
                 + ", valid=" + valid
                 + ", quantityLessThanSoh=" + quantityLessThanSoh
                 + ", isDataChanged=" + isDataChanged
+                + ", isExpire=" + isExpiredLot()
                 + '}';
     }
 }

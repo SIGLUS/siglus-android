@@ -111,9 +111,6 @@ public class HomeActivity extends BaseActivity {
     @Inject
     SyncService syncService;
     @Inject
-    InternetCheck internetCheck;
-
-    @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
 
     @Inject
@@ -294,7 +291,12 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        incompleteRequisitionBanner.setIncompleteRequisitionBanner();
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            incompleteRequisitionBanner.setIncompleteRequisitionBanner();
+        } else {
+            incompleteRequisitionBanner.setVisibility(View.GONE);
+        }
         if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
             syncTimeView.setSyncStockCardLastYearError();
         } else {
@@ -387,7 +389,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void alertWipeData() {
-        internetCheck.execute(validateConnectionListener());
+        new InternetCheck().execute(validateConnectionListener());
     }
 
     private InternetCheck.Callback validateConnectionListener() {

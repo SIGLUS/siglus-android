@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.InitialInventoryActivity;
@@ -26,7 +26,6 @@ import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
-import java.util.Calendar;
 
 import roboguice.inject.InjectView;
 
@@ -73,7 +72,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
                 if (viewModel.quantityGreaterThanZero()) {
                     vgLotSOH.setVisibility(View.GONE);
                 } else {
-                    tvLotSOHTip.setText(context.getResources().getString(R.string.label_new_added_lot));
+                    tvLotSOHTip.setText(getString(R.string.label_new_added_lot));
                 }
             } else {
                 tvLotSOH.setText(viewModel.getLotSoh());
@@ -90,16 +89,16 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
     private void populateAmountField(LotMovementViewModel viewModel) {
         final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
-        if (DateUtil.parseString(viewModel.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)
-                .before(Calendar.getInstance().getTime())) {
+        if (viewModel.isExpiredLot() && viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE) {
             lyLotAmount.setErrorEnabled(true);
             etLotAmount.setInputType(InputType.TYPE_CLASS_TEXT);
-            etLotAmount.setText(R.string.lots_has_expire);
-            etLotAmount.setTextColor(context.getResources().getColor(R.color.color_red));
-            etLotAmount.setGravity(Gravity.CENTER_HORIZONTAL);
             etLotAmount.setEnabled(false);
-            etLotAmount.setBackgroundResource(R.drawable.border_bg_warning_red);
+            etLotAmount.setHint(getString(R.string.lots_has_expire));
+            etLotAmount.setTextSize(16);
+            etLotAmount.setHintTextColor(context.getResources().getColor(R.color.color_red));
+            etLotAmount.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
+            etLotAmount.setEnabled(true);
             etLotAmount.setMaxLines(9);
             etLotAmount.removeTextChangedListener(textWatcher);
             etLotAmount.setText(viewModel.getQuantity());
@@ -109,11 +108,15 @@ public class LotMovementViewHolder extends BaseViewHolder {
         }
 
         if (!viewModel.isValid()) {
-            setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
+            setQuantityError(getString(R.string.msg_empty_quantity));
         }
         if (!viewModel.isQuantityLessThanSoh()) {
-            setQuantityError(context.getResources().getString(R.string.msg_invalid_quantity));
+            setQuantityError(getString(R.string.msg_invalid_quantity));
         }
+    }
+
+    private String getString(int id) {
+        return context.getResources().getString(id);
     }
 
     private void setQuantityError(String string) {
@@ -134,10 +137,10 @@ public class LotMovementViewHolder extends BaseViewHolder {
             @Override
             public void onClick(final View v) {
                 final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-                        Html.fromHtml(context.getResources().getString(R.string.msg_remove_new_lot_title)),
+                        Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
                         Html.fromHtml(context.getResources().getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(), viewModel.getExpiryDate(), lotMovementAdapter.getProductName())),
-                        context.getResources().getString(R.string.btn_remove_lot),
-                        context.getResources().getString(R.string.btn_cancel), "confirm_dialog");
+                        getString(R.string.btn_remove_lot),
+                        getString(R.string.btn_cancel), "confirm_dialog");
                 dialogFragment.show(((BaseActivity) context).getFragmentManager(), "confirm_dialog");
                 dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
                     @Override
@@ -180,11 +183,11 @@ public class LotMovementViewHolder extends BaseViewHolder {
                         vgLotSOH.setVisibility(View.GONE);
                     } else {
                         vgLotSOH.setVisibility(View.VISIBLE);
-                        setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
+                        setQuantityError(getString(R.string.msg_empty_quantity));
                     }
                 }
                 if (!viewModel.validateQuantityNotGreaterThanSOH()) {
-                    setQuantityError(context.getResources().getString(R.string.msg_invalid_quantity));
+                    setQuantityError(getString(R.string.msg_invalid_quantity));
                 }
             }
 
@@ -194,18 +197,18 @@ public class LotMovementViewHolder extends BaseViewHolder {
                         vgLotSOH.setVisibility(View.GONE);
                     } else {
                         vgLotSOH.setVisibility(View.VISIBLE);
-                        setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
+                        setQuantityError(getString(R.string.msg_empty_quantity));
                     }
                 } else {
                     if (!viewModel.validateLotWithNoEmptyFields()) {
-                        setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
+                        setQuantityError(getString(R.string.msg_empty_quantity));
                     }
                 }
             }
 
             if (context instanceof InitialInventoryActivity) {
                 if (!viewModel.validateLotWithPositiveQuantity()) {
-                    setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
+                    setQuantityError(getString(R.string.msg_empty_quantity));
                 }
             }
 

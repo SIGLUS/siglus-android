@@ -63,7 +63,7 @@ public class SelectRegimeProductsActivityTest {
 
             }
         });
-        when(presenter.loadRegimeProducts()).thenReturn(value);
+        when(presenter.loadRegimeProducts(Regimen.RegimeType.Adults)).thenReturn(value);
 
         Intent intent = new Intent();
         intent.putExtra(SelectRegimeProductsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
@@ -92,7 +92,7 @@ public class SelectRegimeProductsActivityTest {
         }
         selectProductsActivity.btnNext.performClick();
 
-        assertThat(ShadowToast.getTextOfLatestToast(), is("You can only select 5 products for regime"));
+        assertThat(ShadowToast.getTextOfLatestToast(), is("You can only select 1 products for regime"));
     }
 
     @Test
@@ -130,6 +130,11 @@ public class SelectRegimeProductsActivityTest {
     }
 
     private ArrayList<RegimeProductViewModel> getInventoryViewModels() {
-        return newArrayList(new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"));
+        return newArrayList(new RegimeProductViewModel("3TC 150mg"),
+                new RegimeProductViewModel("3TC 150mg"),
+                new RegimeProductViewModel("3TC 150mg"),
+                new RegimeProductViewModel("3TC 150mg"),
+                new RegimeProductViewModel("3TC 150mg"),
+                new RegimeProductViewModel("3TC 150mg"));
     }
 }

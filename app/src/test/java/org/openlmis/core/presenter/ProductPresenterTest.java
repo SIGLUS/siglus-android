@@ -70,12 +70,12 @@ public class ProductPresenterTest {
         RegimeShortCode regimeShortCode = new RegimeShortCode();
         regimeShortCode.setCode("code");
         regimeShortCode.setShortCode("3TC 150mg");
-        when(regimenRepository.listRegimeShortCode()).thenReturn(newArrayList(regimeShortCode));
+        when(regimenRepository.listRegimeShortCode(Regimen.RegimeType.Adults)).thenReturn(newArrayList(regimeShortCode));
         Product product = new Product();
         product.setPrimaryName("PrimaryName");
         when(productRepository.getByCode("code")).thenReturn(product);
         TestSubscriber<List<RegimeProductViewModel>> subscriber = new TestSubscriber<>();
-        presenter.loadRegimeProducts().subscribe(subscriber);
+        presenter.loadRegimeProducts(Regimen.RegimeType.Adults).subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
@@ -83,7 +83,6 @@ public class ProductPresenterTest {
 
         assertThat(subscriber.getOnNextEvents().get(0).size(), is(1));
         assertThat(subscriber.getOnNextEvents().get(0).get(0).getShortCode(), is("3TC 150mg"));
-        assertThat(subscriber.getOnNextEvents().get(0).get(0).getEntireName(), is("PrimaryName"));
     }
 
     @Test
@@ -138,6 +137,6 @@ public class ProductPresenterTest {
     }
 
     private ArrayList<RegimeProductViewModel> getInventoryViewModels() {
-        return newArrayList(new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"));
+        return newArrayList(new RegimeProductViewModel("3TC 150mg"), new RegimeProductViewModel("3TC 150mg"));
     }
 }

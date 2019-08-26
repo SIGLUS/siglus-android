@@ -47,6 +47,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.widget.MMIARegimeList;
 import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
 
@@ -97,7 +98,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         mmiaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
 
-        program = new Program("ART", "ART", null, false, null,null);
+        program = new Program("ART", "ART", null, false, null, null);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
     }
 
@@ -183,8 +184,8 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         List<RnRForm> list = mmiaRepository.list();
         RnRForm DBForm = list.get(list.size() - 1);
 
-        long expectRegimeTotal = RnRForm.calculateTotalRegimenAmount(initForm.getRegimenItemListWrapper());
-        long regimenTotal = RnRForm.calculateTotalRegimenAmount(DBForm.getRegimenItemListWrapper());
+        long expectRegimeTotal = RnRForm.calculateTotalRegimenAmount(initForm.getRegimenItemListWrapper(), MMIARegimeList.COUNTTYPE.AMOUNT);
+        long regimenTotal = RnRForm.calculateTotalRegimenAmount(DBForm.getRegimenItemListWrapper(), MMIARegimeList.COUNTTYPE.AMOUNT);
         assertThat(expectRegimeTotal, is(regimenTotal));
 
         assertThat(mmiaRepository.getTotalPatients(initForm), is(mmiaRepository.getTotalPatients(DBForm)));
@@ -193,7 +194,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGenerateBaseInfoItems() throws Exception {
         RnRForm rnRForm = new RnRForm();
-        List<BaseInfoItem> baseInfoItems = mmiaRepository.generateBaseInfoItems(rnRForm);
+        List<BaseInfoItem> baseInfoItems = mmiaRepository.generateBaseInfoItems(rnRForm, MMIARepository.ReportType.OLD);
         assertThat(baseInfoItems.size(), is(7));
         assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_NEW_PATIENTS));
         assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_PTV));

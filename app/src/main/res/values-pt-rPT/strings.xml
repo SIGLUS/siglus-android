@@ -83,6 +83,7 @@
     <string name="label_rnrfrom_left_header">Produto</string>
     <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
     <string name="total">Total</string>
+    <string name="total_title">Total doentes</string>
     <string name="ape">APEs</string>
     <string name="label_mmia_info_header_name">TIPO</string>
     <string name="label_mmia_speed_info_header">Número de pacientes em TARV</string>
@@ -129,10 +130,10 @@
     <string name="label_kits_opened">No. de Kits Abertos</string>
     <string name="label_us">US</string>
     <string name="label_ape">APE</string>
-    <string name="label_initial_amount_requisition">Estoque no Início do Período</string>
+    <string name="label_initial_amount_requisition">Stock no início do período</string>
     <string name="label_received_requisition">Soma das Entradas</string>
     <string name="label_issued_requisition">Soma das Saídas</string>
-    <string name="label_theoretical">Estoque Teórico no Fim do Período</string>
+    <string name="label_theoretical">Stock teórico no fim do período</string>
     <string name="label_total_requisition">Total dos Pedidos</string>
     <string name="label_different">Diferença</string>
     <string name="label_total_requested">Quantidade a Requisitar</string>
@@ -201,7 +202,7 @@
     <string name="Regular_stock">Stock regular</string>
     <string name="Low_stock"> Eminência de ruptura</string>
     <string name="Stock_out">Ruptura de stock</string>
-    <string name="title_stock_movement">Ficha de Estoque</string>
+    <string name="title_stock_movement">Ficha de Stock</string>
     <string name="label_default">-</string>
     <string name="label_movement_date">Data do Movimento</string>
     <string name="label_reason">Origem/Destino do Movimento</string>
@@ -235,6 +236,28 @@
     <string name="label_total_patients">Total de pacientes em TARV na US</string>
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>
+
+    <string name="table_trav">Type of patients in TRAV</string>
+    <string name="table_trav_label_new">Novos</string>
+    <string name="table_trav_label_maintenance">Manutenção</string>
+    <string name="table_trav_label_alteration">Alteração</string>
+    <string name="table_trav_label_transit">Trânsito</string>
+    <string name="table_trav_label_transfers">Transferências</string>
+    <string name="table_dispensed">Months dispensed</string> <!-- TODO -->
+    <string name="table_dispensed_label_dt">Dispensa para 3 Meses (DT)</string>
+    <string name="table_dispensed_label_dispense">Month dispense</string> <!-- TODO -->
+    <string name="table_dispensed_label_therapeutic">#Meses de terapêutica dispensados</string>
+    <string name="table_patients">age range of TRAV patients</string><!-- TODO -->
+    <string name="table_patients_adults">Adultos</string>
+    <string name="table_patients_0to4">Pediátricos 0 aos 4 anos</string>
+    <string name="table_patients_5to9">Pediátricos 5 aos 9 anos</string>
+    <string name="table_patients_10to14">Pediátricos 10 aos 14 anos</string>
+    <string name="table_prophylaxis">prophylaxis</string>
+    <string name="table_prophylaxis_ppe">PPE</string>
+    <string name="table_prophylaxis_prep">PrEP</string>
+    <string name="table_prophylaxis_child">Criança Exposta</string>
+    <string name="table_prophylaxis_total">Total de pacientes em TARV na US</string>
+
     <string name="hint_has_not_new_data">Estás no fim da lista</string>
     <string name="RECEIVE">Entradas</string>
     <string name="ISSUE">Saídas</string>
@@ -300,7 +323,7 @@
     <string name="btn_view_completed_Rapid_Test_inventory">Criar testes rápidos</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
-    <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b> Nenhum testes rápidos foi criada.</b>]]> Complete o seu inventário antes de criar um testes rápidos</string>
+    <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b> Nenhum MMIT foi criado.</b>]]> Complete o seu inventario antes de criar um MMIT</string>
     <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma %2$s </string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
@@ -349,9 +372,9 @@
     <string name="menu_archive_drug">Arquivar produtos</string>
     <string name="title_archived_drugs">Produtos Arquivados</string>
     <string name="msg_drug_archived">O produto foi arquivado</string>
-    <string name="label_removed_drug_from_stock">Este produto foi removido da sua lista de fichas de estoque.</string>
+    <string name="label_removed_drug_from_stock">Este produto foi removido da sua lista das fichas de stock.</string>
     <string name="label_view_movement_history">Ver histórico de movimentos</string>
-    <string name="label_add_drug_to_stock">Adicionar produto para a lista geral de estoque</string>
+    <string name="label_add_drug_to_stock">Adicionar produto para a lista geral de stock</string>
     <string name="label_empty_archived_drugs">Nenhum produto arquivado</string>
     <!--Select Period-->
     <string name="title_select_period">Selecione inventário para fechar período</string>
@@ -365,7 +388,7 @@
     <!--Select Drugs-->
     <string name="title_select_drugs">Criar regime</string>
     <string name="hint_no_product_has_checked">Por favor, selecione um produto</string>
-    <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 5 produtos para regime</string>
+    <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 1 produtos para regime</string>
     <!--update notification text-->
     <string name="app_update_suffix">Actualizar</string>
     <string name="select_to_install">Selecione instalar</string>
@@ -412,7 +435,7 @@
     <string name="msg_invalid_stock_movement">A data de movimento das ações deve ser posterior ao último movimento de estoque</string>
 
     <!--Lot management-->
-    <string name="lots_has_expire">Lot has expire</string>
+    <string name="lots_has_expire">Lot has expired, it cannot be issued</string>
     <string name="label_lot_number">Qual é o número do lote?</string>
     <string name="hint_lot_number">Número do lote</string>
     <string name="label_add_lot_expire">Quando é que o lote expira?</string>
@@ -497,7 +520,7 @@
     <string name="losses_and_adjustments">Perdas e Ajustes</string>
     <string name="loss_and_adjustment">Perdas e Ajustes</string>
     <string name="requisition">Requisição</string>
-    <string name="final_stock">estoque final</string>
+    <string name="final_stock">Stock Final</string>
     <string name="loading_report_information">Carregando informações do relatório</string>
     <string name="report_submitted_synced_pending_message">O seu relatório foi <![CDATA[<b>gravado com sucesso</b>]]>, e vai ser submetido \r\n automaticamente quando tiver conecção a internet.</string>
     <string name="report_synced_successfully">Seu relatório foi <![CDATA[<b>sincronizado com sucesso</b>]]></string>

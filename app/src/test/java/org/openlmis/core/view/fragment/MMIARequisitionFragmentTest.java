@@ -104,7 +104,6 @@ public class MMIARequisitionFragmentTest {
         regimeListView = mock(MMIARegimeList.class);
         mmiaInfoListView = mock(MMIAInfoList.class);
         mockRnrItemsHeaderFreeze = mock(ViewGroup.class);
-
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
         mmiaRequisitionFragment.rnrFormList = rnrFormList;
@@ -158,7 +157,7 @@ public class MMIARequisitionFragmentTest {
         mmiaRequisitionFragment.refreshRequisitionForm(form);
 
         verify(rnrFormList).initView(any(ArrayList.class));
-        verify(regimeListView).initView(mmiaRequisitionFragment.tvRegimeTotal, mmiaFormPresenter);
+        verify(regimeListView).initView(mmiaRequisitionFragment.tvRegimeTotal, mmiaRequisitionFragment.tvRegimeTotalPharmacy, mmiaFormPresenter);
         verify(mmiaInfoListView).initView(baseInfoItems);
     }
 
@@ -230,7 +229,7 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldDeHighLightWhenTotalMatches() {
-        when(regimeListView.getTotal()).thenReturn(20L);
+        when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(20L);
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
@@ -245,7 +244,7 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldDeHighlightWhenTotalNotMatchesAndLessThanFiveWithEmptyField() {
-        when(regimeListView.getTotal()).thenReturn(20L);
+        when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(40L);
         when(regimeListView.hasEmptyField()).thenReturn(false);
         when(mmiaInfoListView.hasEmptyField()).thenReturn(true);
@@ -262,7 +261,7 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldDeHighlightWhenTotalNotMatchesAndMoreThanFive() {
-        when(regimeListView.getTotal()).thenReturn(20L);
+        when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(40L);
         when(regimeListView.hasEmptyField()).thenReturn(false);
         when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
@@ -279,7 +278,7 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldDeHighlightWhenTotalMatchesAndCommentLengthLessThanFiveAndWithoutEmptyField() {
-        when(regimeListView.getTotal()).thenReturn(20L);
+        when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(20L);
         when(regimeListView.hasEmptyField()).thenReturn(false);
         when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
@@ -296,7 +295,7 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldDeHighlightWhenTotalMatchesWithoutEmptyField() {
-        when(regimeListView.getTotal()).thenReturn(20L);
+        when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(20L);
         when(regimeListView.hasEmptyField()).thenReturn(false);
         when(mmiaInfoListView.hasEmptyField()).thenReturn(false);

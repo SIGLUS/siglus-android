@@ -55,7 +55,6 @@ public class LMISApp extends Application {
     private static LMISApp instance;
 
     public static long lastOperateTime = 0L;
-    private static String TAG = "123";
     private final int facilityCustomDimensionKey = 1;
 
     @Override
@@ -110,6 +109,7 @@ public class LMISApp extends Application {
     }
 
     public void logErrorOnFabric(LMISException exception) {
+        Crashlytics.setUserName(UserInfoMgr.getInstance().getFacilityName());
         Crashlytics.logException(exception);
     }
 

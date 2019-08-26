@@ -22,8 +22,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -37,15 +35,26 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MMIAInfoList extends LinearLayout {
     private Context context;
-    EditText totalPatientsView = null;
+    private EditText totalPatientsView = null;
     private List<EditText> editTexts = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private List<BaseInfoItem> dataList;
+    private Map<String, List<BaseInfoItem>> tableMap = new HashMap<>();
+    private String ATTR_TABLE_TRAV;
+    private String ATTR_TABLE_DISPENSED;
+    private String ATTR_TABLE_PATIENTS;
+    private String ATTR_TABLE_PROPHYLAXIS;
+
+    private String ATTR_TABLE_ORIGIN;
+
     private boolean hasDataChanged = false;
 
     public MMIAInfoList(Context context) {
@@ -66,69 +75,82 @@ public class MMIAInfoList extends LinearLayout {
         this.context = context;
         setOrientation(LinearLayout.VERTICAL);
         layoutInflater = LayoutInflater.from(context);
+        initTableName();
+    }
+
+    private void initTableName() {
+        ATTR_TABLE_TRAV = getString(R.string.table_trav);
+        ATTR_TABLE_DISPENSED = getString(R.string.table_dispensed);
+        ATTR_TABLE_PATIENTS = getString(R.string.table_patients);
+        ATTR_TABLE_PROPHYLAXIS = getString(R.string.table_prophylaxis);
+        ATTR_TABLE_ORIGIN = getString(R.string.label_mmia_speed_info_header);
+    }
+
+    private String getString(int id) {
+        return getResources().getString(id);
     }
 
     public void initView(List<BaseInfoItem> list) {
         this.dataList = list;
-        addHeaderView();
-
-        for (int i = 0; i < dataList.size(); i++) {
-            BaseInfoItem item = dataList.get(i);
-            if (item != null) {
-                addItemView(item, i);
-            }
+        for (BaseInfoItem item : list) {
+            List<BaseInfoItem> tableList = tableMap.get(item.getTableName()) == null ? new ArrayList<>() : tableMap.get(item.getTableName());
+            tableList.add(item);
+            tableMap.put(item.getTableName(), tableList);
         }
 
+        addItemView();
         editTexts.get(editTexts.size() - 2).setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
-    private void addItemView(BaseInfoItem item, int position) {
-        addItemView(item, false, position);
-    }
-
-    private void addHeaderView() {
-        addItemView(null, true, 0);
-    }
-
-
-    private void addItemView(BaseInfoItem item, boolean isHeaderView, final int position) {
-        View view = layoutInflater.inflate(R.layout.item_mmia_info, this, false);
-        TextView tvName = (TextView) view.findViewById(R.id.tv_name);
-        EditText etValue = (EditText) view.findViewById(R.id.et_value);
-
-        if (isHeaderView) {
-            tvName.setText(R.string.label_mmia_info_header_name);
-            etValue.setText(getResources().getString(R.string.total).toUpperCase());
-            etValue.setEnabled(false);
-            etValue.setGravity(Gravity.CENTER);
-            view.setBackgroundResource(R.color.color_mmia_info_name);
+    private void addItemView() {
+        if (tableMap.size() != 1) {
+            addTableView(tableMap.get(ATTR_TABLE_TRAV), ATTR_TABLE_TRAV);
+            addTableView(tableMap.get(ATTR_TABLE_DISPENSED), ATTR_TABLE_DISPENSED);
+            addTableView(tableMap.get(ATTR_TABLE_PATIENTS), ATTR_TABLE_PATIENTS);
+            addTableView(tableMap.get(ATTR_TABLE_PROPHYLAXIS), ATTR_TABLE_PROPHYLAXIS);
         } else {
-            tvName.setText(item.getName());
-            editTexts.add(etValue);
-            etValue.setText(item.getValue());
-            if (isTotalPatient(item)) {
-                totalPatientsView = etValue;
-            } else {
-                etValue.addTextChangedListener(new EditTextWatcher(item));
-            }
-            etValue.addTextChangedListener(new EditTextWatcher(item));
-            setTotalViewBackground(item, etValue);
+            addTableView(dataList, ATTR_TABLE_ORIGIN);
         }
-        addView(view);
+    }
 
-        etValue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+    private void addTableView(List<BaseInfoItem> list, String tableName) {
+        LinearLayout linearLayout = (LinearLayout) layoutInflater.inflate(R.layout.item_mmia_requisitions_bottom, this, false);
+        TextView tableHeader = (TextView) linearLayout.findViewById(R.id.header);
+        tableHeader.setText(tableName);
+        linearLayout.removeView(tableHeader);
+        addView(tableHeader);
+        sortedByDisplayOrder(list);
+        for (BaseInfoItem item : list) {
+            addTableViewItem(item);
+        }
+    }
+
+    private void sortedByDisplayOrder(List<BaseInfoItem> list) {
+        Collections.sort(list, new Comparator<BaseInfoItem>() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    if ((position + 1) < editTexts.size()) {
-                        editTexts.get(position + 1).requestFocus();
-                        return true;
-                    }
-                }
-                return false;
+            public int compare(BaseInfoItem o1, BaseInfoItem o2) {
+                return o1.getDisplayOrder() - o2.getDisplayOrder();
             }
         });
+    }
 
+
+    private void addTableViewItem(BaseInfoItem item) {
+        View view = layoutInflater.inflate(R.layout.item_mmia_info, this, false);
+        TextView textView = (TextView) view.findViewById(R.id.tv_name);
+        EditText editText = (EditText) view.findViewById(R.id.et_value);
+
+        textView.setText(item.getName());
+        editTexts.add(editText);
+        editText.setText(item.getValue());
+        if (isTotalInfoView(item)) {
+            totalPatientsView = editText;
+        } else {
+            editText.addTextChangedListener(new EditTextWatcher(item));
+        }
+        editText.addTextChangedListener(new EditTextWatcher(item));
+        setTotalViewBackground(item, editText);
+        addView(view);
     }
 
     private void setTotalViewBackground(BaseInfoItem item, EditText etValue) {
@@ -146,12 +168,14 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     public void deHighLightTotal() {
-        totalPatientsView.setBackground(getResources().getDrawable(R.color.color_page_gray));
+        if (totalPatientsView != null) {
+            totalPatientsView.setBackground(getResources().getDrawable(R.color.color_page_gray));
+        }
     }
 
     public boolean hasEmptyField() {
-        for (BaseInfoItem item: dataList) {
-            if (StringUtils.isEmpty(item.getValue())){
+        for (BaseInfoItem item : dataList) {
+            if (StringUtils.isEmpty(item.getValue())) {
                 return true;
             }
         }
@@ -199,15 +223,8 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     private boolean isTotalInfoView(BaseInfoItem item) {
-        List<String> monthDispenseLabels = Arrays.asList(getResources().getStringArray(R.array.TOTAL_MONTH_DISPENSE));
-        return monthDispenseLabels.contains(item.getName()) || isTotalPatient(item);
+        return getString(R.string.table_prophylaxis_total).equals(item.getName());
     }
-
-    private boolean isTotalPatient(BaseInfoItem item) {
-        List<String> totalPatientLabels = Arrays.asList(getResources().getStringArray(R.array.TOTAL_PATIENTS));
-        return totalPatientLabels.contains(item.getName());
-    }
-
 
     public boolean isCompleted() {
         for (EditText editText : editTexts) {

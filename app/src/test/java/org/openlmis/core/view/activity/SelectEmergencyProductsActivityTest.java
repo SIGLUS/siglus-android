@@ -102,9 +102,9 @@ public class SelectEmergencyProductsActivityTest {
 
     @Test
     public void shouldInflateCurrentDataAfterFilter() throws Exception {
+//        activity.mAdapter.filter("Product name");
         activity.mAdapter.refreshList(getInventoryViewModels());
 
-        activity.mAdapter.filter("8");
         SelectEmergencyProductsViewHolder viewHolder = activity.mAdapter.onCreateViewHolder(new LinearLayout(activity), 0);
         activity.mAdapter.onBindViewHolder(viewHolder, 0);
 

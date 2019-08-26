@@ -58,7 +58,6 @@ lmis-moz
 # Test reports
 functionalTests/*.html
 functionalTests/*.json
-<<<<<<< HEAD
 
 #Test Apk calabash
 test_servers/
@@ -67,6 +66,9 @@ node_modules/
 package-lock.json
 *.swp
 **/**/.irb-history
+
+.project
+.vscode/
 #for vscode
 .project
 .settings/
@@ -74,4 +76,4 @@ app/.classpath
 app/.project
 app/.settings/
 contractTests/.project
-contractTests/.settings/
+contractTests/.settings

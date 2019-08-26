@@ -260,7 +260,8 @@ public class SyncUpManager {
     public void syncAppVersion() {
         try {
             if (!sharedPreferenceMgr.hasSyncedVersion()) {
-                AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(), UserInfoMgr.getInstance().getUser().getUsername(), UserInfoMgr.getInstance().getVersion());
+                AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(),
+                        UserInfoMgr.getInstance().getUser().getUsername(), UserInfoMgr.getInstance().getVersion());
                 lmisRestApi.updateAppVersion(request);
                 sharedPreferenceMgr.setSyncedVersion(true);
             }
@@ -284,9 +285,11 @@ public class SyncUpManager {
         try {
             List<Cmm> unsyncedCmms = cmmRepository.listUnsynced();
             if (!unsyncedCmms.isEmpty()) {
+//                FluentIterable.from(unsyncedCmms).filter()
                 List<CmmEntry> cmmEntries = FluentIterable.from(unsyncedCmms).transform(new Function<Cmm, CmmEntry>() {
                     @Override
                     public CmmEntry apply(Cmm cmm) {
+//                        cmm.getStockCard()
                         return CmmEntry.createFrom(cmm);
                     }
                 }).toList();

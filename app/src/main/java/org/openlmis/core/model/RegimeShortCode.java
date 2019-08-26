@@ -15,4 +15,7 @@ public class RegimeShortCode extends BaseModel {
 
     @DatabaseField
     private String shortCode;
+
+    @DatabaseField
+    private Regimen.RegimeType type;
 }

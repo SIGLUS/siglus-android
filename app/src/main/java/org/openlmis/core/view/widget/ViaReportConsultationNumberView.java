@@ -120,7 +120,7 @@ public class ViaReportConsultationNumberView extends LinearLayout {
         @Override
         public void afterTextChanged(Editable s) {
             String input = etExternalConsultationsPerformed.getText().toString();
-            if (!input.equals(presenter.getConsultationNumbers())) {
+            if (input != null && !input.equals(presenter.getConsultationNumbers())) {
                 presenter.setConsultationNumbers(input);
             }
         }

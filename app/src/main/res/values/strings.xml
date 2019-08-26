@@ -91,10 +91,13 @@
     <string name="label_rnrfrom_left_header">Medicine</string>
     <string name="label_regime_header_name">Therapeutic Regime</string>
     <string name="total">Total</string>
+    <string name="total_title">Total patients</string>
+    <string name="total_pharmacy">Comunitary pharmacy</string>
     <string name="ape">APEs</string>
     <string name="label_mmia_info_header_name">TYPE</string>
     <string name="label_mmia_speed_info_header">Number of patients on ART</string>
     <string name="hint_mmia_comment">Observations</string>
+    <string name="mmia_comment_should_not_empty">MMIA comment should not empty</string>
     <string name="btn_complete">Complete</string>
     <string name="btn_new_movement">NEW MOVEMENT</string>
     <string name="btn_submit">Submit for Approval</string>
@@ -122,6 +125,10 @@
     <string name="label_add_adult_regime">+ Adult regime</string>
     <string name="label_add_child_regime">+ Child regime</string>
     <string name="msg_regime_already_exist">select regime already exist</string>
+    <string name="mmia_therapeutic">Therapeutic lines</string>
+    <string name="mmia_1stline">1st Line</string>
+    <string name="mmia_2ndline">2nd Line</string>
+    <string name="mmia_3rdline">3rd Line</string>
 
     <!-- VIA Form -->
     <string name="label_via_kit_received">No. of Kits Received</string>
@@ -243,6 +250,27 @@
     <string name="label_total_patients">Total Patients</string>
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>
+
+    <string name="table_trav">Type of patients in TRAV</string>
+    <string name="table_trav_label_new">New</string>
+    <string name="table_trav_label_maintenance">Maintenance</string>
+    <string name="table_trav_label_alteration">Alteration</string>
+    <string name="table_trav_label_transit">Transit</string>
+    <string name="table_trav_label_transfers">Transfers</string>
+    <string name="table_dispensed">Months dispensed</string> <!-- TODO -->
+    <string name="table_dispensed_label_dt">3 mopnths dispense (DT)</string>
+    <string name="table_dispensed_label_dispense">Month dispense</string>
+    <string name="table_dispensed_label_therapeutic"># of therapeutic months dispensed</string>
+    <string name="table_patients">age range of TRAV patients</string> <!-- TODO -->
+    <string name="table_patients_adults">Adults</string>
+    <string name="table_patients_0to4">Pediatric from 0 to 4 years</string>
+    <string name="table_patients_5to9">Pediatric from 5 to 9 years</string>
+    <string name="table_patients_10to14">Pediatric from 10 to 14 years</string>
+    <string name="table_prophylaxis">prophylaxis</string>
+    <string name="table_prophylaxis_ppe">PPE</string>
+    <string name="table_prophylaxis_prep">PrEP</string>
+    <string name="table_prophylaxis_child">Exposed child</string>
+    <string name="table_prophylaxis_total">Total Nr of Patients In TARV at HF</string>
     <string name="hint_has_not_new_data">You are at the end of the list</string>
 
     <string name="RECEIVE">Entries</string>
@@ -391,7 +419,7 @@
     <!--Select Drugs-->
     <string name="title_select_drugs">Create regime</string>
     <string name="hint_no_product_has_checked">Please select product</string>
-    <string name="hint_more_than_limit_product_has_checked">You can only select 5 products for regime</string>
+    <string name="hint_more_than_limit_product_has_checked">You can only select 1 products for regime</string>
 
     <!-- update notification text-->
     <string name="app_update_suffix"> update</string>
@@ -457,7 +485,7 @@
     <string name="msg_invalid_stock_movement">Stock movement date must later than last stock movement</string>
 
     <!--Lot management-->
-    <string name="lots_has_expire">Lot has expire</string>
+    <string name="lots_has_expire">Lot has expired, it cannot be issued</string>
     <string name="label_lot_number">What is the lot number?</string>
     <string name="hint_lot_number">Lot number</string>
     <string name="label_add_lot_expire">When does the lot expire?</string>

@@ -20,7 +20,7 @@ public class SelectRegimeProductAdapter extends RecyclerView.Adapter<SelectRegim
 
     @Override
     public SelectRegimeProductsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new SelectRegimeProductsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_select_product, parent, false));
+        return new SelectRegimeProductsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_select_product_regime, parent, false));
     }
 
     @Override

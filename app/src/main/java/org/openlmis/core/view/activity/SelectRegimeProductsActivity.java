@@ -45,7 +45,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
     @InjectPresenter(ProductPresenter.class)
     ProductPresenter presenter;
     protected List<RegimeProductViewModel> viewModels;
-    private final int MAX_CHECKED_LIMIT = 5;
+    private final int MAX_CHECKED_LIMIT = 1;
 
     @Override
     protected ScreenName getScreenName() {
@@ -73,7 +73,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
         mAdapter = new SelectRegimeProductAdapter(viewModels);
         productListRecycleView.setAdapter(mAdapter);
         loading();
-        Subscription subscription = presenter.loadRegimeProducts().subscribe(subscriber);
+        Subscription subscription = presenter.loadRegimeProducts(regimeType).subscribe(subscriber);
         subscriptions.add(subscription);
 
         btnNext.setOnClickListener(new SingleClickButtonListener() {
@@ -100,6 +100,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
         Subscription subscription = presenter.saveRegimes(checkedViewModels, regimeType).subscribe(saveSubscriber);
         subscriptions.add(subscription);
     }
+
 
     private List<RegimeProductViewModel> getCheckedProducts() {
         return from(viewModels).filter(new Predicate<RegimeProductViewModel>() {
