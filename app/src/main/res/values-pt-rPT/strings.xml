@@ -105,7 +105,7 @@
     <string name="msg_regime_del_confirm">Tem a certeza que pretende remover este regime?</string>
     <string name="btn_positive">Sim</string>
     <string name="btn_negative">Não</string>
-    <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conecção a internet.</string>
+    <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,e vai ser submetido \n automaticamente quando tiver conecção a internet.</string>
     <string name="hint_mmia_total_not_equal">O Total dos regimes terapêuticos não confere com o Total de pacientes em TARV na US.</string>
     <string name="msg_mmia_not_unique">Não é possivel submeter duas vezes o MMIA no mesmo período.</string>
     <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e total de pacientes</string>

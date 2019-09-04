@@ -10,4 +10,10 @@
     <include layout="@layout/fragment_rapid_test_report_form_top" />
 
     <include layout="@layout/fragment_rapid_test_report_form_body" />
+
+    <org.openlmis.core.view.widget.ActionPanelView
+        android:id="@+id/action_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

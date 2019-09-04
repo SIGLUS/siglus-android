@@ -94,7 +94,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
             etLotAmount.setInputType(InputType.TYPE_CLASS_TEXT);
             etLotAmount.setEnabled(false);
             etLotAmount.setHint(getString(R.string.lots_has_expire));
-            etLotAmount.setTextSize(16);
+            etLotAmount.setTextSize(14);
             etLotAmount.setHintTextColor(context.getResources().getColor(R.color.color_red));
             etLotAmount.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {

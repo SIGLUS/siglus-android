@@ -406,6 +406,9 @@ public class MMIARegimeList extends LinearLayout {
 
         @Override
         public void afterTextChanged(Editable editable) {
+            if (TextUtils.isEmpty(editable.toString())){
+                return;
+            }
             if (COUNTTYPE.AMOUNT == counttype) {
                 item.setAmount(Long.parseLong(editable.toString()));
                 totalView.setText(String.valueOf(getTotal(COUNTTYPE.AMOUNT)));

@@ -116,7 +116,7 @@
     <string name="msg_regime_del_confirm">Are you sure that you want to remove this regime?</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
-    <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
+    <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved,\n and will submit automatically when you have a data connection </string>
     <string name="hint_mmia_total_not_equal">Total Therapeutic Regime does not equal Total Patients</string>
     <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
     <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for mismatch between regime & patient totals]]></string>
@@ -485,7 +485,7 @@
     <string name="msg_invalid_stock_movement">Stock movement date must later than last stock movement</string>
 
     <!--Lot management-->
-    <string name="lots_has_expire">Lot has expired, it cannot be issued</string>
+    <string name="lots_has_expire">Lot has expired,it cannot be issued</string>
     <string name="label_lot_number">What is the lot number?</string>
     <string name="hint_lot_number">Lot number</string>
     <string name="label_add_lot_expire">When does the lot expire?</string>
