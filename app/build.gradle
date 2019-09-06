@@ -124,24 +124,6 @@ android {
 }
 
 
-apply plugin: "jacoco"
-
-jacoco {
-    toolVersion = "0.7.1.201405082137"
-}
-
-def coverageSourceDirs = ['./src/main/java']
-
-task jacocoTestReport(type: JacocoReport, dependsOn: "testLocalDebugUnitTest") {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-    classDirectories = fileTree(dir: './build/intermediates/classes/local/debug/org')
-    sourceDirectories = files(coverageSourceDirs)
-    executionData = files('./build/jacoco/testLocalDebug.exec')
-}
-
 
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
@@ -334,3 +316,5 @@ task monkeyTests(type: Exec, dependsOn: ['bundleInstall', 'assembleProdsimDebug'
     executable 'calabash-android'
     args "run", "$targetPath", "--tags @monkey --format html --out monkey_test_report.html"
 }
+
+apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"

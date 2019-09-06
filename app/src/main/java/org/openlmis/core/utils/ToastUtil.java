@@ -18,6 +18,7 @@
 package org.openlmis.core.utils;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,18 +40,12 @@ public final class ToastUtil {
         Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showForLongTime(int resId) {
-        for(int i = 0; i < 2; i++) {
-            Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_SHORT).show();
-        }
+    public static void showForLongTime(@StringRes int resId) {
+        Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_LONG).show();
     }
 
     public static void show(int resId) {
         show(LMISApp.getContext().getString(resId));
-    }
-
-    public static void showLongTimeAsOfficialWay(int res) {
-        Toast.makeText(LMISApp.getContext(), res, Toast.LENGTH_LONG).show();
     }
 
     public static void showCustomToast(CharSequence text) {

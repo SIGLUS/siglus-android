@@ -262,7 +262,7 @@ public class LoginPresenter extends Presenter {
 
                     case RequisitionSynced:
                         if (!view.needInitInventory()) {
-                            ToastUtil.showLongTimeAsOfficialWay(R.string.msg_initial_sync_success);
+                            ToastUtil.showForLongTime(R.string.msg_initial_sync_success);
                         }
                         goToNextPage();
                         break;
