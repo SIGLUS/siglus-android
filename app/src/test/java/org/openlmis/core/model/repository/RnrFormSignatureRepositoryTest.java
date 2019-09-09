@@ -47,6 +47,10 @@ public class RnrFormSignatureRepositoryTest {
         assertThat(signatures.size(), is(2));
         assertThat(signatures.get(0).getSignature(), is("Submitter Signature"));
         assertThat(signatures.get(1).getSignature(), is("Approver Signature"));
+
+        signatureRepository.batchDelete(signatures);
+        List<RnRFormSignature> deleted = signatureRepository.queryByRnrFormId(form.getId());
+        assertThat(deleted.size(), is(0));
     }
 
 }
