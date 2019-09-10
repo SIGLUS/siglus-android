@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
 apply plugin: "de.felixschulze.gradle.hockeyapp"
 
 repositories {
@@ -167,6 +166,9 @@ dependencies {
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp:1.5.0'
     implementation 'com.android.support:multidex:1.0.3'
+    def appCenterSdkVersion = '2.3.0'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
     implementation 'com.android.support:support-annotations:22.2.1',
             'com.android.support:appcompat-v7:22.2.1',
             'com.android.support:design:22.2.1',
@@ -184,7 +186,6 @@ dependencies {
             'org.roboguice:roboguice:3.0.1',
             'org.apache.commons:commons-lang3:3.3.2',
             'net.danlew:android.joda:2.9.1'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') { transitive = true }
     implementation 'org.roboguice:roboblender:3.0.1',
             'org.projectlombok:lombok:1.12.6'
     testImplementation 'junit:junit:4.12',

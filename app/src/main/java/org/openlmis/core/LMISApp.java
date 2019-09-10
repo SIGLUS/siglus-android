@@ -24,11 +24,12 @@ import android.content.res.Configuration;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -46,8 +47,9 @@ import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
 
 public class LMISApp extends Application {
@@ -64,9 +66,7 @@ public class LMISApp extends Application {
         JodaTimeAndroid.init(this);
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
-        if(!BuildConfig.DEBUG) {
-            setupFabric();
-        }
+        setupAppCenter();
         setupGoogleAnalytics();
 
         instance = this;
@@ -80,10 +80,11 @@ public class LMISApp extends Application {
         return instance;
     }
 
-    protected void setupFabric() {
-        Fabric.with(this, new Crashlytics.Builder()
-                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build());
+    protected void setupAppCenter() {
+        AppCenter.start(this, getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
+        final boolean isRelease = !BuildConfig.DEBUG;
+        AppCenter.setEnabled(isRelease);
+        Analytics.setEnabled(isRelease);
     }
 
     public boolean isConnectionAvailable() {
@@ -108,9 +109,19 @@ public class LMISApp extends Application {
         return getResources().getBoolean(id);
     }
 
-    public void logErrorOnFabric(LMISException exception) {
-        Crashlytics.setUserName(UserInfoMgr.getInstance().getFacilityName());
-        Crashlytics.logException(exception);
+    public void logErrorOnAppCenter(LMISException exception) {
+        Analytics.isEnabled().thenAccept(enable -> {
+            final StackTraceElement[] traceElements = exception.getStackTrace();
+            if (enable && (traceElements.length > 0)) {
+                Map<String, String> properties = new HashMap<>(traceElements.length);
+
+                for (int i = traceElements.length - 1; i >= 0; i--) {
+                    properties.put(Integer.toString(i), traceElements[i].toString());
+                }
+                AppCenter.setUserId(UserInfoMgr.getInstance().getFacilityName());
+                Analytics.trackEvent("LMISException", properties);
+            }
+        });
     }
 
     public LMISRestApi getRestApi() {

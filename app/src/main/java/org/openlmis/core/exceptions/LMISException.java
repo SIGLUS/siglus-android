@@ -47,7 +47,7 @@ public class LMISException extends Exception {
         //it only uploads to fabric server when network is available
         //so this actually behaves analogously with our sync data logic
         if (!BuildConfig.DEBUG) {
-            LMISApp.getInstance().logErrorOnFabric(this);
+            LMISApp.getInstance().logErrorOnAppCenter(this);
         }
         Log.e(openLMISError, this.getMessage(), this);
     }

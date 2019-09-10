@@ -24,7 +24,7 @@ public class LMISTestApp extends LMISApp {
     }
 
     @Override
-    protected void setupFabric() {
+    protected void setupAppCenter() {
     }
 
     public static LMISTestApp getInstance() {
@@ -68,7 +68,7 @@ public class LMISTestApp extends LMISApp {
     }
 
     @Override
-    public void logErrorOnFabric(LMISException exception) {
+    public void logErrorOnAppCenter(LMISException exception) {
         //do nothing
     }
 
