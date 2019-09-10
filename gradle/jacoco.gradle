@@ -41,7 +41,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testLocalDebugUnitTest") {
             '**/*Module_*Factory.class'
     ]
     def javaClasses = fileTree(
-            dir: "$buildDir/intermediates/classes/local/debug/org",
+            dir: "$buildDir/intermediates/javac/localDebug/compileLocalDebugJavaWithJavac/classes/org",
             excludes: fileFilter
     )
     classDirectories = files([javaClasses])
