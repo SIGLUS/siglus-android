@@ -20,7 +20,7 @@ android {
         multiDexEnabled true
         applicationId "org.openlmis.core"
         minSdkVersion 17
-        targetSdkVersion 21
+        targetSdkVersion 26
         flavorDimensions "1"
         javaCompileOptions {
             annotationProcessorOptions {
