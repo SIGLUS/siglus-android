@@ -7,8 +7,10 @@ buildscript {
         google()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
+        classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.13"
         classpath 'com.android.tools.build:gradle:3.3.0'
         classpath 'de.felixschulze.gradle:gradle-hockeyapp-plugin:3.6'
         // The Fabric Gradle plugin uses an open ended version to react

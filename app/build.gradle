@@ -318,3 +318,4 @@ task monkeyTests(type: Exec, dependsOn: ['bundleInstall', 'assembleProdsimDebug'
 }
 
 apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
+apply from: "${rootProject.projectDir}/gradle/appcenter.gradle"
