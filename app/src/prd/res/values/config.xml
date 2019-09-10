@@ -10,4 +10,6 @@
     <string name="app_name">@string/app_name_in_prd</string>
 
     <string name="app_time_out">3600000</string>
+
+    <string name="appcenter_app_key" translatable="false">bb609655-f9a0-4761-a524-d6302976cff8</string>
 </resources>

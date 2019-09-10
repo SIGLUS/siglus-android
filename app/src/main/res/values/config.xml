@@ -33,5 +33,6 @@
         <item>08S23</item>
         <item>08S17</item>
     </string-array>
+    <!-- default is uat.. -->
     <string name="appcenter_app_key" translatable="false">6344c759-adee-478f-98b5-c5ccbf948189</string>
 </resources>
