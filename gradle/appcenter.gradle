@@ -3,29 +3,30 @@ apply plugin: "com.betomorrow.appcenter"
 appcenter {
     apiToken = "8f0ab2fe7829098e892a976559bd1168ba864434"
     ownerName = "toc.siglus"
-    distributionGroups = ["trials"]
+    distributionGroups = ["beta"]
     releaseNotes = getGitCommit()
     notifyTesters = false
     apps {
         uatRelease {
-            appName = "UAT"
+            appName = "SIGLUS-UAT"
         }
         devRelease {
-            appName = "Dev"
+            appName = "Siglus-Dev"
         }
         trainingRelease {
             appName = "Training"
         }
         prdRelease {
-            appName = "Prd"
+            appName = "Siglus-Prod"
+            distributionGroups = ["release"]
         }
     }
 }
 
-task doSth {
-    println("=============")
-    println(getGitCommit())
-}
+//task doSth {
+//    println("=============")
+//    println(getGitCommit())
+//}
 
 def getGitCommit() {
     def gitDir = new File("${new File("${rootDir}")}/.git")
