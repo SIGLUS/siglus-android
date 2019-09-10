@@ -4,11 +4,38 @@ appcenter {
     apiToken = "8f0ab2fe7829098e892a976559bd1168ba864434"
     ownerName = "toc.siglus"
     distributionGroups = ["trials"]
-    releaseNotes = file("../changelog.md")
+    releaseNotes = getGitCommit()
     notifyTesters = false
     apps {
-        uatDebug {
-            appName = "SIGLUS-UAT"
+        uatRelease {
+            appName = "UAT"
+        }
+        devRelease {
+            appName = "Dev"
+        }
+        trainingRelease {
+            appName = "Training"
+        }
+        prdRelease {
+            appName = "Prd"
         }
     }
+}
+
+task doSth {
+    println("=============")
+    println(getGitCommit())
+}
+
+def getGitCommit() {
+    def gitDir = new File("${new File("${rootDir}")}/.git")
+    if (!gitDir.isDirectory()) {
+        print(gitDir)
+        return 'non-git-build'
+    }
+
+    def cmd = 'git log --pretty=format:%B%cI -1'
+    def gitCommit = cmd.execute().text.trim()
+    assert !gitCommit.isEmpty()
+    gitCommit
 }
