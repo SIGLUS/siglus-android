@@ -58,6 +58,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -339,6 +340,42 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldRemoveRnrForm() throws LMISException {
+        Program program = new Program();
+
+        RnRForm form = new RnRForm();
+        form.setProgram(program);
+        form.setId(1);
+        form.setComments("DRAFT Form");
+
+        rnrFormRepository.create(form);
+        List<RnRForm> rnRForm = rnrFormRepository.list();
+        assertThat(rnRForm.size(), is(1));
+        assertThat(rnRForm.get(0).getComments(), is("DRAFT Form"));
+
+        rnrFormRepository.removeRnrForm(form);
+
+        assertThat(rnrFormRepository.hasRequisitionData(), is(false));
+    }
+
+
+    @Test
+    public void shouldHasZeroData() throws LMISException {
+        assertThat(rnrFormRepository.hasOldDate(), is(false));
+    }
+
+    @Test
+    public void shouldListNotSynchronizedFromStarTime() throws LMISException {
+        assertThat(rnrFormRepository.listNotSynchronizedFromStarTime().size(), is(0));
+        rnrFormRepository.deleteOldData();
+    }
+
+    @Test
+    public void shouldQueryAllUnsyncedForms() throws LMISException {
+        assertThat(rnrFormRepository.queryAllUnsyncedForms().size(), is(0));
+    }
+
+    @Test
     public void shouldRecordUpdateTimeWhenAuthorizeRnrForm() throws Exception {
         Program program = new Program();
 
@@ -453,6 +490,15 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormRepository.programCode = "MMIA";
 
         rnrFormRepository.initNormalRnrForm(null);
+        verify(mockRequisitionPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
+    }
+
+    @Test
+    public void shouldInitRnrEmergencyService() throws Exception {
+        when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime(), new DateTime()));
+        rnrFormRepository.programCode = "MMIA";
+
+        rnrFormRepository.initEmergencyRnrForm(null, Collections.EMPTY_LIST);
         verify(mockRequisitionPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
     }
 

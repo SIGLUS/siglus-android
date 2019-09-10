@@ -1,0 +1,53 @@
+apply plugin: 'jacoco'
+
+def buildDir = "$project.buildDir"
+
+jacoco {
+    toolVersion "0.8.4"
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "testLocalDebugUnitTest") {
+    group = "Reporting"
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        html.destination file("$buildDir/jacoco")
+        csv.enabled false
+    }
+
+    def coverageSourceDirs = ["./src/main/java"]
+    def fileFilter = [
+            '**/R.class',
+            '**/R$*.class',
+            '**/*$ViewInjector*.*',
+            '**/*$ViewBinder*.*',
+            '**/BuildConfig.*',
+            '**/Manifest*.*',
+            'android/**',
+            'com/google/**',
+            'com/intellij/**',
+            'junit/**',
+            'net/**',
+            'okhttp/**',
+            'org/**',
+            'rx/**',
+            '**/*_MembersInjector.class',
+            '**/Dagger*Component.class', // covers component implementations
+            '**/Dagger*Component$Builder.class', // covers component builders
+            '**/*Module_*Factory.class'
+    ]
+    def javaClasses = fileTree(
+            dir: "$buildDir/intermediates/javac/localDebug/compileLocalDebugJavaWithJavac/classes/org",
+            excludes: fileFilter
+    )
+    classDirectories = files([javaClasses])
+    sourceDirectories = files([coverageSourceDirs])
+    additionalSourceDirs = files([coverageSourceDirs])
+    executionData = fileTree(dir: "$buildDir", includes: [
+            "jacoco/testLocalDebugUnitTest.exec"
+    ])
+}
