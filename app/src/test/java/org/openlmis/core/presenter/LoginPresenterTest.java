@@ -48,7 +48,6 @@ import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowToast;
 
 import java.util.Arrays;
 import java.util.List;

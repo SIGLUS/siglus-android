@@ -355,6 +355,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository.saveStockCardAndBatchUpdateMovements(expectedStockCard);
         StockCard actualStockCard = stockRepository.queryStockCardByProductCode(product.getCode());
 
-        assertThat(actualStockCard, is(expectedStockCard));
+        assertThat(actualStockCard.getProduct().getCode(), is(expectedStockCard.getProduct().getCode()));
     }
 }

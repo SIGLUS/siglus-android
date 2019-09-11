@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.TextView;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +27,10 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowDatePickerDialog;
 import org.robolectric.shadows.ShadowToast;
+import org.openlmis.core.view.listener.MovementDateListener;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 
 import roboguice.RoboGuice;
@@ -47,17 +50,30 @@ public class StockMovementViewHolderTest {
 
     private StockMovementViewHolder viewHolder;
     private StockMovementViewModel viewModel;
+    private StockMovementViewModel newestViewModel;
     private ProductRepository productRepository;
     private StockCard stockCard;
     private View itemView;
+    private String NEWEST_TIME_STRING = "";
 
     @Before
     public void setUp() throws LMISException, ParseException {
         itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stock_movement, null, false);
         viewHolder = new StockMovementViewHolder(itemView);
+        NEWEST_TIME_STRING = (DateUtil.CALENDAR_NOW.get(Calendar.YEAR) + 2) + "-" + 11 + "-" + 11;
 
         viewModel = new StockMovementViewModelBuilder()
                 .withMovementDate("2015-11-11")
+                .withDocumentNo("12345")
+                .withNegativeAdjustment(null)
+                .withPositiveAdjustment(null)
+                .withIssued("30")
+                .withReceived(null)
+                .withStockExistence("70")
+                .withIsDraft(false)
+                .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "issue description")).build();
+        newestViewModel = new StockMovementViewModelBuilder()
+                .withMovementDate(NEWEST_TIME_STRING)
                 .withDocumentNo("12345")
                 .withNegativeAdjustment(null)
                 .withPositiveAdjustment(null)
@@ -172,6 +188,25 @@ public class StockMovementViewHolderTest {
         StockMovementViewHolder.MovementDateListener movementDateListener = viewHolder.new MovementDateListener(viewModel, new Date());
         movementDateListener.onDateSet(mock(DatePicker.class), 2015, 11, 10);
         assertNotNull(ShadowToast.getLatestToast());
+    }
+
+
+    @Test
+    public void testmovementDateListenerOnDateSetFailed() {
+        viewHolder.populate(viewModel, stockCard);
+        MovementDateListener movementDateListener = new MovementDateListener(viewModel, new Date(), viewHolder.txMovementDate);
+        movementDateListener.onDateSet(mock(DatePicker.class), 2015, 11, 10);
+        assertNotNull(ShadowToast.getLatestToast());
+    }
+
+    @Test
+    public void testmovementDateListenerOnDateSetOK() {
+        viewHolder.populate(newestViewModel, stockCard);
+        MovementDateListener movementDateListener = new MovementDateListener(newestViewModel, new Date(), viewHolder.txMovementDate);
+        movementDateListener.onDateSet(mock(DatePicker.class),
+                DateUtil.CALENDAR_NOW.get(Calendar.YEAR) + 3,
+                11, 10);
+        assertEquals(NEWEST_TIME_STRING, viewHolder.txMovementDate.getText().toString());
     }
 
     @Test

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -124,6 +125,20 @@ public class ChangeMovementReasonToCodeTest extends LMISRepositoryUnitTest{
         migrate.setDefaultReasonCode(item);
         assertThat(item.getReason(), is(MovementReasonManager.INVENTORY_NEGATIVE));
 
+    }
+
+
+    @Test
+    public void shouldSetDefaultReason() {
+        StockMovementItem item = new StockMovementItem();
+        Throwable e = null;
+        item.setMovementType(MovementReasonManager.MovementType.DEFAULT);
+        try {
+            migrate.setDefaultReasonCode(item);
+        }catch (Throwable ex){
+            e = ex;
+        }
+        assertTrue(e.getMessage().startsWith("Invalid MovementType "));
     }
 
     @Test
