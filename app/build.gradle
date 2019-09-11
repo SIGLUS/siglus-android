@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.firebase-perf'
+
 
 repositories {
     jcenter()
@@ -157,6 +160,10 @@ task findbugs(type: FindBugs) {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     annotationProcessor "org.projectlombok:lombok:1.12.6"
+    implementation "com.google.firebase:firebase-core:16.0.7"
+    implementation "com.google.firebase:firebase-analytics:16.3.0"
+    implementation "com.crashlytics.sdk.android:crashlytics:2.9.3"
+    implementation 'com.google.firebase:firebase-perf:16.2.3'
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp:1.5.0'
     implementation 'com.android.support:multidex:1.0.3'
@@ -167,7 +174,7 @@ dependencies {
             'com.android.support:design:22.2.1',
             'com.android.support:recyclerview-v7:23.2.1',
             'com.android.support:cardview-v7:22.2.1',
-            'com.google.android.gms:play-services-analytics:7.8.0',
+            'com.google.android.gms:play-services-analytics:16.0.8',
             'com.github.viethoa:fastscroller:1.2.0',
             'io.reactivex:rxjava:1.0.14',
             'io.reactivex:rxandroid:1.0.1',
@@ -313,3 +320,4 @@ task monkeyTests(type: Exec, dependsOn: ['bundleInstall', 'assembleProdsimDebug'
 
 apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
 apply from: "${rootProject.projectDir}/gradle/appcenter.gradle"
+apply plugin: 'com.google.gms.google-services'

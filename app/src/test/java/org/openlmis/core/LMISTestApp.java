@@ -68,7 +68,7 @@ public class LMISTestApp extends LMISApp {
     }
 
     @Override
-    public void logErrorOnAppCenter(LMISException exception) {
+    public void logErrorToFirebase(LMISException exception) {
         //do nothing
     }
 
