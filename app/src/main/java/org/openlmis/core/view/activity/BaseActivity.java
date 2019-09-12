@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.InjectPresenter;
@@ -60,6 +62,7 @@ import rx.Subscription;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public abstract class BaseActivity extends RoboActionBarActivity implements BaseView {
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Inject
     SharedPreferenceMgr preferencesMgr;
@@ -150,6 +153,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setUserId(UserInfoMgr.getInstance().getFacilityCode());
         isPageLoadTimerInProgress = true;
         onCreateStartMili = LMISApp.getInstance().getCurrentTimeMillis();
 

@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "266144063579",
+    "firebase_url": "https://siglus-uat.firebaseio.com",
+    "project_id": "siglus-uat",
+    "storage_bucket": "siglus-uat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266144063579:android:131cf0fafd9dd97eda1f7e",
+        "android_client_info": {
+          "package_name": "org.openlmis.core.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "266144063579-nr0i93bg05cscvtfs1ivrfaj9i6qdsoj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz2MowHHdDZd8oT9EP4ntpwNxb5Zq9Y-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "266144063579-nr0i93bg05cscvtfs1ivrfaj9i6qdsoj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266144063579:android:decf1047bd10b87fda1f7e",
+        "android_client_info": {
+          "package_name": "org.openlmis.core.uat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "266144063579-nr0i93bg05cscvtfs1ivrfaj9i6qdsoj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz2MowHHdDZd8oT9EP4ntpwNxb5Zq9Y-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "266144063579-nr0i93bg05cscvtfs1ivrfaj9i6qdsoj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
