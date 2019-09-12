@@ -18,7 +18,7 @@
 package org.openlmis.core.manager;
 
 
-import com.microsoft.appcenter.AppCenter;
+//import com.microsoft.appcenter.AppCenter;
 
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.model.User;
@@ -42,11 +42,11 @@ public final class UserInfoMgr {
     }
 
     public void setUser(User user) {
-        AppCenter.isEnabled().thenAccept(enable -> {
-            if (enable) {
-                AppCenter.setUserId(user.getFacilityName());
-            }
-        });
+//        AppCenter.isEnabled().thenAccept(enable -> {
+//            if (enable) {
+//                AppCenter.setUserId(user.getFacilityName());
+//            }
+//        });
 
         SharedPreferenceMgr.getInstance().setCurrentUserFacility(user.getFacilityName());
         SharedPreferenceMgr.getInstance().setLastLoginUser(user.getUsername());

@@ -28,9 +28,6 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.analytics.Analytics;
-import com.microsoft.appcenter.crashes.Crashes;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -79,10 +76,10 @@ public class LMISApp extends Application {
     }
 
     protected void setupAppCenter() {
-        AppCenter.start(this, getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
-        final boolean isRelease = !BuildConfig.DEBUG;
-        AppCenter.setEnabled(isRelease);
-        Analytics.setEnabled(isRelease);
+//        AppCenter.start(this, getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
+//        final boolean isRelease = !BuildConfig.DEBUG;
+//        AppCenter.setEnabled(isRelease);
+//        Analytics.setEnabled(isRelease);
     }
 
     public boolean isConnectionAvailable() {
