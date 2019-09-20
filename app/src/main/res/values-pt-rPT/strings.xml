@@ -190,7 +190,7 @@
     <string name="medicines">Produtos</string>
     <string name="dispensation">Dispensas</string>
     <string name="PatientAndService">Nome do paciente/ ou serviço da US</string>
-    <string name="initialStockLevel">Nível inicial de estoque</string>
+    <string name="initialStockLevel">Nível inicial de stock</string>
     <string name="totalPtv">TOTAIS / Parciais</string>
     <string name="typePatient">Tipo de paciente</string>
     <string name="totalWomen">Total de mulheres:</string>
@@ -457,7 +457,7 @@
     <string name="msg_no_lot_for_issue">Nenhum lote existente para que você possa dar saída ou fazer ajuste negativo</string>
     <string name="error_lot_already_exists">O lote já existe, por favor, adicione um novo.</string>
     <string name="msg_draft_saved">Rascunho gravado com sucesso</string>
-    <string name="alert_soonest_expire">Seu movimento inclui um lote que não é o primeiro a expirar</string>
+    <string name="alert_soonest_expire">Primeiro, Remova o produto expirado</string>
     <string name="msg_export_data_success">Os dados foram exportados e gravados com sucesso para <![CDATA[<b>%1$s</b>]]></string>
     <string name="action_export_data">Exportar todos os dados de aplicativos</string>
     <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
@@ -469,7 +469,7 @@
     <string name="error_lot_without_number_already_exists">Um lote com um nome de lote gerado automaticamente e a mesma data de expiração já foi criado</string>
     <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
     <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE UM NÚMERO DE LOTE</string>
-    <string name="title_rapid_test_reports">Testes Rápidos</string>
+    <string name="title_rapid_test_reports">MMIT</string>
     <string name="msg_report_missing"><![CDATA[<b>Nenhum relatório de teste rápido foi criado </b>]]></string>
     <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE TESTE RÁPIDO</string>
     <string name="title_rapid_test_form">Relatório de testes rápido</string>
