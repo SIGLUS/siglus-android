@@ -33,7 +33,7 @@ import lombok.Data;
 @Data
 public abstract class BaseModel implements Serializable {
 
-    @DatabaseField(uniqueIndex = true, generatedId = true)
+    @DatabaseField(uniqueIndex = true, generatedId = true, canBeNull = false)
     private long id;
 
     public BaseModel() {

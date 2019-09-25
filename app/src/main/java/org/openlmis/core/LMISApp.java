@@ -61,7 +61,6 @@ public class LMISApp extends Application {
         JodaTimeAndroid.init(this);
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
-        setupAppCenter();
         setupGoogleAnalytics();
 
         instance = this;
@@ -73,13 +72,6 @@ public class LMISApp extends Application {
 
     public static LMISApp getInstance() {
         return instance;
-    }
-
-    protected void setupAppCenter() {
-//        AppCenter.start(this, getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
-//        final boolean isRelease = !BuildConfig.DEBUG;
-//        AppCenter.setEnabled(isRelease);
-//        Analytics.setEnabled(isRelease);
     }
 
     public boolean isConnectionAvailable() {

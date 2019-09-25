@@ -23,10 +23,6 @@ public class LMISTestApp extends LMISApp {
         instance = this;
     }
 
-    @Override
-    protected void setupAppCenter() {
-    }
-
     public static LMISTestApp getInstance() {
         return instance;
     }
