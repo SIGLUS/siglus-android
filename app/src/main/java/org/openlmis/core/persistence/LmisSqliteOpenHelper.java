@@ -90,6 +90,7 @@ import org.openlmis.core.persistence.migrations.UpdateAvgColumn;
 import org.openlmis.core.persistence.migrations.UpdateCategoryColumnForMMIAProducts;
 import org.openlmis.core.persistence.migrations.UpdateCreateTimeAndUpdateTime;
 import org.openlmis.core.persistence.migrations.UpdateCustomRegimes;
+import org.openlmis.core.persistence.migrations.UpdateKitProductUnSynced;
 import org.openlmis.core.persistence.migrations.UpdateProductsFalseValueToZero;
 import org.openlmis.core.persistence.migrations.UpdateProgramDataFormTable;
 import org.openlmis.core.persistence.migrations.UpdateRapidTestCode;
@@ -179,6 +180,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddRegimeDisplayOrder());
             add(new UpdateRegimeShortCodeTable());
             add(new AddActiveToRegimes());
+            add(new UpdateKitProductUnSynced());
         }
     };
     private static int instanceCount = 0;
