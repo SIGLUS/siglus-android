@@ -60,6 +60,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Scheduler;
@@ -179,7 +180,10 @@ public class SyncDownManager {
     }
 
     private void fetchAndSaveService() throws LMISException {
-        SyncDownServiceResponse response = lmisRestApi.fetchPTVService(sharedPreferenceMgr.getLastSyncServiceTime(),Constants.PTV_PROGRAM_CODE);
+        SyncDownServiceResponse response = lmisRestApi
+                .fetchPTVService(sharedPreferenceMgr.getLastSyncServiceTime(),
+                        Constants.PTV_PROGRAM_CODE,
+                        Locale.getDefault().getLanguage());
         serviceFormRepository.batchCreateOrUpdateServiceList(response.getLatestServices());
     }
 

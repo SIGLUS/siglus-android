@@ -54,7 +54,6 @@ import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 
 import java.security.cert.X509Certificate;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -142,6 +141,7 @@ public class LMISRestManager {
         httpClient.setReadTimeout(20, TimeUnit.MINUTES);
         httpClient.setConnectTimeout(30, TimeUnit.SECONDS);
         httpClient.setWriteTimeout(60, TimeUnit.SECONDS);
+        httpClient.interceptors();
 
         return httpClient;
     }
@@ -158,7 +158,6 @@ public class LMISRestManager {
                     request.addHeader("UserName", user.getUsername());
                     request.addHeader("FacilityName", user.getFacilityName());
                     request.addHeader("FacilityId", user.getFacilityId());
-                    request.addHeader("Language", Locale.getDefault().getLanguage());
                 }
 
                 if (BuildConfig.MONITOR_DEVICE_ID) {

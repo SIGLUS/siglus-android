@@ -78,7 +78,8 @@ public class SyncStockCardsLastYearSilently {
             @Override
             public void call(Subscriber<? super SyncDownStockCardResponse> subscriber) {
                 try {
-                    SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDateStr, endDateStr);
+                    SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi
+                            .fetchStockMovementData(facilityId,startDateStr,endDateStr);
                     subscriber.onNext(syncDownStockCardResponse);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

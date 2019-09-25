@@ -85,7 +85,9 @@ public interface LMISRestApi {
     SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode) throws LMISException;
 
     @GET("/rest-api/facilities/{facilityId}/stockCards")
-    SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate) throws LMISException;
+    SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId,
+                                                     @Query("startTime") String startDate,
+                                                     @Query("endTime") String endDate) throws LMISException;
 
     @GET("/rest-api/latest-products")
     SyncDownLatestProductsResponse fetchLatestProducts(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
@@ -100,7 +102,9 @@ public interface LMISRestApi {
     SyncDownReportTypeResponse fetchReportTypeForms(@Path("facilityId") Long facilityId) throws LMISException;
 
     @GET("/rest-api/services")
-    SyncDownServiceResponse fetchPTVService(@Query("afterUpdatedTime") String afterUpdatedTime, @Query("programCode") String programCode) throws LMISException;
+    SyncDownServiceResponse fetchPTVService(@Query("afterUpdatedTime") String afterUpdatedTime,
+                                            @Query("programCode") String programCode,
+                                            @Query("Language") String Language) throws LMISException;
 
     @GET("/rest-api/programs/{facilityId}")
     SyncUpProgramResponse fetchPrograms(@Path("facilityId") Long facilityId) throws LMISException;
