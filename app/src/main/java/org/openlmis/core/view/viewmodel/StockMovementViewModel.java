@@ -213,11 +213,13 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
                 if (!soonestToExpireLotsIssued) {
                     return false;
                 }
-                if (Long.parseLong(lotMovementViewModel.getQuantity()) < Long.parseLong(lotMovementViewModel.getLotSoh())) {
+                if (Long.parseLong(lotMovementViewModel.getQuantity()) < Long.parseLong(lotMovementViewModel.getLotSoh()) && !lotMovementViewModel.isExpiredLot()) {
                     soonestToExpireLotsIssued = false;
                 }
             } else {
-                soonestToExpireLotsIssued = false;
+                if (!lotMovementViewModel.isExpiredLot()) {
+                    soonestToExpireLotsIssued = false;
+                }
             }
         }
         return true;

@@ -92,7 +92,11 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     }
 
     private void updateSoonestToExpireNotIssuedBanner() {
-        alertSoonestExpire.setVisibility(viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE && !((StockMovementViewModel) viewModel).validateSoonestToExpireLotsIssued() ? View.VISIBLE : View.GONE);
+        alertSoonestExpire.setVisibility(
+                viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE
+                        && !((StockMovementViewModel) viewModel).validateSoonestToExpireLotsIssued()
+                ? View.VISIBLE
+                : View.GONE);
     }
 
     public void setActionAddNewLotVisibility(int visibility) {

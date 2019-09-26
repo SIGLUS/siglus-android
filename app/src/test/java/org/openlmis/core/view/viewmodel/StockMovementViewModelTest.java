@@ -30,6 +30,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -44,11 +45,17 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
     private StockMovementViewModel stockMovementViewModel;
     private MovementReasonManager.MovementReason movementReason;
+    private Calendar featureCalendar;
+    private Calendar oldCalendar;
 
     @Before
     public void setup() {
         stockMovementViewModel = new StockMovementViewModel();
         movementReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "RECEIVE", "receive");
+        featureCalendar = Calendar.getInstance();
+        oldCalendar = Calendar.getInstance();
+        featureCalendar.add(Calendar.YEAR,1);
+        oldCalendar.add(Calendar.YEAR,-1);
     }
 
     @Test
@@ -218,26 +225,45 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldValidateEarlyExpiredLotIssued() throws Exception {
-        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
+                .setLotSOH("100")
+                .setExpiryDate(DateUtil.formatDateWithoutDay(oldCalendar.getTime()))
+                .setQuantity("50").build());
         assertTrue(stockMovementViewModel.validateSoonestToExpireLotsIssued());
 
-        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").build());
-        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+        stockMovementViewModel.existingLotMovementViewModelList.clear();
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
+                .setLotSOH("100")
+                .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+                .setQuantity("50").build());
+        assertEquals(true,stockMovementViewModel.validateSoonestToExpireLotsIssued());
+//        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
 
         stockMovementViewModel.existingLotMovementViewModelList.clear();
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
-        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").build());
-        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
+                .setLotSOH("100")
+                .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+                .setQuantity("50").build());
+//        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+        assertEquals(true,stockMovementViewModel.validateSoonestToExpireLotsIssued());
 
         stockMovementViewModel.existingLotMovementViewModelList.clear();
-        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("100").build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
+                .setLotSOH("100")
+                .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+                .setQuantity("100").build());
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
-        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").build());
-        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
+                .setLotSOH("100")
+                .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+                .setQuantity("50").build());
+//        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+        assertEquals(true,stockMovementViewModel.validateSoonestToExpireLotsIssued());
     }
 
     @Test
