@@ -88,10 +88,8 @@ android {
     //this is needed for in-app upgrade to work, because it's how the upgrade server matches package names
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.endsWith('.apk') && outputFile.name.contains("-release")) {
-                def fileName = "${applicationId}-${versionCode}-release.apk"
-                outputFileName =  fileName
+            if (outputFileName.endsWith('.apk') && outputFileName.contains("-release")) {
+                outputFileName = "${applicationId}-${versionCode}-release.apk"
             }
         }
     }
