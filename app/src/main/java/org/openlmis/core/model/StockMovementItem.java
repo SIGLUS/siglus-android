@@ -190,4 +190,13 @@ public class StockMovementItem extends BaseModel {
         setLotMovementItemListWrapper(existingLotMovementItemList);
         setNewAddedLotMovementItemListWrapper(newAddedLotMovementItemList);
     }
+
+    @Override
+    public String toString() {
+        return "[documentNumber=" + documentNumber
+                + ",reason=" + reason
+                + ",movementType=" + movementType
+                + ",productCode=" + stockCard.getProduct().getCode()
+                + "]";
+    }
 }

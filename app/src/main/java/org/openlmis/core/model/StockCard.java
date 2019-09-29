@@ -103,7 +103,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     }
 
     public boolean isOverStock() {
-        return  product.isHiv() ? stockOnHand > (int) Math.ceil(this.avgMonthlyConsumption * 3) : stockOnHand > (int) Math.ceil(this.avgMonthlyConsumption * 2);
+        return product.isHiv() ? stockOnHand > (int) Math.ceil(this.avgMonthlyConsumption * 3) : stockOnHand > (int) Math.ceil(this.avgMonthlyConsumption * 2);
     }
 
     public boolean isLowStock() {
@@ -164,5 +164,14 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
                 return lotOnHand.getQuantityOnHand() > 0;
             }
         }).toList();
+    }
+
+    @Override
+    public String toString() {
+        return "[[product=" + product + ","
+                + "stockOnHand=" + stockOnHand
+                + "]"
+                + super.toString()
+                + "]";
     }
 }

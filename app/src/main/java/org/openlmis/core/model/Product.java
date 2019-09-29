@@ -46,7 +46,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
 
     //DEPRECATED, DO NOT USE
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
-     Program program;
+    Program program;
 
     @DatabaseField
     String primaryName;
@@ -152,5 +152,17 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
         dummyProduct.setStrength("");
         dummyProduct.setType("");
         return dummyProduct;
+    }
+
+    @Override
+    public String toString() {
+        return "[[code=" + code + ","
+                + "type=" + type + ","
+                + "isKit=" + isKit + ","
+                + "isKit=" + isKit + ","
+                + "isHiv=" + isHiv
+                + "]"
+                + super.toString()
+                + "]";
     }
 }
