@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.NonBasicProductsViewModel;
 import org.robolectric.RuntimeEnvironment;
 

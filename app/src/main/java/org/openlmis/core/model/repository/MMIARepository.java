@@ -158,7 +158,6 @@ public class MMIARepository extends RnrFormRepository {
         regimeThreeLines.add(ATTR_REGIME_TYPE_THIRD_LINE);
 
         return FluentIterable.from(regimeThreeLines).transform(new Function<String, RegimenItemThreeLines>() {
-            @Nullable
             @Override
             public RegimenItemThreeLines apply(@Nullable String type) {
                 RegimenItemThreeLines itemThreeLines = new RegimenItemThreeLines(type);

@@ -2,7 +2,6 @@ package org.openlmis.core.persistence.migrations;
 
 import org.openlmis.core.persistence.Migration;
 
-import static org.roboguice.shaded.goole.common.base.Ascii.EM;
 
 
 public class CreateMalariaTreatments extends Migration {

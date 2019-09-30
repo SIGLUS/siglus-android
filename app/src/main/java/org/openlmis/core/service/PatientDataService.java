@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.openlmis.core.enums.VIAReportType.MALARIA;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x1_CODE;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x2_CODE;
 import static org.openlmis.core.utils.MalariaProductCodes.PRODUCT_6x3_CODE;
@@ -44,7 +45,7 @@ public class PatientDataService {
 
     public List<Period> calculatePeriods(VIAReportType VIAReportType) {
         List<Period> periods = new ArrayList<>();
-        if (VIAReportType.equals(VIAReportType.MALARIA)) {
+        if (VIAReportType.equals(MALARIA)) {
             calculateMalariaPeriods(periods);
         } else {
             calculatePTVPeriods(periods);

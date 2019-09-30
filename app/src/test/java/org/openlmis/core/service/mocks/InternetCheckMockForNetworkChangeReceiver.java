@@ -17,11 +17,7 @@ public class InternetCheckMockForNetworkChangeReceiver extends InternetCheck {
 
     @Override
     public InternetListener doInBackground(Callback... callbacks) {
-        if (withInternet) {
-            return new InternetListener(withInternet, callbacks[0], null);
-        } else {
-            return new InternetListener(withInternet, callbacks[0], new Exception());
-        }
+        return new InternetListener(withInternet, callbacks[0], withInternet ? null : new Exception());
     }
 
     @Override

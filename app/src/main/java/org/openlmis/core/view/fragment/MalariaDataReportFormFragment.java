@@ -17,6 +17,7 @@ import com.google.inject.Inject;
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
 import org.openlmis.core.enums.VIAReportType;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.Period;
@@ -63,9 +64,14 @@ public class MalariaDataReportFormFragment extends BaseReportFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        DateTime periodBegin = (DateTime) this.getActivity().getIntent().getExtras().get(Constants.PARAM_PERIOD_BEGIN);
-        period = new Period(periodBegin);
-        return inflater.inflate(R.layout.fragment_malaria_data_report_form, container, false);
+        if (getActivity().getIntent().getExtras() != null) {
+            DateTime periodBegin = (DateTime) this.getActivity().getIntent().getExtras().get(Constants.PARAM_PERIOD_BEGIN);
+            period = new Period(periodBegin);
+            return inflater.inflate(R.layout.fragment_malaria_data_report_form, container, false);
+        } else {
+            new LMISException("MalariaDataReportFormFragment onCreateView").reportToFabric();
+            return null;
+        }
     }
 
     @Override

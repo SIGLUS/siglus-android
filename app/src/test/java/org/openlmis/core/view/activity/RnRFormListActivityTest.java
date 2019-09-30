@@ -261,26 +261,6 @@ public class RnRFormListActivityTest {
     }
 
     @Test
-    public void shouldOnlyShowCreateEmergencyRnRButtonInVIAPage() {
-//        Intent intent = new Intent();
-//        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
-//        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).newIntent(intent).create().visible().get();
-//
-//        MenuItem createEmergencyRnr = shadowOf(rnRFormListActivity).getOptionsMenu().findItem(R.id.action_create_emergency_rnr);
-//        assertTrue(createEmergencyRnr.isVisible());
-    }
-
-    @Test
-    public void shouldHideCreateEmergencyRnRButtonInMMIAPage() {
-//        Intent intent = new Intent();
-//        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.MMIA_PROGRAM_CODE);
-//        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).newIntent(intent).create().visible().get();
-//
-//        MenuItem createEmergencyRnr = shadowOf(rnRFormListActivity).getOptionsMenu().findItem(R.id.action_create_emergency_rnr);
-//        assertFalse(createEmergencyRnr.isVisible());
-    }
-
-    @Test
     public void shouldShowToastWhenDateNotInEmergencyDate() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
         rnRFormListActivity.checkAndGotoEmergencyPage();

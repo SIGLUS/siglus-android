@@ -139,7 +139,7 @@ public class StockMovementRepository {
 
         for (String movementDate : queryStockMovementDatesByProgram(programCode)) {
             Date date = DateUtil.parseString(movementDate, DateUtil.DB_DATE_FORMAT);
-            if (earliestDate == null || date.before(earliestDate)) {
+            if (earliestDate == null || (date != null && date.before(earliestDate))) {
                 earliestDate = date;
             }
         }

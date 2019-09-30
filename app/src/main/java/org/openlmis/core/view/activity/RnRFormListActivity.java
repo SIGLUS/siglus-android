@@ -294,12 +294,11 @@ public class RnRFormListActivity extends BaseReportListActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_create_emergency_rnr:
-                checkAndGotoEmergencyPage();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (R.id.action_create_emergency_rnr == item.getItemId()){
+            checkAndGotoEmergencyPage();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

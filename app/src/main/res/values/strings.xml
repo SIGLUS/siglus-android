@@ -175,8 +175,8 @@
     <string name="msg_requisition_signature_message_notify_rapid_test">Please hand the device to the person responsible for approval and submission of Rapid Test</string>
     <string name="btn_continue">Continue</string>
     <string name="label_adjustment_dialog_header"><![CDATA[The quantity to request has been adjusted based on: <br/>]]></string>
-    <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$s</b> unopened <i>%2$s</i>. There are <b>%3$s</b> <i>%4$s</i> in each kit.<br/>]]></string>
-    <string name="label_adjustment_dialog_adjust_amount"><![CDATA[<br/>You have <b>%1$s</b> <i>%2$s</i> in unopened kits.<br/><br/>]]></string>
+    <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$d</b> unopened <i>%2$s</i>. There are <b>%3$d</b> <i>%4$s</i> in each kit.<br/>]]></string>
+    <string name="label_adjustment_dialog_adjust_amount"><![CDATA[<br/>You have <b>%1$d</b> <i>%2$s</i> in unopened kits.<br/><br/>]]></string>
     <string name="label_adjustment_dialog_initial_amount"><![CDATA[<b>%1$s</b> is the initial quantity to request<br/>]]></string>
     <string name="label_adjustment_dialog_adjusted_amount"><![CDATA[<b>%1$s</b> is the adjusted quantity to request<br/>]]></string>
 
@@ -315,7 +315,7 @@
     <string name="label_physical_inventory_title_stock_on_hand">Stock Existente</string>
 
     <!-- Unpack Kit -->
-    <string name="kit_number">Unpacking: %1$s %2$s kit</string>
+    <string name="kit_number">Unpacking: %1$d %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantity received</string>
     <string name="label_unpack_kit_quantity_expected">Quantity expected</string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected. Please recheck it</string>
@@ -383,7 +383,7 @@
 
     <string name="mmia_list">MMIA</string>
     <string name="requisition_list">Requisitions</string>
-    <string name="label_total">Total:%1$s</string>
+    <string name="label_total">Total:%1$d</string>
     <string name="requisition_delete_failed">Delete Failed</string>
 
     <string name="delete_rnr_form_failed_warning">Delete Failed</string>
@@ -534,12 +534,12 @@
     <string name="error_empty_rapid_test_list">Rapid test report list cannot be empty.</string>
     <string name="btn_edit">EDIT</string>
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - No adjustment will be made</string>
-    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Positive adjustment</font>]]> of <![CDATA[<font color="#000">%2$s</font>]]> will be made</string>
-    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Negative adjustment</font>]]> of <![CDATA[<font color="#000">%2$s</font>]]> will be made</string>
-    <string name="label_total_complete_counts">Completed %1$s / %2$s</string>
+    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Positive adjustment</font>]]> of <![CDATA[<font color="#000">%2$d</font>]]> will be made</string>
+    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Negative adjustment</font>]]> of <![CDATA[<font color="#000">%2$d</font>]]> will be made</string>
+    <string name="label_total_complete_counts">Completed %1$d / %2$d</string>
     <string name="title_movement_history">Movement History</string>
-    <string name="msg_products_with_movement_count">%1$s products with movements</string>
-    <string name="msg_movement_count">%1$s movements</string>
+    <string name="msg_products_with_movement_count">%1$d products with movements</string>
+    <string name="msg_movement_count">%1$d movements</string>
     <string name="label_column_syphillis">Syphillis</string>
     <string name="label_view_movements">View movements:</string>
     <string name="batch_dummy">16B283S - Jul 2018</string>

@@ -89,7 +89,9 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
             }
         }).toList();
         ArrayList<StockCard> stockCards = new ArrayList<>();
-        stockCards.addAll(immutableList);
+        for (StockCard stockCard: immutableList) {
+            stockCards.add(stockCard);
+        }
         startActivityForResult(VIARequisitionActivity.getIntentToMe(this, stockCards), Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }
 

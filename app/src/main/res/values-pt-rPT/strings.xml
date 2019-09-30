@@ -159,8 +159,8 @@
     <string name="msg_requisition_signature_message_notify_rapid_test">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de testes rápidos.</string>
     <string name="btn_continue">Continuar</string>
     <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
-    <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$s</b> Fechados <i>%2$s</i>. São<b>%3$s</b> <i>%4$s</i> em cada kit.<br/>]]></string>
-    <string name="label_adjustment_dialog_adjust_amount"><![CDATA[<br/> Você tem <b>%1$s </b> <i>%2$s</ i> em kits fechados. <br/>]]></string>
+    <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$d</b> Fechados <i>%2$s</i>. São<b>%3$d</b> <i>%4$s</i> em cada kit.<br/>]]></string>
+    <string name="label_adjustment_dialog_adjust_amount"><![CDATA[<br/> Você tem <b>%1$d </b> <i>%2$s</ i> em kits fechados. <br/>]]></string>
     <string name="label_adjustment_dialog_initial_amount"><![CDATA[<b>%1$s</b> é a quantidade inicial para requisitar <br/>]]></string>
     <string name="label_adjustment_dialog_adjusted_amount"><![CDATA[<b>%1$s</b> é a quantidade ajustada para requisitar <br/>]]></string>
     <string name="btn_del">Apagar</string>
@@ -296,7 +296,7 @@
     <string name="label_physical_inventory_stock_on_hand">Stock existente actual</string>
     <string name="label_physical_inventory_title_stock_on_hand">Stock Existente</string>
     <!--Unpack Kit-->
-    <string name="kit_number">Desembalando: %1$s %2$s kit</string>
+    <string name="kit_number">Desembalando: %1$d %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantidade recebida</string>
     <string name="label_unpack_kit_quantity_expected">Quantidade esperada</string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Menor</ b>]]> quantidade inserida do que a esperada. Por favor verifique</string>
@@ -359,7 +359,7 @@
     <string name="btn_mmia_list_old">Ver histórico de MMIAs submetidos</string>
     <string name="mmia_list">MMIA</string>
     <string name="requisition_list">Requisições</string>
-    <string name="label_total">Total:%1$s</string>
+    <string name="label_total">Total:%1$d</string>
     <string name="requisition_delete_failed">Falha ao excluir</string>
     <string name="delete_rnr_form_failed_warning">Falha ao apagar</string>
     <!--Signature-->
@@ -483,12 +483,12 @@
     <string name="error_empty_rapid_test_list">Lista rápida de relatórios de teste não pode estar vazia.</string>
     <string name="btn_edit">EDITAR</string>
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
-    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\"> Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
-    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$s</font>]]> será feito</string>
-    <string name="label_total_complete_counts">Completado %1$s / %2$s</string>
+    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\"> Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
+    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
+    <string name="label_total_complete_counts">Completado %1$d / %2$d</string>
     <string name="title_movement_history">Historicos de Movimentos</string>
-    <string name="msg_products_with_movement_count">%1$s Produtos com movimentos</string>
-    <string name="msg_movement_count">%1$s movimentos</string>
+    <string name="msg_products_with_movement_count">%1$d Produtos com movimentos</string>
+    <string name="msg_movement_count">%1$d movimentos</string>
     <string name="label_column_syphillis">Sífilis</string>
     <string name="label_view_movements">Visualizar movimentos:</string>
     <string name="amount_field_cannot_be_empty">O campo de quantidade não pode estar vazio</string>

@@ -19,6 +19,7 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
 
 import static org.openlmis.core.R.id.btn_create_patient_data_report;
+import static org.openlmis.core.enums.VIAReportType.MALARIA;
 
 
 public class MalariaDataReportViewHolderMissing extends MalariaDataReportViewHolderBase {
@@ -39,7 +40,7 @@ public class MalariaDataReportViewHolderMissing extends MalariaDataReportViewHol
     public void populate(PatientDataReportViewModel patientDataReportViewModel) {
         viewModel = patientDataReportViewModel;
         tvPeriod.setText(patientDataReportViewModel.getPeriod().toString());
-        if(VIAReportType.equals(VIAReportType.MALARIA)) {
+        if(VIAReportType.equals(MALARIA)) {
             btnReportEntry.setOnClickListener(goToPatientDataReportFormActivity());
             btnReportEntry.setText(R.string.btn_create_malaria_report);
         }else{

@@ -139,7 +139,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     private void generateTestDataForGetStockCards(String productCode, boolean isActive, boolean isArchived, Program program, String movementDate) throws LMISException {
-        Product product = new ProductBuilder().create().setCode(productCode).setIsActive(isActive).setIsArchived(isArchived).build();
+        Product product = ProductBuilder.create().setCode(productCode).setIsActive(isActive).setIsArchived(isArchived).build();
 
         productRepository.createOrUpdate(product);
         programRepository.createOrUpdate(program);

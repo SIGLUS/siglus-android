@@ -397,11 +397,6 @@ public class SyncUpManagerTest {
         verify(mockedCmmRepository, never()).save(cmm);
     }
 
-    @Test
-    public void shouldSyncUpMalariaProgramAndMarkThemAsSync() throws Exception {
-        
-    }
-
     private List<Cmm> createCmmsData() throws LMISException, ParseException {
         Cmm cmm = new Cmm();
         cmm.setStockCard(createTestStockCardData());

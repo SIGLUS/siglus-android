@@ -1,8 +1,5 @@
 package org.openlmis.core.persistence.migrations;
 
-import android.database.Cursor;
-import android.util.Log;
-
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.persistence.Migration;
 import org.openlmis.core.utils.DateUtil;

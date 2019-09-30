@@ -32,6 +32,10 @@
 
         <!-- Do not change -->
         <item>PHYSICAL_INVENTORY|INVENTORY|Inventario</item>
-
+        <!-- Default Code , Do not change -->
+        <item>ISSUE|DEFAULT_ISSUE|Issued</item>
+        <item>RECEIVE|DEFAULT_RECEIVE|Received</item>
+        <item>NEGATIVE_ADJUST|DEFAULT_NEGATIVE_ADJUSTMENT|Negative adjustment</item>
+        <item>POSITIVE_ADJUST|DEFAULT_POSITIVE_ADJUSTMENT|Positive adjustment</item>
     </string-array>
 </resources>

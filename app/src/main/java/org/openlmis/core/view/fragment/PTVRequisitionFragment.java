@@ -279,9 +279,9 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
     private void refreshRegimenValue(RnRForm rnRForm) {
         RegimenItem regimenAdult = getRegimenItem(Constants.PTV_REGIME_ADULT);
-        totalParent.setText(getValue(regimenAdult.getAmount()));
+        totalParent.setText(getValue(regimenAdult != null ? regimenAdult.getAmount() : 0));
         RegimenItem regimenChild = getRegimenItem(Constants.PTV_REGIME_CHILD);
-        totalChild.setText(getValue(regimenChild.getAmount()));
+        totalChild.setText(getValue(regimenChild != null ? regimenChild.getAmount() : 0));
     }
 
     private boolean completeRegimen() {

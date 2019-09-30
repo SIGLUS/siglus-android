@@ -82,6 +82,7 @@
     </ScrollView>
 
     <LinearLayout
+        android:baselineAligned="false"
         android:id="@+id/mmia_rnr_items_header_freeze"
         style="@style/MMIA.RnrTable.Header"
         android:layout_width="match_parent"

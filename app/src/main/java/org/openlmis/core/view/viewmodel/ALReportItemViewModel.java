@@ -33,7 +33,7 @@ public class ALReportItemViewModel implements Serializable {
 
     public void setColumnValue(RegimenItem regimen, Long value) {
         String regimenName = regimen.getRegimen().getName();
-        String columnName = regimenName.substring(regimenName.length() - SUFFIX_LENGTH, regimenName.length());
+        String columnName = regimenName.substring(regimenName.length() - SUFFIX_LENGTH);
         alGridViewModelMap.get(columnName).setValue(regimen, value);
     }
 
