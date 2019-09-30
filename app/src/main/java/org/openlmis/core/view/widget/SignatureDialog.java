@@ -98,7 +98,10 @@ public class SignatureDialog extends BaseDialogFragment {
 
     private void setDialogAttributes() {
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.copyFrom(getDialog().getWindow().getAttributes());
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            params.copyFrom(getDialog().getWindow().getAttributes());
+        }
         params.width = (int) (getDialog().getContext().getResources().getDisplayMetrics().widthPixels * 0.8);
         getDialog().getWindow().setAttributes(params);
     }

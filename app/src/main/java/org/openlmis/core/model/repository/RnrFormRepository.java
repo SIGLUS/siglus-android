@@ -289,7 +289,7 @@ public class RnrFormRepository {
         }
         Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
-        if (hasRequisitionData()) {
+        if (list != null && hasRequisitionData()) {
             for (RnRForm rnrForm : list) {
                 if (rnrForm.getPeriodEnd().before(dueDateShouldDataLivedInDB)) {
                     return true;
@@ -384,7 +384,7 @@ public class RnrFormRepository {
         List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
 
         for (RnrFormItem item : rnrForm.getRnrFormItemListWrapper()) {
-            if (item.getProduct() != null && productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes) !=null) {
+            if (item.getProduct() != null && productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes) != null) {
                 item.setCategory(productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes).getCategory());
             }
         }

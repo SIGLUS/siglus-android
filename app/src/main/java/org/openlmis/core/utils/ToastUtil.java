@@ -17,17 +17,12 @@
  */
 package org.openlmis.core.utils;
 
-import android.content.Context;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 
 public final class ToastUtil {
 
@@ -48,41 +43,10 @@ public final class ToastUtil {
         show(LMISApp.getContext().getString(resId));
     }
 
-    public static void showCustomToast(CharSequence text) {
-        if (TextUtils.isEmpty(text))
-            return;
-        Toast toast = new Toast(LMISApp.getContext());
-        LayoutInflater inflate = (LayoutInflater)
-                LMISApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflate.inflate(R.layout.view_toast, null);
-        TextView tv = (TextView) v.findViewById(R.id.message);
-        tv.setText(text);
-        toast.setView(v);
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
-
-    public static void showInCenter(String text) {
-        Toast toast = Toast
-                .makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
-
     public static void showInCenter(int text) {
         Toast toast = Toast
                 .makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
-
-    public static void showLongTimeInCenter(CharSequence text) {
-        if (text == null)
-            return;
-        Toast toast = Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
-
 }

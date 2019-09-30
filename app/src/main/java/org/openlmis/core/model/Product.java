@@ -159,7 +159,6 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
         return "[[code=" + code + ","
                 + "type=" + type + ","
                 + "isKit=" + isKit + ","
-                + "isKit=" + isKit + ","
                 + "isHiv=" + isHiv
                 + "]"
                 + super.toString()

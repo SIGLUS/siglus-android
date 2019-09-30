@@ -30,7 +30,10 @@ public final class DisplayUtil {
 
     public static int getScreenWidth() {
         Point size = new Point();
-        ((WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(size);
+        WindowManager windowManager = (WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager !=null) {
+            windowManager.getDefaultDisplay().getSize(size);
+        }
         return size.x;
     }
 

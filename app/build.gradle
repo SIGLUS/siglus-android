@@ -168,7 +168,7 @@ dependencies {
     implementation 'com.android.support:support-annotations:22.2.1',
             'com.android.support:appcompat-v7:22.2.1',
             'com.android.support:design:22.2.1',
-            'com.android.support:recyclerview-v7:23.2.1',
+            'com.android.support:recyclerview-v7:22.2.1',
             'com.android.support:cardview-v7:22.2.1',
             'com.google.android.gms:play-services-analytics:16.0.8',
             'com.github.viethoa:fastscroller:1.2.0',

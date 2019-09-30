@@ -88,7 +88,7 @@ public class SelectEmergencyProductsActivityTest {
         for (InventoryViewModel model : inventoryViewModels) {
             model.setChecked(true);
         }
-        inventoryViewModels.add(new InventoryViewModel(new ProductBuilder().setPrimaryName("Product name").setCode(String.valueOf("code")).build()));
+        inventoryViewModels.add(new InventoryViewModel(new ProductBuilder().setPrimaryName("Product name").setCode("code").build()));
 
         activity.mAdapter.refreshList(inventoryViewModels);
         activity.mAdapter.notifyDataSetChanged();
@@ -110,28 +110,6 @@ public class SelectEmergencyProductsActivityTest {
 
         String actualValue = ((TextView) viewHolder.itemView.findViewById(R.id.tv_product_name)).getText().toString();
         assertThat(actualValue, is(activity.mAdapter.getFilteredList().get(0).getStyledName().toString()));
-    }
-
-    @Test
-    public void shouldGoToNextPage() throws Exception {
-//        LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-//        SingleClickButtonListener.isViewClicked = false;
-//
-//        ArrayList<InventoryViewModel> inventoryViewModels = getInventoryViewModels();
-//        activity.mAdapter.refreshList(inventoryViewModels);
-//        inventoryViewModels.get(0).setChecked(true);
-//        StockCard stockCard = new StockCard();
-//        stockCard.setId(100);
-//        inventoryViewModels.get(0).setStockCard(stockCard);
-//
-//        activity.btnNext.performClick();
-//
-//        Intent startedIntent = shadowOf(activity).getNextStartedActivity();
-//
-//        MatcherAssert.assertThat(startedIntent.getComponent().getClassName(), equalTo(VIARequisitionActivity.class.getName()));
-//        ArrayList<StockCard> stockCards = (ArrayList<StockCard>) startedIntent.getSerializableExtra(Constants.PARAM_SELECTED_EMERGENCY);
-//
-//        MatcherAssert.assertThat(stockCards.get(0).getId(), Matchers.is(100L));
     }
 
     private ArrayList<InventoryViewModel> getInventoryViewModels() {

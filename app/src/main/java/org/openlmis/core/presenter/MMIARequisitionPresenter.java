@@ -112,12 +112,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-
-    private void getSortedList() {
-
-    }
-
-
     public void setViewModels(List<RnrFormItem> formItems,
                               List<RegimenItem> regimenItemList,
                               List<BaseInfoItem> baseInfoItemList,

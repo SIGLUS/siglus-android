@@ -2,8 +2,6 @@ package org.openlmis.core.model.builder;
 
 import org.openlmis.core.model.User;
 
-import java.util.Arrays;
-import java.util.List;
 
 public class UserBuilder {
     private User user;

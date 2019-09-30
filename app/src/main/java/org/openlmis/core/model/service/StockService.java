@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Cmm;
@@ -44,7 +45,7 @@ public class StockService {
     protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
         StockMovementItem stockMovementItem = stockMovementRepository.queryFirstStockMovementByStockCardId(stockCard.getId());
         if (stockMovementItem == null) {
-            return  null;
+            throw new StockMovementIsNullException(stockCard);
         }
         return stockMovementItem.getMovementPeriod().getBegin().toDate();
     }

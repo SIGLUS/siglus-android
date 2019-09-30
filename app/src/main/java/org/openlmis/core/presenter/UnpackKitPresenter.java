@@ -24,7 +24,9 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -84,7 +86,7 @@ public class UnpackKitPresenter extends Presenter {
             public void call(final Subscriber<? super Void> subscriber) {
                 try {
                     List<StockCard> stockCards = new ArrayList<>();
-                    stockCards.addAll(FluentIterable.from(inventoryViewModels).filter(new Predicate<InventoryViewModel>() {
+                    Collection<StockCard> list = FluentIterable.from(inventoryViewModels).filter(new Predicate<InventoryViewModel>() {
                         @Override
                         public boolean apply(InventoryViewModel inventoryViewModel) {
                             return inventoryViewModel.getLotListQuantityTotalAmount() > 0;
@@ -99,7 +101,10 @@ public class UnpackKitPresenter extends Presenter {
                             }
                             return null;
                         }
-                    }).toList());
+                    }).toList();
+                    for (StockCard stockCard : list) {
+                        stockCards.add(stockCard);
+                    }
 
                     stockCards.add(getStockCardForKit(kitUnpackQuantity, documentNumber, signature));
                     stockRepository.batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(stockCards);
@@ -195,7 +200,12 @@ public class UnpackKitPresenter extends Presenter {
             }).toSortedList(new Comparator<LotMovementViewModel>() {
                 @Override
                 public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
-                    return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                    Date localDate = DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+                    if (localDate != null) {
+                        return localDate.compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                    } else {
+                        return 0;
+                    }
                 }
             });
             inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);

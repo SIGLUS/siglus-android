@@ -98,7 +98,7 @@ public class RapidTestReportsPresenter extends Presenter {
 
         if (period.isPresent()) {
             List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(RAPID_TEST_CODE);
-            isHaveFirstPeriod = isAllRapidTestFormInDBCompleted(rapidTestForms) ? false : true;
+            isHaveFirstPeriod = !isAllRapidTestFormInDBCompleted(rapidTestForms);
             while (period.isPresent()) {
                 RapidTestReportViewModel rapidTestReportViewModel = getViewModel(period.get(), rapidTestForms);
                 viewModelList.add(rapidTestReportViewModel);

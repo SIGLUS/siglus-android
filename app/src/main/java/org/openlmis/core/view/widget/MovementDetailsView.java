@@ -140,14 +140,16 @@ public class MovementDetailsView extends LinearLayout {
         DatePickerDialog dialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Light_Dialog,
                 new MovementDateListener(presenter.getViewModel(), presenter.getLastMovementDate(), etMovementDate),
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
-        dialog.setButton(DatePickerDialog.BUTTON_POSITIVE,"Done",dialog);
+        dialog.setButton(DatePickerDialog.BUTTON_POSITIVE, "Done", dialog);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 etMovementDate.setEnabled(true);
             }
         });
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(TRANSPARENT));
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(TRANSPARENT));
+        }
         dialog.show();
         dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setVisibility(GONE);
     }
