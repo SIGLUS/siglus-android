@@ -333,7 +333,7 @@ public class AutoUpdateApk {
     }
 
     private void initNotification() {
-        notificationB = new NotificationCompat.Builder(context,"siglus")
+        notificationB = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Download")
                 .setContentText("Download in progress")
