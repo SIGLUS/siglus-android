@@ -165,10 +165,8 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     }
 
     private boolean areThereSelectedProducts(int requestCode, int resultCode, Intent data) {
-        return requestCode == REQUEST_CODE
-                && resultCode == AddNonBasicProductsActivity.RESULT_CODE
-                && data.getExtras() !=null
-                && data.getExtras().containsKey(AddNonBasicProductsActivity.SELECTED_PRODUCTS);
+        return requestCode == REQUEST_CODE && resultCode == AddNonBasicProductsActivity.RESULT_CODE && data.getExtras().
+                containsKey(AddNonBasicProductsActivity.SELECTED_PRODUCTS);
     }
 
     protected void setTotal() {
@@ -178,7 +176,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
                 total++;
             }
         }
-        tvTotal.setText(getString(R.string.label_total, total));
+        tvTotal.setText(getString(R.string.label_total, String.valueOf(total)));
     }
 
     @NonNull

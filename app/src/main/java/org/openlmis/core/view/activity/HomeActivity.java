@@ -223,11 +223,9 @@ public class HomeActivity extends BaseActivity {
         }
 
         if (btnPTVReport.getVisibility() == View.VISIBLE && btnMMIAList.getVisibility() == View.VISIBLE) {
-            ReportTypeForm ptv = getReportType(Constants.PTV_REPORT, reportTypes);
-            ReportTypeForm mmia = getReportType(Constants.MMIA_REPORT, reportTypes);
-            if (ptv != null && !ptv.active) {
+            if (!getReportType(Constants.PTV_REPORT, reportTypes).active) {
                 btnPTVReport.setVisibility(View.GONE);
-            } else if (mmia != null && !mmia.active) {
+            } else if (!getReportType(Constants.MMIA_REPORT, reportTypes).active) {
                 btnMMIAList.setVisibility(View.GONE);
             }
         }
@@ -430,9 +428,7 @@ public class HomeActivity extends BaseActivity {
 
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (mgr != null) {
-            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + startAppInterval, mPendingIntent);
-        }
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + startAppInterval, mPendingIntent);
     }
 
 }

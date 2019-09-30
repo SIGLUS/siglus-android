@@ -115,7 +115,7 @@ public class ImplementationListToImplementationReportViewModelMapperTest {
 
     private void assertProductForImplementationWasMapped(String productCode, String executorName, String productName) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Implementation implementation = getImplementationForExecutor(productCode, executorName);
-        ImplementationReportViewModel implementationReportViewModel = US_EXECUTOR.equals(executorName) ?
+        ImplementationReportViewModel implementationReportViewModel = executorName == US_EXECUTOR ?
                 mapper.mapUsImplementations(newArrayList(implementation), malariaProgram.getStatus()) :
                 mapper.mapApeImplementations(newArrayList(implementation), malariaProgram.getStatus());
         Method getCurrentTreatment = implementationReportViewModel.getClass().getMethod("getCurrentTreatment" + productName);

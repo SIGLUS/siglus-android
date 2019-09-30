@@ -1,5 +1,6 @@
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import com.google.inject.AbstractModule;
@@ -23,6 +24,9 @@ import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class ArchivedDrugsListActivityTest {
@@ -67,5 +71,15 @@ public class ArchivedDrugsListActivityTest {
         assertThat(historyIntent.getStringExtra(Constants.PARAM_STOCK_NAME)).isEqualTo("Lamivudina 150mg [08S40]");
         assertThat(historyIntent.getBooleanExtra(Constants.PARAM_IS_FROM_ARCHIVE, false)).isTrue();
 
+    }
+
+    @Test
+    public void shouldArchiveBackStockCardWhenViewClicked() {
+//        archivedListActivity.archiveStockCardListener.archiveStockCardBack(stockCard);
+//
+//        verify(mockedPresenter).archiveBackStockCard(stockCard);
+//        verify(mockedPresenter, times(2)).loadStockCards(StockCardPresenter.ArchiveStatus.Archived);
+//
+//        assertThat(shadowOf(archivedListActivity).getResultCode()).isEqualTo(Activity.RESULT_OK);
     }
 }

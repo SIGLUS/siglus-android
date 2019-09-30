@@ -262,7 +262,7 @@ public class SharedPreferenceMgr {
     }
 
     public void setKeyHasCopiedTrainingDb(boolean hasCopiedTrainingDb) {
-        sharedPreferences.edit().putBoolean(KEY_HAS_COPIED_TRAINING_DB, hasCopiedTrainingDb).apply();
+        sharedPreferences.edit().putBoolean(KEY_HAS_COPIED_TRAINING_DB, hasCopiedTrainingDb);
     }
 
     public boolean hasCopiedTrainingDb() {

@@ -103,7 +103,7 @@ public class PTVTestRnrForm extends LinearLayout {
     private void configureDataView(RnrFormItem item, TextView tvName, EditText etStock, List<EditText> services, TextView tvTotal, TextView tvReceived, EditText etAdjustment, EditText etFinalStock) {
         List<EditText> editTexts = new ArrayList<>();
         tvName.setText(item.getProduct().getPrimaryName());
-        etStock.setText(getValue(item.getInitialAmount()));
+        etStock.setText(String.valueOf(getValue(item.getInitialAmount())));
         if (item.getIsCustomAmount()) {
             configEditText(item, etStock, tvTotal);
             editTexts.add(etStock);

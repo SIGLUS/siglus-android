@@ -86,7 +86,6 @@
                     android:layout_height="wrap_content">
 
                     <LinearLayout
-                        android:baselineAligned="false"
                         android:id="@+id/al_header"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/al_view_header_list_height"

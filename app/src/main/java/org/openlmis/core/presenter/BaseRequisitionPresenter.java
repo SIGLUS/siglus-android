@@ -77,6 +77,9 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     public void attachView(BaseView baseView) throws ViewNotMatchException {
         if (baseView instanceof BaseRequisitionView) {
             this.view = (BaseRequisitionView) baseView;
+        } else {
+            //TODO:  temp not tip it
+//            throw new ViewNotMatchException("required VIARequisitionView");
         }
     }
 

@@ -62,16 +62,16 @@ public class AutoUpdateApk {
     // ---------- everything below this line is private and does not belong to
     // the public API ----------
     //
-    private final static String TAG = "AutoUpdateApk1";
+    protected final static String TAG = "AutoUpdateApk1";
 
     private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
 
-    private final String server;
-    private final String apiPath;
+    protected final String server;
+    protected final String apiPath;
 
-    private Context context = null;
-    private SharedPreferences preferences;
-    private static final String LAST_UPDATE_KEY = "last_update";
+    protected static Context context = null;
+    protected static SharedPreferences preferences;
+    private final static String LAST_UPDATE_KEY = "last_update";
     private static long last_update = 0;
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationB;
@@ -80,14 +80,14 @@ public class AutoUpdateApk {
     private static String packageName;
     private static int device_id;
 
-    private static final long MINUTES = 60 * 1000;
-    private static final long HOURS = 60 * MINUTES;
+    public static final long MINUTES = 60 * 1000;
+    public static final long HOURS = 60 * MINUTES;
 
     // 3-4 hours in dev.mode, 1-2 days for stable releases
     private long updateInterval = 3 * HOURS; // how often to check
 
-    private final static String UPDATE_FILE = "updateFile";
-    private final static String SILENT_FAILED = "silent_failed";
+    protected final static String UPDATE_FILE = "updateFile";
+    protected final static String SILENT_FAILED = "silent_failed";
     private final static String MD5_TIME = "md5_time";
     private final static String MD5_KEY = "md5";
 
@@ -129,7 +129,7 @@ public class AutoUpdateApk {
         private OkHttpClient okHttpClient = new OkHttpClient();
         private List<String> retrieved = new LinkedList<>();
 
-        protected String[] doInBackground(Void... v) {
+        protected String[] doInBackground(Void ... v) {
             String[] resultGetApkInfo = null;
 
             okHttpClient.setConnectTimeout(30, TimeUnit.SECONDS);
@@ -151,16 +151,16 @@ public class AutoUpdateApk {
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .post(getApkLinkBody)
                     .build();
-            Log.d(TAG, "getApkLinkBody:" + getApkLinkBody);
+            Log.d(TAG,"getApkLinkBody:"+getApkLinkBody);
             Call getApkLinkCall = okHttpClient.newCall(getApkLinkRequest);
             try {
                 Response response = getApkLinkCall.execute();
-                String str = null;
+                String str=null;
                 if (response.code() == 200) {
                     str = response.body().string();
                     resultGetApkInfo = str.split("\n");
                 }
-                Log.d(TAG, "first response:" + str);
+                Log.d(TAG,"first response:"+str);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -172,11 +172,11 @@ public class AutoUpdateApk {
         }
 
 
-        private boolean isValidResponse(String[] info) {
+        private boolean isValidResponse(String [] info) {
             return info.length > 1 && info[0].equalsIgnoreCase("have update") && !retrieved.contains(info[1]);
         }
 
-        private String[] processResponse(Response response, String[] resultGetApkInfo) throws IOException {
+        private String[] processResponse(Response response, String [] resultGetApkInfo) throws IOException {
             if (response.code() == 200) {
                 InputStream inputStream = null;
                 String fname = resultGetApkInfo[1]
@@ -186,7 +186,7 @@ public class AutoUpdateApk {
                     inputStream = response.body().byteStream();
                     FileOutputStream output = context
                             .openFileOutput(fname,
-                                    Context.MODE_PRIVATE);
+                                    Context.MODE_WORLD_READABLE);
                     long downloaded = 0;
                     long target = response.body().contentLength();
                     publishProgress(0L, target);
@@ -203,7 +203,7 @@ public class AutoUpdateApk {
                     inputStream.close();
                     resultGetApkInfo[1] = fname;
                     String versionCodeFromServer = resultGetApkInfo[2];
-                    if (versionCodeFromServer != null) {
+                    if (resultGetApkInfo.length > 2 && versionCodeFromServer != null) {
                         updateVersionCode(versionCodeFromServer);
                     }
                     return resultGetApkInfo;
@@ -220,7 +220,7 @@ public class AutoUpdateApk {
             return null;
         }
 
-        private String[] downloadApk(String[] resultGetApkInfo) {
+        private String [] downloadApk(String [] resultGetApkInfo) {
             if (isValidResponse(resultGetApkInfo)) {
                 synchronized (retrieved) {
                     if (!retrieved.contains(resultGetApkInfo[1])) {
@@ -232,7 +232,7 @@ public class AutoUpdateApk {
                         try {
                             initNotification();
                             Response response = call.execute();
-                            return processResponse(response, resultGetApkInfo);
+                            return processResponse(response,resultGetApkInfo);
                         } catch (IOException e) {
                             e.printStackTrace();
                             Log.e(TAG, "response download Apk Filed = " + e.getMessage());
@@ -257,9 +257,9 @@ public class AutoUpdateApk {
 
         @Override
         protected void onProgressUpdate(Long... values) {
-            notificationB.setProgress(100, (int) ((values[0] * 1.0 / values[1]) * 100), false);
-            notificationB.setContentText("Download Progress: " + (int) ((values[0] * 1.0 / values[1]) * 100) + "%");
-            notificationManager.notify(NOTIFICATION_ID, notificationB.build());
+            notificationB.setProgress(100, (int)((values[0]*1.0/values[1])*100),false);
+            notificationB.setContentText("Download Progress: " +(int)((values[0]*1.0/values[1])*100) +"%");
+            notificationManager.notify(NOTIFICATION_ID,notificationB.build());
         }
 
         @Override
@@ -281,14 +281,14 @@ public class AutoUpdateApk {
                 String updateFile = preferences.getString(UPDATE_FILE, "");
                 Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
                 notificationIntent.setDataAndType(
-                        Uri.parse("file://" + context.getFilesDir().getAbsolutePath() + "/" + updateFile), ANDROID_PACKAGE);
+                        Uri.parse("file://" + context.getFilesDir().getAbsolutePath() + "/"+ updateFile), ANDROID_PACKAGE);
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
                         notificationIntent, 0);
                 notificationB.setContentTitle("Download Completed")
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentText("Click to install")
                         .setPriority(NotificationCompat.DEFAULT_ALL)
-                        .setProgress(0, 0, false)
+                        .setProgress(0,0,false)
                         .setOngoing(false)
                         .setAutoCancel(true)
                         .setContentIntent(contentIntent);
@@ -308,10 +308,10 @@ public class AutoUpdateApk {
                         .setContentText("Please try later")
                         .setPriority(NotificationCompat.DEFAULT_ALL)
                         .setContentIntent(null)
-                        .setProgress(0, 0, false)
+                        .setProgress(0,0,false)
                         .setOngoing(false)
                         .setAutoCancel(true);
-                notificationManager.notify(NOTIFICATION_ID, notificationB.build());
+                notificationManager.notify(NOTIFICATION_ID,notificationB.build());
                 Log_v(TAG, "1 no reply from update server ");
             }
         }
@@ -321,7 +321,7 @@ public class AutoUpdateApk {
         long now = System.currentTimeMillis();
         if (forced || (last_update + updateInterval) < now) {
             try {
-                PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(),0);
                 versionCode = packageInfo.versionCode;
             } catch (NameNotFoundException e) {
                 e.printStackTrace();
@@ -333,20 +333,19 @@ public class AutoUpdateApk {
     }
 
     private void initNotification() {
-        notificationB = new NotificationCompat.Builder(context,"siglus")
+        notificationB = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Download")
                 .setContentText("Download in progress")
                 .setPriority(NotificationCompat.DEFAULT_ALL)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
-                .setProgress(100, 0, true);
+                .setProgress(100,0,true);
 
         if (notificationManager == null) {
             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        }else {
-            notificationManager.notify(NOTIFICATION_ID, notificationB.build());
         }
+        notificationManager.notify(NOTIFICATION_ID,notificationB.build());
     }
 
     private String MD5Hex(String filename) {
@@ -377,7 +376,7 @@ public class AutoUpdateApk {
     }
 
     private static int crc32(String str) {
-        byte[] bytes = str.getBytes();
+        byte [] bytes = str.getBytes();
         Checksum checksum = new CRC32();
         checksum.update(bytes, 0, bytes.length);
         return (int) checksum.getValue();

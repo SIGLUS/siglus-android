@@ -103,7 +103,10 @@ public class Period implements Serializable {
     }
 
     public boolean isOpenToRequisitions() {
-        return isOpenForCurrentDate() || isBeforeCurrent();
+        if (isOpenForCurrentDate() || isBeforeCurrent()) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isOpenForCurrentDate() {
@@ -128,9 +131,6 @@ public class Period implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (getClass() != object.getClass()) {
-            return false;
-        }
         Period period = (Period) object;
         return this.toString().equals(period.toString());
     }

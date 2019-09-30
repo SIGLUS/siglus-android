@@ -142,10 +142,10 @@ public class LoginPresenter extends Presenter {
     }
 
     private void setDefaultReportType() {
-        if (SharedPreferenceMgr.getInstance().getReportTypesData() == null) {
+        if (sharedPreferenceMgr.getInstance().getReportTypesData() == null) {
             try {
                 List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
-                SharedPreferenceMgr.getInstance().setReportTypesData(reportTypeForms);
+                sharedPreferenceMgr.getInstance().setReportTypesData(reportTypeForms);
             } catch (LMISException e) {
                 e.reportToFabric();
             }

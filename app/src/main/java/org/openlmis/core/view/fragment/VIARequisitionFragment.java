@@ -33,7 +33,6 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
@@ -363,14 +362,10 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_ADD_DRUGS_TO_VIA && resultCode == Activity.RESULT_OK) {
             Date periodBegin = (Date) data.getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
-            if (data.getExtras() != null) {
 
-                List<RnrFormItem> drugInVIAs = (ArrayList<RnrFormItem>) data.getExtras().get(Constants.PARAM_ADDED_DRUGS_TO_VIA);
-                presenter.populateAdditionalDrugsViewModels(drugInVIAs, periodBegin);
-                bodyView.refreshProductNameList();
-            } else {
-                new LMISException("VIARequisitionFragment onActivityResult").reportToFabric();
-            }
+            List<RnrFormItem> drugInVIAs = (ArrayList<RnrFormItem>) data.getExtras().get(Constants.PARAM_ADDED_DRUGS_TO_VIA);
+            presenter.populateAdditionalDrugsViewModels(drugInVIAs, periodBegin);
+            bodyView.refreshProductNameList();
         }
     }
 }

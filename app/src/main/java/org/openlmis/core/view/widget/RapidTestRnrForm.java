@@ -130,12 +130,12 @@ public class RapidTestRnrForm extends LinearLayout {
             tvIssue.setText(String.valueOf(item.getIssued()));
             tvAdjustment.setText(String.valueOf(item.getAdjustment()));
             if (item.getIsCustomAmount()) {
-                configEditText(item, etStock,getValue(item.getInitialAmount()));
+                configEditText(item, etStock, String.valueOf(getValue(item.getInitialAmount())));
             } else {
-                etStock.setText(getValue(item.getInitialAmount()));
+                etStock.setText(String.valueOf(getValue(item.getInitialAmount())));
                 etStock.setEnabled(false);
             }
-            configEditText(item, etInventory, getValue(item.getInventory()));
+            configEditText(item, etInventory, String.valueOf(getValue(item.getInventory())));
 
             try {
                 if (!(TextUtils.isEmpty(item.getValidate()))) {

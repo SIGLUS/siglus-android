@@ -17,6 +17,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -111,7 +112,7 @@ public class RapidTestReportViewModel implements Serializable {
         period = new Period(beginDateTime, endDateTime);
         observation = programDataForm.getObservation();
 
-        if (programDataForm.getFormBasicItemListWrapper() != null) {
+        if (programDataForm.getFormBasicItemListWrapper() != null){
             basicItems.addAll(programDataForm.getFormBasicItemListWrapper());
         }
 
@@ -141,7 +142,7 @@ public class RapidTestReportViewModel implements Serializable {
     }
 
     private void addCompatibleWithNotSubmitAPE() {
-        String[] columnList = {"HIVDetermine", "HIVUnigold", "Syphillis", "Malaria"};
+        List<String> columnList = Arrays.asList(new String[]{"HIVDetermine", "HIVUnigold", "Syphillis", "Malaria"});
         for (String columnName : columnList) {
             if (isNeedAPE(columnName)) {
                 RapidTestFormGridViewModel viewModel = itemAPEs.rapidTestFormGridViewModelMap.get(StringUtils.upperCase(columnName));
@@ -289,8 +290,6 @@ public class RapidTestReportViewModel implements Serializable {
                 continue;
             }
             RapidTestFormGridViewModel gridViewModel = itemViewModel.getRapidTestFormGridViewModelMap().get(columnCode.toString());
-            //TODO
-            //FIXM
             total = calculateTotalLogic(total, gridViewModel, gridColumnCode);
         }
         setTotalRowValue(itemTotal, columnCode, gridColumnCode, String.valueOf(total.longTotal));
@@ -300,7 +299,11 @@ public class RapidTestReportViewModel implements Serializable {
     public void updateAPEWaring() {
         for (RapidTestFormGridViewModel viewModel : itemRealTotal.rapidTestFormGridViewModelList) {
             RapidTestFormGridViewModel apeViewModel = itemAPEs.rapidTestFormGridViewModelMap.get(viewModel.getColumnCode().name().toUpperCase());
-            apeViewModel.isNeedAllAPEValue = !viewModel.isEmpty();
+            if (!viewModel.isEmpty()) {
+                apeViewModel.isNeedAllAPEValue = true;
+            } else {
+                apeViewModel.isNeedAllAPEValue = false;
+            }
         }
     }
 

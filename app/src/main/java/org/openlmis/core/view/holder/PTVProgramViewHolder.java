@@ -9,6 +9,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.view.viewmodel.ptv.PTVViewModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import roboguice.inject.InjectView;
@@ -88,9 +89,7 @@ public class PTVProgramViewHolder extends BaseViewHolder {
 
     public void setWatchersForEditableListeners(TextWatcher textWatcher) {
         List<EditText> textViewsListened = new ArrayList<>();
-        for (EditText editText: productQuantities) {
-            textViewsListened.add(editText);
-        }
+        textViewsListened.addAll(Arrays.asList(productQuantities));
         for (EditText editText : textViewsListened) {
             editText.addTextChangedListener(textWatcher);
         }

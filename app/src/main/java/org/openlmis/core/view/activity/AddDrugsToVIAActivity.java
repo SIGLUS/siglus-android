@@ -138,7 +138,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
         return false;
     }
 
-    private final Action1<ArrayList<RnrFormItem>>  nextMainPageAction = new Action1<ArrayList<RnrFormItem>>() {
+    private Action1<ArrayList<RnrFormItem>> nextMainPageAction = new Action1<ArrayList<RnrFormItem>>() {
         @Override
         public void call(ArrayList<RnrFormItem> rnrFormItemList) {
             loaded();

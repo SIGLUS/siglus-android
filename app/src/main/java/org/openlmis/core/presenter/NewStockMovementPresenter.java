@@ -110,7 +110,7 @@ public class NewStockMovementPresenter extends Presenter {
         return Observable.create(new Observable.OnSubscribe<StockMovementViewModel>() {
             @Override
             public void call(Subscriber<? super StockMovementViewModel> subscriber) {
-                if (convertViewModelToDataModelAndSave()) {
+                if (convertViewModelToDataModelAndSave()){
                     subscriber.onNext(viewModel);
                     subscriber.onCompleted();
                 } else {
@@ -157,12 +157,7 @@ public class NewStockMovementPresenter extends Presenter {
         }).toSortedList(new Comparator<LotMovementViewModel>() {
             @Override
             public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
-                Date localDate = DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-                if (localDate != null) {
-                    return localDate.compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                } else {
-                    return 0;
-                }
+                return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
             }
         });
 
@@ -210,9 +205,7 @@ public class NewStockMovementPresenter extends Presenter {
         return stockCard.getLastStockMovementDate();
     }
 
-    public Date getLastMovementCreateDate() {
-        return stockCard.getLastStockMovementCreatedTime();
-    }
+    public Date getLastMovementCreateDate() {return stockCard.getLastStockMovementCreatedTime();}
 
     public interface NewStockMovementView extends BaseView {
 

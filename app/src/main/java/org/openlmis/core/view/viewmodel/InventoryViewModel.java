@@ -171,9 +171,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
 
     @Override
     public boolean equals(Object object) {
-        if (getClass() != object.getClass()) {
-            return false;
-        }
         return this.productId == ((InventoryViewModel) object).productId && this.productName.equals(((InventoryViewModel) object).productName);
     }
 
@@ -209,10 +206,10 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     }
 
     private String getNewMovementString() {
-        StringBuilder list = new StringBuilder();
+        String list = "";
         for (LotMovementViewModel model : newLotMovementViewModelList) {
-            list.append(" ").append(model.toString());
+            list += " " + model.toString();
         }
-        return list.toString();
+        return list;
     }
 }

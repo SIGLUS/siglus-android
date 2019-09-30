@@ -5,7 +5,6 @@
     android:layout_marginTop="@dimen/margin_tiny">
 
     <LinearLayout
-        android:baselineAligned="false"
         android:id="@+id/vg_rapid_test_report_header"
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -36,7 +35,6 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:baselineAligned="false"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -63,7 +61,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:baselineAligned="false"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -105,7 +102,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:baselineAligned="false"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -113,7 +109,6 @@
                 android:background="@drawable/border_top_black_bold">
 
                 <LinearLayout
-                    android:baselineAligned="false"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
@@ -185,7 +180,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:baselineAligned="false"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1">

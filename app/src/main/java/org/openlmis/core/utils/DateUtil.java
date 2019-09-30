@@ -130,6 +130,10 @@ public final class DateUtil {
         return formatDate(parseString(date, currentFormat), expectFormat);
     }
 
+    public static String formatDateFromIntToString(int year, int monthOfYear, int dayOfMonth) {
+        return new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
+    }
+
     public static Date dateMinusMonth(Date current, int months) {
         return new DateTime(current).minusMonths(months).toDate();
     }
@@ -138,12 +142,7 @@ public final class DateUtil {
         Collections.sort(expiryDates, new Comparator<String>() {
             @Override
             public int compare(String lhs, String rhs) {
-                Date date = parseString(lhs, SIMPLE_DATE_FORMAT);
-                if (date != null) {
-                    return date.compareTo(parseString(rhs, SIMPLE_DATE_FORMAT));
-                } else {
-                    return 0;
-                }
+                return parseString(lhs, SIMPLE_DATE_FORMAT).compareTo(parseString(rhs, SIMPLE_DATE_FORMAT));
             }
         });
     }

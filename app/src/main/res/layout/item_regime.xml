@@ -25,14 +25,12 @@
     </LinearLayout>
 
     <EditText
-        android:inputType="number"
         android:id="@+id/regime_amount"
         style="@style/ItemRegime.EditText"
         android:layout_width="@dimen/mmia_spread_item_common_width"
         android:layout_height="match_parent"/>
 
     <EditText
-        android:inputType="number"
         style="@style/ItemRegime.EditText"
         android:id="@+id/regime_pharmacy_amount"
         android:layout_width="@dimen/mmia_spread_item_common_width"

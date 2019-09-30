@@ -14,7 +14,6 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import lombok.Getter;
@@ -156,8 +155,8 @@ public class InitialInventoryPresenter extends InventoryPresenter {
 
     private void removeExistentNonBasicProducts() {
         List<InventoryViewModel> defaultModels = new ArrayList<>(defaultViewModelList);
-        for (InventoryViewModel model : defaultModels) {
-            if (!model.isBasic()) {
+        for(InventoryViewModel model :defaultModels){
+            if(!model.isBasic()){
                 defaultViewModelList.remove(model);
             }
         }
@@ -200,14 +199,12 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     }
 
     private void removeHeaders() {
-        for (Iterator<InventoryViewModel> iterator = inventoryViewModelList.iterator(); iterator.hasNext(); ) {
-            InventoryViewModel model = iterator.next();
-            if (DEFAULT_PRODUCT_ID == model.getProductId()) {
-                iterator.remove();
+        for (int i = 0; i < inventoryViewModelList.size(); i++) {
+            if (inventoryViewModelList.get(i).getProductId() == DEFAULT_PRODUCT_ID) {
+                inventoryViewModelList.remove(i);
             }
         }
     }
-
 
     private void addHeaders(boolean areThereNonBasicProducts) {
         if (areThereNonBasicProducts) {
@@ -261,7 +258,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         }
     }
 
-    public void removeNonBasicProductElement(InventoryViewModel model) {
+    public void removeNonBasicProductElement(InventoryViewModel model){
         defaultViewModelList.remove(model);
         filterViewModels(EMPTY_STRING);
     }

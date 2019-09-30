@@ -18,7 +18,6 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:baselineAligned="false"
             android:id="@+id/ll_patient_dispensation"
             android:layout_width="match_parent"
             android:layout_height="30dp"

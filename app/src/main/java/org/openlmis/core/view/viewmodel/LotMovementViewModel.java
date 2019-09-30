@@ -11,7 +11,6 @@ import org.openlmis.core.utils.DateUtil;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -115,9 +114,8 @@ public class LotMovementViewModel implements Serializable {
         expireCalender.add(Calendar.MONTH, 1);
         expireCalender.before(nowCalender);
 
-        Date localExpireDate = DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-
-        return localExpireDate != null && localExpireDate.before(Calendar.getInstance().getTime());
+        return DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)
+                .before(Calendar.getInstance().getTime());
     }
 
     public boolean isNewAdded() {
