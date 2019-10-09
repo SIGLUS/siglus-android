@@ -116,7 +116,7 @@ public class PatientDataReportRowViewHolder extends BaseViewHolder {
     private long getLongValueFromEditText(EditText editText) {
         String currentValue = editText.getText().toString();
         if (!currentValue.isEmpty()) {
-            return  Long.parseLong(currentValue);
+            return Long.parseLong(currentValue);
         }
         return EMPTY_VALUE;
     }

@@ -39,10 +39,10 @@ import com.squareup.okhttp.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 
 public class AutoUpdateApk {
     MediaType MEDIA_TYPE = MediaType.parse("application/json");
-    private static final String DOWNLOADED_LATEST_VERSIONCODE = "downloaded_latest_versioncode";
 
     public AutoUpdateApk(Context ctx, String apiPath, String server) {
         setupVariables(ctx);
@@ -70,8 +70,7 @@ public class AutoUpdateApk {
     private final String apiPath;
 
     private Context context = null;
-    private SharedPreferences preferences;
-    private static final String LAST_UPDATE_KEY = "last_update";
+    private SharedPreferenceMgr preferences;
     private static long last_update = 0;
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationB;
@@ -85,22 +84,15 @@ public class AutoUpdateApk {
 
     // 3-4 hours in dev.mode, 1-2 days for stable releases
     private long updateInterval = 3 * HOURS; // how often to check
-
-    private final static String UPDATE_FILE = "updateFile";
-    private final static String SILENT_FAILED = "silent_failed";
-    private final static String MD5_TIME = "md5_time";
-    private final static String MD5_KEY = "md5";
-
     private static int NOTIFICATION_ID = 12;
 
     private void setupVariables(Context ctx) {
         context = ctx;
 
         packageName = context.getPackageName();
-        preferences = context.getSharedPreferences(packageName + "_" + TAG,
-                Context.MODE_PRIVATE);
+        preferences = SharedPreferenceMgr.getInstance();
         device_id = crc32(Secure.getString(context.getContentResolver(), Secure.ANDROID_ID));
-        last_update = preferences.getLong("last_update", 0);
+        last_update = preferences.getLastUpdate();
         NOTIFICATION_ID += crc32(packageName);
 
         ApplicationInfo appinfo = context.getApplicationInfo();
@@ -108,18 +100,15 @@ public class AutoUpdateApk {
     }
 
     private void removeOldPackage(ApplicationInfo appinfo) {
-        if (new File(appinfo.sourceDir).lastModified() > preferences.getLong(MD5_TIME, 0)) {
-            preferences.edit().putString(MD5_KEY, MD5Hex(appinfo.sourceDir)).commit();
-            preferences.edit().putLong(MD5_TIME, System.currentTimeMillis()).commit();
+        if (new File(appinfo.sourceDir).lastModified() > preferences.getMd5Time()) {
+            preferences.setMd5Key(MD5Hex(appinfo.sourceDir));
+            preferences.setMd5Time(System.currentTimeMillis());
 
-            String updateFile = preferences.getString(UPDATE_FILE, "");
+            String updateFile = preferences.getUpdateFile();
             if (updateFile.length() > 0) {
                 boolean isDeletedSuccessfule = new File(context.getFilesDir().getAbsolutePath() + "/" + updateFile).delete();
                 if (isDeletedSuccessfule) {
-                    preferences.edit()
-                            .remove(UPDATE_FILE)
-                            .remove(SILENT_FAILED)
-                            .remove(DOWNLOADED_LATEST_VERSIONCODE).commit();
+                    preferences.removeDownloadInfo();
                 }
             }
         }
@@ -140,7 +129,7 @@ public class AutoUpdateApk {
             try {
                 postdata.put("pkgname", packageName);
                 postdata.put("version", versionCode);
-                postdata.put("md5", preferences.getString(MD5_KEY, "0"));
+                postdata.put("md5", preferences.getMd5Key());
                 postdata.put("id", String.format("%08x", device_id));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -249,7 +238,7 @@ public class AutoUpdateApk {
         private void updateVersionCode(String versionFromServer) {
             try {
                 versionCode = Integer.parseInt(versionFromServer);
-                preferences.edit().putInt(DOWNLOADED_LATEST_VERSIONCODE, versionCode).commit();
+                preferences.setLastestVersionCode(versionCode);
             } catch (NumberFormatException nfe) {
                 Log_e(TAG, "Invalide version code", nfe);
             }
@@ -278,7 +267,7 @@ public class AutoUpdateApk {
                 Log_v(TAG, "111 reply from update server, and saved ");
                 notificationManager.cancel(NOTIFICATION_ID);
 
-                String updateFile = preferences.getString(UPDATE_FILE, "");
+                String updateFile = preferences.getUpdateFile();
                 Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
                 notificationIntent.setDataAndType(
                         Uri.parse("file://" + context.getFilesDir().getAbsolutePath() + "/" + updateFile), ANDROID_PACKAGE);
@@ -295,11 +284,12 @@ public class AutoUpdateApk {
                 Notification notification = notificationB.build();
 
                 if (result[0].equalsIgnoreCase("have update")) {
-                    preferences.edit().putString(UPDATE_FILE, result[1]).commit();
+                    preferences.setUpdateFile(result[1]);
                     String updateFilePath = context.getFilesDir()
                             .getAbsolutePath() + "/" + result[1];
-                    preferences.edit().putString(MD5_KEY, MD5Hex(updateFilePath)).commit();
-                    preferences.edit().putLong(MD5_TIME, System.currentTimeMillis()).commit();
+
+                    preferences.setMd5Key(MD5Hex(updateFilePath));
+                    preferences.setMd5Time(System.currentTimeMillis());
                 }
                 notificationManager.notify(NOTIFICATION_ID, notification);
             } else {
@@ -328,7 +318,7 @@ public class AutoUpdateApk {
             }
             new CheckUpdateTask().execute();
             last_update = System.currentTimeMillis();
-            preferences.edit().putLong(LAST_UPDATE_KEY, last_update).commit();
+            preferences.setLastUpdate(last_update);
         }
     }
 
@@ -344,7 +334,7 @@ public class AutoUpdateApk {
 
         if (notificationManager == null) {
             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        }else {
+        } else {
             notificationManager.notify(NOTIFICATION_ID, notificationB.build());
         }
     }

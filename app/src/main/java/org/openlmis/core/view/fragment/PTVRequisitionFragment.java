@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -297,7 +298,9 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
     }
 
     private String getValue(Long vaule) {
-        return vaule == null ? "" : String.valueOf(vaule.longValue());
+        Log.d("caopeng","vaule="+vaule);
+        Log.d("caopeng","vaule.longValue="+vaule.longValue());
+        return vaule == null ? "" : String.valueOf(vaule);
     }
 
     @Override

@@ -45,9 +45,10 @@ public class SyncStockCardsLastYearSilently {
         List<Observable<SyncDownStockCardResponse>> tasks = new ArrayList<>();
         scheduler = SchedulerBuilder.createScheduler();
         int startMonth = sharedPreferenceMgr.getPreference().getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
+        Date now = getActualDate();
 
         for (int month = startMonth; month <= monthsInAYear; month++) {
-            Observable<SyncDownStockCardResponse> objectObservable = createObservableToFetchStockMovements(month);
+            Observable<SyncDownStockCardResponse> objectObservable = createObservableToFetchStockMovements(month,now);
             tasks.add(objectObservable);
         }
 
@@ -69,8 +70,7 @@ public class SyncStockCardsLastYearSilently {
         });
     }
 
-    private Observable<SyncDownStockCardResponse> createObservableToFetchStockMovements(int month) {
-        Date now = getActualDate();
+    private Observable<SyncDownStockCardResponse> createObservableToFetchStockMovements(int month,Date now) {
         final String startDateStr = getStartDate(now, month);
         final String endDateStr = getEndDate(now, month);
 

@@ -7,5 +7,4 @@
     <bool name="ga_dryRun">true</bool>
     <string name="app_name">@string/app_name_in_uat</string>
     <string name="app_time_out">3600000</string>
-    <string name="appcenter_app_key" translatable="false">6344c759-adee-478f-98b5-c5ccbf948189</string>
 </resources>

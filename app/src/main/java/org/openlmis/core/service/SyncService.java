@@ -52,7 +52,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class SyncService extends Service {
     private static final Object SYNC_ADAPTER_LOCK = new Object();
-    private static SyncAdapter syncAdapter = null;
+    private SyncAdapter syncAdapter = null;
     private final String tag = "SyncService";
 
     @Inject

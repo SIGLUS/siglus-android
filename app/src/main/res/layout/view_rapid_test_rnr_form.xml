@@ -15,7 +15,7 @@
                 android:layout_width="@dimen/rapid_view_basic_form_item_width"
                 android:layout_height="match_parent"
                 android:background="#0ff"
-                android:orientation="vertical"></LinearLayout>
+                android:orientation="vertical" />
         </ScrollView>
 
         <org.openlmis.core.view.widget.RnrFormHorizontalScrollView

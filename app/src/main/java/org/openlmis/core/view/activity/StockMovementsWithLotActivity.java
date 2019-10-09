@@ -51,6 +51,7 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.Arrays;
 import java.util.List;
 
 import roboguice.inject.ContentView;
@@ -276,6 +277,9 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
                             }
                         }).toArray(String.class);
                         newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), selections);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("select", "dd");
+//                        newMovementDialog.setArguments(bundle);
                         newMovementDialog.show(getFragmentManager(), "");
                         break;
                 }

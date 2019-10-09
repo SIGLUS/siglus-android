@@ -76,6 +76,12 @@ public class SharedPreferenceMgr {
     public static final String MONTH_OFFSET_DEFINED_OLD_DATA = "month_offset_that_defined_old_data";
     public static final String KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR = "stock_card_last_year_sync_error";
     public static final String KEY_HAS_COPIED_TRAINING_DB = "has_copied_training_db";
+    public static final String KEY_LAST_UPDATE = "last_update";
+    public static final String KEY_MD5_TIME = "md5_time";
+    public static final String KEY_MD5_Key = "md5";
+    public static final String KEY_UPDATE_FILE = "updateFile";
+    public static final String KEY_SILENT_FAILED = "silent_failed";
+    public static final String KEY_DOWNLOADED_LATEST_VERSIONCODE = "downloaded_latest_versioncode";
     final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
 
@@ -317,5 +323,37 @@ public class SharedPreferenceMgr {
 
     public boolean isStockCardLastYearSyncError() {
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR, false);
+    }
+    public long getLastUpdate() {
+        return sharedPreferences.getLong(KEY_LAST_UPDATE,0);
+    }
+    public void setLastUpdate(Long val) {
+        sharedPreferences.edit().putLong(KEY_LAST_UPDATE,val).apply();
+    }
+    public long getMd5Time() {
+        return sharedPreferences.getLong(KEY_MD5_TIME,0);
+    }
+    public void setMd5Time(Long val){
+        sharedPreferences.edit().putLong(KEY_MD5_TIME,val).apply();
+    }
+    public String getMd5Key() {
+        return sharedPreferences.getString(KEY_MD5_Key,"0");
+    }
+    public void setMd5Key(String val){
+        sharedPreferences.edit().putString(KEY_MD5_Key,val).apply();
+    }
+    public String getUpdateFile(){
+        return sharedPreferences.getString(KEY_UPDATE_FILE,"");
+    }
+    public void setUpdateFile(String val) {
+        sharedPreferences.edit().putString(KEY_UPDATE_FILE,val).apply();
+    }
+    public void removeDownloadInfo() {
+        sharedPreferences.edit().remove(KEY_UPDATE_FILE)
+                .remove(KEY_SILENT_FAILED)
+                .remove(KEY_DOWNLOADED_LATEST_VERSIONCODE).apply();
+    }
+    public void setLastestVersionCode(int val){
+        sharedPreferences.edit().putInt(KEY_DOWNLOADED_LATEST_VERSIONCODE,val).apply();
     }
 }

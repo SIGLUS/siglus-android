@@ -53,14 +53,14 @@ public final class DateUtil {
     public static final String ISO_BASIC_DATE_TIME_FORMAT = "yyyyMMdd'T'HHmmss.SSSZ";
     public static final int DAY_PERIOD_END = 20;
 
-
-    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
-    public static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat(DATE_TIME_FORMAT);
-    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR = new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH);
-    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-    public static final SimpleDateFormat DATE_FORMAT_MONTH_AND_YEAR_SHORT = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR_SHORT);
-    public static final SimpleDateFormat DATE_FORMAT_MONTH_AND_YEAR_LONG = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR_LONG);
     private static Locale locale = Locale.getDefault();
+
+    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT, locale);
+    public static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat(DATE_TIME_FORMAT, locale);
+    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR = new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH, locale);
+    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR, locale);
+    public static final SimpleDateFormat DATE_FORMAT_MONTH_AND_YEAR_SHORT = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR_SHORT, locale);
+    public static final SimpleDateFormat DATE_FORMAT_MONTH_AND_YEAR_LONG = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR_LONG, locale);
 
     public static final long MILLISECONDS_MINUTE = 60000;
     public static final long MILLISECONDS_HOUR = 3600000;
