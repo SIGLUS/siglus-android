@@ -92,7 +92,7 @@ public class TreatmentBuilder {
         }
     };
 
-    public static final List<Treatment> createDefaultTreatments() {
+    public static List<Treatment> createDefaultTreatments() {
         return newArrayList(make(a(treatment6x1)),
                 make(a(treatment6x2)),
                 make(a(treatment6x3)),

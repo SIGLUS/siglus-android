@@ -6,7 +6,6 @@
     android:paddingStart="200dp">
 
     <include
-        android:id="@+id/requisition_body_header"
         layout="@layout/layout_requisition_header_right"
         android:layout_width="1200dp"
         android:layout_height="wrap_content" />

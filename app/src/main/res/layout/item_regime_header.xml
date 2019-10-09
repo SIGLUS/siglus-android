@@ -7,7 +7,6 @@
     android:minHeight="@dimen/mmia_ragime_title_minHeight">
 
     <TextView
-        android:id="@+id/tv_name_title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -15,7 +14,6 @@
         android:text="@string/label_regime_header_name" />
 
     <TextView
-        android:id="@+id/et_total_title"
         android:layout_width="@dimen/mmia_spread_item_common_width"
         android:layout_height="match_parent"
         android:background="@null"

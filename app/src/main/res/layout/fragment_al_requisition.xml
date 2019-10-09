@@ -104,7 +104,6 @@
                                 android:text="@string/msg_treatments_month" />
 
                             <include
-                                android:id="@+id/view_al_header_item"
                                 layout="@layout/view_al_header_item"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
@@ -124,7 +123,6 @@
                                 android:text="@string/msg_existing_stock_month" />
 
                             <include
-                                android:id="@+id/view_al_header_item"
                                 layout="@layout/view_al_header_item"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"

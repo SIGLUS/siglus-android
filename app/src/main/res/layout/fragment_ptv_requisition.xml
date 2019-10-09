@@ -40,7 +40,6 @@
         android:layout_toEndOf="@+id/ptv_left_header">
 
         <RelativeLayout
-            android:id="@+id/scrollView_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/border_black">

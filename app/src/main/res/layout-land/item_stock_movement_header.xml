@@ -78,7 +78,6 @@
             android:text="@string/label_stock_existence"/>
 
         <TextView
-            android:id="@+id/tx_requested"
             android:minWidth="@dimen/stock_movement_item_common_width"
             android:layout_width="0dp"
             android:layout_weight="1"

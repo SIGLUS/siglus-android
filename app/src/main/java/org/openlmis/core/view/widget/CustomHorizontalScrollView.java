@@ -40,7 +40,9 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mPrevY = MotionEvent.obtain(event).getY();
+                MotionEvent down = MotionEvent.obtain(event);
+                mPrevY = down.getY();
+                down.recycle();
                 break;
 
             case MotionEvent.ACTION_MOVE:

@@ -43,7 +43,6 @@
         android:layout_toEndOf="@+id/vg_rapid_test_report_body_left_header">
 
         <RelativeLayout
-            android:id="@+id/rl_rapid_test_form"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/border_left_black_bold">
@@ -81,7 +80,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/rv_observation_row_item_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/repid_view_item_line_heigh"
         android:layout_below="@+id/vg_rapid_test_report_body_left_header"
@@ -106,7 +104,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/rv_observation_content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/border_right_black_bold">

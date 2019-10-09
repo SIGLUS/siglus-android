@@ -19,7 +19,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -264,7 +263,6 @@ public class AutoUpdateApk {
                 return;
             }
             if (result != null) {
-                Log_v(TAG, "111 reply from update server, and saved ");
                 notificationManager.cancel(NOTIFICATION_ID);
 
                 String updateFile = preferences.getUpdateFile();
@@ -273,9 +271,9 @@ public class AutoUpdateApk {
                         Uri.parse("file://" + context.getFilesDir().getAbsolutePath() + "/" + updateFile), ANDROID_PACKAGE);
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
                         notificationIntent, 0);
-                notificationB.setContentTitle("Download Completed")
+                notificationB.setContentTitle(getString(R.string.upgrade_download_complete))
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentText("Click to install")
+                        .setContentText(getString(R.string.upgrade_download_click_install))
                         .setPriority(NotificationCompat.DEFAULT_ALL)
                         .setProgress(0, 0, false)
                         .setOngoing(false)
@@ -293,18 +291,22 @@ public class AutoUpdateApk {
                 }
                 notificationManager.notify(NOTIFICATION_ID, notification);
             } else {
-                notificationB.setContentTitle("Download Failed")
+                notificationB.setContentTitle(getString(R.string.upgrade_download_Failed))
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentText("Please try later")
+                        .setContentText(getString(R.string.upgrade_download_try))
                         .setPriority(NotificationCompat.DEFAULT_ALL)
                         .setContentIntent(null)
                         .setProgress(0, 0, false)
                         .setOngoing(false)
                         .setAutoCancel(true);
                 notificationManager.notify(NOTIFICATION_ID, notificationB.build());
-                Log_v(TAG, "1 no reply from update server ");
             }
         }
+    }
+
+
+    private String getString(int id) {
+        return context.getString(id);
     }
 
     private void checkUpdates(boolean forced) {
@@ -325,8 +327,8 @@ public class AutoUpdateApk {
     private void initNotification() {
         notificationB = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Download")
-                .setContentText("Download in progress")
+                .setContentTitle(getString(R.string.upgrade_download_title))
+                .setContentText(getString(R.string.upgrade_download_msg))
                 .setPriority(NotificationCompat.DEFAULT_ALL)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
@@ -389,10 +391,6 @@ public class AutoUpdateApk {
 
     protected void Log_d(String tag, String message, Throwable e) {
         log("d", tag, message, e);
-    }
-
-    protected void Log_w(String tag, String message, Throwable e) {
-        log("w", tag, message, e);
     }
 
     protected void Log_e(String tag, String message) {

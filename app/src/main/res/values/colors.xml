@@ -3,7 +3,6 @@
     <color name="color_primary_dark">#388E3C</color>
     <color name="color_primary">#4CAF50</color>
     <color name="color_primary_50">#504CAF50</color>
-    <color name="color_primary_light">#C8E6C9</color>
     <color name="color_accent">#536DFE</color>
 
     <color name="color_amber">#FFC107</color>
@@ -21,8 +20,6 @@
     <color name="color_red_dark">#D32F2F</color>
     <color name="color_material_blue_gray">#607D8B</color>
     <color name="color_material_blue_gray_dark">#455A64</color>
-
-    <color name="color_lime">#CDDC39</color>
 
     <color name="color_divider">#B6B6B6</color>
     <color name="color_page_gray">#EAEAEA</color>
@@ -43,7 +40,6 @@
     <color name="color_regime_baby">#FFFF81</color>
     <color name="color_regime_other">#DAEEF3</color>
 
-    <color name="color_warning">#FFDE80</color>
     <color name="color_draft_title">#889E9E9E</color>
     <color name="color_select_title">#9E9E9E</color>
     <color name="color_warning_banner">#FCF8E2</color>
@@ -58,14 +54,6 @@
     <color name="color_box_bg_red">#E8D5D3</color>
     <color name="color_box_border_red">#E1BFC5</color>
     <color name="color_box_text_red">#9D3B3B</color>
-
-    <color name="color_box_bg_blue">#DAEDF6</color>
-    <color name="color_box_border_blue">#C3E7F1</color>
-    <color name="color_box_text_blue">#186D8C</color>
-
-    <color name="color_box_bg_yellow">#F8F4DB</color>
-    <color name="color_box_border_yellow">#F5E8C2</color>
-    <color name="color_box_text_yellow">#7B602E</color>
 
     <color name="color_add_lot_page_expire_date_warning_border">#F5E8C2</color>
     <color name="color_add_lot_page_expire_date_warning_background">#F8F4DB</color>

@@ -56,7 +56,6 @@
                     tools:text="@string/label_dummy_sho_amount" />
 
                 <TextView
-                    android:id="@+id/tv_soh"
                     style="@style/Text.Gray.Normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -75,7 +74,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_batch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/tv_batch"

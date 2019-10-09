@@ -78,7 +78,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_HAS_COPIED_TRAINING_DB = "has_copied_training_db";
     public static final String KEY_LAST_UPDATE = "last_update";
     public static final String KEY_MD5_TIME = "md5_time";
-    public static final String KEY_MD5_Key = "md5";
+    public static final String KEY_MD5_KEY = "md5";
     public static final String KEY_UPDATE_FILE = "updateFile";
     public static final String KEY_SILENT_FAILED = "silent_failed";
     public static final String KEY_DOWNLOADED_LATEST_VERSIONCODE = "downloaded_latest_versioncode";
@@ -337,10 +337,10 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putLong(KEY_MD5_TIME,val).apply();
     }
     public String getMd5Key() {
-        return sharedPreferences.getString(KEY_MD5_Key,"0");
+        return sharedPreferences.getString(KEY_MD5_KEY,"0");
     }
     public void setMd5Key(String val){
-        sharedPreferences.edit().putString(KEY_MD5_Key,val).apply();
+        sharedPreferences.edit().putString(KEY_MD5_KEY,val).apply();
     }
     public String getUpdateFile(){
         return sharedPreferences.getString(KEY_UPDATE_FILE,"");

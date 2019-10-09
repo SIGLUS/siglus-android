@@ -51,7 +51,6 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.Arrays;
 import java.util.List;
 
 import roboguice.inject.ContentView;

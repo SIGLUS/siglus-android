@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="action_settings">Settings</string>
 
     <string name="title_home">Home Page</string>
-    <string name="title_login">Login</string>
     <string name="title_init_inventory">Initial Inventory</string>
     <string name="title_physical_inventory">Inventory</string>
     <string name="title_stock_cards">Stock Overview</string>
@@ -19,34 +17,24 @@
     <string name="btn_login">LOG IN</string>
     <string name="msg_empty_user">User name and password cannot be blank</string>
     <string name="msg_invalid_user">Username or Password is incorrect.</string>
-    <string name="msg_user_not_facility">No facility for this user, please contact your administrator.</string>
-    <string name="msg_save_products_failed">Save products to local Database failed</string>
     <string name="msg_sync_products_list_failed">Download of products from the server failed, please login again.</string>
     <string name="msg_sync_report_type_failed">Download of report types from the server failed, please login again.</string>
-    <string name="msg_save_kit_products_failed">Save Kit failed because there are some products which do not exist</string>
-    <string name="init_product_error">Initial Data Error,Please Retry</string>
     <string name="msg_sync_stock_movements_data">Synchronizing stock movement data</string>
     <string name="msg_fetching_products">Downloading product list…</string>
     <string name="msg_fetching_programs">Downloading programs…</string>
     <string name="msg_sync_program_failed">Download of program the server failed, please login again.</string>
     <string name="msg_service_lists">Downloading list of services...</string>
-    <string name="msg_fetching_Report_Type">Downloading Report type…</string>
     <string name="msg_sync_requisition_data">Synchronizing requisition data</string>
     <string name="msg_sync_requisition_failed">Download of requisition data failed, please login again.</string>
     <string name="msg_sync_stock_movement_failed">Download of stock movement data failed, please login again.</string>
     <string name="msg_initial_sync_success">Initial sync successful. Tablet is ready for use.</string>
-    <string name="msg_download_archived_products_fail">Download of archived products failed, please login again.</string>
     <string name="version_number"><![CDATA[Version <b>%1$s</b>]]> </string>
 
     <!-- Init Inventory -->
-    <string name="hint_quantity_in_stock">Stock Existente</string>
-    <string name="label_expire_date">Expiration Date</string>
     <string name="label_dummy_product">Paracetamol</string>
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantity cannot be blank!</string>
-    <string name="msg_invalid_date">Cannot select past month</string>
     <string name="btn_done">VERIFIED</string>
-    <string name="msg_remove_expire_date">Are you sure you want to remove this expiry date?</string>
     <string name="msg_save_before_exit">Please save initial inventory before exiting the app</string>
     <string name="btn_no_stock">NO STOCK</string>
     <string name="btn_add_product">Add Products</string>
@@ -61,7 +49,6 @@
     <!-- Home Page -->
     <string name="label_stock_cards">Stock Card Overview</string>
     <string name="label_kits_stock_cards">KITS</string>
-    <string name="label_mmia">Create a MMIA</string>
     <string name="label_sync">Sync Data</string>
     <string name="action_add_new_drug">Add new product</string>
     <plurals name="minute_unit">
@@ -94,7 +81,6 @@
     <string name="total_title">Total patients</string>
     <string name="total_pharmacy">Comunitary pharmacy</string>
     <string name="ape">APEs</string>
-    <string name="label_mmia_info_header_name">TYPE</string>
     <string name="label_mmia_speed_info_header">Number of patients on ART</string>
     <string name="hint_mmia_comment">Observations</string>
     <string name="mmia_comment_should_not_empty">MMIA comment should not empty</string>
@@ -117,8 +103,6 @@
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
     <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved,\n and will submit automatically when you have a data connection </string>
-    <string name="hint_mmia_total_not_equal">Total Therapeutic Regime does not equal Total Patients</string>
-    <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
     <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for mismatch between regime & patient totals]]></string>
     <string name="msg_regime_total_and_patient_total_not_match">The regime and patient totals do not match. Please correct your figures or add a comment that explains why the totals differ</string>
     <string name="btn_ok">OK</string>
@@ -142,13 +126,8 @@
     <string name="title_stock_move_ment">Stock Movements</string>
     <string name="title_inventory_info">Inventory</string>
     <string name="label_consultation">No. of External Consultations Performed</string>
-    <string name="label_kits_received">No. of Kits Received</string>
-    <string name="label_kits_opened">No. of Kits Opened</string>
-    <string name="label_us">HF</string>
-    <string name="label_ape">CHW</string>
     <string name="label_initial_amount_requisition">Stock at Beginning of Period</string>
     <string name="label_received_requisition">Sum of Entries</string>
-    <string name="label_issued_requisition">Sum of Issues</string>
     <string name="label_theoretical">Theoretical Stock at End of Period</string>
     <string name="label_total_requisition">Total Requested</string>
     <string name="label_different">Difference</string>
@@ -158,9 +137,6 @@
     <string name="label_fnm">FNM</string>
     <string name="label_product_codes">Product Codes</string>
     <string name="label_product_name">Product Name</string>
-    <string name="msg_low_stock_warning">Your product has low stock.</string>
-    <string name="msg_over_stock_warning">Your product is overstock.</string>
-    <string name="msg_stock_out_warning">Your product is stocked out.</string>
     <string name="msg_requisition_submit_tip">Your Requisition form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
     <string name="btn_approve">Approve</string>
@@ -210,13 +186,10 @@
     <string name="initialStockLevel">Initial Stock Level</string>
     <string name="totalPtv">TOTALS/Partials</string>
     <string name="typePatient">Type of Patient</string>
-    <string name="totalWomen">Total Women:</string>
-    <string name="TotalChildren">Total de Children:</string>
     <string name="msg_requisition_signature_message_notify_ptv">Please hand the device to the person responsible for approval and submission of PTV</string>
 
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>
-    <string name="label_default">-</string>
     <string name="label_movement_date">Date of Movement</string>
     <string name="label_reason">Origin/Destination of Movement</string>
     <string name="label_document_no">Document Number</string>
@@ -226,18 +199,13 @@
     <string name="label_requested">Requested</string>
     <string name="label_signature">Signature</string>
     <string name="btn_cancel">CANCEL</string>
-    <string name="btn_do_not_remove">Cancel</string>
-    <string name="msg_validation_error">Invalid Input</string>
-    <string name="msg_validation_empty_error">Data missing from required field</string>
     <string name="msg_invalid_stock_movement_date">Invalid date</string>
     <string name="msg_db_error">An unexpected error has occurred. Please contact your administrator.</string>
     <string name="msg_entries_error">Should input a positive number. 0 is not permitted.</string>
     <string name="label_cmm">C.M.M.</string>
     <string name="label_validate_period">Expiry Date</string>
     <string name="label_lot_info">Lot Information</string>
-    <string name="btn_add_expiry_date">+ Expiry Date</string>
     <string name="menu_item_stock_movement_history">Movement History</string>
-    <string name="menu_item_kit_unpack">Unpack Kit</string>
     <string name="title_add_new_drug">Add new product</string>
     <string name="hint_signature">Enter your initials</string>
     <string name="hint_product_deactivated">This product has been deactivated and is not available to reorder</string>
@@ -301,23 +269,15 @@
         <item>Sort by quantity: Low to High</item>
     </string-array>
     <string name="hint_update_banner_tips">%1$s has been deactivated and removed to the <![CDATA[<b>archived drug</b>]]> list</string>
-    <string name="msg_expiry_warning">This product has stock expiring soon. Please check product expiry dates.</string>
-    <string name="msg_expired_warning">This product has expired stock. Please check product expiry dates.</string>
     <string name="msg_expiring_date">Expiring %1$s</string>
     <string name="msg_expired_date">Expired %1$s</string>
-    <string name="msg_over_stock">Over Stock</string>
     <string name="msg_regular_stock">Regular Stock</string>
-    <string name="msg_stock_out">Stock Out</string>
-    <string name="msg_low_stock">Low Stock</string>
 
     <!-- Physical Inventory Page -->
-    <string name="label_physical_inventory_stock_on_hand">Current stock on hand:</string>
     <string name="label_physical_inventory_title_stock_on_hand">Stock Existente</string>
 
     <!-- Unpack Kit -->
     <string name="kit_number">Unpacking: %1$d %2$s kit</string>
-    <string name="hint_quantity_in_unpack_kit">Quantity received</string>
-    <string name="label_unpack_kit_quantity_expected">Quantity expected</string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected. Please recheck it</string>
     <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Larger</b>]]> quantity entered than expected. Please recheck it</string>
     <string name="text_quantity_expected">%1$s expected</string>
@@ -328,7 +288,6 @@
 
     <!-- Server Sync Errors -->
     <string name="sync_server_error">Sync failed due to technical problem on the server. Please contact system administrator.</string>
-    <string name="default_sync_data_error">Sync failed due to unknown error while syncing requisition. Please contact system administrator.</string>
     <string name="rnr_previous_not_filled">Sync failed due to requisition missing from previous period. Please contact system administrator.</string>
     <string name="period_configuration_missing">Sync failed due to missing server configuration for this period. Please contact system administrator.</string>
     <string name="product_code_invalid">Sync failed due attempted submission of invalid product in form %1$s. Please contact system administrator.</string>
@@ -347,7 +306,7 @@
     <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b>No %1$s has been created.</b>]]> Complete your inventory before creating a %2$s </string>
     <string name="btn_view_uncompleted_physical_inventory">Complete Inventory</string>
     <string name="label_select_close_of_period"><![CDATA[Please select an inventory from the list below. Only inventories made on or between the <b>18th</b> and the <b>25th</b> of <b>%1$s</b> can be used to close the period. Today\'s date is <b>%2$s</b>]]></string>
-    <string name="label_training_select_close_of_period"><![CDATA[Please select an inventory from the list below. Today\'s date is <b>%2$s</b>]]></string>
+    <string name="label_training_select_close_of_period"><![CDATA[Please select an inventory from the list below. Today\'s date is <b>%1$s</b>]]></string>
     <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b>No MMIA has been created.</b>]]></string>
     <string name="label_completed_physical_inventory_message"><![CDATA[<b>No %1$s has been created.</b>]]></string>
     <string name="btn_view_completed_physical_inventory">Create %1$s</string>
@@ -366,7 +325,6 @@
     <string name="label_period_date">%1$s  to  %2$s</string>
     <string name="label_emergency_date">Emergency Requisition – %s</string>
     <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>You will be able to create a MMIA on the 18th of %1$s</b>]]> </string>
-    <string name="label_training_can_not_create_mmia_rnr"><![CDATA[<b>You will be able to create a MMIA in the next period</b>]]></string>
     <string name="label_training_can_not_create_rapid_Test_rnr"><![CDATA[<b>You will be able to create a Rapid Test in the next period</b>]]></string>
     <string name="label_can_not_create_report_rnr"><![CDATA[<b>You will be able to create a %1$s on the 18th of %2$s</b>]]> </string>
     <string name="label_training_can_not_create_report_rnr"><![CDATA[<b>You will be able to create a %1$s in the next period</b>]]> </string>
@@ -375,11 +333,6 @@
     <string name="Rapid_Test_missed_period"><![CDATA[<b>Rapid Test is overdue and no inventory was taken.</b> A requisition will be automatically generated using the stock on hand amounts at the close of the period]]></string>
     <string name="btn_select_close_period">SElECT CLOSE OF PERIOD</string>
     <string name="label_create_emergency_rnr">Create emergency requisition</string>
-
-    <string name="label_incomplete_requisition_old">This <![CDATA[<b>%1$s</b>]]> is incomplete. To complete it, select \"Create a %1$s\" on the home page</string>
-
-    <string name="btn_requisition_list_old">See Requisition Balancete History</string>
-    <string name="btn_mmia_list_old">See previous MMIAs History</string>
 
     <string name="mmia_list">MMIA</string>
     <string name="requisition_list">Requisitions</string>
@@ -391,7 +344,6 @@
     <!-- Signature -->
     <string name="dialog_request_signature">Enter your initials to sign the movement</string>
     <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_request_signature_sign">Approve</string>
     <string name="label_physical_inventory_signature_title">Enter your initials to sign all inventory movements</string>
     <string name="hint_signature_error_message">Enter more than 2 characters as your initials (maximum 5 characters)</string>
     <string name="dialog_unpack_kit_signature">Please enter your initials to confirm the amounts entered &amp; unpack the kit</string>
@@ -422,9 +374,6 @@
     <string name="hint_more_than_limit_product_has_checked">You can only select 1 products for regime</string>
 
     <!-- update notification text-->
-    <string name="app_update_suffix"> update</string>
-    <string name="select_to_install">Select to install</string>
-    <string name="update_available"> update available</string>
 
     <string name="action_wipe_data">Re-sync data from server</string>
     <string name="message_warning_wipe_data">This operation will remove all the data from this device &amp; download previously submitted data back down to the tablet, \n WARNING \n Any un-synced movements or data will be lost. Do you want to continue?</string>
@@ -489,13 +438,11 @@
     <string name="label_lot_number">What is the lot number?</string>
     <string name="hint_lot_number">Lot number</string>
     <string name="label_add_lot_expire">When does the lot expire?</string>
-    <string name="msg_empty_lot_number">Lot number can not be blank.</string>
     <string name="wrong_expire_date_warning">The expiry date that you have entered is in the past. Please double check the date before adding the lot.</string>
     <string name="btn_add_new_lot">Add New Lot</string>
     <string name="title_add_new_lot">Add new lot to</string>
     <string name="hint_lot_info"><![CDATA[Lot number & expiry date]]></string>
     <string name="hint_lot_amount">Amount</string>
-    <string name="hint_soh_of_lot">Stock on hand of lot</string>
     <string name="label_existing_soh_of_lot">Existing stock on hand of lot</string>
     <string name="label_new_added_lot">Lot was just added and has no stock on hand</string>
     <string name="empty_lot_warning">Please add a new lot</string>
@@ -506,7 +453,6 @@
     <string name="msg_no_lot_for_issue">No existing lot for you to issue or do negative adjustment</string>
     <string name="error_lot_already_exists">The lot already exists, please add a new one.</string>
 
-    <string name="msg_draft_saved">Draft saved successfully</string>
     <string name="alert_soonest_expire">Your movement includes a batch that is not the first to expire</string>
     <string name="msg_export_data_success">Data are successfully exported and saved to <![CDATA[<b>%1$s</b>]]></string>
     <string name="action_export_data">Export all app data</string>
@@ -521,7 +467,6 @@
     <string name="title_generate_lot_number">Auto generate lot number for new lot?</string>
     <string name="btn_confirm_generate_lot_number">AUTO GENERATE LOT NUMBER</string>
     <string name="title_rapid_test_reports">Rapid Test</string>
-    <string name="msg_report_missing"><![CDATA[<b>No rapid test report has been created</b>]]></string>
     <string name="btn_create_rapid_test_period">CREATE RAPID TEST REPORT</string>
     <string name="title_rapid_test_form">Rapid Test Report</string>
     <string name="msg_sync_rapid_tests_failed">Sync Rapid Tests failed.</string>
@@ -553,7 +498,6 @@
     <string name="btn_create_malaria_report">Create malaria report</string>
     <string name="msg_patient_data_report_missing">No patient data report has been created</string>
     <string name="msg_us_ape">US/APE</string>
-    <string name="msg_total_sum_us_ape">Total US/APE</string>
     <string name="msg_arthemeter_lumefantrina">ARTEMÉTER-LUMEFANTRINA (AL)</string>
     <string name="msg_treatments_month">Nº Treatments Attended in this Month</string>
     <string name="msg_existing_stock_month">Existent Stock at the End of the Period</string>
@@ -569,14 +513,10 @@
     <string name="title_patient_data_report_form">PATIENT DATA REPORT</string>
     <string name="total_woman">Total Woman</string>
     <string name="total_child">Total Child</string>
-    <string name="service_name">Service Name</string>
-    <string name="signature">Signature</string>
     <string name="initial_stock">Initial Stock</string>
     <string name="drug_name">Drug Name</string>
     <string name="entries">Entries</string>
-    <string name="losses_and_adjustments">Losses and Adjustments</string>
     <string name="loss_and_adjustment">Loss and Adjustment</string>
-    <string name="requisition">Requisition</string>
     <string name="final_stock">Final Stock</string>
     <string name="loading_report_information">Loading report information</string>
     <string name="report_submitted_synced_pending_message">Your report was <![CDATA[<b>submitted successfully </b>]]>, but is still pending for synchronization. It will sync as soon as you have internet connection</string>
@@ -608,4 +548,11 @@
         <item>Last 180 days</item>
         <item>Last 365 days</item>
     </string-array>
+
+    <string name="upgrade_download_complete">Download Completed</string>
+    <string name="upgrade_download_title">Download</string>
+    <string name="upgrade_download_msg">Download in progress</string>
+    <string name="upgrade_download_Failed">Download Failed</string>
+    <string name="upgrade_download_try">Please try later</string>
+    <string name="upgrade_download_click_install">Click to install</string>
 </resources>

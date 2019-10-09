@@ -159,10 +159,6 @@
         <item name="android:textColor">@color/color_text_secondary</item>
     </style>
 
-    <style name="Text.Gray.Small">
-        <item name="android:textSize">@dimen/font_size_small</item>
-    </style>
-
     <style name="Text.Gray.Regular">
         <item name="android:textSize">@dimen/font_size_regular</item>
     </style>
@@ -173,14 +169,6 @@
 
     <style name="Text.Gray.Medium">
         <item name="android:textSize">@dimen/font_size_medium</item>
-    </style>
-
-    <style name="Text.Gray.Large">
-        <item name="android:textSize">@dimen/font_size_large</item>
-    </style>
-    
-    <style name="Text.LightGray">
-        <item name="android:textColor">@color/color_divider</item>
     </style>
 
     <style name="Text.White">
@@ -199,19 +187,11 @@
         <item name="android:textColor">@color/color_accent</item>
     </style>
 
-    <style name="Text.Blue.Small">
-        <item name="android:textSize">@dimen/font_size_small</item>
-    </style>
-
     <style name="Text.Blue.Regular">
         <item name="android:textSize">@dimen/font_size_regular</item>
     </style>
 
     <style name="Text.Blue.Normal">
-        <item name="android:textSize">@dimen/font_size_normal</item>
-    </style>
-
-    <style name="Text.Blue.Medium">
         <item name="android:textSize">@dimen/font_size_normal</item>
     </style>
 
@@ -242,11 +222,6 @@
     <style name="HorizontalLine">
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:background">@color/color_divider</item>
-    </style>
-    <style name="VerticalLine">
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_width">1dp</item>
         <item name="android:background">@color/color_divider</item>
     </style>
 </resources>

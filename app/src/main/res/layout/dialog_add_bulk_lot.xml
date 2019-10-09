@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/view_bulk_add_lot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="false">
@@ -17,7 +16,6 @@
 
         <TextView
             style="@style/Dialog.TitleLeft"
-            android:id="@+id/dialog_add_new_lot"
             android:layout_width="@dimen/lot_dialog_page_common_width"
             android:layout_height="wrap_content"
             android:textStyle="bold"

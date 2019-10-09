@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:fillViewport="true">
@@ -26,7 +26,6 @@
                     android:src="@mipmap/logo" />
 
                 <LinearLayout
-                    android:id="@+id/login_panel"
                     style="@style/Login.Panel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

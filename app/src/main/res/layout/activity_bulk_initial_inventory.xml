@@ -47,29 +47,25 @@
 
     </RelativeLayout>
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/action_panel"
         android:layout_below="@+id/headerRL">
 
-        <RelativeLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/products_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/fast_scroller"
+            android:scrollbars="vertical" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/products_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toStartOf="@+id/fast_scroller"
-                android:scrollbars="vertical" />
-
-            <com.viethoa.RecyclerViewFastScroller
-                android:id="@+id/fast_scroller"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true" />
-        </RelativeLayout>
+        <com.viethoa.RecyclerViewFastScroller
+            android:id="@+id/fast_scroller"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
     <include
