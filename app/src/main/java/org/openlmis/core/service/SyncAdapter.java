@@ -37,6 +37,7 @@ import org.openlmis.core.utils.Constants;
 import roboguice.RoboGuice;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
+    private static final String TAG = SyncAdapter.class.getSimpleName();
 
     @Inject
     SyncUpManager syncUpManager;
@@ -62,10 +63,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         User user = UserInfoMgr.getInstance().getUser();
         if (user == null) {
-            Log.d("SyncAdapter", "No user login, skip sync....");
+            Log.d(TAG, "No user login, skip sync....");
             return;
         }
-        Log.d("SyncAdapter", "===> Syncing Data to server");
+        Log.d(TAG, "===> Syncing Data to server");
         upgradeManager.triggerUpgrade();
         triggerSync();
     }
@@ -90,7 +91,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         syncUpManager.syncAppVersion();
         syncUpManager.syncUpCmms();
 
-        if(!sharedPreferenceMgr.shouldSyncLastYearStockData()) {
+        if (!sharedPreferenceMgr.shouldSyncLastYearStockData()) {
             sendSyncFinishedBroadcast();
         }
     }

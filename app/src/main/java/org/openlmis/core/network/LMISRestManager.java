@@ -84,7 +84,7 @@ public class LMISRestManager {
         RestAdapter.Builder restBuilder = new RestAdapter.Builder()
                 .setEndpoint(baseUrl)
                 .setErrorHandler(new APIErrorHandler())
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
                 .setRequestInterceptor(getRequestInterceptor())
                 .setClient(getSSLClient())
                 .setConverter(registerTypeAdapter());

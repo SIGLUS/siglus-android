@@ -122,7 +122,7 @@ public class LoginPresenterTest {
     public void shouldSaveUserToLocalDBWhenSuccess() throws InterruptedException {
         appInject.setNetworkConnection(true);
 
-        presenter.startLogin("user", "password");
+        presenter.startLogin("user", "password",false);
 
         verify(mockActivity).loading();
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
@@ -136,7 +136,7 @@ public class LoginPresenterTest {
     public void shouldSaveUserSupportedProgramsToLocalDBWhenSuccess() throws InterruptedException, LMISException {
         appInject.setNetworkConnection(true);
 
-        presenter.startLogin("user", "password");
+        presenter.startLogin("user", "password",false);
 
         verify(mockActivity).loading();
 
@@ -154,7 +154,7 @@ public class LoginPresenterTest {
     public void shouldCreateSyncAccountWhenLoginSuccess() {
         appInject.setNetworkConnection(true);
 
-        presenter.startLogin("user", "password");
+        presenter.startLogin("user", "password",false);
 
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
@@ -167,7 +167,7 @@ public class LoginPresenterTest {
     public void shouldSaveUserInfoWhenLoginSuccess() {
         appInject.setNetworkConnection(true);
 
-        presenter.startLogin("user", "password");
+        presenter.startLogin("user", "password",false);
 
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
@@ -182,7 +182,7 @@ public class LoginPresenterTest {
     public void shouldSyncServerDataWhenLoginSuccessFromNet() {
         appInject.setNetworkConnection(true);
 
-        presenter.startLogin("user", "password");
+        presenter.startLogin("user", "password",false);
 
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
         loginCB.getValue().success(userResponse, retrofitResponse);
@@ -214,7 +214,7 @@ public class LoginPresenterTest {
         SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
         SharedPreferenceMgr.getInstance().setLastSyncProductTime("time");
 
-        presenter.startLogin("user", "password");
+        presenter.startLogin("user", "password",false);
 
         verify(userRepository).mapUserFromLocal(any(User.class));
         assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
@@ -227,7 +227,7 @@ public class LoginPresenterTest {
         when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
 
-        presenter.startLogin("user", "password");
+        presenter.startLogin("user", "password",false);
 
         verify(userRepository).mapUserFromLocal(any(User.class));
         assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
@@ -239,7 +239,7 @@ public class LoginPresenterTest {
         appInject.setNetworkConnection(false);
         when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(null);
 
-        presenter.startLogin("user", "password");
+        presenter.startLogin("user", "password",false);
 
         verify(userRepository).mapUserFromLocal(any(User.class));
 
@@ -250,13 +250,13 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldShowUserNameEmptyErrorMessage() {
-        presenter.startLogin("", "password1");
+        presenter.startLogin("", "password1",false);
         verify(mockActivity).showUserNameEmpty();
     }
 
     @Test
     public void shouldShowPasswordEmptyErrorMessage() {
-        presenter.startLogin("user", "");
+        presenter.startLogin("user", "",false);
         verify(mockActivity).showPasswordEmpty();
     }
 

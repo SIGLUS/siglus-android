@@ -113,4 +113,7 @@ public interface LMISRestApi {
     Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
 
     Void syncUpMalariaPrograms(List<MalariaProgram> malariaPrograms) throws LMISException;
+
+    @GET("/rest-api/re-sync")
+    Void recordReSyncActionG() throws LMISException;
 }

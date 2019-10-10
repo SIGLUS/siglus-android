@@ -108,7 +108,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
         etUsername.setText(strUsername);
         etPassword.setText(strPassword);
-        startLogin();
+        startLogin(true);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     hideImm();
-                    startLogin();
+                    startLogin(false);
                     return true;
                 }
                 return false;
@@ -213,15 +213,15 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         etUsername.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     }
 
-    private void startLogin() {
-        presenter.startLogin(etUsername.getText().toString(), etPassword.getText().toString());
+    private void startLogin(boolean fromReSync) {
+        presenter.startLogin(etUsername.getText().toString(), etPassword.getText().toString(), fromReSync);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
-                startLogin();
+                startLogin(false);
                 break;
             case R.id.iv_visibility_pwd:
                 setPwdVisibility();

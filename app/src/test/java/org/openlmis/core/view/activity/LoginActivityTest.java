@@ -74,7 +74,7 @@ public class LoginActivityTest {
 
         loginActivity.btnLogin.performClick();
 
-        verify(mockedPresenter).startLogin("superuser", "super@password");
+        verify(mockedPresenter).startLogin("superuser", "super@password",false);
     }
 
     @Test

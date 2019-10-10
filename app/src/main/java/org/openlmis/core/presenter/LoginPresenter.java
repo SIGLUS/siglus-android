@@ -103,7 +103,7 @@ public class LoginPresenter extends Presenter {
         this.view = (LoginView) v;
     }
 
-    public void startLogin(String userName, String password) {
+    public void startLogin(String userName, String password, boolean fromReSync) {
         hasGoneToNextPage = false;
         if (StringUtils.EMPTY.equals(userName.trim())) {
             view.showUserNameEmpty();
@@ -117,7 +117,7 @@ public class LoginPresenter extends Presenter {
 
         User user = new User(userName.trim(), password);
         if (LMISApp.getInstance().isConnectionAvailable() && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            authorizeAndLoginUserRemote(user);
+            authorizeAndLoginUserRemote(user, fromReSync);
         } else {
             authorizeAndLoginUserLocal(user);
         }
@@ -152,7 +152,7 @@ public class LoginPresenter extends Presenter {
         }
     }
 
-    private void authorizeAndLoginUserRemote(final User user) {
+    private void authorizeAndLoginUserRemote(final User user, final boolean fromReSync) {
         LMISApp.getInstance().getRestApi().authorizeUser(user, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
@@ -162,7 +162,7 @@ public class LoginPresenter extends Presenter {
                     userResponse.getUserInformation().setUsername(user.getUsername());
                     userResponse.getUserInformation().setPassword(user.getPassword());
 
-                    onLoginSuccess(userResponse);
+                    onLoginSuccess(userResponse,fromReSync);
                 }
             }
 
@@ -181,12 +181,24 @@ public class LoginPresenter extends Presenter {
         userRepository.createOrUpdate(response.getUserInformation());
     }
 
-    private void onLoginSuccess(UserResponse userResponse) {
+    private void onLoginSuccess(UserResponse userResponse, final boolean fromReSync) {
         Log.d(TAG, "Log in successful, setting up sync account");
         syncService.createSyncAccount(userResponse.getUserInformation());
 
         try {
             saveUserDataToLocalDatabase(userResponse);
+            if (fromReSync) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            LMISApp.getInstance().getRestApi().recordReSyncActionG();
+                        } catch (LMISException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
         } catch (LMISException e) {
             e.reportToFabric();
         }
@@ -201,7 +213,7 @@ public class LoginPresenter extends Presenter {
     }
 
     private void archiveOldData() {
-        if (! LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_old_data)) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_old_data)) {
             return;
         }
 
@@ -216,7 +228,8 @@ public class LoginPresenter extends Presenter {
                     rnrFormRepository.deleteOldData();
                     SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
                 }
-            }}).subscribeOn(Schedulers.io())
+            }
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(System.out::println, Throwable::printStackTrace);
 
@@ -287,7 +300,7 @@ public class LoginPresenter extends Presenter {
         return new Subscriber<List<StockCard>>() {
             @Override
             public void onCompleted() {
-                Log.d(TAG,"getSyncLastYearStockCardSubscriber onCompleted");
+                Log.d(TAG, "getSyncLastYearStockCardSubscriber onCompleted");
                 try {
                     syncDownManager.fetchKitChangeProduct();
                 } catch (LMISException e) {
@@ -331,7 +344,8 @@ public class LoginPresenter extends Presenter {
                     return;
                 }
                 subscriber.onNext(SyncLocalUserProgress.SyncLastDataSuccess);
-            }}).subscribeOn(Schedulers.io())
+            }
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
 
