@@ -187,6 +187,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             List<KitProduct> kitProducts = productRepository.queryKitProductByProductCode(product.getCode());
             for (KitProduct kitProduct : kitProducts) {
                 Product kit = productRepository.getByCode(kitProduct.getKitCode());
+                if (kit == null) {
+                    continue;
+                }
                 long kitSOH = getKitSOH(kit);
                 if (kitSOH != 0) {
                     list.add(new RnRFormItemAdjustmentViewModel(kitSOH, kitProduct.getQuantity(), kit.getPrimaryName()));

@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.inputmethod.EditorInfo;
@@ -92,6 +93,7 @@ public class ViaReportConsultationNumberView extends LinearLayout {
         etExternalConsultationsPerformed.setEms(ems);
         etExternalConsultationsPerformed.setImeOptions(EditorInfo.IME_ACTION_DONE);
         etExternalConsultationsPerformed.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+        etExternalConsultationsPerformed.setInputType(InputType.TYPE_CLASS_NUMBER);
         viaRnrHeader.setText(headerText);
     }
 

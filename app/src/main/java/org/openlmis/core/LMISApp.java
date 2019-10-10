@@ -25,6 +25,7 @@ import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -51,6 +52,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
 
 public class LMISApp extends Application {
@@ -69,6 +71,9 @@ public class LMISApp extends Application {
         RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
         setupAppCenter();
         setupGoogleAnalytics();
+        if(!BuildConfig.DEBUG) {
+            setupFabric();
+        }
 
         instance = this;
     }
@@ -83,8 +88,14 @@ public class LMISApp extends Application {
 
     private void setupAppCenter() {
         AppCenter.start(this, getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
-        AppCenter.setEnabled(!BuildConfig.DEBUG);
+        AppCenter.setEnabled(true);
         Analytics.setEnabled(true);
+    }
+
+    protected void setupFabric() {
+        Fabric.with(this, new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build());
     }
 
     public boolean isConnectionAvailable() {
