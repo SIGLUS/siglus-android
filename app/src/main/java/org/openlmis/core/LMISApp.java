@@ -30,6 +30,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -66,6 +67,7 @@ public class LMISApp extends Application {
         JodaTimeAndroid.init(this);
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
+        setupAppCenter();
         setupGoogleAnalytics();
 
         instance = this;
@@ -77,6 +79,12 @@ public class LMISApp extends Application {
 
     public static LMISApp getInstance() {
         return instance;
+    }
+
+    private void setupAppCenter() {
+        AppCenter.start(this, getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
+        AppCenter.setEnabled(!BuildConfig.DEBUG);
+        Analytics.setEnabled(true);
     }
 
     public boolean isConnectionAvailable() {
