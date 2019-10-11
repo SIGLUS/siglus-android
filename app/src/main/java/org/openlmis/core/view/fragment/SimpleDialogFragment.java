@@ -19,6 +19,7 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -80,6 +81,15 @@ public class SimpleDialogFragment extends RoboDialogFragment {
 
     public void setCallBackListener(MsgDialogCallBack listener) {
         mListener = listener;
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        //avoid the duplicate Dialog
+        if (manager != null && manager.findFragmentByTag(tag) != null) {
+            return;
+        }
+        super.show(manager, tag);
     }
 
     @Override
