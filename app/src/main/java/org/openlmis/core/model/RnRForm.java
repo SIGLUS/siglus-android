@@ -303,6 +303,11 @@ public class RnRForm extends BaseModel {
         return from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
+                return rnrFormItem.getProduct() != null;
+            }
+        }).filter(new Predicate<RnrFormItem>() {
+            @Override
+            public boolean apply(RnrFormItem rnrFormItem) {
                 return isKit.isKit() == rnrFormItem.getProduct().isKit();
             }
         }).toList();

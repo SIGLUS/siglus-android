@@ -124,7 +124,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     private void fakePopulateRequestApprovedAmount(RequisitionFormItemViewModel entry, RnRForm.STATUS status) {
         if (status == RnRForm.STATUS.SUBMITTED_MISSED) {
             status = RnRForm.STATUS.SUBMITTED;
-        } else if (status == RnRForm.STATUS.DRAFT_MISSED)  {
+        } else if (status == RnRForm.STATUS.DRAFT_MISSED) {
             status = RnRForm.STATUS.DRAFT;
         }
 
