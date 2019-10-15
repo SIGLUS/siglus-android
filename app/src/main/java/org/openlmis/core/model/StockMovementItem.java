@@ -103,11 +103,13 @@ public class StockMovementItem extends BaseModel {
     }
 
     public boolean isPositiveMovement() {
-        return movementType.equals(MovementReasonManager.MovementType.RECEIVE) || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
+        return movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+                || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
     }
 
     public boolean isNegativeMovement() {
-        return movementType.equals(MovementReasonManager.MovementType.ISSUE) || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
+        return movementType.equals(MovementReasonManager.MovementType.ISSUE)
+                || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
     }
 
     public Period getMovementPeriod() {
@@ -140,53 +142,60 @@ public class StockMovementItem extends BaseModel {
         return newAddedLotMovementItemListWrapper;
     }
 
-    public void populateLotQuantitiesAndCalculateNewSOH(List<LotMovementViewModel> lotMovementViewModelList, MovementReasonManager.MovementType movementType) {
+    public void populateLotQuantitiesAndCalculateNewSOH(List<LotMovementViewModel> lotMovementViewModelList,
+                                                        MovementReasonManager.MovementType movementType) {
         final StockMovementItem stockMovementItem = this;
         if (!lotMovementViewModelList.isEmpty()) {
-            setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
-                @Override
-                public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
-                    LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
-                    lotItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
-                    return lotItem;
-                }
-            }).toList());
-
             long movementQuantity = 0;
             for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
                 movementQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
             }
             setMovementQuantity(movementQuantity);
 
-            if (movementType.equals(MovementReasonManager.MovementType.ISSUE) || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
+            if (movementType.equals(MovementReasonManager.MovementType.ISSUE)
+                    || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
                 setStockOnHand(getStockOnHand() - movementQuantity);
             } else {
                 setStockOnHand(getStockOnHand() + movementQuantity);
             }
+            setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList)
+                .transform(new Function<LotMovementViewModel, LotMovementItem>() {
+                    @Override
+                    public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
+                        LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
+                        lotItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
+                        return lotItem;
+                    }
+                }).toList());
         }
     }
 
-    public void populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(List<LotMovementViewModel> existingLotMovementList, List<LotMovementViewModel> newAddedLotMovementList) {
+    public void populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(List<LotMovementViewModel> existingLotMovementList,
+                                                                               List<LotMovementViewModel> newAddedLotMovementList) {
         final StockMovementItem stockMovementItem = this;
-        ImmutableList<LotMovementItem> existingLotMovementItemList = FluentIterable.from(existingLotMovementList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
-            @Override
-            public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
-                LotMovementItem lotItem = lotMovementViewModel.convertViewToModelAndResetSOH(getStockCard().getProduct());
-                lotItem.setStockMovementItem(stockMovementItem);
-                lotItem.setStockOnHandReset(true);
-                return lotItem;
-            }
-        }).toList();
+        ImmutableList<LotMovementItem> existingLotMovementItemList = FluentIterable
+                .from(existingLotMovementList)
+                .transform(new Function<LotMovementViewModel, LotMovementItem>() {
+                    @Override
+                    public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
+                        LotMovementItem lotItem = lotMovementViewModel.convertViewToModelAndResetSOH(getStockCard().getProduct());
+                        lotItem.setStockMovementItem(stockMovementItem);
+                        lotItem.setStockOnHandReset(true);
+                        return lotItem;
+                    }
+                }).toList();
 
-        ImmutableList<LotMovementItem> newAddedLotMovementItemList = FluentIterable.from(newAddedLotMovementList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
-            @Override
-            public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
-                lotMovementViewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
-                LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
-                lotItem.setStockMovementItem(stockMovementItem);
-                return lotItem;
-            }
-        }).toList();
+        ImmutableList<LotMovementItem> newAddedLotMovementItemList = FluentIterable
+                .from(newAddedLotMovementList)
+                .transform(new Function<LotMovementViewModel, LotMovementItem>() {
+                    @Override
+                    public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
+                        lotMovementViewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+                        LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
+                        lotItem.setStockMovementItem(stockMovementItem);
+                        return lotItem;
+                    }
+                }).toList();
         setLotMovementItemListWrapper(existingLotMovementItemList);
         setNewAddedLotMovementItemListWrapper(newAddedLotMovementItemList);
     }
@@ -197,6 +206,9 @@ public class StockMovementItem extends BaseModel {
                 + ",reason=" + reason
                 + ",movementType=" + movementType
                 + ",productCode=" + stockCard.getProduct().getCode()
+                + ",stockOnHand=" + stockOnHand
+                + ",movementQuantity=" + movementQuantity
+                + ",stockCard.StockOnHand=" + stockCard.getStockOnHand()
                 + "]";
     }
 }

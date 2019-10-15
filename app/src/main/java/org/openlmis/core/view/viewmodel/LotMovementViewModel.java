@@ -133,22 +133,22 @@ public class LotMovementViewModel implements Serializable {
         return null;
     }
 
-    public int getAdjustmentQuantity() {
-        int returnInt = 0;
+    public long getAdjustmentQuantity() {
+        long returnLong = 0;
         try {
             if (StringUtils.isBlank(lotSoh)) {
-                returnInt = Integer.parseInt(quantity);
+                returnLong = Long.parseLong(quantity);
             }
-            returnInt = (Integer.parseInt(this.getQuantity()) - Integer.parseInt(this.getLotSoh()));
+            returnLong = (Long.parseLong(this.getQuantity()) - Long.parseLong(this.getLotSoh()));
         } catch (NumberFormatException e) {
             new LMISException(e).reportToFabric();
         }
-        return returnInt;
+        return returnLong;
     }
 
     @Override
     public String toString() {
-        return "LotMovementViewModel{"
+        return "LotMovementViewModel<"
                 + "lotNumber='" + lotNumber + '\''
                 + ", expiryDate='" + expiryDate + '\''
                 + ", quantity='" + quantity + '\''
@@ -158,6 +158,6 @@ public class LotMovementViewModel implements Serializable {
                 + ", quantityLessThanSoh=" + quantityLessThanSoh
                 + ", isDataChanged=" + isDataChanged
                 + ", isExpire=" + isExpiredLot()
-                + '}';
+                + '>';
     }
 }

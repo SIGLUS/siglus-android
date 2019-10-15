@@ -18,7 +18,7 @@ public class LotInfoReviewViewHolder extends BaseViewHolder {
     }
 
     public void populate(LotMovementViewModel viewModel) {
-        int adjustmentQuantity = viewModel.getAdjustmentQuantity();
+        long adjustmentQuantity = viewModel.getAdjustmentQuantity();
         if (adjustmentQuantity == 0) {
             tvLotInfoReview.setText(Html.fromHtml(context.getString(R.string.msg_physical_inventory_lot_review_no_adjustment, viewModel.getLotNumber())));
         } else if (adjustmentQuantity > 0) {
