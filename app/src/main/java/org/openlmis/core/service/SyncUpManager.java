@@ -181,6 +181,11 @@ public class SyncUpManager {
             final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
             List<StockMovementEntry> movementEntriesToSync = convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
 
+            if (movementEntriesToSync == null || movementEntriesToSync.isEmpty()) {
+                (new LMISException("SyncUpManager.movementEntriesToSync")).reportToFabric();
+                return false;
+            }
+
             lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
             markStockDataSynced(stockMovementItems);
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
@@ -349,12 +354,17 @@ public class SyncUpManager {
         }
     }
 
-    private List<StockMovementEntry> convertStockMovementItemsToStockMovementEntriesForSync(final String facilityId, List<StockMovementItem> stockMovementItems) {
+    private List<StockMovementEntry> convertStockMovementItemsToStockMovementEntriesForSync(final String facilityId,
+                                                                                            List<StockMovementItem> stockMovementItems) {
 
         return FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
             @Override
             public StockMovementEntry apply(StockMovementItem stockMovementItem) {
-                return new StockMovementEntry(stockMovementItem, facilityId);
+                if (stockMovementItem.getStockCard().getProduct() != null) {
+                    return new StockMovementEntry(stockMovementItem, facilityId);
+                } else {
+                    return null;
+                }
             }
         }).toList();
     }

@@ -34,6 +34,7 @@ import org.openlmis.core.service.SyncService;
 import roboguice.RoboGuice;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
+    private static final String TAG = NetworkChangeReceiver.class.getSimpleName();
 
     @Inject
     InternetCheck internetCheck;
@@ -41,7 +42,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         SyncService syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
-        if(internetCheck!=null) {
+        if (internetCheck != null) {
             internetCheck.execute(synchronizeListener(syncService));
         }
     }
@@ -52,13 +53,13 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             @Override
             public void launchResponse(Boolean internet) {
                 if (internet) {
-                    Log.d("NetworkChangeReceiver :", "network connected, start sync service...");
+                    Log.d(TAG, "network connected, start sync service...");
                     LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkConnected);
                     syncService.requestSyncImmediately();
                     syncService.kickOff();
                 } else {
-                    Log.d("Internet Connection", "there is no internet connection in network receiver");
-                    Log.d("NetworkChangeReceiver :", "network disconnect, stop sync service...");
+                    Log.d(TAG, "there is no internet connection in network receiver");
+                    Log.d(TAG, "network disconnect, stop sync service...");
                     LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkDisconnected);
                     syncService.shutDown();
                 }

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
@@ -135,7 +136,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
 
     private void showConfirmNoLotNumberDialog() {
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER, getString(R.string.msg_confirm_empty_lot_number, drugName.getText()));
+        bundle.putString(Constants.PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER, getString1(R.string.msg_confirm_empty_lot_number, drugName.getText()));
         final ConfirmGenerateLotNumberDialogFragment confirmDialog = new ConfirmGenerateLotNumberDialogFragment();
         confirmDialog.setArguments(bundle);
         confirmDialog.setPositiveClickListener(new SingleClickButtonListener() {
@@ -149,6 +150,31 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         confirmDialog.show(getFragmentManager(), "confirm generate lot number");
     }
 
+    private String getString1(int resId) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            if (getContext() != null) {
+                return getString(resId);
+            } else {
+                return "Unkown";
+            }
+        } else {
+            return getString(resId);
+        }
+
+    }
+
+    private String getString1(int resId, Object... formatArgs) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            if (getContext() != null) {
+                return getString(resId, formatArgs);
+            } else {
+                return "Unkown";
+            }
+        } else {
+            return getString(resId, formatArgs);
+        }
+
+    }
 
     private void clearErrorMessage() {
         lyLotNumber.setErrorEnabled(false);
@@ -157,7 +183,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
 
     public boolean hasIdenticalLot(List<String> existingLots) {
         if (existingLots.contains(etLotNumber.getText().toString().toUpperCase())) {
-            lyLotNumber.setError(getResources().getString(R.string.error_lot_already_exists));
+            lyLotNumber.setError(getString1(R.string.error_lot_already_exists));
             etLotNumber.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
             return true;
         }

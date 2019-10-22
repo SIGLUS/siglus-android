@@ -132,7 +132,7 @@ public class LMISApp extends Application {
                     properties.put(Integer.toString(i), traceElements[i].toString());
                 }
                 AppCenter.setUserId(UserInfoMgr.getInstance().getFacilityName());
-                Analytics.trackEvent("LMISException", properties);
+                Analytics.trackEvent(exception.getMsg(), properties);
             }
         });
     }

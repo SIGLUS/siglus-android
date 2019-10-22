@@ -18,28 +18,28 @@ public final class SyncErrorsMap {
 
     }
 
-    public static String getDisplayErrorMessageBySyncErrorMessage(String errorMessage){
-        if (errorMessage == null){
+    public static String getDisplayErrorMessageBySyncErrorMessage(String errorMessage) {
+        if (errorMessage == null) {
             return null;
         }
         Context context = LMISApp.getContext();
-        if(errorMessage.equals(context.getString(R.string.hint_network_error))){
+        if (errorMessage.equals(context.getString(R.string.hint_network_error))) {
             return null;
         }
         if (errorMessage.contains(PROGRAM_CONFIG_ERROR)) {
             return context.getString(R.string.period_configuration_missing);
         }
-        if (errorMessage.contains(INVALID_PRODUCT_CODES)){
+        if (errorMessage.contains(INVALID_PRODUCT_CODES)) {
             String[] errorString = errorMessage.split(" ");
             return context.getString(R.string.product_code_invalid, errorString[errorString.length - 1]);
         }
-        if (errorMessage.contains(PREVIOUS_FORM_NOT_FILLED)){
+        if (errorMessage.contains(PREVIOUS_FORM_NOT_FILLED)) {
             return context.getString(R.string.rnr_previous_not_filled);
         }
-        if (errorMessage.contains(USER_UNAUTHORIZED)){
+        if (errorMessage.contains(USER_UNAUTHORIZED)) {
             return context.getString(R.string.unauthorized_operation);
         }
-        if (errorMessage.contains(context.getString(R.string.sync_server_error))){
+        if (errorMessage.contains(context.getString(R.string.sync_server_error))) {
             return context.getString(R.string.sync_server_error);
         }
         if (errorMessage.contains(DUPLICATE_RNR)) {
