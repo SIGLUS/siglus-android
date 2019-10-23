@@ -18,17 +18,28 @@
 
 package org.openlmis.core;
 
+import android.annotation.TargetApi;
 import android.app.Application;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.inject.Inject;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
@@ -43,9 +54,13 @@ import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.NetworkConnectionManager;
+import org.openlmis.core.network.NetworkSchedulerService;
+import org.openlmis.core.receiver.NetworkChangeReceiver;
+import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
@@ -71,11 +86,43 @@ public class LMISApp extends Application {
         RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
         setupAppCenter();
         setupGoogleAnalytics();
-        if(!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             setupFabric();
         }
 
         instance = this;
+        registerNetWorkChangeListener();
+    }
+
+    private void registerNetWorkChangeListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            startScheduleJob();
+        } else {
+            registerNetWorkListener();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private void startScheduleJob() {
+        JobInfo myJob = new JobInfo.Builder(0, new ComponentName(this, NetworkSchedulerService.class))
+                .setRequiresCharging(true)
+                .setMinimumLatency(1000)
+                .setOverrideDeadline(2000)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPersisted(true)
+                .build();
+
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(myJob);
+        Intent startServiceIntent = new Intent(this, NetworkSchedulerService.class);
+        this.startService(startServiceIntent);
+    }
+
+    private void registerNetWorkListener() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver(this);
+        registerReceiver(networkChangeReceiver, filter);
     }
 
     protected void setupGoogleAnalytics() {

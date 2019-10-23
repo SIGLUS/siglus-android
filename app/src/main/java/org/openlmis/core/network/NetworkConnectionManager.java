@@ -35,9 +35,7 @@ public final class NetworkConnectionManager {
             return false;
         }
 
-        NetworkInfo mobNetInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        NetworkInfo wifiNetInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        return (mobNetInfo != null && mobNetInfo.isConnected()) || (wifiNetInfo != null && wifiNetInfo.isConnected());
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 }

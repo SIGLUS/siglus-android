@@ -35,6 +35,12 @@ import roboguice.RoboGuice;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
     private static final String TAG = NetworkChangeReceiver.class.getSimpleName();
+    private Context mContext;
+
+
+    public NetworkChangeReceiver(Context context){
+        mContext = context;
+    }
 
     @Inject
     InternetCheck internetCheck;
@@ -66,6 +72,4 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             }
         };
     }
-
-
 }

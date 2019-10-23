@@ -14,7 +14,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         applicationId "org.openlmis.core"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 26
         flavorDimensions "1"
         javaCompileOptions {
