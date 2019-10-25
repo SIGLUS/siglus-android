@@ -22,7 +22,6 @@ import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -32,14 +31,12 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.inject.Inject;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
@@ -54,13 +51,11 @@ import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.network.NetworkSchedulerService;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
-import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
@@ -121,7 +116,7 @@ public class LMISApp extends Application {
     private void registerNetWorkListener() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver(this);
+        NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver();
         registerReceiver(networkChangeReceiver, filter);
     }
 

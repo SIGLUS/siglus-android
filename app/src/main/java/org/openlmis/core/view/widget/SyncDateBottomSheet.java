@@ -99,6 +99,10 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
     }
 
     public void show(FragmentManager fragmentManager) {
+        //avoid the duplicate Dialog
+        if (fragmentManager != null && fragmentManager.findFragmentByTag("sync_date_bottom_sheet") != null) {
+            return;
+        }
         super.show(fragmentManager, "sync_date_bottom_sheet");
     }
 

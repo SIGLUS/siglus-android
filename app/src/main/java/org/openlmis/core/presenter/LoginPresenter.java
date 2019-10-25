@@ -162,7 +162,7 @@ public class LoginPresenter extends Presenter {
                     userResponse.getUserInformation().setUsername(user.getUsername());
                     userResponse.getUserInformation().setPassword(user.getPassword());
 
-                    onLoginSuccess(userResponse,fromReSync);
+                    onLoginSuccess(userResponse, fromReSync);
                 }
             }
 
@@ -185,6 +185,13 @@ public class LoginPresenter extends Presenter {
         Log.d(TAG, "Log in successful, setting up sync account");
         syncService.createSyncAccount(userResponse.getUserInformation());
 
+        UserInfoMgr.getInstance().setUser(userResponse.getUserInformation());
+        view.clearErrorAlerts();
+
+        syncDownManager.syncDownServerData(getSyncSubscriber());
+
+        view.sendScreenToGoogleAnalyticsAfterLogin();
+        archiveOldData();
         try {
             saveUserDataToLocalDatabase(userResponse);
             if (fromReSync) {
@@ -202,14 +209,6 @@ public class LoginPresenter extends Presenter {
         } catch (LMISException e) {
             e.reportToFabric();
         }
-        UserInfoMgr.getInstance().setUser(userResponse.getUserInformation());
-        view.clearErrorAlerts();
-
-        syncDownManager.syncDownServerData(getSyncSubscriber());
-
-        view.sendScreenToGoogleAnalyticsAfterLogin();
-        archiveOldData();
-
     }
 
     private void archiveOldData() {

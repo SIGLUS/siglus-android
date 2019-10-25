@@ -66,7 +66,7 @@ public class StockMovementItem extends BaseModel {
     @DatabaseField
     MovementReasonManager.MovementType movementType;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
     StockCard stockCard;
 
     @DatabaseField
