@@ -397,7 +397,7 @@ public class RnrFormRepository {
     protected long lastRnrInventory(Product product) throws LMISException {
         if (rnrFormItemListWrapper != null) {
             for (RnrFormItem item : rnrFormItemListWrapper) {
-                if (item.getProduct().getId() == product.getId()) {
+                if (item.getProduct() != null && (item.getProduct().getId() == product.getId())) {
                     return item.getInventory();
                 }
             }
