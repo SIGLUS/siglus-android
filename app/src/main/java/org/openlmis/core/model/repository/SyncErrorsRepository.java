@@ -50,7 +50,9 @@ public class SyncErrorsRepository {
 
                 @Override
                 public List<SyncError> operate(Dao<SyncError, String> dao) throws SQLException {
-                    return dao.queryBuilder().where().eq("syncType", syncType).and().eq("syncObjectId", syncObjectId).query();
+                    return dao.queryBuilder()
+                            .where().eq("syncType", syncType)
+                            .and().eq("syncObjectId", syncObjectId).query();
                 }
             });
         } catch (LMISException e) {
@@ -65,7 +67,10 @@ public class SyncErrorsRepository {
 
                 @Override
                 public Integer operate(Dao<SyncError, String> dao) throws SQLException {
-                    return dao.delete(dao.queryBuilder().orderBy("id", false).where().eq("syncType", syncType).and().eq("syncObjectId", syncObjectId).query());
+                    return dao.delete(dao.queryBuilder()
+                            .orderBy("id", false)
+                            .where().eq("syncType", syncType)
+                            .and().eq("syncObjectId", syncObjectId).query());
                 }
             });
         } catch (LMISException e) {

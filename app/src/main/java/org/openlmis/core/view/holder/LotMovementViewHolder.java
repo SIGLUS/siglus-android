@@ -91,12 +91,14 @@ public class LotMovementViewHolder extends BaseViewHolder {
         final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
         if (viewModel.isExpiredLot() && viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE) {
             lyLotAmount.setErrorEnabled(true);
-            etLotAmount.setInputType(InputType.TYPE_CLASS_TEXT);
+            etLotAmount.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
             etLotAmount.setEnabled(false);
             etLotAmount.setHint(getString(R.string.lots_has_expire));
             etLotAmount.setTextSize(14);
             etLotAmount.setHintTextColor(context.getResources().getColor(R.color.color_red));
-            etLotAmount.setGravity(Gravity.CENTER_HORIZONTAL);
+            etLotAmount.setGravity(Gravity.TOP);
+            etLotAmount.setSingleLine(false);
+            etLotAmount.setHorizontallyScrolling(false);
         } else {
             etLotAmount.setEnabled(true);
             etLotAmount.setMaxLines(9);

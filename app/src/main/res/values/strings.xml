@@ -37,6 +37,7 @@
     <string name="btn_done">VERIFIED</string>
     <string name="msg_save_before_exit">Please save initial inventory before exiting the app</string>
     <string name="btn_no_stock">NO STOCK</string>
+    <string name="btn_remove_stock">REMOVE PRODUCT</string>
     <string name="btn_add_product">Add Products</string>
     <string name="title_basic_products">Basic Products</string>
 

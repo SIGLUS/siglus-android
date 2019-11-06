@@ -290,11 +290,9 @@ public class SyncUpManager {
         try {
             List<Cmm> unsyncedCmms = cmmRepository.listUnsynced();
             if (!unsyncedCmms.isEmpty()) {
-//                FluentIterable.from(unsyncedCmms).filter()
                 List<CmmEntry> cmmEntries = FluentIterable.from(unsyncedCmms).transform(new Function<Cmm, CmmEntry>() {
                     @Override
                     public CmmEntry apply(Cmm cmm) {
-//                        cmm.getStockCard()
                         return CmmEntry.createFrom(cmm);
                     }
                 }).toList();

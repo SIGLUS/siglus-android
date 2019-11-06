@@ -107,7 +107,8 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
         }
 
-        txSyncTime.setText(LMISApp.getContext().getResources().getString(R.string.label_last_synced_ago, syncTimeIntervalWithUnit));
+        String msg = LMISApp.getContext().getResources().getString(R.string.label_last_synced_ago, syncTimeIntervalWithUnit);
+        txSyncTime.setText(msg);
     }
 
     private boolean isNeverSyncSuccessful() {

@@ -33,8 +33,9 @@
     <string name="btn_done">VERIFICADO</string>
     <string name="msg_save_before_exit">Por favor, grave o inventário inicial, antes de sair da aplicação</string>
     <string name="btn_no_stock">Sem stock</string>
+    <string name="btn_remove_stock">REMOVER PRODUTO</string>
     <string name="btn_add_product">Adicionar produtos</string>
-    <string name="title_basic_products">Basic Products</string>
+    <string name="title_basic_products">Produtos Básicos</string>
     <!--Home Page-->
     <string name="label_stock_cards">Visão geral da ficha de stock</string>
     <string name="label_kits_stock_cards">KITS</string>
@@ -71,6 +72,7 @@
     <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
     <string name="total">Total</string>
     <string name="total_title">Total doentes</string>
+    <string name="total_pharmacy">Comunitary pharmacy</string>
     <string name="ape">APEs</string>
     <string name="label_mmia_speed_info_header">Número de pacientes em TARV</string>
     <string name="hint_mmia_comment">Observações</string>
@@ -220,7 +222,7 @@
     <string name="table_patients_0to4">Pediátricos 0 aos 4 anos</string>
     <string name="table_patients_5to9">Pediátricos 5 aos 9 anos</string>
     <string name="table_patients_10to14">Pediátricos 10 aos 14 anos</string>
-    <string name="table_prophylaxis">prophylaxis</string>
+    <string name="table_prophylaxis">Profilaxia</string>
     <string name="table_prophylaxis_ppe">PPE</string>
     <string name="table_prophylaxis_prep">PrEP</string>
     <string name="table_prophylaxis_child">Criança Exposta</string>
