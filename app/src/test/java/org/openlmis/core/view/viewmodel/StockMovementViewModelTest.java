@@ -27,6 +27,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.widget.NewMovementLotListView;
 
 import java.text.ParseException;
 import java.util.Arrays;
@@ -46,6 +47,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     private StockMovementViewModel stockMovementViewModel;
     private MovementReasonManager.MovementReason movementReason;
     private Calendar featureCalendar;
+    private Calendar featureCalendar1;
     private Calendar oldCalendar;
 
     @Before
@@ -53,9 +55,11 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
         stockMovementViewModel = new StockMovementViewModel();
         movementReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "RECEIVE", "receive");
         featureCalendar = Calendar.getInstance();
+        featureCalendar1 = Calendar.getInstance();
         oldCalendar = Calendar.getInstance();
-        featureCalendar.add(Calendar.YEAR,1);
-        oldCalendar.add(Calendar.YEAR,-1);
+        featureCalendar.add(Calendar.YEAR, 1);
+        featureCalendar1.add(Calendar.YEAR, 2);
+        oldCalendar.add(Calendar.YEAR, -1);
     }
 
     @Test
@@ -228,16 +232,15 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
                 .setLotSOH("100")
                 .setExpiryDate(DateUtil.formatDateWithoutDay(oldCalendar.getTime()))
-                .setQuantity("50").build());
-        assertTrue(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+                .setQuantity(null).build());
+        assertEquals(NewMovementLotListView.LotStatus.containExpiredLots, stockMovementViewModel.getSoonestToExpireLotsIssued());
 
         stockMovementViewModel.existingLotMovementViewModelList.clear();
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
                 .setLotSOH("100")
                 .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
                 .setQuantity("50").build());
-        assertEquals(true,stockMovementViewModel.validateSoonestToExpireLotsIssued());
-//        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+        assertEquals(NewMovementLotListView.LotStatus.defaultStatus, stockMovementViewModel.getSoonestToExpireLotsIssued());
 
         stockMovementViewModel.existingLotMovementViewModelList.clear();
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
@@ -247,8 +250,8 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
                 .setLotSOH("100")
                 .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
                 .setQuantity("50").build());
-//        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
-        assertEquals(true,stockMovementViewModel.validateSoonestToExpireLotsIssued());
+        // LotMovementViewModelBuilder().build() : expireDate == null
+        assertEquals(NewMovementLotListView.LotStatus.containExpiredLots, stockMovementViewModel.getSoonestToExpireLotsIssued());
 
         stockMovementViewModel.existingLotMovementViewModelList.clear();
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
@@ -262,8 +265,30 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
                 .setLotSOH("100")
                 .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
                 .setQuantity("50").build());
-//        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
-        assertEquals(true,stockMovementViewModel.validateSoonestToExpireLotsIssued());
+        assertEquals(NewMovementLotListView.LotStatus.containExpiredLots, stockMovementViewModel.getSoonestToExpireLotsIssued());
+
+
+        stockMovementViewModel.existingLotMovementViewModelList.clear();
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
+                .setLotSOH("100")
+                .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+                .setQuantity("50")
+                .build());
+        assertEquals(NewMovementLotListView.LotStatus.containExpiredLots, stockMovementViewModel.getSoonestToExpireLotsIssued());
+
+        stockMovementViewModel.existingLotMovementViewModelList.clear();
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
+                .setLotSOH("100")
+                .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
+                .setQuantity(null)
+                .build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
+                .setLotSOH("100")
+                .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar1.getTime()))
+                .setQuantity("10")
+                .build());
+        assertEquals(NewMovementLotListView.LotStatus.notSoonestToExpireLotsIssued, stockMovementViewModel.getSoonestToExpireLotsIssued());
     }
 
     @Test

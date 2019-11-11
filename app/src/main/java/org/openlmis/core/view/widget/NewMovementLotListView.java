@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -25,6 +26,9 @@ public class NewMovementLotListView extends MovementChangeLotListView {
 
     @InjectView(R.id.alert_soonest_expire)
     ViewGroup alertSoonestExpire;
+
+    @InjectView(R.id.alert_soonest_and_contain_expire)
+    TextView textViewAlertSoonestAndExpired;
 
     public NewMovementLotListView(Context context) {
         super(context);
@@ -92,11 +96,20 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     }
 
     private void updateSoonestToExpireNotIssuedBanner() {
-        alertSoonestExpire.setVisibility(
-                viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE
-                        && !((StockMovementViewModel) viewModel).validateSoonestToExpireLotsIssued()
-                ? View.VISIBLE
-                : View.GONE);
+        if (MovementReasonManager.MovementType.ISSUE == viewModel.getMovementType()) {
+            LotStatus lotStatus = ((StockMovementViewModel) viewModel).getSoonestToExpireLotsIssued();
+            if (lotStatus == LotStatus.defaultStatus) {
+                alertSoonestExpire.setVisibility(View.GONE);
+            } else if (lotStatus == LotStatus.containExpiredLots) {
+                alertSoonestExpire.setVisibility(View.VISIBLE);
+                textViewAlertSoonestAndExpired.setText(R.string.alert_issue_with_expired);
+            } else if (lotStatus == LotStatus.notSoonestToExpireLotsIssued) {
+                alertSoonestExpire.setVisibility(View.VISIBLE);
+                textViewAlertSoonestAndExpired.setText(R.string.alert_soonest_expire);
+            }
+        } else {
+            alertSoonestExpire.setVisibility(View.GONE);
+        }
     }
 
     public void setActionAddNewLotVisibility(int visibility) {
@@ -154,5 +167,11 @@ public class NewMovementLotListView extends MovementChangeLotListView {
             return false;
         }
         return true;
+    }
+
+    public enum LotStatus {
+        notSoonestToExpireLotsIssued,
+        containExpiredLots,
+        defaultStatus,
     }
 }

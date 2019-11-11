@@ -25,6 +25,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.widget.NewMovementLotListView.LotStatus;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -206,23 +207,29 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
         return newLotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty();
     }
 
-    public boolean validateSoonestToExpireLotsIssued() {
+    public LotStatus getSoonestToExpireLotsIssued() {
         boolean soonestToExpireLotsIssued = true;
+        boolean containExpiredLot = false;
+
         for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
+            if (!containExpiredLot) {
+                containExpiredLot = lotMovementViewModel.isExpiredLot();
+            }
             if (!StringUtils.isEmpty(lotMovementViewModel.getQuantity()) && Long.parseLong(lotMovementViewModel.getQuantity()) > 0) {
                 if (!soonestToExpireLotsIssued) {
-                    return false;
+                    return LotStatus.notSoonestToExpireLotsIssued;
                 }
-                if (Long.parseLong(lotMovementViewModel.getQuantity()) < Long.parseLong(lotMovementViewModel.getLotSoh()) && !lotMovementViewModel.isExpiredLot()) {
+                if (Long.parseLong(lotMovementViewModel.getQuantity()) < Long.parseLong(lotMovementViewModel.getLotSoh())) {
                     soonestToExpireLotsIssued = false;
                 }
             } else {
-                if (!lotMovementViewModel.isExpiredLot()) {
-                    soonestToExpireLotsIssued = false;
+                if (containExpiredLot) {
+                    return LotStatus.containExpiredLots;
                 }
+                soonestToExpireLotsIssued = false;
             }
         }
-        return true;
+        return LotStatus.defaultStatus;
     }
 
     public boolean hasLotDataChanged() {

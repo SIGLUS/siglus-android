@@ -455,6 +455,7 @@
     <string name="error_lot_already_exists">The lot already exists, please add a new one.</string>
 
     <string name="alert_soonest_expire">Your movement includes a batch that is not the first to expire</string>
+    <string name="alert_issue_with_expired">First, Please remove the expired product.</string>
     <string name="msg_export_data_success">Data are successfully exported and saved to <![CDATA[<b>%1$s</b>]]></string>
     <string name="action_export_data">Export all app data</string>
 

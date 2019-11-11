@@ -24,7 +24,6 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
@@ -100,7 +99,6 @@ public class LMISApp extends Application {
     @TargetApi(Build.VERSION_CODES.N)
     private void startScheduleJob() {
         JobInfo myJob = new JobInfo.Builder(0, new ComponentName(this, NetworkSchedulerService.class))
-                .setRequiresCharging(true)
                 .setMinimumLatency(1000)
                 .setOverrideDeadline(2000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
@@ -109,8 +107,6 @@ public class LMISApp extends Application {
 
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(myJob);
-        Intent startServiceIntent = new Intent(this, NetworkSchedulerService.class);
-        this.startService(startServiceIntent);
     }
 
     private void registerNetWorkListener() {
