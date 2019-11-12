@@ -2,7 +2,9 @@ package org.openlmis.core.view.viewmodel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
@@ -15,6 +17,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.util.Lists.newArrayList;
@@ -38,16 +41,47 @@ public class RapidTestReportViewModelTest {
     @Test
     public void shouldConvertToDataModel() throws Exception {
         viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
-        RapidTestFormItemViewModel itemViewModel = mock(RapidTestFormItemViewModel.class);
+        RapidTestFormItemViewModel itemViewModel = new RapidTestFormItemViewModel(new MovementReasonManager.MovementReason(
+                MovementReasonManager.MovementType.ISSUE,
+                "TOTAL", "Total"));
         List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(itemViewModel);
         viewModel.setItemViewModelList(itemViewModelList);
 
         Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null, null);
         viewModel.convertFormViewModelToDataModel(program);
-
-        verify(itemViewModel).convertToDataModel();
+        assertFalse(this.viewModel.isSynced());
+        assertFalse(this.viewModel.isSubmitted());
+        assertTrue(this.viewModel.isEditable());
+        assertTrue(this.viewModel.isDraft());
+        assertNull(this.viewModel.getSyncedTime());
+        assertEquals(0, this.viewModel.getStatus().getViewType());
+        assertTrue(this.viewModel.validateAPES());
+        assertTrue(this.viewModel.validateUnjustified());
+        assertFalse(this.viewModel.validateOnlyAPES());
+        assertTrue(this.viewModel.isFormEmpty());
         assertEquals(DateUtil.parseString("2016-08-21", DateUtil.DB_DATE_FORMAT), this.viewModel.getRapidTestForm().getPeriodBegin());
         assertEquals(DateUtil.parseString("2016-09-20", DateUtil.DB_DATE_FORMAT), this.viewModel.getRapidTestForm().getPeriodEnd());
+    }
+
+
+    @Test
+    public void shouldConvertToDataModule1() {
+        viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2019-09-11", DateUtil.DB_DATE_FORMAT)),
+                RapidTestReportViewModel.Status.INCOMPLETE);
+        RapidTestFormItemViewModel itemViewModel = mock(RapidTestFormItemViewModel.class);
+        List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(itemViewModel);
+        viewModel.setItemViewModelList(itemViewModelList);
+        Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null, null);
+        viewModel.convertFormViewModelToDataModel(program);
+        verify(itemViewModel).convertToDataModel();
+        assertNull(this.viewModel.getSyncedTime());
+        assertTrue(this.viewModel.isDraft());
+        assertFalse(this.viewModel.isSubmitted());
+        assertTrue(this.viewModel.isEditable());
+        assertFalse(this.viewModel.isSynced());
+        assertTrue(this.viewModel.isFormEmpty());
+        assertEquals(DateUtil.parseString("2019-08-21", DateUtil.DB_DATE_FORMAT), this.viewModel.getRapidTestForm().getPeriodBegin());
+        assertEquals(DateUtil.parseString("2019-09-20", DateUtil.DB_DATE_FORMAT), this.viewModel.getRapidTestForm().getPeriodEnd());
     }
 
     @Test
@@ -147,7 +181,7 @@ public class RapidTestReportViewModelTest {
     public void shouldUpdateTotal() throws Exception {
         viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
         viewModel.getItemViewModelList().get(0).getGridHIVDetermine().setConsumptionValue("100");
-        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine,consumption);
+        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, consumption);
         assertEquals("100", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
 
         viewModel.getItemViewModelList().get(1).getGridHIVDetermine().setConsumptionValue("2333");

@@ -14,6 +14,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.view.activity.DummyActivity;
+import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
 import org.robolectric.Robolectric;
@@ -30,11 +31,11 @@ public class RequisitionFormViewHolderTest {
 
     private RequisitionFormViewHolder viewHolder;
     private RequisitionFormItemViewModel viewModel;
-    private DummyActivity dummyActivity;
+    private DumpFragmentActivity dummyActivity;
 
     @Before
     public void setup() {
-        dummyActivity = Robolectric.setupActivity(DummyActivity.class);
+        dummyActivity = Robolectric.setupActivity(DumpFragmentActivity.class);
         View itemView = LayoutInflater.from(dummyActivity).inflate(R.layout.item_requisition_body, null, false);
         viewHolder = new RequisitionFormViewHolder(itemView);
         viewModel = RequisitionBuilder.buildFakeRequisitionViewModel();
@@ -100,8 +101,7 @@ public class RequisitionFormViewHolderTest {
         assertThat(viewHolder.adjustTheoreticalIcon.getVisibility(), is(View.VISIBLE));
     }
 
-    // TODO: robolectric.android.controller.FragmentController with RoboContext
-    @Ignore
+
     @Test
     public void shouldShowPopTipsTotalReminderIconClicked() {
         viewModel.setAdjustmentViewModels(Arrays.asList(generateAdjustmentViewModel()));

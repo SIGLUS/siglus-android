@@ -35,7 +35,7 @@ import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidT
 public class RapidTestReportViewModel implements Serializable {
     Period period;
     String observation;
-    public Status status;
+    private Status status;
     private Date syncedTime;
 
     MovementReasonManager movementReasonManager;
@@ -267,7 +267,10 @@ public class RapidTestReportViewModel implements Serializable {
 
     public boolean isFormEmpty() {
         for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-            if (!itemViewModel.isEmpty() && !itemViewModel.issueReason.getCode().endsWith("TOTAL")) {
+            if (!itemViewModel.isEmpty()
+                    && (itemViewModel.issueReason != null
+                    && itemViewModel.issueReason.getCode() != null
+                    && !itemViewModel.issueReason.getCode().endsWith("TOTAL"))) {
                 return false;
             }
         }
@@ -357,15 +360,12 @@ public class RapidTestReportViewModel implements Serializable {
 
         @Getter
         private boolean editable;
+        @Getter
         private int viewType;
 
         Status(boolean editable, int viewType) {
             this.editable = editable;
             this.viewType = viewType;
-        }
-
-        public int getViewType() {
-            return viewType;
         }
     }
 }

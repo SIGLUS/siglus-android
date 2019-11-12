@@ -29,6 +29,7 @@ import org.openlmis.core.utils.DateUtil;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -50,7 +51,7 @@ public class PTVProgram extends BaseModel implements Serializable {
     @DatabaseField
     String verifiedBy;
 
-    @DatabaseField (dataType = DataType.ENUM_INTEGER)
+    @DatabaseField(dataType = DataType.ENUM_INTEGER)
     ViaReportStatus status;
 
     @ForeignCollectionField(eager = true)
@@ -66,18 +67,13 @@ public class PTVProgram extends BaseModel implements Serializable {
 
         PTVProgram that = (PTVProgram) o;
 
-        if (startPeriod != null ? !startPeriod.equals(that.startPeriod) : that.startPeriod != null)
-            return false;
-        if (endPeriod != null ? !endPeriod.equals(that.endPeriod) : that.endPeriod != null)
-            return false;
-        if (createdBy != null ? !createdBy.equals(that.createdBy) : that.createdBy != null)
-            return false;
-        if (verifiedBy != null ? !verifiedBy.equals(that.verifiedBy) : that.verifiedBy != null)
-            return false;
-        if (status != that.status) return false;
-        if (ptvProgramStocksInformation != null ? !ptvProgramStocksInformation.equals(that.ptvProgramStocksInformation) : that.ptvProgramStocksInformation != null)
-            return false;
-        return patientDispensations != null ? patientDispensations.equals(that.patientDispensations) : that.patientDispensations == null;
+        return Objects.equals(startPeriod, that.startPeriod)
+                && Objects.equals(endPeriod, that.endPeriod)
+                && Objects.equals(createdBy, that.createdBy)
+                && Objects.equals(verifiedBy, that.verifiedBy)
+                && Objects.equals(status, that.status)
+                && Objects.equals(ptvProgramStocksInformation, that.ptvProgramStocksInformation)
+                && Objects.equals(patientDispensations, that.patientDispensations);
     }
 
     @Override

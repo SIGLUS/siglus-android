@@ -20,6 +20,7 @@ import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.ProgramDataFormPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.viewmodel.RapidTestFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.RuntimeEnvironment;
@@ -87,7 +88,12 @@ public class RapidTestReportsPresenterTest {
         when(fifthPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(sixthPeriod));
         when(sixthPeriod.generateNextAvailablePeriod()).thenReturn(emptyOptional);
 
-        Program programRapidTest = new Program(Constants.RAPID_TEST_CODE, "Rapid Test", null, false, null, null);
+        Program programRapidTest = new Program(Constants.RAPID_TEST_CODE,
+                "Rapid Test",
+                null,
+                false,
+                null,
+                null);
         ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
                 .setPeriod(DateUtil.parseString("2016-10-21", DateUtil.DB_DATE_FORMAT))
                 .setStatus(ProgramDataForm.STATUS.SUBMITTED)
@@ -113,20 +119,89 @@ public class RapidTestReportsPresenterTest {
         when(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
                 .thenReturn(newArrayList(programDataForm1, programDataForm2, programDataForm3, programDataForm4));
         ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
-                setActive(true).
-                setCode(Constants.RAPID_REPORT).
-                setName(Constants.RAPID_TEST_CODE).
-                setStartTime(new DateTime(DateUtil.parseString("2016-09-10", DateUtil.DB_DATE_FORMAT)).toDate()).
-                build();
+                setActive(true)
+                .setCode(Constants.RAPID_REPORT)
+                .setName(Constants.RAPID_TEST_CODE)
+                .setStartTime(new DateTime(DateUtil.parseString("2016-09-10", DateUtil.DB_DATE_FORMAT)).toDate())
+                .build();
         when(reportTypeFormRepository.queryByCode(Constants.RAPID_REPORT))
                 .thenReturn(reportTypeForm);
 
-        presenter.generateViewModelsForAllPeriods();
+        presenter.loadViewModels();
         assertThat(presenter.getViewModelList().size(), is(13));
-        assertNull(presenter.getViewModelList().get(2).getRapidTestForm().getStatus());
-        assertThat(presenter.getViewModelList().get(2).getStatus(), is(RapidTestReportViewModel.Status.MISSING));
-        assertNull(presenter.getViewModelList().get(1).getRapidTestForm().getStatus());
-        assertThat(presenter.getViewModelList().get(1).getStatus(), is(RapidTestReportViewModel.Status.MISSING));
-        assertThat(presenter.getViewModelList().get(0).getStatus(), is(RapidTestReportViewModel.Status.MISSING));
+        for (RapidTestReportViewModel rapidTestReportViewModel : presenter.getViewModelList()) {
+            assertNull(rapidTestReportViewModel.getRapidTestForm().getStatus());
+            assertThat(rapidTestReportViewModel.getStatus(), is(RapidTestReportViewModel.Status.MISSING));
+        }
     }
+
+//    @Test
+//    public void shouldaa() throws Exception {
+//        //today period is 2016-12-21 to 2017-01-20
+//        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2020-3-18", DateUtil.DB_DATE_FORMAT).getTime());
+//        //first period is 2016-09-21 to 2016-10-20
+//        Period firstPeriod = spy(new Period(new DateTime(DateUtil.parseString("2019-09-21", DateUtil.DB_DATE_FORMAT))));
+//        Period secondPeriod = spy(new Period(new DateTime(DateUtil.parseString("2019-10-21", DateUtil.DB_DATE_FORMAT))));
+//        Period thirdPeriod = spy(new Period(new DateTime(DateUtil.parseString("2019-11-21", DateUtil.DB_DATE_FORMAT))));
+//        Period fourthPeriod = spy(new Period(new DateTime(DateUtil.parseString("2019-12-21", DateUtil.DB_DATE_FORMAT))));
+//        Period fifthPeriod = spy(new Period(new DateTime(DateUtil.parseString("2020-01-21", DateUtil.DB_DATE_FORMAT))));
+//        Period sixthPeriod = spy(new Period(new DateTime(DateUtil.parseString("2020-02-21", DateUtil.DB_DATE_FORMAT))));
+//
+//        Optional<Period> emptyOptional = Optional.absent();
+//        when(periodService.getFirstStandardPeriod()).thenReturn(Optional.of(firstPeriod));
+//        when(firstPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(secondPeriod));
+//        when(secondPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(thirdPeriod));
+//        when(thirdPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(fourthPeriod));
+//        when(fourthPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(fifthPeriod));
+//        when(fifthPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(sixthPeriod));
+//        when(sixthPeriod.generateNextAvailablePeriod()).thenReturn(emptyOptional);
+//
+//        Program programRapidTest = new Program(Constants.RAPID_TEST_CODE,
+//                "Rapid Test",
+//                null,
+//                false,
+//                null,
+//                null);
+//        ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
+//                .setPeriod(DateUtil.parseString("2019-10-21", DateUtil.DB_DATE_FORMAT))
+//                .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+//                .setProgram(programRapidTest)
+//                .build();
+//
+//        ProgramDataForm programDataForm4 = new ProgramDataFormBuilder()
+//                .setPeriod(DateUtil.parseString("2019-11-21", DateUtil.DB_DATE_FORMAT))
+//                .setProgram(programRapidTest)
+//                .setSynced(true)
+//                .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+//                .build();
+//
+//        ProgramDataForm programDataForm2 = new ProgramDataFormBuilder()
+//                .setPeriod(DateUtil.parseString("2019-12-21", DateUtil.DB_DATE_FORMAT))
+//                .setProgram(programRapidTest)
+//                .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+//                .build();
+//        ProgramDataForm programDataForm3 = new ProgramDataFormBuilder()
+//                .setPeriod(DateUtil.parseString("2020-01-21", DateUtil.DB_DATE_FORMAT))
+//                .setProgram(programRapidTest)
+//                .setStatus(ProgramDataForm.STATUS.DRAFT)
+//                .build();
+//
+//        when(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
+//                .thenReturn(newArrayList(programDataForm1, programDataForm2, programDataForm3, programDataForm4));
+//        ReportTypeForm reportTypeForm = new ReportTypeFormBuilder()
+//                .setActive(true)
+//                .setCode(Constants.RAPID_REPORT)
+//                .setName(Constants.RAPID_TEST_CODE)
+//                .setStartTime(new DateTime(DateUtil.parseString("2019-06-21", DateUtil.DB_DATE_FORMAT)).toDate())
+//                .build();
+//        when(reportTypeFormRepository.queryByCode(Constants.RAPID_REPORT))
+//                .thenReturn(reportTypeForm);
+//
+//        presenter.loadViewModels();
+//        assertThat(presenter.getViewModelList().size(), is(1));
+//        for (RapidTestReportViewModel rapidTestReportViewModel : presenter.getViewModelList()) {
+//            assertThat(rapidTestReportViewModel.getRapidTestForm().getStatus(), is(ProgramDataForm.STATUS.SUBMITTED));
+//            assertThat(rapidTestReportViewModel.getStatus(), is(RapidTestReportViewModel.Status.INCOMPLETE));
+//        }
+//    }
 }

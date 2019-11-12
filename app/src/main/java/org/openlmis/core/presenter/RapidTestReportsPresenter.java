@@ -86,7 +86,7 @@ public class RapidTestReportsPresenter extends Presenter {
         return viewModelList;
     }
 
-    protected void generateViewModelsForAllPeriods() throws LMISException {
+    private void generateViewModelsForAllPeriods() throws LMISException {
         ReportTypeForm typeForm = reportTypeFormRepository.queryByCode(Constants.RAPID_REPORT);
         Optional<Period> period = periodService.getFirstStandardPeriod();
         DateTime startPeriodTime = new DateTime(typeForm.getStartTime());
@@ -107,11 +107,12 @@ public class RapidTestReportsPresenter extends Presenter {
 
             removeInactiveData(viewModelList, typeForm);
             RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
-            if (typeForm.active && lastViewModel != null && (lastViewModel.status == Status.FIRST_MISSING && lastViewModel.getPeriod().getEnd().isAfterNow())) {
+            if (typeForm.active && lastViewModel != null
+                    && (lastViewModel.getStatus() == Status.FIRST_MISSING
+                    && lastViewModel.getPeriod().getEnd().isAfterNow())) {
 
                 DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
                 DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
-
                 addLastRapidTestViewModel(lastViewModel, dateTime, endDateTime);
             }
         }
@@ -153,7 +154,7 @@ public class RapidTestReportsPresenter extends Presenter {
                 if (period.isPresent()) {
                     currentPeriod = period.get().getBegin();
                 } else {
-                    currentPeriod = new DateTime(new DateTime(LMISApp.getInstance().getCurrentTimeMillis()));
+                    currentPeriod = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
                 }
             } else {
                 currentPeriod = period.get().getEnd();
@@ -178,7 +179,7 @@ public class RapidTestReportsPresenter extends Presenter {
             List<RapidTestReportViewModel> needBeDeleteList = new ArrayList<>();
             for (int i = list.size() - 1; i >= 0; i--) {
                 RapidTestReportViewModel viewModel = list.get(i);
-                if (viewModel.status == Status.MISSING || viewModel.status == Status.FIRST_MISSING) {
+                if (viewModel.getStatus() == Status.MISSING || viewModel.getStatus() == Status.FIRST_MISSING) {
                     needBeDeleteList.add(viewModel);
                 } else {
                     break;
@@ -191,8 +192,8 @@ public class RapidTestReportsPresenter extends Presenter {
 
     private List<RapidTestReportViewModel> removeGreaterThanData(List<RapidTestReportViewModel> list) {
         if (list.size() > 13) {
-            if (list.get(0).status != Status.FIRST_MISSING
-                    && list.get(1).status != Status.FIRST_MISSING) {
+            if (list.get(0).getStatus() != Status.FIRST_MISSING
+                    && list.get(1).getStatus() != Status.FIRST_MISSING) {
                 list.remove(0);
                 return removeGreaterThanData(list);
             }
@@ -253,9 +254,9 @@ public class RapidTestReportsPresenter extends Presenter {
     private RapidTestReportViewModel getViewModel(Period period, List<ProgramDataForm> rapidTestForms) {
         RapidTestReportViewModel rapidTestReportViewModel = new RapidTestReportViewModel(period);
         setExistingProgramDataForm(rapidTestReportViewModel, rapidTestForms);
-        if (rapidTestReportViewModel.status == RapidTestReportViewModel.Status.MISSING && !isHaveFirstPeriod) {
+        if (rapidTestReportViewModel.getStatus() == RapidTestReportViewModel.Status.MISSING && !isHaveFirstPeriod) {
             isHaveFirstPeriod = true;
-            rapidTestReportViewModel.status = RapidTestReportViewModel.Status.FIRST_MISSING;
+            rapidTestReportViewModel.setStatus(RapidTestReportViewModel.Status.FIRST_MISSING);
         }
         return rapidTestReportViewModel;
     }
@@ -280,7 +281,7 @@ public class RapidTestReportsPresenter extends Presenter {
         }
     }
 
-    public Period getRapidTestPeriod(DateTime dateTime) {
+    private Period getRapidTestPeriod(DateTime dateTime) {
         DateTime periodBegin;
         DateTime periodEnd;
         if (dateTime.dayOfMonth().get() <= BEGIN_DAY) {

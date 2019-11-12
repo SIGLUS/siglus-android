@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
@@ -84,7 +83,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.model.Product.IsKit;
@@ -354,6 +352,32 @@ public class VIARequisitionPresenterTest {
 
         Assert.assertEquals(5, presenter.rnRForm.getRnrFormItemListWrapper().size());
         assertThat(presenter.getRnRForm().getRnrFormItemListWrapper().get(3).getCalculatedOrderQuantity(), is(1L));
+    }
+
+
+    @Test(expected = NumberFormatException.class)
+    public void testNumberFormatException() {
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
+        presenter.rnRForm = rnRForm;
+
+
+        List<RequisitionFormItemViewModel> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            list.add(new RequisitionFormItemViewModel(createRnrFormItem(i)));
+            list.get(i).setRequestAmount(String.valueOf(i));
+            list.get(i).setAdjustedTotalRequest(String.valueOf(i));
+        }
+
+        ViaKitsViewModel viaKitsViewModel = buildDefaultViaKit();
+        presenter.setViaKitsViewModel(viaKitsViewModel);
+        presenter.requisitionFormItemViewModels = list;
+
+        when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
+        when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
+
+        // Throws NumberFormatException
+        presenter.processRequisition("avd");
     }
 
     @Test
