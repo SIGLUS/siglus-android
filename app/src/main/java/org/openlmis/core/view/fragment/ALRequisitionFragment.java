@@ -100,7 +100,6 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         containerView = inflater.inflate(R.layout.fragment_al_requisition, container, false);
-//        updateHeaderSize();
         return containerView;
     }
 
@@ -133,12 +132,9 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     }
 
     protected void initUI() {
-//        scrollView.setVisibility(View.INVISIBLE);
         if (isHistoryForm()) {
-//            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             actionPanelView.setVisibility(View.GONE);
         } else {
-//            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             actionPanelView.setVisibility(View.VISIBLE);
         }
         bindListeners();
@@ -196,7 +192,6 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
                         e.printStackTrace();
                         return;
                     }
-//                    scrollView.requestFocus();
                     if (!presenter.validateFormPeriod()) {
                         ToastUtil.show(R.string.msg_requisition_not_unique);
                     } else {
@@ -258,7 +253,6 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     public void refreshRequisitionForm(RnRForm rnRForm) {
         getActivity().setTitle(getString(R.string.label_AL_title, DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()), DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
         monthTitle.setText(DateUtil.formatDateWithLongMonthAndYear(rnRForm.getPeriodEnd()));
-//        scrollView.setVisibility(View.VISIBLE);
         adapter.refresh(presenter.alReportViewModel);
     }
 
