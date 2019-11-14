@@ -104,7 +104,7 @@ public class ALReportViewModel implements Serializable {
                 && !itemCHW.isShowCheckTip();
     }
 
-    public void clearCheckTip() {
+    private void clearCheckTip() {
         itemHF.setShowCheckTip(false);
         itemCHW.setShowCheckTip(false);
     }

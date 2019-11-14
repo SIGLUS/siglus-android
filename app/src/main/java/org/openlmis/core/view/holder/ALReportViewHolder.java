@@ -46,7 +46,9 @@ public class ALReportViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void populate(final ALReportItemViewModel alReportViewModel, QuantityChangeListener changeListener) {
+    public void populate(final ALReportItemViewModel alReportViewModel,
+                         QuantityChangeListener changeListener,
+                         boolean editDisable) {
         this.viewModel = alReportViewModel;
         removeTextWatcher();
         setEditTextValue();
@@ -55,6 +57,12 @@ public class ALReportViewHolder extends BaseViewHolder {
             configureEditTextWatch();
             checkTips();
         } else {
+            for (EditText editText : editTexts) {
+                editText.setEnabled(false);
+                editText.setError(null);
+            }
+        }
+        if (editDisable) {
             for (EditText editText : editTexts) {
                 editText.setEnabled(false);
                 editText.setError(null);

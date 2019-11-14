@@ -37,7 +37,7 @@ public class ALReportItemViewModel implements Serializable {
         alGridViewModelMap.get(columnName).setValue(regimen, value);
     }
 
-    public Boolean isComplete() {
+    public boolean isComplete() {
         for (ALGridViewModel viewModel : alGridViewModelList) {
             if (viewModel.getTreatmentsValue() == null || viewModel.getExistentStockValue() == null) {
                 return false;
