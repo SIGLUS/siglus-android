@@ -196,11 +196,18 @@ public class MMIARegimeThreeLineList extends LinearLayout {
 
         @Override
         public void afterTextChanged(Editable editable) {
+            Long count = 0L;
+            try {
+                count = Long.parseLong(editable.toString());
+            } catch (NumberFormatException e) {
+
+            }
+
             if (COUNTTYPE.PATIENTSAMOUNT == type) {
-                item.setPatientsAmount(Long.parseLong(editable.toString()));
+                item.setPatientsAmount(count);
                 mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(type)));
             } else if (COUNTTYPE.PHARMACYAMOUNT == type) {
-                item.setPharmacyAmount(Long.parseLong(editable.toString()));
+                item.setPharmacyAmount(count);
                 mmiaThreeLinePharmacyTotal.setText(String.valueOf(getTotal(type)));
             }
         }

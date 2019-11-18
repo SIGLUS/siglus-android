@@ -406,14 +406,16 @@ public class MMIARegimeList extends LinearLayout {
 
         @Override
         public void afterTextChanged(Editable editable) {
-            if (TextUtils.isEmpty(editable.toString())){
-                return;
+            Long count = 0L;
+            try {
+                count = Long.parseLong(editable.toString());
+            } catch (NumberFormatException e) {
             }
             if (COUNTTYPE.AMOUNT == counttype) {
-                item.setAmount(Long.parseLong(editable.toString()));
+                item.setAmount(count);
                 totalView.setText(String.valueOf(getTotal(COUNTTYPE.AMOUNT)));
             } else if (COUNTTYPE.PHARMACY == counttype) {
-                item.setPharmacy(Long.parseLong(editable.toString()));
+                item.setPharmacy(count);
                 totalPharmcy.setText(String.valueOf(getTotal(COUNTTYPE.PHARMACY)));
             }
         }
