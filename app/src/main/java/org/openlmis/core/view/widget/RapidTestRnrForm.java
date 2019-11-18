@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
@@ -130,7 +131,7 @@ public class RapidTestRnrForm extends LinearLayout {
             tvIssue.setText(String.valueOf(item.getIssued()));
             tvAdjustment.setText(String.valueOf(item.getAdjustment()));
             if (item.getIsCustomAmount()) {
-                configEditText(item, etStock,getValue(item.getInitialAmount()));
+                configEditText(item, etStock, getValue(item.getInitialAmount()));
             } else {
                 etStock.setText(getValue(item.getInitialAmount()));
                 etStock.setEnabled(false);
@@ -164,7 +165,8 @@ public class RapidTestRnrForm extends LinearLayout {
 
     private void configEditText(ProgramDataFormBasicItem item, EditText editText, String value) {
         editText.setText(value);
-        editText.setEnabled(true);
+        editText.setEnabled(item.getForm().getStatus() == null
+                || item.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT);
         RapidTestRnrForm.EditTextWatcher textWatcher = new RapidTestRnrForm.EditTextWatcher(item, editText);
         editText.addTextChangedListener(textWatcher);
         editTextConfigures.add(new Pair<>(editText, textWatcher));
