@@ -151,7 +151,7 @@ public class StockRepository {
         }
     }
 
-    public void addStockMovementAndUpdateStockCard(final StockMovementItem stockMovementItem) {
+    public synchronized void addStockMovementAndUpdateStockCard(final StockMovementItem stockMovementItem) {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
