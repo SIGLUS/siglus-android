@@ -27,8 +27,6 @@ public class InventoryRepository {
 
     @Inject
     DbUtil dbUtil;
-    @Inject
-    private LotRepository lotRepository;
 
     @Inject
     public InventoryRepository(Context context) {
@@ -50,16 +48,21 @@ public class InventoryRepository {
         return dbUtil.withDao(Inventory.class, new DbUtil.Operation<Inventory, List<Inventory>>() {
             @Override
             public List<Inventory> operate(Dao<Inventory, String> dao) throws SQLException {
-                return dao.queryBuilder().orderBy("updatedAt", false).where().between("updatedAt", period.getInventoryBegin().toDate(), period.getInventoryEnd().toDate()).query();
+                return dao.queryBuilder().orderBy("updatedAt", false)
+                        .where()
+                        .between("updatedAt",
+                                period.getInventoryBegin().toDate(),
+                                period.getInventoryEnd().toDate())
+                        .query();
             }
         });
     }
 
-    public void createDraft(final DraftInventory draftInventory) throws LMISException {
+    public void  createDraft(final DraftInventory draftInventory) throws LMISException {
         dbUtil.withDaoAsBatch(DraftInventory.class, new DbUtil.Operation<DraftInventory, Object>() {
             @Override
-            public Object operate(Dao<DraftInventory, String> dao) throws SQLException, LMISException {
-                draftInventoryGenericDao.create(draftInventory);
+            public Object operate(Dao<DraftInventory, String> dao) throws LMISException {
+                draftInventoryGenericDao.createOrUpdate(draftInventory);
                 for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
                     draftLotItemGenericDao.createOrUpdate(draftLotItem);
                 }

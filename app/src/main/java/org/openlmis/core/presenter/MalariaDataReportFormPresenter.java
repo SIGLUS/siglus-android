@@ -174,14 +174,9 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
                 malariaProgram.setCreatedBy(signature);
             }
             patientDataService.save(malariaProgram);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (LMISException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            String str = e.getMessage();
+            (new LMISException("MalariaData:" + str)).reportToFabric();
         }
     }
 

@@ -37,9 +37,6 @@ public class StockCardViewHolder extends BaseViewHolder {
     @InjectView(R.id.tv_expiry_date_msg)
     TextView tvExpiryDateMsg;
 
-    @InjectView(R.id.ly_stock_status)
-    LinearLayout lyStockStatus;
-
     @InjectView(R.id.tv_stock_status)
     TextView tvStockStatus;
 
@@ -51,12 +48,14 @@ public class StockCardViewHolder extends BaseViewHolder {
         REGULAR_STOCK("regularStock", R.string.Regular_stock, R.color.color_regular_stock, R.color.color_stock_status),
         LOW_STOCK("lowStock", R.string.Low_stock, R.color.color_low_stock, R.color.color_stock_status),
         STOCK_OUT("stockOut", R.string.Stock_out, R.color.color_stock_out, R.color.color_stock_status),
-        OVER_STOCK("overStock",R.string.Overstock, R.color.color_over_stock, R.color.color_stock_status);
+        OVER_STOCK("overStock", R.string.Overstock, R.color.color_over_stock, R.color.color_stock_status);
 
         private String messageKey;
         private int description;
-        private @ColorRes int bgColor;
-        private @ColorRes int color;
+        private @ColorRes
+        int bgColor;
+        private @ColorRes
+        int color;
 
         StockOnHandStatus(String key, int desc, @ColorRes int bgColor, @ColorRes int color) {
             this.messageKey = key;
@@ -73,11 +72,13 @@ public class StockCardViewHolder extends BaseViewHolder {
             return description;
         }
 
-        public @ColorRes int getColor() {
+        public @ColorRes
+        int getColor() {
             return color;
         }
 
-        public @ColorRes int getBgColor() {
+        public @ColorRes
+        int getBgColor() {
             return bgColor;
         }
     }

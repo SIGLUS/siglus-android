@@ -74,8 +74,8 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     protected void restoreDraftInventory() throws LMISException {
         List<DraftInventory> draftList = inventoryRepository.queryAllDraft();
 
-        for (InventoryViewModel viewModel : inventoryViewModelList) {
-            for (DraftInventory draftInventory : draftList) {
+        for (DraftInventory draftInventory : draftList) {//total : N
+            for (InventoryViewModel viewModel : inventoryViewModelList) { // total: N+1
                 if (viewModel.getStockCardId() == draftInventory.getStockCard().getId()) {
                     ((PhysicalInventoryViewModel) viewModel).setDraftInventory(draftInventory);
                 }
@@ -90,8 +90,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     }
 
     protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
-        Long inventory;
-        inventory = model.getLotListQuantityTotalAmount();
+        Long inventory = model.getLotListQuantityTotalAmount();
         long stockOnHand = model.getStockOnHand();
         StockMovementItem item = new StockMovementItem();
         item.setSignature(model.getSignature());
@@ -135,6 +134,12 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * 如果在 {@link #doInventory(String)} 时, {@link #inventoryViewModelList} 和 {@link #restoreDraftInventory()}
+     * 中的{@code draftInventory} 不同会怎样？
+     * 如果在inventory部分，并将其save。然后在issue saved的product！会怎样？
+     *
+     */
     public Observable<Object> doInventory(final String sign) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
@@ -182,9 +187,9 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             @Override
             public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
                 Date localDate = DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-                if (localDate !=null) {
+                if (localDate != null) {
                     return localDate.compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                }else {
+                } else {
                     return 0;
                 }
             }

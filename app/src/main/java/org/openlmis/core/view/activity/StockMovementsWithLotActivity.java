@@ -154,7 +154,9 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
             tvLabelStockCardInfo.setText(getString(R.string.label_validate_period));
         } else {
             tvLabelStockCardInfo.setText(getString(R.string.label_lot_info));
-            tvCmm.setText((presenter.getStockCard().getCMM() < 0) ? "" : String.valueOf(presenter.getStockCard().getCMM()).replaceAll("\\.?0*$", ""));
+            tvCmm.setText((presenter.getStockCard().getCMM() < 0)
+                    ? "" : String.valueOf(presenter.getStockCard().getCMM())
+                    .replaceAll("\\.?0*$", ""));
         }
         updateExpiryDateViewGroup();
     }
@@ -276,9 +278,6 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
                             }
                         }).toArray(String.class);
                         newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), selections);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString("select", "dd");
-//                        newMovementDialog.setArguments(bundle);
                         newMovementDialog.show(getFragmentManager(), "");
                         break;
                 }
@@ -290,11 +289,17 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if ((movementTypes.get(position).equals(MovementReasonManager.MovementType.ISSUE)
-                || movementTypes.get(position).equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST))
+                    || movementTypes.get(position).equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST))
                     && presenter.getStockCard().getStockOnHand() == 0) {
                 ToastUtil.show(R.string.msg_no_lot_for_issue);
             } else {
-                startActivityForResult(NewStockMovementActivity.getIntentToMe(StockMovementsWithLotActivity.this, stockName, movementTypes.get(position), stockId, isKit), Constants.REQUEST_NEW_MOVEMENT_PAGE);
+                startActivityForResult(NewStockMovementActivity.getIntentToMe(
+                        StockMovementsWithLotActivity.this,
+                        stockName,
+                        movementTypes.get(position),
+                        stockId,
+                        isKit),
+                        Constants.REQUEST_NEW_MOVEMENT_PAGE);
             }
             newMovementDialog.dismiss();
         }

@@ -120,7 +120,7 @@ public class NewStockMovementPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private Boolean convertViewModelToDataModelAndSave() {
+    private boolean convertViewModelToDataModelAndSave() {
         viewModel.populateStockExistence(stockCard.getStockOnHand());
         StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
         stockCard.setStockOnHand(stockMovementItem.getStockOnHand());

@@ -99,6 +99,7 @@ import org.openlmis.core.persistence.migrations.UpdateRegimeShortCodeTable;
 import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
+
 import java.util.ArrayList;
 import java.util.List;
 

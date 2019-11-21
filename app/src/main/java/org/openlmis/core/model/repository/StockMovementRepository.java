@@ -38,7 +38,7 @@ public class StockMovementRepository {
         genericDao = new GenericDao<>(StockMovementItem.class, context);
     }
 
-    public void create(StockMovementItem stockMovementItem) throws LMISException {
+    private void create(StockMovementItem stockMovementItem) throws LMISException {
         genericDao.create(stockMovementItem);
     }
 
@@ -76,6 +76,7 @@ public class StockMovementRepository {
 
     public void batchCreateStockMovementItemAndLotItems(final StockMovementItem stockMovementItem) throws LMISException {
         stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+        // Create Stock Movement history list
         create(stockMovementItem);
 
         lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());

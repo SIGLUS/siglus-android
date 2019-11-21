@@ -18,9 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-
-import android.content.Context;
-
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -54,9 +51,6 @@ public class StockMovementHistoryPresenter extends Presenter {
 
     StockMovementHistoryView view;
 
-
-    @Inject
-    Context context;
     public static final long MAXROWS = 30L;
     private long stockCardId;
 
@@ -85,19 +79,20 @@ public class StockMovementHistoryPresenter extends Presenter {
                     subscriber.onError(e);
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<StockMovementViewModel>>() {
-            @Override
-            public void call(List<StockMovementViewModel> stockMovementViewModels) {
-                if (stockMovementViewModels.size() == 0) {
-                    view.refreshStockMovement(false);
-                } else {
-                    stockMovementModelList.addAll(0, stockMovementViewModels);
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                .subscribe(new Action1<List<StockMovementViewModel>>() {
+                    @Override
+                    public void call(List<StockMovementViewModel> stockMovementViewModels) {
+                        if (stockMovementViewModels.size() == 0) {
+                            view.refreshStockMovement(false);
+                        } else {
+                            stockMovementModelList.addAll(0, stockMovementViewModels);
 
-                    view.refreshStockMovement(true);
-                }
-                view.loaded();
-            }
-        });
+                            view.refreshStockMovement(true);
+                        }
+                        view.loaded();
+                    }
+                });
         subscriptions.add(subscription);
     }
 

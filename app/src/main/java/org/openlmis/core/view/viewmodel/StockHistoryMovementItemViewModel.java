@@ -1,6 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
@@ -12,7 +13,7 @@ import lombok.Data;
 
 @Data
 public class StockHistoryMovementItemViewModel {
-    private final MovementReasonManager.MovementReason reason;
+    private MovementReasonManager.MovementReason reason;
     StockMovementItem stockMovementItem;
     private String movementDate;
     private static String EMPTY_FIELD = "-";
@@ -25,7 +26,7 @@ public class StockHistoryMovementItemViewModel {
         try {
             reason = MovementReasonManager.getInstance().queryByCode(stockMovementItem.getReason());
         } catch (MovementReasonNotFoundException e) {
-            throw new RuntimeException("MovementReason Cannot be find " + e.getMessage());
+            new LMISException("MovementReason Cannot be find ," + e.getMsg()).reportToFabric();
         }
     }
 
