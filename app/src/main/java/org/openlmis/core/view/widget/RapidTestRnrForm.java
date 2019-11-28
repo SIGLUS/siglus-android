@@ -143,7 +143,7 @@ public class RapidTestRnrForm extends LinearLayout {
                     tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
                 }
             } catch (ParseException e) {
-                new LMISException(e).reportToFabric();
+                new LMISException(e,"RapidTestRnrForm.addView").reportToFabric();
             }
         }
         leftHeaderLinearlayout.addView(topLeftInflate);

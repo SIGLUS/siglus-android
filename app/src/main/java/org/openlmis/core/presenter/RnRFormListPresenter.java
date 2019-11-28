@@ -247,7 +247,7 @@ public class RnRFormListPresenter extends Presenter {
                     subscriber.onNext(requisitionPeriodService.hasMissedPeriod(programCode));
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e,"hasMissedPeriod").reportToFabric();
                     subscriber.onError(e);
                 }
             }

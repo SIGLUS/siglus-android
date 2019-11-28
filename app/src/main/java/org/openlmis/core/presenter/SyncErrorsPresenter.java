@@ -33,7 +33,7 @@ public class SyncErrorsPresenter extends Presenter {
         try {
             return repository.hasSyncErrorOf(syncType);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"SyncErrorsPresenter.hasSyncError").reportToFabric();
             return false;
         }
     }

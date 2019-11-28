@@ -128,7 +128,7 @@ public class LotMovementViewModel implements Serializable {
         try {
             return "SEM-LOTE-" + productCode.toUpperCase() + "-" + DateUtil.convertDate(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR, DateUtil.DATE_DIGIT_FORMAT_ONLY_MONTH_AND_YEAR);
         } catch (ParseException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e,"LotMovementViewModel.generateLotNumberForProductWithoutLot").reportToFabric();
         }
         return null;
     }
@@ -141,7 +141,7 @@ public class LotMovementViewModel implements Serializable {
             }
             returnLong = (Long.parseLong(this.getQuantity()) - Long.parseLong(this.getLotSoh()));
         } catch (NumberFormatException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e, "LotMovementViewModel.getAdjustmentQuantity").reportToFabric();
         }
         return returnLong;
     }

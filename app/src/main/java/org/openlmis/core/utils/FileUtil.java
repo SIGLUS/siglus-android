@@ -51,7 +51,7 @@ public final class FileUtil {
             out.close();
             in.close();
         } catch (Exception e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e,"FileUtil.copyInputStreamToFile").reportToFabric();
         }
     }
 }

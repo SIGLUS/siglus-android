@@ -84,7 +84,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, 
             Program program = programRepository.queryByCode(programCode);
             programDataForm.setProgram(program);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"ProgramDataFormAdapter.deserialize").reportToFabric();
             throw new JsonParseException("can not find Program by programCode");
         }
         programDataForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);

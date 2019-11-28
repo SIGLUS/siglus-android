@@ -58,7 +58,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e, "AddDrugsToVIAPresenter,loadActiveProductsNotInVIAForm").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -81,7 +81,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
                             rnrFormItem.setProduct(product);
                             rnrFormItem.setRequestAmount(Long.valueOf(((AddDrugsToViaInventoryViewModel) inventoryViewModel).getQuantity()));
                         } catch (LMISException e) {
-                            e.reportToFabric();
+                            new LMISException(e, "AddDrugsToVIAPresenter,convertViewModelsToRnrFormItems").reportToFabric();
                         }
                         return rnrFormItem;
                     }

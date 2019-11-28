@@ -38,10 +38,22 @@ public class LMISException extends Exception {
         super(e);
     }
 
+    public LMISException(Exception e, String msg) {
+        super(e);
+        this.msg = msg;
+    }
+
     public LMISException(Throwable throwable) {
         super(throwable);
     }
+    public LMISException(Throwable throwable, String msg) {
+        super(throwable);
+        this.msg = msg;
+    }
 
+    public void setLMISExcetption(LMISException e) {
+        this.msg = e.getMsg();
+    }
     public void reportToFabric() {
         //this will save exception messages locally
         //it only uploads to fabric server when network is available
@@ -64,5 +76,10 @@ public class LMISException extends Exception {
     @Override
     public int hashCode() {
         return msg != null ? msg.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "cccccccccc";
     }
 }

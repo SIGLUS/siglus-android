@@ -66,7 +66,7 @@ public class ChangeMovementReasonToCode extends Migration {
             updateStockMovementItems(itemList);
 
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "ChangeMovementReasonToCode,up").reportToFabric();
             throw new RuntimeException(e.getMessage());
         }
     }

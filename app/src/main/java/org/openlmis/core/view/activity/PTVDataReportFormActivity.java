@@ -145,7 +145,7 @@ public class PTVDataReportFormActivity extends BaseActivity {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                new LMISException(e.getCause()).reportToFabric();
+                new LMISException(e, "savePTVProgramSubscriber").reportToFabric();
             }
 
             @Override
@@ -172,7 +172,7 @@ public class PTVDataReportFormActivity extends BaseActivity {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                new LMISException(e.getCause()).reportToFabric();
+                new LMISException(e, "updatePTVProgramSubscriber").reportToFabric();
             }
 
             @Override

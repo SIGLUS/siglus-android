@@ -56,7 +56,7 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
 
             setupProductAndStockCardOfMovementItems(stockCard);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"StockCardAdapter.deserialize").reportToFabric();
         }
         return stockCard;
     }

@@ -141,8 +141,9 @@ public class SyncDownManager {
             fetchAndSaveReportType();
             subscriber.onNext(SyncProgress.ReportTypeSynced);
         } catch (LMISException e) {
-            e.reportToFabric();
-            throw new LMISException(errorMessage(R.string.msg_sync_report_type_failed));
+            LMISException e1 = new LMISException(e,errorMessage(R.string.msg_sync_report_type_failed));
+            e1.reportToFabric();
+            throw e1;
         }
     }
 
@@ -152,8 +153,9 @@ public class SyncDownManager {
             fetchAndSaveprogram();
             subscriber.onNext(SyncProgress.ProgramSynced);
         } catch (LMISException e) {
-            e.reportToFabric();
-            throw new LMISException(errorMessage(R.string.msg_sync_program_failed));
+            LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_program_failed));
+            e1.reportToFabric();
+            throw e1;
         }
     }
 
@@ -174,8 +176,9 @@ public class SyncDownManager {
             fetchAndSaveService();
             subscriber.onNext(SyncProgress.ServiceSynced);
         } catch (LMISException e) {
-            e.reportToFabric();
-            throw new LMISException(errorMessage(R.string.msg_service_lists));
+            LMISException e1 = new LMISException(errorMessage(R.string.msg_service_lists));
+            e1.reportToFabric();
+            throw e1;
         }
     }
 
@@ -196,8 +199,9 @@ public class SyncDownManager {
                 subscriber.onNext(SyncProgress.RapidTestsSynced);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setRapidTestsDataSynced(false);
-                e.reportToFabric();
-                throw new LMISException(errorMessage(R.string.msg_sync_rapid_tests_failed));
+                LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_rapid_tests_failed));
+                e1.reportToFabric();
+                throw e1;
             }
         }
     }
@@ -205,7 +209,9 @@ public class SyncDownManager {
     private void fetchAndSaveRapidTests() throws LMISException {
         SyncDownProgramDataResponse syncDownProgramDataResponse = lmisRestApi.fetchProgramDataForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
         if (syncDownProgramDataResponse == null) {
-            throw new LMISException("Can't get SyncDownRapidTestsResponse, you can check json parse to POJO logic");
+            LMISException e = new LMISException("Can't get SyncDownRapidTestsResponse, you can check json parse to POJO logic");
+            e.reportToFabric();
+            throw e;
         }
 
         programDataFormRepository.batchSaveForms(syncDownProgramDataResponse.getProgramDataForms());
@@ -267,7 +273,7 @@ public class SyncDownManager {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(true);
                 sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-                new LMISException(e).reportToFabric();
+                new LMISException(e, "getSyncLastYearStockCardSubscriber:onError").reportToFabric();
                 sendSyncErrorBroadcast();
             }
 
@@ -331,8 +337,9 @@ public class SyncDownManager {
                 subscriber.onNext(SyncProgress.RequisitionSynced);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setRequisitionDataSynced(false);
-                e.reportToFabric();
-                throw new LMISException(errorMessage(R.string.msg_sync_requisition_failed));
+                LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_requisition_failed));
+                e1.reportToFabric();
+                throw e1;
             }
         }
     }
@@ -348,8 +355,9 @@ public class SyncDownManager {
                 subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
-                e.reportToFabric();
-                throw new LMISException(errorMessage(R.string.msg_sync_stock_movement_failed));
+                LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_stock_movement_failed));
+                e1.reportToFabric();
+                throw e1;
             }
         }
     }
@@ -360,8 +368,9 @@ public class SyncDownManager {
             fetchAndSaveProductsWithProgramsAndKits();
             subscriber.onNext(SyncProgress.ProductSynced);
         } catch (LMISException e) {
-            e.reportToFabric();
-            throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
+            LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_products_list_failed));
+            e1.reportToFabric();
+            throw e1;
         }
     }
 
@@ -436,7 +445,7 @@ public class SyncDownManager {
         try {
             stockRepository.batchCreateSyncDownStockCardsAndMovements(syncDownStockCardResponse.getStockCards());
         } catch (SQLException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e, "fetchAndSaveStockCards exception").reportToFabric();
         }
     }
 
@@ -492,7 +501,9 @@ public class SyncDownManager {
         SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
 
         if (syncDownRequisitionsResponse == null) {
-            throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
+            LMISException e = new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
+            e.reportToFabric();
+            throw e;
         }
 
         rnrFormRepository.createRnRsWithItems(syncDownRequisitionsResponse.getRequisitions());

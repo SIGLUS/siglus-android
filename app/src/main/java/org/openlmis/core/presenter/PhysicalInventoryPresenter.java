@@ -128,7 +128,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
-                    e.reportToFabric();
+                    new LMISException(e,"saveDraftInventoryObservable").reportToFabric();
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -165,7 +165,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
-                    e.reportToFabric();
+                    new LMISException(e,"doInventory").reportToFabric();
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

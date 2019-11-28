@@ -45,7 +45,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
             stockMovementItem.setMovementType(movementReason.getMovementType());
             stockMovementItem.setReason(movementReason.getCode());
         } catch (MovementReasonNotFoundException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e,"StockMovementItemAdapter,deserialize").reportToFabric();
             e.printStackTrace();
         }
 

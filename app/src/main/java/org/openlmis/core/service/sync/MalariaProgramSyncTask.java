@@ -22,13 +22,14 @@ public class MalariaProgramSyncTask implements SyncronizableTask {
     }
 
     @Override
-    public void sync() throws LMISException {
+    public void sync() {
         try {
             List<MalariaProgram> pendingForSync = malariaProgramRepository.getPendingForSync();
             restApi.syncUpMalariaPrograms(pendingForSync);
             malariaProgramRepository.bulkUpdateAsSynced(pendingForSync);
         } catch (LMISException exception) {
-            exception.reportToFabric();
+            new LMISException(exception, "MalariaProgramSyncTask").reportToFabric();
+//            exception.reportToFabric();
         }
     }
 }

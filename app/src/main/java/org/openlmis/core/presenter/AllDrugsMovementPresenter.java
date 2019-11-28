@@ -62,7 +62,7 @@ public class AllDrugsMovementPresenter extends Presenter {
             @Override
             public void onError(Throwable e) {
                 view.loaded();
-                new LMISException(e).reportToFabric();
+                new LMISException(e, "AllDrugsMovementPresenter,loadMovementHistory").reportToFabric();
                 ToastUtil.show(e.getMessage());
             }
 

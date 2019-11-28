@@ -79,7 +79,7 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
                     subscriber.onNext(viewModels);
                     subscriber.onCompleted();
                 } catch (Exception e) {
-                    new LMISException(e).reportToFabric();
+                    new LMISException(e, "MalariaData:getImple").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -145,7 +145,7 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);
-                    new LMISException(e).reportToFabric();
+                    new LMISException(e,"MalariaData:.onSaveForm").reportToFabric();
 
                 }
             }
@@ -175,8 +175,7 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
             }
             patientDataService.save(malariaProgram);
         } catch (Exception e) {
-            String str = e.getMessage();
-            (new LMISException("MalariaData:" + str)).reportToFabric();
+            new LMISException(e,"MalariaData:"+e.getMessage()).reportToFabric();
         }
     }
 

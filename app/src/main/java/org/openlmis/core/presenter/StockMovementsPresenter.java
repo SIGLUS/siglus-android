@@ -147,7 +147,7 @@ public class StockMovementsPresenter extends Presenter {
             boolean isUnpackable = stockCard.getProduct().isKit() && kitProducts.size() > 0 && stockCard.getStockOnHand() != 0;
             view.updateUnpackKitMenu(isUnpackable);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"StockMovementsPresenter.updateMenus").reportToFabric();
         }
     }
 

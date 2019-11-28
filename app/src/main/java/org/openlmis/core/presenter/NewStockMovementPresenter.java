@@ -80,7 +80,7 @@ public class NewStockMovementPresenter extends Presenter {
             viewModel.setMovementType(movementType);
             viewModel.setKit(isKit);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e," NewStockM.loadData").reportToFabric();
         }
         loadExistingLotMovementViewModels(movementType);
     }

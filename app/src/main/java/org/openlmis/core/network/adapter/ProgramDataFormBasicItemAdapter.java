@@ -56,7 +56,7 @@ public class ProgramDataFormBasicItemAdapter implements JsonSerializer<ProgramDa
             try {
                 return productRepository.getByCode(json.getAsString());
             } catch (LMISException e) {
-                e.reportToFabric();
+                new LMISException(e,"ProductAdapter.deserialize").reportToFabric();
                 throw new JsonParseException("can not find Product by code");
             }
         }

@@ -216,7 +216,7 @@ public class MMIAInfoList extends LinearLayout {
             try {
                 totalRegimenNumber += Long.parseLong(item.getValue());
             } catch (NumberFormatException e) {
-                new LMISException(e).reportToFabric();
+                new LMISException(e,"MMIAInfoList.getTotal").reportToFabric();
             }
         }
         return totalRegimenNumber;

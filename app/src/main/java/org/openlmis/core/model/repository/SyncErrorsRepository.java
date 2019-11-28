@@ -32,7 +32,7 @@ public class SyncErrorsRepository {
         try {
             genericDao.createOrUpdate(syncError);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"SyncErrorsRepository.save").reportToFabric();
         }
     }
 
@@ -40,7 +40,7 @@ public class SyncErrorsRepository {
         try {
             genericDao.delete(syncError);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"SyncErrorsRepository.delete").reportToFabric();
         }
     }
 
@@ -56,7 +56,7 @@ public class SyncErrorsRepository {
                 }
             });
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"SyncErrorsRepository.getBy").reportToFabric();
             return null;
         }
     }
@@ -74,7 +74,7 @@ public class SyncErrorsRepository {
                 }
             });
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"SyncErrorsRepository.deleteBy").reportToFabric();
             return null;
         }
     }

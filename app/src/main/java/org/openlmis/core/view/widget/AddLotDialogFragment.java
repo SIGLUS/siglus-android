@@ -116,7 +116,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
 
             }
         } catch (NullPointerException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e, "AddLotDialogFragment,hideDay").reportToFabric();
         }
     }
 

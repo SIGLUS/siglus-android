@@ -126,7 +126,7 @@ public class ProgramRepository {
         try {
             genericDao.refresh(programsWithProducts);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"ProgramRepository.refresh").reportToFabric();
         }
     }
 

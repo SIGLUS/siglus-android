@@ -85,7 +85,7 @@ public class ProgramDataFormRepository {
                 }
             });
         } catch (SQLException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e,"ProgramDataFormRepository.batchSaveForms").reportToFabric();
         }
     }
 

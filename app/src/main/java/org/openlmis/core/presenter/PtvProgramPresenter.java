@@ -69,7 +69,9 @@ public class PtvProgramPresenter extends Presenter {
             public void call(Subscriber<? super PTVProgram> subscriber) {
                 try {
                     if (period == null) {
-                        throw new LMISException("Period cannot be null");
+                        LMISException e =  new LMISException("Period cannot be null");
+                        e.reportToFabric();
+                        throw e;
                     }
                     createPTVProgram();
                     buildPlaceholderRows();
@@ -97,7 +99,9 @@ public class PtvProgramPresenter extends Presenter {
             public void call(Subscriber<? super PTVProgram> subscriber) {
                 try {
                     if (ptvProgram == null) {
-                        throw new LMISException("PTV Program cannot be null");
+                        LMISException e = new LMISException("PTV Program cannot be null");
+                        e.reportToFabric();
+                        throw e;
                     }
                     setPTVProgramStatus(isCompleted);
                     PTVProgram ptvProgramSaved = ptvProgramRepository.save(ptvProgram);

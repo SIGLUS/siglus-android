@@ -57,7 +57,7 @@ public class UserRepository {
             }
             return userQueried;
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"UserRepository.mapUserFromLocal").reportToFabric();
         }
         return null;
     }
@@ -72,7 +72,7 @@ public class UserRepository {
                 genericDao.update(user);
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"UserRepository.createOrUpdate").reportToFabric();
         }
     }
 
@@ -96,6 +96,7 @@ public class UserRepository {
             });
         } catch (LMISException e) {
             e.printStackTrace();
+            new LMISException(e,"UserRepository.getLocalUser").reportToFabric();
         }
         return user;
     }

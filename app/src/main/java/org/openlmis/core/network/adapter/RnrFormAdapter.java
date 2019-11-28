@@ -87,7 +87,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
             Program program = programRepository.queryByCode(json.getAsJsonObject().get("programCode").getAsString());
             rnRForm.setProgram(program);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"RnrFormAdapter.deserialize").reportToFabric();
             throw new JsonParseException("can not find Program by programCode");
         }
         rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);

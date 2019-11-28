@@ -26,7 +26,7 @@ public class StockHistoryMovementItemViewModel {
         try {
             reason = MovementReasonManager.getInstance().queryByCode(stockMovementItem.getReason());
         } catch (MovementReasonNotFoundException e) {
-            new LMISException("MovementReason Cannot be find ," + e.getMsg()).reportToFabric();
+            new LMISException(e, "MovementReason Cannot be find ," + e.getMsg()).reportToFabric();
         }
     }
 

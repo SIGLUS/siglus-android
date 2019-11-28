@@ -51,7 +51,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
                     subscriber.onNext(inventoryViewModelList);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e,"InitialInventoryPresenter.loadInventory").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -76,7 +76,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
                     defaultViewModelList = new ArrayList<>(inventoryViewModelList);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e,"InitialInventoryPresenter.loadInventoryWithBasicProducts").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -98,7 +98,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
             viewModel.setChecked(false);
             return viewModel;
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"InitialInventoryPresenter.convertProductToStockCardViewModel").reportToFabric();
         }
         return null;
     }
@@ -134,7 +134,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
             }
             createStockCardAndInventoryMovementWithLot(inventoryViewModel);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"InitialInventoryPresenter.initOrArchiveBackStockCard").reportToFabric();
         }
     }
 

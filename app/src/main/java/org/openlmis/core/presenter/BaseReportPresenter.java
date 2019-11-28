@@ -27,7 +27,7 @@ public abstract class BaseReportPresenter extends Presenter{
                     subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);
-                    new LMISException(e).reportToFabric();
+                    new LMISException(e,"BaseReportPresenter.getOnSignObservable").reportToFabric();
                 }
             }
         });

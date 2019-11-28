@@ -156,7 +156,7 @@ public class ProductRepository {
                 }
             });
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"ProductRepository.save").reportToFabric();
         }
     }
 

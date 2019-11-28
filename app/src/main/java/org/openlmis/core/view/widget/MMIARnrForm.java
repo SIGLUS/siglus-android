@@ -303,7 +303,7 @@ public class MMIARnrForm extends LinearLayout {
                     tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
                 }
             } catch (ParseException e) {
-                new LMISException(e).reportToFabric();
+                new LMISException(e,"MMIARnrForm.addRightView").reportToFabric();
             }
         }
         return inflate;

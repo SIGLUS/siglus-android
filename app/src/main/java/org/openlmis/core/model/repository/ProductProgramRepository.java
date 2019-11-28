@@ -58,7 +58,7 @@ public class ProductProgramRepository {
                 createOrUpdate(productProgram);
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "ProductProgramRepository.batchSave").reportToFabric();
         }
     }
 

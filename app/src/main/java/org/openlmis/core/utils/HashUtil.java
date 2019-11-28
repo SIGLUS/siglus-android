@@ -22,7 +22,7 @@ public final class HashUtil {
             return hexString.toString();
 
         } catch (NoSuchAlgorithmException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e,"getOnSignObservable.md5").reportToFabric();
         }
         return "";
     }

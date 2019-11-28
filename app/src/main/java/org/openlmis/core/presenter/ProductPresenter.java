@@ -62,7 +62,7 @@ public class ProductPresenter extends Presenter {
                     subscriber.onNext(regimeProductViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e,"ProductPresenter.loadRegimeProducts").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -91,7 +91,7 @@ public class ProductPresenter extends Presenter {
                             }
                             return regimen;
                         } catch (LMISException e) {
-                            e.printStackTrace();
+                            new LMISException(e,"ProductPresenter.saveRegimes").reportToFabric();
                             subscriber.onError(e);
                             return null;
                         }
@@ -125,7 +125,7 @@ public class ProductPresenter extends Presenter {
                     subscriber.onNext(inventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e,"ProductPresenter.loadEmergencyProducts").reportToFabric();
                     subscriber.onError(e);
                 }
             }

@@ -165,7 +165,11 @@ public class StockMovementRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder().offset(startIndex).limit(maxRows).orderBy("movementDate", true).orderBy("createdTime", true).orderBy("id", true).where().eq("stockCard_id", stockCardId).query();
+                return dao.queryBuilder().offset(startIndex).limit(maxRows)
+                        .orderBy("movementDate", true)
+                        .orderBy("createdTime", true)
+                        .orderBy("id", true)
+                        .where().eq("stockCard_id", stockCardId).query();
             }
         });
     }
@@ -206,7 +210,11 @@ public class StockMovementRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return Lists.reverse(dao.queryBuilder().limit(5L).orderBy("movementDate", false).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
+                return Lists.reverse(dao.queryBuilder().limit(5L)
+                        .orderBy("movementDate", false)
+                        .orderBy("createdTime", false)
+                        .orderBy("id", false)
+                        .where().eq("stockCard_id", stockCardId).query());
             }
         });
     }

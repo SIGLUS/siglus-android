@@ -66,7 +66,7 @@ public class SelectPeriodPresenter extends Presenter {
                     subscriber.onNext(selectInventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e,"SelectPeriodPresenter.loadData").reportToFabric();
                     subscriber.onError(e);
                 }
             }

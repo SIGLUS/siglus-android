@@ -101,7 +101,7 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onNext(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e, "ALRequisitionPresenter,getRnrFormObservable").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -117,7 +117,7 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
                     rnrFormRepository.createOrUpdateWithItems(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e, "ALRequisitionPresenter,getSaveFormObservable").reportToFabric();
                     subscriber.onError(e);
                 }
             }

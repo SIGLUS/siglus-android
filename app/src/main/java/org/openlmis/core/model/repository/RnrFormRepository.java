@@ -171,7 +171,7 @@ public class RnrFormRepository {
             });
 
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"RnrFormRepository.isPeriodUnique").reportToFabric();
         }
         return false;
     }
@@ -199,7 +199,9 @@ public class RnrFormRepository {
         final Program program = programRepository.queryByCode(programCode);
         ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
         if (program == null) {
-            throw new LMISException("Program cannot be null !");
+            LMISException e = new LMISException("Program cannot be null !");
+            e.reportToFabric();
+            throw e;
         }
         RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
             @Override
@@ -274,7 +276,7 @@ public class RnrFormRepository {
                 return true;
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"RnrFormRepository.hasRequisitionData").reportToFabric();
         }
         return false;
     }
@@ -285,7 +287,7 @@ public class RnrFormRepository {
         try {
             list = list();
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"RnrFormRepository.hasOldDate").reportToFabric();
         }
         Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
@@ -346,7 +348,9 @@ public class RnrFormRepository {
     private RnRForm initRnRForm(Date periodEndDate, RnRForm.Emergency emergency) throws LMISException {
         final Program program = programRepository.queryByCode(programCode);
         if (program == null) {
-            throw new LMISException("Program cannot be null !");
+            LMISException e = new LMISException("Program cannot be null !");
+            e.reportToFabric();
+            throw e;
         }
 
         Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);

@@ -42,7 +42,7 @@ public class ServiceItemAdapter implements JsonDeserializer<ServiceItem>, JsonSe
             Service service = serviceFormRepository.queryByCode(json.getAsJsonObject().get("code").getAsString());
             serviceItem.setService(service);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"ServiceItemAdapter.deserialize").reportToFabric();
             throw new JsonParseException("can not find service by code");
         }
         return serviceItem;

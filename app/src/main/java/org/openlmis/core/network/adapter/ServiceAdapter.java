@@ -54,7 +54,7 @@ public class ServiceAdapter implements JsonDeserializer<Service> {
             Program program = programRepository.queryByCode(json.getAsJsonObject().get("programCode").getAsString());
             service.setProgram(program);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"ServiceAdapter.deserialize").reportToFabric();
             throw new JsonParseException("can not find Program by programCode");
         }
         return service;

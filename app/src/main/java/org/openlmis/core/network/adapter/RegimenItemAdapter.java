@@ -46,7 +46,7 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDese
             }
             regimenItem.setRegimen(regimen);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"RegimenItemAdapter.deserialize").reportToFabric();
             throw new JsonParseException("can not find RegimenItem by name and category");
         }
         return regimenItem;

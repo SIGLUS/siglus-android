@@ -105,7 +105,7 @@ public class SyncUpManager {
                 return false;
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager:syncRnr").reportToFabric();
             return false;
         }
 
@@ -139,7 +139,7 @@ public class SyncUpManager {
                 return false;
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager:fakeSyncRnr").reportToFabric();
             return false;
         }
 
@@ -152,6 +152,7 @@ public class SyncUpManager {
                     return true;
                 } catch (Exception e) {
                     Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
+                    new LMISException(e, "SyncUpManager:fakeSyncRnr,sync failed").reportToFabric();
                     syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RnRForm, rnRForm.getId()));
                     return false;
                 }
@@ -182,7 +183,7 @@ public class SyncUpManager {
             List<StockMovementEntry> movementEntriesToSync = convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
 
             if (movementEntriesToSync == null || movementEntriesToSync.isEmpty()) {
-                (new LMISException("SyncUpManager.movementEntriesToSync")).reportToFabric();
+                new LMISException("SyncUpManager.movementEntriesToSync").reportToFabric();
                 return false;
             }
 
@@ -192,7 +193,7 @@ public class SyncUpManager {
             Log.d(TAG, "===> SyncStockMovement : synced");
             return true;
         } catch (LMISException exception) {
-            exception.reportToFabric();
+            new LMISException(exception, "SyncUpManager.syncStockCards").reportToFabric();
             syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.StockCards, 0L));
             Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
             return false;
@@ -210,7 +211,7 @@ public class SyncUpManager {
             Log.d(TAG, "===> SyncStockMovement : synced");
             return true;
         } catch (LMISException exception) {
-            exception.reportToFabric();
+            new LMISException(exception, "SyncUpManager.fakeSyncStockCards").reportToFabric();
             syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.StockCards, 0L));
             Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
             return false;
@@ -237,7 +238,7 @@ public class SyncUpManager {
                 sharedPreferenceMgr.setStockLastSyncTime();
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.syncUpUnSyncedStockCardCodes").reportToFabric();
         }
     }
 
@@ -258,7 +259,7 @@ public class SyncUpManager {
                 sharedPreferenceMgr.setStockLastSyncTime();
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.fakeSyncUpUnSyncedStockCardCodes").reportToFabric();
         }
     }
 
@@ -271,7 +272,7 @@ public class SyncUpManager {
                 sharedPreferenceMgr.setSyncedVersion(true);
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.syncArchivedProducts").reportToFabric();
         }
     }
 
@@ -282,7 +283,7 @@ public class SyncUpManager {
             List<String> archivedProductCodes = productRepository.listArchivedProductCodes();
             lmisRestApi.syncUpArchivedProducts(facilityId, archivedProductCodes);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.syncArchivedProducts").reportToFabric();
         }
     }
 
@@ -305,7 +306,7 @@ public class SyncUpManager {
                 }
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.syncUpCmms").reportToFabric();
         }
     }
 
@@ -319,7 +320,7 @@ public class SyncUpManager {
                 }
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.fakeSyncUpCmms").reportToFabric();
         }
     }
 
@@ -334,7 +335,7 @@ public class SyncUpManager {
             Log.d(TAG, "===> SyncRnr : synced ->");
             return true;
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
             Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
             syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RnRForm, rnRForm.getId()));
             return false;
@@ -347,7 +348,7 @@ public class SyncUpManager {
             Log.d(TAG, "===> SyncRapidTests: Rapid Tests synced...");
             return true;
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.submitProgramDataForm").reportToFabric();
             return false;
         }
     }
@@ -384,7 +385,7 @@ public class SyncUpManager {
         try {
             rnrFormRepository.createOrUpdateWithItems(rnRForm);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.markRnrFormSynced").reportToFabric();
             Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
         }
     }
@@ -406,7 +407,7 @@ public class SyncUpManager {
                 return;
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.syncRapidTestForms").reportToFabric();
             return;
         }
         Observable.from(forms).filter(new Func1<ProgramDataForm, Boolean>() {
@@ -436,7 +437,7 @@ public class SyncUpManager {
             Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");
 
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e, "SyncUpManager.fakeSyncRapidTestForms").reportToFabric();
             return;
         }
 
@@ -451,7 +452,7 @@ public class SyncUpManager {
         try {
             programDataFormRepository.batchCreateOrUpdate(programDataForm);
         } catch (SQLException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e, "SyncUpManager.markProgramDataFormsSynced").reportToFabric();
             Log.e(TAG, "===> SyncRapidTests : mark synced failed -> " + programDataForm.getId());
         }
     }

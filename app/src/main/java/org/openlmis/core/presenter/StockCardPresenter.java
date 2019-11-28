@@ -26,7 +26,6 @@ import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -58,8 +57,6 @@ public class StockCardPresenter extends Presenter {
     ProductRepository productRepository;
     @Inject
     StockService stockService;
-    @Inject
-    RequisitionPeriodService requisitionPeriodService;
 
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
@@ -140,7 +137,7 @@ public class StockCardPresenter extends Presenter {
         try {
             stockRepository.updateStockCardWithProduct(stockCard);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"StockCardPresenter.archiveBackStockCard").reportToFabric();
         }
     }
 
@@ -228,7 +225,7 @@ public class StockCardPresenter extends Presenter {
                         stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
                     }
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e,"createStockCardsIfNotExist").reportToFabric();
                 }
                 return stockCard;
             }

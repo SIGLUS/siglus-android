@@ -144,7 +144,7 @@ public class LotRepository {
         try {
             return new GenericDao<>(Lot.class, context).queryForAll();
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"queryAllLot").reportToFabric();
         }
         return null;
     }

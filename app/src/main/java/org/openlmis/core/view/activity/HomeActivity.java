@@ -375,7 +375,7 @@ public class HomeActivity extends BaseActivity {
             FileUtil.copy(tempBackup, externalBackup);
             ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
         } catch (Exception e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e,"HomeActivity.exportDB").reportToFabric();
             ToastUtil.show(e.getMessage());
         } finally {
             if (tempBackup.canRead()) {

@@ -117,7 +117,7 @@ public final class DateUtil {
         try {
             return new SimpleDateFormat(format, locale).parse(string);
         } catch (ParseException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e, "DateUtil,parseString").reportToFabric();
             return null;
         }
     }

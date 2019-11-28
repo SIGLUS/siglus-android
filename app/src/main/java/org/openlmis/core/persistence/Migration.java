@@ -72,7 +72,7 @@ public abstract class Migration {
 
             db.setTransactionSuccessful();
         } catch (IOException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e,"execSQLScript").reportToFabric();
             throw new RuntimeException("Invalid migration file :" + filename);
         } finally {
             db.endTransaction();

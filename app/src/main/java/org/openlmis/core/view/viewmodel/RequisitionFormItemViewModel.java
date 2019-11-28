@@ -107,7 +107,7 @@ public class RequisitionFormItemViewModel {
             }
             item.setCalculatedOrderQuantity(Long.valueOf(this.adjustedTotalRequest));
         } catch (NumberFormatException e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e,"toRnrFormItem").reportToFabric();
         }
         return item;
     }

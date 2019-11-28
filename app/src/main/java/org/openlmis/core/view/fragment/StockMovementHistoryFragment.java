@@ -173,14 +173,13 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     private void addFooterViewIfMoreThanOneScreen() {
         historyListView.post(new Runnable() {
-                                 @Override
-                                 public void run() {
-                                     if (isGreaterThanOneScreen()) {
-                                         addFooterView();
-                                     }
-                                 }
-                             }
-        );
+            @Override
+            public void run() {
+                if (isGreaterThanOneScreen()) {
+                    addFooterView();
+                }
+            }
+        });
     }
 
     private void addFooterView() {

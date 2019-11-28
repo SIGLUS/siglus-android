@@ -83,7 +83,7 @@ public class RegimenRepository {
                 createOrUpdate(regimen);
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"RegimenRepository.batchSave").reportToFabric();
         }
     }
 

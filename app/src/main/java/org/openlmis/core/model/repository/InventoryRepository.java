@@ -40,7 +40,7 @@ public class InventoryRepository {
         try {
             genericDao.create(inventory);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"InventoryRepository.save").reportToFabric();
         }
     }
 

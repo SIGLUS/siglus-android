@@ -210,7 +210,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
+                    new LMISException(e, "BaseRequisitionPresenter,createOrUpdateRnrForm").reportToFabric();
                     subscriber.onError(e);
                 } finally {
                     stockService.monthlyUpdateAvgMonthlyConsumption();
@@ -226,7 +226,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
                 rnrFormRepository.removeRnrForm(rnRForm);
             } catch (LMISException e) {
                 ToastUtil.show(context.getString(R.string.delete_rnr_form_failed_warning));
-                e.reportToFabric();
+                new LMISException(e, "BaseRequisitionPresenter,deleteDraft").reportToFabric();
             }
         }
     }

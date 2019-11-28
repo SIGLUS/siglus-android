@@ -113,14 +113,14 @@ public class LMISRestManager {
                             return true;
                         }
                     } catch (SSLPeerUnverifiedException e) {
-                        new LMISException(e).reportToFabric();
+                        new LMISException(e,"LMISRestManager,verify").reportToFabric();
                     }
 
                     return getDefaultHostnameVerifier().verify(hostname, session);
                 }
             });
         } catch (Exception e) {
-            new LMISException(e).reportToFabric();
+            new LMISException(e,"LMISRestManager,ssl").reportToFabric();
         }
         return new OkClient(client);
     }
