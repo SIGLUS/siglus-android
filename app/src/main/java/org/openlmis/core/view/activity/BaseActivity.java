@@ -36,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -160,7 +161,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         try {
             presenter.attachView(BaseActivity.this);
         } catch (ViewNotMatchException e) {
-            e.reportToFabric();
+            new LMISException(e,"BaseActivity:onCreate").reportToFabric();
             ToastUtil.show(e.getMessage());
             return;
         }

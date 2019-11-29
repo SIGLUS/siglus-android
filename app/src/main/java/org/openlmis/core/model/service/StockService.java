@@ -68,7 +68,7 @@ public class StockService {
             }
             SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"StockService:immediatelyUpdate").reportToFabric();
         }
     }
 
@@ -77,7 +77,7 @@ public class StockService {
         try {
             firstPeriodBegin = queryFirstPeriodBegin(stockCard);
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"StockService:calculateAverage").reportToFabric();
             return -1;
         }
         if (firstPeriodBegin == null) {
@@ -136,7 +136,7 @@ public class StockService {
             }
             return totalIssued;
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"StockService:calculateTotalI").reportToFabric();
             return null;
         }
     }

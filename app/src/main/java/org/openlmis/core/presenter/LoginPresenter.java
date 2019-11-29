@@ -147,7 +147,7 @@ public class LoginPresenter extends Presenter {
                 List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
                 SharedPreferenceMgr.getInstance().setReportTypesData(reportTypeForms);
             } catch (LMISException e) {
-                e.reportToFabric();
+                new LMISException(e,"setDefaultReportType").reportToFabric();
             }
         }
     }
@@ -201,13 +201,13 @@ public class LoginPresenter extends Presenter {
                         try {
                             LMISApp.getInstance().getRestApi().recordReSyncActionG();
                         } catch (LMISException e) {
-                            e.printStackTrace();
+                            new LMISException(e,"recordReSyncActionG").reportToFabric();
                         }
                     }
                 }).start();
             }
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"onLoginSuccess").reportToFabric();
         }
     }
 

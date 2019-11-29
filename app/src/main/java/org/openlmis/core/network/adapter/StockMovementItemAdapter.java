@@ -69,7 +69,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
                 try {
                     this.setStockOnHand(Long.parseLong(extensions.get("soh")));
                 } catch (NumberFormatException e) {
-                    new LMISException(e).reportToFabric();
+                    new LMISException(e,"convertToStockMovementItem").reportToFabric();
                     e.printStackTrace();
                 }
             }

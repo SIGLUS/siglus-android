@@ -174,7 +174,7 @@ public class StockRepository {
             Collections.sort(stockCards);
             return stockCards;
         } catch (LMISException e) {
-            e.reportToFabric();
+            new LMISException(e,"StockRepository:list").reportToFabric();
         }
         return null;
     }

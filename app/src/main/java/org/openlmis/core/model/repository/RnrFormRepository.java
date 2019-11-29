@@ -166,12 +166,16 @@ public class RnrFormRepository {
             return null == dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
                 @Override
                 public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
-                    return dao.queryBuilder().where().eq("program_id", form.getProgram().getId()).and().eq("status", RnRForm.STATUS.AUTHORIZED).and().eq("periodBegin", form.getPeriodBegin()).and().eq("periodEnd", form.getPeriodEnd()).queryForFirst();
+                    return dao.queryBuilder().where().eq("program_id", form.getProgram().getId())
+                            .and().eq("status", RnRForm.STATUS.AUTHORIZED)
+                            .and().eq("periodBegin", form.getPeriodBegin())
+                            .and().eq("periodEnd", form.getPeriodEnd())
+                            .queryForFirst();
                 }
             });
 
         } catch (LMISException e) {
-            new LMISException(e,"RnrFormRepository.isPeriodUnique").reportToFabric();
+            new LMISException(e, "RnrFormRepository.isPeriodUnique").reportToFabric();
         }
         return false;
     }
@@ -206,7 +210,10 @@ public class RnrFormRepository {
         RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
             @Override
             public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("program_id", program.getId()).and().between("periodBegin", reportTypeForm.getStartTime(), new Date()).and().ne("status", RnRForm.STATUS.AUTHORIZED).queryForFirst();
+                return dao.queryBuilder().where().eq("program_id", program.getId())
+                        .and().between("periodBegin", reportTypeForm.getStartTime(), new Date())
+                        .and().ne("status", RnRForm.STATUS.AUTHORIZED)
+                        .queryForFirst();
             }
         });
         assignCategoryForRnrItems(rnRForm);
@@ -276,7 +283,7 @@ public class RnrFormRepository {
                 return true;
             }
         } catch (LMISException e) {
-            new LMISException(e,"RnrFormRepository.hasRequisitionData").reportToFabric();
+            new LMISException(e, "RnrFormRepository.hasRequisitionData").reportToFabric();
         }
         return false;
     }
@@ -287,7 +294,7 @@ public class RnrFormRepository {
         try {
             list = list();
         } catch (LMISException e) {
-            new LMISException(e,"RnrFormRepository.hasOldDate").reportToFabric();
+            new LMISException(e, "RnrFormRepository.hasOldDate").reportToFabric();
         }
         Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 

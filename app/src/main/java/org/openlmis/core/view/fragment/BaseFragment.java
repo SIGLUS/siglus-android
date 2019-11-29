@@ -20,6 +20,7 @@ package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
 
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
@@ -65,7 +66,7 @@ public abstract class BaseFragment extends RoboFragment implements BaseView {
         try {
             presenter.attachView(this);
         } catch (ViewNotMatchException e) {
-            e.reportToFabric();
+            new LMISException(e,"BaseFragment:attachPresenterView").reportToFabric();
             ToastUtil.show(e.getMessage());
         }
     }
