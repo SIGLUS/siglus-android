@@ -8,6 +8,7 @@ import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
@@ -39,6 +40,14 @@ public class StockMovementRepository {
     }
 
     private void create(StockMovementItem stockMovementItem) throws LMISException {
+        StockMovementItem lastestStockMovement = getLastestStockMovement();
+        if (lastestStockMovement != null
+                && stockMovementItem.getCreatedTime().before(lastestStockMovement.getCreatedTime())) {
+            String currentProductCode = stockMovementItem.getStockCard().getProduct().getCode();
+            String productCode = lastestStockMovement.getStockCard().getProduct().getCode();
+            String facilityCode = UserInfoMgr.getInstance().getFacilityCode();
+            new LMISException(currentProductCode + ":" + productCode + ":" + facilityCode).reportToFabric();
+        }
         genericDao.create(stockMovementItem);
     }
 
@@ -108,6 +117,18 @@ public class StockMovementRepository {
                 return dao.queryBuilder()
                         .orderBy("movementDate", true)
                         .orderBy("createdTime", true)
+                        .queryForFirst();
+            }
+        });
+    }
+
+    private StockMovementItem getLastestStockMovement() throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
+            @Override
+            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder()
+                        .orderBy("movementDate", false)
+                        .orderBy("createdTime", false)
                         .queryForFirst();
             }
         });

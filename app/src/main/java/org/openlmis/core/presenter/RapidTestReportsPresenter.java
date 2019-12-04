@@ -36,6 +36,7 @@ import rx.schedulers.Schedulers;
 
 import static org.openlmis.core.model.Period.BEGIN_DAY;
 import static org.openlmis.core.model.Period.END_DAY;
+import static org.openlmis.core.model.Period.INVENTORY_BEGIN_DAY;
 import static org.openlmis.core.model.ProgramDataForm.STATUS.DRAFT;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
 import static org.openlmis.core.view.viewmodel.RapidTestReportViewModel.Status;
@@ -130,7 +131,7 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     private void addLastRapidTestViewModel(RapidTestReportViewModel lastViewModel, DateTime dateTime, DateTime endDateTime) throws LMISException {
-        if (dateTime.getDayOfMonth() >= 18 && dateTime.getMonthOfYear() == endDateTime.getMonthOfYear()) {
+        if (dateTime.getDayOfMonth() >= INVENTORY_BEGIN_DAY && dateTime.getMonthOfYear() == endDateTime.getMonthOfYear()) {
             Period currentPeriod = lastViewModel.getPeriod();
             Period lastPeriod = new Period(currentPeriod.getBegin(), currentPeriod.getEnd());
             List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(lastPeriod);
