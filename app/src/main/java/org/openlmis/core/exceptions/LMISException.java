@@ -80,6 +80,6 @@ public class LMISException extends Exception {
 
     @Override
     public String toString() {
-        return "cccccccccc";
+        return msg;
     }
 }

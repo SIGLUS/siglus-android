@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -281,19 +282,19 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     public void sendSyncStartBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
     }
 
     public void sendSyncFinishedBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
     }
 
     @Override
     public void sendSyncErrorBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
     }
 }

@@ -37,6 +37,7 @@ import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
+import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.network.model.UserResponse;
 
 import java.util.List;
@@ -65,6 +66,10 @@ public interface LMISRestApi {
 
     @POST("/rest-api/facilities/{facilityId}/stockCards")
     JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries) throws LMISException;
+
+
+    @POST("/rest-api/facilities/split/{facilityId}/stockCards")
+    SyncUpStockMovementDataSplitResponse syncUpStockMovementDataSplit(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries) throws LMISException;
 
     @POST("/rest-api/facilities/{facilityId}/unSyncedStockCards")
     Void syncUpUnSyncedStockCards(@Path("facilityId") String facilityId, @Body List<String> unSyncedStockCardCodes) throws LMISException;

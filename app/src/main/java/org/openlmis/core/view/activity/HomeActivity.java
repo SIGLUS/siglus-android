@@ -27,7 +27,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
@@ -156,19 +158,19 @@ public class HomeActivity extends BaseActivity {
     private void registerSyncStartReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-        registerReceiver(syncStartReceiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncStartReceiver, filter);
     }
 
     private void registerSyncFinishedReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        registerReceiver(syncFinishedReceiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncFinishedReceiver, filter);
     }
 
     private void registerErrorFinishedReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-        registerReceiver(syncErrorReceiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncErrorReceiver, filter);
     }
 
     @Override
@@ -193,15 +195,20 @@ public class HomeActivity extends BaseActivity {
     BroadcastReceiver syncErrorReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            syncTimeView.setSyncStockCardLastYearError();
+            String msg = intent.getStringExtra(Constants.SYNC_MOVEMENT_ERROR);
+            if (msg != null) {
+                syncTimeView.setSyncedMovementError(msg);
+            } else {
+                syncTimeView.setSyncStockCardLastYearError();
+            }
         }
     };
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(syncStartReceiver);
-        unregisterReceiver(syncFinishedReceiver);
-        unregisterReceiver(syncErrorReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncStartReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncFinishedReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncErrorReceiver);
         super.onDestroy();
     }
 
@@ -301,6 +308,8 @@ public class HomeActivity extends BaseActivity {
         }
         if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
             syncTimeView.setSyncStockCardLastYearError();
+        } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+            syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
         } else {
             setSyncedTime();
         }
@@ -375,7 +384,7 @@ public class HomeActivity extends BaseActivity {
             FileUtil.copy(tempBackup, externalBackup);
             ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
         } catch (Exception e) {
-            new LMISException(e,"HomeActivity.exportDB").reportToFabric();
+            new LMISException(e, "HomeActivity.exportDB").reportToFabric();
             ToastUtil.show(e.getMessage());
         } finally {
             if (tempBackup.canRead()) {

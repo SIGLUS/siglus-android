@@ -126,6 +126,9 @@ public final class Constants {
     public static final String INTENT_FILTER_FINISH_SYNC_DATA = LMISApp.getContext().getPackageName() + ".finish.sync_data";
     public static final String INTENT_FILTER_ERROR_SYNC_DATA = LMISApp.getContext().getPackageName() + ".error.sync_data";
 
+    // error define
+    public static final String SYNC_MOVEMENT_ERROR = "sync_movement_error";
+
     //PTV
     public static final String PTV_PRODUCT_FIRST_CODE = "08S40";
     public static final String PTV_PRODUCT_SECOND_CODE = "08S15";

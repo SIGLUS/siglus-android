@@ -2,6 +2,7 @@ package org.openlmis.core.training;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -57,13 +58,14 @@ public class TrainingSyncAdapter {
     private void sendSyncStartBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-        context.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
     }
 
     private void sendSyncFinishedBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        context.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     public void requestSync() {

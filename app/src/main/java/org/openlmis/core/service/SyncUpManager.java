@@ -18,6 +18,8 @@
 
 package org.openlmis.core.service;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -44,13 +46,16 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -186,10 +191,28 @@ public class SyncUpManager {
                 new LMISException("SyncUpManager.movementEntriesToSync").reportToFabric();
                 return false;
             }
+            SyncUpStockMovementDataSplitResponse response = lmisRestApi.syncUpStockMovementDataSplit(facilityId, movementEntriesToSync);
 
-            lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
-            markStockDataSynced(stockMovementItems);
+            List<StockMovementItem> shouldMarkSyncedItems = new ArrayList<>();
+            for (String product : response.getErrorProductCodes()) {
+                for (StockMovementItem stockMovementItem : stockMovementItems) {
+                    if (!product.equals(stockMovementItem.getStockCard().getProduct().getCode())) {
+                        shouldMarkSyncedItems.add(stockMovementItem);
+                    }
+                }
+            }
+
+            markStockDataSynced(shouldMarkSyncedItems);
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
+            if (!response.getErrorProductCodes().isEmpty()) {
+                String error = response.getErrorProductCodes().toString();
+                Intent intent = new Intent(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
+                intent.putExtra(Constants.SYNC_MOVEMENT_ERROR,error);
+                LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
+                sharedPreferenceMgr.setStockMovementSyncError(error);
+                throw new LMISException(response.getErrorProductCodes().toString());
+            }
+            sharedPreferenceMgr.setStockMovementSyncError("");
             Log.d(TAG, "===> SyncStockMovement : synced");
             return true;
         } catch (LMISException exception) {

@@ -20,6 +20,7 @@ package org.openlmis.core.service;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -312,19 +313,19 @@ public class SyncDownManager {
     private void sendSyncErrorBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-        LMISApp.getContext().sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
     }
 
     private void sendSyncStartBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-        LMISApp.getContext().sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
     }
 
     private void sendSyncFinishedBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        LMISApp.getContext().sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
     }
 

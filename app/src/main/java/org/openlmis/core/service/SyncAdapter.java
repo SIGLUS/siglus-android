@@ -25,10 +25,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
@@ -91,7 +94,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         syncUpManager.syncAppVersion();
         syncUpManager.syncUpCmms();
 
-        if (!sharedPreferenceMgr.shouldSyncLastYearStockData()) {
+        if (!sharedPreferenceMgr.shouldSyncLastYearStockData()
+                && TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
             sendSyncFinishedBroadcast();
         }
     }
@@ -99,12 +103,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void sendSyncStartBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-        context.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     private void sendSyncFinishedBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        context.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }

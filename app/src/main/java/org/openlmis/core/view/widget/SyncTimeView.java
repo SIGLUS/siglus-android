@@ -163,4 +163,10 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         txSyncTime.setText(R.string.sync_stock_card_last_year_error);
         ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
     }
+
+    public void setSyncedMovementError(String error) {
+        hideSyncProgressBarAndShowIcon();
+        txSyncTime.setText(context.getString(R.string.sync_stock_movement_error, error));
+        ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
+    }
 }

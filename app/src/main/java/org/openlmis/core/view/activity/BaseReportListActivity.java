@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 
 import org.openlmis.core.utils.Constants;
 
@@ -17,7 +18,7 @@ public abstract class BaseReportListActivity extends BaseActivity {
     private void registerRnrSyncReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        registerReceiver(syncReceiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, filter);
     }
 
     BroadcastReceiver syncReceiver = new BroadcastReceiver() {
@@ -31,7 +32,7 @@ public abstract class BaseReportListActivity extends BaseActivity {
 
     @Override
     protected void onStop() {
-        unregisterReceiver(syncReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
         super.onStop();
     }
 }
