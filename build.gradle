@@ -14,7 +14,7 @@ buildscript {
     }
     dependencies {
         classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.13"
-        classpath 'com.android.tools.build:gradle:3.5.2'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         // Add dependency
         classpath 'io.fabric.tools:gradle:1.31.0'  // Crashlytics plugin
     }

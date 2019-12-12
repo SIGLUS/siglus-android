@@ -19,7 +19,6 @@
 
 package org.openlmis.core.network;
 
-import org.json.JSONObject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.ProgramDataForm;
@@ -63,10 +62,6 @@ public interface LMISRestApi {
 
     @POST("/rest-api/sdp-requisitions")
     SyncUpRequisitionResponse submitEmergencyRequisition(@Body RnRForm rnRForm) throws LMISException;
-
-    @POST("/rest-api/facilities/{facilityId}/stockCards")
-    JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries) throws LMISException;
-
 
     @POST("/rest-api/facilities/split/{facilityId}/stockCards")
     SyncUpStockMovementDataSplitResponse syncUpStockMovementDataSplit(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries) throws LMISException;

@@ -207,7 +207,7 @@ public class SyncUpManager {
             if (!response.getErrorProductCodes().isEmpty()) {
                 String error = response.getErrorProductCodes().toString();
                 Intent intent = new Intent(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-                intent.putExtra(Constants.SYNC_MOVEMENT_ERROR,error);
+                intent.putExtra(Constants.SYNC_MOVEMENT_ERROR, error);
                 LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
                 sharedPreferenceMgr.setStockMovementSyncError(error);
                 throw new LMISException(response.getErrorProductCodes().toString());

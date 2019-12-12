@@ -47,6 +47,7 @@ import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
@@ -54,6 +55,7 @@ import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
+import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -102,6 +104,7 @@ public class SyncUpManagerTest {
     private ProgramDataFormRepository mockedProgramDataFormRepository;
     private MalariaProgramRepository mockedMalariaprogramRepository;
     private ProductRepository productRepository;
+    private StockMovementRepository stockMovementRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -113,6 +116,7 @@ public class SyncUpManagerTest {
         mockedSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         mockedLmisRestApi = mock(LMISRestApi.class);
         mockedMalariaprogramRepository = mock(MalariaProgramRepository.class);
+        stockMovementRepository = mock(StockMovementRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
@@ -167,24 +171,28 @@ public class SyncUpManagerTest {
     }
 
     @Test
-    public void shouldSyncUnSyncedStockMovementData() throws LMISException, SQLException, ParseException {
+    public void shouldSyncUnSyncedStockMovementData() throws LMISException, ParseException {
         StockCard stockCard = createTestStockCardData();
 
-        doReturn(null).when(mockedLmisRestApi).syncUpStockMovementData(anyString(), anyList());
+        SyncUpStockMovementDataSplitResponse response = new SyncUpStockMovementDataSplitResponse();
+        response.setErrorProductCodes(newArrayList("PD1"));
+
+        when(mockedLmisRestApi.syncUpStockMovementDataSplit(any(String.class), any(List.class))).thenReturn(response);
+
         syncUpManager.syncStockCards();
         stockRepository.refresh(stockCard);
         List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
 
         assertThat(items.size(), is(2));
-        assertThat(items.get(0).isSynced(), is(true));
-        assertThat(items.get(1).isSynced(), is(true));
+        assertThat(items.get(0).isSynced(), is(false));
+        assertThat(items.get(1).isSynced(), is(false));
         verify(mockedSyncErrorsRepository).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
     @Test
     public void shouldSaveSyncErrorWhenUnSyncedStockMovementDataFail() throws LMISException, SQLException, ParseException {
         createTestStockCardData();
-        doThrow(new LMISException("mocked exception")).when(mockedLmisRestApi).syncUpStockMovementData(anyString(), anyList());
+        doThrow(new LMISException("mocked exception")).when(mockedLmisRestApi).syncUpStockMovementDataSplit(anyString(), anyList());
 
         syncUpManager.syncStockCards();
 
@@ -195,7 +203,7 @@ public class SyncUpManagerTest {
     public void shouldNotMarkAsSyncedWhenStockMovementSyncFailed() throws LMISException, ParseException {
         StockCard stockCard = createTestStockCardData();
 
-        doThrow(new RuntimeException("Sync Failed")).when(mockedLmisRestApi).syncUpStockMovementData(anyString(), anyList());
+        doThrow(new RuntimeException("Sync Failed")).when(mockedLmisRestApi).syncUpStockMovementDataSplit(anyString(), anyList());
 
         try {
             syncUpManager.syncStockCards();
@@ -273,7 +281,7 @@ public class SyncUpManagerTest {
         rapidTest2.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
 
         syncUpManager.programDataFormRepository = mockedProgramDataFormRepository;
-        when(mockedProgramDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).thenReturn(newArrayList(rapidTest1,rapidTest2));
+        when(mockedProgramDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).thenReturn(newArrayList(rapidTest1, rapidTest2));
         syncUpManager.syncRapidTestForms();
 
         verify(mockedLmisRestApi).syncUpProgramDataForm(rapidTest1);
