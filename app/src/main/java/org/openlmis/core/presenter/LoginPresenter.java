@@ -272,7 +272,7 @@ public class LoginPresenter extends Presenter {
                         syncStockCards();
                         break;
 
-                    case RequisitionSynced:
+                    case ShouldGoToInitialInventory:
                         if (!view.needInitInventory()) {
                             ToastUtil.showForLongTime(R.string.msg_initial_sync_success);
                         }

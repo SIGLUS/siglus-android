@@ -7,7 +7,6 @@ import com.google.inject.AbstractModule;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISApp;
@@ -22,6 +21,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.Service;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
@@ -34,6 +34,7 @@ import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
@@ -42,7 +43,9 @@ import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
+import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
@@ -52,6 +55,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import roboguice.RoboGuice;
 import rx.Scheduler;
@@ -63,6 +67,7 @@ import rx.schedulers.Schedulers;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
@@ -73,16 +78,20 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.ProductSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.ProgramSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.RapidTestsSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.ReportTypeSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.ServiceSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastMonthSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastYearSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingProduct;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingPrograms;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRapidTests;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingReportType;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRequisition;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingServiceList;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastMonth;
-//import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastYear;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -102,6 +111,8 @@ public class SyncDownManagerTest {
     private Product productWithKits;
     private StockService stockService;
 
+    private StockMovementRepository stockMovementRepository;
+
     @Before
     public void setUp() throws Exception {
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
@@ -111,6 +122,7 @@ public class SyncDownManagerTest {
         productRepository = mock(ProductRepository.class);
         stockRepository = mock(StockRepository.class);
         stockService = mock(StockService.class);
+        stockMovementRepository = mock(StockMovementRepository.class);
 
         reset(rnrFormRepository);
         reset(lmisRestApi);
@@ -134,7 +146,7 @@ public class SyncDownManagerTest {
         syncDownManager.stockService = stockService;
     }
 
-    @Ignore
+    //    @Ignore
     @Test
     public void shouldSyncDownServerData() throws Exception {
         //given
@@ -143,6 +155,8 @@ public class SyncDownManagerTest {
         mockRequisitionResponse();
         mockStockCardsResponse();
         mockRapidTestsResponse();
+        mockFetchProgramsResponse();
+        mockFetchPTVServiceResponse();
 
 
         //when
@@ -152,18 +166,23 @@ public class SyncDownManagerTest {
         subscriber.assertNoErrors();
 
         //then
-        assertThat(subscriber.syncProgresses.get(0), is(SyncingReportType));
-        assertThat(subscriber.syncProgresses.get(1), is(SyncingProduct));
-        assertThat(subscriber.syncProgresses.get(2), is(ProductSynced));
-        assertThat(subscriber.syncProgresses.get(3), is(SyncingStockCardsLastMonth));
-        assertThat(subscriber.syncProgresses.get(4), is(StockCardsLastMonthSynced));
-        assertThat(subscriber.syncProgresses.get(5), is(SyncingRequisition));
-        assertThat(subscriber.syncProgresses.get(6), is(RequisitionSynced));
-        assertThat(subscriber.syncProgresses.get(7), is(SyncingRapidTests));
-        assertThat(subscriber.syncProgresses.get(8), is(RapidTestsSynced));
+        assertThat(subscriber.syncProgresses.get(0), is(SyncingPrograms));
+        assertThat(subscriber.syncProgresses.get(1), is(ProgramSynced));
+        assertThat(subscriber.syncProgresses.get(2), is(SyncingServiceList));
+        assertThat(subscriber.syncProgresses.get(3), is(ServiceSynced));
+        assertThat(subscriber.syncProgresses.get(4), is(SyncingReportType));
+        assertThat(subscriber.syncProgresses.get(5), is(ReportTypeSynced));
+        assertThat(subscriber.syncProgresses.get(6), is(SyncingProduct));
+        assertThat(subscriber.syncProgresses.get(7), is(ProductSynced));
+        assertThat(subscriber.syncProgresses.get(8), is(SyncingStockCardsLastMonth));
+        assertThat(subscriber.syncProgresses.get(9), is(StockCardsLastMonthSynced));
+        assertThat(subscriber.syncProgresses.get(10), is(SyncingRequisition));
+        assertThat(subscriber.syncProgresses.get(11), is(RequisitionSynced));
+        assertThat(subscriber.syncProgresses.get(12), is(SyncingRapidTests));
+        assertThat(subscriber.syncProgresses.get(13), is(RapidTestsSynced));
     }
 
-    @Ignore
+    //    @Ignore
     @Test
     public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
         //given
@@ -172,6 +191,8 @@ public class SyncDownManagerTest {
         mockRequisitionResponse();
         mockStockCardsResponse();
         mockRapidTestsResponse();
+        mockFetchProgramsResponse();
+        mockFetchPTVServiceResponse();
 
         //when
         CountOnNextSubscriber firstEnterSubscriber = new CountOnNextSubscriber();
@@ -184,11 +205,11 @@ public class SyncDownManagerTest {
         laterEnterSubscriber.assertNoTerminalEvent();
 
         //then
-        assertThat(firstEnterSubscriber.syncProgresses.size(), is(9));
+        assertThat(firstEnterSubscriber.syncProgresses.size(), is(14));
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }
 
-    @Ignore
+    //    @Ignore
     @Test
     public void shouldSyncDownNewLatestProductList() throws Exception {
         mockReportResponse();
@@ -196,6 +217,8 @@ public class SyncDownManagerTest {
         mockRequisitionResponse();
         mockStockCardsResponse();
         mockRapidTestsResponse();
+        mockFetchProgramsResponse();
+        mockFetchPTVServiceResponse();
         when(productRepository.getByCode(anyString())).thenReturn(new Product());
 
         Program program = new Program();
@@ -359,6 +382,31 @@ public class SyncDownManagerTest {
         when(lmisRestApi.fetchReportTypeForms(anyLong())).thenReturn(getReportTypeResponse());
     }
 
+    private void mockFetchProgramsResponse() throws LMISException, ParseException {
+        SyncUpProgramResponse response = getFetchProgramsResponse();
+        when(lmisRestApi.fetchPrograms(anyLong())).thenReturn(response);
+    }
+
+    private void mockFetchPTVServiceResponse() throws LMISException {
+        SyncDownServiceResponse response = getSyncDownServiceResponse();
+
+    }
+
+    private SyncDownServiceResponse getSyncDownServiceResponse() throws LMISException {
+        SyncDownServiceResponse response = new SyncDownServiceResponse();
+        Service service1 = new Service();
+        Service service2 = new Service();
+        service1.setCode("serviceCode");
+        service1.setName("serviceName");
+        service1.setActive(false);
+        service2.setCode("serviceCode1");
+        service2.setName("serviceName1");
+        service2.setActive(true);
+        response.setLatestServices(newArrayList(service1, service2));
+        when(lmisRestApi.fetchPTVService(sharedPreferenceMgr.getLastSyncServiceTime(), Constants.PTV_PROGRAM_CODE,
+                Locale.getDefault().getLanguage())).thenReturn(response);
+        return response;
+    }
 
     private SyncDownProgramDataResponse getRapidTestsResponse() {
         ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
@@ -375,6 +423,19 @@ public class SyncDownManagerTest {
         SyncDownProgramDataResponse syncDownProgramDataResponse = new SyncDownProgramDataResponse();
         syncDownProgramDataResponse.setProgramDataForms(newArrayList(programDataForm1, programDataForm2));
         return syncDownProgramDataResponse;
+    }
+
+    private SyncUpProgramResponse getFetchProgramsResponse() throws ParseException, LMISException {
+        SyncUpProgramResponse syncUpProgramResponse = new SyncUpProgramResponse();
+        Program program1 = new Program();
+        Program program2 = new Program();
+        StockMovementItemBuilder builder = new StockMovementItemBuilder();
+
+        stockMovementItem = builder.build();
+        stockMovementItem.setSynced(false);
+        when(stockMovementRepository.queryFirstStockMovementByStockCardId(anyInt())).thenReturn(stockMovementItem);
+        syncUpProgramResponse.setPrograms(newArrayList(program1, program2));
+        return syncUpProgramResponse;
     }
 
     private SyncDownReportTypeResponse getReportTypeResponse() {
@@ -452,6 +513,7 @@ public class SyncDownManagerTest {
             bind(ProgramRepository.class).toInstance(programRepository);
             bind(ProductRepository.class).toInstance(productRepository);
             bind(StockRepository.class).toInstance(stockRepository);
+            bind(StockMovementRepository.class).toInstance(stockMovementRepository);
         }
     }
 }

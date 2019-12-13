@@ -65,6 +65,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.ShouldGoToInitialInventory;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -269,7 +270,7 @@ public class LoginPresenterTest {
     @Test
     public void shouldGoToInitInventoryWhenRequisitionDataSynced() {
         when(mockActivity.needInitInventory()).thenReturn(true);
-        syncSubscriber.onNext(RequisitionSynced);
+        syncSubscriber.onNext(ShouldGoToInitialInventory);
 
         verify(mockActivity).loaded();
         verify(mockActivity).goToInitInventory();

@@ -246,13 +246,14 @@ public class SyncDownManager {
         });
     }
 
-    private void syncChangeKit() {
-        Observable.create(new Observable.OnSubscribe<Void>() {
+    private void syncChangeKit(){
+        Observable.create(new Observable.OnSubscribe<SyncProgress>() {
             @Override
-            public void call(Subscriber<? super Void> subscriber) {
+            public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
                     Log.d(TAG," sync the kit change.");
                     fetchKitChangeProduct();
+                    subscriber.onNext(SyncProgress.ShouldGoToInitialInventory);
                 } catch (LMISException e) {
                     e.printStackTrace();
                 }
@@ -552,7 +553,8 @@ public class SyncDownManager {
         StockCardsLastMonthSynced,
         RequisitionSynced,
         StockCardsLastYearSynced,
-        RapidTestsSynced;
+        RapidTestsSynced,
+        ShouldGoToInitialInventory;
 
         private int messageCode;
 
