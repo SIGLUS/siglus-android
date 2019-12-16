@@ -115,7 +115,7 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
     }
 
     //This method will move static and change to private after remove home page update feature toggle
-    private static String formatLastSyncTime(long syncedTimestamp, int syncTimeStringRId) {
+    private String formatLastSyncTime(long syncedTimestamp, int syncTimeStringRId) {
         long diff = DateUtil.calculateTimeIntervalFromNow(syncedTimestamp);
         String syncTimeIntervalWithUnit;
         if (diff < DateUtil.MILLISECONDS_HOUR) {

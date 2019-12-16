@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.Assert;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -14,9 +15,6 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
-
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -109,24 +107,26 @@ public class SharedPreferenceMgrTest {
 
     @Test
     public void shouldReturnTrueIfLastSyncUpDateIsToday() throws Exception {
-        ((LMISTestApp)RuntimeEnvironment.application).setCurrentTimeMillis(System.currentTimeMillis());
+        ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(System.currentTimeMillis());
         sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
 
         boolean hasSyncedUpLatestMovementToday = sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay();
 
-        assertTrue(hasSyncedUpLatestMovementToday);
+        Assert.assertTrue(hasSyncedUpLatestMovementToday);
     }
-    @Ignore
+
     @Test
+    //TODO later
+    @Ignore
     public void shouldReturnFalseIfLastSyncUpDateIsMoreThanOneDayBefore() throws Exception {
         DateTime twoDaysAgo = new DateTime().minusDays(2);
-        ((LMISTestApp)RuntimeEnvironment.application).setCurrentTimeMillis(twoDaysAgo.getMillis());
+        ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(twoDaysAgo.getMillis());
         sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
 
-        ((LMISTestApp)RuntimeEnvironment.application).setCurrentTimeMillis(System.currentTimeMillis());
-        boolean hasSyncedUpLatestMovementToday = sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay();
+        ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(System.currentTimeMillis());
+        boolean hasSyncedUpLatestMovementToday = (Boolean) sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay();
 
-        assertFalse(hasSyncedUpLatestMovementToday);
+        Assert.assertFalse(hasSyncedUpLatestMovementToday);
     }
 
     public class MyTestModule extends AbstractModule {

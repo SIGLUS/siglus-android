@@ -15,6 +15,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.view.activity.DummyActivity;
+import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -39,18 +40,16 @@ public class MMIARegimeListTest {
 
     private MMIARegimeList mmiaRegimeList;
     private MMIARequisitionPresenter presenter;
-    private DummyActivity dummyActivity;
+    private DumpFragmentActivity dummyActivity;
 
     @Before
     public void setUp() throws Exception {
-        dummyActivity = Robolectric.setupActivity(DummyActivity.class);
+        dummyActivity = Robolectric.setupActivity(DumpFragmentActivity.class);
         mmiaRegimeList = new MMIARegimeList(dummyActivity);
         presenter = mock(MMIARequisitionPresenter.class);
         mmiaRegimeList.presenter = presenter;
     }
 
-    // TODO: robolectric.android.controller.FragmentController with RoboContext
-    @Ignore
     @Test
     public void shouldCallDeleteMethodWhenDialogPositive() throws Exception {
         mmiaRegimeList = spy(mmiaRegimeList);

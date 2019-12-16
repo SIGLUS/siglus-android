@@ -434,7 +434,7 @@ public class RnrFormRepository {
         });
     }
 
-    private List<RnRForm> listNotSynchronizedFromReportStartTime(String programCode) throws LMISException {
+    public List<RnRForm> listNotSynchronizedFromReportStartTime(String programCode) throws LMISException {
         long programId;
         ReportTypeForm reportTypeForm;
 
@@ -451,7 +451,8 @@ public class RnrFormRepository {
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                Where<RnRForm, String> where = dao.queryBuilder().where().eq("program_id", programId).and().
+                Where<RnRForm, String> where = dao.queryBuilder().where().
+                        eq("program_id", programId).and().
                         eq("synced", false).and().
                         eq("status", RnRForm.STATUS.AUTHORIZED).and().
                         between("periodBegin", reportTypeForm.getStartTime(), new Date());

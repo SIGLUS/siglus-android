@@ -7,6 +7,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.MalariaProgram;
@@ -58,7 +60,6 @@ public class MalariaProgramSyncTaskTest {
     }
 
     @Test
-    @Ignore
     public void shouldReportToFabricWhenRestError() throws Exception {
         LMISException lmisException = mock(LMISException.class);
         LMISException lmisException1 = new LMISException("aaa");
@@ -69,7 +70,6 @@ public class MalariaProgramSyncTaskTest {
     }
 
     @Test
-    @Ignore
     public void shouldReportErrorToFabricWhenAccessingPendingForSync() throws LMISException {
         LMISException lmisException = mock(LMISException.class);
         doThrow(lmisException).when(malariaProgramRepository).getPendingForSync();
@@ -78,7 +78,6 @@ public class MalariaProgramSyncTaskTest {
     }
 
     @Test
-    @Ignore
     public void shouldReportErrorToFabricWhenUpdatingSyncedPrograms() throws LMISException {
         LMISException lmisException = mock(LMISException.class);
         doThrow(lmisException).when(malariaProgramRepository).bulkUpdateAsSynced((List<MalariaProgram>) anyObject());

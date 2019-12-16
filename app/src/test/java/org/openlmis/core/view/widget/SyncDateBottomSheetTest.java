@@ -3,6 +3,8 @@ package org.openlmis.core.view.widget;
 import android.view.View;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
+import com.google.inject.Module;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -11,7 +13,9 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.openlmis.core.utils.DateUtil;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.FragmentController;
 import org.robolectric.util.FragmentTestUtil;
 
 import java.util.Date;
@@ -24,12 +28,12 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@Ignore
 @RunWith(LMISTestRunner.class)
 public class SyncDateBottomSheetTest {
 
     protected SyncDateBottomSheet fragment;
-    protected SyncErrorsPresenter presenter;
+    protected FragmentController fragmentController;
+    SyncErrorsPresenter presenter;
 
     @Before
     public void setUp() throws Exception {
@@ -40,10 +44,10 @@ public class SyncDateBottomSheetTest {
                 bind(SyncErrorsPresenter.class).toInstance(presenter);
             }
         });
-
         fragment = new SyncDateBottomSheet();
-        fragment.setArguments(SyncDateBottomSheet.getArgumentsToMe(1, 1));
-        FragmentTestUtil.startFragment(fragment);
+        fragmentController = Robolectric.buildFragment(SyncDateBottomSheet.class,
+                SyncDateBottomSheet.getArgumentsToMe(1, 1));
+
     }
 
     @Test
@@ -77,6 +81,7 @@ public class SyncDateBottomSheetTest {
     }
 
     @Test
+    @Ignore
     public void shouldShowErrorMsgWhenFirstSyncFailed() throws Exception {
         when(presenter.hasRnrSyncError()).thenReturn(true);
         when(presenter.hasStockCardSyncError()).thenReturn(true);
@@ -89,6 +94,7 @@ public class SyncDateBottomSheetTest {
     }
 
     @Test
+    @Ignore
     public void shouldShowEmptyMsgWhenHasNotSynced() throws Exception {
         String formatRnrLastSyncTime = fragment.formatRnrLastSyncTime(0);
         assertThat(formatRnrLastSyncTime, equalTo(""));
@@ -98,10 +104,12 @@ public class SyncDateBottomSheetTest {
     }
 
     @Test
+    @Ignore
     public void shouldShowErrorIconWhenHasSyncError() throws Exception {
         when(presenter.hasRnrSyncError()).thenReturn(true);
         when(presenter.hasStockCardSyncError()).thenReturn(true);
-        fragment.onViewCreated(null, null);
+        fragmentController.create();
+
 
         assertThat(fragment.ivRnRError.getVisibility(), is(View.VISIBLE));
         assertThat(fragment.ivStockcardError.getVisibility(), is(View.VISIBLE));

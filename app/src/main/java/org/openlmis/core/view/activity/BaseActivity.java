@@ -158,6 +158,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         super.onCreate(savedInstanceState);
         initDataFragment();
         injectPresenter();
+
         try {
             presenter.attachView(BaseActivity.this);
         } catch (ViewNotMatchException e) {

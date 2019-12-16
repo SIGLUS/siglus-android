@@ -73,7 +73,7 @@ public class SelectPeriodActivityTest {
         inventoryList.addAll(selectInventoryViewModels);
     }
 
-    @Ignore
+//    @Ignore
     @Test
     public void shouldShowFormattedInstrumentTextAndLoadDataWhenActivityStarts() throws Exception {
         Spanned expectedFormattedText = Html.fromHtml(RuntimeEnvironment.application.getString(
@@ -86,7 +86,7 @@ public class SelectPeriodActivityTest {
 
     }
 
-    @Ignore
+//    @Ignore
     @Test
     public void shouldInVisibleWarningWhenUserChoseTheInventory() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(100000);
@@ -106,7 +106,7 @@ public class SelectPeriodActivityTest {
         assertThat(selectedDate, is(new DateTime("2016-01-19").toDate()));
     }
 
-    @Ignore
+//    @Ignore
     @Test
     public void shouldCheckedDefaultInventoryDay() throws Exception {
         inventoryList.get(1).setChecked(true);

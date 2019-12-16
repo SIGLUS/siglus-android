@@ -38,7 +38,6 @@ public class RegimenRepositoryTest {
         assertThat(actualRegime.getName(), is(regimeName));
     }
 
-    @Ignore
     @Test
     public void shouldListDefaultRegime() throws Exception {
         Regimen customRegime = new Regimen();
@@ -52,10 +51,10 @@ public class RegimenRepositoryTest {
         repository.create(customRegime2);
 
         List<Regimen> regimens = repository.listDefaultRegime();
-        assertThat(regimens.size(), is(19));
+        assertThat(regimens.size(), is(1));
     }
 
-    //TODO add adult
+
     @Test
     public void shouldListRegimeShortCodeAdults() throws Exception {
         List<RegimeShortCode> regimeShortCodes = repository.listRegimeShortCode(Regimen.RegimeType.Adults);

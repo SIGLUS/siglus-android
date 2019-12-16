@@ -79,9 +79,9 @@ public class MMIARnrForm extends LinearLayout {
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-       for (Pair<EditText, EditTextWatcher> editText: editTexts) {
-           editText.first.removeTextChangedListener(editText.second);
-       }
+        for (Pair<EditText, EditTextWatcher> editText : editTexts) {
+            editText.first.removeTextChangedListener(editText.second);
+        }
     }
 
     private void init(Context context) {
@@ -140,7 +140,7 @@ public class MMIARnrForm extends LinearLayout {
 
     public void fillOtherTypeItem() {
         List<RnrFormItem> otherItems = filterRnrFormItem(itemFormList, Product.MEDICINE_TYPE_OTHER);
-        for (RnrFormItem rnrFormItem: otherItems) {
+        for (RnrFormItem rnrFormItem : otherItems) {
             rnrFormItem.setIssued((long) 0);
             rnrFormItem.setAdjustment((long) 0);
             rnrFormItem.setInventory((long) 0);
@@ -159,10 +159,10 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private boolean isValidate(EditText editText) {
-        if (editText.getId() != R.id.et_adjustment) return  true;
+        if (editText.getId() != R.id.et_adjustment) return true;
         Long text;
         try {
-           text = Long.valueOf(editText.getText().toString());
+            text = Long.valueOf(editText.getText().toString());
         } catch (NumberFormatException e) {
             text = null;
         }
@@ -291,8 +291,8 @@ public class MMIARnrForm extends LinearLayout {
         } else {
             tvIssuedUnit.setText(item.getProduct().getStrength());
             boolean isArchived = item.getProduct().isArchived();
-            tvInitialAmount.setText(String.valueOf(isArchived ? 0 : item.getInitialAmount()));
-            tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
+            tvInitialAmount.setText(getValue(isArchived, item.getInitialAmount()));
+            tvReceived.setText(getValue(isArchived, item.getReceived()));
             editTexts.add(configEditText(item, etIssued, getValue(isArchived, item.getIssued())));
             editTexts.add(configEditText(item, etAdjustment, getValue(isArchived, item.getAdjustment())));
             editTexts.add(configEditText(item, etInventory, getValue(isArchived, item.getInventory())));
@@ -303,7 +303,7 @@ public class MMIARnrForm extends LinearLayout {
                     tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
                 }
             } catch (ParseException e) {
-                new LMISException(e,"MMIARnrForm.addRightView").reportToFabric();
+                new LMISException(e, "MMIARnrForm.addRightView").reportToFabric();
             }
         }
         return inflate;
@@ -346,7 +346,7 @@ public class MMIARnrForm extends LinearLayout {
 
     private String getValue(Boolean isArchived, Long vaule) {
         if (isArchived) return String.valueOf(0);
-        return vaule == null ? "": String.valueOf(vaule.longValue());
+        return vaule == null ? "" : String.valueOf(vaule.longValue());
 
     }
 
@@ -375,13 +375,13 @@ public class MMIARnrForm extends LinearLayout {
         @Override
         public void afterTextChanged(Editable etText) {
             switch (editText.getId()) {
-                case  R.id.et_inventory:
+                case R.id.et_inventory:
                     item.setInventory(getEditValue(etText));
                     break;
-                case  R.id.et_issued:
+                case R.id.et_issued:
                     item.setIssued(getEditValue(etText));
                     break;
-                case  R.id.et_adjustment:
+                case R.id.et_adjustment:
                     item.setAdjustment(getEditValue(etText));
                     break;
             }
@@ -390,7 +390,8 @@ public class MMIARnrForm extends LinearLayout {
 
         private Long getEditValue(Editable etText) {
             Long editText;
-            try { editText = Long.valueOf(etText.toString());
+            try {
+                editText = Long.valueOf(etText.toString());
             } catch (NumberFormatException e) {
                 editText = null;
             }

@@ -52,7 +52,8 @@ public class ProgramDataFormAdapterTest {
         when(mockProgramRepository.queryByCode(Constants.RAPID_TEST_CODE)).thenReturn(program);
     }
 
-    @Test @Ignore
+    @Test
+//    @Ignore
     public void shouldDeserializeProgramDataFormJson() throws LMISException {
 
         String json = JsonFileReader.readJson(getClass(), "SyncDownRapidTestsResponse.json");

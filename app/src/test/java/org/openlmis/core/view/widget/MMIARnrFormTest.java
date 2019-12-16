@@ -37,7 +37,6 @@ public class MMIARnrFormTest {
         mmiaRnrForm.setLayoutParams(new ViewGroup.MarginLayoutParams(100,100));
     }
 
-    @Ignore
     @Test
     public void shouldSortByProductCodeAndCategory() throws Exception {
         ArrayList<RnrFormItem> list = new ArrayList<>();

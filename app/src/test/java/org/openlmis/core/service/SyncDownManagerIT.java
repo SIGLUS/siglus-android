@@ -38,6 +38,7 @@ import rx.observers.TestSubscriber;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
+@Ignore
 @RunWith(LMISTestRunner.class)
 public class SyncDownManagerIT {
     private SyncDownManager syncDownManager;
@@ -73,7 +74,7 @@ public class SyncDownManagerIT {
         UserInfoMgr.getInstance().setUser(defaultUser);
     }
 
-    @Test @Ignore
+    @Test
     public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
         //given
         String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
@@ -94,7 +95,7 @@ public class SyncDownManagerIT {
         assertTrue(productProgram.isActive());
     }
 
-    @Test @Ignore
+    @Test
     public void shouldSyncDownStockCardsWithMovements() throws Exception {
         //set shared preferences to have synced all historical data already
         Calendar cal = Calendar.getInstance();
@@ -142,7 +143,7 @@ public class SyncDownManagerIT {
         assertEquals(5, lotOnHand.getQuantityOnHand(), 0L);
     }
 
-    @Test @Ignore
+    @Test
     public void shouldSyncDownRapidTests() throws Exception {
         //set shared preferences to have synced all historical data already
         Calendar cal = Calendar.getInstance();

@@ -45,8 +45,9 @@ public class SyncTimeViewTest {
         sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
     }
 
-    @Ignore
     @Test
+    //TODO later
+    @Ignore
     public void shouldDisplayGreenIconAndTimeUnitIsMinute() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusMinutes(1).getMillis());
         sharedPreferenceMgr.setRnrLastSyncTime();
@@ -58,8 +59,9 @@ public class SyncTimeViewTest {
         assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_green));
     }
 
-    @Ignore
     @Test
+    //TODO later
+    @Ignore
     public void shouldDisplayGreenIconAndTimeUnitIsHour() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(2).getMillis());
         sharedPreferenceMgr.setRnrLastSyncTime();
@@ -71,8 +73,9 @@ public class SyncTimeViewTest {
         assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_green));
     }
 
-    @Ignore
     @Test
+    //TODO later
+    @Ignore
     public void shouldDisplayYellowIconAndTimeUnitIsDay() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(1).getMillis());
         sharedPreferenceMgr.setRnrLastSyncTime();
@@ -84,8 +87,9 @@ public class SyncTimeViewTest {
         assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_yellow));
     }
 
-    @Ignore
     @Test
+    //TODO later
+    @Ignore
     public void shouldDisplayRedIconAndTimeUnitIsDay() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(4).getMillis());
         sharedPreferenceMgr.setRnrLastSyncTime();

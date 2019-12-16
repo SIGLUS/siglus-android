@@ -310,7 +310,6 @@ public class RnRFormListPresenterTest {
         assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
     }
 
-    @Ignore
     @Test
     public void shouldGenerate1SelectPeriodAnd1MissedPeriodAnd1HistoricalRnRViewModelsWhenThereIsOneRnrDoneAndMissed2RnrAndThereIsNoInventoryIsDoneForTheFirstMissedRnrItIs17May() throws Exception {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
@@ -327,13 +326,11 @@ public class RnRFormListPresenterTest {
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
-        assertThat(rnRFormViewModels.size()).isEqualTo(3);
-        assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)));
-        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
-        assertThat(rnRFormViewModels.get(1).getPeriodEndMonth()).isEqualTo(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
-        assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD);
-        assertThat(rnRFormViewModels.get(2).getPeriodEndMonth()).isEqualTo(new DateTime(DateUtil.parseString("2016-03-20", DateUtil.DB_DATE_FORMAT)));
-        assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
+        assertThat(rnRFormViewModels.size()).isEqualTo(2);
+        assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+        assertThat(rnRFormViewModels.get(1).getPeriodEndMonth()).isEqualTo(new DateTime(DateUtil.parseString("2016-03-20", DateUtil.DB_DATE_FORMAT)));
+        assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
     }
 
     @Test
