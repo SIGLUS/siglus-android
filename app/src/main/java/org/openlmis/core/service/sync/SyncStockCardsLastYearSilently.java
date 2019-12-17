@@ -70,7 +70,7 @@ public class SyncStockCardsLastYearSilently {
         });
     }
 
-    private Observable<SyncDownStockCardResponse> createObservableToFetchStockMovements(int month,Date now) {
+    private Observable<SyncDownStockCardResponse> createObservableToFetchStockMovements(int month, Date now) {
         final String startDateStr = getStartDate(now, month);
         final String endDateStr = getEndDate(now, month);
 
@@ -79,7 +79,7 @@ public class SyncStockCardsLastYearSilently {
             public void call(Subscriber<? super SyncDownStockCardResponse> subscriber) {
                 try {
                     SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi
-                            .fetchStockMovementData(facilityId,startDateStr,endDateStr);
+                            .fetchStockMovementData(facilityId, startDateStr, endDateStr);
                     subscriber.onNext(syncDownStockCardResponse);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

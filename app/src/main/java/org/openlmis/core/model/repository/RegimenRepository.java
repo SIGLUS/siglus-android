@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -30,9 +31,11 @@ import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class RegimenRepository {
 
@@ -40,6 +43,9 @@ public class RegimenRepository {
 
     @Inject
     DbUtil dbUtil;
+
+    @Inject
+    Context context;
 
     @Inject
     public RegimenRepository(Context context) {
@@ -64,14 +70,19 @@ public class RegimenRepository {
         });
     }
 
-    public void deleteAllNoCustomRegimens() throws LMISException {
-        dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
+    public void deleteAllNoCustomRegimens() throws LMISException, SQLException {
+        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
             @Override
-            public Regimen operate(Dao<Regimen, String> dao) throws SQLException, LMISException {
-                DeleteBuilder<Regimen, String> deleteBuilder = dao.deleteBuilder();
-                deleteBuilder.where().eq("isCustom", false);
-                deleteBuilder.delete();
-                return null;
+            public Object call() throws Exception {
+                return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
+                    @Override
+                    public Regimen operate(Dao<Regimen, String> dao) throws SQLException, LMISException {
+                        DeleteBuilder<Regimen, String> deleteBuilder = dao.deleteBuilder();
+                        deleteBuilder.where().eq("isCustom", false);
+                        deleteBuilder.delete();
+                        return null;
+                    }
+                });
             }
         });
     }
@@ -83,7 +94,7 @@ public class RegimenRepository {
                 createOrUpdate(regimen);
             }
         } catch (LMISException e) {
-            new LMISException(e,"RegimenRepository.batchSave").reportToFabric();
+            new LMISException(e, "RegimenRepository.batchSave").reportToFabric();
         }
     }
 

@@ -24,6 +24,7 @@ import android.database.Cursor;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
@@ -41,6 +42,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class ProductRepository {
 
@@ -156,7 +158,7 @@ public class ProductRepository {
                 }
             });
         } catch (LMISException e) {
-            new LMISException(e,"ProductRepository.save").reportToFabric();
+            new LMISException(e, "ProductRepository.save").reportToFabric();
         }
     }
 
@@ -176,25 +178,30 @@ public class ProductRepository {
     public void createOrUpdate(Product product) throws LMISException {
         Product existingProduct = getByCode(product.getCode());
         if (existingProduct != null) {
-            product.setId(existingProduct.getId());
-            product.setArchived(existingProduct.isArchived());
-            updateProduct(product);
             if (existingProduct.isKit() != product.isKit()) {//isKit changed
                 stockRepository.deletedData(product, product.isKit());
             }
+            product.setId(existingProduct.getId());
+            product.setArchived(existingProduct.isArchived());
+            updateProduct(product);
 
         } else {
             genericDao.create(product);
         }
 
-        createKitProductsIfNotExist(product);
+        try {
+            createKitProductsIfNotExist(product);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
     }
 
     public void updateProduct(Product product) throws LMISException {
         genericDao.update(product);
     }
 
-    private void createKitProductsIfNotExist(Product product) throws LMISException {
+    private void createKitProductsIfNotExist(Product product) throws LMISException, SQLException {
         if (product.getKitProductList() != null && !product.getKitProductList().isEmpty()) {
             // product as kit product
             deleteKitProductByCode(product.getCode());
@@ -226,14 +233,19 @@ public class ProductRepository {
         });
     }
 
-    private  void  deleteKitProductByCode(final String productCode) throws LMISException {
-        dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, KitProduct>() {
+    private void deleteKitProductByCode(final String productCode) throws SQLException {
+        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
             @Override
-            public KitProduct operate(Dao<KitProduct, String> dao) throws SQLException, LMISException{
-                DeleteBuilder<KitProduct, String> deleteBuilder = dao.deleteBuilder();
-                deleteBuilder.where().eq("kitCode", productCode);
-                deleteBuilder.delete();
-                return null;
+            public Object call() throws Exception {
+                return dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, KitProduct>() {
+                    @Override
+                    public KitProduct operate(Dao<KitProduct, String> dao) throws SQLException {
+                        DeleteBuilder<KitProduct, String> deleteBuilder = dao.deleteBuilder();
+                        deleteBuilder.where().eq("kitCode", productCode);
+                        deleteBuilder.delete();
+                        return null;
+                    }
+                });
             }
         });
     }
@@ -380,7 +392,7 @@ public class ProductRepository {
 
     public List<Product> getProductsByCodes(final List<String> codes) throws LMISException {
         final List<Product> products = new ArrayList<>();
-        dbUtil.withDaoAsBatch(context, Product.class, new DbUtil.Operation<Product,Void>() {
+        dbUtil.withDaoAsBatch(context, Product.class, new DbUtil.Operation<Product, Void>() {
             @Override
             public Void operate(Dao<Product, String> dao) throws SQLException, LMISException {
                 for (String code : codes) {

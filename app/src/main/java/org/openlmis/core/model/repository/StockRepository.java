@@ -87,7 +87,7 @@ public class StockRepository {
                 }
             });
         } catch (LMISException e) {
-            new LMISException(e,"StockRepository.batchSave").reportToFabric();
+            new LMISException(e, "StockRepository.batchSave").reportToFabric();
         }
     }
 
@@ -99,7 +99,7 @@ public class StockRepository {
             }
             genericDao.createOrUpdate(stockCard);
         } catch (LMISException e) {
-            new LMISException(e,"StockRepository.createOrUpdate").reportToFabric();
+            new LMISException(e, "StockRepository.createOrUpdate").reportToFabric();
         }
     }
 
@@ -107,7 +107,7 @@ public class StockRepository {
         try {
             genericDao.refresh(stockCard);
         } catch (LMISException e) {
-            new LMISException(e,"StockRepository.refresh").reportToFabric();
+            new LMISException(e, "StockRepository.refresh").reportToFabric();
         }
     }
 
@@ -123,7 +123,7 @@ public class StockRepository {
                 }
             });
         } catch (SQLException e) {
-            new LMISException(e,"StockRepository.saveStock").reportToFabric();
+            new LMISException(e, "StockRepository.saveStock").reportToFabric();
         }
     }
 
@@ -131,7 +131,7 @@ public class StockRepository {
         try {
             productRepository.updateProduct(product);
         } catch (LMISException e) {
-            new LMISException(e,"StockRepository.updateP").reportToFabric();
+            new LMISException(e, "StockRepository.updateP").reportToFabric();
         }
     }
 
@@ -147,7 +147,7 @@ public class StockRepository {
                 }
             });
         } catch (SQLException e) {
-            new LMISException(e,"StockRepository.addStock").reportToFabric();
+            new LMISException(e, "StockRepository.addStock").reportToFabric();
         }
     }
 
@@ -163,7 +163,7 @@ public class StockRepository {
                 }
             });
         } catch (SQLException e) {
-            new LMISException(e,"StockRepository.addStock").reportToFabric();
+            new LMISException(e, "StockRepository.addStock").reportToFabric();
         }
 
     }
@@ -174,7 +174,7 @@ public class StockRepository {
             Collections.sort(stockCards);
             return stockCards;
         } catch (LMISException e) {
-            new LMISException(e,"StockRepository:list").reportToFabric();
+            new LMISException(e, "StockRepository:list").reportToFabric();
         }
         return null;
     }
@@ -347,7 +347,7 @@ public class StockRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotMovmentItem);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotOnHand);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLots);
-        if (stockCard == null) {
+        if (stockCard == null && !isFromKitToNormal) {
             LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteProducts);
 
         }

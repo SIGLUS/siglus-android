@@ -135,14 +135,13 @@ public class SyncDownManager {
     }
 
 
-
     private void syncDownReportType(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         try {
             subscriber.onNext(SyncProgress.SyncingReportType);
             fetchAndSaveReportType();
             subscriber.onNext(SyncProgress.ReportTypeSynced);
         } catch (LMISException e) {
-            LMISException e1 = new LMISException(e,errorMessage(R.string.msg_sync_report_type_failed));
+            LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_report_type_failed));
             e1.reportToFabric();
             throw e1;
         }
@@ -227,7 +226,7 @@ public class SyncDownManager {
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
                     syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
-                    Log.d(TAG,"syncDownServerData onCompleted");
+                    Log.d(TAG, "syncDownServerData onCompleted");
                     syncChangeKit();
                     sendSyncFinishedBroadcast();
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
@@ -246,12 +245,12 @@ public class SyncDownManager {
         });
     }
 
-    private void syncChangeKit(){
+    private void syncChangeKit() {
         Observable.create(new Observable.OnSubscribe<SyncProgress>() {
             @Override
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
-                    Log.d(TAG," sync the kit change.");
+                    Log.d(TAG, " sync the kit change.");
                     fetchKitChangeProduct();
                     subscriber.onNext(SyncProgress.ShouldGoToInitialInventory);
                 } catch (LMISException e) {
@@ -350,11 +349,18 @@ public class SyncDownManager {
 
         if (!sharedPreferenceMgr.isLastMonthStockDataSynced()) {
             try {
+                // 1 re-sync && if(stockRepository.list()!=null) do not goto initial inventory
+                // 2 initial inventory
                 subscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
                 fetchLatestOneMonthMovements();
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
+                // in fetchLatestOneMonthMovements() will set isNeedsInventory to false, default is true
+                if (sharedPreferenceMgr.isNeedsInventory()) {
+                    fetchKitChangeProduct();
+                }
                 subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
+
             } catch (LMISException e) {
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
                 LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_stock_movement_failed));
@@ -426,7 +432,7 @@ public class SyncDownManager {
     public void fetchKitChangeProduct() throws LMISException {
         SyncDownKitChangeDraftProductsResponse responseAgain = getSyncDownKitChangeProductResponse();
         List<Product> productList = new ArrayList<>();
-        for (ProductAndSupportedPrograms productAndSupportedPrograms: responseAgain.getKitChangeProducts()) {
+        for (ProductAndSupportedPrograms productAndSupportedPrograms : responseAgain.getKitChangeProducts()) {
             Product product = productAndSupportedPrograms.getProduct();
             productProgramRepository.batchSave(productAndSupportedPrograms.getProductPrograms());
             updateDeactivateProductNotifyList(product);
@@ -454,7 +460,7 @@ public class SyncDownManager {
     public Observable<Void> saveStockCardsFromLastYear(final List<StockCard> stockCards) {
 
         List<Observable<Void>> observables = new ArrayList<>();
-        if(stockCards.isEmpty()){
+        if (stockCards.isEmpty()) {
             return zipObservables(observables);
         }
 
@@ -465,8 +471,8 @@ public class SyncDownManager {
 
         int numberOfElementsInAListForAnObservable = stockCards.size() / threadNumber;
         int startPosition = 0;
-        for (int arrayNumber = 1; arrayNumber<=threadNumber; arrayNumber++) {
-            int endPosition = arrayNumber==threadNumber ? stockCards.size()-1 : numberOfElementsInAListForAnObservable * arrayNumber;
+        for (int arrayNumber = 1; arrayNumber <= threadNumber; arrayNumber++) {
+            int endPosition = arrayNumber == threadNumber ? stockCards.size() - 1 : numberOfElementsInAListForAnObservable * arrayNumber;
             observables.add(saveStockCards(stockCards.subList(startPosition, endPosition), scheduler));
             startPosition = endPosition + 1;
         }
