@@ -205,12 +205,9 @@ public class SyncUpManager {
             markStockDataSynced(shouldMarkSyncedItems);
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
             if (!response.getErrorProductCodes().isEmpty()) {
-                String error = response.getErrorProductCodes().toString();
-                Intent intent = new Intent(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-                intent.putExtra(Constants.SYNC_MOVEMENT_ERROR, error);
-                LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
-                sharedPreferenceMgr.setStockMovementSyncError(error);
-                throw new LMISException(response.getErrorProductCodes().toString());
+                syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.SyncMovement, 2L);
+                saveStockMovementErrors(response);
+                return false;
             }
             sharedPreferenceMgr.setStockMovementSyncError("");
             Log.d(TAG, "===> SyncStockMovement : synced");
@@ -221,6 +218,15 @@ public class SyncUpManager {
             Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
             return false;
         }
+    }
+
+    private void saveStockMovementErrors(SyncUpStockMovementDataSplitResponse response) {
+        String error = response.getErrorProductCodes().toString();
+        Intent intent = new Intent(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
+        intent.putExtra(Constants.SYNC_MOVEMENT_ERROR, error);
+        LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
+        sharedPreferenceMgr.setStockMovementSyncError(error);
+        syncErrorsRepository.save(new SyncError(response.getErrorProductCodes().toString(), SyncType.SyncMovement, 2L));
     }
 
     public boolean fakeSyncStockCards() {

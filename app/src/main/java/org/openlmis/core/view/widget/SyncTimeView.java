@@ -78,14 +78,14 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
             return;
         }
 
-        updateSyncTimeViewUI();
+        txSyncTime.setText(updateSyncTimeViewUI());
 
-        if(sharedPreferenceMgr.isStockCardLastYearSyncError()) {
+        if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
             setSyncStockCardLastYearError();
         }
     }
 
-    private void updateSyncTimeViewUI() {
+    private String updateSyncTimeViewUI() {
         long syncTimeInterval = getSyncTimeInterval(rnrLastSyncTime, stockLastSyncTime);
 
         String syncTimeIntervalWithUnit;
@@ -108,7 +108,7 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         }
 
         String msg = LMISApp.getContext().getResources().getString(R.string.label_last_synced_ago, syncTimeIntervalWithUnit);
-        txSyncTime.setText(msg);
+        return msg;
     }
 
     private boolean isNeverSyncSuccessful() {
@@ -131,7 +131,7 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(!sharedPreferenceMgr.isStockCardLastYearSyncError() && !sharedPreferenceMgr.shouldSyncLastYearStockData()) {
+        if (!sharedPreferenceMgr.isStockCardLastYearSyncError() && !sharedPreferenceMgr.shouldSyncLastYearStockData()) {
             showLastSyncTime();
             popUpBottomSheet();
         }
@@ -154,7 +154,7 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         ivSyncTimeIcon.setVisibility(VISIBLE);
     }
 
-    public void setSyncStockCardLastYearText(){
+    public void setSyncStockCardLastYearText() {
         txSyncTime.setText(R.string.last_year_stock_cards_sync);
     }
 
@@ -165,8 +165,8 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     }
 
     public void setSyncedMovementError(String error) {
-        hideSyncProgressBarAndShowIcon();
-        txSyncTime.setText(context.getString(R.string.sync_stock_movement_error, error));
+        String msg = context.getString(R.string.sync_stock_movement_error, error, updateSyncTimeViewUI());
+        txSyncTime.setText(msg);
         ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
     }
 }

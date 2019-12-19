@@ -175,7 +175,7 @@ public class SyncUpManagerTest {
         StockCard stockCard = createTestStockCardData();
 
         SyncUpStockMovementDataSplitResponse response = new SyncUpStockMovementDataSplitResponse();
-        response.setErrorProductCodes(newArrayList("PD1"));
+        response.setErrorProductCodes(newArrayList());
 
         when(mockedLmisRestApi.syncUpStockMovementDataSplit(any(String.class), any(List.class))).thenReturn(response);
 
@@ -187,6 +187,27 @@ public class SyncUpManagerTest {
         assertThat(items.get(0).isSynced(), is(false));
         assertThat(items.get(1).isSynced(), is(false));
         verify(mockedSyncErrorsRepository).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
+    }
+
+
+    @Test
+    public void shouldDisplaySyncedErrorProduct() throws LMISException, ParseException {
+        StockCard stockCard = createTestStockCardData();
+
+        SyncUpStockMovementDataSplitResponse response = new SyncUpStockMovementDataSplitResponse();
+        response.setErrorProductCodes(newArrayList("product1", "product2"));
+
+        when(mockedLmisRestApi.syncUpStockMovementDataSplit(any(String.class), any(List.class))).thenReturn(response);
+
+        syncUpManager.syncStockCards();
+        stockRepository.refresh(stockCard);
+        List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
+
+        assertThat(items.size(), is(2));
+        // stockCard's product code != error response product code
+        assertThat(items.get(0).isSynced(), is(true));
+        assertThat(items.get(1).isSynced(), is(true));
+        verify(mockedSyncErrorsRepository, times(2)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
     @Test

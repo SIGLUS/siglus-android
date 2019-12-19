@@ -66,6 +66,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         return from(stockRepository.list()).filter(new Predicate<StockCard>() {
             @Override
             public boolean apply(StockCard stockCard) {
+                //TODO the result of filter will apply to inventory list
                 return !stockCard.getProduct().isKit() && stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived();
             }
         }).toList();
