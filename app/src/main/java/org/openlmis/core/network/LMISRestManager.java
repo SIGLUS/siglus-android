@@ -54,6 +54,7 @@ import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -113,14 +114,14 @@ public class LMISRestManager {
                             return true;
                         }
                     } catch (SSLPeerUnverifiedException e) {
-                        new LMISException(e,"LMISRestManager,verify").reportToFabric();
+                        new LMISException(e, "LMISRestManager,verify").reportToFabric();
                     }
 
                     return getDefaultHostnameVerifier().verify(hostname, session);
                 }
             });
         } catch (Exception e) {
-            new LMISException(e,"LMISRestManager,ssl").reportToFabric();
+            new LMISException(e, "LMISRestManager,ssl").reportToFabric();
         }
         return new OkClient(client);
     }
@@ -158,6 +159,7 @@ public class LMISRestManager {
                     request.addHeader("UserName", user.getUsername());
                     request.addHeader("FacilityName", user.getFacilityName());
                     request.addHeader("FacilityId", user.getFacilityId());
+                    request.addHeader("language", Locale.getDefault().getLanguage());
                 }
 
                 if (BuildConfig.MONITOR_DEVICE_ID) {
