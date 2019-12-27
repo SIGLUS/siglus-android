@@ -103,8 +103,7 @@ public interface LMISRestApi {
 
     @GET("/rest-api/services")
     SyncDownServiceResponse fetchPTVService(@Query("afterUpdatedTime") String afterUpdatedTime,
-                                            @Query("programCode") String programCode,
-                                            @Query("language") String language) throws LMISException;
+                                            @Query("programCode") String programCode) throws LMISException;
 
     @GET("/rest-api/programs/{facilityId}")
     SyncUpProgramResponse fetchPrograms(@Path("facilityId") Long facilityId) throws LMISException;

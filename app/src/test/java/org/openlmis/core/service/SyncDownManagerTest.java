@@ -403,8 +403,7 @@ public class SyncDownManagerTest {
         service2.setName("serviceName1");
         service2.setActive(true);
         response.setLatestServices(newArrayList(service1, service2));
-        when(lmisRestApi.fetchPTVService(sharedPreferenceMgr.getLastSyncServiceTime(), Constants.PTV_PROGRAM_CODE,
-                Locale.getDefault().getLanguage())).thenReturn(response);
+        when(lmisRestApi.fetchPTVService(sharedPreferenceMgr.getLastSyncServiceTime(), Constants.PTV_PROGRAM_CODE)).thenReturn(response);
         return response;
     }
 
