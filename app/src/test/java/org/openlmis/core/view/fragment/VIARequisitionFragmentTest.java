@@ -28,6 +28,7 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,7 @@ import org.robolectric.shadows.ShadowToast;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import roboguice.RoboGuice;
 
@@ -76,6 +78,8 @@ public class VIARequisitionFragmentTest {
 
     @Before
     public void setup() throws Exception {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        DateTimeZone.setDefault(DateTimeZone.UTC);
         presenter = mock(VIARequisitionPresenter.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
@@ -83,7 +87,6 @@ public class VIARequisitionFragmentTest {
                 binder.bind(VIARequisitionPresenter.class).toInstance(presenter);
             }
         });
-
         program = new Program();
         program.setProgramCode("ESS_MEDS");
         program.setProgramName("ESS_MEDS");

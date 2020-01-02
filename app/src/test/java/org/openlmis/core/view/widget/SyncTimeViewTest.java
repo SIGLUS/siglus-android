@@ -4,8 +4,8 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -14,6 +14,8 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.robolectric.RuntimeEnvironment;
+
+import java.util.TimeZone;
 
 import roboguice.RoboGuice;
 
@@ -34,6 +36,8 @@ public class SyncTimeViewTest {
 
     @Before
     public void setUp() throws Exception {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        DateTimeZone.setDefault(DateTimeZone.UTC);
         mockPresenter = mock(SyncErrorsPresenter.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
@@ -46,8 +50,6 @@ public class SyncTimeViewTest {
     }
 
     @Test
-    //TODO later
-    @Ignore
     public void shouldDisplayGreenIconAndTimeUnitIsMinute() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusMinutes(1).getMillis());
         sharedPreferenceMgr.setRnrLastSyncTime();
@@ -60,8 +62,6 @@ public class SyncTimeViewTest {
     }
 
     @Test
-    //TODO later
-    @Ignore
     public void shouldDisplayGreenIconAndTimeUnitIsHour() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(2).getMillis());
         sharedPreferenceMgr.setRnrLastSyncTime();
@@ -74,8 +74,6 @@ public class SyncTimeViewTest {
     }
 
     @Test
-    //TODO later
-    @Ignore
     public void shouldDisplayYellowIconAndTimeUnitIsDay() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(1).getMillis());
         sharedPreferenceMgr.setRnrLastSyncTime();
@@ -88,8 +86,6 @@ public class SyncTimeViewTest {
     }
 
     @Test
-    //TODO later
-    @Ignore
     public void shouldDisplayRedIconAndTimeUnitIsDay() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(4).getMillis());
         sharedPreferenceMgr.setRnrLastSyncTime();

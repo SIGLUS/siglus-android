@@ -152,6 +152,7 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     private void hideSyncProgressBarAndShowIcon() {
         progressBar.setVisibility(GONE);
         ivSyncTimeIcon.setVisibility(VISIBLE);
+
     }
 
     public void setSyncStockCardLastYearText() {
