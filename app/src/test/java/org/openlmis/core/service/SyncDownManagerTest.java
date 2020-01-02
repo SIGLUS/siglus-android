@@ -146,7 +146,6 @@ public class SyncDownManagerTest {
         syncDownManager.stockService = stockService;
     }
 
-    //    @Ignore
     @Test
     public void shouldSyncDownServerData() throws Exception {
         //given
@@ -182,7 +181,6 @@ public class SyncDownManagerTest {
         assertThat(subscriber.syncProgresses.get(13), is(RapidTestsSynced));
     }
 
-    //    @Ignore
     @Test
     public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
         //given
@@ -209,7 +207,6 @@ public class SyncDownManagerTest {
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }
 
-    //    @Ignore
     @Test
     public void shouldSyncDownNewLatestProductList() throws Exception {
         mockReportResponse();

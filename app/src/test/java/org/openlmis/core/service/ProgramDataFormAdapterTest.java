@@ -4,8 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.inject.AbstractModule;
 
+//import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -24,6 +25,8 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
+
+import java.util.TimeZone;
 
 import roboguice.RoboGuice;
 
@@ -50,20 +53,14 @@ public class ProgramDataFormAdapterTest {
         program = new Program();
         program.setProgramCode(Constants.RAPID_TEST_CODE);
         when(mockProgramRepository.queryByCode(Constants.RAPID_TEST_CODE)).thenReturn(program);
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        DateTimeZone.setDefault(DateTimeZone.UTC);
     }
 
     @Test
-    @Ignore
-    // TODO local: success, GOCD : failed
-    /*
-    *
-    * Expected: is <Sun Feb 21 00:00:00 UTC 2016>
-     but: was <Sat Feb 20 16:00:00 UTC 2016>
-    * */
     public void shouldDeserializeProgramDataFormJson() throws LMISException {
 
         String json = JsonFileReader.readJson(getClass(), "SyncDownRapidTestsResponse.json");
-
         ProgramDataForm programDataForm = programDataAdapter.deserialize(new JsonParser().parse(json), null, null);
         assertThat(programDataForm.getProgram(), is(program));
         assertThat(programDataForm.getPeriodBegin(), is(DateUtil.parseString("2016-02-21", DateUtil.DB_DATE_FORMAT)));

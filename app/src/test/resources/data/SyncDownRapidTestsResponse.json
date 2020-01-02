@@ -1,9 +1,9 @@
 {
   "facilityId":10,
   "programCode":"RAPID_TEST",
-  "periodBegin":1455984000000,
-  "periodEnd":1458403200000,
-  "submittedTime":1480046580000,
+  "periodBegin":1456012800000,
+  "periodEnd":1458432000000,
+  "submittedTime":1480075380000,
   "programDataFormSignatures": [
     {
       "type": "SUBMITTER",

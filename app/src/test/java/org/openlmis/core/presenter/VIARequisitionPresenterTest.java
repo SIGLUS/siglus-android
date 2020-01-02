@@ -612,7 +612,6 @@ public class VIARequisitionPresenterTest {
         verify(mockRnrFormItemRepository).deleteRnrItem(rnrFormItem);
     }
 
-//    @Ignore
     @Test
     public void shouldPopulateAdditionalRnrFormItemsViewModels() throws Exception {
         presenter.requisitionFormItemViewModels = new ArrayList<>();
@@ -644,7 +643,6 @@ public class VIARequisitionPresenterTest {
         assertThat(presenter.requisitionFormItemViewModels.get(1).getApprovedAmount(), is("200"));
     }
 
-//    @Ignore
     @Test
     public void shouldAssignValuesToSelectedArchivedProducts() throws Exception {
         Date periodBegin = DateUtil.parseString("2016-01-21", DateUtil.DB_DATE_FORMAT);
