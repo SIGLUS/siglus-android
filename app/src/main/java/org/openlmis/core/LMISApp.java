@@ -58,6 +58,7 @@ import org.openlmis.core.receiver.NetworkChangeReceiver;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +75,9 @@ public class LMISApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Stetho.initializeWithDefaults(this);
+        if (!isRoboUniTest()) {
+            Stetho.initializeWithDefaults(this);
+        }
         JodaTimeAndroid.init(this);
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
@@ -86,6 +89,11 @@ public class LMISApp extends Application {
 
         instance = this;
         registerNetWorkChangeListener();
+    }
+
+    // Test case throw IO error
+    private boolean isRoboUniTest() {
+        return "robolectric".equals(Build.FINGERPRINT);
     }
 
     private void registerNetWorkChangeListener() {
@@ -140,8 +148,11 @@ public class LMISApp extends Application {
         return NetworkConnectionManager.isConnectionAvailable(instance);
     }
 
+
     public long getCurrentTimeMillis() {
-        return System.currentTimeMillis();
+        // System.currentTimeMillis() not contain timezone!!!
+        // return System.currentTimeMillis();
+        return new Date().getTime();
     }
 
     public static Context getContext() {

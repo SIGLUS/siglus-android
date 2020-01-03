@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public final class DateUtil {
 
@@ -52,6 +53,7 @@ public final class DateUtil {
     public static final String DATE_DIGIT_FORMAT_ONLY_MONTH_AND_YEAR = "MMyyyy";
     public static final String ISO_BASIC_DATE_TIME_FORMAT = "yyyyMMdd'T'HHmmss.SSSZ";
     public static final int DAY_PERIOD_END = 20;
+    public static final String MOZ_TIME_ZONE = "Africa/Maputo";
 
     private static Locale locale = Locale.getDefault();
 
@@ -116,6 +118,17 @@ public final class DateUtil {
     public static Date parseString(String string, String format) {
         try {
             return new SimpleDateFormat(format, locale).parse(string);
+        } catch (ParseException e) {
+            new LMISException(e, "DateUtil,parseString").reportToFabric();
+            return null;
+        }
+    }
+
+    public static Date parseString(String string, String format, String timeZone) {
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(timeZone));
+            return simpleDateFormat.parse(string);
         } catch (ParseException e) {
             new LMISException(e, "DateUtil,parseString").reportToFabric();
             return null;
@@ -188,7 +201,8 @@ public final class DateUtil {
     }
 
     public static long calculateTimeIntervalFromNow(long lastSyncedTimestamp) {
-        return new Date().getTime() - lastSyncedTimestamp;
+        return new DateTime().getMillis() - lastSyncedTimestamp;
+//        return new Date().getTime() - lastSyncedTimestamp;
     }
 
     public static String formatExpiryDateString(List<String> expiryDates) {

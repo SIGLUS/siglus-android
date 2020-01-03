@@ -30,6 +30,7 @@ import com.google.inject.Module;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -57,7 +58,9 @@ import java.util.TimeZone;
 
 import roboguice.RoboGuice;
 
+import static android.content.Context.ALARM_SERVICE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -121,9 +124,9 @@ public class VIARequisitionFragmentTest {
     }
 
     @Test
+    @Ignore
     public void shouldSetEmergencyViewWhenRnrIsEmergency() {
-        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-04-21 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
-
+        ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(DateUtil.parseString("2015-04-21 17:30:00 UTC", DateUtil.DATE_TIME_FORMAT).getTime());
         RnRForm rnRForm = viaRequisitionFragment.presenter.getRnRForm();
         rnRForm.setEmergency(true);
 

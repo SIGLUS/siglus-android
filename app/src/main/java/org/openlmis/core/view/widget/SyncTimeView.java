@@ -41,6 +41,8 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     protected Context context;
     protected long rnrLastSyncTime;
     protected long stockLastSyncTime;
+    protected boolean hasRnrSyncError;
+    protected boolean hasStockCardSyncError;
 
     public SyncTimeView(Context context) {
         super(context);
@@ -68,8 +70,8 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     public void showLastSyncTime() {
         hideSyncProgressBarAndShowIcon();
 
-        rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
-        stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
+        rnrLastSyncTime = sharedPreferenceMgr.getRnrLastSyncTime();
+        stockLastSyncTime = sharedPreferenceMgr.getStockLastSyncTime();
 
         if (isNeverSyncSuccessful()) {
             if (hasSyncFailed()) {
@@ -107,7 +109,7 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
         }
 
-        String msg = LMISApp.getContext().getResources().getString(R.string.label_last_synced_ago, syncTimeIntervalWithUnit);
+        String msg = getResources().getString(R.string.label_last_synced_ago, syncTimeIntervalWithUnit);
         return msg;
     }
 

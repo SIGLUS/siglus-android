@@ -6,6 +6,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,6 +35,7 @@ public class SyncDateBottomSheetTest {
     protected SyncDateBottomSheet fragment;
     protected FragmentController fragmentController;
     SyncErrorsPresenter presenter;
+    private long timeMills;
 
     @Before
     public void setUp() throws Exception {
@@ -47,36 +49,37 @@ public class SyncDateBottomSheetTest {
         fragment = new SyncDateBottomSheet();
         fragmentController = Robolectric.buildFragment(SyncDateBottomSheet.class,
                 SyncDateBottomSheet.getArgumentsToMe(1, 1));
+        timeMills = new DateTime().getMillis();
 
     }
 
     @Test
     public void shouldShowRnrFormLastSyncedTimeCorrectly() {
-        String formatRnrLastSyncTimeWithMinute = fragment.formatRnrLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE);
+        String formatRnrLastSyncTimeWithMinute = fragment.formatRnrLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_MINUTE);
         assertThat(formatRnrLastSyncTimeWithMinute, equalTo("Requisition last synced 20 minutes ago"));
 
-        String formatRnrLastSyncTimeWithHour = fragment.formatRnrLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR);
+        String formatRnrLastSyncTimeWithHour = fragment.formatRnrLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_HOUR);
         assertThat(formatRnrLastSyncTimeWithHour, equalTo("Requisition last synced 20 hours ago"));
 
-        String formatRnrLastSyncTimeWithDay = fragment.formatRnrLastSyncTime(new Date().getTime() - 1 * DateUtil.MILLISECONDS_DAY);
+        String formatRnrLastSyncTimeWithDay = fragment.formatRnrLastSyncTime(timeMills - 1 * DateUtil.MILLISECONDS_DAY);
         assertThat(formatRnrLastSyncTimeWithDay, equalTo("Requisition last synced 1 day ago"));
 
-        String formatRnrLastSyncTimeWithDays = fragment.formatRnrLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY);
+        String formatRnrLastSyncTimeWithDays = fragment.formatRnrLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_DAY);
         assertThat(formatRnrLastSyncTimeWithDays, equalTo("Requisition last synced 20 days ago"));
     }
 
     @Test
     public void shouldShowStockCardLastSyncedTimeCorrectly() {
-        String formatStockCardLastSyncTimeWithMinute = fragment.formatStockCardLastSyncTime(new Date().getTime() - 1 * DateUtil.MILLISECONDS_MINUTE);
+        String formatStockCardLastSyncTimeWithMinute = fragment.formatStockCardLastSyncTime(timeMills - 1 * DateUtil.MILLISECONDS_MINUTE);
         assertThat(formatStockCardLastSyncTimeWithMinute, equalTo("Stock cards last synced 1 minute ago"));
 
-        String formatStockCardLastSyncTimeWithMinutes = fragment.formatStockCardLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE);
+        String formatStockCardLastSyncTimeWithMinutes = fragment.formatStockCardLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_MINUTE);
         assertThat(formatStockCardLastSyncTimeWithMinutes, equalTo("Stock cards last synced 20 minutes ago"));
 
-        String formatStockCardLastSyncTimeWithHour = fragment.formatStockCardLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR);
+        String formatStockCardLastSyncTimeWithHour = fragment.formatStockCardLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_HOUR);
         assertThat(formatStockCardLastSyncTimeWithHour, equalTo("Stock cards last synced 20 hours ago"));
 
-        String formatStockCardLastSyncTimeWithDay = fragment.formatStockCardLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY);
+        String formatStockCardLastSyncTimeWithDay = fragment.formatStockCardLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_DAY);
         assertThat(formatStockCardLastSyncTimeWithDay, equalTo("Stock cards last synced 20 days ago"));
     }
 

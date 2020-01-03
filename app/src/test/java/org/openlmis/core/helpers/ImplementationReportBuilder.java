@@ -11,6 +11,9 @@ import static com.natpryce.makeiteasy.Property.newProperty;
 import static org.apache.commons.lang.math.RandomUtils.nextLong;
 
 public class ImplementationReportBuilder {
+    private ImplementationReportBuilder() {
+    }
+
     public static final Property<ImplementationReportViewModel, ImplementationReportType> type = newProperty();
     public static final Property<ImplementationReportViewModel, Long> currentTreatment6x1 = newProperty();
     public static final Property<ImplementationReportViewModel, Long> currentTreatment6x2 = newProperty();
