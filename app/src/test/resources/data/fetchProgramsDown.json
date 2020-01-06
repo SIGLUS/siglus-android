@@ -1,0 +1,371 @@
+{
+  "programs": [
+    {
+      "id": 1,
+      "name": "MMIA",
+      "code": "MMIA",
+      "isSupportEmergency": false,
+      "regimens": [
+        {
+          "name": "AZT+3TC+NVP",
+          "code": "001",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 1,
+            "code": "ADULTS",
+            "name": "Adults",
+            "displayOrder": 1
+          },
+          "displayOrder": 1,
+          "skipped": false,
+          "categoryName": "Adults",
+          "custom": false
+        },
+        {
+          "name": "TDF+3TC+EFV",
+          "code": "002",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 1,
+            "code": "ADULTS",
+            "name": "Adults",
+            "displayOrder": 1
+          },
+          "displayOrder": 2,
+          "skipped": false,
+          "categoryName": "Adults",
+          "custom": false
+        },
+        {
+          "name": "AZT+3TC+EFV",
+          "code": "003",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 1,
+            "code": "ADULTS",
+            "name": "Adults",
+            "displayOrder": 1
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Adults",
+          "custom": false
+        },
+        {
+          "name": "d4T 30+3TC+NVP",
+          "code": "004",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 1,
+            "code": "ADULTS",
+            "name": "Adults",
+            "displayOrder": 1
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Adults",
+          "custom": false
+        },
+        {
+          "name": "d4T 30+3TC+EFV",
+          "code": "005",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 1,
+            "code": "ADULTS",
+            "name": "Adults",
+            "displayOrder": 1
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Adults",
+          "custom": false
+        },
+        {
+          "name": "AZT+3TC+LPV/r",
+          "code": "006",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 1,
+            "code": "ADULTS",
+            "name": "Adults",
+            "displayOrder": 1
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Adults",
+          "custom": false
+        },
+        {
+          "name": "TDF+3TC+LPV/r",
+          "code": "007",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 1,
+            "code": "ADULTS",
+            "name": "Adults",
+            "displayOrder": 1
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Adults",
+          "custom": false
+        },
+        {
+          "name": "ABC+3TC+LPV/r",
+          "code": "008",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 1,
+            "code": "ADULTS",
+            "name": "Adults",
+            "displayOrder": 1
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Adults",
+          "custom": false
+        },
+        {
+          "name": "d4T+3TC+NVP(3DFC Baby)",
+          "code": "009",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        },
+        {
+          "name": "d4T+3TC+LPV/r(2DFC Baby + LPV/r)",
+          "code": "010",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        },
+        {
+          "name": "d4T+3TC+ABC(2DFC Baby + ABC)",
+          "code": "011",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        },
+        {
+          "name": "d4T+3TC+EFV(2DFC Baby + EFV)",
+          "code": "012",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        },
+        {
+          "name": "AZT60+3TC+NVP(3DFC)",
+          "code": "013",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        },
+        {
+          "name": "AZT60+3TC+ABC(2DFC + ABC)",
+          "code": "015",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        },
+        {
+          "name": "AZT60+3TC+LPV/r(2DFC + LPV/r)",
+          "code": "016",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        },
+        {
+          "name": "ABC+3TC+LPV/r",
+          "code": "017",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        },
+        {
+          "name": "ABC+3TC+EFZ",
+          "code": "018",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        },
+        {
+          "name": "AZT60+3TC+EFV(2DFC + EFV)",
+          "code": "014",
+          "programId": 1,
+          "active": true,
+          "category": {
+            "id": 2,
+            "code": "PAEDIATRICS",
+            "name": "Paediatrics",
+            "displayOrder": 2
+          },
+          "displayOrder": 3,
+          "skipped": false,
+          "categoryName": "Paediatrics",
+          "custom": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Medicamentos Essenciais",
+      "code": "ESS_MEDS",
+      "parentCode": "VIA",
+      "isSupportEmergency": true,
+      "regimens": []
+    },
+    {
+      "id": 3,
+      "name": "Testes Rápidos Diag",
+      "code": "TEST_KIT",
+      "parentCode": "VIA",
+      "isSupportEmergency": true,
+      "regimens": []
+    },
+    {
+      "id": 4,
+      "name": "Tuberculose",
+      "code": "TB",
+      "parentCode": "VIA",
+      "isSupportEmergency": true,
+      "regimens": []
+    },
+    {
+      "id": 5,
+      "name": "Malaria",
+      "code": "MALARIA",
+      "parentCode": "VIA",
+      "isSupportEmergency": true,
+      "regimens": []
+    },
+    {
+      "id": 6,
+      "name": "PTV",
+      "code": "PTV",
+      "parentCode": "MMIA",
+      "isSupportEmergency": false,
+      "regimens": []
+    },
+    {
+      "id": 7,
+      "name": "TARV",
+      "code": "TARV",
+      "parentCode": "MMIA",
+      "isSupportEmergency": false,
+      "regimens": []
+    },
+    {
+      "id": 8,
+      "name": "PME",
+      "code": "PME",
+      "parentCode": "VIA",
+      "isSupportEmergency": true,
+      "regimens": []
+    },
+    {
+      "id": 9,
+      "name": "NUTRITION",
+      "code": "NUTRITION",
+      "parentCode": "VIA",
+      "isSupportEmergency": true,
+      "regimens": []
+    },
+    {
+      "id": 10,
+      "name": "VIA Classica",
+      "code": "VIA",
+      "isSupportEmergency": true,
+      "regimens": []
+    }
+  ]
+}

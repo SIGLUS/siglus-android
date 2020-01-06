@@ -151,9 +151,9 @@ public class SyncDownManager {
             fetchAndSaveprogram();
             subscriber.onNext(SyncProgress.ProgramSynced);
         } catch (LMISException e) {
-            LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_program_failed));
-            e1.reportToFabric();
-            throw e1;
+//            LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_program_failed));
+//            e1.reportToFabric();
+            throw e;
         }
     }
 

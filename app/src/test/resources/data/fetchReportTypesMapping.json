@@ -1,0 +1,43 @@
+{
+  "reportTypes": [
+    {
+      "id": 1,
+      "code": "MMIA",
+      "name": "MMIA",
+      "description": "MMIA",
+      "active": true,
+      "startTime": "2015-09-20 00:00:00",
+      "program": {
+        "id": 1,
+        "name": "MMIA",
+        "code": "MMIA"
+      }
+    },
+    {
+      "id": 2,
+      "code": "TEST_KIT",
+      "name": "RAPID TEST",
+      "description": "RAPID TEST",
+      "active": true,
+      "startTime": "2015-09-20 00:00:00",
+      "program": {
+        "id": 3,
+        "name": "Testes Rápidos Diag",
+        "code": "TEST_KIT"
+      }
+    },
+    {
+      "id": 4,
+      "code": "VIA",
+      "name": "Balance Requisition",
+      "description": "Balance Requisition",
+      "active": true,
+      "startTime": "2015-09-20 00:00:00",
+      "program": {
+        "id": 10,
+        "name": "VIA Classica",
+        "code": "VIA"
+      }
+    }
+  ]
+}

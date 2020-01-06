@@ -1,0 +1,29 @@
+{
+  "latestUpdatedTime": 1564999501627,
+  "latestServices": [
+    {
+      "code": "CPN",
+      "name": "CPN",
+      "programCode": "PTV",
+      "active": true
+    },
+    {
+      "code": "Maternity",
+      "name": "Maternity",
+      "programCode": "PTV",
+      "active": true
+    },
+    {
+      "code": "CCR",
+      "name": "CCR",
+      "programCode": "PTV",
+      "active": true
+    },
+    {
+      "code": "Farmacy",
+      "name": "Farmacy",
+      "programCode": "PTV",
+      "active": true
+    }
+  ]
+}

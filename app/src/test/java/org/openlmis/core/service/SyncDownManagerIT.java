@@ -5,6 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Lot;
@@ -36,10 +37,11 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
-@Ignore
 @RunWith(LMISTestRunner.class)
+@Ignore
 public class SyncDownManagerIT {
     private SyncDownManager syncDownManager;
     private ProductRepository productRepository;
@@ -51,6 +53,7 @@ public class SyncDownManagerIT {
     private SharedPreferenceMgr sharedPreferenceMgr;
     private ProgramDataFormRepository programDataFormRepository;
     private StockMovementRepository stockMovementRepository;
+    private static final int DAYS_OF_MONTH = 30;
 
     @Before
     public void setup() {
@@ -65,35 +68,75 @@ public class SyncDownManagerIT {
         sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
 
         defaultUser = new User();
-        defaultUser.setUsername("username");
+        defaultUser.setUsername("cs_gelo");
         defaultUser.setPassword("password");
-        defaultUser.setFacilityId("10");
-        defaultUser.setFacilityName("facility");
-        defaultUser.setFacilityCode("F1");
+        defaultUser.setFacilityId("808");
+        defaultUser.setFacilityName("CS Gelo");
+        defaultUser.setFacilityCode("HF615");
         userRepository.createOrUpdate(defaultUser);
         UserInfoMgr.getInstance().setUser(defaultUser);
     }
+
+    private void testSyncProgress(SyncDownManager.SyncProgress progress) {
+        System.out.println(progress);
+    }
+
+    private class SyncServerDataSubscriber extends TestSubscriber<SyncDownManager.SyncProgress> {
+        @Override
+        public void onNext(SyncDownManager.SyncProgress syncProgress) {
+            super.onNext(syncProgress);
+            testSyncProgress(syncProgress);
+        }
+    }
+
 
     @Test
     public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
         //given
         String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", json, RuntimeEnvironment.application);
+
+        Date now = new Date();
+        Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
+        String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
+
+        Date endDate = DateUtil.addDayOfMonth(now, 1);
+        String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
+
+        String fetchProgramsJson = JsonFileReader.readJson(getClass(), "fetchProgramsDown.json");
+        String fetchPTVServiceJson = JsonFileReader.readJson(getClass(), "fetchfetchPTVService.json");
+        String fetchReportTypesMapping = JsonFileReader.readJson(getClass(), "fetchReportTypesMapping.json");
+        String fetchMovementDate = JsonFileReader.readJson(getClass(), "fetchStockMovementDate.json");
+        String fetchRequisitionsData = JsonFileReader.readJson(getClass(), "fetchRequisitionsData.json");
+        String fetchProgramDataFacilities = JsonFileReader.readJson(getClass(), "fetchProgramDataFacilities.json");
+        lmisRestManager.addNewMockedResponse("/rest-api/programs/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramsJson);
+        lmisRestManager.addNewMockedResponse("/rest-api/services?" + "programCode=PTV", 200, "OK", fetchPTVServiceJson);
+        lmisRestManager.addNewMockedResponse("/rest-api/report-types/mapping/" + defaultUser.getFacilityId(), 200, "OK", fetchReportTypesMapping);
+        lmisRestManager.addNewMockedResponse("/rest-api/requisitions?" + "facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", fetchRequisitionsData);
+        lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramDataFacilities);
+        lmisRestManager.addNewMockedResponse("/rest-api/facilities/" + defaultUser.getFacilityId() + "/stockCards?" + "startTime=" + startDateStr + "&endTime=" + endDateStr, 200, "OK", fetchMovementDate);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
-        //when
-        syncDownManager.syncDownServerData();
+        //When
+        SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+        syncDownManager.syncDownServerData(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        //Then
+        checkShouldSyncDownLatestProductWithArchivedStatus();
+    }
 
-        //then
-        Product product = productRepository.getByCode("01A01");
-        assertTrue(product.isArchived());
-        assertEquals("Estavudina+Lamivudina+Nevirapi 6mg + 30mg +50mg, 60 Cps (BabyEmbalagem", product.getPrimaryName());
-        assertEquals("Embalagem", product.getType());
-        assertEquals("6mg + 30mg +50mg, 60 Cps (Baby", product.getStrength());
+    private void checkShouldSyncDownLatestProductWithArchivedStatus() throws LMISException {
+        Product product = productRepository.getByCode("08A12");
+        assertFalse(product.isArchived());
+        assertEquals("Amoxicilina+Acido clavulânico250mg + 62,5mgSuspensão", product.getPrimaryName());
+        assertEquals("Suspensão", product.getType());
+        assertEquals("250mg + 62,5mg", product.getStrength());
 
-        ProductProgram productProgram = productProgramRepository.queryByCode("01A01", "ESS_MEDS");
+        ProductProgram productProgram = productProgramRepository.queryByCode("08A12", "ESS_MEDS");
         assertTrue(productProgram.isActive());
     }
+
 
     @Test
     public void shouldSyncDownStockCardsWithMovements() throws Exception {
@@ -121,6 +164,17 @@ public class SyncDownManagerIT {
 
         String emptyRequisitions = "{\"requisitions\": []}";
         lmisRestManager.addNewMockedResponse("/rest-api/requisitions?facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", emptyRequisitions);
+        String fetchProgramsJson = JsonFileReader.readJson(getClass(), "fetchProgramsDown.json");
+        String fetchPTVServiceJson = JsonFileReader.readJson(getClass(), "fetchfetchPTVService.json");
+        String fetchReportTypesMapping = JsonFileReader.readJson(getClass(), "fetchReportTypesMapping.json");
+        String fetchRequisitionsData = JsonFileReader.readJson(getClass(), "fetchRequisitionsData.json");
+        String fetchProgramDataFacilities = JsonFileReader.readJson(getClass(), "fetchProgramDataFacilities.json");
+        lmisRestManager.addNewMockedResponse("/rest-api/programs/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramsJson);
+        lmisRestManager.addNewMockedResponse("/rest-api/services?" + "programCode=PTV", 200, "OK", fetchPTVServiceJson);
+        lmisRestManager.addNewMockedResponse("/rest-api/report-types/mapping/" + defaultUser.getFacilityId(), 200, "OK", fetchReportTypesMapping);
+        lmisRestManager.addNewMockedResponse("/rest-api/requisitions?" + "facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", fetchRequisitionsData);
+        lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramDataFacilities);
+
 
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
@@ -132,13 +186,13 @@ public class SyncDownManagerIT {
         subscriber.assertNoErrors();
 
         List<StockCard> stockCards = stockRepository.list();
-        assertEquals(1, stockCards.size());
+        assertEquals(118, stockCards.size());
         List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockMovementHistory(stockCards.get(0).getId(), 0L, 1000L);
-        assertEquals(1, stockMovementItems.size());
+        assertEquals(0, stockMovementItems.size());
 
-        Product product = productRepository.getByCode("01A01");
-        Lot lot = lotRepository.getLotByLotNumberAndProductId("TEST5", product.getId());
-        assertEquals("2016-10-30", DateUtil.formatDate(lot.getExpirationDate(), DateUtil.DB_DATE_FORMAT));
+        Product product = productRepository.getByCode("08N04Z");
+        Lot lot = lotRepository.getLotByLotNumberAndProductId("6MK07", product.getId());
+        assertEquals("2019-10-30", DateUtil.formatDate(lot.getExpirationDate(), DateUtil.DB_DATE_FORMAT));
         LotOnHand lotOnHand = lotRepository.getLotOnHandByLot(lot);
         assertEquals(5, lotOnHand.getQuantityOnHand(), 0L);
     }
@@ -146,11 +200,18 @@ public class SyncDownManagerIT {
     @Test
     public void shouldSyncDownRapidTests() throws Exception {
         //set shared preferences to have synced all historical data already
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.YEAR, -1);
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(new Date());
+//        cal.add(Calendar.YEAR, -1);
 
-        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, cal.getTimeInMillis()).apply();
+        Date now = new Date();
+        Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
+        String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
+
+        Date endDate = DateUtil.addDayOfMonth(now, 1);
+        String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
+
+//        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, cal.getTimeInMillis()).apply();
 
         //given
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
@@ -158,7 +219,18 @@ public class SyncDownManagerIT {
 
         sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
         sharedPreferenceMgr.setRequisitionDataSynced(true);
-
+        String fetchProgramsJson = JsonFileReader.readJson(getClass(), "fetchProgramsDown.json");
+        String fetchPTVServiceJson = JsonFileReader.readJson(getClass(), "fetchfetchPTVService.json");
+        String fetchReportTypesMapping = JsonFileReader.readJson(getClass(), "fetchReportTypesMapping.json");
+        String fetchMovementDate = JsonFileReader.readJson(getClass(), "fetchStockMovementDate.json");
+        String fetchRequisitionsData = JsonFileReader.readJson(getClass(), "fetchRequisitionsData.json");
+        String fetchProgramDataFacilities = JsonFileReader.readJson(getClass(), "fetchProgramDataFacilities.json");
+        lmisRestManager.addNewMockedResponse("/rest-api/programs/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramsJson);
+        lmisRestManager.addNewMockedResponse("/rest-api/services?" + "programCode=PTV", 200, "OK", fetchPTVServiceJson);
+        lmisRestManager.addNewMockedResponse("/rest-api/report-types/mapping/" + defaultUser.getFacilityId(), 200, "OK", fetchReportTypesMapping);
+        lmisRestManager.addNewMockedResponse("/rest-api/requisitions?" + "facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", fetchRequisitionsData);
+        lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramDataFacilities);
+        lmisRestManager.addNewMockedResponse("/rest-api/facilities/" + defaultUser.getFacilityId() + "/stockCards?" + "startTime=" + startDateStr + "&endTime=" + endDateStr, 200, "OK", fetchMovementDate);
         String rapidTestsResponseJson = JsonFileReader.readJson(getClass(), "SyncDownRapidTestsResponse.json");
         lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + defaultUser.getFacilityId(), 200, "OK", rapidTestsResponseJson);
 
@@ -172,9 +244,6 @@ public class SyncDownManagerIT {
         subscriber.assertNoErrors();
 
         List<ProgramDataForm> programDataForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
-        assertEquals(1, programDataForms.size());
-        assertEquals("2016-02-21", DateUtil.formatDate(programDataForms.get(0).getPeriodBegin(), DateUtil.DB_DATE_FORMAT));
-        assertEquals("2016-03-20", DateUtil.formatDate(programDataForms.get(0).getPeriodEnd(), DateUtil.DB_DATE_FORMAT));
-        assertEquals(8, programDataForms.get(0).getProgramDataFormItemListWrapper().size());
+        assertEquals(0, programDataForms.size());
     }
 }
