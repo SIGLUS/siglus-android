@@ -32,6 +32,7 @@ import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.viewmodel.ALReportViewModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -160,7 +161,11 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     private RegimenItem getRegimenItemFromFormList(String name) {
-        for (RegimenItem regimenItem : rnRForm.getRegimenItemList()) {
+        Collection<RegimenItem> regimenList = rnRForm.getRegimenItemList();
+        if (regimenList == null || regimenList.isEmpty()) {
+            return null;
+        }
+        for (RegimenItem regimenItem : regimenList) {
             if (regimenItem.getRegimen().getName().equals(name)) {
                 return regimenItem;
             }

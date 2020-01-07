@@ -43,7 +43,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-//@Ignore
 @RunWith(LMISTestRunner.class)
 public class RequisitionPeriodServiceTest {
 
@@ -71,16 +70,6 @@ public class RequisitionPeriodServiceTest {
 
         programMMIA = new Program("MMIA", "MMIA", null, false, null, null);
         programMMIA.setId(1l);
-        when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
-        ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
-                setActive(true).
-                setCode(Constants.MMIA_REPORT).
-                setName(Constants.MMIA_PROGRAM_CODE).
-                setStartTime(new DateTime(DateUtil.parseString("2015-01-01", DateUtil.DB_DATE_FORMAT)).toDate()).
-                build();
-        when(mockReportTypeFormRepository.queryByCode(Constants.MMIA_REPORT))
-                .thenReturn(reportTypeForm);
-        when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
     }
 
     @Test
@@ -104,7 +93,16 @@ public class RequisitionPeriodServiceTest {
     @Ignore
     public void shouldGeneratePeriodOfJan21ToFebWhenRnrNotExists() throws Exception {
         when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-02-17").toDate());
-
+        when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
+        ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
+                setActive(true).
+                setCode(Constants.MMIA_REPORT).
+                setName(Constants.MMIA_PROGRAM_CODE).
+                setStartTime(new DateTime(DateUtil.parseString("2015-01-01", DateUtil.DB_DATE_FORMAT)).toDate()).
+                build();
+        when(mockReportTypeFormRepository.queryByCode(Constants.MMIA_REPORT))
+                .thenReturn(reportTypeForm);
+        when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
         Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2016-01-21")));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(2));

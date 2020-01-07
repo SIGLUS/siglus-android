@@ -18,7 +18,7 @@ public class LotAdapterTest {
 
         Lot lot = lotAdapter.deserialize(new JsonParser().parse(json), null, null);
 
-        assertEquals("TEST1", lot.getLotNumber());
-        assertEquals(DateUtil.parseString("2016-10-30", DateUtil.DB_DATE_FORMAT), lot.getExpirationDate());
+        assertEquals("6MK07", lot.getLotNumber());
+        assertEquals(DateUtil.parseString("2019-10-30", DateUtil.DB_DATE_FORMAT), lot.getExpirationDate());
     }
 }

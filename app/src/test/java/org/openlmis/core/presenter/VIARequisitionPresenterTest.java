@@ -54,6 +54,7 @@ import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.fragment.VIARequisitionFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -91,7 +92,7 @@ import static org.openlmis.core.model.Product.IsKit;
 public class VIARequisitionPresenterTest {
 
     private VIARequisitionPresenter presenter;
-    private org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
+    private VIARequisitionFragment VIARequisitionFragment;
     private VIARepository mockRnrFormRepository;
     private ProductRepository mockProductRepository;
     private StockRepository mockStockRepository;
@@ -234,7 +235,7 @@ public class VIARequisitionPresenterTest {
         form.setStatus(status);
         form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
         form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>() {{
-            add(new BaseInfoItem(VIARepository.ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form,"",0));
+            add(new BaseInfoItem(VIARepository.ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form, "", 0));
         }});
         return form;
     }

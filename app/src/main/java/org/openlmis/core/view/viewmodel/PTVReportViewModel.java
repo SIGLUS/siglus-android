@@ -17,7 +17,7 @@ public class PTVReportViewModel implements Serializable {
 
     public PTVReportViewModel(RnRForm form) {
         this.form = form;
-        if (form.getRnrFormItemList().size() > 0) {
+        if (form.getRnrFormItemListWrapper().size() > 0) {
             services.clear();
             for (ServiceItem serviceItem : form.getRnrFormItemListWrapper().get(0).getServiceItemList()) {
                 services.add(serviceItem.getService());
