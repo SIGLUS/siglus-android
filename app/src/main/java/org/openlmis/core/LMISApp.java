@@ -31,8 +31,6 @@ import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -62,7 +60,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
 
 public class LMISApp extends Application {
@@ -161,8 +158,6 @@ public class LMISApp extends Application {
     }
 
     public void logErrorToFirebase(LMISException exception) {
-        Crashlytics.setUserName(UserInfoMgr.getInstance().getFacilityName());
-        Crashlytics.logException(exception);
         Analytics.isEnabled().thenAccept(enable -> {
             final StackTraceElement[] traceElements = exception.getStackTrace();
             if (enable && (traceElements.length > 0)) {
