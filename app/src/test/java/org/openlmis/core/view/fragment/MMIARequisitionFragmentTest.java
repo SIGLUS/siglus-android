@@ -41,6 +41,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
@@ -48,6 +49,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
+import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
 import org.openlmis.core.view.widget.MMIARnrForm;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.robolectric.Robolectric;
@@ -56,12 +58,16 @@ import org.robolectric.shadows.ShadowToast;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
@@ -83,6 +89,8 @@ public class MMIARequisitionFragmentTest {
     private MMIARegimeList regimeListView;
     private MMIAInfoList mmiaInfoListView;
     private MMIARnrForm rnrFormList;
+//    private MMIARegimeThreeLineList mmiaRegimeThreeLineList;
+
 
     protected ViewGroup mockRightViewGroup;
     private ViewGroup mockRnrItemsHeaderFreeze;
@@ -98,6 +106,7 @@ public class MMIARequisitionFragmentTest {
         });
 
         rnrFormList = mock(MMIARnrForm.class);
+//        mmiaRegimeThreeLineList = mock(MMIARegimeThreeLineList.class);
         SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
         mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
 
@@ -107,6 +116,7 @@ public class MMIARequisitionFragmentTest {
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
         mmiaRequisitionFragment.rnrFormList = rnrFormList;
+//        mmiaRequisitionFragment.mmiaRegimeThreeLineListView = mmiaRegimeThreeLineList;
         mmiaRequisitionFragment.rnrItemsHeaderFreeze = mockRnrItemsHeaderFreeze;
 
         when(rnrFormList.getRightHeaderView()).thenReturn(mock(ViewGroup.class));
@@ -133,6 +143,7 @@ public class MMIARequisitionFragmentTest {
         fragment.regimeListView = regimeListView;
         fragment.mmiaInfoListView = mmiaInfoListView;
         fragment.rnrFormList = rnrFormList;
+//        fragment.mmiaRegimeThreeLineListView = mmiaRegimeThreeLineList;
 
         return fragment;
     }
@@ -143,6 +154,7 @@ public class MMIARequisitionFragmentTest {
         fragment.regimeListView = regimeListView;
         fragment.mmiaInfoListView = mmiaInfoListView;
         fragment.rnrFormList = rnrFormList;
+//        fragment.mmiaRegimeThreeLineListView = mmiaRegimeThreeLineList;
 
         return fragment;
     }
@@ -240,6 +252,31 @@ public class MMIARequisitionFragmentTest {
         verify(regimeListView).deHighLightTotal();
         verify(mmiaInfoListView).deHighLightTotal();
         assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+    }
+
+
+    @Test
+    public void shouldDisplayRegimeThreeLine() {
+        List<RegimenItemThreeLines> linesList = new ArrayList<>();
+        linesList.add(new RegimenItemThreeLines(0, getString(R.string.mmia_1stline)));
+        linesList.add(new RegimenItemThreeLines(1, getString(R.string.mmia_2ndline)));
+        linesList.add(new RegimenItemThreeLines(2, getString(R.string.mmia_3rdline)));
+        form.setRegimenThreeLinesWrapper(linesList);
+        mmiaRequisitionFragment.regimeListView = regimeListView;
+        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+
+        mmiaRequisitionFragment.refreshRequisitionForm(form);
+        verify(regimeListView).deHighLightTotal();
+        verify(mmiaInfoListView).deHighLightTotal();
+        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+        assertFalse(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.isCompleted());
+        assertTrue(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.hasEmptyField());
+        assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.getDataList().size()).isEqualTo(3);
+        assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.getTotal(MMIARegimeThreeLineList.COUNTTYPE.PATIENTSAMOUNT)).isEqualTo(0);
+    }
+
+    private String getString(int id) {
+        return mmiaRequisitionFragment.getString(id);
     }
 
     @Test

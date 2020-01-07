@@ -34,7 +34,13 @@ public class RegimenItemThreeLines extends BaseModel {
     public RegimenItemThreeLines(String type) {
         this.regimeTypes = type;
     }
+
     public RegimenItemThreeLines() {
         super();
+    }
+
+    public RegimenItemThreeLines(long id, String regimeTypes) {
+        super.setId(id);
+        this.regimeTypes = regimeTypes;
     }
 }
