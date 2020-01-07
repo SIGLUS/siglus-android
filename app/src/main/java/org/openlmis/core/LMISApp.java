@@ -83,9 +83,6 @@ public class LMISApp extends Application {
         RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
         setupAppCenter();
         setupGoogleAnalytics();
-        if (!BuildConfig.DEBUG) {
-            setupFabric();
-        }
 
         instance = this;
         registerNetWorkChangeListener();
@@ -136,12 +133,6 @@ public class LMISApp extends Application {
         AppCenter.start(this, getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
         AppCenter.setEnabled(true);
         Analytics.setEnabled(true);
-    }
-
-    protected void setupFabric() {
-        Fabric.with(this, new Crashlytics.Builder()
-                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build());
     }
 
     public boolean isConnectionAvailable() {

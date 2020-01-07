@@ -61,6 +61,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;

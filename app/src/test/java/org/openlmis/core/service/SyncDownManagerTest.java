@@ -314,6 +314,7 @@ public class SyncDownManagerTest {
             if (progress == StockCardsLastMonthSynced) {
                 verifyLastMonthStockCardsSynced();
                 verify(sharedPreferenceMgr).setLastMonthStockCardDataSynced(true);
+
             }
             if (progress == RequisitionSynced) {
                 verify(rnrFormRepository, times(1)).createRnRsWithItems(any(ArrayList.class));

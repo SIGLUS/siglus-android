@@ -41,7 +41,6 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManagerMock;
-import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
@@ -64,7 +63,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.ShouldGoToInitialInventory;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -75,7 +73,6 @@ public class LoginPresenterTest {
     RnrFormRepository rnrFormRepository;
     LoginActivity mockActivity;
     LoginPresenter presenter;
-    SyncDownProductsResponse mockSyncDownProductsResponse;
     SyncService syncService;
 
     @Captor
@@ -97,7 +94,6 @@ public class LoginPresenterTest {
         programRepository = mock(ProgramRepository.class);
         rnrFormRepository = mock(RnrFormRepository.class);
         mockActivity = mock(LoginActivity.class);
-        mockSyncDownProductsResponse = mock(SyncDownProductsResponse.class);
         syncService = mock(SyncService.class);
         syncDownManager = mock(SyncDownManager.class);
 

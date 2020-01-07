@@ -1,14 +1,11 @@
 package org.openlmis.core.view.activity;
 
-
-import android.content.Intent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.inject.AbstractModule;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,10 +13,8 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.ProductPresenter;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.holder.SelectEmergencyProductsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -34,13 +29,11 @@ import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class SelectEmergencyProductsActivityTest {
@@ -69,7 +62,6 @@ public class SelectEmergencyProductsActivityTest {
     public void shouldLoadEmergencyProducts() throws Exception {
         verify(productPresenter).loadEmergencyProducts();
     }
-
 
     @Test
     public void shouldShowToastWhenHasNotChecked() throws Exception {
@@ -102,7 +94,6 @@ public class SelectEmergencyProductsActivityTest {
 
     @Test
     public void shouldInflateCurrentDataAfterFilter() throws Exception {
-//        activity.mAdapter.filter("Product name");
         activity.mAdapter.refreshList(getInventoryViewModels());
 
         SelectEmergencyProductsViewHolder viewHolder = activity.mAdapter.onCreateViewHolder(new LinearLayout(activity), 0);
