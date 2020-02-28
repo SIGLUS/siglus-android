@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name=".LMISApp"
@@ -20,9 +21,6 @@
         android:supportsRtl="false"
         android:fullBackupContent="@xml/appcenter_backup_rule"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="bb9773077d8b9b49cf4a0d181c8e6bcf19213304" />
 
         <activity
             android:name=".view.activity.LoginActivity"
@@ -185,6 +183,15 @@
             android:authorities="@string/sync_content_authority"
             android:syncable="true" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepath_data" />
+        </provider>
         <receiver android:name=".receiver.BootCompletedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

@@ -554,7 +554,7 @@
 
     <string name="upgrade_download_complete">Download Completed</string>
     <string name="upgrade_download_title">Download</string>
-    <string name="upgrade_download_msg">Download in progress</string>
+    <string name="upgrade_download_msg">Download Progress: %1$d %%</string>
     <string name="upgrade_download_Failed">Download Failed</string>
     <string name="upgrade_download_try">Please try later</string>
     <string name="upgrade_download_click_install">Click to install</string>
