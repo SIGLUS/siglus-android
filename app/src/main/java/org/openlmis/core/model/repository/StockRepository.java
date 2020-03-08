@@ -204,7 +204,7 @@ public class StockRepository {
         return false;
     }
 
-    private List<StockCard> listStockCardsByProductIds(final List<Long> productIds) throws LMISException {
+    public List<StockCard> listStockCardsByProductIds(final List<Long> productIds) throws LMISException {
         return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
             @Override
             public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
@@ -349,7 +349,6 @@ public class StockRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLots);
         if (stockCard == null && !isFromKitToNormal) {
             LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteProducts);
-
         }
         if (isFromKitToNormal) {
             LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteKitProducts);

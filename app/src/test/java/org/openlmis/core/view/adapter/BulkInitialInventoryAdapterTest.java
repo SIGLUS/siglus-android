@@ -17,7 +17,7 @@ public class BulkInitialInventoryAdapterTest {
 
     @Test
     public void shouldReturnMinusOneWhenProductListIsEmpty() throws Exception {
-        InventoryListAdapter<BaseViewHolder> adapter = new BulkInitialInventoryAdapter(new ArrayList<InventoryViewModel>());
+        InventoryListAdapter<BaseViewHolder> adapter = new BulkInventoryLotMovementAdapter(new ArrayList<InventoryViewModel>());
         assertThat(adapter.validateAll(), is(-1));
     }
 
@@ -27,14 +27,14 @@ public class BulkInitialInventoryAdapterTest {
         int expectedPosition = nextInt(0, models.size() - 1);
         InventoryViewModel model = models.get(expectedPosition);
         model.setChecked(false);
-        InventoryListAdapter<BaseViewHolder> adapter = new BulkInitialInventoryAdapter(models);
+        InventoryListAdapter<BaseViewHolder> adapter = new BulkInventoryLotMovementAdapter(models);
         assertThat(adapter.validateAll(), is(expectedPosition));
     }
 
     @Test
     public void shouldReturnMinusOneWhenAllModelsAreChecked () throws Exception {
         List<InventoryViewModel> models = newArrayList(dummyIntentoryViewModel(), randomCheckedInventoryViewModel(), randomCheckedInventoryViewModel(), randomCheckedInventoryViewModel());
-        InventoryListAdapter<BaseViewHolder> adapter = new BulkInitialInventoryAdapter(models);
+        InventoryListAdapter<BaseViewHolder> adapter = new BulkInventoryLotMovementAdapter(models);
         assertThat(adapter.validateAll(), is(-1));
     }
 

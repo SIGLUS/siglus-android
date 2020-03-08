@@ -8,6 +8,8 @@ import com.j256.ormlite.table.TableUtils;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.DraftInitialInventory;
+import org.openlmis.core.model.DraftInitialInventoryLotItem;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.Inventory;
@@ -25,6 +27,9 @@ public class InventoryRepository {
     GenericDao<DraftInventory> draftInventoryGenericDao;
     GenericDao<DraftLotItem> draftLotItemGenericDao;
 
+    GenericDao<DraftInitialInventory> draftInitialInventoryGenericDao;
+    GenericDao<DraftInitialInventoryLotItem> draftInitialInventoryLotItemGenericDao;
+
     @Inject
     DbUtil dbUtil;
 
@@ -33,6 +38,8 @@ public class InventoryRepository {
         genericDao = new GenericDao<>(Inventory.class, context);
         draftInventoryGenericDao = new GenericDao<>(DraftInventory.class, context);
         draftLotItemGenericDao = new GenericDao<>(DraftLotItem.class, context);
+        draftInitialInventoryGenericDao = new GenericDao<>(DraftInitialInventory.class, context);
+        draftInitialInventoryLotItemGenericDao = new GenericDao<>(DraftInitialInventoryLotItem.class, context);
         this.context = context;
     }
 
@@ -40,7 +47,7 @@ public class InventoryRepository {
         try {
             genericDao.create(inventory);
         } catch (LMISException e) {
-            new LMISException(e,"InventoryRepository.save").reportToFabric();
+            new LMISException(e, "InventoryRepository.save").reportToFabric();
         }
     }
 
@@ -58,7 +65,7 @@ public class InventoryRepository {
         });
     }
 
-    public void  createDraft(final DraftInventory draftInventory) throws LMISException {
+    public void createDraft(final DraftInventory draftInventory) throws LMISException {
         dbUtil.withDaoAsBatch(DraftInventory.class, new DbUtil.Operation<DraftInventory, Object>() {
             @Override
             public Object operate(Dao<DraftInventory, String> dao) throws LMISException {
@@ -83,6 +90,31 @@ public class InventoryRepository {
                 TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftLotItem.class);
                 return null;
             }
+        });
+
+    }
+
+    public void createInitialDraft(final DraftInitialInventory draftInitialInventory) throws LMISException {
+        dbUtil.withDaoAsBatch(DraftInitialInventory.class, dao -> {
+            draftInitialInventoryGenericDao.createOrUpdate(draftInitialInventory);
+            for (DraftInitialInventoryLotItem draftInitialInventoryLotItem : draftInitialInventory.getDraftLotItemListWrapper()) {
+                draftInitialInventoryLotItemGenericDao.createOrUpdate(draftInitialInventoryLotItem);
+            }
+            return null;
+        });
+    }
+
+    public List<DraftInitialInventory> queryAllInitialDraft() throws LMISException {
+        return draftInitialInventoryGenericDao.queryForAll();
+    }
+
+    public void clearInitialDraft() throws LMISException {
+        dbUtil.withDaoAsBatch(DraftInitialInventory.class, dao -> {
+            TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+                    .getConnectionSource(), DraftInitialInventory.class);
+            TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+                    .getConnectionSource(), DraftInitialInventoryLotItem.class);
+            return null;
         });
 
     }

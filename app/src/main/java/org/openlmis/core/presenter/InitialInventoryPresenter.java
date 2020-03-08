@@ -8,7 +8,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
+//import org.openlmis.core.view.adapter.BulkInventoryLotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -92,7 +92,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
                 viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
             } else {
                 viewModel = new InventoryViewModel(product);
-                viewModel.setViewType(BulkInitialInventoryAdapter.ITEM_LIST);
+//                viewModel.setViewType(BulkInventoryLotMovementAdapter.ITEM_LIST);
                 viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
             }
             viewModel.setChecked(false);
@@ -188,14 +188,14 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         basicProductHeader.setBasic(true);
         InventoryViewModel inventoryModelBasicHeader = new InventoryViewModel(basicProductHeader);
         inventoryModelBasicHeader.setDummyModel(true);
-        inventoryModelBasicHeader.setViewType(BulkInitialInventoryAdapter.ITEM_BASIC_HEADER);
+//        inventoryModelBasicHeader.setViewType(BulkInventoryLotMovementAdapter.ITEM_BASIC_HEADER);
         inventoryViewModelList.add(FIRST_ELEMENT_POSITION_OF_THE_LIST, inventoryModelBasicHeader);
     }
 
     private void addHeaderForNonBasicProducts(int position) {
         InventoryViewModel headerInventoryModel = new InventoryViewModel(Product.dummyProduct());
         headerInventoryModel.setDummyModel(true);
-        headerInventoryModel.setViewType(BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER);
+//        headerInventoryModel.setViewType(BulkInventoryLotMovementAdapter.ITEM_NON_BASIC_HEADER);
         inventoryViewModelList.add(position, headerInventoryModel);
     }
 

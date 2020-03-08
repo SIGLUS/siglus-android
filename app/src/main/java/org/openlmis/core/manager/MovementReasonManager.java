@@ -207,6 +207,7 @@ public final class MovementReasonManager {
         POSITIVE_ADJUST("POSITIVE_ADJUST"),
         NEGATIVE_ADJUST("NEGATIVE_ADJUST"),
         PHYSICAL_INVENTORY("PHYSICAL_INVENTORY"),
+        INITIAL_INVENTORY("INITIAL_INVENTORY"),
         DEFAULT("default");
 
         private final String value;

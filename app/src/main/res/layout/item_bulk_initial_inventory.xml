@@ -40,7 +40,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_soh_information"
+                android:id="@+id/initial_inventory_ll_soh_information"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_large"
@@ -48,7 +48,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_sho_amount"
+                    android:id="@+id/initial_inventory_sho_amount"
                     style="@style/Text.Black.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -56,6 +56,7 @@
                     tools:text="@string/label_dummy_sho_amount" />
 
                 <TextView
+                    android:id="@+id/initial_inventory_stock_existence"
                     style="@style/Text.Gray.Normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -88,7 +89,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
-            android:background="@color/alphabet_background_border_color"></View>
+            android:background="@color/alphabet_background_border_color"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,6 +104,16 @@
                 android:layout_marginLeft="@dimen/margin_normal"
                 android:background="@drawable/border_round_blue"
                 android:text="@string/btn_bulk_add_new_lot"
+                android:textColor="@color/color_accent"
+                android:textSize="16sp" />
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/btn_initial_inventory_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:background="@drawable/border_round_blue"
+                android:text="@string/btn_edit"
                 android:textColor="@color/color_accent"
                 android:textSize="16sp" />
 

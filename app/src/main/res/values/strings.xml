@@ -491,7 +491,7 @@
     <string name="label_view_movements">View movements:</string>
     <string name="batch_dummy">16B283S - Jul 2018</string>
     <string name="label_dummy_sho_amount">80</string>
-    <string name="sho">Stock Existente</string>
+    <string name="sho">Stock Existence</string>
     <string name="amount_field_cannot_be_empty">The amount field cannot be empty</string>
     <string name="amount_cannot_be_less_or_equal_to_zero">The amount cannot be less or equal than zero</string>
     <string name="succesfully_saved">Successfully Saved</string>
