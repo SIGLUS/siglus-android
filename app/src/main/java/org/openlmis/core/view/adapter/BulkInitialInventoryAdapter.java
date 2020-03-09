@@ -21,17 +21,21 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
     private static final String TAG = BulkInitialInventoryAdapter.class.getSimpleName();
     private final SingleClickButtonListener saveClickListener;
     private final SingleClickButtonListener completeClickListener;
-    private final View.OnClickListener removeNonBasicProductListener;
+    private final RemoveNonBasicProduct removeNonBasicProductListener;
     private BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener;
 
+    public static final int ITEM_BASIC = 1;
+    public static final int ITEM_NO_BASIC = ITEM_BASIC + 1;
+    public static final int ITEM_BASIC_HEADER = ITEM_NO_BASIC + 1;
+    public static final int ITEM_NON_BASIC_HEADER = ITEM_BASIC_HEADER + 1;
+
     public BulkInitialInventoryAdapter(List<InventoryViewModel> data,
-                                       View.OnClickListener removeNonBasicProductListener,
+                                       RemoveNonBasicProduct removeNonBasicProductListener,
                                        SingleClickButtonListener saveClickListener,
                                        SingleClickButtonListener completeClickListener,
                                        BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener) {
         super(data);
-        Log.e(TAG,"BulkInitialInventoryAdapter data size = " + data.size());
-        this.removeNonBasicProductListener =  removeNonBasicProductListener;
+        this.removeNonBasicProductListener = removeNonBasicProductListener;
         this.saveClickListener = saveClickListener;
         this.completeClickListener = completeClickListener;
         this.refreshCompleteCountListener = refreshCompleteCountListener;
@@ -40,7 +44,8 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
         final InventoryViewModel viewModel = filteredList.get(position);
         BulkInitialInventoryWithLotViewHolder holder = (BulkInitialInventoryWithLotViewHolder) viewHolder;
-        holder.populate((BulkInitialInventoryViewModel) viewModel, queryKeyWord, refreshCompleteCountListener);
+//        holder
+        holder.populate((BulkInitialInventoryViewModel) viewModel, queryKeyWord, refreshCompleteCountListener, removeNonBasicProductListener);
     }
 
     @Override
@@ -55,6 +60,11 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
         return data.get(position).getProductName().substring(0, 1);
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return data.get(position).getViewType();
+    }
+
     public boolean isHasDataChanged() {
         List<InventoryViewModel> data = getData();
         for (InventoryViewModel model : data) {
@@ -64,27 +74,31 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
         }
         return false;
     }
+
     @Override
     public int validateAll() {
         int position = -1;
         for (int i = 0; i < data.size(); i++) {
-            Log.e(TAG,"data.get(i).validate() = " + data.get(i).validate());
+            Log.e(TAG, "data.get(i).validate() = " + data.get(i).validate());
             if (!data.get(i).validate()) {
                 if (position == -1 || i < position) {
                     position = i;
                 }
             }
         }
-        Log.e(TAG,"BulkInitialInventoryAdapter validateAll position = "+position);
         this.notifyDataSetChanged();
         return position;
     }
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.e(TAG,"BulkInitialInventoryAdapter onCreateViewHolder ");
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bulk_item_initial_inventory, parent, false);
-        return new BulkInitialInventoryWithLotViewHolder(view);
+        if (viewType == ITEM_BASIC_HEADER) {
+            return new BulkInitialInventoryWithLotViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_bulk_initial_inventory_header, parent, false));
+        } else if (viewType == ITEM_NON_BASIC_HEADER) {
+            return new BulkInitialInventoryWithLotViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_bulk_initial_inventory_non_basic_header, parent, false));
+        } else {
+            return new BulkInitialInventoryWithLotViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.bulk_item_initial_inventory, parent, false));
+        }
     }
 
     @Override
@@ -93,5 +107,9 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
             return;
         }
         populate(holder, position);
+    }
+
+    public interface RemoveNonBasicProduct {
+        void removeNoneBasicProduct(BulkInitialInventoryViewModel viewModel);
     }
 }
