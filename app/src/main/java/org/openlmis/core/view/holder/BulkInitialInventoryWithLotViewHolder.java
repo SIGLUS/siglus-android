@@ -1,10 +1,8 @@
 package org.openlmis.core.view.holder;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +12,6 @@ import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 import org.openlmis.core.view.widget.BulkInitialInventoryLotListView;
 
-import java.util.logging.Logger;
 
 import roboguice.inject.InjectView;
 
@@ -37,9 +34,9 @@ public class BulkInitialInventoryWithLotViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.view_lot_list)
     BulkInitialInventoryLotListView lotListView;
-
-    @InjectView(R.id.ic_delete)
-    ImageView icDelete;
+//
+//    @InjectView(R.id.ic_delete)
+//    ImageView icDelete;
 
     protected BulkInitialInventoryViewModel viewModel;
     private BulkInitialInventoryAdapter.RemoveNonBasicProduct removeNonBasicProductListener;
@@ -55,17 +52,19 @@ public class BulkInitialInventoryWithLotViewHolder extends BaseViewHolder {
         this.removeNonBasicProductListener = removeNonBasicProductListener;
         if (lotListView == null) return;
         lotListView.initLotListView(viewModel, (done) -> {
-            updateTitle(done, queryKeyWord);
-            refreshCompleteCountListener.onStatusChange(done);
-        });
-        icDelete.setOnClickListener(removeProductListener);
-        icDelete.setVisibility(viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NO_BASIC ? View.VISIBLE : View.GONE);
+                    updateTitle(done, queryKeyWord);
+                    refreshCompleteCountListener.onStatusChange(done);
+                },
+                removeProductListener
+        );
+//        icDelete.setOnClickListener(removeProductListener);
+//        icDelete.setVisibility(viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NO_BASIC ? View.VISIBLE : View.GONE);
         updateTitle(viewModel.isDone(), queryKeyWord);
     }
 
 
     @NonNull
-    private View.OnClickListener removeProductListener = v ->  removeNonBasicProductListener.removeNoneBasicProduct(viewModel);
+    private View.OnClickListener removeProductListener = v -> removeNonBasicProductListener.removeNoneBasicProduct(viewModel);
 
     private void highlightQueryKeyWord(BulkInitialInventoryViewModel inventoryViewModel, String queryKeyWord, boolean done) {
         if (done) {

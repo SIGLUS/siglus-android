@@ -4,21 +4,22 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.adapter.BulkInitialInventoryLotMovementAdapter;
 import org.openlmis.core.view.adapter.LotInfoReviewListAdapter;
 import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import roboguice.inject.InjectView;
 
 public class BulkInitialInventoryLotListView extends BaseLotListView {
-    @InjectView(R.id.btn_done)
-    ViewGroup btnDone;
+    @InjectView(R.id.btn_no_stock_done)
+    ViewGroup btnNoStockDone;
 
     @InjectView(R.id.btn_edit)
     TextView btnEdit;
@@ -32,7 +33,13 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     @InjectView(R.id.rv_lot_info_review)
     RecyclerView rvLotInfoReview;
 
+    @InjectView(R.id.ll_btn_verify)
+    ViewGroup btnVerify;
+    @InjectView(R.id.ll_btn_remove_product)
+    ViewGroup btnRemoveProduct;
+
     private BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener statusChangeListener;
+
     public BulkInitialInventoryLotListView(Context context) {
         super(context);
     }
@@ -44,7 +51,7 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     @Override
     protected void init(Context context) {
         super.init(context);
-        btnDone.setOnClickListener(v -> {
+        btnNoStockDone.setOnClickListener(v -> {
             if (validateLotList()) {
                 markDone(true);
             }
@@ -52,10 +59,32 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
         btnEdit.setOnClickListener(v -> markDone(false));
     }
 
-    public void initLotListView(InventoryViewModel viewModel, BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener statusChangeListener) {
+    public void initLotListView(BulkInitialInventoryViewModel viewModel,
+                                BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener statusChangeListener,
+                                View.OnClickListener removeProductListener) {
         this.statusChangeListener = statusChangeListener;
         super.initLotListView(viewModel);
-        markDone(((BulkInitialInventoryViewModel) viewModel).isDone());
+        if (BulkInitialInventoryAdapter.ITEM_BASIC == viewModel.getViewType()) {
+            btnVerify.setVisibility(getLotNumbers().size() == 0 ? View.GONE : View.VISIBLE);
+            btnVerify.setOnClickListener(v -> {
+                if (validateLotList()) {
+                    markDone(true);
+                }
+            });
+            btnRemoveProduct.setVisibility(View.GONE);
+            btnNoStockDone.setVisibility(getLotNumbers().size() == 0 ? View.VISIBLE : View.GONE);
+        } else if (BulkInitialInventoryAdapter.ITEM_NO_BASIC == viewModel.getViewType()) {
+            btnRemoveProduct.setOnClickListener(removeProductListener);
+            btnVerify.setVisibility(getLotNumbers().size() == 0 ? View.GONE : View.VISIBLE);
+            btnVerify.setOnClickListener(v -> {
+                if (validateLotList()) {
+                    markDone(true);
+                }
+            });
+            btnRemoveProduct.setVisibility(getLotNumbers().size() == 0 ? View.VISIBLE : View.GONE);
+            btnNoStockDone.setVisibility(View.GONE);
+        }
+        markDone(viewModel.isDone());
     }
 
     @Override

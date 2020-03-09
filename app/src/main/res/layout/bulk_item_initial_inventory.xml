@@ -68,14 +68,6 @@
                     android:textSize="@dimen/font_size_tiny" />
 
             </LinearLayout>
-            <ImageView
-                android:id="@+id/ic_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                tools:visibility="visible"
-                android:paddingHorizontal="@dimen/padding_small"
-                android:src="@drawable/ic_clear_red" />
         </LinearLayout>
 
         <org.openlmis.core.view.widget.BulkInitialInventoryLotListView
