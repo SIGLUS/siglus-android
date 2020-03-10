@@ -3,6 +3,7 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,14 @@ import org.openlmis.core.R;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.adapter.BulkInitialInventoryLotMovementAdapter;
 import org.openlmis.core.view.adapter.LotInfoReviewListAdapter;
+import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 
 import roboguice.inject.InjectView;
 
 public class BulkInitialInventoryLotListView extends BaseLotListView {
+    private static final String TAG = BulkInitialInventoryLotListView.class.getSimpleName();
     @InjectView(R.id.btn_no_stock_done)
     ViewGroup btnNoStockDone;
 
@@ -91,6 +94,7 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     public void initExistingLotListView() {
         existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
         existingLotMovementAdapter = new BulkInitialInventoryLotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
+        existingLotMovementAdapter.setMovementChangedListenerWithStatus(movementChangedListenerWithStatus);
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
@@ -98,8 +102,21 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     public void initNewLotListView() {
         newLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
         newLotMovementAdapter = new BulkInitialInventoryLotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementAdapter.setMovementChangedListenerWithStatus(movementChangedListenerWithStatus);
         newLotListView.setAdapter(newLotMovementAdapter);
     }
+
+    LotMovementAdapter.MovementChangedListenerWithStatus movementChangedListenerWithStatus = (amount) -> {
+        if (BulkInitialInventoryAdapter.ITEM_BASIC == ((BulkInitialInventoryViewModel) viewModel).getViewType()) {
+            btnVerify.setVisibility(TextUtils.isEmpty(amount) ? GONE : VISIBLE);
+            btnNoStockDone.setVisibility(TextUtils.isEmpty(amount) ? VISIBLE : GONE);
+        } else if (BulkInitialInventoryAdapter.ITEM_NO_BASIC == ((BulkInitialInventoryViewModel) viewModel).getViewType()) {
+            btnVerify.setVisibility(TextUtils.isEmpty(amount) ? GONE : VISIBLE);
+            btnNoStockDone.setVisibility(GONE);
+            btnRemoveProduct.setVisibility(TextUtils.isEmpty(amount) ? VISIBLE : GONE);
+        }
+
+    };
 
     private void initLotInfoReviewList() {
         LotInfoReviewListAdapter adapter = new LotInfoReviewListAdapter(viewModel);

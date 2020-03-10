@@ -17,6 +17,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.activity.BulkInitialInventoryActivity;
 import org.openlmis.core.view.activity.InitialInventoryActivity;
 import org.openlmis.core.view.activity.InventoryActivity;
 import org.openlmis.core.view.activity.NewStockMovementActivity;
@@ -52,6 +53,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.iv_del)
     private ImageView iconDel;
     private LotMovementAdapter.MovementChangedListener movementChangeListener;
+    private LotMovementAdapter.MovementChangedListenerWithStatus movementChangedListenerWithStatus;
 
     public LotMovementViewHolder(View itemView) {
         super(itemView);
@@ -65,7 +67,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
     }
 
     private void populateLotSOHBanner(LotMovementViewModel viewModel) {
-        if (context instanceof InitialInventoryActivity || context instanceof UnpackKitActivity) {
+        if (context instanceof InitialInventoryActivity
+                || context instanceof UnpackKitActivity
+                || context instanceof BulkInitialInventoryActivity) {
             vgLotSOH.setVisibility(View.GONE);
         } else {
             if (viewModel.isNewAdded()) {
@@ -166,6 +170,10 @@ public class LotMovementViewHolder extends BaseViewHolder {
         this.movementChangeListener = movementChangedListener;
     }
 
+    public void setMovementChangedLisenerWithStatus(LotMovementAdapter.MovementChangedListenerWithStatus movementChangedLisenerWithStatus) {
+        this.movementChangedListenerWithStatus = movementChangedLisenerWithStatus;
+    }
+
     class EditTextWatcher extends SingleTextWatcher {
 
         private final LotMovementViewModel viewModel;
@@ -216,6 +224,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
             if (movementChangeListener != null) {
                 movementChangeListener.movementChange();
+            }
+            if (context instanceof BulkInitialInventoryActivity && movementChangedListenerWithStatus != null) {
+                movementChangedListenerWithStatus.movementChange(editable.toString());
             }
         }
     }

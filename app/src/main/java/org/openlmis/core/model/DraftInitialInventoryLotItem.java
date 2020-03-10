@@ -35,10 +35,7 @@ public class DraftInitialInventoryLotItem extends BaseModel{
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private DraftInitialInventory draftInitialInventory;
 
-    @DatabaseField
-    boolean newAdded;
-
-    public DraftInitialInventoryLotItem(LotMovementViewModel lotMovementViewModel, Product product, boolean isNewAdded) {
+    public DraftInitialInventoryLotItem(LotMovementViewModel lotMovementViewModel, Product product) {
         try {
             quantity = Long.parseLong(lotMovementViewModel.getQuantity());
         } catch (Exception e) {
@@ -47,6 +44,5 @@ public class DraftInitialInventoryLotItem extends BaseModel{
         setExpirationDate(DateUtil.getActualMaximumDate(DateUtil.parseString(lotMovementViewModel.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
         setLotNumber(lotMovementViewModel.getLotNumber());
         setProduct(product);
-        newAdded = isNewAdded;
     }
 }

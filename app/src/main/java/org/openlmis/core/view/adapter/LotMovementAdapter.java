@@ -21,6 +21,7 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     @Getter
     private final String productName;
     private MovementChangedListener movementChangedListener;
+    private MovementChangedListenerWithStatus movementChangedListenerWithStatus;
 
     public LotMovementAdapter(List<LotMovementViewModel> data) {
         this.lotList = data;
@@ -41,7 +42,9 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     @Override
     public void onBindViewHolder(LotMovementViewHolder holder, int position) {
         final LotMovementViewModel viewModel = lotList.get(position);
+
         holder.setMovementChangeListener(movementChangedListener);
+        holder.setMovementChangedLisenerWithStatus(movementChangedListenerWithStatus);
         holder.populate(viewModel, this);
     }
 
@@ -58,12 +61,19 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
         this.notifyDataSetChanged();
     }
 
-
     public void setMovementChangeListener(MovementChangedListener movementChangedListener) {
         this.movementChangedListener = movementChangedListener;
     }
 
+    public void setMovementChangedListenerWithStatus(MovementChangedListenerWithStatus movementChangedListenerWithStatus) {
+        this.movementChangedListenerWithStatus = movementChangedListenerWithStatus;
+    }
+
     public interface MovementChangedListener {
         void movementChange();
+    }
+
+    public interface MovementChangedListenerWithStatus {
+        void movementChange(String amount);
     }
 }

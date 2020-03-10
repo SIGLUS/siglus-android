@@ -12,7 +12,6 @@ import org.openlmis.core.model.DraftInitialInventoryLotItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
 
@@ -28,15 +27,15 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
     public BulkInitialInventoryViewModel(StockCard stockCard) {
         super(stockCard);
     }
+
     public BulkInitialInventoryViewModel(Product product) {
         super(product);
     }
 
     @Override
     public boolean validate() {
-        Log.e(TAG,"validate done = " +done);
-//        valid = !checked || (validateNewLotList() && validateExistingLot()) || product.isArchived();
-//        done = valid;
+        valid = !checked || (validateNewLotList() && validateExistingLot()) || product.isArchived();
+        done = valid;
         return done;
     }
 
@@ -45,12 +44,14 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
         if (draftInventory == null) {
             return hasLotInInventoryModelChanged();
         }
-        return !draftInventory.getDraftLotItemListWrapper().isEmpty() && isDifferentFromDraft();
+
+
+        return isDifferentFromDraft();
     }
 
     private boolean isDifferentFromDraft() {
-        List<DraftInitialInventoryLotItem> newAddedDraftLotItems = FluentIterable.from(draftInventory.getDraftLotItemListWrapper()).filter(draftLotItem -> draftLotItem.isNewAdded()).toList();
-        List<DraftInitialInventoryLotItem> existingDraftLotItems = FluentIterable.from(draftInventory.getDraftLotItemListWrapper()).filter(draftLotItem -> !draftLotItem.isNewAdded()).toList();
+        // 数据库中读取的和当前界面上的值是否有改动
+        List<DraftInitialInventoryLotItem> existingDraftLotItems = draftInventory.getDraftLotItemListWrapper();
         for (DraftInitialInventoryLotItem draftLotItem : existingDraftLotItems) {
             for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
                 if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
@@ -60,19 +61,7 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
                 }
             }
         }
-        for (DraftInitialInventoryLotItem draftLotItem : newAddedDraftLotItems) {
-            if (newAddedDraftLotItems.size() != newLotMovementViewModelList.size()) {
-                return true;
-            }
-            for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
-                if (draftLotItem.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
-                    if (!String.valueOf(draftLotItem.getQuantity() == null ? "" : draftLotItem.getQuantity()).equals(lotMovementViewModel.getQuantity())) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return newLotMovementViewModelList.size() != 0;
     }
 
     private boolean hasLotInInventoryModelChanged() {
@@ -127,37 +116,12 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
 
     private void populateLotMovementModelWithDraftLotItem() {
         for (DraftInitialInventoryLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
-            if (draftLotItem.isNewAdded()) {
-                if (isNotInExistingLots(draftLotItem)) {
-                    LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
-                    newLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
-                    newLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
-                    newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                    getNewLotMovementViewModelList().add(newLotMovementViewModel);
-                }
-            } else {
-                for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
-                    if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
-                        existingLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
-                    }
-                }
-            }
+            LotMovementViewModel existLotMovementViewModel = new LotMovementViewModel();
+            existLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
+            existLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
+            existLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+            getExistingLotMovementViewModelList().add(existLotMovementViewModel);
         }
-    }
-
-    private boolean isNotInExistingLots(DraftInitialInventoryLotItem draftLotItem) {
-        for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-            if (draftLotItem.getLotNumber().toUpperCase().equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
-                return false;
-            }
-        }
-
-        for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
-            if (draftLotItem.getLotNumber().toUpperCase().equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private String formatQuantity(Long quantity) {

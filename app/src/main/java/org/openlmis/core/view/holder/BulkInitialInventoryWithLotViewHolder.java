@@ -34,9 +34,6 @@ public class BulkInitialInventoryWithLotViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.view_lot_list)
     BulkInitialInventoryLotListView lotListView;
-//
-//    @InjectView(R.id.ic_delete)
-//    ImageView icDelete;
 
     protected BulkInitialInventoryViewModel viewModel;
     private BulkInitialInventoryAdapter.RemoveNonBasicProduct removeNonBasicProductListener;
@@ -57,8 +54,6 @@ public class BulkInitialInventoryWithLotViewHolder extends BaseViewHolder {
                 },
                 removeProductListener
         );
-//        icDelete.setOnClickListener(removeProductListener);
-//        icDelete.setVisibility(viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NO_BASIC ? View.VISIBLE : View.GONE);
         updateTitle(viewModel.isDone(), queryKeyWord);
     }
 

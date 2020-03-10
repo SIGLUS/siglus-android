@@ -1,9 +1,7 @@
 package org.openlmis.core.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 
@@ -19,8 +17,6 @@ import java.util.List;
 
 public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHolder> {
     private static final String TAG = BulkInitialInventoryAdapter.class.getSimpleName();
-    private final SingleClickButtonListener saveClickListener;
-    private final SingleClickButtonListener completeClickListener;
     private final RemoveNonBasicProduct removeNonBasicProductListener;
     private BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener;
 
@@ -31,20 +27,15 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
 
     public BulkInitialInventoryAdapter(List<InventoryViewModel> data,
                                        RemoveNonBasicProduct removeNonBasicProductListener,
-                                       SingleClickButtonListener saveClickListener,
-                                       SingleClickButtonListener completeClickListener,
                                        BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener) {
         super(data);
         this.removeNonBasicProductListener = removeNonBasicProductListener;
-        this.saveClickListener = saveClickListener;
-        this.completeClickListener = completeClickListener;
         this.refreshCompleteCountListener = refreshCompleteCountListener;
     }
 
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
         final InventoryViewModel viewModel = filteredList.get(position);
         BulkInitialInventoryWithLotViewHolder holder = (BulkInitialInventoryWithLotViewHolder) viewHolder;
-//        holder
         holder.populate((BulkInitialInventoryViewModel) viewModel, queryKeyWord, refreshCompleteCountListener, removeNonBasicProductListener);
     }
 
@@ -79,7 +70,6 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
     public int validateAll() {
         int position = -1;
         for (int i = 0; i < data.size(); i++) {
-            Log.e(TAG, "data.get(i).validate() = " + data.get(i).validate());
             if (!data.get(i).validate()) {
                 if (position == -1 || i < position) {
                     position = i;

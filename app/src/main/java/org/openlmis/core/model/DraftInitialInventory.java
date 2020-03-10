@@ -21,6 +21,7 @@ import lombok.Setter;
 @DatabaseTable(tableName = "draft_initial_inventory")
 @NoArgsConstructor
 public class DraftInitialInventory extends BaseModel {
+    private static final String TAG = DraftInitialInventory.class.getSimpleName();
 
     @Deprecated
     @DatabaseField
@@ -58,7 +59,7 @@ public class DraftInitialInventory extends BaseModel {
                 .addAll(FluentIterable.from(existingLotMovementViewModelList)
                         .transform(lotMovementViewModel -> {
                             DraftInitialInventoryLotItem draftLotItem = new DraftInitialInventoryLotItem(lotMovementViewModel,
-                                    product, false);
+                                    product);
                             draftLotItem.setDraftInitialInventory(DraftInitialInventory.this);
                             return draftLotItem;
                         }).toList());
@@ -66,7 +67,7 @@ public class DraftInitialInventory extends BaseModel {
                 .addAll(FluentIterable.from(lotMovementViewModelList)
                         .transform(lotMovementViewModel -> {
                             DraftInitialInventoryLotItem draftLotItem = new DraftInitialInventoryLotItem(lotMovementViewModel,
-                                    product, true);
+                                    product);
                             draftLotItem.setDraftInitialInventory(DraftInitialInventory.this);
                             return draftLotItem;
                         }).toList());

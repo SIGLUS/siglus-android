@@ -39,11 +39,12 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
             try {
                 List<Product> inventoryProducts = productRepository.listBasicProducts();
+                defaultViewModelList.clear();
+                inventoryViewModelList.clear();
                 defaultViewModelList.addAll(convertProductToStockCardViewModel(inventoryProducts,
                         BulkInitialInventoryAdapter.ITEM_BASIC));
                 addHeaderForBasicProducts();
                 restoreDraftInventory();
-                Log.e(TAG, "loadInventory inventoryViewModelList.size = " + inventoryViewModelList.size());
                 subscriber.onNext(inventoryViewModelList);
                 subscriber.onCompleted();
             } catch (LMISException e) {
@@ -56,12 +57,9 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     private void restoreDraftInventory() throws LMISException {
         List<DraftInitialInventory> draftInventoryList = inventoryRepository.queryAllInitialDraft();
         List<BulkInitialInventoryViewModel> nonBasicLists = new ArrayList<>();
-        Log.e(TAG, "draftInventoryList.size = " + draftInventoryList.size());
-        Log.e(TAG, "inventoryViewModelList.size = " + defaultViewModelList.size());
         List<DraftInitialInventory> noBasicDraftInventoryList = new ArrayList<>();
         for (DraftInitialInventory draftInventory : draftInventoryList) {
             for (InventoryViewModel viewModel : defaultViewModelList) {
-//                Log.e(TAG, "draftInventory.getProduct() = " + draftInventory.getProduct());
                 if ((viewModel.getProductId() == draftInventory.getProduct().getId())) {
                     ((BulkInitialInventoryViewModel) viewModel).setInitialDraftInventory(draftInventory);
                 }
@@ -77,13 +75,9 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
             nonBasicLists.add(bulkInitialInventoryViewModel);
         }
 
-//        addHeaderForBasicProducts();
-        Log.e(TAG, "nonBasicLists.size() = " + nonBasicLists.size());
         if (nonBasicLists.size() >= 1) {
             buildNonBasicProductModels(nonBasicLists);
         }
-//        inventoryViewModelList.addAll(convertDraftInitialInventoryToViewModel(noBasicDraftInventoryList));
-        Log.e(TAG, "inventoryViewModelList.size=" + inventoryViewModelList.size());
     }
 
     @Nullable
@@ -135,7 +129,6 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     public void addNonBasicProductsToInventory(List<Product> nonBasicProducts) {
         List<BulkInitialInventoryViewModel> nonBasicProductsModels = convertProductToStockCardViewModel(nonBasicProducts,
                 BulkInitialInventoryAdapter.ITEM_NO_BASIC);
-        Log.e(TAG, "inventoryViewModelList.size()=" + inventoryViewModelList.size());
         buildNonBasicProductModels(nonBasicProductsModels);
     }
 
@@ -147,17 +140,13 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
                 hasNonBasicProductHeader = true;
             }
         }
-        Log.e(TAG, "buildNonBasicProductModels hasNonBasicProductHeader = " + hasNonBasicProductHeader);
         if (!hasNonBasicProductHeader) {
             BulkInitialInventoryViewModel nonBasicHeaderInventoryModel = new BulkInitialInventoryViewModel(Product.dummyProduct());
             nonBasicHeaderInventoryModel.setDummyModel(true);
             nonBasicHeaderInventoryModel.setViewType(BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER);
             inventoryViewModelList.add(nonBasicHeaderInventoryModel);
         }
-        Log.e(TAG, "buildNonBasicProductModels nonBasicProductsModels.size = " + nonBasicProductsModels.size());
-        Log.e(TAG, "buildNonBasicProductModels inventoryViewModelList.size = " + inventoryViewModelList.size());
         inventoryViewModelList.addAll(nonBasicProductsModels);
-        Log.e(TAG, "buildNonBasicProductModels inventoryViewModelList.size = " + inventoryViewModelList.size());
 
     }
 
@@ -191,7 +180,6 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
                 for (InventoryViewModel inventoryViewModel : inventoryViewModelList) {
                     if (inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
                             || inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER) {
-                        Log.e(TAG, "saveDraftInventoryObservable continue..");
                         continue;
                     }
                     inventoryRepository.createInitialDraft(new DraftInitialInventory((BulkInitialInventoryViewModel) inventoryViewModel));
