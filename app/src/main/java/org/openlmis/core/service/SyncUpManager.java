@@ -25,6 +25,7 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -51,10 +52,12 @@ import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.Sets;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 import rx.Observable;
@@ -194,11 +197,12 @@ public class SyncUpManager {
             SyncUpStockMovementDataSplitResponse response = lmisRestApi.syncUpStockMovementDataSplit(facilityId, movementEntriesToSync);
 
             List<StockMovementItem> shouldMarkSyncedItems = new ArrayList<>();
-            for (String product : response.getErrorProductCodes()) {
-                for (StockMovementItem stockMovementItem : stockMovementItems) {
-                    if (!product.equals(stockMovementItem.getStockCard().getProduct().getCode())) {
-                        shouldMarkSyncedItems.add(stockMovementItem);
-                    }
+
+            Set<String> syncFailedProduct = Sets.newHashSet(response.getErrorProductCodes());
+            for (StockMovementItem stockMovementItem : stockMovementItems) {
+                if (CollectionUtils.isEmpty(syncFailedProduct)
+                        || !syncFailedProduct.contains(stockMovementItem.getStockCard().getProduct().getCode())) {
+                    shouldMarkSyncedItems.add(stockMovementItem);
                 }
             }
 

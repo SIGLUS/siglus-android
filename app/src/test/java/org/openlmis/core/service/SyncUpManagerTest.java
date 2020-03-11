@@ -184,8 +184,8 @@ public class SyncUpManagerTest {
         List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
 
         assertThat(items.size(), is(2));
-        assertThat(items.get(0).isSynced(), is(false));
-        assertThat(items.get(1).isSynced(), is(false));
+        assertThat(items.get(0).isSynced(), is(true));
+        assertThat(items.get(1).isSynced(), is(true));
         verify(mockedSyncErrorsRepository).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
