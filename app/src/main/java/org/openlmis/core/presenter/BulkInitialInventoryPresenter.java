@@ -195,16 +195,24 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         return Observable.create(subscriber -> {
             try {
                 for (InventoryViewModel viewModel : inventoryViewModelList) {
+                    if (viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER
+                            || viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER) {
+                        continue;
+                    }
+                    viewModel.setMovementType(MovementReasonManager.MovementType.INITIAL_INVENTORY);
                     if (viewModel.getProduct().isArchived()) {
                         StockCard stockCard = viewModel.getStockCard();
                         stockCard.getProduct().setArchived(false);
                         stockRepository.updateStockCardWithProduct(stockCard);
                         return;
                     }
+
                     StockCard stockCard = new StockCard();
                     stockCard.setProduct(viewModel.getProduct());
-                    StockMovementItem movementItem = new StockMovementItem(stockCard, viewModel);
+                    StockMovementItem movementItem = new StockMovementItem(stockCard, viewModel, true);
                     stockCard.setStockOnHand(movementItem.getStockOnHand());
+                    movementItem.setStockCard(stockCard);
+                    movementItem.setStockOnHand(movementItem.getStockOnHand());
                     stockRepository.addStockMovementAndUpdateStockCard(movementItem);
                 }
                 inventoryRepository.clearInitialDraft();

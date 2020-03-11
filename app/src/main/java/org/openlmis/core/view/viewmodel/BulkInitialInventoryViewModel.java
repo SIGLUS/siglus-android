@@ -33,8 +33,6 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
 
     @Override
     public boolean validate() {
-        valid = !checked || (validateNewLotList() && validateExistingLot()) || product.isArchived();
-        done = valid;
         return done;
     }
 
@@ -76,15 +74,6 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
             }
         }
         return false;
-    }
-
-    private boolean validateExistingLot() {
-        for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-            if (!lotMovementViewModel.validateLotWithNoEmptyFields()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public String getFormattedProductName() {

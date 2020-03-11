@@ -35,6 +35,7 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -102,6 +103,18 @@ public class StockMovementItem extends BaseModel {
         populateLotQuantitiesAndCalculateNewSOH(model.getNewLotMovementViewModelList(), movementType);
     }
 
+    public StockMovementItem(StockCard stockCard, InventoryViewModel model, boolean fromInitialInventory) {
+        this.stockCard = stockCard;
+        this.movementDate = new Date();
+        this.reason = MovementReasonManager.INVENTORY;
+        this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
+
+        List<LotMovementViewModel> movementViewModelList = new ArrayList<>();
+        movementViewModelList.addAll(model.getExistingLotMovementViewModelList());
+        movementViewModelList.addAll(model.getNewLotMovementViewModelList());
+        populateLotQuantitiesAndCalculateNewSOH(fromInitialInventory ? movementViewModelList : model.getNewLotMovementViewModelList(), movementType);
+    }
+
     public boolean isPositiveMovement() {
         return movementType.equals(MovementReasonManager.MovementType.RECEIVE)
                 || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
@@ -159,14 +172,14 @@ public class StockMovementItem extends BaseModel {
                 setStockOnHand(getStockOnHand() + movementQuantity);
             }
             setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList)
-                .transform(new Function<LotMovementViewModel, LotMovementItem>() {
-                    @Override
-                    public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
-                        LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
-                        lotItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
-                        return lotItem;
-                    }
-                }).toList());
+                    .transform(new Function<LotMovementViewModel, LotMovementItem>() {
+                        @Override
+                        public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
+                            LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
+                            lotItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
+                            return lotItem;
+                        }
+                    }).toList());
         }
     }
 

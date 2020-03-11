@@ -69,7 +69,9 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
     public int validateAll() {
         int position = -1;
         for (int i = 0; i < data.size(); i++) {
-            if (!data.get(i).validate()) {
+            if (!data.get(i).validate()
+                    && !(data.get(i).getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
+                    || data.get(i).getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER)) {
                 if (position == -1 || i < position) {
                     position = i;
                 }
