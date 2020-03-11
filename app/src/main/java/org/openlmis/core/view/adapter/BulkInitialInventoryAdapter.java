@@ -10,7 +10,6 @@ import org.openlmis.core.view.holder.BaseViewHolder;
 import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.List;
 

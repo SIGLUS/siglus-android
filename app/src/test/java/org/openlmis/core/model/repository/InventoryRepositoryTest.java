@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.DraftInitialInventory;
+import org.openlmis.core.model.DraftInitialInventoryLotItem;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.Inventory;
@@ -104,10 +106,51 @@ public class InventoryRepositoryTest {
 
         assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getLotNumber(), is("A111"));
         assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getProduct(), is(product));
-        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(), is(DateUtil.parseString(DateUtil.formatDate(new Date(), DateUtil.DB_DATE_FORMAT),DateUtil.DB_DATE_FORMAT)));
+        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(), is(DateUtil.parseString(DateUtil.formatDate(new Date(), DateUtil.DB_DATE_FORMAT), DateUtil.DB_DATE_FORMAT)));
         assertThat(draftInventoryQueried.getStockCard().getProduct(), is(product));
         assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).isNewAdded(), is(false));
         assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getQuantity(), is(20L));
+    }
+
+
+    @Test
+    public void shouldSaveInitialDraftInventoryAndDraftLotItem() throws LMISException, ParseException {
+        Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true).setIsKit(false).build();
+        StockCard stockCard = createNewStockCard("code", null, product, true);
+
+        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withMovementDate("2016-10-10").withMovementType(RECEIVE).build();
+        Lot lot1 = new LotBuilder().setLotNumber("A111").setProduct(stockCard.getProduct()).build();
+        LotMovementItem lotMovementItem1 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem1).setLot(lot1).setMovementQuantity(100L).setStockOnHand(0L).build();
+        stockMovementItem1.setLotMovementItemListWrapper(newArrayList(lotMovementItem1));
+        stockMovementItem1.setStockCard(stockCard);
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem1);
+
+        DraftInitialInventory draftInitialInventory = new DraftInitialInventory();
+        DraftInitialInventoryLotItem draftInitialInventoryLotItem = new DraftInitialInventoryLotItem();
+        draftInitialInventoryLotItem.setProduct(product);
+        draftInitialInventoryLotItem.setLotNumber("A111");
+        draftInitialInventoryLotItem.setExpirationDate(new Date());
+        draftInitialInventoryLotItem.setDraftInitialInventory(draftInitialInventory);
+        draftInitialInventoryLotItem.setQuantity(20L);
+        draftInitialInventory.setDraftLotItemListWrapper(newArrayList(draftInitialInventoryLotItem));
+        draftInitialInventory.setQuantity(20L);
+        draftInitialInventory.setExpireDates("Feb 2015");
+
+        repository.createInitialDraft(draftInitialInventory);
+        DraftInitialInventory draftInventoryQueried = repository.queryAllInitialDraft().get(0);
+
+        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getLotNumber(), is("A111"));
+        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getProduct(), is(product));
+        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(), is(DateUtil.parseString(DateUtil.formatDate(new Date(), DateUtil.DB_DATE_FORMAT), DateUtil.DB_DATE_FORMAT)));
+        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getQuantity(), is(20L));
+    }
+
+    @Test
+    public void shouldClearInitialDraftInventory() throws Exception {
+        saveInitialDraftInventory();
+        Assert.assertThat(repository.queryAllInitialDraft().size(), Is.is(2));
+        repository.clearInitialDraft();
+        Assert.assertThat(repository.queryAllInitialDraft().size(), Is.is(0));
     }
 
     @Test
@@ -124,6 +167,24 @@ public class InventoryRepositoryTest {
         inventory.setCreatedAt(date);
         inventory.setUpdatedAt(date);
         return inventory;
+    }
+
+
+    private void saveInitialDraftInventory() throws LMISException {
+        Product product = ProductBuilder.create().setIsBasic(true).setCode("basicCode").setProductId(1L).setPrimaryName("basicName").build();
+        DraftInitialInventory draftInitialInventory = new DraftInitialInventory();
+        draftInitialInventory.setQuantity(13L);
+        draftInitialInventory.setProduct(product);
+        draftInitialInventory.setExpireDates("11/10/2020");
+
+        Product product1 = ProductBuilder.create().setIsBasic(true).setCode("basicCode2").setProductId(2L).setPrimaryName("basicName2").build();
+        DraftInitialInventory draftInitialInventory1 = new DraftInitialInventory();
+        draftInitialInventory1.setQuantity(33L);
+        draftInitialInventory.setProduct(product1);
+        draftInitialInventory1.setExpireDates("11/12/2020");
+
+        repository.createInitialDraft(draftInitialInventory);
+        repository.createInitialDraft(draftInitialInventory1);
     }
 
     private void saveDraftInventory() throws LMISException {

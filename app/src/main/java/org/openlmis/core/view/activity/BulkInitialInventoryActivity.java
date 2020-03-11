@@ -4,7 +4,6 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +22,6 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;

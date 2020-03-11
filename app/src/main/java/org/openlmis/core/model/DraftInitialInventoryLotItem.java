@@ -11,9 +11,7 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import java.util.Date;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
 @DatabaseTable(tableName = "draft_initial_lot_items")

@@ -1,7 +1,6 @@
 package org.openlmis.core.presenter;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -54,7 +53,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private void restoreDraftInventory() throws LMISException {
+    protected void restoreDraftInventory() throws LMISException {
         List<DraftInitialInventory> draftInventoryList = inventoryRepository.queryAllInitialDraft();
         List<BulkInitialInventoryViewModel> nonBasicLists = new ArrayList<>();
         List<DraftInitialInventory> noBasicDraftInventoryList = new ArrayList<>();

@@ -3,7 +3,6 @@ package org.openlmis.core.view.viewmodel;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;

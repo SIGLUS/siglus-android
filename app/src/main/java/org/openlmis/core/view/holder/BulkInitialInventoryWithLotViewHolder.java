@@ -3,7 +3,6 @@ package org.openlmis.core.view.holder;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
