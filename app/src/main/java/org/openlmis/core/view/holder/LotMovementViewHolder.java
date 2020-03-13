@@ -94,6 +94,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
     private void populateAmountField(LotMovementViewModel viewModel) {
         final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
         if (viewModel.isExpiredLot() && viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE) {
+            etLotAmount.setText(null);
             lyLotAmount.setErrorEnabled(true);
             etLotAmount.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
             etLotAmount.setEnabled(false);
@@ -104,6 +105,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
             etLotAmount.setSingleLine(false);
             etLotAmount.setHorizontallyScrolling(false);
         } else {
+            etLotAmount.setHintTextColor(context.getResources().getColor(R.color.color_select_title));
             etLotAmount.setEnabled(true);
             etLotAmount.setMaxLines(9);
             etLotAmount.removeTextChangedListener(textWatcher);
@@ -118,6 +120,8 @@ public class LotMovementViewHolder extends BaseViewHolder {
         }
         if (!viewModel.isQuantityLessThanSoh()) {
             setQuantityError(getString(R.string.msg_invalid_quantity));
+        }else {
+            setQuantityError(null);
         }
     }
 
