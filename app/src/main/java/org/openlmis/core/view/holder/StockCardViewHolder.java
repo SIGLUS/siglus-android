@@ -15,6 +15,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import roboguice.RoboGuice;
@@ -107,12 +108,15 @@ public class StockCardViewHolder extends BaseViewHolder {
         Date earliestLotExpiryDate = inventoryViewModel.getStockCard().getEarliestLotExpiryDate();
 
         if (earliestLotExpiryDate != null) {
-            if (earliestLotExpiryDate.before(new Date(LMISApp.getInstance().getCurrentTimeMillis()))) {
-                showExpiryDateWithMessage(R.string.msg_expired_date, earliestLotExpiryDate);
+            Calendar addOneDayToEarliestLotExpiryDate= Calendar.getInstance();
+            addOneDayToEarliestLotExpiryDate.setTime(earliestLotExpiryDate);
+            addOneDayToEarliestLotExpiryDate.add(Calendar.DATE,2);
+           if (addOneDayToEarliestLotExpiryDate.getTime().compareTo(new Date(LMISApp.getInstance().getCurrentTimeMillis()))<=0) {
+                showExpiryDateWithMessage(R.string.msg_expired_date, addOneDayToEarliestLotExpiryDate.getTime());
                 return;
             }
-            if (DateUtil.calculateDateMonthOffset(new Date(LMISApp.getInstance().getCurrentTimeMillis()), earliestLotExpiryDate) <= 3) {
-                showExpiryDateWithMessage(R.string.msg_expiring_date, earliestLotExpiryDate);
+            if (DateUtil.calculateDateMonthOffset(new Date(LMISApp.getInstance().getCurrentTimeMillis()), addOneDayToEarliestLotExpiryDate.getTime()) <= 3) {
+                showExpiryDateWithMessage(R.string.msg_expiring_date, addOneDayToEarliestLotExpiryDate.getTime());
                 return;
             }
         }

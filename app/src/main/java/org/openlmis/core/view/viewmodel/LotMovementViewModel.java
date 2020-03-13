@@ -117,7 +117,13 @@ public class LotMovementViewModel implements Serializable {
 
         Date localExpireDate = DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
 
-        return localExpireDate != null && localExpireDate.before(Calendar.getInstance().getTime());
+        Calendar trueExpireDate=Calendar.getInstance();
+        trueExpireDate.setTime(DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        trueExpireDate.add(Calendar.MONTH,1);
+        trueExpireDate.set(Calendar.DAY_OF_MONTH, 1);
+
+        return localExpireDate!=null && trueExpireDate.getTime().compareTo(Calendar.getInstance().getTime())<=0;
+
     }
 
     public boolean isNewAdded() {
