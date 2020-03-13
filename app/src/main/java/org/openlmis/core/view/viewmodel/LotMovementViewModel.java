@@ -110,20 +110,16 @@ public class LotMovementViewModel implements Serializable {
             return true;
         }
         Calendar nowCalender = Calendar.getInstance();
-        Calendar expireCalender = Calendar.getInstance();
-        expireCalender.setTime(DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-        expireCalender.add(Calendar.MONTH, 1);
-        expireCalender.before(nowCalender);
 
-        Date localExpireDate = DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-
-        Calendar trueExpireDate=Calendar.getInstance();
-        trueExpireDate.setTime(DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-        trueExpireDate.add(Calendar.MONTH,1);
-        trueExpireDate.set(Calendar.DAY_OF_MONTH, 1);
-
-        return localExpireDate!=null && trueExpireDate.getTime().compareTo(Calendar.getInstance().getTime())<=0;
-
+        Date expireDate =  DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+        if (expireDate  != null) {
+            Calendar expireCalender = Calendar.getInstance();
+            expireCalender.setTime(expireDate);
+            expireCalender.add(Calendar.MONTH, 1);
+            expireCalender.set(Calendar.DAY_OF_MONTH, 1);
+            return expireCalender.before(nowCalender);
+        }
+        return false;
     }
 
     public boolean isNewAdded() {

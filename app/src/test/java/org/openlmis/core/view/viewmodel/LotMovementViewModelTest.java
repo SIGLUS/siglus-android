@@ -4,14 +4,20 @@ import org.junit.Test;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.utils.DateUtil;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.logging.SimpleFormatter;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.openlmis.core.utils.DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR;
 
 public class LotMovementViewModelTest {
     private LotMovementViewModel viewModel = new LotMovementViewModel();
@@ -98,5 +104,22 @@ public class LotMovementViewModelTest {
 
         viewModel.setQuantity("10");
         assertEquals(9, viewModel.getAdjustmentQuantity());
+    }
+
+    @Test
+    public void shouldExpiredLot() throws Exception {
+        Calendar expireLot=Calendar.getInstance();
+        expireLot.add(Calendar.MONTH,-2);
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+        viewModel.setExpiryDate(dateFormat.format(expireLot.getTime()));
+        assertEquals(viewModel.isExpiredLot(), true);
+    }
+
+    @Test
+    public void shouldNotExpiredLot() throws Exception {
+        Calendar expireLot=Calendar.getInstance();
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+        viewModel.setExpiryDate(dateFormat.format(expireLot.getTime()));
+        assertEquals(viewModel.isExpiredLot(), false);
     }
 }
