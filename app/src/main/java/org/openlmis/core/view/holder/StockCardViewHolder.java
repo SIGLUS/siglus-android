@@ -108,14 +108,14 @@ public class StockCardViewHolder extends BaseViewHolder {
         Date earliestLotExpiryDate = inventoryViewModel.getStockCard().getEarliestLotExpiryDate();
 
         if (earliestLotExpiryDate != null) {
-            Calendar EarliestLotExpiryDateAddTwoDay= Calendar.getInstance();
-            EarliestLotExpiryDateAddTwoDay.setTime(earliestLotExpiryDate);
-            EarliestLotExpiryDateAddTwoDay.add(Calendar.DATE,2);
-           if (EarliestLotExpiryDateAddTwoDay.getTime().compareTo(new Date(LMISApp.getInstance().getCurrentTimeMillis()))<=0) {
+            Calendar earliestLotExpiryDateAddTwoDay= Calendar.getInstance();
+            earliestLotExpiryDateAddTwoDay.setTime(earliestLotExpiryDate);
+            earliestLotExpiryDateAddTwoDay.add(Calendar.DATE,2);
+           if (earliestLotExpiryDateAddTwoDay.getTime().compareTo(new Date(LMISApp.getInstance().getCurrentTimeMillis()))<=0) {
                 showExpiryDateWithMessage(R.string.msg_expired_date,earliestLotExpiryDate);
                 return;
             }
-            if (DateUtil.calculateDateMonthOffset(new Date(LMISApp.getInstance().getCurrentTimeMillis()), EarliestLotExpiryDateAddTwoDay.getTime()) <= 3) {
+            if (DateUtil.calculateDateMonthOffset(new Date(LMISApp.getInstance().getCurrentTimeMillis()), earliestLotExpiryDateAddTwoDay.getTime()) <= 3) {
                 showExpiryDateWithMessage(R.string.msg_expiring_date, earliestLotExpiryDate);
                 return;
             }
