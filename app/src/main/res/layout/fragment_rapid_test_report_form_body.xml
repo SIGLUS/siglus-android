@@ -28,7 +28,8 @@
                 android:id="@+id/rapid_test_body_left_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/vg_rapid_test_report_empty_header" />
+                android:layout_below="@+id/vg_rapid_test_report_empty_header"
+                android:contentDescription="rapid_test_body_left_list" />
         </RelativeLayout>
 
 
@@ -43,16 +44,17 @@
         android:layout_toEndOf="@+id/vg_rapid_test_report_body_left_header">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@drawable/border_left_black_bold">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_rapid_report_row_item_list"
-                android:layout_width="@dimen/rapid_view_width"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_below="@+id/vg_rapid_test_report_header"
                 android:background="@drawable/border_top_black_right_black_bold"
+                android:contentDescription="rv_rapid_report_row_item_list"
                 android:overScrollMode="never" />
 
             <include layout="@layout/fragment_rapid_test_test_report_form_body_top_header" />

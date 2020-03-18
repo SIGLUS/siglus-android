@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import org.openlmis.core.model.Period;
 
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -41,6 +40,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 public class RapidTestReportFormFragment extends BaseReportFragment {
+    private static final String TAG = RapidTestReportFormFragment.class.getSimpleName();
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
 
@@ -107,7 +107,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         } else {
             loadForm(formId, period);
         }
-        addObservationChange();
     }
 
     @Nullable
@@ -301,31 +300,44 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
             rnrBasicItemHeader.setVisibility(View.GONE);
             rnrBasicItemListView.setVisibility(View.GONE);
         }
+        initListener();
         populateFormData(viewModel);
         updateObservation(viewModel);
         updateActionPanel();
         loaded();
-        initListener();
     }
 
     private void initListener() {
-        rapidTestTopScrollView.setOnScrollChangedListener(new RnrFormHorizontalScrollView.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged(int l, int t, int oldl, int oldt) {
-                rnrBasicItemListView.getLeftHeaderScrollView().scrollBy(l - oldl, 0);
-            }
-        });
+        rapidTestTopScrollView.setOnScrollChangedListener((l, t, oldL, oldT) -> rnrBasicItemListView.getLeftHeaderScrollView().scrollBy(l - oldL, 0));
+        rapidTestBodyLeftListView.setOnTouchListener((v, event) -> true);
+
+        combineRowItemListViewAndLeftListView();
+    }
+
+    private void combineRowItemListViewAndLeftListView() {
         rvReportRowItemListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int moveState = RecyclerView.SCROLL_STATE_IDLE;
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int rvRightFistVisibleIndex = ((LinearLayoutManager) rvReportRowItemListView.getLayoutManager()).findFirstVisibleItemPosition();
+                int rvRightLastVisibleIndex = ((LinearLayoutManager) rvReportRowItemListView.getLayoutManager()).findLastVisibleItemPosition();
+                int rvRightRowSize = rvReportRowItemListView.getAdapter().getItemCount();
+                int rvReportLeftFistVisibleIndex = ((LinearLayoutManager) rapidTestBodyLeftListView.getLayoutManager()).findFirstVisibleItemPosition();
+
                 rapidTestBodyLeftListView.scrollBy(dx, dy);
+                if (rvRightFistVisibleIndex != rvReportLeftFistVisibleIndex
+                        && (rvRightLastVisibleIndex == rvRightRowSize - 1) //right scroll to the end
+                        && moveState == RecyclerView.SCROLL_STATE_IDLE) {// moving stopped
+                    rapidTestBodyLeftListView.smoothScrollToPosition(rvRightLastVisibleIndex);
+                    rvReportRowItemListView.smoothScrollToPosition(rvRightLastVisibleIndex);
+                }
             }
-        });
-        // disable the touch event
-        rapidTestBodyLeftListView.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                moveState = newState;
             }
         });
     }
