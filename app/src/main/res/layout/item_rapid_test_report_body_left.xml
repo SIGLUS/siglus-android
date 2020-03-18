@@ -8,7 +8,7 @@
         style="@style/RapidTestForm.RowHeading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="left|center"
+        android:gravity="center"
         android:paddingLeft="@dimen/rapid_view_view_left_padding"
         android:text="Farmácia Pública" />
 </RelativeLayout>
