@@ -110,7 +110,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     public void populate(final StockMovementViewModel model, StockCard stockCard) {
-        removeTextChangeListeners(model, stockCard.getStockOnHand());
+        removeTextChangeListeners(model, stockCard.calculateSOHFromLots());
 
         disableLine();
         hideUnderline();
@@ -140,7 +140,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
         addClickListeners(model, getPreviousMovementDate(stockCard));
 
-        addTextChangedListeners(model, stockCard.getStockOnHand());
+        addTextChangedListeners(model, stockCard.calculateSOHFromLots());
     }
 
     private void setInitialDraftStyle(final StockMovementViewModel model) {

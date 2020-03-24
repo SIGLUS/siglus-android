@@ -6,6 +6,7 @@ import android.database.Cursor;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -85,11 +86,23 @@ public class StockMovementRepository {
 
     public void batchCreateStockMovementItemAndLotItems(final StockMovementItem stockMovementItem) throws LMISException {
         stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+
+        if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper()) || CollectionUtils.isNotEmpty(stockMovementItem.getNewAddedLotMovementItemListWrapper())) {
+            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
+            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getNewAddedLotMovementItemListWrapper());
+            long totalSoh = 0;
+            for (LotMovementItem lotMovementItem : stockMovementItem.getLotMovementItemListWrapper()) {
+                totalSoh += lotMovementItem.getStockOnHand();
+            }
+            for (LotMovementItem lotMovementItem : stockMovementItem.getNewAddedLotMovementItemListWrapper()) {
+                totalSoh += lotMovementItem.getStockOnHand();
+            }
+            stockMovementItem.setStockOnHand(totalSoh);
+            genericDao.update(stockMovementItem);
+            stockMovementItem.getStockCard().setStockOnHand(totalSoh);
+        }
         // Create Stock Movement history list
         create(stockMovementItem);
-
-        lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
-        lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getNewAddedLotMovementItemListWrapper());
     }
 
     public void batchCreateOrUpdateStockMovementsAndLotMovements(final List<StockMovementItem> stockMovementItems) throws LMISException {

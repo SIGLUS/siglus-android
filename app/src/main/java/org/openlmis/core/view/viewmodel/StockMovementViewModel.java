@@ -26,8 +26,6 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.widget.NewMovementLotListView.LotStatus;
-import org.roboguice.shaded.goole.common.base.Predicate;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -131,12 +129,7 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
         stockMovementItem.setStockCard(stockCard);
 
         List<LotMovementViewModel> totalLotMovementViewModelList = new ArrayList<>();
-        totalLotMovementViewModelList.addAll(FluentIterable.from(existingLotMovementViewModelList).filter(new Predicate<LotMovementViewModel>() {
-            @Override
-            public boolean apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.quantityGreaterThanZero();
-            }
-        }).toList());
+        totalLotMovementViewModelList.addAll(existingLotMovementViewModelList);
         totalLotMovementViewModelList.addAll(newLotMovementViewModelList);
         stockMovementItem.populateLotQuantitiesAndCalculateNewSOH(totalLotMovementViewModelList, stockMovementItem.getMovementType());
 

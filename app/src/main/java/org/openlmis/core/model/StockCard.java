@@ -28,6 +28,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -108,6 +109,19 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
     public boolean isLowStock() {
         return stockOnHand < (int) Math.ceil(this.avgMonthlyConsumption * 1);
+    }
+
+    public long calculateSOHFromLots() {
+        List<LotOnHand> lots = getLotOnHandListWrapper();
+        long totalSOHFromLots = 0L;
+        if (CollectionUtils.isEmpty(lots)) {
+            totalSOHFromLots = stockOnHand;
+        }
+
+        for (LotOnHand lotOnHand : lots) {
+            totalSOHFromLots += lotOnHand.getQuantityOnHand();
+        }
+        return totalSOHFromLots;
     }
 
     public List<LotOnHand> getLotOnHandListWrapper() {

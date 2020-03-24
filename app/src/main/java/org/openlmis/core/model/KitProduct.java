@@ -21,4 +21,13 @@ public class KitProduct extends BaseModel {
 
     @DatabaseField
     private int quantity;
+
+    @Override
+    public String toString() {
+        return "["
+                + "kitCode=" + kitCode + ","
+                + "productCode=" + productCode + ","
+                + "quantity=" + quantity
+                + "]";
+    }
 }

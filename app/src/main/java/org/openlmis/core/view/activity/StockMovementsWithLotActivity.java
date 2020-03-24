@@ -190,7 +190,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
     @Override
     public void updateExpiryDateViewGroup() {
         if (!isKit) {
-            lotInfoGroup.setVisibility(presenter.getStockCard().getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
+            lotInfoGroup.setVisibility(presenter.getStockCard().calculateSOHFromLots() == 0 ? View.INVISIBLE : View.VISIBLE);
             lotInfoGroup.initLotInfoGroup(presenter.getStockCard().getNonEmptyLotOnHandList());
         }
     }
@@ -240,7 +240,11 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
 
     private void unpackKit() {
         Product product = presenter.getStockCard().getProduct();
-        startActivityForResult(SelectUnpackKitNumActivity.getIntentToMe(this, product.getPrimaryName(), product.getCode(), presenter.getStockCard().getStockOnHand()), Constants.REQUEST_UNPACK_KIT);
+        startActivityForResult(SelectUnpackKitNumActivity.getIntentToMe(this,
+                product.getPrimaryName(),
+                product.getCode(),
+                presenter.getStockCard().getStockOnHand()),
+                Constants.REQUEST_UNPACK_KIT);
     }
 
     @Override
@@ -290,7 +294,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if ((movementTypes.get(position).equals(MovementReasonManager.MovementType.ISSUE)
                     || movementTypes.get(position).equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST))
-                    && presenter.getStockCard().getStockOnHand() == 0) {
+                    && presenter.getStockCard().calculateSOHFromLots() == 0) {
                 ToastUtil.show(R.string.msg_no_lot_for_issue);
             } else {
                 startActivityForResult(NewStockMovementActivity.getIntentToMe(

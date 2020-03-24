@@ -65,7 +65,11 @@ public class LotMovementViewModel implements Serializable {
         lot.setExpirationDate(DateUtil.getActualMaximumDate(DateUtil.parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
         lotMovementItem.setLot(lot);
 
-        lotMovementItem.setMovementQuantity(Long.parseLong(quantity));
+        if (StringUtils.isNoneBlank(quantity)) {
+            lotMovementItem.setMovementQuantity(Long.parseLong(quantity));
+        } else {
+            lotMovementItem.setMovementQuantity(null);
+        }
         return lotMovementItem;
     }
 
@@ -111,8 +115,8 @@ public class LotMovementViewModel implements Serializable {
         }
         Calendar nowCalender = Calendar.getInstance();
 
-        Date expireDate =  DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-        if (expireDate  != null) {
+        Date expireDate = DateUtil.parseString(getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+        if (expireDate != null) {
             Calendar expireCalender = Calendar.getInstance();
             expireCalender.setTime(expireDate);
             expireCalender.add(Calendar.MONTH, 1);
@@ -130,7 +134,7 @@ public class LotMovementViewModel implements Serializable {
         try {
             return "SEM-LOTE-" + productCode.toUpperCase() + "-" + DateUtil.convertDate(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR, DateUtil.DATE_DIGIT_FORMAT_ONLY_MONTH_AND_YEAR);
         } catch (ParseException e) {
-            new LMISException(e,"LotMovementViewModel.generateLotNumberForProductWithoutLot").reportToFabric();
+            new LMISException(e, "LotMovementViewModel.generateLotNumberForProductWithoutLot").reportToFabric();
         }
         return null;
     }

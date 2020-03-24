@@ -39,9 +39,11 @@ public class LotMovementItem extends BaseModel {
     }
 
     public void updateMovementQuantity() {
-        if (stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.ISSUE)
-                || stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
-            movementQuantity *= -1;
+        if (movementQuantity != null) {
+            if (stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.ISSUE)
+                    || stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
+                movementQuantity *= -1;
+            }
         }
     }
 }

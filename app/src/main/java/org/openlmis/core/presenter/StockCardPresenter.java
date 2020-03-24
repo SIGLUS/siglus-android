@@ -121,7 +121,7 @@ public class StockCardPresenter extends Presenter {
         for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
             final StockCard stockCard = inventoryViewModel.getStockCard();
             stockRepository.refresh(stockCard);
-            inventoryViewModel.setStockOnHand(stockCard.getStockOnHand());
+            inventoryViewModel.setStockOnHand(stockCard.calculateSOHFromLots());
         }
     }
 
@@ -161,11 +161,11 @@ public class StockCardPresenter extends Presenter {
     }
 
     private boolean showInOverview(StockCard stockCard) {
-        return !stockCard.getProduct().isKit() && (stockCard.getStockOnHand() > 0 || (stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived()));
+        return !stockCard.getProduct().isKit() && (stockCard.calculateSOHFromLots() > 0 || (stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived()));
     }
 
     private boolean showInArchiveView(StockCard stockCard) {
-        return stockCard.getStockOnHand() == 0 && (stockCard.getProduct().isArchived() || !stockCard.getProduct().isActive());
+        return stockCard.calculateSOHFromLots() == 0 && (stockCard.getProduct().isArchived() || !stockCard.getProduct().isActive());
     }
 
     private Observer<List<StockCard>> getLoadStockCardsSubscriber() {

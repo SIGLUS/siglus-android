@@ -141,8 +141,8 @@ public class StockRepository {
                 @Override
                 public Object call() throws Exception {
                     createOrUpdate(stockCard);
-                    updateProductOfStockCard(stockCard.getProduct());
                     stockMovementRepository.batchCreateStockMovementItemAndLotItems(stockCard.generateInitialStockMovementItem());
+                    updateProductOfStockCard(stockCard.getProduct());
                     return null;
                 }
             });

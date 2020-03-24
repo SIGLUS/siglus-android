@@ -121,14 +121,14 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     private boolean convertViewModelToDataModelAndSave() {
-        viewModel.populateStockExistence(stockCard.getStockOnHand());
+        viewModel.populateStockExistence(stockCard.calculateSOHFromLots());
         StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
         stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
 
         Date lastMovementDate = getLastMovementCreateDate();
         if (lastMovementDate == null || stockMovementItem.getCreatedAt().after(lastMovementDate)) {
             stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-            if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
+            if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
                 SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
             }
             return true;
@@ -203,7 +203,7 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     public boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
-        return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > stockCard.getStockOnHand();
+        return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > stockCard.calculateSOHFromLots();
     }
 
     public Date getLastMovementDate() {

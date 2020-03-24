@@ -64,6 +64,8 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     private String signature;
     StockCard stockCard;
 
+
+
     public InventoryViewModel(StockCard stockCard) {
         this(stockCard.getProduct());
 

@@ -22,6 +22,7 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public class ProductRepository {
+    private static final String TAG = ProductRepository.class.getSimpleName();
 
     GenericDao<Product> genericDao;
 
@@ -202,10 +204,11 @@ public class ProductRepository {
     }
 
     private void createKitProductsIfNotExist(Product product) throws LMISException, SQLException {
-        if (product.getKitProductList() != null && !product.getKitProductList().isEmpty()) {
+        List<KitProduct> kitProductList = product.getKitProductList();
+        if (!CollectionUtils.isEmpty(kitProductList)) {
             // product as kit product
             deleteKitProductByCode(product.getCode());
-            for (KitProduct kitProduct : product.getKitProductList()) {
+            for (KitProduct kitProduct : kitProductList) {
                 createProductForKitIfNotExist(kitProduct);
                 KitProduct kitProductInDB = queryKitProductByCode(kitProduct.getKitCode(), kitProduct.getProductCode());
                 if (kitProductInDB == null) {
@@ -406,18 +409,4 @@ public class ProductRepository {
         return products;
     }
 
-    public enum IsWithKit {
-        Yes(true),
-        No(false);
-
-        public boolean IsWithKit() {
-            return IsWithKit;
-        }
-
-        private boolean IsWithKit;
-
-        IsWithKit(boolean IsWithKit) {
-            this.IsWithKit = IsWithKit;
-        }
-    }
 }
