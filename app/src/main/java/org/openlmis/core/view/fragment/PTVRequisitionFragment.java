@@ -279,9 +279,9 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
     private void refreshRegimenValue(RnRForm rnRForm) {
         RegimenItem regimenAdult = getRegimenItem(Constants.PTV_REGIME_ADULT);
-        totalParent.setText(getValue(regimenAdult != null ? regimenAdult.getAmount() : 0));
+        totalParent.setText(getValue(regimenAdult));
         RegimenItem regimenChild = getRegimenItem(Constants.PTV_REGIME_CHILD);
-        totalChild.setText(getValue(regimenChild != null ? regimenChild.getAmount() : 0));
+        totalChild.setText(getValue(regimenChild));
     }
 
     private boolean completeRegimen() {
@@ -296,8 +296,13 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         return true;
     }
 
-    private String getValue(Long vaule) {
-        return vaule == null ? "" : String.valueOf(vaule);
+    private String getValue(RegimenItem item) {
+        String returnValue = "";
+        if (item != null) {
+            Long amount = item.getAmount();
+            returnValue = amount == null ? "" : String.valueOf(amount);
+        }
+        return returnValue;
     }
 
     @Override
