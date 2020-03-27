@@ -54,6 +54,7 @@ import rx.functions.Action1;
 
 public class ALRequisitionFragment extends BaseReportFragment implements ALRequisitionPresenter.ALRequisitionView {
 
+    private static final String TAG = ALRequisitionFragment.class.getSimpleName();
     private long formId;
     protected View containerView;
     private Date periodEndDate;
@@ -119,6 +120,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
         if (isSavedInstanceState && presenter.getRnRForm() != null) {
             presenter.updateFormUI();
         } else {
+            presenter.correctDirtyData(TAG);
             presenter.loadData(formId, periodEndDate);
         }
     }

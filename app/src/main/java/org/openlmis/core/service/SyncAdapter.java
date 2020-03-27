@@ -53,6 +53,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
 
+    @Inject
+    DirtyDataManager dirtyDataManager;
+
     Context context;
 
     public SyncAdapter(Context context, boolean autoInitialize) {
@@ -69,6 +72,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
         Log.d(TAG, "===> Syncing Data to server");
+        if (extras != null && extras.getBoolean("isUserTriggered")) {
+            //TODO
+            dirtyDataManager.correctData();
+        }
         upgradeManager.triggerUpgrade();
         triggerSync();
     }

@@ -63,6 +63,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 public class MMIARequisitionFragment extends BaseReportFragment implements MMIARequisitionPresenter.MMIARequisitionView {
+    private static final String TAG = MMIARequisitionFragment.class.getSimpleName();
     @InjectView(R.id.rnr_form_list)
     protected MMIARnrForm rnrFormList;
 
@@ -150,6 +151,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         if (isSavedInstanceState && presenter.getRnRForm() != null) {
             presenter.updateFormUI();
         } else {
+            presenter.correctDirtyData(TAG);
             presenter.loadData(formId, periodEndDate);
         }
     }

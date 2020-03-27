@@ -96,7 +96,7 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
             public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
                 try {
                     saveForm();
-                    syncService.requestSyncImmediately();
+                    syncService.requestSyncImmediately(false);
                     subscriber.onNext(viewModel);
                     subscriber.onCompleted();
                 } catch (Exception e) {

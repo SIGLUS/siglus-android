@@ -98,6 +98,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     @Inject
     private StockMovementRepository stockMovementRepository;
 
+
     public VIARequisitionPresenter() {
         requisitionFormItemViewModels = new ArrayList<>();
         viaKitsViewModel = new ViaKitsViewModel();
@@ -123,7 +124,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    new LMISException(e,"VIARequisitionPresenter.loadEmergencyData").reportToFabric();
+                    new LMISException(e, "VIARequisitionPresenter.loadEmergencyData").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -196,7 +197,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                 }
             }
         } catch (LMISException e) {
-            new LMISException(e,"VIARequisitionPresenter.generateAdjustInfo").reportToFabric();
+            new LMISException(e, "VIARequisitionPresenter.generateAdjustInfo").reportToFabric();
         }
         return list;
     }
@@ -219,7 +220,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    new LMISException(e,"VIARequisitionPresenter.getRnrFormObservable").reportToFabric();
+                    new LMISException(e, "VIARequisitionPresenter.getRnrFormObservable").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -242,7 +243,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             List<RnrFormItem> additionalProducts = generateRnrItemsForAdditionalProducts(addedDrugInVIAs, periodBegin);
             requisitionFormItemViewModels.addAll(transformDataItemsToViewModels(additionalProducts));
         } catch (LMISException e) {
-            new LMISException(e,"VIARequisitionPresenter.populateAddi").reportToFabric();
+            new LMISException(e, "VIARequisitionPresenter.populateAddi").reportToFabric();
         }
     }
 
@@ -274,7 +275,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                         populateRnrItemWithQuantities(rnrFormItem, periodBegin, periodEndDate);
                     }
                 } catch (LMISException e) {
-                    new LMISException(e,"VIARequisitionPresenter.generateRnrItems").reportToFabric();
+                    new LMISException(e, "VIARequisitionPresenter.generateRnrItems").reportToFabric();
                 }
                 return rnrFormItem;
             }
@@ -375,7 +376,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onNext(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    new LMISException(e,"VIARequisitionPresenter.getSaveFormObservable").reportToFabric();
+                    new LMISException(e, "VIARequisitionPresenter.getSaveFormObservable").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -414,7 +415,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    new LMISException(e,"VIARequisitionPresenter.createOrUpdateRnrForm").reportToFabric();
+                    new LMISException(e, "VIARequisitionPresenter.createOrUpdateRnrForm").reportToFabric();
                     subscriber.onError(e);
                 } finally {
                     stockService.monthlyUpdateAvgMonthlyConsumption();
@@ -432,7 +433,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                 }
             }
         } catch (LMISException e) {
-            new LMISException(e,"VIARequisitionPresenter. createStock").reportToFabric();
+            new LMISException(e, "VIARequisitionPresenter. createStock").reportToFabric();
         }
     }
 
@@ -443,7 +444,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                 try {
                     rnrFormItemRepository.deleteRnrItem(rnrFormItem);
                 } catch (LMISException e) {
-                    new LMISException(e,"VIARequisitionPresenter.removeRnrItem").reportToFabric();
+                    new LMISException(e, "VIARequisitionPresenter.removeRnrItem").reportToFabric();
                     subscriber.onError(e);
                 }
                 subscriber.onCompleted();

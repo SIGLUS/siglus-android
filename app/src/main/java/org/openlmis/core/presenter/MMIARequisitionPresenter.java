@@ -92,7 +92,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onNext(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    new LMISException(e,"MMIARequisitionPresenter.getRnrFormObservable").reportToFabric();
+                    new LMISException(e, "MMIARequisitionPresenter.getRnrFormObservable").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -140,7 +140,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                         rnRForm.getRegimenItemListWrapper().add(regimenItem);
                     }
                 } catch (LMISException e) {
-                    new LMISException(e,"MMIARequisitionPresenter.addCustomRegimenItem").reportToFabric();
+                    new LMISException(e, "MMIARequisitionPresenter.addCustomRegimenItem").reportToFabric();
                     subscriber.onError(e);
                 }
                 subscriber.onCompleted();
@@ -177,7 +177,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                     rnRForm.getRegimenItemListWrapper().remove(item);
                     regimenItemRepository.deleteRegimeItem(item);
                 } catch (LMISException e) {
-                    new LMISException(e,"MMIARequisitionPresenter.deleteRegimeItem").reportToFabric();
+                    new LMISException(e, "MMIARequisitionPresenter.deleteRegimeItem").reportToFabric();
                     subscriber.onError(e);
                 }
                 subscriber.onCompleted();
@@ -198,7 +198,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                     rnrFormRepository.createOrUpdateWithItems(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    new LMISException(e,"MMIARequisitionPresenter.getSaveFormObservable").reportToFabric();
+                    new LMISException(e, "MMIARequisitionPresenter.getSaveFormObservable").reportToFabric();
                     subscriber.onError(e);
                 }
             }

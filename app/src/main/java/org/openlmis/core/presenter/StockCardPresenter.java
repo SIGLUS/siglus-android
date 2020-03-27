@@ -18,6 +18,8 @@
 
 package org.openlmis.core.presenter;
 
+import android.util.Log;
+
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -29,6 +31,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.service.StockService;
+import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -49,6 +52,7 @@ import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Activ
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class StockCardPresenter extends Presenter {
+    private static final String TAG = StockCardPresenter.class.getSimpleName();
 
 
     private List<InventoryViewModel> inventoryViewModels;
@@ -62,6 +66,9 @@ public class StockCardPresenter extends Presenter {
     @Inject
     StockMovementRepository stockMovementRepository;
 
+    @Inject
+    DirtyDataManager dirtyDataManager;
+
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
     private StockCardListView view;
@@ -72,6 +79,38 @@ public class StockCardPresenter extends Presenter {
 
     public List<InventoryViewModel> getInventoryViewModels() {
         return inventoryViewModels;
+    }
+
+    public void correctDirtyData() {
+        Subscription subscription = correctDirtyObservable().subscribe(afterCorrectDirtyDataHandler());
+        subscriptions.add(subscription);
+    }
+
+    private Observer<Object> afterCorrectDirtyDataHandler() {
+        return new Observer<Object>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ", e);
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e(TAG, "onNext: ");
+            }
+        };
+    }
+
+    private Observable correctDirtyObservable() {
+        return Observable.create(subscriber -> {
+            dirtyDataManager.correctData();
+            subscriber.onNext(null);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public void loadStockCards(ArchiveStatus status) {
@@ -102,23 +141,23 @@ public class StockCardPresenter extends Presenter {
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-            }
+                .subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                ToastUtil.show(e.getMessage());
-                view.loaded();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        ToastUtil.show(e.getMessage());
+                        view.loaded();
+                    }
 
-            @Override
-            public void onNext(Void aVoid) {
-                view.refreshBannerText();
-                loadStockCards(Active, false);
-            }
-        });
+                    @Override
+                    public void onNext(Void aVoid) {
+                        view.refreshBannerText();
+                        loadStockCards(Active, false);
+                    }
+                });
     }
 
     public void refreshStockCardViewModelsSOH() {
@@ -264,6 +303,7 @@ public class StockCardPresenter extends Presenter {
 
     public interface StockCardListView extends BaseView {
         void refresh(List<InventoryViewModel> data);
+
         void refreshBannerText();
     }
 }

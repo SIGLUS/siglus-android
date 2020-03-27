@@ -39,9 +39,6 @@ import java.util.List;
 
 import roboguice.inject.InjectResource;
 
-import static android.content.ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY;
-import static android.content.ContentResolver.SYNC_EXTRAS_EXPEDITED;
-import static android.content.ContentResolver.SYNC_EXTRAS_MANUAL;
 import static android.content.ContentResolver.addPeriodicSync;
 import static android.content.ContentResolver.cancelSync;
 import static android.content.ContentResolver.requestSync;
@@ -96,7 +93,7 @@ public class SyncService extends Service {
         Log.d(tag, "sync service kicked off");
     }
 
-    public void requestSyncImmediately() {
+    public void requestSyncImmediately(boolean isUserTriggered) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             trainingSyncAdapter.requestSync();
         } else {
@@ -107,6 +104,7 @@ public class SyncService extends Service {
                 bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
                 bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
                 bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                bundle.putBoolean("isUserTriggered", isUserTriggered);
 
                 requestSync(account, syncContentAuthority, bundle);
             }
@@ -124,10 +122,9 @@ public class SyncService extends Service {
 
     private Bundle periodicSyncParams() {
         Bundle extras = new Bundle();
-        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
-        extras.putBoolean(SYNC_EXTRAS_EXPEDITED, false);
-        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
-        extras.putBoolean(SYNC_EXTRAS_MANUAL, false);
+        extras.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
+        extras.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
+        extras.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
         return extras;
     }
 

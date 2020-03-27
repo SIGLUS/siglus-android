@@ -66,6 +66,7 @@ import rx.functions.Action1;
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
 
 public class VIARequisitionFragment extends BaseReportFragment implements VIARequisitionView {
+    private static final String TAG = VIARequisitionFragment.class.getSimpleName();
     @InjectView(R.id.view_consultation)
     ViaReportConsultationNumberView consultationView;
 
@@ -163,6 +164,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
         if (isFromSelectEmergencyPage()) {
             presenter.loadEmergencyData(emergencyStockCards, new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         } else {
+            presenter.correctDirtyData(TAG);
             presenter.loadData(formId, periodEndDate);
         }
     }

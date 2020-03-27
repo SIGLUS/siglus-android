@@ -279,7 +279,7 @@ public class HomeActivity extends BaseActivity {
 
     public void syncData() {
         Log.d("HomeActivity", "requesting immediate sync");
-        syncService.requestSyncImmediately();
+        syncService.requestSyncImmediately(true);
     }
 
     public void onClickMMIAHistory(View view) {

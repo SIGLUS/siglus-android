@@ -148,6 +148,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     }
 
     protected void loadStockCards() {
+        presenter.correctDirtyData();
         presenter.loadStockCards(Active);
     }
 
