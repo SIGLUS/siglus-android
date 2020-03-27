@@ -24,8 +24,10 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -57,6 +59,8 @@ public class StockCardPresenter extends Presenter {
     ProductRepository productRepository;
     @Inject
     StockService stockService;
+    @Inject
+    StockMovementRepository stockMovementRepository;
 
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
@@ -137,7 +141,7 @@ public class StockCardPresenter extends Presenter {
         try {
             stockRepository.updateStockCardWithProduct(stockCard);
         } catch (LMISException e) {
-            new LMISException(e,"StockCardPresenter.archiveBackStockCard").reportToFabric();
+            new LMISException(e, "StockCardPresenter.archiveBackStockCard").reportToFabric();
         }
     }
 
@@ -158,6 +162,17 @@ public class StockCardPresenter extends Presenter {
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    private void adjustmentMovement(List<StockCard> stockCardList) {
+        for (StockCard stockCard : stockCardList) {
+            try {
+                List<StockMovementItem> movementItemList = stockMovementRepository.listLastTwoStockMovements(stockCard.getId());
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private boolean showInOverview(StockCard stockCard) {
@@ -225,7 +240,7 @@ public class StockCardPresenter extends Presenter {
                         stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
                     }
                 } catch (LMISException e) {
-                    new LMISException(e,"createStockCardsIfNotExist").reportToFabric();
+                    new LMISException(e, "createStockCardsIfNotExist").reportToFabric();
                 }
                 return stockCard;
             }

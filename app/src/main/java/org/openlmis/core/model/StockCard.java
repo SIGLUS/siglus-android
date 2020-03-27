@@ -29,6 +29,7 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -178,6 +179,14 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
                 return lotOnHand.getQuantityOnHand() > 0;
             }
         }).toList();
+    }
+
+    public List<LotOnHand> getLotOnHandListWithEmpty() {
+        DateTime now = DateTime.now();
+        return FluentIterable.from(getLotOnHandListWrapper())
+                .filter(lotOnHand -> now.isBefore(lotOnHand.getLot().getExpirationDate().getTime())
+                        && lotOnHand.getQuantityOnHand() >= 0)
+                .toList();
     }
 
     @Override

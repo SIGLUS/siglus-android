@@ -252,4 +252,12 @@ public class StockMovementRepository {
             }
         });
     }
+
+    public List<StockMovementItem> listLastTwoStockMovements(final long stockCardId) throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, dao -> Lists.reverse(dao.queryBuilder().limit(2L)
+                .orderBy("movementDate", false)
+                .orderBy("createdTime", false)
+                .orderBy("id", false)
+                .where().eq("stockCard_id", stockCardId).query()));
+    }
 }
