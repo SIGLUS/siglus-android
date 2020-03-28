@@ -20,11 +20,13 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
@@ -172,6 +174,30 @@ public class ProgramRepository {
                             .or().eq("programCode", programCode).query();
                 }
             });
+    }
+
+    public void deleteProgramDirtyData(List<String> productCodeList){
+        String deleteProgramDataItems="DELETE FROM program_data_items "
+                + "WHERE form_id=(SELECT id FROM program_data_forms WHERE status='DRAFT_MISSED');";
+        String deleteProgramDataFromSignatures="DELETE FROM program_data_form_signatures "
+                + "WHERE form_id=(SELECT id FROM program_data_forms WHERE status='DRAFT_MISSED');";
+        String deleteProgramDataBasicItems="DELETE FROM program_data_Basic_items";
+        String deleteProgramDataForms="DELETE FROM program_data_forms WHERE status='DRAFT_MISSED';";
+        Cursor programId=null;
+        for (String productCode:productCodeList) {
+            String getProgramIdByProductCode="SELECT id FROM programs "
+                    +"WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode=?);";
+            programId=LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramIdByProductCode,new String[]{productCode});
+            if(programId.getInt(0)==11){
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataItems);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataFromSignatures);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataBasicItems);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataForms);
+            }
+        }
+        if(!programId.isClosed()){
+            programId.close();
+        }
     }
 
 }

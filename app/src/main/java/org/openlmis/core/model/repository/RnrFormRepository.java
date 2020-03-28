@@ -18,6 +18,7 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
@@ -516,5 +517,39 @@ public class RnrFormRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRegimeItems);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteSignature);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRnrForms);
+    }
+
+    public void deleteRnrFormDirtyData(List<String> productCodeList){
+        Cursor result=null;
+        for (String productCode:productCodeList) {
+            String getRnrFormDataByStatusAndProgramId="SELECT * FROM rnr_forms "
+                    +"where status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                    +" programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode=?));";
+            result=LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getRnrFormDataByStatusAndProgramId,new String[]{productCode});
+            if(result!=null){
+                String deleteRnrFormItem="DELETE FROM rnr_form_items "
+                        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='"+productCode+"'));";
+                String deleteRnrFormSignature="DELETE FROM rnr_form_signature "
+                        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='"+productCode+"'));";
+                String deleteRnrBaseInfoItems="DELETE FROM rnr_baseInfo_items "
+                        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='"+productCode+"'));";
+                String deleteRnrForm="DELETE FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='"+productCode+"'));";
+
+                if(result.getInt(4)==1){
+                    regimenRepository.deleteRegimeDirtyData(productCode);
+                }
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrFormItem);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrFormSignature);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrBaseInfoItems);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrForm);
+            }
+        }
+        if(!result.isClosed()){
+            result.close();
+        }
     }
 }
