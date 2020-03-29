@@ -1,7 +1,12 @@
 package org.openlmis.core.presenter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.util.Pair;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -10,18 +15,22 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
+import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.activity.RnRFormListActivity;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
 import java.util.List;
 
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,11 +47,49 @@ public class SelectPeriodPresenter extends Presenter {
     private RequisitionPeriodService requisitionPeriodService;
 
     private SelectPeriodView view;
+    @Inject
+    Context context;
+    @Inject
+    DirtyDataManager dirtyDataManager;
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
         view = (SelectPeriodView) v;
     }
+
+    public Observable<Pair<Constants.Program, List<StockCard>>> correctDirtyObservable(Constants.Program from) {
+        return Observable.create((Observable.OnSubscribe<Pair<Constants.Program, List<StockCard>>>) subscriber -> {
+            List<StockCard> deletedStockCards = dirtyDataManager.correctData();
+            if (!CollectionUtils.isEmpty(deletedStockCards)) {
+                subscriber.onNext(new Pair<>(from, deletedStockCards));
+            } else {
+                subscriber.onCompleted();
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    protected Observer<Pair<Constants.Program, List<StockCard>>> afterCorrectDirtyDataHandler() {
+        return new Observer<Pair<Constants.Program, List<StockCard>>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(Pair<Constants.Program, List<StockCard>> deletedProgramStocks) {
+                List<StockCard> stockCards = deletedProgramStocks.second;
+                Log.e(deletedProgramStocks.first.toString(), "onNext: " + (stockCards != null ? stockCards.get(0) : ""));
+                Log.e(deletedProgramStocks.first.toString(), "onNext: " + deletedProgramStocks.second.size());
+                Intent intent = RnRFormListActivity.getIntentToMe(context, deletedProgramStocks.first);
+                context.startActivity(intent);
+            }
+        };
+    }
+
 
     public void loadData(final String programCode, Period period) {
         view.loading();
@@ -66,7 +113,7 @@ public class SelectPeriodPresenter extends Presenter {
                     subscriber.onNext(selectInventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    new LMISException(e,"SelectPeriodPresenter.loadData").reportToFabric();
+                    new LMISException(e, "SelectPeriodPresenter.loadData").reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -83,7 +130,7 @@ public class SelectPeriodPresenter extends Presenter {
                         periodInSchedule.getEnd().getMonthOfYear(),
                         Period.INVENTORY_BEGIN_DAY)
                 // Hours, Min, Seconds
-                .withTime(23,59,59,0);
+                .withTime(23, 59, 59, 0);
         for (int i = 0; i < Period.INVENTORY_END_DAY_NEXT - Period.INVENTORY_BEGIN_DAY; i++) {
             Inventory inventory = new Inventory();
             inventory.setCreatedAt(inventoryDate.toDate());

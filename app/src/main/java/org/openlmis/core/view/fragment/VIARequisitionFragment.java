@@ -164,7 +164,6 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
         if (isFromSelectEmergencyPage()) {
             presenter.loadEmergencyData(emergencyStockCards, new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         } else {
-            presenter.correctDirtyData(TAG);
             presenter.loadData(formId, periodEndDate);
         }
     }

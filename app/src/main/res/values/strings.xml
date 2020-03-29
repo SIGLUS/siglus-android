@@ -559,4 +559,6 @@
     <string name="upgrade_download_Failed">Download Failed</string>
     <string name="upgrade_download_try">Please try later</string>
     <string name="upgrade_download_click_install">Click to install</string>
+
+    <string name="dirty_data_correct_warning">There is a stock calculation error on product %s, the system just delete the dirty data. please using receive/physical inventory/adjustments to re-record the product stock.</string>
 </resources>

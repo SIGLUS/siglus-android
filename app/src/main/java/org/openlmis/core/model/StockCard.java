@@ -181,11 +181,10 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
         }).toList();
     }
 
-    public List<LotOnHand> getLotOnHandListWithEmpty() {
+    public List<LotOnHand> getNoneExpiredLotOnHandList() {
         DateTime now = DateTime.now();
         return FluentIterable.from(getLotOnHandListWrapper())
-                .filter(lotOnHand -> now.isBefore(lotOnHand.getLot().getExpirationDate().getTime())
-                        && lotOnHand.getQuantityOnHand() >= 0)
+                .filter(lotOnHand -> now.isBefore(lotOnHand.getLot().getExpirationDate().getTime()))
                 .toList();
     }
 

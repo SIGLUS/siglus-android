@@ -55,7 +55,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                 if (internet) {
                     Log.d(TAG, "network connected, start sync service...");
                     LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkConnected);
-                    syncService.requestSyncImmediately(false);
+                    syncService.requestSyncImmediatelyByTask();
                     syncService.kickOff();
                 } else {
                     Log.d(TAG, "there is no internet connection in network receiver");

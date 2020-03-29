@@ -151,7 +151,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         if (isSavedInstanceState && presenter.getRnRForm() != null) {
             presenter.updateFormUI();
         } else {
-            presenter.correctDirtyData(TAG);
             presenter.loadData(formId, periodEndDate);
         }
     }

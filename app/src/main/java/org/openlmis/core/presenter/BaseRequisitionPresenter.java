@@ -30,7 +30,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.InternetCheck;
-import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
@@ -39,7 +38,6 @@ import java.util.Date;
 
 import lombok.Getter;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -68,8 +66,6 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
     @Inject
     InternetCheck internetCheck;
-    @Inject
-    DirtyDataManager dirtyDataManager;
 
     public BaseRequisitionPresenter() {
         rnrFormRepository = initRnrFormRepository();
@@ -126,10 +122,6 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
             return draftRequisition;
         }
         return rnrFormRepository.initNormalRnrForm(periodEndDate);
-    }
-
-    public Boolean isHistoryForm(long formId) {
-        return formId != 0;
     }
 
     public void submitRequisition() {
@@ -197,44 +189,13 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
             @Override
             public void launchResponse(Boolean internet) {
                 if (internet) {
-                    syncService.requestSyncImmediately(false);
+                    syncService.requestSyncImmediatelyByTask();
                 } else {
                     Log.d("Internet", "No hay conexion");
                 }
             }
         };
     }
-
-    public void correctDirtyData(String from) {
-        Subscription subscription = correctDirtyObservable(from).subscribe(afterCorrectDirtyDataHandler());
-        subscriptions.add(subscription);
-    }
-
-    protected Observable<String> correctDirtyObservable(String from) {
-        return Observable.create((Observable.OnSubscribe<String>) subscriber -> {
-            dirtyDataManager.correctData();
-            subscriber.onNext(from);
-            subscriber.onCompleted();
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    protected Observer<String> afterCorrectDirtyDataHandler() {
-        return new Observer<String>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(String from) {
-                Log.e(from, "onNext: ");
-            }
-        };
-    }
-
 
     protected Observable<Void> createOrUpdateRnrForm() {
         return Observable.create(new Observable.OnSubscribe<Void>() {

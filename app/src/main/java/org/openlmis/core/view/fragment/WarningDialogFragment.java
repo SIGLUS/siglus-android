@@ -23,6 +23,9 @@ public class WarningDialogFragment extends DialogFragment {
     private static final String PARAM_MESSAGE_RES = "messageResId";
     private static final String PARAM_POSITIVE_TEXT_RES = "positiveTextResId";
     private static final String PARAM_NEGATIVE_TEXT_RES = "negativeTextResId";
+    private static final String PARAM_STRING_TYPE = "stringType";
+    private static final String PARAM_FORMAT_STRING = "typeFormatString";
+    private static final String PARAM_INT_STRING = "typeIntString";
 
     @Setter
     private DialogDelegate delegate;
@@ -33,6 +36,18 @@ public class WarningDialogFragment extends DialogFragment {
         bundle.putInt(PARAM_MESSAGE_RES, messageResId);
         bundle.putInt(PARAM_POSITIVE_TEXT_RES, positiveTextResId);
         bundle.putInt(PARAM_NEGATIVE_TEXT_RES, negativeTextResId);
+        bundle.putString(PARAM_STRING_TYPE, PARAM_INT_STRING);
+        dialog.setArguments(bundle);
+        return dialog;
+    }
+
+    public static WarningDialogFragment newInstance(String messageResId, String positiveTextResId, String negativeTextResId) {
+        WarningDialogFragment dialog = new WarningDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_MESSAGE_RES, messageResId);
+        bundle.putString(PARAM_POSITIVE_TEXT_RES, positiveTextResId);
+        bundle.putString(PARAM_NEGATIVE_TEXT_RES, negativeTextResId);
+        bundle.putString(PARAM_STRING_TYPE, PARAM_FORMAT_STRING);
         dialog.setArguments(bundle);
         return dialog;
     }
@@ -60,10 +75,6 @@ public class WarningDialogFragment extends DialogFragment {
     }
 
     private void initUI(View contentView) {
-        int messageResId = getArguments().getInt(PARAM_MESSAGE_RES);
-        int positiveResId = getArguments().getInt(PARAM_POSITIVE_TEXT_RES);
-        int negativeResId = getArguments().getInt(PARAM_NEGATIVE_TEXT_RES);
-
         TextView tvMessage = (TextView) contentView.findViewById(R.id.dialog_message);
         Button btnNegative = (Button) contentView.findViewById(R.id.btn_cancel);
         Button btnPositive = (Button) contentView.findViewById(R.id.btn_del);
@@ -72,10 +83,22 @@ public class WarningDialogFragment extends DialogFragment {
         btnNegative.setOnClickListener(singleClickButtonListener);
         btnPositive.setOnClickListener(singleClickButtonListener);
 
-        tvMessage.setText(messageResId);
-        btnPositive.setText(positiveResId);
-        btnNegative.setText(negativeResId);
+        if (isStringArgument()) {
+            tvMessage.setText(getArguments().getString(PARAM_MESSAGE_RES));
+            btnPositive.setText(getArguments().getString(PARAM_POSITIVE_TEXT_RES));
+            btnNegative.setText(getArguments().getString(PARAM_NEGATIVE_TEXT_RES));
+        } else {
+            tvMessage.setText(getArguments().getInt(PARAM_MESSAGE_RES));
+            btnPositive.setText(getArguments().getInt(PARAM_POSITIVE_TEXT_RES));
+            btnNegative.setText(getArguments().getInt(PARAM_NEGATIVE_TEXT_RES));
+        }
+
     }
+
+    private boolean isStringArgument() {
+        return getArguments().getString(PARAM_STRING_TYPE) == PARAM_FORMAT_STRING;
+    }
+
 
     private void setDialogAttributes() {
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();

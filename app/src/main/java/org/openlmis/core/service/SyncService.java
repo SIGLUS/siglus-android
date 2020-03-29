@@ -93,7 +93,15 @@ public class SyncService extends Service {
         Log.d(tag, "sync service kicked off");
     }
 
-    public void requestSyncImmediately(boolean isUserTriggered) {
+    public void requestSyncImmediatelyFromUserTrigger() {
+        requestSyncImmediately(true);
+    }
+
+    public void requestSyncImmediatelyByTask() {
+        requestSyncImmediately(false);
+    }
+
+    private void requestSyncImmediately(boolean isUserTriggered) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             trainingSyncAdapter.requestSync();
         } else {

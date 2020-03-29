@@ -123,7 +123,6 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         if (isSavedInstanceState && presenter.getRnRForm() != null) {
             presenter.updateFormUI();
         } else {
-            presenter.correctDirtyData(TAG);
             presenter.loadData(formId, periodEndDate);
         }
     }
@@ -260,7 +259,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         if (!presenter.ptvReportViewModel.isEmpty()) {
             ptvTable.initView(presenter.ptvReportViewModel);
             ptvTestLeftHeader.initView(presenter.ptvReportViewModel);
-            refreshRegimenValue(rnRForm);
+            refreshRegimenValue();
             refreshUI(rnRForm);
         } else {
             scrollView.setVisibility(View.GONE);
@@ -279,7 +278,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         llTableHeader.getLayoutParams().width = viewWidth;
     }
 
-    private void refreshRegimenValue(RnRForm rnRForm) {
+    private void refreshRegimenValue() {
         RegimenItem regimenAdult = getRegimenItem(Constants.PTV_REGIME_ADULT);
         totalParent.setText(getValue(regimenAdult));
         RegimenItem regimenChild = getRegimenItem(Constants.PTV_REGIME_CHILD);

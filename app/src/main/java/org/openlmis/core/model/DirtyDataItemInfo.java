@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @DatabaseTable(tableName = "dirty_data")
 public class DirtyDataItemInfo extends BaseModel {
     @DatabaseField
-    String json_data;
+    String jsonData;
 
     @DatabaseField
-    boolean sync_status;
+    boolean synced = false;
 
     @DatabaseField
     String productCode;

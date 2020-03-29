@@ -120,7 +120,6 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
         if (isSavedInstanceState && presenter.getRnRForm() != null) {
             presenter.updateFormUI();
         } else {
-            presenter.correctDirtyData(TAG);
             presenter.loadData(formId, periodEndDate);
         }
     }

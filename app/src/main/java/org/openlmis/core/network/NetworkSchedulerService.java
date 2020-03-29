@@ -58,7 +58,7 @@ public class NetworkSchedulerService extends JobService {
 
     private void syncImmediately() {
         LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkConnected);
-        syncService.requestSyncImmediately(false);
+        syncService.requestSyncImmediatelyByTask();
         syncService.kickOff();
     }
 
