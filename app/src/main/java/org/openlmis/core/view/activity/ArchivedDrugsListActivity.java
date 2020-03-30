@@ -92,4 +92,9 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
     @Override
     public void refreshBannerText() {
     }
+
+    @Override
+    public void showWarning(List<StockCard> stockCardList) {
+
+    }
 }

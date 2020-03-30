@@ -19,7 +19,9 @@
 package org.openlmis.core.presenter;
 
 import android.util.Log;
+import android.util.Pair;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -81,13 +83,8 @@ public class StockCardPresenter extends Presenter {
         return inventoryViewModels;
     }
 
-    public void correctDirtyData() {
-        Subscription subscription = correctDirtyObservable().subscribe(afterCorrectDirtyDataHandler());
-        subscriptions.add(subscription);
-    }
-
-    private Observer<Object> afterCorrectDirtyDataHandler() {
-        return new Observer<Object>() {
+    private Observer<Pair<ArchiveStatus, List<StockCard>>> afterCorrectDirtyDataHandler() {
+        return new Observer<Pair<ArchiveStatus, List<StockCard>>>() {
             @Override
             public void onCompleted() {
                 Log.e(TAG, "onCompleted");
@@ -99,16 +96,24 @@ public class StockCardPresenter extends Presenter {
             }
 
             @Override
-            public void onNext(Object o) {
+            public void onNext(Pair<ArchiveStatus, List<StockCard>> statusListPair) {
+                ArchiveStatus status = statusListPair.first;
+                List<StockCard> deletedStocks = statusListPair.second;
                 Log.e(TAG, "onNext: ");
+                if (!CollectionUtils.isEmpty(deletedStocks)) {
+                    view.showWarning(deletedStocks);
+                } else {
+                    Subscription subscription = getLoadStockCardsObservable(status).subscribe(afterLoadHandler);
+                    subscriptions.add(subscription);
+                }
             }
         };
     }
 
-    private Observable correctDirtyObservable() {
+    public Observable correctDirtyObservable(ArchiveStatus status) {
         return Observable.create(subscriber -> {
-            dirtyDataManager.correctData();
-            subscriber.onNext(null);
+            List<StockCard> deletedStockCards = dirtyDataManager.correctData();
+            subscriber.onNext(new Pair<>(status, deletedStockCards));
             subscriber.onCompleted();
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
@@ -121,7 +126,8 @@ public class StockCardPresenter extends Presenter {
         if (showLoading) {
             view.loading();
         }
-        Subscription subscription = getLoadStockCardsObservable(status).subscribe(afterLoadHandler);
+
+        Subscription subscription = correctDirtyObservable(status).subscribe(afterCorrectDirtyDataHandler());
         subscriptions.add(subscription);
     }
 
@@ -305,5 +311,7 @@ public class StockCardPresenter extends Presenter {
         void refresh(List<InventoryViewModel> data);
 
         void refreshBannerText();
+
+        void showWarning(List<StockCard> stockCardList);
     }
 }

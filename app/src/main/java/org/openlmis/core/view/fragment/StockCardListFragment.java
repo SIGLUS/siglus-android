@@ -21,6 +21,7 @@ package org.openlmis.core.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,16 +35,22 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.activity.HomeActivity;
 import org.openlmis.core.view.activity.StockMovementsWithLotActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
+import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +60,7 @@ import roboguice.inject.InjectView;
 import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
 
 public class StockCardListFragment extends BaseFragment implements StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
+    private static final String TAG = StockCardListFragment.class.getSimpleName();
 
     @InjectView(R.id.sort_spinner)
     Spinner sortSpinner;
@@ -75,6 +83,8 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     StockCardListAdapter mAdapter;
 
     private int currentPosition;
+    @Inject
+    private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     @Override
     public Presenter initPresenter() {
@@ -148,13 +158,41 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     }
 
     protected void loadStockCards() {
-        presenter.correctDirtyData();
         presenter.loadStockCards(Active);
+    }
+
+    private String getDeletedProductCodeList(List<StockCard> stockCards) {
+        return FluentIterable.from(stockCards).limit(3).transform(new Function<StockCard, String>() {
+            @javax.annotation.Nullable
+            @Override
+            public String apply(@javax.annotation.Nullable StockCard stockCard) {
+                return stockCard.getProduct().getCode();
+            }
+        }).toString();
+    }
+
+    @NonNull
+    private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate() {
+        return () -> {
+            Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
+            LMISApp.getContext().startActivity(intent);
+            getActivity().finish();
+        };
     }
 
     @Override
     public void refreshBannerText() {
         productsUpdateBanner.refreshBannerText();
+    }
+
+    @Override
+    public void showWarning(List<StockCard> stockCardList) {
+        WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
+                .build(buildWarningDialogFragmentDelegate(),
+                        getString(R.string.dirty_data_correct_warning, getDeletedProductCodeList(stockCardList)),
+                        getString(R.string.btn_del),
+                        getString(R.string.dialog_cancel));
+        warningDialogFragment.show(getFragmentManager(), "deleteProductWarningDialogFragment");
     }
 
     private void initRecycleView() {
