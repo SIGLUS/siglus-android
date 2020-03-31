@@ -521,8 +521,6 @@ public class RnrFormRepository {
 
     public void deleteRnrFormDirtyData(List<String> productCodeList) {
         Cursor getRnrFormDataCursor = null;
-        Cursor getParentProgramCodeCursor = null;
-        Cursor getProgramCodeCursor = null;
         for (String productCode : productCodeList) {
             String getRnrFormDataByStatusAndProgramId = "SELECT * FROM rnr_forms "
                     + "where status='DRAFT_MISSED' AND program_id in (SELECT id FROM"
@@ -542,17 +540,11 @@ public class RnrFormRepository {
                         + "programs WHERE programCode in (SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
 
                 while (getRnrFormDataCursor.moveToNext()) {
-                    String getParentProgramCode = "SELECT parentCode FROM programs WHERE program_id='"
-                            + getRnrFormDataCursor.getInt(getRnrFormDataCursor.getColumnIndexOrThrow("program_id")) + "';";
-                    String getProgramCode = "SELECT programCode FROM programs WHERE program_id='"
-                            + getRnrFormDataCursor.getInt(getRnrFormDataCursor.getColumnIndexOrThrow("program_id")) + "';";
-                    getParentProgramCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getParentProgramCode, null);
-                    getProgramCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramCode, null);
-
-                    if (getParentProgramCodeCursor != null && getParentProgramCodeCursor.getString(getParentProgramCodeCursor.getColumnIndexOrThrow("parentCode")).equals(Constants.MMIA_PROGRAM_CODE)) {
+                    int programId = getRnrFormDataCursor.getInt(getRnrFormDataCursor.getColumnIndexOrThrow("program_id"));
+                    if (getParentProgramCodeCursor(programId) != null && getParentProgramCodeCursor(programId).getString(getParentProgramCodeCursor(programId).getColumnIndexOrThrow("parentCode")).equals(Constants.MMIA_PROGRAM_CODE)) {
                         regimenRepository.deleteRegimeDirtyData(getRnrFormDataCursor.getInt(getRnrFormDataCursor.getColumnIndexOrThrow("id")));
                     }
-                    if (getProgramCodeCursor != null && getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.MMIA_PROGRAM_CODE)) {
+                    if (getProgramCodeCursor(programId) != null && getProgramCodeCursor(programId).getString(getProgramCodeCursor(programId).getColumnIndexOrThrow("programCode")).equals(Constants.MMIA_PROGRAM_CODE)) {
                         regimenRepository.deleteRegimeDirtyData(getRnrFormDataCursor.getInt(getRnrFormDataCursor.getColumnIndexOrThrow("id")));
                     }
                 }
@@ -566,11 +558,33 @@ public class RnrFormRepository {
         if (!getRnrFormDataCursor.isClosed()) {
             getRnrFormDataCursor.close();
         }
+    }
+
+    private Cursor getParentProgramCodeCursor(int programId) {
+        String getParentProgramCode = "SELECT parentCode FROM programs WHERE program_id='"
+                + programId + "';";
+        Cursor getParentProgramCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getParentProgramCode, null);
+
+        if (getParentProgramCodeCursor != null) {
+            return getParentProgramCodeCursor;
+        }
         if (!getParentProgramCodeCursor.isClosed()) {
             getParentProgramCodeCursor.close();
+        }
+        return null;
+    }
+
+    private Cursor getProgramCodeCursor(int programId) {
+        String getProgramCode = "SELECT programCode FROM programs WHERE program_id='"
+                + programId + "';";
+        Cursor getProgramCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramCode, null);
+
+        if (getProgramCodeCursor != null) {
+            return getProgramCodeCursor;
         }
         if (!getProgramCodeCursor.isClosed()) {
             getProgramCodeCursor.close();
         }
+        return null;
     }
 }

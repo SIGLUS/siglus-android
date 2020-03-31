@@ -11,6 +11,8 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
+import java.util.List;
+
 
 public class DirtyDataRepository {
 
