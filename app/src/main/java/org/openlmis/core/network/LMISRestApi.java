@@ -20,6 +20,7 @@
 package org.openlmis.core.network;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
@@ -115,4 +116,7 @@ public interface LMISRestApi {
 
     @GET("/rest-api/re-sync")
     Void recordReSyncActionG() throws LMISException;
+
+    @POST("/rest-api/syndeletedData/{facilityId}")
+    boolean syncUpDeletedData(@Path("facilityId") Long facilityId, DirtyDataItemInfo dataItemInfo) throws LMISException;
 }

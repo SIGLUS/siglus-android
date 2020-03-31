@@ -31,12 +31,14 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
+import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.CmmRepository;
+import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -94,6 +96,9 @@ public class SyncUpManager {
 
     @Inject
     private SyncErrorsRepository syncErrorsRepository;
+
+    @Inject
+    private DirtyDataRepository dirtyDataRepository;
 
     protected LMISRestApi lmisRestApi;
 
@@ -354,6 +359,28 @@ public class SyncUpManager {
             }
         } catch (LMISException e) {
             new LMISException(e, "SyncUpManager.fakeSyncUpCmms").reportToFabric();
+        }
+    }
+
+    public boolean syncDeleteMovement() {
+        List<DirtyDataItemInfo> itemInfos = dirtyDataRepository.listunSyced();
+        String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+        if (!CollectionUtils.isEmpty(itemInfos)) {
+            Observable.from(itemInfos).filter(dirtyDataItemInfo -> {
+                try {
+                    lmisRestApi.syncUpDeletedData(Long.parseLong(facilityId), dirtyDataItemInfo);
+                    return true;
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }).subscribe(dirtyDataItemInfo -> {
+                dirtyDataItemInfo.setSynced(true);
+                dirtyDataRepository.createOrUpdateWithItem(dirtyDataItemInfo);
+            });
+            return from(itemInfos).allMatch(item -> item.isSynced());
+        } else {
+            return true;
         }
     }
 

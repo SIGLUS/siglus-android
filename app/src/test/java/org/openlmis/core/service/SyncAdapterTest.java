@@ -43,6 +43,7 @@ public class SyncAdapterTest {
         sharedPreferenceMgr.getPreference().edit().clear();
         UserInfoMgr.getInstance().setUser(new User());
         LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime());
+        when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
     }
 
     @Test

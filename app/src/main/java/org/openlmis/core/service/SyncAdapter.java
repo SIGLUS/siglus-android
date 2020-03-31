@@ -83,7 +83,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void triggerSync() {
         sendSyncStartBroadcast();
         syncDownManager.syncDownServerData();
+        boolean isSyncDeleted = syncUpManager.syncDeleteMovement();
+        if (isSyncDeleted) {
+            syncOtherData();
+        }
+    }
 
+    private void syncOtherData() {
         boolean isSyncRnrSuccessful = syncUpManager.syncRnr();
         if (isSyncRnrSuccessful) {
             sharedPreferenceMgr.setRnrLastSyncTime();
