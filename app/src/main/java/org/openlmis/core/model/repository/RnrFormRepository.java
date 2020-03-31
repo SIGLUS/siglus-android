@@ -519,27 +519,30 @@ public class RnrFormRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRnrForms);
     }
 
-    public void deleteRnrFormDirtyData(List<String> productCodeList){
-        Cursor result=null;
-        for (String productCode:productCodeList) {
-            String getRnrFormDataByStatusAndProgramId="SELECT * FROM rnr_forms "
-                    +"where status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
-                    +" programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode=?));";
-            result=LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getRnrFormDataByStatusAndProgramId,new String[]{productCode});
-            if(result!=null){
-                String deleteRnrFormItem="DELETE FROM rnr_form_items "
+    public void deleteRnrFormDirtyData(List<String> productCodeList) {
+        Cursor cursor1 = null;
+        Cursor cursor2 = null;
+        for (String productCode : productCodeList) {
+            String getRnrFormDataByStatusAndProgramId = "SELECT * FROM rnr_forms "
+                    + "where status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                    + " programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+            String getProgramByProductCode = "(SELECT * FROM product_programs WHERE productCode='" + productCode + "'";
+            cursor1 = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getRnrFormDataByStatusAndProgramId, null);
+            cursor2 = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramByProductCode, null);
+            if (cursor1 != null) {
+                String deleteRnrFormItem = "DELETE FROM rnr_form_items "
                         + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
-                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='"+productCode+"'));";
-                String deleteRnrFormSignature="DELETE FROM rnr_form_signature "
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+                String deleteRnrFormSignature = "DELETE FROM rnr_form_signature "
                         + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
-                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='"+productCode+"'));";
-                String deleteRnrBaseInfoItems="DELETE FROM rnr_baseInfo_items "
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+                String deleteRnrBaseInfoItems = "DELETE FROM rnr_baseInfo_items "
                         + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
-                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='"+productCode+"'));";
-                String deleteRnrForm="DELETE FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
-                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='"+productCode+"'));";
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+                String deleteRnrForm = "DELETE FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
 
-                if(result.getInt(4)==1){
+                if (cursor2.getString(cursor2.getColumnIndexOrThrow("programCode")).equals(Constants.MMIA_PROGRAM_CODE)) {
                     regimenRepository.deleteRegimeDirtyData(productCode);
                 }
                 LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrFormItem);
@@ -548,8 +551,23 @@ public class RnrFormRepository {
                 LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrForm);
             }
         }
-        if(!result.isClosed()){
-            result.close();
+        if (!cursor1.isClosed()) {
+            cursor1.close();
         }
+        if (!cursor2.isClosed()) {
+            cursor2.close();
+        }
+    }
+
+    private List<ProductProgram> getProgramByProductCode(final String productCode) throws LMISException {
+        return dbUtil.withDao(ProductProgram.class, new DbUtil.Operation<ProductProgram, List<ProductProgram>>() {
+            @Override
+            public List<ProductProgram> operate(Dao<ProductProgram, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder()
+                        .where()
+                        .eq("productCode",productCode)
+                        .query();
+            }
+        });
     }
 }

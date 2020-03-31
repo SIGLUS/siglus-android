@@ -60,10 +60,11 @@ public class CmmRepository {
         }).toList();
     }
 
-    public void ResetCmm(List<String> productCodeList){
-        for (String productCode:productCodeList) {
-            String resetCmmValueAndSynced="UPDATE cmm SET cmmValue=0,synced=0 "+
-                    "WHERE stockCard_id=(SELECT stockCard_id FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' ));";
+    public void resetCmm(List<String> productCodeList) {
+        for (String productCode : productCodeList) {
+            String resetCmmValueAndSynced = "UPDATE cmm "
+                    + "SET cmmValue=-1.0,synced=0 WHERE stockCard_id=(SELECT stockCard_id "
+                    + "FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' ));";
             LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(resetCmmValueAndSynced);
         }
     }

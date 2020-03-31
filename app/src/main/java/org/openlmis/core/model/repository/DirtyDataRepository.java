@@ -47,9 +47,10 @@ public class DirtyDataRepository {
             e.printStackTrace();
         }
     }
-    public void DeleteDirtyDataByProductCode(List<String> productCodeList){
-        String deleteDraftLotItems="DELETE FROM draft_lot_items";
-        String deleteDraftInventory="DELETE FROM draft_inventory";
+
+    public void deleteDirtyDataByProductCode(List<String> productCodeList) {
+        String deleteDraftLotItems = "DELETE FROM draft_lot_items";
+        String deleteDraftInventory = "DELETE FROM draft_inventory";
         stockRepository.deleteStockDirtyData(productCodeList);
         rnrFormRepository.deleteRnrFormDirtyData(productCodeList);
         programRepository.deleteProgramDirtyData(productCodeList);
