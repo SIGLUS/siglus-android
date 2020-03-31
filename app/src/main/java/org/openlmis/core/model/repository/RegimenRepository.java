@@ -137,13 +137,11 @@ public class RegimenRepository {
         });
     }
 
-    public void deleteRegimeDirtyData(String productCode) {
+    public void deleteRegimeDirtyData(int formId) {
         String deleteRegimeThreeLines = "DELETE FROM regime_three_lines "
-                + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
-                + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+                + "WHERE form_id='" + formId + "';";
         String deleteRegimeItems = "DELETE FROM regime_items "
-                + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
-                + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+                + "WHERE form_id='" + formId + "';";
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeThreeLines);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeItems);
     }
