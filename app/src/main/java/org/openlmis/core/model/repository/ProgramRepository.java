@@ -184,20 +184,22 @@ public class ProgramRepository {
                 + "WHERE form_id=(SELECT id FROM program_data_forms WHERE status='DRAFT_MISSED');";
         String deleteProgramDataBasicItems = "DELETE FROM program_data_Basic_items";
         String deleteProgramDataForms = "DELETE FROM program_data_forms WHERE status='DRAFT_MISSED';";
-        Cursor cursor = null;
+        Cursor getProgramByProductCodeCursor = null;
         for (String productCode : productCodeList) {
             String getProgramByProductCode = "SELECT * FROM programs "
-                    + "WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "');";
-            cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramByProductCode, null);
-            if (cursor.getString(cursor.getColumnIndexOrThrow("programCode")).equals(Constants.RAPID_TEST_OLD_CODE)) {
-                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataItems);
-                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataFromSignatures);
-                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataBasicItems);
-                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataForms);
+                    + "WHERE programCode in (SELECT programCode FROM product_programs WHERE productCode='" + productCode + "');";
+            getProgramByProductCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramByProductCode, null);
+            while (getProgramByProductCodeCursor.moveToNext()) {
+                if (getProgramByProductCodeCursor.getString(getProgramByProductCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.RAPID_TEST_OLD_CODE)) {
+                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataItems);
+                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataFromSignatures);
+                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataBasicItems);
+                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataForms);
+                }
             }
         }
-        if (!cursor.isClosed()) {
-            cursor.close();
+        if (!getProgramByProductCodeCursor.isClosed()) {
+            getProgramByProductCodeCursor.close();
         }
     }
 

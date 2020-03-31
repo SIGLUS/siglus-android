@@ -20,6 +20,7 @@ package org.openlmis.core.model.repository;
 
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
