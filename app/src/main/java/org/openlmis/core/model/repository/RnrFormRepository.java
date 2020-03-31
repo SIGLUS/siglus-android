@@ -18,6 +18,7 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
@@ -516,5 +517,57 @@ public class RnrFormRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRegimeItems);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteSignature);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRnrForms);
+    }
+
+    public void deleteRnrFormDirtyData(List<String> productCodeList) {
+        Cursor cursor1 = null;
+        Cursor cursor2 = null;
+        for (String productCode : productCodeList) {
+            String getRnrFormDataByStatusAndProgramId = "SELECT * FROM rnr_forms "
+                    + "where status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                    + " programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+            String getProgramByProductCode = "(SELECT * FROM product_programs WHERE productCode='" + productCode + "'";
+            cursor1 = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getRnrFormDataByStatusAndProgramId, null);
+            cursor2 = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramByProductCode, null);
+            if (cursor1 != null) {
+                String deleteRnrFormItem = "DELETE FROM rnr_form_items "
+                        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+                String deleteRnrFormSignature = "DELETE FROM rnr_form_signature "
+                        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+                String deleteRnrBaseInfoItems = "DELETE FROM rnr_baseInfo_items "
+                        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+                String deleteRnrForm = "DELETE FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                        + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+
+                if (cursor2.getString(cursor2.getColumnIndexOrThrow("programCode")).equals(Constants.MMIA_PROGRAM_CODE)) {
+                    regimenRepository.deleteRegimeDirtyData(productCode);
+                }
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrFormItem);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrFormSignature);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrBaseInfoItems);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrForm);
+            }
+        }
+        if (!cursor1.isClosed()) {
+            cursor1.close();
+        }
+        if (!cursor2.isClosed()) {
+            cursor2.close();
+        }
+    }
+
+    private List<ProductProgram> getProgramByProductCode(final String productCode) throws LMISException {
+        return dbUtil.withDao(ProductProgram.class, new DbUtil.Operation<ProductProgram, List<ProductProgram>>() {
+            @Override
+            public List<ProductProgram> operate(Dao<ProductProgram, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder()
+                        .where()
+                        .eq("productCode",productCode)
+                        .query();
+            }
+        });
     }
 }

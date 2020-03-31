@@ -26,6 +26,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
@@ -134,5 +135,16 @@ public class RegimenRepository {
                         .query();
             }
         });
+    }
+
+    public void deleteRegimeDirtyData(String productCode) {
+        String deleteRegimeThreeLines = "DELETE FROM regime_three_lines "
+                + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+        String deleteRegimeItems = "DELETE FROM regime_items "
+                + "WHERE form_id=(SELECT id FROM rnr_forms WHERE status='DRAFT_MISSED' AND program_id=(SELECT id FROM"
+                + "programs WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'));";
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeThreeLines);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeItems);
     }
 }

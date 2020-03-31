@@ -375,4 +375,71 @@ public class StockRepository {
         }
         return stockCard;
     }
+
+    public void deleteStockDirtyData(List<String> productCodeList) {
+
+        for (String productCode : productCodeList) {
+            String deleteLotOnHand = "DELETE FROM lot_on_hand "
+                    + "WHERE lot_id=(SELECT id FROM lots WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' ));";
+            String deleteLotMovementItems = "DELETE FROM lot_movement_items "
+                    + "WHERE lot_id=(SELECT id FROM lots WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' ));";
+            String deleteStockItems = "DELETE FROM stock_items "
+                    + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' ));";
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteLotOnHand);
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteLotMovementItems);
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteStockItems);
+        }
+    }
+
+    public void resetStockCard(List<String> productCodeList) {
+
+        for (String productCode : productCodeList) {
+            String resetStockCardSohAndAvgMonthlyConsumption = "UPDATE stock_cards SET stockOnHand=0,avgMonthlyConsumption=-1.0 " +
+                    "WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' );";
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(resetStockCardSohAndAvgMonthlyConsumption);
+        }
+    }
+
+    public void insertNewInventory(List<String> productCodeList) {
+        Cursor cursor = null;
+
+        for (String productCode : productCodeList) {
+            Date newDate = new Date();
+            String getStockCard = "SELECT * FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "');";
+            String addNewInventory = "INSERT INTO stock_items "
+                    + "(id,documentNumber,movementDate,StockCard_id,MovementType,reason,movementQuantity,stockOnHand,createAt,updateAt,id,signature,synced,createTime,requested)"
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getStockCard, null);
+            if (cursor != null) {
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(addNewInventory,
+                        new Object[]{null, null, DateUtil.formatDate(newDate, DateUtil.DB_DATE_FORMAT),
+                                cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                                "PHYSICAL_INVENTORY", "INVENTORY", 0, 0, DateUtil.formatDate(newDate, DateUtil.DATE_TIME_FORMAT),
+                                DateUtil.formatDate(newDate, DateUtil.DATE_TIME_FORMAT), null, null, 0, DateUtil.formatDate(newDate,
+                                DateUtil.DATE_TIME_FORMAT), 0});
+            }
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+    }
+
+    public void resetLotsOnHand(List<String> productCodeList) {
+        Cursor cursor = null;
+        for (String productCode : productCodeList) {
+            String getLotsOnHandItemsByStockCardId = "SELECT * FROM lots_on_hand "
+                    + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT product_id FROM products WHERE code=?))";
+            cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getLotsOnHandItemsByStockCardId, new String[]{productCode});
+            while (cursor.moveToNext()) {
+                if (cursor.getInt(cursor.getColumnIndexOrThrow("quantityOnHand")) > 0) {
+                    String reSetQuantityOnHandValue = "UPDATE lots_on_hand "
+                            + "SET quantityOnHand=0 WHERE id='" + cursor.getInt(cursor.getColumnIndexOrThrow("id")) + "'";
+                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(reSetQuantityOnHandValue);
+                }
+            }
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+    }
 }

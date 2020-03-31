@@ -20,17 +20,20 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -63,7 +66,7 @@ public class ProgramRepository {
         return genericDao.queryForAll();
     }
 
-    public List<Program> listEmergencyPrograms() throws LMISException{
+    public List<Program> listEmergencyPrograms() throws LMISException {
         return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
             @Override
             public List<Program> operate(Dao<Program, String> dao) throws SQLException {
@@ -126,7 +129,7 @@ public class ProgramRepository {
         try {
             genericDao.refresh(programsWithProducts);
         } catch (LMISException e) {
-            new LMISException(e,"ProgramRepository.refresh").reportToFabric();
+            new LMISException(e, "ProgramRepository.refresh").reportToFabric();
         }
     }
 
@@ -166,12 +169,36 @@ public class ProgramRepository {
 
     public List<Program> queryProgramsByProgramCodeOrParentCode(final String programCode) throws LMISException {
         return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
-                @Override
-                public List<Program> operate(Dao<Program, String> dao) throws SQLException, LMISException {
-                    return dao.queryBuilder().where().eq("parentCode", programCode)
-                            .or().eq("programCode", programCode).query();
-                }
-            });
+            @Override
+            public List<Program> operate(Dao<Program, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().eq("parentCode", programCode)
+                        .or().eq("programCode", programCode).query();
+            }
+        });
+    }
+
+    public void deleteProgramDirtyData(List<String> productCodeList) {
+        String deleteProgramDataItems = "DELETE FROM program_data_items "
+                + "WHERE form_id=(SELECT id FROM program_data_forms WHERE status='DRAFT_MISSED');";
+        String deleteProgramDataFromSignatures = "DELETE FROM program_data_form_signatures "
+                + "WHERE form_id=(SELECT id FROM program_data_forms WHERE status='DRAFT_MISSED');";
+        String deleteProgramDataBasicItems = "DELETE FROM program_data_Basic_items";
+        String deleteProgramDataForms = "DELETE FROM program_data_forms WHERE status='DRAFT_MISSED';";
+        Cursor cursor = null;
+        for (String productCode : productCodeList) {
+            String getProgramByProductCode = "SELECT * FROM programs "
+                    + "WHERE programCode=(SELECT programCode FROM product_programs WHERE productCode='" + productCode + "');";
+            cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramByProductCode, null);
+            if (cursor.getString(cursor.getColumnIndexOrThrow("programCode")).equals(Constants.RAPID_TEST_OLD_CODE)) {
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataItems);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataFromSignatures);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataBasicItems);
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataForms);
+            }
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
     }
 
 }
