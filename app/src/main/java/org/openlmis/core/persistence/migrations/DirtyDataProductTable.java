@@ -6,12 +6,12 @@ public class DirtyDataProductTable extends Migration {
     @Override
     public void up() {
         execSQL("create table `dirty_data` (" +
-                "`createdAt` VARCHAR NOT NULL , " +
-                "`updatedAt` VARCHAR NOT NULL , " +
-                "`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "`json_data` VARCHAR NOT NULL," +
-                "`sync_status` BOOLEAN DEFAULT 0," +
-                "`productCode` VARCHAR NOT NULL" +
+                " `id` INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " `productCode` VARCHAR NOT NULL," +
+                " `jsonData` VARCHAR NOT NULL," +
+                " `synced` BOOLEAN DEFAULT 0," +
+                " `createdAt` VARCHAR NOT NULL , " +
+                " `updatedAt` VARCHAR NOT NULL" +
                 ")"
         );
     }

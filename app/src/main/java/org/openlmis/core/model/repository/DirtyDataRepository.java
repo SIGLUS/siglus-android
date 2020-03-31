@@ -11,7 +11,6 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
-import java.util.List;
 
 public class DirtyDataRepository {
 
@@ -35,14 +34,9 @@ public class DirtyDataRepository {
         this.context = context;
     }
 
-    public void save(List<DirtyDataItemInfo> dirtyDataItemInfoList) {
+    public void save(DirtyDataItemInfo itemInfo) {
         try {
-            dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, dao -> {
-                for (DirtyDataItemInfo itemInfo : dirtyDataItemInfoList) {
-                    dao.createOrUpdate(itemInfo);
-                }
-                return null;
-            });
+            dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, dao -> dao.createOrUpdate(itemInfo));
         } catch (LMISException e) {
             e.printStackTrace();
         }
