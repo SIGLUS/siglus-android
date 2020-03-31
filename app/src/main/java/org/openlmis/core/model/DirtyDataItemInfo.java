@@ -21,6 +21,8 @@ public class DirtyDataItemInfo extends BaseModel {
     String productCode;
 
     public DirtyDataItemInfo(String productCode, boolean sync_status, String json_data) {
-
+        this.productCode = productCode;
+        this.synced = sync_status;
+        this.jsonData = json_data;
     }
 }
