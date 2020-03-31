@@ -401,7 +401,7 @@ public class StockRepository {
     }
 
     public void insertNewInventory(List<String> productCodeList) {
-        Cursor cursor = null;
+        Cursor getStockCardCursor = null;
 
         for (String productCode : productCodeList) {
             Date newDate = new Date();
@@ -409,37 +409,37 @@ public class StockRepository {
             String addNewInventory = "INSERT INTO stock_items "
                     + "(id,documentNumber,movementDate,StockCard_id,MovementType,reason,movementQuantity,stockOnHand,createAt,updateAt,id,signature,synced,createTime,requested)"
                     + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getStockCard, null);
-            if (cursor != null) {
+            getStockCardCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getStockCard, null);
+            if (getStockCardCursor != null) {
                 LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(addNewInventory,
                         new Object[]{null, null, DateUtil.formatDate(newDate, DateUtil.DB_DATE_FORMAT),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                                getStockCardCursor.getInt(getStockCardCursor.getColumnIndexOrThrow("id")),
                                 "PHYSICAL_INVENTORY", "INVENTORY", 0, 0, DateUtil.formatDate(newDate, DateUtil.DATE_TIME_FORMAT),
                                 DateUtil.formatDate(newDate, DateUtil.DATE_TIME_FORMAT), null, null, 0, DateUtil.formatDate(newDate,
                                 DateUtil.DATE_TIME_FORMAT), 0});
             }
         }
-        if (!cursor.isClosed()) {
-            cursor.close();
+        if (!getStockCardCursor.isClosed()) {
+            getStockCardCursor.close();
         }
     }
 
     public void resetLotsOnHand(List<String> productCodeList) {
-        Cursor cursor = null;
+        Cursor getLotsOnHandItemsCursor = null;
         for (String productCode : productCodeList) {
             String getLotsOnHandItemsByStockCardId = "SELECT * FROM lots_on_hand "
-                    + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT product_id FROM products WHERE code=?))";
-            cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getLotsOnHandItemsByStockCardId, new String[]{productCode});
-            while (cursor.moveToNext()) {
-                if (cursor.getInt(cursor.getColumnIndexOrThrow("quantityOnHand")) > 0) {
+                    + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT product_id FROM products WHERE code='" + productCode + "'));";
+            getLotsOnHandItemsCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getLotsOnHandItemsByStockCardId, null);
+            while (getLotsOnHandItemsCursor.moveToNext()) {
+                if (getLotsOnHandItemsCursor.getInt(getLotsOnHandItemsCursor.getColumnIndexOrThrow("quantityOnHand")) > 0) {
                     String reSetQuantityOnHandValue = "UPDATE lots_on_hand "
-                            + "SET quantityOnHand=0 WHERE id='" + cursor.getInt(cursor.getColumnIndexOrThrow("id")) + "'";
+                            + "SET quantityOnHand=0 WHERE id='" + getLotsOnHandItemsCursor.getInt(getLotsOnHandItemsCursor.getColumnIndexOrThrow("id")) + "';";
                     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(reSetQuantityOnHandValue);
                 }
             }
         }
-        if (!cursor.isClosed()) {
-            cursor.close();
+        if (!getLotsOnHandItemsCursor.isClosed()) {
+            getLotsOnHandItemsCursor.close();
         }
     }
 }
