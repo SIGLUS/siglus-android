@@ -65,13 +65,12 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     StockCard stockCard;
 
 
-
     public InventoryViewModel(StockCard stockCard) {
         this(stockCard.getProduct());
 
         this.stockCard = stockCard;
         this.stockCardId = stockCard.getId();
-        this.stockOnHand = stockCard.getStockOnHand();
+        this.stockOnHand = stockCard.calculateSOHFromLots();
         this.checked = true;
     }
 

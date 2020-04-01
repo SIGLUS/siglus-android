@@ -202,11 +202,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     @NonNull
     private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(final Constants.Program program) {
-        return () -> {
-            Intent intent = RnRFormListActivity.getIntentToMe(LMISApp.getContext(), program);
-            LMISApp.getContext().startActivity(intent);
-            finish();
-        };
+        return () -> finish();
     }
 
     private String getDeletedProductCodeList(List<StockCard> stockCards) {

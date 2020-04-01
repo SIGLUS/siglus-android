@@ -175,7 +175,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate() {
         return () -> {
             Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
-            LMISApp.getContext().startActivity(intent);
+            getActivity().startActivity(intent);
             getActivity().finish();
         };
     }

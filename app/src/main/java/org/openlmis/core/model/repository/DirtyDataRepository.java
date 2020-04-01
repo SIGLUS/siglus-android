@@ -31,12 +31,38 @@ public class DirtyDataRepository {
         this.context = context;
     }
 
-    public void save(DirtyDataItemInfo itemInfo) {
+    public void save(DirtyDataItemInfo fromRule) {
+        boolean updatedItem = false;
         try {
-            dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, dao -> dao.createOrUpdate(itemInfo));
+            List<DirtyDataItemInfo> itemInfos = listAll();
+
+            for (DirtyDataItemInfo fromDB : itemInfos) {
+                if (hasSavedNeedUpdate(fromDB, fromRule)) {
+                    fromRule.setId(fromDB.getId());
+                    fromRule.setProductCode(fromDB.getProductCode());
+                    deleteItemInfoGenericDao.createOrUpdate(fromRule);
+                    updatedItem = true;
+                }
+            }
+            if (!updatedItem) {
+                deleteItemInfoGenericDao.createOrUpdate(fromRule);
+            }
         } catch (LMISException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean hasSavedNeedUpdate(DirtyDataItemInfo fromDB, DirtyDataItemInfo fromRule) {
+        return fromDB.getProductCode().equals(fromRule.getProductCode());
+    }
+
+    private List<DirtyDataItemInfo> listAll() {
+        try {
+            return deleteItemInfoGenericDao.queryForAll();
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<DirtyDataItemInfo> listunSyced() {

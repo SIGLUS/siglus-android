@@ -27,6 +27,8 @@ import java.util.List;
 @Singleton
 public class DirtyDataManager {
 
+    private static final String TAG = DirtyDataManager.class.getSimpleName();
+
     protected LMISRestApi lmisRestApi;
 
     @Inject
@@ -102,10 +104,13 @@ public class DirtyDataManager {
     private boolean isCorrectMovement(StockMovementItem previousMovement, StockMovementItem newestMovement) {
         Long previousSOH = previousMovement.getStockOnHand();
         Long currentSOH = newestMovement.getStockOnHand();
+        //TODO list all of the type of adjustment.
         if (newestMovement.isNegativeMovement()) {
-            return currentSOH == previousSOH - newestMovement.getMovementQuantity();
+            return currentSOH == previousSOH - newestMovement.getStockCard().calculateSOHFromLots();
+        } else if (newestMovement.isPositiveMovement()) {
+            return currentSOH == previousSOH + newestMovement.getStockCard().calculateSOHFromLots();
         } else {
-            return currentSOH == previousSOH + newestMovement.getMovementQuantity();
+            return true;
         }
     }
 }
