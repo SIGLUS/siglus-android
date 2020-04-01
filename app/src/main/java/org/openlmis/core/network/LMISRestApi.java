@@ -115,7 +115,7 @@ public interface LMISRestApi {
     Void syncUpMalariaPrograms(List<MalariaProgram> malariaPrograms) throws LMISException;
 
     @GET("/rest-api/re-sync")
-    Void recordReSyncActionG() throws LMISException;
+    Void recordReSyncAction() throws LMISException;
 
     @POST("/rest-api/syndeletedData/{facilityId}")
     boolean syncUpDeletedData(@Path("facilityId") Long facilityId, DirtyDataItemInfo dataItemInfo) throws LMISException;

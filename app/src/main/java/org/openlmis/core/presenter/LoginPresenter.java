@@ -33,6 +33,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
@@ -98,6 +99,9 @@ public class LoginPresenter extends Presenter {
     @Inject
     private ProgramRepository programRepository;
 
+    @Inject
+    private DirtyDataRepository dirtyDataRepository;
+
     @Override
     public void attachView(BaseView v) {
         this.view = (LoginView) v;
@@ -147,7 +151,7 @@ public class LoginPresenter extends Presenter {
                 List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
                 SharedPreferenceMgr.getInstance().setReportTypesData(reportTypeForms);
             } catch (LMISException e) {
-                new LMISException(e,"setDefaultReportType").reportToFabric();
+                new LMISException(e, "setDefaultReportType").reportToFabric();
             }
         }
     }
@@ -192,22 +196,23 @@ public class LoginPresenter extends Presenter {
 
         view.sendScreenToGoogleAnalyticsAfterLogin();
         archiveOldData();
+
         try {
             saveUserDataToLocalDatabase(userResponse);
-            if (fromReSync) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            LMISApp.getInstance().getRestApi().recordReSyncActionG();
-                        } catch (LMISException e) {
-                            new LMISException(e,"recordReSyncActionG").reportToFabric();
-                        }
-                    }
-                }).start();
-            }
         } catch (LMISException e) {
-            new LMISException(e,"onLoginSuccess").reportToFabric();
+            e.printStackTrace();
+        }
+
+        if (fromReSync) {
+            Observable.create(subscriber -> {
+                try {
+                    LMISApp.getInstance().getRestApi().recordReSyncAction();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(System.out::println, Throwable::printStackTrace);
         }
     }
 
@@ -216,17 +221,17 @@ public class LoginPresenter extends Presenter {
             return;
         }
 
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                if (stockRepository.hasOldDate()) {
-                    stockRepository.deleteOldData();
-                    SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
-                }
-                if (rnrFormRepository.hasOldDate()) {
-                    rnrFormRepository.deleteOldData();
-                    SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
-                }
+        Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+            if (stockRepository.hasOldDate()) {
+                stockRepository.deleteOldData();
+                SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
+            }
+            if (rnrFormRepository.hasOldDate()) {
+                rnrFormRepository.deleteOldData();
+                SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
+            }
+            if (dirtyDataRepository.hasOldDate()) {
+                dirtyDataRepository.deleteOldData();
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

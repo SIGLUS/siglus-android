@@ -4,14 +4,17 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -83,6 +86,37 @@ public class DirtyDataRepository {
                         return null;
                     });
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean hasBackedData(List<DirtyDataItemInfo> infos) {
+        return infos != null && infos.size() > 0;
+    }
+
+    public boolean hasOldDate() {
+        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), 1);
+        List<DirtyDataItemInfo> infos = listAll();
+        if (hasBackedData(infos)) {
+            for (DirtyDataItemInfo itemInfo : infos) {
+                if (itemInfo.getCreatedAt().before(dueDateShouldDataLivedInDB)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void deleteOldData() {
+        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), 1);
+        try {
+            dbUtil.withDao(DirtyDataItemInfo.class, dao -> {
+                DeleteBuilder<DirtyDataItemInfo, String> deleteBuilder = dao.deleteBuilder();
+                deleteBuilder.where().le("createdAt", dueDateShouldDataLivedInDB);
+                deleteBuilder.delete();
+                return null;
+            });
+        } catch (LMISException e) {
             e.printStackTrace();
         }
     }
