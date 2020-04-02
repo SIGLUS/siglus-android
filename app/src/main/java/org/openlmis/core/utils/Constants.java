@@ -64,7 +64,7 @@ public final class Constants {
     public static final String AL_PROGRAM_CODE = "MALARIA";
     public static final String PTV_PROGRAM_CODE = "PTV";
     public static final String TEST_KIT_PROGRAM_CODE = "TEST_KIT";
-
+    public static final String VIA_PROGRAM_CHILD_CODE_TARV="TARV";
     public static final List<Constants.Program> PROGRAMES = Arrays.asList(Constants.Program.VIA_PROGRAM,
                     Constants.Program.MMIA_PROGRAM,
                     Constants.Program.AL_PROGRAM,
