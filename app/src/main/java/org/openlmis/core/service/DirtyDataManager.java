@@ -103,17 +103,17 @@ public class DirtyDataManager {
     }
 
     private void deleteAndReset(List<String> productCodes) {
-        dirtyDataRepository.deleteDirtyDataByProductCode(productCodes);
-        rnrFormRepository.deleteRnrFormDirtyData(productCodes);
-        programRepository.deleteProgramDirtyData(productCodes);
-        stockRepository.resetStockCard(productCodes);
-        stockRepository.resetLotsOnHand(productCodes);
-        cmmRepository.resetCmm(productCodes);
+       dirtyDataRepository.deleteDirtyDataByProductCode(productCodes);
         try {
             stockRepository.insertNewInventory(productCodes);
         } catch (LMISException e) {
             e.printStackTrace();
         }
+        stockRepository.resetStockCard(productCodes);
+        stockRepository.resetLotsOnHand(productCodes);
+        cmmRepository.resetCmm(productCodes);
+        rnrFormRepository.deleteRnrFormDirtyData(productCodes);
+        programRepository.deleteProgramDirtyData(productCodes);
     }
 
     private DirtyDataItemInfo convertStockMovementItemsToStockMovementEntriesForSave(final String facilityId,
