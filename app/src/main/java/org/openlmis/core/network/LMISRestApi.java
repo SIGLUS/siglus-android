@@ -20,13 +20,13 @@
 package org.openlmis.core.network;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
+import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownKitChangeDraftProductsResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -35,6 +35,7 @@ import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
 import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
@@ -79,6 +80,8 @@ public interface LMISRestApi {
     @POST("/rest-api/update-app-info")
     Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
 
+    @POST("/rest-api/facilities/{facilityId}/deleteStockCards")
+    SyncUpDeletedMovementResponse syncUpDeletedData(@Path("facilityId") Long facilityId, @Body List<DirtyDataItemEntry> entryList) throws LMISException;
 
     //sync down
 
@@ -117,6 +120,4 @@ public interface LMISRestApi {
     @GET("/rest-api/re-sync")
     Void recordReSyncAction() throws LMISException;
 
-    @POST("/rest-api/syndeletedData/{facilityId}")
-    boolean syncUpDeletedData(@Path("facilityId") Long facilityId, DirtyDataItemInfo dataItemInfo) throws LMISException;
 }

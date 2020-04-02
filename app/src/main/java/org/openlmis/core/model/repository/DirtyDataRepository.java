@@ -85,6 +85,16 @@ public class DirtyDataRepository {
         return null;
     }
 
+    public void updateToSynced(List<String> productCodes) {
+        List<DirtyDataItemInfo> dataItemInfoList = listunSyced();
+        for (DirtyDataItemInfo item : dataItemInfoList) {
+            if (productCodes.contains(item.getProductCode())) {
+                item.setSynced(true);
+                save(item);
+            }
+        }
+    }
+
     public void createOrUpdateWithItem(DirtyDataItemInfo itemInfo) {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),

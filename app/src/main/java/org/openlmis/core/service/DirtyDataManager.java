@@ -12,16 +12,22 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
+import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 
 @Singleton
@@ -38,6 +44,12 @@ public class DirtyDataManager {
 
     @Inject
     DirtyDataRepository dirtyDataRepository;
+    @Inject
+    RnrFormRepository rnrFormRepository;
+    @Inject
+    ProgramRepository programRepository;
+    @Inject
+    CmmRepository cmmRepository;
 
     public DirtyDataManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -76,12 +88,33 @@ public class DirtyDataManager {
 
             dirtyDataRepository.save(dirtyDataItems);
         }
-
-
         //TODO delete stock card movement here..
+        if (deletedStockCards.size() > 0) {
+            List<String> productCodes = FluentIterable.from(deletedStockCards).transform(new Function<StockCard, String>() {
+                @Nullable
+                @Override
+                public String apply(@Nullable StockCard stockCard) {
+                    return stockCard.getProduct().getCode();
+                }
+            }).toList();
+            deleteAndReset(productCodes);
+        }
         return deletedStockCards;
     }
 
+    private void deleteAndReset(List<String> productCodes) {
+        dirtyDataRepository.deleteDirtyDataByProductCode(productCodes);
+        rnrFormRepository.deleteRnrFormDirtyData(productCodes);
+        programRepository.deleteProgramDirtyData(productCodes);
+        stockRepository.resetStockCard(productCodes);
+        stockRepository.resetLotsOnHand(productCodes);
+        cmmRepository.resetCmm(productCodes);
+        try {
+            stockRepository.insertNewInventory(productCodes);
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+    }
 
     private DirtyDataItemInfo convertStockMovementItemsToStockMovementEntriesForSave(final String facilityId,
                                                                                      List<StockMovementItem> stockMovementItems,

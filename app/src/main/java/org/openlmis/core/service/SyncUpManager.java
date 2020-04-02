@@ -48,7 +48,9 @@ import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
+import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -61,6 +63,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+
+import javax.annotation.Nullable;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -363,22 +367,33 @@ public class SyncUpManager {
     }
 
     public boolean syncDeleteMovement() {
-        List<DirtyDataItemInfo> itemInfos = dirtyDataRepository.listunSyced();
+        int unitCount = 6;
         String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+        List<DirtyDataItemInfo> itemInfos = dirtyDataRepository.listunSyced();
+        List<String> errorProducts = new ArrayList<>();
+
         if (!CollectionUtils.isEmpty(itemInfos)) {
-            Observable.from(itemInfos).filter(dirtyDataItemInfo -> {
+            List<DirtyDataItemEntry> entries = FluentIterable.from(itemInfos).transform(new Function<DirtyDataItemInfo, DirtyDataItemEntry>() {
+                @Nullable
+                @Override
+                public DirtyDataItemEntry apply(@Nullable DirtyDataItemInfo dirtyDataItemInfo) {
+                    return new DirtyDataItemEntry(dirtyDataItemInfo.getProductCode(), dirtyDataItemInfo.getJsonData());
+                }
+            }).toList();
+
+            for (int start = 0; start < entries.size(); ) {
+                int end = (start + unitCount) >= entries.size() ? entries.size() - 1 : start + unitCount;
+                List<DirtyDataItemEntry> sub = entries.subList(start, end);
                 try {
-                    lmisRestApi.syncUpDeletedData(Long.parseLong(facilityId), dirtyDataItemInfo);
-                    return true;
+                    SyncUpDeletedMovementResponse response = lmisRestApi.syncUpDeletedData(Long.parseLong(facilityId), sub);
+                    errorProducts.addAll(response.getErrorCodes());
                 } catch (LMISException e) {
                     e.printStackTrace();
                 }
-                return false;
-            }).subscribe(dirtyDataItemInfo -> {
-                dirtyDataItemInfo.setSynced(true);
-                dirtyDataRepository.createOrUpdateWithItem(dirtyDataItemInfo);
-            });
-            return from(itemInfos).allMatch(item -> item.isSynced());
+                start += unitCount;
+            }
+            dirtyDataRepository.updateToSynced(errorProducts);
+            return errorProducts.size() == 0;
         } else {
             return true;
         }
