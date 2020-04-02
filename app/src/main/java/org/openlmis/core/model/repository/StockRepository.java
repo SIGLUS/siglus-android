@@ -27,6 +27,7 @@ import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
@@ -374,5 +375,88 @@ public class StockRepository {
             cursor.close();
         }
         return stockCard;
+    }
+
+    public void deleteStockDirtyData(List<String> productCodeList) {
+
+        for (String productCode : productCodeList) {
+            String deleteLotMovementItems = "DELETE FROM lot_movement_items "
+                    + "WHERE lot_id=(SELECT id FROM lots WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' ));";
+            String deleteStockItems = "DELETE FROM stock_items "
+                    + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' ));";
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteLotMovementItems);
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteStockItems);
+        }
+    }
+
+    public void resetStockCard(List<String> productCodeList) {
+
+        for (String productCode : productCodeList) {
+            String resetStockCardSohAndAvgMonthlyConsumption = "UPDATE stock_cards SET stockOnHand=0,avgMonthlyConsumption=-1.0 "
+                    + "WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' );";
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(resetStockCardSohAndAvgMonthlyConsumption);
+        }
+    }
+
+    public void insertNewInventory(List<String> productCodeList) throws LMISException {
+        StockMovementItem addNewStockMovementItem = new StockMovementItem();
+        Cursor getStockCardCursor = null;
+
+        for (String productCode : productCodeList) {
+            String getStockCard = "SELECT * FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "');";
+            getStockCardCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getStockCard, null);
+            if (getStockCardCursor != null && getStockCardCursor.moveToFirst()) {
+                addNewStockMovementItem.setCreatedTime(new Date());
+                addNewStockMovementItem.setStockOnHand(0);
+                addNewStockMovementItem.setDocumentNumber(null);
+                addNewStockMovementItem.setMovementDate(new Date());
+                addNewStockMovementItem.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+                addNewStockMovementItem.setReason("INVENTORY");
+                addNewStockMovementItem.setRequested(null);
+                addNewStockMovementItem.setMovementQuantity(0);
+                addNewStockMovementItem.setSignature(null);
+                addNewStockMovementItem.setSynced(false);
+                addNewStockMovementItem.setCreatedAt(new Date());
+                addNewStockMovementItem.setUpdatedAt(new Date());
+                addNewStockMovementItem.setStockCard(getStockCardById(getStockCardCursor.getInt(getStockCardCursor.getColumnIndexOrThrow("id"))).get(0));
+                dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
+                    @Override
+                    public Void operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
+                        dao.createOrUpdate(addNewStockMovementItem);
+                        return null;
+                    }
+                });
+            }
+
+
+        }
+    }
+
+    private List<StockCard> getStockCardById(int stockCardId) throws LMISException {
+        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
+            @Override
+            public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().eq("id", stockCardId).query();
+            }
+        });
+    }
+
+    public void resetLotsOnHand(List<String> productCodeList) {
+        Cursor getLotsOnHandItemsCursor = null;
+        for (String productCode : productCodeList) {
+            String getLotsOnHandItemsByStockCardId = "SELECT * FROM lots_on_hand "
+                    + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "'));";
+            getLotsOnHandItemsCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getLotsOnHandItemsByStockCardId, null);
+            while (getLotsOnHandItemsCursor.moveToNext()) {
+                if (getLotsOnHandItemsCursor.getInt(getLotsOnHandItemsCursor.getColumnIndexOrThrow("quantityOnHand")) > 0) {
+                    String reSetQuantityOnHandValue = "UPDATE lots_on_hand "
+                            + "SET quantityOnHand=0 WHERE id='" + getLotsOnHandItemsCursor.getInt(getLotsOnHandItemsCursor.getColumnIndexOrThrow("id")) + "';";
+                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(reSetQuantityOnHandValue);
+                }
+            }
+        }
+        if (!getLotsOnHandItemsCursor.isClosed()) {
+            getLotsOnHandItemsCursor.close();
+        }
     }
 }

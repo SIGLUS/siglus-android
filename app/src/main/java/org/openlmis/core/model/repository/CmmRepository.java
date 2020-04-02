@@ -5,10 +5,12 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -56,5 +58,14 @@ public class CmmRepository {
                 return !cmm.isSynced();
             }
         }).toList();
+    }
+
+    public void resetCmm(List<String> productCodeList) {
+        for (String productCode : productCodeList) {
+            String resetCmmValueAndSynced = "UPDATE cmm "
+                    + "SET cmmValue=-1.0,synced=0 WHERE stockCard_id=(SELECT stockCard_id "
+                    + "FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' ));";
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(resetCmmValueAndSynced);
+        }
     }
 }

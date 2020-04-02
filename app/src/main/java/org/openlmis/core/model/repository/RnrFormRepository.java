@@ -18,6 +18,7 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
@@ -516,5 +517,68 @@ public class RnrFormRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRegimeItems);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteSignature);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRnrForms);
+    }
+
+    public void deleteRnrFormDirtyData(List<String> productCodeList) {
+        Cursor getProgramCodeCursor = null;
+        Cursor getParentCodeCursor = null;
+        for (String productCode : productCodeList) {
+            String getProgramCodeByProductCode = "SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'";
+            getProgramCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramCodeByProductCode, null);
+            while (getProgramCodeCursor.moveToNext()) {
+                String getParentCode = "SELECT count(parentCode) AS 'result' FROM programs WHERE programCode='" + getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")) + "'";
+                getParentCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getParentCode, null);
+                getParentCodeCursor.moveToFirst();
+                if (getParentCodeCursor.getInt(getParentCodeCursor.getColumnIndexOrThrow("result")) == 0 && !getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.RAPID_TEST_OLD_CODE)) {
+                    if (getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.MMIA_PROGRAM_CODE)) {
+                        regimenRepository.deleteRegimeDirtyData(Constants.MMIA_PROGRAM_CODE);
+                        deleteRnrData(Constants.MMIA_PROGRAM_CODE);
+                    }
+                    if (getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.VIA_PROGRAM_CODE)) {
+                        deleteRnrData(Constants.VIA_PROGRAM_CODE);
+                    }
+                } else {
+                    if (getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.PTV_PROGRAM_CODE)) {
+                        regimenRepository.deleteRegimeDirtyData(Constants.MMIA_PROGRAM_CODE);
+                        deleteRnrData(Constants.PTV_PROGRAM_CODE);
+                        deleteRnrData(Constants.MMIA_PROGRAM_CODE);
+                    } else if (getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.AL_PROGRAM_CODE)) {
+                        deleteRnrData(Constants.AL_PROGRAM_CODE);
+                        deleteRnrData(Constants.VIA_PROGRAM_CODE);
+                    } else if (getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.VIA_PROGRAM_CHILD_CODE_TARV)) {
+                        regimenRepository.deleteRegimeDirtyData(Constants.MMIA_PROGRAM_CODE);
+                        deleteRnrData(Constants.MMIA_PROGRAM_CODE);
+                    } else {
+                        if (!getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.RAPID_TEST_OLD_CODE)) {
+                            deleteRnrData(Constants.VIA_PROGRAM_CODE);
+                        }
+                    }
+                }
+            }
+        }
+        if (!getProgramCodeCursor.isClosed()) {
+            getProgramCodeCursor.close();
+        }
+        if (!getParentCodeCursor.isClosed()) {
+            getParentCodeCursor.close();
+        }
+    }
+
+    private void deleteRnrData(String programCode) {
+        String deleteRnrFormItem = "DELETE FROM rnr_form_items "
+                + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM programs "
+                + "WHERE programCode='" + programCode + "'));";
+        String deleteRnrFormSignature = "DELETE FROM rnr_form_signature "
+                + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
+                + "programs WHERE programCode='" + programCode + "'));";
+        String deleteRnrBaseInfoItems = "DELETE FROM rnr_baseInfo_items "
+                + "WHERE rnRForm_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id IN (SELECT id FROM programs "
+                + "WHERE programCode='" + programCode + "'));";
+        String deleteRnrForm = "DELETE FROM rnr_forms WHERE synced=0 AND program_id = (SELECT id FROM programs "
+                + "WHERE programCode='" + programCode + "');";
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrFormItem);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrFormSignature);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrBaseInfoItems);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRnrForm);
     }
 }
