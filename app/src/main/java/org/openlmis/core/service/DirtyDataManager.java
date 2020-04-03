@@ -57,22 +57,15 @@ public class DirtyDataManager {
 
     public List<StockCard> correctData() {
         List<StockCard> stockCards = stockRepository.list();
-        List<StockCard> deletedStockCards = new ArrayList<>();
-        List<Long> deletedStockCardIds = new ArrayList<>();
-        for (StockCard stockCard : stockCards) {
-            try {
-                List<StockMovementItem> stockMovementItems = stockMovementRepository.listLastTwoStockMovements(stockCard.getId());
-                if (stockMovementItems != null && stockMovementItems.size() == 2) {
-                    if (!isCorrectMovement(stockMovementItems.get(0), stockMovementItems.get(1))) {
-                        deletedStockCards.add(stockCard);
-                        deletedStockCardIds.add(stockCard.getId());
-                    }
-                }
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
-        }
 
+        List<StockCard> deletedStockCards = getWrongStockCard(stockCards);
+        saveDeletedInfoToDB(deletedStockCards);
+        deleteAndReset(deletedStockCards);
+
+        return deletedStockCards;
+    }
+
+    private void saveDeletedInfoToDB(List<StockCard> deletedStockCards) {
         for (StockCard stockCard : deletedStockCards) {
             List<StockMovementItem> stockMovementItems = null;
             try {
@@ -88,7 +81,9 @@ public class DirtyDataManager {
 
             dirtyDataRepository.save(dirtyDataItems);
         }
-        //TODO delete stock card movement here..
+    }
+
+    private void deleteAndReset(List<StockCard> deletedStockCards) {
         if (deletedStockCards.size() > 0) {
             List<String> productCodes = FluentIterable.from(deletedStockCards).transform(new Function<StockCard, String>() {
                 @Nullable
@@ -97,23 +92,18 @@ public class DirtyDataManager {
                     return stockCard.getProduct().getCode();
                 }
             }).toList();
-            deleteAndReset(productCodes);
+            dirtyDataRepository.deleteDirtyDataByProductCode(productCodes);
+            try {
+                stockRepository.insertNewInventory(productCodes);
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+            stockRepository.resetStockCard(productCodes);
+            stockRepository.resetLotsOnHand(productCodes);
+            cmmRepository.resetCmm(productCodes);
+            rnrFormRepository.deleteRnrFormDirtyData(productCodes);
+            programRepository.deleteProgramDirtyData(productCodes);
         }
-        return deletedStockCards;
-    }
-
-    private void deleteAndReset(List<String> productCodes) {
-       dirtyDataRepository.deleteDirtyDataByProductCode(productCodes);
-        try {
-            stockRepository.insertNewInventory(productCodes);
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-        stockRepository.resetStockCard(productCodes);
-        stockRepository.resetLotsOnHand(productCodes);
-        cmmRepository.resetCmm(productCodes);
-        rnrFormRepository.deleteRnrFormDirtyData(productCodes);
-        programRepository.deleteProgramDirtyData(productCodes);
     }
 
     private DirtyDataItemInfo convertStockMovementItemsToStockMovementEntriesForSave(final String facilityId,
@@ -134,10 +124,26 @@ public class DirtyDataManager {
         return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type));
     }
 
+    private List<StockCard> getWrongStockCard(List<StockCard> stockCards) {
+        List<StockCard> deleted = new ArrayList<>();
+        for (StockCard stockCard : stockCards) {
+            try {
+                List<StockMovementItem> stockMovementItems = stockMovementRepository.listLastTwoStockMovements(stockCard.getId());
+                if (stockMovementItems != null && stockMovementItems.size() == 2) {
+                    if (!isCorrectMovement(stockMovementItems.get(0), stockMovementItems.get(1))) {
+                        deleted.add(stockCard);
+                    }
+                }
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+        }
+        return deleted;
+    }
+
     private boolean isCorrectMovement(StockMovementItem previousMovement, StockMovementItem newestMovement) {
         Long previousSOH = previousMovement.getStockOnHand();
         Long currentSOH = newestMovement.getStockOnHand();
-        //TODO list all of the type of adjustment.
         if (newestMovement.isNegativeMovement()) {
             return currentSOH == previousSOH - newestMovement.getStockCard().calculateSOHFromLots();
         } else if (newestMovement.isPositiveMovement()) {

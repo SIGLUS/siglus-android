@@ -54,7 +54,6 @@ import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Sets;
 
@@ -67,8 +66,6 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
@@ -126,24 +123,9 @@ public class SyncUpManager {
             return false;
         }
 
-        Observable.from(forms).filter(new Func1<RnRForm, Boolean>() {
-            @Override
-            public Boolean call(RnRForm rnRForm) {
-                return submitRequisition(rnRForm);
-            }
-        }).subscribe(new Action1<RnRForm>() {
-            @Override
-            public void call(RnRForm rnRForm) {
-                markRnrFormSynced(rnRForm);
-            }
-        });
+        Observable.from(forms).filter(this::submitRequisition).subscribe(this::markRnrFormSynced);
 
-        return from(forms).allMatch(new Predicate<RnRForm>() {
-            @Override
-            public boolean apply(RnRForm rnRForm) {
-                return rnRForm.isSynced();
-            }
-        });
+        return from(forms).allMatch(RnRForm::isSynced);
     }
 
     public boolean fakeSyncRnr() {
@@ -160,33 +142,20 @@ public class SyncUpManager {
             return false;
         }
 
-        Observable.from(forms).filter(new Func1<RnRForm, Boolean>() {
-            @Override
-            public Boolean call(RnRForm rnRForm) {
-                try {
-                    syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
-                    Log.d(TAG, "===> SyncRnr : synced ->");
-                    return true;
-                } catch (Exception e) {
-                    Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
-                    new LMISException(e, "SyncUpManager:fakeSyncRnr,sync failed").reportToFabric();
-                    syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RnRForm, rnRForm.getId()));
-                    return false;
-                }
+        Observable.from(forms).filter(rnRForm -> {
+            try {
+                syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
+                Log.d(TAG, "===> SyncRnr : synced ->");
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
+                new LMISException(e, "SyncUpManager:fakeSyncRnr,sync failed").reportToFabric();
+                syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RnRForm, rnRForm.getId()));
+                return false;
             }
-        }).subscribe(new Action1<RnRForm>() {
-            @Override
-            public void call(RnRForm rnRForm) {
-                markRnrFormSynced(rnRForm);
-            }
-        });
+        }).subscribe(this::markRnrFormSynced);
 
-        return from(forms).allMatch(new Predicate<RnRForm>() {
-            @Override
-            public boolean apply(RnRForm rnRForm) {
-                return rnRForm.isSynced();
-            }
-        });
+        return from(forms).allMatch(RnRForm::isSynced);
     }
 
     public boolean syncStockCards() {
@@ -234,11 +203,11 @@ public class SyncUpManager {
     }
 
     private void saveStockMovementErrors(SyncUpStockMovementDataSplitResponse response) {
-        String error = response.getErrorProductCodes().toString();
+        List<String> syncErrorProduct = FluentIterable.from(response.getErrorProductCodes()).limit(3).toList();
         Intent intent = new Intent(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-        intent.putExtra(Constants.SYNC_MOVEMENT_ERROR, error);
+        intent.putExtra(Constants.SYNC_MOVEMENT_ERROR, syncErrorProduct.toString());
         LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
-        sharedPreferenceMgr.setStockMovementSyncError(error);
+        sharedPreferenceMgr.setStockMovementSyncError(syncErrorProduct.toString());
         syncErrorsRepository.save(new SyncError(response.getErrorProductCodes().toString(), SyncType.SyncMovement, 2L));
     }
 
@@ -265,12 +234,10 @@ public class SyncUpManager {
             return;
         }
         try {
-            List<String> unSyncedStockCardCodes = FluentIterable.from(stockMovementRepository.listUnSynced()).transform(new Function<StockMovementItem, String>() {
-                @Override
-                public String apply(StockMovementItem stockMovementItem) {
-                    return stockMovementItem.getStockCard().getProduct().getCode();
-                }
-            }).toList();
+            List<String> unSyncedStockCardCodes = FluentIterable
+                    .from(stockMovementRepository.listUnSynced())
+                    .transform(stockMovementItem -> stockMovementItem.getStockCard().getProduct().getCode())
+                    .toList();
 
             final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
             lmisRestApi.syncUpUnSyncedStockCards(facilityId, unSyncedStockCardCodes);
@@ -289,12 +256,9 @@ public class SyncUpManager {
             return;
         }
         try {
-            List<String> unSyncedStockCardCodes = FluentIterable.from(stockMovementRepository.listUnSynced()).transform(new Function<StockMovementItem, String>() {
-                @Override
-                public String apply(StockMovementItem stockMovementItem) {
-                    return stockMovementItem.getStockCard().getProduct().getCode();
-                }
-            }).toList();
+            List<String> unSyncedStockCardCodes = FluentIterable
+                    .from(stockMovementRepository.listUnSynced())
+                    .transform(stockMovementItem -> stockMovementItem.getStockCard().getProduct().getCode()).toList();
             sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
             boolean isAllStockCardSyncSuccessful = unSyncedStockCardCodes.isEmpty();
             if (isAllStockCardSyncSuccessful) {
@@ -333,12 +297,10 @@ public class SyncUpManager {
         try {
             List<Cmm> unsyncedCmms = cmmRepository.listUnsynced();
             if (!unsyncedCmms.isEmpty()) {
-                List<CmmEntry> cmmEntries = FluentIterable.from(unsyncedCmms).transform(new Function<Cmm, CmmEntry>() {
-                    @Override
-                    public CmmEntry apply(Cmm cmm) {
-                        return CmmEntry.createFrom(cmm);
-                    }
-                }).toList();
+                List<CmmEntry> cmmEntries = FluentIterable
+                        .from(unsyncedCmms)
+                        .transform(CmmEntry::createFrom)
+                        .toList();
 
                 lmisRestApi.syncUpCmms(UserInfoMgr.getInstance().getUser().getFacilityId(), cmmEntries);
 
@@ -431,26 +393,18 @@ public class SyncUpManager {
     private List<StockMovementEntry> convertStockMovementItemsToStockMovementEntriesForSync(final String facilityId,
                                                                                             List<StockMovementItem> stockMovementItems) {
 
-        return FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
-            @Override
-            public StockMovementEntry apply(StockMovementItem stockMovementItem) {
-                if (stockMovementItem.getStockCard().getProduct() != null) {
-                    return new StockMovementEntry(stockMovementItem, facilityId);
-                } else {
-                    return null;
-                }
+        return FluentIterable.from(stockMovementItems).transform(stockMovementItem -> {
+            if (stockMovementItem.getStockCard().getProduct() != null) {
+                return new StockMovementEntry(stockMovementItem, facilityId);
+            } else {
+                return null;
             }
         }).toList();
     }
 
     private void markStockDataSynced(List<StockMovementItem> stockMovementItems) throws LMISException {
 
-        Observable.from(stockMovementItems).forEach(new Action1<StockMovementItem>() {
-            @Override
-            public void call(StockMovementItem stockMovementItem) {
-                stockMovementItem.setSynced(true);
-            }
-        });
+        Observable.from(stockMovementItems).forEach(stockMovementItem -> stockMovementItem.setSynced(true));
 
         stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockMovementItems);
     }
@@ -469,12 +423,11 @@ public class SyncUpManager {
         List<ProgramDataForm> forms;
         try {
             Log.d(TAG, "===> Preparing RapidTestForms for Syncing");
-            forms = FluentIterable.from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).filter(new Predicate<ProgramDataForm>() {
-                @Override
-                public boolean apply(ProgramDataForm programDataForm) {
-                    return !programDataForm.isSynced() && programDataForm.getStatus().equals(ProgramDataForm.STATUS.AUTHORIZED);
-                }
-            }).toList();
+            forms = FluentIterable
+                    .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
+                    .filter(programDataForm -> !programDataForm.isSynced()
+                            && programDataForm.getStatus().equals(ProgramDataForm.STATUS.AUTHORIZED))
+                    .toList();
 
             Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");
 
@@ -485,29 +438,20 @@ public class SyncUpManager {
             new LMISException(e, "SyncUpManager.syncRapidTestForms").reportToFabric();
             return;
         }
-        Observable.from(forms).filter(new Func1<ProgramDataForm, Boolean>() {
-            @Override
-            public Boolean call(ProgramDataForm programDataForm) {
-                return submitProgramDataForm(programDataForm);
-            }
-        }).subscribe(new Action1<ProgramDataForm>() {
-            @Override
-            public void call(ProgramDataForm programDataForm) {
-                markProgramDataFormsSynced(programDataForm);
-            }
-        });
+        Observable.from(forms)
+                .filter(this::submitProgramDataForm)
+                .subscribe(this::markProgramDataFormsSynced);
     }
 
     public void fakeSyncRapidTestForms() {
         List<ProgramDataForm> forms;
         try {
             Log.d(TAG, "===> Preparing RapidTestForms for Syncing");
-            forms = FluentIterable.from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE)).filter(new Predicate<ProgramDataForm>() {
-                @Override
-                public boolean apply(ProgramDataForm programDataForm) {
-                    return !programDataForm.isSynced() && programDataForm.getStatus().equals(ProgramDataForm.STATUS.AUTHORIZED);
-                }
-            }).toList();
+            forms = FluentIterable
+                    .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
+                    .filter(programDataForm -> !programDataForm.isSynced()
+                            && programDataForm.getStatus().equals(ProgramDataForm.STATUS.AUTHORIZED))
+                    .toList();
 
             Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");
 

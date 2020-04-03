@@ -1,9 +1,6 @@
 package org.openlmis.core.presenter;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
 
 import com.google.android.gms.common.util.CollectionUtils;
@@ -23,14 +20,11 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.activity.RnRFormListActivity;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -47,8 +41,6 @@ public class SelectPeriodPresenter extends Presenter {
     private RequisitionPeriodService requisitionPeriodService;
 
     private SelectPeriodView view;
-    @Inject
-    Context context;
     @Inject
     DirtyDataManager dirtyDataManager;
 
@@ -68,54 +60,28 @@ public class SelectPeriodPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    protected Observer<Pair<Constants.Program, List<StockCard>>> afterCorrectDirtyDataHandler() {
-        return new Observer<Pair<Constants.Program, List<StockCard>>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(Pair<Constants.Program, List<StockCard>> deletedProgramStocks) {
-                List<StockCard> stockCards = deletedProgramStocks.second;
-                Log.e(deletedProgramStocks.first.toString(), "onNext: " + (stockCards != null ? stockCards.get(0) : ""));
-                Log.e(deletedProgramStocks.first.toString(), "onNext: " + deletedProgramStocks.second.size());
-                Intent intent = RnRFormListActivity.getIntentToMe(context, deletedProgramStocks.first);
-                context.startActivity(intent);
-            }
-        };
-    }
-
-
     public void loadData(final String programCode, Period period) {
         view.loading();
-        Subscription subscription = Observable.create(new Observable.OnSubscribe<List<SelectInventoryViewModel>>() {
-            @Override
-            public void call(Subscriber<? super List<SelectInventoryViewModel>> subscriber) {
-                try {
-                    Period periodInSchedule;
-                    if (programCode.equals(Constants.RAPID_TEST_CODE)) {
-                        periodInSchedule = new Period(period.getBegin(), period.getEnd());
-                    } else {
-                        periodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
-                    }
-                    List<Inventory> inventories = inventoryRepository.queryPeriodInventory(periodInSchedule);
-                    boolean isDefaultInventoryDate = false;
-                    if (inventories.isEmpty()) {
-                        isDefaultInventoryDate = true;
-                        generateDefaultInventoryDates(periodInSchedule, inventories);
-                    }
-                    List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(inventories, isDefaultInventoryDate);
-                    subscriber.onNext(selectInventoryViewModels);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    new LMISException(e, "SelectPeriodPresenter.loadData").reportToFabric();
-                    subscriber.onError(e);
+        Subscription subscription = Observable.create((Observable.OnSubscribe<List<SelectInventoryViewModel>>) subscriber -> {
+            try {
+                Period periodInSchedule;
+                if (programCode.equals(Constants.RAPID_TEST_CODE)) {
+                    periodInSchedule = new Period(period.getBegin(), period.getEnd());
+                } else {
+                    periodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
                 }
+                List<Inventory> inventories = inventoryRepository.queryPeriodInventory(periodInSchedule);
+                boolean isDefaultInventoryDate = false;
+                if (inventories.isEmpty()) {
+                    isDefaultInventoryDate = true;
+                    generateDefaultInventoryDates(periodInSchedule, inventories);
+                }
+                List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(inventories, isDefaultInventoryDate);
+                subscriber.onNext(selectInventoryViewModels);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e, "SelectPeriodPresenter.loadData").reportToFabric();
+                subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(getSubscriber());
         subscriptions.add(subscription);
@@ -140,26 +106,23 @@ public class SelectPeriodPresenter extends Presenter {
     }
 
     private List<SelectInventoryViewModel> generateSelectInventoryViewModels(final List<Inventory> inventories, final boolean isDefaultInventoryDate) {
-        return from(inventories).transform(new Function<Inventory, SelectInventoryViewModel>() {
-            @Override
-            public SelectInventoryViewModel apply(Inventory inventory) {
-                SelectInventoryViewModel selectInventoryViewModel = new SelectInventoryViewModel(inventory);
+        return from(inventories).transform(inventory -> {
+            SelectInventoryViewModel selectInventoryViewModel = new SelectInventoryViewModel(inventory);
 
-                if (isDefaultInventoryDate && new DateTime(selectInventoryViewModel.getInventoryDate()).getDayOfMonth() == Period.DEFAULT_INVENTORY_DAY) {
-                    selectInventoryViewModel.setChecked(true);
-                }
-
-                for (Inventory comparedInventory : inventories) {
-                    if (inventory == comparedInventory) continue;
-                    String formattedInventoryDate = DateUtil.formatDate(inventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);
-                    String formattedComparedInventoryDate = DateUtil.formatDate(comparedInventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);
-                    if (formattedInventoryDate.equals(formattedComparedInventoryDate)) {
-                        selectInventoryViewModel.setShowTime(true);
-                        break;
-                    }
-                }
-                return selectInventoryViewModel;
+            if (isDefaultInventoryDate && new DateTime(selectInventoryViewModel.getInventoryDate()).getDayOfMonth() == Period.DEFAULT_INVENTORY_DAY) {
+                selectInventoryViewModel.setChecked(true);
             }
+
+            for (Inventory comparedInventory : inventories) {
+                if (inventory == comparedInventory) continue;
+                String formattedInventoryDate = DateUtil.formatDate(inventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);
+                String formattedComparedInventoryDate = DateUtil.formatDate(comparedInventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);
+                if (formattedInventoryDate.equals(formattedComparedInventoryDate)) {
+                    selectInventoryViewModel.setShowTime(true);
+                    break;
+                }
+            }
+            return selectInventoryViewModel;
         }).toList();
     }
 

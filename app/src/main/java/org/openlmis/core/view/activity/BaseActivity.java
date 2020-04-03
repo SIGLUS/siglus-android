@@ -40,19 +40,24 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.fragment.RetainedFragment;
+import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import roboguice.RoboGuice;
 import roboguice.activity.RoboActionBarActivity;
@@ -162,7 +167,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         try {
             presenter.attachView(BaseActivity.this);
         } catch (ViewNotMatchException e) {
-            new LMISException(e,"BaseActivity:onCreate").reportToFabric();
+            new LMISException(e, "BaseActivity:onCreate").reportToFabric();
             ToastUtil.show(e.getMessage());
             return;
         }
@@ -295,5 +300,18 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         }
     }
 
+
+    public String getDeletedProductCodeList(List<StockCard> stockCards) {
+        ImmutableList<String> deletedList = FluentIterable.from(stockCards).limit(3)
+                .transform(new Function<StockCard, String>() {
+                    @Nullable
+                    @Override
+                    public String apply(@Nullable StockCard stockCard) {
+                        return stockCard.getProduct().getCode();
+                    }
+                }).toList();
+        preferencesMgr.setDeletedThreeProduct(deletedList);
+        return deletedList.toString();
+    }
 }
 

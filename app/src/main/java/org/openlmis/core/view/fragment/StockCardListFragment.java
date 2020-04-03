@@ -42,6 +42,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.HomeActivity;
 import org.openlmis.core.view.activity.StockMovementsWithLotActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
@@ -49,8 +50,6 @@ import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,21 +153,11 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     }
 
     protected void createAdapter() {
-        mAdapter = new StockCardListAdapter(new ArrayList<InventoryViewModel>(), onItemViewClickListener);
+        mAdapter = new StockCardListAdapter(new ArrayList<>(), onItemViewClickListener);
     }
 
     protected void loadStockCards() {
         presenter.loadStockCards(Active);
-    }
-
-    private String getDeletedProductCodeList(List<StockCard> stockCards) {
-        return FluentIterable.from(stockCards).limit(3).transform(new Function<StockCard, String>() {
-            @javax.annotation.Nullable
-            @Override
-            public String apply(@javax.annotation.Nullable StockCard stockCard) {
-                return stockCard.getProduct().getCode();
-            }
-        }).toString();
     }
 
     @NonNull
@@ -189,7 +178,8 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     public void showWarning(List<StockCard> stockCardList) {
         WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
                 .build(buildWarningDialogFragmentDelegate(),
-                        getString(R.string.dirty_data_correct_warning, getDeletedProductCodeList(stockCardList)),
+                        getString(R.string.dirty_data_correct_warning,
+                                ((BaseActivity) getActivity()).getDeletedProductCodeList(stockCardList)),
                         getString(R.string.btn_del),
                         getString(R.string.dialog_cancel));
         warningDialogFragment.show(getFragmentManager(), "deleteProductWarningDialogFragment");
@@ -203,12 +193,9 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         stockCardRecycleView.setAdapter(mAdapter);
     }
 
-    protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
-        @Override
-        public void onItemViewClick(InventoryViewModel inventoryViewModel) {
-            Intent intent = getStockMovementIntent(inventoryViewModel);
-            startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
-        }
+    protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = inventoryViewModel -> {
+        Intent intent = getStockMovementIntent(inventoryViewModel);
+        startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
     };
 
     protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {

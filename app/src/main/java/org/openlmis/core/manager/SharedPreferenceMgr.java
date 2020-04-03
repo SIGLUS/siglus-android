@@ -83,6 +83,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_UPDATE_FILE = "updateFile";
     public static final String KEY_SILENT_FAILED = "silent_failed";
     public static final String KEY_DOWNLOADED_LATEST_VERSIONCODE = "downloaded_latest_versioncode";
+    public static final String KEY_DELETED_THREE_PRODUCT = "deleted_three_products";
     final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
 
@@ -375,4 +376,22 @@ public class SharedPreferenceMgr {
     public void setLastestVersionCode(int val) {
         sharedPreferences.edit().putInt(KEY_DOWNLOADED_LATEST_VERSIONCODE, val).apply();
     }
+
+    public void setDeletedThreeProduct(List<String> products) {
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(products);
+        sharedPreferences.edit().putString(KEY_DELETED_THREE_PRODUCT, json).apply();
+    }
+
+    public List<String> getDeletedThreeProduct() {
+        String json = sharedPreferences.getString(KEY_DELETED_THREE_PRODUCT, null);
+        if (json != null) {
+            Gson gson = new GsonBuilder().create();
+            Type type = new TypeToken<List<String>>() {
+            }.getType();
+            return gson.fromJson(json, type);
+        }
+        return null;
+    }
+
 }

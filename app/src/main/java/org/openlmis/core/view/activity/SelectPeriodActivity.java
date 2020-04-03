@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Html;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -32,13 +30,10 @@ import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.Nullable;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -120,12 +115,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     }
 
     private void bindListeners() {
-        vgContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedInventory = adapter.getItem(position);
-                invalidateNextBtn();
-            }
+        vgContainer.setOnItemClickListener((parent, view, position, id) -> {
+            selectedInventory = adapter.getItem(position);
+            invalidateNextBtn();
         });
 
         nextBtn.setOnClickListener(new SingleClickButtonListener() {
@@ -138,7 +130,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                 loading();
                 nextBtn.setEnabled(false);
                 if (shouldCheckData()) {
-                    Subscription subscription = presenter.correctDirtyObservable(getProgramFromCode(programCode)).subscribe(afterCorrectDirtyDataHandler());
+                    Subscription subscription = presenter
+                            .correctDirtyObservable(getProgramFromCode(programCode))
+                            .subscribe(afterCorrectDirtyDataHandler());
                     subscriptions.add(subscription);
                 } else {
                     goNextPage();
@@ -185,8 +179,6 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
             public void onNext(Pair<Constants.Program, List<StockCard>> deletedProgramStocks) {
                 loaded();
                 List<StockCard> stockCards = deletedProgramStocks.second;
-                Log.e(deletedProgramStocks.first.toString(), "onNext: " + (stockCards != null ? stockCards.get(0) : ""));
-                Log.e(deletedProgramStocks.first.toString(), "onNext: " + deletedProgramStocks.second.size());
                 nextBtn.setEnabled(true);
 
                 WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
@@ -203,16 +195,6 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     @NonNull
     private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(final Constants.Program program) {
         return () -> finish();
-    }
-
-    private String getDeletedProductCodeList(List<StockCard> stockCards) {
-        return FluentIterable.from(stockCards).limit(3).transform(new Function<StockCard, String>() {
-            @Nullable
-            @Override
-            public String apply(@Nullable StockCard stockCard) {
-                return stockCard.getProduct().getCode();
-            }
-        }).toString();
     }
 
     private Constants.Program getProgramFromCode(String programCode) {
