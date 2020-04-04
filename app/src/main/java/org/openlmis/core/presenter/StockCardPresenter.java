@@ -278,6 +278,7 @@ public class StockCardPresenter extends Presenter {
             public StockCard apply(Product product) {
                 StockCard stockCard = null;
                 try {
+                    //TODO
                     stockCard = stockRepository.queryStockCardByProductId(product.getId());
                     if (stockCard == null) {
                         stockCard = new StockCard();

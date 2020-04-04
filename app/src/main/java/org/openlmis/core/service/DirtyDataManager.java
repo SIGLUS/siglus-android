@@ -143,11 +143,11 @@ public class DirtyDataManager {
 
     private boolean isCorrectMovement(StockMovementItem previousMovement, StockMovementItem newestMovement) {
         Long previousSOH = previousMovement.getStockOnHand();
-        Long currentSOH = newestMovement.getStockOnHand();
+        Long currentSOH = newestMovement.getStockCard().calculateSOHFromLots();
         if (newestMovement.isNegativeMovement()) {
-            return currentSOH == previousSOH - newestMovement.getStockCard().calculateSOHFromLots();
+            return currentSOH == previousSOH - newestMovement.getMovementQuantity();
         } else if (newestMovement.isPositiveMovement()) {
-            return currentSOH == previousSOH + newestMovement.getStockCard().calculateSOHFromLots();
+            return currentSOH == previousSOH + newestMovement.getMovementQuantity();
         } else {
             return true;
         }

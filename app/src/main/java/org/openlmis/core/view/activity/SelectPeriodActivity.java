@@ -186,6 +186,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                                 getString(R.string.dirty_data_correct_warning, getDeletedProductCodeList(stockCards)),
                                 getString(R.string.btn_del),
                                 getString(R.string.dialog_cancel));
+                warningDialogFragment.setCancelable(false);
                 warningDialogFragment.show(getFragmentManager(), "deleteProductWarningDialogFragment");
             }
         };

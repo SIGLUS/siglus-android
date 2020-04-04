@@ -24,10 +24,10 @@ public class WarningDialogFragmentBuilder {
                                        String message, String positiveMessageButton,
                                        String negativeMessageButton) {
 
-        WarningDialogFragment wipeDataDialog = WarningDialogFragment.newInstance(
+        WarningDialogFragment warningDataDialog = WarningDialogFragment.newInstance(
                 message, positiveMessageButton, negativeMessageButton);
-        wipeDataDialog.setDelegate(delegate);
-        return wipeDataDialog;
+        warningDataDialog.setDelegate(delegate);
+        return warningDataDialog;
     }
 
 }

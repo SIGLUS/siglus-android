@@ -167,8 +167,7 @@ public class StockMovementItem extends BaseModel {
             }
             setMovementQuantity(movementQuantity);
 
-            if (movementType.equals(MovementReasonManager.MovementType.ISSUE)
-                    || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
+            if (isNegativeMovement()) {
                 setStockOnHand(getStockOnHand() - movementQuantity);
             } else {
                 setStockOnHand(getStockOnHand() + movementQuantity);

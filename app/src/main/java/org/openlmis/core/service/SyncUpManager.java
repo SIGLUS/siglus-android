@@ -344,7 +344,7 @@ public class SyncUpManager {
             }).toList();
 
             for (int start = 0; start < entries.size(); ) {
-                int end = (start + unitCount) >= entries.size() ? entries.size() - 1 : start + unitCount;
+                int end = (start + unitCount) >= entries.size() ? entries.size(): start + unitCount;
                 List<DirtyDataItemEntry> sub = entries.subList(start, end);
                 try {
                     SyncUpDeletedMovementResponse response = lmisRestApi.syncUpDeletedData(Long.parseLong(facilityId), sub);
@@ -354,7 +354,14 @@ public class SyncUpManager {
                 }
                 start += unitCount;
             }
-            dirtyDataRepository.updateToSynced(errorProducts);
+            List<String> shouldMarkedToSynced = FluentIterable.from(itemInfos).transform(new Function<DirtyDataItemInfo, String>() {
+                @Nullable
+                @Override
+                public String apply(@Nullable DirtyDataItemInfo dirtyDataItemInfo) {
+                    return dirtyDataItemInfo.getProductCode();
+                }
+            }).filter(s -> !errorProducts.contains(s)).toList();
+            dirtyDataRepository.updateToSynced(shouldMarkedToSynced);
             return errorProducts.size() == 0;
         } else {
             return true;

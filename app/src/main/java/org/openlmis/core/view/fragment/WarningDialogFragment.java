@@ -87,6 +87,7 @@ public class WarningDialogFragment extends DialogFragment {
             tvMessage.setText(getArguments().getString(PARAM_MESSAGE_RES));
             btnPositive.setText(getArguments().getString(PARAM_POSITIVE_TEXT_RES));
             btnNegative.setText(getArguments().getString(PARAM_NEGATIVE_TEXT_RES));
+            btnNegative.setEnabled(false);
         } else {
             tvMessage.setText(getArguments().getInt(PARAM_MESSAGE_RES));
             btnPositive.setText(getArguments().getInt(PARAM_POSITIVE_TEXT_RES));
@@ -96,7 +97,7 @@ public class WarningDialogFragment extends DialogFragment {
     }
 
     private boolean isStringArgument() {
-        return getArguments().getString(PARAM_STRING_TYPE) == PARAM_FORMAT_STRING;
+        return PARAM_FORMAT_STRING.equals(getArguments().getString(PARAM_STRING_TYPE));
     }
 
 
