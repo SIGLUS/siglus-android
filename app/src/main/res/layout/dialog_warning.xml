@@ -11,10 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="180dp"
-        tools:text="@string/msg_del_requisition"
-        android:textColor="@color/color_red" />
+        android:textColor="@color/color_red"
+        tools:text="@string/msg_del_requisition" />
 
     <LinearLayout
+        android:id="@+id/btn_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

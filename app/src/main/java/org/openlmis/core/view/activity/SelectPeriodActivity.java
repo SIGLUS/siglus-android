@@ -195,6 +195,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     @NonNull
     private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(final Constants.Program program) {
+
         return () -> finish();
     }
 

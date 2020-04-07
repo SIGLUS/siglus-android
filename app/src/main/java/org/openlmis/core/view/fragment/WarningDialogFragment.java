@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -41,7 +42,7 @@ public class WarningDialogFragment extends DialogFragment {
         return dialog;
     }
 
-    public static WarningDialogFragment newInstance(String messageResId, String positiveTextResId, String negativeTextResId) {
+    public static WarningDialogFragment newInstanceForDeleteProduct(String messageResId, String positiveTextResId, String negativeTextResId) {
         WarningDialogFragment dialog = new WarningDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_MESSAGE_RES, messageResId);
@@ -49,6 +50,7 @@ public class WarningDialogFragment extends DialogFragment {
         bundle.putString(PARAM_NEGATIVE_TEXT_RES, negativeTextResId);
         bundle.putString(PARAM_STRING_TYPE, PARAM_FORMAT_STRING);
         dialog.setArguments(bundle);
+        dialog.setCancelable(false);
         return dialog;
     }
 
@@ -65,6 +67,9 @@ public class WarningDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if (isForDeletedProductWarning()) {
+            dialog.setCanceledOnTouchOutside(false);
+        }
         return dialog;
     }
 
@@ -83,11 +88,12 @@ public class WarningDialogFragment extends DialogFragment {
         btnNegative.setOnClickListener(singleClickButtonListener);
         btnPositive.setOnClickListener(singleClickButtonListener);
 
-        if (isStringArgument()) {
+        if (isForDeletedProductWarning()) {
             tvMessage.setText(getArguments().getString(PARAM_MESSAGE_RES));
+            LinearLayout layout = (LinearLayout) contentView.findViewById(R.id.btn_group);
+            layout.setWeightSum(1f);
             btnPositive.setText(getArguments().getString(PARAM_POSITIVE_TEXT_RES));
-            btnNegative.setText(getArguments().getString(PARAM_NEGATIVE_TEXT_RES));
-            btnNegative.setEnabled(false);
+            btnNegative.setVisibility(View.GONE);
         } else {
             tvMessage.setText(getArguments().getInt(PARAM_MESSAGE_RES));
             btnPositive.setText(getArguments().getInt(PARAM_POSITIVE_TEXT_RES));
@@ -96,7 +102,7 @@ public class WarningDialogFragment extends DialogFragment {
 
     }
 
-    private boolean isStringArgument() {
+    private boolean isForDeletedProductWarning() {
         return PARAM_FORMAT_STRING.equals(getArguments().getString(PARAM_STRING_TYPE));
     }
 

@@ -24,7 +24,7 @@ public class WarningDialogFragmentBuilder {
                                        String message, String positiveMessageButton,
                                        String negativeMessageButton) {
 
-        WarningDialogFragment warningDataDialog = WarningDialogFragment.newInstance(
+        WarningDialogFragment warningDataDialog = WarningDialogFragment.newInstanceForDeleteProduct(
                 message, positiveMessageButton, negativeMessageButton);
         warningDataDialog.setDelegate(delegate);
         return warningDataDialog;

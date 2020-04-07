@@ -87,19 +87,18 @@ public class StockCardPresenter extends Presenter {
         return new Observer<Pair<ArchiveStatus, List<StockCard>>>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted");
+                Log.d(TAG, "afterCorrectDirtyDataHandler onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: ", e);
+                Log.d(TAG, "afterCorrectDirtyDataHandler onError: ", e);
             }
 
             @Override
             public void onNext(Pair<ArchiveStatus, List<StockCard>> statusListPair) {
                 ArchiveStatus status = statusListPair.first;
                 List<StockCard> deletedStocks = statusListPair.second;
-                Log.e(TAG, "onNext: ");
                 if (!CollectionUtils.isEmpty(deletedStocks)) {
                     view.showWarning(deletedStocks);
                 } else {
