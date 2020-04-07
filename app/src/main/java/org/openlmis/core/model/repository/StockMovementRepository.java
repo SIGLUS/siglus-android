@@ -85,7 +85,8 @@ public class StockMovementRepository {
 
     public void batchCreateStockMovementItemAndLotItems(final StockMovementItem stockMovementItem) throws LMISException {
         stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
-
+        // Create Stock Movement history list
+        create(stockMovementItem);
         if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())
                 || CollectionUtils.isNotEmpty(stockMovementItem.getNewAddedLotMovementItemListWrapper())) {
             lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
@@ -101,8 +102,6 @@ public class StockMovementRepository {
             genericDao.update(stockMovementItem);
             stockMovementItem.getStockCard().setStockOnHand(totalSoh);
         }
-        // Create Stock Movement history list
-        create(stockMovementItem);
     }
 
     public void batchCreateOrUpdateStockMovementsAndLotMovements(final List<StockMovementItem> stockMovementItems) throws LMISException {
