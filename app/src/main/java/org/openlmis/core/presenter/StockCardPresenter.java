@@ -24,6 +24,8 @@ import android.util.Pair;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
@@ -102,8 +104,7 @@ public class StockCardPresenter extends Presenter {
                 if (!CollectionUtils.isEmpty(deletedStocks)) {
                     view.showWarning(deletedStocks);
                 } else {
-                    Subscription subscription = getLoadStockCardsObservable(status).subscribe(afterLoadHandler);
-                    subscriptions.add(subscription);
+                    loadStockCardsInner(status);
                 }
             }
         };
@@ -126,7 +127,16 @@ public class StockCardPresenter extends Presenter {
             view.loading();
         }
 
-        Subscription subscription = correctDirtyObservable(status).subscribe(afterCorrectDirtyDataHandler());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)) {
+            Subscription subscription = correctDirtyObservable(status).subscribe(afterCorrectDirtyDataHandler());
+            subscriptions.add(subscription);
+        } else {
+            loadStockCardsInner(status);
+        }
+    }
+
+    private void loadStockCardsInner(ArchiveStatus status) {
+        Subscription subscription = getLoadStockCardsObservable(status).subscribe(afterLoadHandler);
         subscriptions.add(subscription);
     }
 

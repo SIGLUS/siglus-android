@@ -6,4 +6,5 @@
     <bool name="feature_all_drugs_movements_history">true</bool>
     <bool name="feature_basic_products_in_inventory">true</bool>
     <bool name="feature_patient_data">true</bool>
+    <bool name="feature_deleted_dirty_data">true</bool>
 </resources>

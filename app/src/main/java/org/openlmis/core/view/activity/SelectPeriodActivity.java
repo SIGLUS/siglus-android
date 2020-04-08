@@ -157,11 +157,12 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     }
 
     private boolean shouldCheckData() {
-        return AL_PROGRAM_CODE.equals(programCode)
+        boolean correctCode = AL_PROGRAM_CODE.equals(programCode)
                 || MMIA_PROGRAM_CODE.equals(programCode)
                 || VIA_PROGRAM_CODE.equals(programCode)
                 || RAPID_TEST_CODE.equals(programCode)
                 || PTV_PROGRAM_CODE.equals(programCode);
+        return correctCode && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data);
     }
 
     protected Observer<Pair<Constants.Program, List<StockCard>>> afterCorrectDirtyDataHandler() {

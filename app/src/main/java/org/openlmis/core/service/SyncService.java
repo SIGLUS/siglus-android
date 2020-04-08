@@ -33,6 +33,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.User;
 import org.openlmis.core.training.TrainingSyncAdapter;
+import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
@@ -112,7 +113,7 @@ public class SyncService extends Service {
                 bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
                 bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
                 bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                bundle.putBoolean("isUserTriggered", isUserTriggered);
+                bundle.putBoolean(Constants.IS_USER_TRIGGERED_SYCED, isUserTriggered);
 
                 requestSync(account, syncContentAuthority, bundle);
             }

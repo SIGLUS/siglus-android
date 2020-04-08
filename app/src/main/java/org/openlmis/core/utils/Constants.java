@@ -144,6 +144,8 @@ public final class Constants {
     public static final String FINAL_STOCK = "Final Stock";
     public static final String TOTAL = "Total";
 
+    public static final String IS_USER_TRIGGERED_SYCED = "isUserTriggered";
+
     private Constants() {
 
     }

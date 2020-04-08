@@ -31,6 +31,8 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
@@ -72,12 +74,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
         Log.d(TAG, "===> Syncing Data to server");
-        if (extras != null && extras.getBoolean("isUserTriggered")) {
+        if (shouldCorrectData(extras)) {
             //TODO
             dirtyDataManager.correctData();
         }
         upgradeManager.triggerUpgrade();
         triggerSync();
+    }
+
+    private boolean shouldCorrectData(Bundle extras) {
+        return extras != null
+                && extras.getBoolean(Constants.IS_USER_TRIGGERED_SYCED)
+                && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data);
     }
 
     private void triggerSync() {
