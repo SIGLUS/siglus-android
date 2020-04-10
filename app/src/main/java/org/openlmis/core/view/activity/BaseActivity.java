@@ -40,7 +40,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.InjectPresenter;
@@ -301,16 +300,16 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
     }
 
 
-    public String getDeletedProductCodeList(List<StockCard> stockCards) {
-        ImmutableList<String> deletedList = FluentIterable.from(stockCards).limit(3)
-                .transform(new Function<StockCard, String>() {
+    public String getDeletedProductCodeList() {
+        ImmutableList<String> deletedList = FluentIterable.from(preferencesMgr.getDeletedProduct())
+                .limit(3)
+                .transform(new Function<String, String>() {
                     @Nullable
                     @Override
-                    public String apply(@Nullable StockCard stockCard) {
-                        return stockCard.getProduct().getCode();
+                    public String apply(@Nullable String productCode) {
+                        return productCode;
                     }
                 }).toList();
-        preferencesMgr.setDeletedThreeProduct(deletedList);
         return deletedList.toString();
     }
 }

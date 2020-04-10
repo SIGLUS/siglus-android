@@ -1,7 +1,6 @@
 package org.openlmis.core.presenter;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
@@ -49,11 +48,11 @@ public class SelectPeriodPresenter extends Presenter {
         view = (SelectPeriodView) v;
     }
 
-    public Observable<Pair<Constants.Program, List<StockCard>>> correctDirtyObservable(Constants.Program from) {
-        return Observable.create((Observable.OnSubscribe<Pair<Constants.Program, List<StockCard>>>) subscriber -> {
+    public Observable<Constants.Program> correctDirtyObservable(Constants.Program from) {
+        return Observable.create((Observable.OnSubscribe<Constants.Program>) subscriber -> {
             List<StockCard> deletedStockCards = dirtyDataManager.correctData();
             if (!CollectionUtils.isEmpty(deletedStockCards)) {
-                subscriber.onNext(new Pair<>(from, deletedStockCards));
+                subscriber.onNext(from);
             } else {
                 subscriber.onCompleted();
             }

@@ -377,13 +377,13 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putInt(KEY_DOWNLOADED_LATEST_VERSIONCODE, val).apply();
     }
 
-    public void setDeletedThreeProduct(List<String> products) {
+    public void setDeletedProduct(List<String> products) {
         Gson gson = new GsonBuilder().create();
         String json = gson.toJson(products);
         sharedPreferences.edit().putString(KEY_DELETED_THREE_PRODUCT, json).apply();
     }
 
-    public List<String> getDeletedThreeProduct() {
+    public List<String> getDeletedProduct() {
         String json = sharedPreferences.getString(KEY_DELETED_THREE_PRODUCT, null);
         if (json != null) {
             Gson gson = new GsonBuilder().create();

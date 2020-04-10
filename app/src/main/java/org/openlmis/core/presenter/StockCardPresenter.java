@@ -102,7 +102,7 @@ public class StockCardPresenter extends Presenter {
                 ArchiveStatus status = statusListPair.first;
                 List<StockCard> deletedStocks = statusListPair.second;
                 if (!CollectionUtils.isEmpty(deletedStocks)) {
-                    view.showWarning(deletedStocks);
+                    view.showWarning();
                 } else {
                     loadStockCardsInner(status);
                 }
@@ -322,6 +322,6 @@ public class StockCardPresenter extends Presenter {
 
         void refreshBannerText();
 
-        void showWarning(List<StockCard> stockCardList);
+        void showWarning();
     }
 }

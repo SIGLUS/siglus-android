@@ -38,7 +38,6 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
@@ -175,11 +174,11 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     }
 
     @Override
-    public void showWarning(List<StockCard> stockCardList) {
+    public void showWarning() {
         WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
                 .build(buildWarningDialogFragmentDelegate(),
                         getString(R.string.dirty_data_correct_warning,
-                                ((BaseActivity) getActivity()).getDeletedProductCodeList(stockCardList)),
+                                ((BaseActivity) getActivity()).getDeletedProductCodeList()),
                         getString(R.string.btn_del),
                         getString(R.string.dialog_cancel));
         warningDialogFragment.show(getFragmentManager(), "deleteProductWarningDialogFragment");

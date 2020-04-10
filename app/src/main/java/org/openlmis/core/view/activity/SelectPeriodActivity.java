@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Html;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -19,7 +18,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -165,8 +163,8 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         return correctCode && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data);
     }
 
-    protected Observer<Pair<Constants.Program, List<StockCard>>> afterCorrectDirtyDataHandler() {
-        return new Observer<Pair<Constants.Program, List<StockCard>>>() {
+    protected Observer<Constants.Program> afterCorrectDirtyDataHandler() {
+        return new Observer<Constants.Program>() {
             @Override
             public void onCompleted() {
                 goNextPage();
@@ -177,14 +175,13 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
             }
 
             @Override
-            public void onNext(Pair<Constants.Program, List<StockCard>> deletedProgramStocks) {
+            public void onNext(Constants.Program from) {
                 loaded();
-                List<StockCard> stockCards = deletedProgramStocks.second;
                 nextBtn.setEnabled(true);
 
                 WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
-                        .build(buildWarningDialogFragmentDelegate(deletedProgramStocks.first),
-                                getString(R.string.dirty_data_correct_warning, getDeletedProductCodeList(stockCards)),
+                        .build(buildWarningDialogFragmentDelegate(from),
+                                getString(R.string.dirty_data_correct_warning, getDeletedProductCodeList()),
                                 getString(R.string.btn_del),
                                 getString(R.string.dialog_cancel));
                 warningDialogFragment.setCancelable(false);

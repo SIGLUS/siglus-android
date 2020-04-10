@@ -8,6 +8,7 @@ import com.google.inject.Singleton;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.StockCard;
@@ -51,6 +52,9 @@ public class DirtyDataManager {
     @Inject
     CmmRepository cmmRepository;
 
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
+
     public DirtyDataManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
     }
@@ -60,8 +64,16 @@ public class DirtyDataManager {
 
         List<StockCard> deletedStockCards = getWrongStockCard(stockCards);
         saveDeletedInfoToDB(deletedStockCards);
-        deleteAndReset(deletedStockCards);
 
+        List<String> productCodes = FluentIterable.from(deletedStockCards).transform(new Function<StockCard, String>() {
+            @Nullable
+            @Override
+            public String apply(@Nullable StockCard stockCard) {
+                return stockCard.getProduct().getCode();
+            }
+        }).toList();
+        deleteAndReset(productCodes);
+        sharedPreferenceMgr.setDeletedProduct(productCodes);
         return deletedStockCards;
     }
 
@@ -83,15 +95,8 @@ public class DirtyDataManager {
         }
     }
 
-    private void deleteAndReset(List<StockCard> deletedStockCards) {
-        if (deletedStockCards.size() > 0) {
-            List<String> productCodes = FluentIterable.from(deletedStockCards).transform(new Function<StockCard, String>() {
-                @Nullable
-                @Override
-                public String apply(@Nullable StockCard stockCard) {
-                    return stockCard.getProduct().getCode();
-                }
-            }).toList();
+    private void deleteAndReset(List<String> productCodes) {
+        if (productCodes.size() > 0) {
             dirtyDataRepository.deleteDirtyDataByProductCode(productCodes);
             try {
                 stockRepository.insertNewInventory(productCodes);

@@ -94,7 +94,7 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
     }
 
     @Override
-    public void showWarning(List<StockCard> stockCardList) {
+    public void showWarning() {
 
     }
 }
