@@ -399,26 +399,28 @@ public class StockRepository {
     }
 
     public void insertNewInventory(List<String> productCodeList) throws LMISException {
-        StockMovementItem addNewStockMovementItem = new StockMovementItem();
-        Cursor getStockCardCursor = null;
+        Date now = new Date();
+        Cursor getStockCardCursor;
 
         for (String productCode : productCodeList) {
             String getStockCard = "SELECT * FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "');";
             getStockCardCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getStockCard, null);
             if (getStockCardCursor != null && getStockCardCursor.moveToFirst()) {
-                addNewStockMovementItem.setCreatedTime(new Date());
+                StockMovementItem addNewStockMovementItem = new StockMovementItem();
+                StockCard stockCard = getStockCardById(getStockCardCursor.getInt(getStockCardCursor.getColumnIndexOrThrow("id"))).get(0);
+                addNewStockMovementItem.setCreatedTime(now);
                 addNewStockMovementItem.setStockOnHand(0);
                 addNewStockMovementItem.setDocumentNumber(null);
-                addNewStockMovementItem.setMovementDate(new Date());
+                addNewStockMovementItem.setMovementDate(now);
                 addNewStockMovementItem.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
                 addNewStockMovementItem.setReason("INVENTORY");
                 addNewStockMovementItem.setRequested(null);
                 addNewStockMovementItem.setMovementQuantity(0);
                 addNewStockMovementItem.setSignature(null);
                 addNewStockMovementItem.setSynced(false);
-                addNewStockMovementItem.setCreatedAt(new Date());
-                addNewStockMovementItem.setUpdatedAt(new Date());
-                addNewStockMovementItem.setStockCard(getStockCardById(getStockCardCursor.getInt(getStockCardCursor.getColumnIndexOrThrow("id"))).get(0));
+                addNewStockMovementItem.setCreatedAt(now);
+                addNewStockMovementItem.setUpdatedAt(now);
+                addNewStockMovementItem.setStockCard(stockCard);
                 dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
                     @Override
                     public Void operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
@@ -448,11 +450,10 @@ public class StockRepository {
                     + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "'));";
             getLotsOnHandItemsCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getLotsOnHandItemsByStockCardId, null);
             while (getLotsOnHandItemsCursor.moveToNext()) {
-                if (getLotsOnHandItemsCursor.getInt(getLotsOnHandItemsCursor.getColumnIndexOrThrow("quantityOnHand")) > 0) {
-                    String reSetQuantityOnHandValue = "UPDATE lots_on_hand "
-                            + "SET quantityOnHand=0 WHERE id='" + getLotsOnHandItemsCursor.getInt(getLotsOnHandItemsCursor.getColumnIndexOrThrow("id")) + "';";
-                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(reSetQuantityOnHandValue);
-                }
+                int lotsOnHandId = getLotsOnHandItemsCursor.getInt(getLotsOnHandItemsCursor.getColumnIndexOrThrow("id"));
+                String reSetQuantityOnHandValue = "UPDATE lots_on_hand "
+                        + "SET quantityOnHand=0 WHERE id='" + lotsOnHandId + "';";
+                LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(reSetQuantityOnHandValue);
             }
         }
         if (!getLotsOnHandItemsCursor.isClosed()) {
