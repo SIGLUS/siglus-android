@@ -29,14 +29,18 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.utils.Constants;
+
+import java.util.List;
 
 import roboguice.RoboGuice;
 
@@ -75,8 +79,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         Log.d(TAG, "===> Syncing Data to server");
         if (shouldCorrectData(extras)) {
-            //TODO
-            dirtyDataManager.correctData();
+            List<StockCard> deleteStockCards = dirtyDataManager.correctData();
+            if (!CollectionUtils.isEmpty(deleteStockCards)) {
+                sendDeletedProductBroadcast();
+            }
         }
         upgradeManager.triggerUpgrade();
         triggerSync();
@@ -129,6 +135,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void sendSyncFinishedBroadcast() {
         Intent intent = new Intent();
         intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
+    private void sendDeletedProductBroadcast() {
+        Intent intent = new Intent(Constants.INTENT_FILTER_DELETED_PRODUCT);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }

@@ -72,6 +72,7 @@ import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_home_page)
 public class HomeActivity extends BaseActivity {
+    private static final String TAG = HomeActivity.class.getSimpleName();
 
     @InjectView(R.id.btn_stock_card)
     Button btnStockCard;
@@ -144,6 +145,7 @@ public class HomeActivity extends BaseActivity {
         registerSyncStartReceiver();
         registerSyncFinishedReceiver();
         registerErrorFinishedReceiver();
+        registerDeletedProductReceiver();
 
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rapid_test)) {
             btnRapidTestReport.setVisibility(View.GONE);
@@ -153,6 +155,24 @@ public class HomeActivity extends BaseActivity {
             btnPatientData.setVisibility(View.GONE);
         }
         updateButtonConfigView();
+    }
+
+    private void registerDeletedProductReceiver() {
+        IntentFilter filter = new IntentFilter(Constants.INTENT_FILTER_DELETED_PRODUCT);
+        LocalBroadcastManager.getInstance(this).registerReceiver(deletedProductReceiver, filter);
+    }
+
+    private BroadcastReceiver deletedProductReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showDeletedWarningDialog(positiveClick());
+        }
+    };
+
+    private WarningDialogFragment.DialogDelegate positiveClick() {
+        return () -> {
+
+        };
     }
 
     private void registerSyncStartReceiver() {

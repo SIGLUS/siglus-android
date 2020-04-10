@@ -46,6 +46,8 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.fragment.RetainedFragment;
+import org.openlmis.core.view.fragment.WarningDialogFragment;
+import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -68,6 +70,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     @Inject
     SharedPreferenceMgr preferencesMgr;
+    @Inject
+    WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     protected RetainedFragment dataFragment;
     protected Presenter presenter;
@@ -311,6 +315,16 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
                     }
                 }).toList();
         return deletedList.toString();
+    }
+
+    public void showDeletedWarningDialog(WarningDialogFragment.DialogDelegate dialogDelegate) {
+        WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
+                .build(dialogDelegate,
+                        getString(R.string.dirty_data_correct_warning,
+                                getDeletedProductCodeList()),
+                        getString(R.string.btn_del),
+                        getString(R.string.dialog_cancel));
+        warningDialogFragment.show(getFragmentManager(), "deleteProductWarningDialogFragment");
     }
 }
 

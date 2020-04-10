@@ -45,7 +45,6 @@ import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.HomeActivity;
 import org.openlmis.core.view.activity.StockMovementsWithLotActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
-import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
@@ -81,8 +80,6 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     StockCardListAdapter mAdapter;
 
     private int currentPosition;
-    @Inject
-    private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     @Override
     public Presenter initPresenter() {
@@ -175,13 +172,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @Override
     public void showWarning() {
-        WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
-                .build(buildWarningDialogFragmentDelegate(),
-                        getString(R.string.dirty_data_correct_warning,
-                                ((BaseActivity) getActivity()).getDeletedProductCodeList()),
-                        getString(R.string.btn_del),
-                        getString(R.string.dialog_cancel));
-        warningDialogFragment.show(getFragmentManager(), "deleteProductWarningDialogFragment");
+        ((BaseActivity) getActivity()).showDeletedWarningDialog(buildWarningDialogFragmentDelegate());
     }
 
     private void initRecycleView() {

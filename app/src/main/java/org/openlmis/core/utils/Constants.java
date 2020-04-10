@@ -125,6 +125,7 @@ public final class Constants {
     public static final String INTENT_FILTER_START_SYNC_DATA = LMISApp.getContext().getPackageName() + ".start.sync_data";
     public static final String INTENT_FILTER_FINISH_SYNC_DATA = LMISApp.getContext().getPackageName() + ".finish.sync_data";
     public static final String INTENT_FILTER_ERROR_SYNC_DATA = LMISApp.getContext().getPackageName() + ".error.sync_data";
+    public static final String INTENT_FILTER_DELETED_PRODUCT = LMISApp.getContext().getPackageName() + ".deleted.product";
 
     // error define
     public static final String SYNC_MOVEMENT_ERROR = "sync_movement_error";

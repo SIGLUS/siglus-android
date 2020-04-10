@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.model.Period;
@@ -25,7 +24,6 @@ import org.openlmis.core.utils.ProgramUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.adapter.SelectPeriodAdapter;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
-import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
@@ -72,8 +70,6 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private boolean isMissedPeriod;
     private Period period;
 
-    @Inject
-    private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     @Override
     protected ScreenName getScreenName() {
@@ -178,14 +174,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
             public void onNext(Constants.Program from) {
                 loaded();
                 nextBtn.setEnabled(true);
-
-                WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder
-                        .build(buildWarningDialogFragmentDelegate(from),
-                                getString(R.string.dirty_data_correct_warning, getDeletedProductCodeList()),
-                                getString(R.string.btn_del),
-                                getString(R.string.dialog_cancel));
-                warningDialogFragment.setCancelable(false);
-                warningDialogFragment.show(getFragmentManager(), "deleteProductWarningDialogFragment");
+                showDeletedWarningDialog(buildWarningDialogFragmentDelegate(from));
             }
         };
     }
