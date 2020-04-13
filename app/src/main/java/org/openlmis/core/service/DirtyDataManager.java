@@ -1,5 +1,6 @@
 package org.openlmis.core.service;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -11,6 +12,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
@@ -135,7 +137,8 @@ public class DirtyDataManager {
             try {
                 List<StockMovementItem> stockMovementItems = stockMovementRepository.listLastTwoStockMovements(stockCard.getId());
                 if (stockMovementItems != null && stockMovementItems.size() == 2) {
-                    if (!isCorrectMovement(stockMovementItems.get(0), stockMovementItems.get(1))) {
+                    if (!isCorrectMovement(stockMovementItems.get(0), stockMovementItems.get(1))
+                            || !isCorrectLotOnHand(stockCard)) {
                         deleted.add(stockCard);
                     }
                 }
@@ -144,6 +147,15 @@ public class DirtyDataManager {
             }
         }
         return deleted;
+    }
+
+    private boolean isCorrectLotOnHand(StockCard stockCard) {
+        List<LotOnHand> lotOnHands = stockCard.getLotOnHandListWrapper();
+        if (CollectionUtils.isEmpty(lotOnHands)) {
+            return true;
+        }
+        return FluentIterable.from(lotOnHands).allMatch(lotOnHand ->
+                lotOnHand != null && lotOnHand.getQuantityOnHand() >= 0);
     }
 
     private boolean isCorrectMovement(StockMovementItem previousMovement, StockMovementItem newestMovement) {
