@@ -21,6 +21,7 @@ package org.openlmis.core.service;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -224,9 +225,10 @@ public class SyncDownManager {
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
                     syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
-                    Log.d(TAG, "syncDownServerData onCompleted");
                     syncChangeKit();
-                    sendSyncFinishedBroadcast();
+                    if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+                        sendSyncFinishedBroadcast();
+                    }
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
                 }

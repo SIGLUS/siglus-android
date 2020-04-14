@@ -339,6 +339,8 @@ public class HomeActivity extends BaseActivity {
         if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
             syncTimeView.showLastSyncTime();
             updateButtonConfigView();
+        } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+            syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
         } else {
             syncTimeView.setSyncStockCardLastYearText();
         }

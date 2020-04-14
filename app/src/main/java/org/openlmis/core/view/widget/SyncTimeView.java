@@ -168,6 +168,9 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     }
 
     public void setSyncedMovementError(String error) {
+        rnrLastSyncTime = sharedPreferenceMgr.getRnrLastSyncTime();
+        stockLastSyncTime = sharedPreferenceMgr.getStockLastSyncTime();
+        hideSyncProgressBarAndShowIcon();
         String msg = context.getString(R.string.sync_stock_movement_error, error, updateSyncTimeViewUI());
         txSyncTime.setText(msg);
         ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
