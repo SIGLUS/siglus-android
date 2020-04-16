@@ -63,6 +63,7 @@ import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -170,9 +171,7 @@ public class HomeActivity extends BaseActivity {
     };
 
     private WarningDialogFragment.DialogDelegate positiveClick() {
-        return () -> {
-
-        };
+        return () -> sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
     }
 
     private void registerSyncStartReceiver() {

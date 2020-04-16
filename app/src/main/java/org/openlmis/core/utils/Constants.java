@@ -48,7 +48,9 @@ public final class Constants {
             return code;
         }
 
-        public String getReportType() {return reportType; }
+        public String getReportType() {
+            return reportType;
+        }
 
         public int getTitle() {
             return title;
@@ -64,14 +66,14 @@ public final class Constants {
     public static final String AL_PROGRAM_CODE = "MALARIA";
     public static final String PTV_PROGRAM_CODE = "PTV";
     public static final String TEST_KIT_PROGRAM_CODE = "TEST_KIT";
-    public static final String VIA_PROGRAM_CHILD_CODE_TARV="TARV";
+    public static final String VIA_PROGRAM_CHILD_CODE_TARV = "TARV";
     public static final List<Constants.Program> PROGRAMES = Arrays.asList(Constants.Program.VIA_PROGRAM,
-                    Constants.Program.MMIA_PROGRAM,
-                    Constants.Program.AL_PROGRAM,
-                    Constants.Program.PTV_PROGRAM,
-                    Constants.Program.RAPID_TEST_PROGRAM);
+            Constants.Program.MMIA_PROGRAM,
+            Constants.Program.AL_PROGRAM,
+            Constants.Program.PTV_PROGRAM,
+            Constants.Program.RAPID_TEST_PROGRAM);
 
-     //Don't change these reportTypes codes!!!
+    //Don't change these reportTypes codes!!!
     public static final String MMIA_REPORT = "MMIA";
     public static final String VIA_REPORT = "VIA";
     public static final String RAPID_REPORT = "TEST_KIT";
@@ -126,6 +128,8 @@ public final class Constants {
     public static final String INTENT_FILTER_FINISH_SYNC_DATA = LMISApp.getContext().getPackageName() + ".finish.sync_data";
     public static final String INTENT_FILTER_ERROR_SYNC_DATA = LMISApp.getContext().getPackageName() + ".error.sync_data";
     public static final String INTENT_FILTER_DELETED_PRODUCT = LMISApp.getContext().getPackageName() + ".deleted.product";
+    // sync within AndroidManifest.xml
+    public static final String INTENT_FILTER_ONE_MONTHLY_TASK = LMISApp.getContext().getPackageName() + ".one.monthly.task";
 
     // error define
     public static final String SYNC_MOVEMENT_ERROR = "sync_movement_error";

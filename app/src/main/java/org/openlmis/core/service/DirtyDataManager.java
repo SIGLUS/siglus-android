@@ -1,5 +1,8 @@
 package org.openlmis.core.service;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,7 +24,6 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -32,13 +34,17 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import roboguice.RoboGuice;
+
 
 @Singleton
 public class DirtyDataManager {
 
     private static final String TAG = DirtyDataManager.class.getSimpleName();
 
-    protected LMISRestApi lmisRestApi;
+    // the newest two already checked.
+    private static final int DO_NOT_CHECK_NEWEST_TWO = 3;
+    private static final int CHECK_NEWEST_TWO = 2;
 
     @Inject
     StockMovementRepository stockMovementRepository;
@@ -58,25 +64,39 @@ public class DirtyDataManager {
     SharedPreferenceMgr sharedPreferenceMgr;
 
     public DirtyDataManager() {
-        lmisRestApi = LMISApp.getInstance().getRestApi();
+        RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
     }
 
     public List<StockCard> correctData() {
         List<StockCard> stockCards = stockRepository.list();
 
-        List<StockCard> deletedStockCards = getWrongStockCard(stockCards);
+        List<StockCard> deletedStockCards = checkTheLastTwoMovementAndLotSOH(stockCards);
         saveDeletedInfoToDB(deletedStockCards);
 
-        List<String> productCodes = FluentIterable.from(deletedStockCards).transform(new Function<StockCard, String>() {
+        List<String> productCodes = getCodeFromStockCard(deletedStockCards);
+        deleteAndReset(productCodes);
+        sharedPreferenceMgr.setDeletedProduct(productCodes);
+        return deletedStockCards;
+    }
+
+    public List<StockCard> scanAllStockMovements() {
+        List<StockCard> stockCards = stockRepository.list();
+
+        List<StockCard> deletedStockCards = checkAllMovementAndLotSOHAndSaveToDB(stockCards);
+        List<String> productCodes = getCodeFromStockCard(deletedStockCards);
+        deleteAndReset(productCodes);
+        sharedPreferenceMgr.setDeletedProduct(productCodes);
+        return stockCards;
+    }
+
+    private List<String> getCodeFromStockCard(List<StockCard> stockCardList) {
+        return FluentIterable.from(stockCardList).transform(new Function<StockCard, String>() {
             @Nullable
             @Override
             public String apply(@Nullable StockCard stockCard) {
                 return stockCard.getProduct().getCode();
             }
         }).toList();
-        deleteAndReset(productCodes);
-        sharedPreferenceMgr.setDeletedProduct(productCodes);
-        return deletedStockCards;
     }
 
     private void saveDeletedInfoToDB(List<StockCard> deletedStockCards) {
@@ -95,6 +115,19 @@ public class DirtyDataManager {
 
             dirtyDataRepository.save(dirtyDataItems);
         }
+    }
+
+    private void saveDeletedMovementToDB(List<StockMovementItem> movementItems, String productCode) {
+        final String facilityId = sharedPreferenceMgr.getUserFacilityId();
+        if (TextUtils.isEmpty(facilityId)) {
+            return;
+        }
+        DirtyDataItemInfo dirtyDataItems = convertStockMovementItemsToStockMovementEntriesForSave(
+                facilityId,
+                movementItems,
+                productCode);
+
+        dirtyDataRepository.save(dirtyDataItems);
     }
 
     private void deleteAndReset(List<String> productCodes) {
@@ -131,15 +164,54 @@ public class DirtyDataManager {
         return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type));
     }
 
-    private List<StockCard> getWrongStockCard(List<StockCard> stockCards) {
+    private List<StockCard> checkTheLastTwoMovementAndLotSOH(List<StockCard> stockCards) {
         List<StockCard> deleted = new ArrayList<>();
         for (StockCard stockCard : stockCards) {
             try {
                 List<StockMovementItem> stockMovementItems = stockMovementRepository.listLastTwoStockMovements(stockCard.getId());
-                if (stockMovementItems != null && stockMovementItems.size() == 2) {
+                if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
                     if (!isCorrectMovement(stockMovementItems.get(0), stockMovementItems.get(1))
                             || !isCorrectLotOnHand(stockCard)) {
                         deleted.add(stockCard);
+                    }
+                }
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+        }
+        return deleted;
+    }
+
+    private List<StockCard> checkAllMovementAndLotSOHAndSaveToDB(List<StockCard> stockCards) {
+        List<StockCard> deleted = new ArrayList<>();
+        for (StockCard stockCard : stockCards) {
+            try {
+                List<StockMovementItem> stockMovementItems = stockMovementRepository.queryMovementByStockCardId(stockCard.getId());
+                if (CollectionUtils.isEmpty(stockMovementItems)) {
+                    continue;
+                }
+                if (stockMovementItems.size() < DO_NOT_CHECK_NEWEST_TWO) {
+                    continue;
+                }
+                if (!isCorrectLotOnHand(stockCard)) {
+                    deleted.add(stockCard);
+                    continue;
+                }
+                for (int i = 0; i < stockMovementItems.size() - DO_NOT_CHECK_NEWEST_TWO; i++) {
+                    if (!isCorrectMovements(stockMovementItems.get(i), stockMovementItems.get(i + 1))) {
+                        StockMovementItem previousMovement = stockMovementItems.get(i);
+                        StockMovementItem currentMovement = stockMovementItems.get(i + 1);
+                        Log.e(TAG, stockCard.getProduct().getCode()
+                                + "(" + stockCard.calculateSOHFromLots() + ")"
+                                + ":previous id=" + previousMovement.getId()
+                                + ",current id =" + currentMovement.getId()
+                                + ";previousSOH = " + previousMovement.getStockOnHand()
+                                + (currentMovement.isNegativeMovement() ? ",-" : ",+")
+                                + ",movementQuantity=" + currentMovement.getMovementQuantity()
+                                + ",currentSOH=" + currentMovement.getStockOnHand());
+                        deleted.add(stockCard);
+                        saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
+                        break;
                     }
                 }
             } catch (LMISException e) {
@@ -159,14 +231,24 @@ public class DirtyDataManager {
     }
 
     private boolean isCorrectMovement(StockMovementItem previousMovement, StockMovementItem newestMovement) {
-        Long previousSOH = previousMovement.getStockOnHand();
-        Long currentSOH = newestMovement.getStockCard().calculateSOHFromLots();
+        return checkFormula(newestMovement, newestMovement.getStockCard().calculateSOHFromLots(),
+                previousMovement.getStockOnHand(), newestMovement.getMovementQuantity());
+    }
+
+    private boolean isCorrectMovements(StockMovementItem previousMovement, StockMovementItem newestMovement) {
+        return checkFormula(newestMovement, newestMovement.getStockOnHand(),
+                previousMovement.getStockOnHand(), newestMovement.getMovementQuantity());
+    }
+
+    private boolean checkFormula(StockMovementItem newestMovement, Long currentSOH,
+                                 Long previousSOH, Long currentQuantity) {
         if (newestMovement.isNegativeMovement()) {
-            return currentSOH == previousSOH - newestMovement.getMovementQuantity();
+            return currentSOH == previousSOH - currentQuantity;
         } else if (newestMovement.isPositiveMovement()) {
-            return currentSOH == previousSOH + newestMovement.getMovementQuantity();
+            return currentSOH == previousSOH + currentQuantity;
         } else {
             return true;
         }
     }
+
 }

@@ -262,7 +262,10 @@ public class StockMovementRepository {
 
     public List<StockMovementItem> queryMovementByStockCardId(final long stockCardId) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, dao ->
-                dao.queryBuilder().where().eq("stockCard_id", stockCardId).query()
+                dao.queryBuilder().orderBy("movementDate", true)
+                        .orderBy("createdTime", true)
+                        .orderBy("id", true)
+                        .where().eq("stockCard_id", stockCardId).query()
         );
     }
 

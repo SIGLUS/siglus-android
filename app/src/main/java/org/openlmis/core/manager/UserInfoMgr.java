@@ -51,6 +51,7 @@ public final class UserInfoMgr {
 
         SharedPreferenceMgr.getInstance().setCurrentUserFacility(user.getFacilityName());
         SharedPreferenceMgr.getInstance().setLastLoginUser(user.getUsername());
+        SharedPreferenceMgr.getInstance().setUserFacilityId(user.getFacilityId());
         this.user = user;
     }
 

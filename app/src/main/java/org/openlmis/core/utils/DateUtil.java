@@ -249,4 +249,32 @@ public final class DateUtil {
         CALENDAR_NOW.set(Calendar.DAY_OF_MONTH, CALENDAR_NOW.getActualMaximum(Calendar.DAY_OF_MONTH));
         return CALENDAR_NOW.getTime();
     }
+
+    public static Long calculateTaskTriggerTime() {
+        Calendar triggerCalendar = new GregorianCalendar();
+        Calendar nowCalendar = new GregorianCalendar();
+        triggerCalendar.set(Calendar.DAY_OF_MONTH, 5);
+        triggerCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        if (triggerCalendar.before(nowCalendar)) {
+            triggerCalendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH) + 1);
+        }
+        // FIXME: 30 minutes later is for test..
+//        return triggerCalendar.getTimeInMillis();
+        nowCalendar.set(Calendar.MINUTE, nowCalendar.get(Calendar.MINUTE) + 30);
+        return nowCalendar.getTimeInMillis();
+    }
+
+    public static Long calcculateTaskTriggerLatency() {
+        Calendar triggerCalendar = new GregorianCalendar();
+        Calendar nowCalendar = new GregorianCalendar();
+        triggerCalendar.set(Calendar.DAY_OF_MONTH, 5);
+        triggerCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        if (triggerCalendar.before(nowCalendar)) {
+            triggerCalendar.set(Calendar.MONTH, nowCalendar.get(Calendar.MONTH) + 1);
+        }
+        // FIXME: 30 minutes later is for test..
+//        return triggerCalendar.getTimeInMillis() - nowCalendar.getTimeInMillis();
+        nowCalendar.set(Calendar.MINUTE, nowCalendar.get(Calendar.MINUTE) + 30);
+        return nowCalendar.getTimeInMillis();
+    }
 }

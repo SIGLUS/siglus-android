@@ -19,17 +19,21 @@
 package org.openlmis.core;
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.HitBuilders;
@@ -53,6 +57,9 @@ import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.network.NetworkSchedulerService;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
+import org.openlmis.core.service.CheckMovementJobService;
+import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
@@ -63,11 +70,15 @@ import java.util.Map;
 import roboguice.RoboGuice;
 
 public class LMISApp extends Application {
+    private static final String TAG = LMISApp.class.getSimpleName();
 
     private static LMISApp instance;
 
     public static long lastOperateTime = 0L;
     private final int facilityCustomDimensionKey = 1;
+
+    private static final int JOB_ID_NETWORK_CHANGE = 123;
+    private static final int JOB_ID_MOVEMENT_SCAN = 124;
 
     @Override
     public void onCreate() {
@@ -83,6 +94,7 @@ public class LMISApp extends Application {
 
         instance = this;
         registerNetWorkChangeListener();
+        registerMonthlyJob();
     }
 
     // Test case throw IO error
@@ -100,7 +112,7 @@ public class LMISApp extends Application {
 
     @TargetApi(Build.VERSION_CODES.N)
     private void startScheduleJob() {
-        JobInfo myJob = new JobInfo.Builder(0, new ComponentName(this, NetworkSchedulerService.class))
+        JobInfo myJob = new JobInfo.Builder(JOB_ID_NETWORK_CHANGE, new ComponentName(this, NetworkSchedulerService.class))
                 .setMinimumLatency(1000)
                 .setOverrideDeadline(2000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
@@ -116,6 +128,30 @@ public class LMISApp extends Application {
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver();
         registerReceiver(networkChangeReceiver, filter);
+    }
+
+    private void registerMonthlyJob() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            if (jobScheduler == null) return;
+            JobInfo mJobInfo = new JobInfo.Builder(JOB_ID_MOVEMENT_SCAN,
+                    new ComponentName(this, CheckMovementJobService.class))
+                    .setMinimumLatency(DateUtil.calcculateTaskTriggerLatency())
+                    .setBackoffCriteria(DateUtil.MILLISECONDS_MINUTE, JobInfo.BACKOFF_POLICY_LINEAR)
+                    .setPersisted(true)
+                    .build();
+            jobScheduler.schedule(mJobInfo);
+        } else {
+            Intent intent = new Intent(Constants.INTENT_FILTER_ONE_MONTHLY_TASK);
+            intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 101,
+                    intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            if (mgr != null) {
+                Log.e(TAG, "registerMonthlyJob: set Alarm..at " + new Date(DateUtil.calculateTaskTriggerTime()).toString());
+                mgr.set(AlarmManager.RTC, DateUtil.calculateTaskTriggerTime(), pendingIntent);
+            }
+        }
     }
 
     protected void setupGoogleAnalytics() {
@@ -138,9 +174,7 @@ public class LMISApp extends Application {
 
 
     public long getCurrentTimeMillis() {
-        // System.currentTimeMillis() not contain timezone!!!
-        // return System.currentTimeMillis();
-        return new Date().getTime();
+        return System.currentTimeMillis();
     }
 
     public static Context getContext() {

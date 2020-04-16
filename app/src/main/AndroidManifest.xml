@@ -16,10 +16,10 @@
     <application
         android:name=".LMISApp"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/appcenter_backup_rule"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:fullBackupContent="@xml/appcenter_backup_rule"
         android:theme="@style/AppTheme">
 
         <activity
@@ -42,12 +42,10 @@
             android:name=".view.activity.BulkInitialInventoryActivity"
             android:label="@string/title_init_inventory"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".view.activity.ViaPatientDataReportActivity"
             android:label="@string/title_patient_data_report"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".view.activity.AddNonBasicProductsActivity"
             android:label="@string/title_add_non_basic_products"
@@ -142,12 +140,10 @@
             android:name=".view.activity.SelectEmergencyProductsActivity"
             android:label="@string/title_select_emergency_products"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".view.activity.AddDrugsToVIAActivity"
             android:label="@string/title_add_drugs_to_form"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".view.activity.AllDrugsMovementHistoryActivity"
             android:label="@string/title_movement_history"
@@ -177,12 +173,18 @@
             android:name=".network.NetworkSchedulerService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".service.CheckMovementIntentService"
+            android:exported="false" />
+        <service
+            android:name=".service.CheckMovementJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <provider
             android:name=".service.StubContentProvider"
             android:authorities="@string/sync_content_authority"
             android:syncable="true" />
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.FileProvider"
@@ -192,26 +194,30 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepath_data" />
         </provider>
+
         <receiver android:name=".receiver.BootCompletedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".receiver.ShutDownReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.OneMonthTaskAlarmReceiver">
+            <intent-filter>
+                <action android:name="${applicationId}.one.monthly.task" />
             </intent-filter>
         </receiver>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <!--
            Optionally, register AnalyticsReceiver and AnalyticsService to support background
            dispatching on non-Google Play devices
-         -->
+        -->
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
             android:enabled="true">
@@ -237,7 +243,6 @@
         </receiver>
 
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
-
     </application>
 
 </manifest>
