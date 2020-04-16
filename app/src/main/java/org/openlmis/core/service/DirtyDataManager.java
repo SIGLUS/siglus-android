@@ -46,6 +46,8 @@ public class DirtyDataManager {
     private static final int DO_NOT_CHECK_NEWEST_TWO = 3;
     private static final int CHECK_NEWEST_TWO = 2;
 
+    private static final boolean DEBUG_ALL_MOVEMENT = true;
+
     @Inject
     StockMovementRepository stockMovementRepository;
     @Inject
@@ -195,20 +197,12 @@ public class DirtyDataManager {
                 }
                 if (!isCorrectLotOnHand(stockCard)) {
                     deleted.add(stockCard);
+                    saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
                     continue;
                 }
                 for (int i = 0; i < stockMovementItems.size() - DO_NOT_CHECK_NEWEST_TWO; i++) {
                     if (!isCorrectMovements(stockMovementItems.get(i), stockMovementItems.get(i + 1))) {
-                        StockMovementItem previousMovement = stockMovementItems.get(i);
-                        StockMovementItem currentMovement = stockMovementItems.get(i + 1);
-                        Log.e(TAG, stockCard.getProduct().getCode()
-                                + "(" + stockCard.calculateSOHFromLots() + ")"
-                                + ":previous id=" + previousMovement.getId()
-                                + ",current id =" + currentMovement.getId()
-                                + ";previousSOH = " + previousMovement.getStockOnHand()
-                                + (currentMovement.isNegativeMovement() ? ",-" : ",+")
-                                + ",movementQuantity=" + currentMovement.getMovementQuantity()
-                                + ",currentSOH=" + currentMovement.getStockOnHand());
+                        debugLog(stockMovementItems.get(i), stockMovementItems.get(i + 1), stockCard);
                         deleted.add(stockCard);
                         saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
                         break;
@@ -219,6 +213,18 @@ public class DirtyDataManager {
             }
         }
         return deleted;
+    }
+
+    private void debugLog(StockMovementItem previousMovement, StockMovementItem currentMovement, StockCard stockCard) {
+        if (!DEBUG_ALL_MOVEMENT) return;
+        Log.e(TAG, stockCard.getProduct().getCode()
+                + "(" + stockCard.calculateSOHFromLots() + ")"
+                + ":previous id=" + previousMovement.getId()
+                + ",current id =" + currentMovement.getId()
+                + ";previousSOH = " + previousMovement.getStockOnHand()
+                + (currentMovement.isNegativeMovement() ? ",-" : ",+")
+                + ",movementQuantity=" + currentMovement.getMovementQuantity()
+                + ",currentSOH=" + currentMovement.getStockOnHand());
     }
 
     private boolean isCorrectLotOnHand(StockCard stockCard) {
