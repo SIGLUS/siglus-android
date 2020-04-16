@@ -293,8 +293,11 @@
     <string name="period_configuration_missing">Sync failed due to missing server configuration for this period. Please contact system administrator.</string>
     <string name="product_code_invalid">Sync failed due attempted submission of invalid product in form %1$s. Please contact system administrator.</string>
     <string name="unauthorized_operation">Sync failed. You do not have permission to sync this requisition to the server. Please contact system administrator.</string>
-    <string name="duplicate_rnr_error">Sync failed. You have already submitted a requisition for this program in this requisition period.</string>
-    <string name="period_mismatch_error">Sync failed. The period you are submitting does not match the period in schedule.</string>
+    <string name="error_rnr_period_duplicate">Sync failed. You have already submitted a requisition for this program in this requisition period. Please contact the administrator.</string>
+    <string name="error_rnr_period_invalid">Sync failed. The period you are submitting does not match the period in schedule.</string>
+    <string name="error_rnr_field_mandatory_negative">Sync failed due to technical problem on the server. Please contact system administrator.</string>
+    <string name="error_rnr_validation_equation_not_equal">Sync failed due to technical problem on the server. Please contact system administrator.</string>
+    <string name="error_rnr_report_start_date_invalid">Sync failed due to technical problem on the server. Please contact system administrator.</string>
 
     <!-- Rnr form historical list -->
     <string name="label_via_name">Requisition Balancete</string>

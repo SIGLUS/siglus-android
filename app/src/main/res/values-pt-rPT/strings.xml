@@ -281,8 +281,11 @@
     <string name="period_configuration_missing">Sincronização falhou devido à falta de configuração no servidor para este período. Entre em contacto com administrador do sistema.</string>
     <string name="product_code_invalid">Sincronização falhou devido à tentativa de submeter um produto inválido no formulário %1$s. Entre em contacto com administrador do sistema.</string>
     <string name="unauthorized_operation">Sincronização falhou. Não tem permissão para sincronizar esta requisicão para o servidor. Entre em contacto com administrador do sistema.</string>
-    <string name="duplicate_rnr_error">Sincronização falhou. Você já enviou uma requisição para este programa neste período.</string>
-    <string name="period_mismatch_error">Sincronização falhou. O período que você está enviando não coincide com o período de programação.</string>
+    <string name="error_rnr_period_duplicate">Sincronização falhou. Arequisição para este período já foi enviada. Por favor contacte o Administrador do sistema.</string>
+    <string name="error_rnr_period_invalid">Sincronização falhou. O período a submeter não corresponde ao período no calendário. Por favor contacte o Administrador do sistema.</string>
+    <string name="error_rnr_field_mandatory_negative">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
+    <string name="error_rnr_validation_equation_not_equal">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
+    <string name="error_rnr_report_start_date_invalid">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
     <!--Rnr form historical list-->
     <string name="label_via_name">Requisição Balancete</string>
     <string name="label_mmia_name">MMIA</string>

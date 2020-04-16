@@ -11,8 +11,11 @@ public final class SyncErrorsMap {
     private static final String INVALID_PRODUCT_CODES = "Invalid product codes";
     private static final String PREVIOUS_FORM_NOT_FILLED = "Please finish all R&R of previous period(s)";
     private static final String USER_UNAUTHORIZED = "User does not have permission";
-    private static final String DUPLICATE_RNR = "RnR for this period has been submitted";
-    private static final String PERIOD_MISMATCH = "Submitted period is not next period in schedule";
+    private static final String ERROR_RNR_PERIOD_DUPLICATE = "RnR for this period has been submitted";
+    private static final String ERROR_RNR_PERIOD_INVALID = "Submitted period is not next period in schedule";
+    private static final String ERROR_RNR_FIELD_MANDATORY_NEGATIVE = "product's field is negative or null, please validate movements";
+    private static final String ERROR_RNR_VALIDATION_EQUATION_NOT_EQUAL = "product quantity is not match";
+    private static final String ERROR_RNR_REPORT_START_DATE_INVALID = "The report submit date must be later than the facility's reports start date";
 
     private SyncErrorsMap() {
 
@@ -42,11 +45,21 @@ public final class SyncErrorsMap {
         if (errorMessage.contains(context.getString(R.string.sync_server_error))) {
             return context.getString(R.string.sync_server_error);
         }
-        if (errorMessage.contains(DUPLICATE_RNR)) {
-            return context.getString(R.string.duplicate_rnr_error);
+
+        if (errorMessage.contains(ERROR_RNR_PERIOD_DUPLICATE)) {
+            return context.getString(R.string.error_rnr_period_duplicate);
         }
-        if (errorMessage.contains(PERIOD_MISMATCH)) {
-            return context.getString(R.string.period_mismatch_error);
+        if (errorMessage.contains(ERROR_RNR_PERIOD_INVALID)) {
+            return context.getString(R.string.error_rnr_period_invalid);
+        }
+        if (errorMessage.contains(ERROR_RNR_FIELD_MANDATORY_NEGATIVE)) {
+            return context.getString(R.string.error_rnr_field_mandatory_negative);
+        }
+        if (errorMessage.contains(ERROR_RNR_VALIDATION_EQUATION_NOT_EQUAL)) {
+            return context.getString(R.string.error_rnr_validation_equation_not_equal);
+        }
+        if (errorMessage.contains(ERROR_RNR_REPORT_START_DATE_INVALID)) {
+            return context.getString(R.string.error_rnr_report_start_date_invalid);
         }
         return errorMessage;
     }

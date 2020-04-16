@@ -120,7 +120,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
         }
         if (!viewModel.isQuantityLessThanSoh()) {
             setQuantityError(getString(R.string.msg_invalid_quantity));
-        }else {
+        } else {
             setQuantityError(null);
         }
     }

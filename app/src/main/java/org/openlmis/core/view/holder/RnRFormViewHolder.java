@@ -99,7 +99,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         if (isTraining) {
             configHolder(model.getTitle(),
                     Html.fromHtml(context.getString(R.string.label_training_can_not_create_report_rnr, model.getName())),
-                    R.drawable.ic_description, R.color.color_draft_title,  color_white);
+                    R.drawable.ic_description, R.color.color_draft_title, color_white);
         } else {
             configHolder(model.getTitle(),
                     Html.fromHtml(context.getString(R.string.label_can_not_create_report_rnr, model.getName(), DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))),
@@ -110,7 +110,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     private void populateRnrFormNotBeCreatedView(RnRFormViewModel model) {
         configHolder(model.getTitle(),
                 Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())),
-                R.drawable.ic_description, R.color.color_draft_title,  color_white);
+                R.drawable.ic_description, R.color.color_draft_title, color_white);
         setupButton(model, context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
         setupButtonColor();
     }
@@ -169,7 +169,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
     private void setupButtonColor() {
         btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
-        btnView.setPadding(60,5,60,0);
+        btnView.setPadding(60, 5, 60, 0);
         btnView.setTextColor(context.getResources().getColor(color_white));
     }
 

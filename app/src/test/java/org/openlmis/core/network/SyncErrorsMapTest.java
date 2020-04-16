@@ -12,12 +12,6 @@ import static org.junit.Assert.*;
 public class SyncErrorsMapTest {
 
     @Test
-    public void shouldReturnAppErrorWhenServerReturnsDuplicateError() {
-        String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("RnR for this period has been submitted");
-        assertEquals(LMISTestApp.getContext().getString(R.string.duplicate_rnr_error), appDisplayError);
-    }
-
-    @Test
     public void shouldReturnAppErrorWhenServerReturnsProgramConfigError() {
         String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("Program configuration missing");
         assertEquals(LMISTestApp.getContext().getString(R.string.period_configuration_missing), appDisplayError);
@@ -54,9 +48,33 @@ public class SyncErrorsMapTest {
     }
 
     @Test
-    public void shouldReturnAppPeriodErrorWhenServerReturnsPeriodError() {
-        String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("Submitted period is not next period in schedule.");
-        assertEquals(LMISTestApp.getContext().getString(R.string.period_mismatch_error), appDisplayError);
+    public void shouldReturnAppRnrPeriodDuplicateErrorWhenServerReturnsPeriodDuplicateError() {
+        String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("RnR for this period has been submitted");
+        assertEquals(LMISTestApp.getContext().getString(R.string.error_rnr_period_duplicate), appDisplayError);
+    }
+
+    @Test
+    public void shouldReturnAppRnrPeriodInvalidErrorWhenServerReturnsPeriodInvalidError() {
+        String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("Submitted period is not next period in schedule");
+        assertEquals(LMISTestApp.getContext().getString(R.string.error_rnr_period_invalid), appDisplayError);
+    }
+
+    @Test
+    public void shouldReturnAppRnrFieldMandatoryNegativeErrorWhenServerReturnsRnrFieldMandatoryNegativeError() {
+        String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("product's field is negative or null, please validate movements");
+        assertEquals(LMISTestApp.getContext().getString(R.string.error_rnr_field_mandatory_negative), appDisplayError);
+    }
+
+    @Test
+    public void shouldReturnAppRnrValidationEquationNotEqualErrorWhenServerReturnsRnrValidationEquationNotEqualError() {
+        String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("product quantity is not match");
+        assertEquals(LMISTestApp.getContext().getString(R.string.error_rnr_validation_equation_not_equal), appDisplayError);
+    }
+
+    @Test
+    public void shouldReturnAppRnrReportStartDateInvalidErrorWhenServerReturnsRnrReportStartDateInvalidError() {
+        String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("The report submit date must be later than the facility's reports start date");
+        assertEquals(LMISTestApp.getContext().getString(R.string.error_rnr_report_start_date_invalid), appDisplayError);
     }
 
 }
