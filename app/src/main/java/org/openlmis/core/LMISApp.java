@@ -54,7 +54,6 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
-import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.network.NetworkSchedulerService;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
 import org.openlmis.core.service.CheckMovementJobService;
@@ -167,11 +166,6 @@ public class LMISApp extends Application {
         AppCenter.setEnabled(true);
         Analytics.setEnabled(true);
     }
-
-    public boolean isConnectionAvailable() {
-        return NetworkConnectionManager.isConnectionAvailable(instance);
-    }
-
 
     public long getCurrentTimeMillis() {
         return System.currentTimeMillis();

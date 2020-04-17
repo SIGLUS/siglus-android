@@ -18,6 +18,7 @@
 
 package org.openlmis.core.presenter;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -40,6 +41,7 @@ import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
@@ -102,6 +104,9 @@ public class LoginPresenter extends Presenter {
     @Inject
     private DirtyDataRepository dirtyDataRepository;
 
+    @Inject
+    InternetCheck internetCheck;
+
     @Override
     public void attachView(BaseView v) {
         this.view = (LoginView) v;
@@ -120,12 +125,27 @@ public class LoginPresenter extends Presenter {
         view.loading();
 
         User user = new User(userName.trim(), password);
-        if (LMISApp.getInstance().isConnectionAvailable() && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            authorizeAndLoginUserRemote(user, fromReSync);
+        if (!isRoboUniTest()) {
+            new InternetCheck().execute(checkNetworkConnected(user, fromReSync));
         } else {
-            authorizeAndLoginUserLocal(user);
+            internetCheck.execute(checkNetworkConnected(user, fromReSync));
         }
     }
+
+    private boolean isRoboUniTest() {
+        return "robolectric".equals(Build.FINGERPRINT);
+    }
+
+    private InternetCheck.Callback checkNetworkConnected(User user, boolean fromReSync) {
+        return internet -> {
+            if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+                authorizeAndLoginUserRemote(user, fromReSync);
+            } else {
+                authorizeAndLoginUserLocal(user);
+            }
+        };
+    }
+
 
     private void authorizeAndLoginUserLocal(User user) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {

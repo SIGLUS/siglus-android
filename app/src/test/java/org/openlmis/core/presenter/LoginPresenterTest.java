@@ -29,7 +29,6 @@ import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
@@ -39,6 +38,7 @@ import org.openlmis.core.model.builder.UserBuilder;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManagerMock;
 import org.openlmis.core.network.model.UserResponse;
@@ -77,6 +77,8 @@ public class LoginPresenterTest {
 
     @Captor
     private ArgumentCaptor<Callback<UserResponse>> loginCB;
+    @Captor
+    private ArgumentCaptor<InternetCheck.Callback> internetCheckCallBack;
 
     private LMISTestApp appInject;
     private Subscriber<SyncProgress> syncSubscriber;
@@ -85,6 +87,7 @@ public class LoginPresenterTest {
     private LMISRestApi mockedApi;
     private Response retrofitResponse;
     private UserResponse userResponse;
+    private InternetCheck internetCheck1;
 
     @Before
     public void setup() {
@@ -98,6 +101,7 @@ public class LoginPresenterTest {
         syncDownManager = mock(SyncDownManager.class);
 
         mockedApi = mock(LMISRestApi.class);
+        internetCheck1 = mock(InternetCheck.class);
         appInject.setRestApi(mockedApi);
 
 
@@ -116,11 +120,10 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldSaveUserToLocalDBWhenSuccess() throws InterruptedException {
-        appInject.setNetworkConnection(true);
-
-        presenter.startLogin("user", "password",false);
-
+    public void shouldSaveUserToLocalDBWhenSuccess() {
+        presenter.startLogin("user", "password", false);
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+        internetCheckCallBack.getValue().launchResponse(true);
         verify(mockActivity).loading();
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
@@ -130,11 +133,10 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldSaveUserSupportedProgramsToLocalDBWhenSuccess() throws InterruptedException, LMISException {
-        appInject.setNetworkConnection(true);
-
-        presenter.startLogin("user", "password",false);
-
+    public void shouldSaveUserSupportedProgramsToLocalDBWhenSuccess() {
+        presenter.startLogin("user", "password", false);
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+        internetCheckCallBack.getValue().launchResponse(true);
         verify(mockActivity).loading();
 
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
@@ -149,10 +151,9 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldCreateSyncAccountWhenLoginSuccess() {
-        appInject.setNetworkConnection(true);
-
-        presenter.startLogin("user", "password",false);
-
+        presenter.startLogin("user", "password", false);
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+        internetCheckCallBack.getValue().launchResponse(true);
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
         loginCB.getValue().success(userResponse, retrofitResponse);
@@ -162,10 +163,9 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSaveUserInfoWhenLoginSuccess() {
-        appInject.setNetworkConnection(true);
-
-        presenter.startLogin("user", "password",false);
-
+        presenter.startLogin("user", "password", false);
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+        internetCheckCallBack.getValue().launchResponse(true);
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
         loginCB.getValue().success(userResponse, retrofitResponse);
@@ -177,10 +177,9 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSyncServerDataWhenLoginSuccessFromNet() {
-        appInject.setNetworkConnection(true);
-
-        presenter.startLogin("user", "password",false);
-
+        presenter.startLogin("user", "password", false);
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+        internetCheckCallBack.getValue().launchResponse(true);
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
         loginCB.getValue().success(userResponse, retrofitResponse);
 
@@ -188,7 +187,7 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldGoToInventoryPageAndKickOffPeriodicSyncIfSyncServerDataSuccess() throws InterruptedException {
+    public void shouldGoToInventoryPageAndKickOffPeriodicSyncIfSyncServerDataSuccess() {
         //given
         when(mockActivity.needInitInventory()).thenReturn(true);
 
@@ -203,7 +202,6 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldDoOfflineLoginWhenNoConnectionAndHasSyncedData() {
-        appInject.setNetworkConnection(false);
         when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
 
@@ -211,8 +209,10 @@ public class LoginPresenterTest {
         SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
         SharedPreferenceMgr.getInstance().setLastSyncProductTime("time");
 
-        presenter.startLogin("user", "password",false);
+        presenter.startLogin("user", "password", false);
 
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+        internetCheckCallBack.getValue().launchResponse(false);
         verify(userRepository).mapUserFromLocal(any(User.class));
         assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
 
@@ -220,12 +220,13 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldShowMessageWhenNoConnectionAndHasNotGetProducts() {
-        appInject.setNetworkConnection(false);
+
         when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
 
-        presenter.startLogin("user", "password",false);
-
+        presenter.startLogin("user", "password", false);
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+        internetCheckCallBack.getValue().launchResponse(false);
         verify(userRepository).mapUserFromLocal(any(User.class));
         assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
 
@@ -233,11 +234,13 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldShowLoginFailErrorMsgWhenNoConnectionAndNoLocalCache() {
-        appInject.setNetworkConnection(false);
         when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(null);
 
-        presenter.startLogin("user", "password",false);
-
+        presenter.startLogin("user", "password", false);
+        InternetCheck internetCheck = mock(InternetCheck.class);
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+        internetCheckCallBack.getValue().launchResponse(false);
         verify(userRepository).mapUserFromLocal(any(User.class));
 
         verify(mockActivity).loaded();
@@ -247,13 +250,13 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldShowUserNameEmptyErrorMessage() {
-        presenter.startLogin("", "password1",false);
+        presenter.startLogin("", "password1", false);
         verify(mockActivity).showUserNameEmpty();
     }
 
     @Test
     public void shouldShowPasswordEmptyErrorMessage() {
-        presenter.startLogin("user", "",false);
+        presenter.startLogin("user", "", false);
         verify(mockActivity).showPasswordEmpty();
     }
 
@@ -306,6 +309,7 @@ public class LoginPresenterTest {
             bind(SyncDownManager.class).toInstance(syncDownManager);
             bind(RnrFormRepository.class).toInstance(rnrFormRepository);
             bind(ProgramRepository.class).toInstance(programRepository);
+            bind(InternetCheck.class).toInstance(internetCheck1);
         }
     }
 }

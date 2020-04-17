@@ -22,14 +22,14 @@ import android.os.AsyncTask;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
+
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, InternetListener> {
-
-    private final String GOOGLE_DNS_IP_ADDRESS = "8.8.8.8";
-    private final int PORT = 53;
-    private final int TIMEOUT = 1500;
+    private final int TIMEOUT = 300;
 
     @Inject
     public InternetCheck() {
@@ -49,13 +49,21 @@ public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, Inter
                 throw new Exception("No callback supplied");
             }
             Socket sock = new Socket();
-            sock.connect(new InetSocketAddress(GOOGLE_DNS_IP_ADDRESS, PORT), TIMEOUT);
+            sock.connect(new InetSocketAddress(getAddress(), getPORT()), TIMEOUT);
             sock.close();
             return new InternetListener(true, callback, null);
         } catch (Exception e) {
             e.printStackTrace();
             return new InternetListener(false, callback, e);
         }
+    }
+
+    private String getAddress() {
+        return LMISApp.getContext().getString(R.string.server_base_url_host);
+    }
+
+    private int getPORT() {
+        return LMISApp.getContext().getResources().getInteger(R.integer.server_base_url_port);
     }
 
     @Override

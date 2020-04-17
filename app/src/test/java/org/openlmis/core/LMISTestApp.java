@@ -1,7 +1,6 @@
 package org.openlmis.core;
 
 
-import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
@@ -12,7 +11,6 @@ import java.util.HashMap;
 
 public class LMISTestApp extends LMISApp {
 
-    private boolean networkAvailable;
     private long currentTimeMillis;
     private HashMap<Integer, Boolean> featureToggles = new HashMap<>();
     private static LMISTestApp instance;
@@ -28,17 +26,9 @@ public class LMISTestApp extends LMISApp {
         return instance;
     }
 
-    public void setNetworkConnection(boolean networkAvailable) {
-        this.networkAvailable = networkAvailable;
-    }
 
     public void setFeatureToggle(int id, boolean featureToggle) {
         featureToggles.put(id, featureToggle);
-    }
-
-    @Override
-    public boolean isConnectionAvailable() {
-        return networkAvailable;
     }
 
     public void setCurrentTimeMillis(long currentTimeMillis) {

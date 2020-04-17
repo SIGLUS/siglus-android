@@ -1,5 +1,7 @@
 <resources>
     <string name="server_base_url">http://52.69.115.46:8000/</string>
+    <string name="server_base_url_host">52.69.115.46</string>
+    <integer name="server_base_url_port">8000</integer>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.dev</string>
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.dev</string>
