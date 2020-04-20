@@ -35,7 +35,7 @@
 
     </FrameLayout>
 
-    <HorizontalScrollView
+    <org.openlmis.core.view.widget.RapidTestBodyHorizontalScrollView
         android:id="@+id/rapid_test_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
 
             <include layout="@layout/fragment_rapid_test_test_report_form_body_top_header" />
         </RelativeLayout>
-    </HorizontalScrollView>
+    </org.openlmis.core.view.widget.RapidTestBodyHorizontalScrollView>
 
     <LinearLayout
         android:id="@+id/vg_rapid_test_report_header_title"
