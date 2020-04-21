@@ -146,7 +146,6 @@ public class HomeActivity extends BaseActivity {
         registerSyncStartReceiver();
         registerSyncFinishedReceiver();
         registerErrorFinishedReceiver();
-        registerDeletedProductReceiver();
 
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rapid_test)) {
             btnRapidTestReport.setVisibility(View.GONE);
@@ -156,22 +155,6 @@ public class HomeActivity extends BaseActivity {
             btnPatientData.setVisibility(View.GONE);
         }
         updateButtonConfigView();
-    }
-
-    private void registerDeletedProductReceiver() {
-        IntentFilter filter = new IntentFilter(Constants.INTENT_FILTER_DELETED_PRODUCT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(deletedProductReceiver, filter);
-    }
-
-    private BroadcastReceiver deletedProductReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            showDeletedWarningDialog(positiveClick());
-        }
-    };
-
-    private WarningDialogFragment.DialogDelegate positiveClick() {
-        return () -> sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
     }
 
     private void registerSyncStartReceiver() {

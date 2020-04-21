@@ -173,13 +173,6 @@
             android:name=".network.NetworkSchedulerService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service
-            android:name=".service.CheckMovementIntentService"
-            android:exported="false" />
-        <service
-            android:name=".service.CheckMovementJobService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <provider
             android:name=".service.StubContentProvider"
@@ -203,11 +196,6 @@
         <receiver android:name=".receiver.ShutDownReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".receiver.OneMonthTaskAlarmReceiver">
-            <intent-filter>
-                <action android:name="${applicationId}.one.monthly.task" />
             </intent-filter>
         </receiver>
 

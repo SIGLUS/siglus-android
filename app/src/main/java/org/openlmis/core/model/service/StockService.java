@@ -14,6 +14,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -38,6 +39,8 @@ public class StockService {
     CmmRepository cmmRepository;
     @Inject
     StockMovementRepository stockMovementRepository;
+    @Inject
+    DirtyDataManager dirtyDataManager;
 
     public StockService() {
     }
@@ -55,7 +58,18 @@ public class StockService {
         Period period = Period.of(today());
         if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
             immediatelyUpdateAvgMonthlyConsumption();
+            monthlyCheckAllMovement();
         }
+    }
+
+    private List<StockCard> monthlyCheckAllMovement() {
+        DateTime recordLowStockAvgPeriod = SharedPreferenceMgr.getInstance().getLatestUpdateLowStockAvgTime();
+        List<StockCard> errorStockCard = new ArrayList<>();
+        Period period = Period.of(today());
+        if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
+            errorStockCard = dirtyDataManager.scanAllStockMovements();
+        }
+        return errorStockCard;
     }
 
     public void immediatelyUpdateAvgMonthlyConsumption() {
@@ -68,7 +82,7 @@ public class StockService {
             }
             SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
         } catch (LMISException e) {
-            new LMISException(e,"StockService:immediatelyUpdate").reportToFabric();
+            new LMISException(e, "StockService:immediatelyUpdate").reportToFabric();
         }
     }
 
@@ -77,7 +91,7 @@ public class StockService {
         try {
             firstPeriodBegin = queryFirstPeriodBegin(stockCard);
         } catch (LMISException e) {
-            new LMISException(e,"StockService:calculateAverage").reportToFabric();
+            new LMISException(e, "StockService:calculateAverage").reportToFabric();
             return -1;
         }
         if (firstPeriodBegin == null) {
@@ -102,15 +116,16 @@ public class StockService {
             }
         }
         if (issuePerMonths.size() < 1) {
-            return  -1;
+            return -1;
         }
 
         return getTotalIssues(issuePerMonths) * 1f / issuePerMonths.size();
     }
 
     private Boolean hasStockOutTotoalIssue(Long totalIssuesEachMonth) {
-        return  totalIssuesEachMonth == null;
+        return totalIssuesEachMonth == null;
     }
+
     private long getTotalIssues(List<Long> issuePerMonths) {
         long total = 0;
         for (Long totalIssues : issuePerMonths) {
@@ -136,7 +151,7 @@ public class StockService {
             }
             return totalIssued;
         } catch (LMISException e) {
-            new LMISException(e,"StockService:calculateTotalI").reportToFabric();
+            new LMISException(e, "StockService:calculateTotalI").reportToFabric();
             return null;
         }
     }
