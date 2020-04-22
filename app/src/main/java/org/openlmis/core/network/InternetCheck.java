@@ -29,7 +29,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, InternetListener> {
-    private final int TIMEOUT = 300;
+    private static final String TAG = InternetCheck.class.getSimpleName();
+    private final int TIMEOUT = 5 * 1000;
 
     @Inject
     public InternetCheck() {
