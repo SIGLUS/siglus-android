@@ -23,4 +23,9 @@ public class RapidTestBodyHorizontalScrollView extends HorizontalScrollView {
     public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
         return true;
     }
+
+    @Override
+    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+        return 0;
+    }
 }
