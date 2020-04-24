@@ -165,7 +165,6 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
     }
 
     protected void setTotal(int total) {
-        new Exception().printStackTrace();
         tvTotal.setText(getString(R.string.label_total, total));
     }
 

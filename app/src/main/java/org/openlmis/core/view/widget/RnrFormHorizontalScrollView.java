@@ -1,6 +1,7 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.HorizontalScrollView;
 
@@ -36,4 +37,8 @@ public class RnrFormHorizontalScrollView extends HorizontalScrollView {
         super.fling(0);
     }
 
+    @Override
+    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+        return 0;
+    }
 }
