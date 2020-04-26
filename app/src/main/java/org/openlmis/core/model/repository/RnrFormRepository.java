@@ -299,7 +299,7 @@ public class RnrFormRepository {
         }
         Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
-        if (list != null && hasRequisitionData()) {
+        if (list != null && list.size() > 0) {
             for (RnRForm rnrForm : list) {
                 if (rnrForm.getPeriodEnd().before(dueDateShouldDataLivedInDB)) {
                     return true;
@@ -371,7 +371,15 @@ public class RnrFormRepository {
                 @Override
                 public Object call() throws Exception {
                     create(rnrForm);
-                    List<StockCard> stockCards = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
+                    List<StockCard> stockCards = new ArrayList<>();
+                    List<StockCard> stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
+                    if (Constants.VIA_PROGRAM_CODE.equals(rnrForm.getProgram().getProgramCode())) {
+                        List<StockCard> stockCardsBelongToProgram = stockRepository.getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
+                        stockCards.clear();
+                        stockCards.addAll(combineStockCard(stockCardWithMovement, stockCardsBelongToProgram));
+                    } else {
+                        stockCards.addAll(stockCardWithMovement);
+                    }
                     rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCards));
                     regimenItemRepository.batchCreateOrUpdate(generateRegimeItems(rnrForm));
                     regimenItemThreeLineRepository.batchCreateOrUpdate(generateRegimeThreeLineItems(rnrForm));
@@ -387,6 +395,18 @@ public class RnrFormRepository {
         assignCategoryForRnrItems(rnrForm);
 
         return rnrForm;
+    }
+
+
+    private List<StockCard> combineStockCard(List<StockCard> stockCardsWithMovement, List<StockCard> belongToProgram) {
+        List<StockCard> stockCards = new ArrayList<>();
+        for (StockCard stockCard : belongToProgram) {
+            if (!stockCardsWithMovement.contains(stockCard)) {
+                stockCards.add(stockCard);
+            }
+        }
+        stockCards.addAll(stockCardsWithMovement);
+        return stockCards;
     }
 
     private void assignCategoryForRnrItems(RnRForm rnrForm) throws LMISException {
@@ -499,16 +519,12 @@ public class RnrFormRepository {
 
         String rawSqlDeleteRnrFormItems = "DELETE FROM rnr_form_items "
                 + "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "' );";
-
         String rawSqlDeleteSignature = "DELETE FROM rnr_form_signature "
                 + "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "' );";
-
         String rawSqlDeleteRegimeItems = "DELETE FROM regime_items "
                 + "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "' );";
-
         String rawSqlDeleteBaseInfoItems = "DELETE FROM rnr_baseInfo_items "
                 + "WHERE rnRForm_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "' );";
-
         String rawSqlDeleteRnrForms = "DELETE FROM rnr_forms "
                 + "WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "'; ";
 

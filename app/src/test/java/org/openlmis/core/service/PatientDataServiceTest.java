@@ -34,7 +34,6 @@ import static com.natpryce.makeiteasy.MakeItEasy.make;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.apache.commons.lang3.RandomUtils.nextLong;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
@@ -100,10 +99,10 @@ public class PatientDataServiceTest {
         stockCard6x2.setStockOnHand(STOCK_ON_HAND_VALUE);
         stockCard6x3.setStockOnHand(STOCK_ON_HAND_VALUE);
         stockCard6x4.setStockOnHand(STOCK_ON_HAND_VALUE);
-        when(stockRepository.queryStockCardByProductId(product6x1.getId())).thenReturn(stockCard6x1);
-        when(stockRepository.queryStockCardByProductId(product6x2.getId())).thenReturn(stockCard6x2);
-        when(stockRepository.queryStockCardByProductId(product6x3.getId())).thenReturn(stockCard6x3);
-        when(stockRepository.queryStockCardByProductId(product6x4.getId())).thenReturn(stockCard6x4);
+        when(stockRepository.queryStockCardByProductCode(product6x1.getCode())).thenReturn(stockCard6x1);
+        when(stockRepository.queryStockCardByProductCode(product6x2.getCode())).thenReturn(stockCard6x2);
+        when(stockRepository.queryStockCardByProductCode(product6x3.getCode())).thenReturn(stockCard6x3);
+        when(stockRepository.queryStockCardByProductCode(product6x4.getCode())).thenReturn(stockCard6x4);
     }
 
     @Test

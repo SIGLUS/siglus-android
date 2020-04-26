@@ -87,6 +87,23 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
         return product == null ? 0 : product.compareTo(another.getProduct());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof StockCard) {
+            return ((StockCard) o).getProduct().equals(getProduct());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        if (getProduct() != null && getProduct().getCode() != null) {
+            return getProduct().hashCode();
+        }
+        return super.hashCode();
+    }
+
     public StockMovementItem generateInitialStockMovementItem() {
         StockMovementItem initInventory = new StockMovementItem(this);
         initInventory.setReason(MovementReasonManager.INVENTORY);

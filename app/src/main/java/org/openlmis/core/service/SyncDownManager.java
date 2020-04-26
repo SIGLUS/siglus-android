@@ -60,6 +60,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -505,9 +506,19 @@ public class SyncDownManager {
         }).observeOn(scheduler);
     }
 
-    private void fetchAndSaveRequisition() throws LMISException {
-        SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
+    private String getStartDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        final Date startTime = DateUtil.dateMinusMonth(calendar.getTime(),
+                sharedPreferenceMgr.getMonthOffsetThatDefinedOldData());
 
+        return DateUtil.formatDate(startTime, DateUtil.DB_DATE_FORMAT);
+    }
+
+    private void fetchAndSaveRequisition() throws LMISException {
+        final String facilityCode = UserInfoMgr.getInstance().getUser().getFacilityCode();
+        SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(facilityCode, getStartDate());
         if (syncDownRequisitionsResponse == null) {
             LMISException e = new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
             e.reportToFabric();

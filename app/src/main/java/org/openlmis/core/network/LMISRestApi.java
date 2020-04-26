@@ -84,9 +84,9 @@ public interface LMISRestApi {
     SyncUpDeletedMovementResponse syncUpDeletedData(@Path("facilityId") Long facilityId, @Body List<DirtyDataItemEntry> entryList) throws LMISException;
 
     //sync down
-
     @GET("/rest-api/requisitions")
-    SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode) throws LMISException;
+    SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode,
+                                                   @Query("startDate") String startDate) throws LMISException;
 
     @GET("/rest-api/facilities/{facilityId}/stockCards")
     SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId,

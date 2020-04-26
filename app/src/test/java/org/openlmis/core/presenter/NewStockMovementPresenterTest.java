@@ -124,6 +124,7 @@ public class NewStockMovementPresenterTest {
         product.setActive(true);
         product.setKit(isKit);
         product.setKitProductList(Arrays.asList(new KitProduct()));
+        product.setCode("productCode");
         stockCard.setProduct(product);
         return stockCard;
     }

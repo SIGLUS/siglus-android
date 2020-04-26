@@ -255,6 +255,32 @@ public class StockRepository {
         return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(), rnRForm.getPeriodEnd());
     }
 
+    public List<StockCard> getStockCardsBelongToProgram(String programCode) throws LMISException {
+        String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
+                + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("
+                + " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode IN ("
+                + " SELECT programCode FROM programs WHERE parentCode= '" + programCode + "'"
+                + " OR programCode='" + programCode + "')))";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        List<StockCard> stockCardList = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                StockCard stockCard = new StockCard();
+                stockCard.setProduct(productRepository.getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
+                stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+                stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
+                stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+                stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
+                stockCardList.add(stockCard);
+            } while (cursor.moveToNext());
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return stockCardList;
+    }
+
     protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd) throws LMISException {
         String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
                 + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("

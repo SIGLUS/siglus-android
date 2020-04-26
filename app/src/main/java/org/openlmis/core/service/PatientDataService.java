@@ -100,7 +100,7 @@ public class PatientDataService {
         List<Product> malariaProducts = getMalariaProducts();
         try {
             for (Product malariaProduct : malariaProducts) {
-                StockCard stockCard = stockRepository.queryStockCardByProductId(malariaProduct.getId());
+                StockCard stockCard = stockRepository.queryStockCardByProductCode(malariaProduct.getCode());
                 malariaProductsStockCards.add(stockCard);
             }
         } catch (LMISException e) {
