@@ -91,7 +91,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private boolean shouldCorrectData(Bundle extras) {
         return extras != null
                 && extras.getBoolean(Constants.IS_USER_TRIGGERED_SYCED)
-                && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data);
+                && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
+                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
     }
 
     private void triggerSync() {

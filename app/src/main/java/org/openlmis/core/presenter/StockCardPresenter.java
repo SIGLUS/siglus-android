@@ -95,6 +95,7 @@ public class StockCardPresenter extends Presenter {
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "afterCorrectDirtyDataHandler onError: ", e);
+                view.loaded();
             }
 
             @Override
@@ -127,7 +128,8 @@ public class StockCardPresenter extends Presenter {
             view.loading();
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
+                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             Subscription subscription = correctDirtyObservable(status).subscribe(afterCorrectDirtyDataHandler());
             subscriptions.add(subscription);
         } else {

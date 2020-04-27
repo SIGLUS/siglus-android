@@ -162,7 +162,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                 || VIA_PROGRAM_CODE.equals(programCode)
                 || RAPID_TEST_CODE.equals(programCode)
                 || PTV_PROGRAM_CODE.equals(programCode);
-        return correctCode && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data);
+        return correctCode
+                && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
+                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
     }
 
     protected Observer<Constants.Program> afterCorrectDirtyDataHandler() {
@@ -174,6 +176,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
             @Override
             public void onError(Throwable e) {
+                loaded();
             }
 
             @Override

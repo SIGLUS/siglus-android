@@ -53,6 +53,7 @@ public class NetworkSchedulerService extends JobService {
     @Override
     public boolean onStopJob(JobParameters params) {
         mConnectivityManager.unregisterNetworkCallback(mNetworkCallback);
+        jobFinished(params, false);
         return true;
     }
 
