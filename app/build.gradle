@@ -116,7 +116,6 @@ android {
 }
 
 
-
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 
@@ -193,10 +192,10 @@ dependencies {
     implementation('com.google.android.gms:play-services-analytics:7.8.0') {
         exclude module: "com.android.support:support-v4:23.2.1"
     }
-    implementation('org.roboguice:roboblender:3.0.1'){
+    implementation('org.roboguice:roboblender:3.0.1') {
         exclude module: "com.android.support:support-v4:23.2.1"
     }
-    implementation('org.roboguice:roboguice:3.0.1'){
+    implementation('org.roboguice:roboguice:3.0.1') {
         exclude module: "com.android.support:support-v4:23.2.1"
     }
     implementation('com.android.support:design:22.2.1') {
@@ -205,6 +204,7 @@ dependencies {
     implementation('com.android.support:appcompat-v7:22.2.1') {
         exclude module: "com.android.support:support-v4:23.2.1"
     }
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
 }
 
