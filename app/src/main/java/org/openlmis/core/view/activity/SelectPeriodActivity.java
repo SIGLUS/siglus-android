@@ -11,7 +11,10 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 
+import com.google.inject.Inject;
+
 import org.joda.time.DateTime;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -28,6 +31,7 @@ import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -70,6 +74,8 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private boolean isMissedPeriod;
     private Period period;
 
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
 
     @Override
     protected ScreenName getScreenName() {
@@ -182,8 +188,10 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     @NonNull
     private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(final Constants.Program program) {
-
-        return () -> finish();
+        return () -> {
+            sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
+            finish();
+        };
     }
 
     private Constants.Program getProgramFromCode(String programCode) {

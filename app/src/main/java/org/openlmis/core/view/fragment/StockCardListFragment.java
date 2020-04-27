@@ -159,6 +159,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     @NonNull
     private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate() {
         return () -> {
+            sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
             Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
             getActivity().startActivity(intent);
             getActivity().finish();

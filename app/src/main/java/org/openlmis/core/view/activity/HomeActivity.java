@@ -39,6 +39,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
@@ -63,6 +64,7 @@ import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -313,6 +315,12 @@ public class HomeActivity extends BaseActivity {
             syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
         } else {
             setSyncedTime();
+        }
+
+        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())) {
+            showDeletedWarningDialog(() -> {
+                sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
+            });
         }
     }
 

@@ -63,13 +63,7 @@ public class StockService {
     }
 
     private List<StockCard> monthlyCheckAllMovement() {
-        DateTime recordLowStockAvgPeriod = SharedPreferenceMgr.getInstance().getLatestUpdateLowStockAvgTime();
-        List<StockCard> errorStockCard = new ArrayList<>();
-        Period period = Period.of(today());
-        if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
-            errorStockCard = dirtyDataManager.scanAllStockMovements();
-        }
-        return errorStockCard;
+        return dirtyDataManager.scanAllStockMovements();
     }
 
     public void immediatelyUpdateAvgMonthlyConsumption() {
