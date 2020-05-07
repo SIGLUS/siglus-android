@@ -41,12 +41,14 @@ public class StockMovementRepository {
     }
 
     private void create(StockMovementItem stockMovementItem) throws LMISException {
-        StockMovementItem lastestStockMovement = getLastestStockMovement();
-        if (lastestStockMovement != null
-                && stockMovementItem.getCreatedTime().before(lastestStockMovement.getCreatedTime())) {
-            String productCode = lastestStockMovement.getStockCard().getProduct().getCode();
+        StockMovementItem latestStockMovement = getLatestStockMovement();
+        if (latestStockMovement != null
+                && stockMovementItem.getCreatedTime().before(latestStockMovement.getCreatedTime())) {
+            String productCode = latestStockMovement.getStockCard().getProduct().getCode();
             String facilityCode = UserInfoMgr.getInstance().getFacilityCode();
-            throw new LMISException(facilityCode + ":" + productCode + ":" + (new Date()).toString());
+            LMISException e = new LMISException(facilityCode + ":" + productCode + ":" + (new Date()).toString());
+            e.reportToFabric();
+            throw e;
         }
         genericDao.create(stockMovementItem);
     }
@@ -76,11 +78,12 @@ public class StockMovementRepository {
     }
 
     private void updateDateTimeIfEmpty(StockMovementItem stockMovementItem) {
+        Date now = new Date();
         if (stockMovementItem.getCreatedTime() == null) {
-            stockMovementItem.setCreatedTime(new Date());
+            stockMovementItem.setCreatedTime(now);
         }
-        stockMovementItem.setCreatedAt(new Date());
-        stockMovementItem.setUpdatedAt(new Date());
+        stockMovementItem.setCreatedAt(now);
+        stockMovementItem.setUpdatedAt(now);
     }
 
     public void batchCreateStockMovementItemAndLotItems(final StockMovementItem stockMovementItem) throws LMISException {
@@ -134,7 +137,7 @@ public class StockMovementRepository {
         });
     }
 
-    private StockMovementItem getLastestStockMovement() throws LMISException {
+    private StockMovementItem getLatestStockMovement() throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
             @Override
             public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
