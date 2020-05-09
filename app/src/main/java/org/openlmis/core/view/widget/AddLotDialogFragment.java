@@ -155,10 +155,14 @@ public class AddLotDialogFragment extends BaseDialogFragment {
             if (getContext() != null) {
                 return getString(resId);
             } else {
-                return "Unkown";
+                return "Unknown";
             }
         } else {
-            return getString(resId);
+            if (isAdded()) {
+                return getString(resId);
+            } else {
+                return "Unknown";
+            }
         }
 
     }
@@ -168,10 +172,14 @@ public class AddLotDialogFragment extends BaseDialogFragment {
             if (getContext() != null) {
                 return getString(resId, formatArgs);
             } else {
-                return "Unkown";
+                return "Unknown";
             }
         } else {
-            return getString(resId, formatArgs);
+            if (isAdded()) {
+                return getString(resId, formatArgs);
+            } else {
+                return "Unknown";
+            }
         }
 
     }
