@@ -679,6 +679,24 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="PatientDataForm.ItemLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/border_right_black</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+    <style name="PatientDataForm.ItemLayoutText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">5</item>
+        <item name="android:tag">enable</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
     <style name="AllStockHistory" />
 
     <style name="AllStockHistory.List">

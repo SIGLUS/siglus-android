@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:hint="@string/document_number"
-            android:maxLength="9"
+            android:maxLength="@integer/document_number_length"
             android:theme="@style/MyActionBar.WhiteEditText" />
     </LinearLayout>
 

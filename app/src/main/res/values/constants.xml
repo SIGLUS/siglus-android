@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="back_twice_interval">5000</integer>
+    <integer name="edit_amount_length">9</integer>
+    <integer name="document_number_length">9</integer>
+    <integer name="signature_length">5</integer>
+    <integer name="edit_amount_initial_inventory_length">5</integer>
 </resources>

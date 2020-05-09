@@ -22,7 +22,7 @@
         android:layout_marginRight="@dimen/margin_tiny_tiny"
         android:layout_weight="3"
         android:inputType="number"
-        android:maxLength="6"
+        android:maxLength="@integer/edit_amount_initial_inventory_length"
         android:hint="@+id/et_amount" />
 
     <ImageButton

@@ -64,7 +64,7 @@
                         android:drawablePadding="5dp"
                         android:hint="@string/hint_document_number"
                         android:inputType="textShortMessage"
-                        android:maxLength="9" />
+                        android:maxLength="@integer/document_number_length" />
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
@@ -108,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_requested_quantity"
                         android:inputType="number"
-                        android:maxLength="9" />
+                        android:maxLength="@integer/edit_amount_length" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
@@ -126,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_movement_quantity"
                     android:inputType="number"
-                    android:maxLength="9" />
+                    android:maxLength="@integer/edit_amount_length" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -141,7 +141,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_movement_signature"
-                    android:maxLength="5" />
+                    android:maxLength="@integer/signature_length" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

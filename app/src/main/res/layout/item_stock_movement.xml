@@ -19,10 +19,10 @@
     <EditText
         android:id="@+id/et_document_number"
         style="@style/ItemMovement.SheetText"
-        android:imeOptions="actionDone"
         android:layout_width="@dimen/stock_movement_item_common_width"
         android:layout_height="wrap_content"
-        android:maxLength="9"/>
+        android:imeOptions="actionDone"
+        android:maxLength="@integer/document_number_length" />
 
     <EditText
         android:id="@+id/et_received"
