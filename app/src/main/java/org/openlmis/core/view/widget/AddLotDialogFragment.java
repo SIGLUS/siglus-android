@@ -67,6 +67,8 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     private AddLotWithoutNumberListener addLotWithoutNumberListener;
     private BaseLotListView.OnDismissListener onDismissListener;
 
+    private static final String UNKNOWN_STRING = "Unknown";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_add_lot, container, false);
@@ -155,13 +157,13 @@ public class AddLotDialogFragment extends BaseDialogFragment {
             if (getContext() != null) {
                 return getString(resId);
             } else {
-                return "Unknown";
+                return UNKNOWN_STRING;
             }
         } else {
             if (isAdded()) {
                 return getString(resId);
             } else {
-                return "Unknown";
+                return UNKNOWN_STRING;
             }
         }
 
@@ -172,13 +174,13 @@ public class AddLotDialogFragment extends BaseDialogFragment {
             if (getContext() != null) {
                 return getString(resId, formatArgs);
             } else {
-                return "Unknown";
+                return UNKNOWN_STRING;
             }
         } else {
             if (isAdded()) {
                 return getString(resId, formatArgs);
             } else {
-                return "Unknown";
+                return UNKNOWN_STRING;
             }
         }
 
