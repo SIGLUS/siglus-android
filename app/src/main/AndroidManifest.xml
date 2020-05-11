@@ -62,6 +62,7 @@
             android:name=".view.activity.RapidTestReportFormActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_rapid_test_form"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".view.activity.MalariaDataReportFormActivity"
