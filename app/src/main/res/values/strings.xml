@@ -40,6 +40,7 @@
     <string name="btn_remove_stock">REMOVE PRODUCT</string>
     <string name="btn_add_product">Add Products</string>
     <string name="title_basic_products">Basic Products</string>
+    <string name="msg_can_not_add_duplicate">Product %1$s already exists, please add a new one.</string>
 
     <!-- Bulk Movements -->
     <string name="label_soh_amount">Stock Existente</string>

@@ -13,7 +13,6 @@ import java.util.List;
 
 import lombok.Getter;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -34,24 +33,21 @@ public class AddNonBasicProductsPresenter extends Presenter {
 
     }
 
-    public Observable<List<NonBasicProductsViewModel>> getAllNonBasicProductsViewModels(final List<Product> selectedProducts) {
-        return Observable.create(new Observable.OnSubscribe<List<NonBasicProductsViewModel>>() {
-            @Override
-            public void call(Subscriber<? super List<NonBasicProductsViewModel>> subscriber) {
-                try {
-                    List<Product> products = productRepository.listNonBasicProducts();
-                    for (Product product : products) {
-                        NonBasicProductsViewModel currentModel = new NonBasicProductsViewModel(product);
-                        if (selectedProducts.contains(product)) {
-                            currentModel.setChecked(true);
-                        }
-                        models.add(currentModel);
+    public Observable<List<NonBasicProductsViewModel>> getAllNonBasicProductsViewModels(final List<String> selectedProducts) {
+        return Observable.create((Observable.OnSubscribe<List<NonBasicProductsViewModel>>) subscriber -> {
+            try {
+                List<Product> products = productRepository.listNonBasicProducts();
+                for (Product product : products) {
+                    if (selectedProducts.contains(product.getCode())) {
+                        continue;
                     }
-                    subscriber.onNext(models);
-                    subscriber.onCompleted();
-                }catch (Exception e){
-                    subscriber.onError(e);
+                    NonBasicProductsViewModel currentModel = new NonBasicProductsViewModel(product);
+                    models.add(currentModel);
                 }
+                subscriber.onNext(models);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }

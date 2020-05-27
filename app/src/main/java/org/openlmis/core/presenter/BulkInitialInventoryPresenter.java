@@ -124,11 +124,17 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         bulkInitialInventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
     }
 
-
     public void addNonBasicProductsToInventory(List<Product> nonBasicProducts) {
         List<BulkInitialInventoryViewModel> nonBasicProductsModels = convertProductToStockCardViewModel(nonBasicProducts,
                 BulkInitialInventoryAdapter.ITEM_NO_BASIC);
         buildNonBasicProductModels(nonBasicProductsModels);
+    }
+
+    public List<String> getAllAddedNonBasicProduct(){
+        return from(inventoryViewModelList)
+                .filter(viewModel -> viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NO_BASIC)
+                .transform(viewModel -> viewModel.getProduct().getCode())
+                .toList();
     }
 
     private void buildNonBasicProductModels(List<BulkInitialInventoryViewModel> nonBasicProductsModels) {

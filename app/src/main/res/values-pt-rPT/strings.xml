@@ -36,6 +36,8 @@
     <string name="btn_remove_stock">REMOVER PRODUTO</string>
     <string name="btn_add_product">Adicionar produtos</string>
     <string name="title_basic_products">Produtos Básicos</string>
+    <string name="msg_can_not_add_duplicate">Produtos %1$s já existe, por favor, adicione um novo.</string>
+
     <!--Home Page-->
     <string name="label_stock_cards">Visão geral da ficha de stock</string>
     <string name="label_kits_stock_cards">KITS</string>

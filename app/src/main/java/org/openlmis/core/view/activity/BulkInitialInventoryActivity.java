@@ -35,8 +35,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     public static final int REQUEST_CODE = 1050;
     public final String EMPTY_STRING = "";
 
-    private List<Product> selectedProducts;
-
     @InjectView(R.id.btn_add_products)
     private TextView btnAddProducts;
 
@@ -46,7 +44,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        selectedProducts = new ArrayList<>();
     }
 
     @Override
@@ -171,7 +168,8 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     public View.OnClickListener goToAddNonBasicProductsLister() {
         return v -> {
             Intent intent = new Intent(getApplicationContext(), AddNonBasicProductsActivity.class);
-            intent.putExtra(AddNonBasicProductsActivity.SELECTED_PRODUCTS, (Serializable) selectedProducts);
+            intent.putExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS,
+                    (Serializable) presenter.getAllAddedNonBasicProduct());
             startActivityForResult(intent, REQUEST_CODE);
         };
     }
@@ -179,15 +177,14 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (areThereSelectedProducts(requestCode, resultCode, data)) {
-            this.selectedProducts.clear();
-            this.selectedProducts.addAll((ArrayList<Product>) data.getSerializableExtra(AddNonBasicProductsActivity.SELECTED_PRODUCTS));
-            presenter.addNonBasicProductsToInventory(selectedProducts);
+            presenter.addNonBasicProductsToInventory((ArrayList<Product>) data.getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS));
             mAdapter.refresh();
             setUpFastScroller(presenter.getInventoryViewModelList());
             mAdapter.notifyDataSetChanged();
             setTotal();
         }
     }
+
 
     @Override
     public void onBackPressed() {
@@ -220,7 +217,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         return requestCode == REQUEST_CODE
                 && resultCode == AddNonBasicProductsActivity.RESULT_CODE
                 && data.getExtras() != null
-                && data.getExtras().containsKey(AddNonBasicProductsActivity.SELECTED_PRODUCTS);
+                && data.getExtras().containsKey(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
     }
 
     protected void setTotal() {
@@ -241,7 +238,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
             presenter.removeNonBasicProductElement(viewModel);
             mAdapter.refresh();
             mAdapter.notifyDataSetChanged();
-            selectedProducts.remove(viewModel.getProduct());
             setTotal();
         };
     }

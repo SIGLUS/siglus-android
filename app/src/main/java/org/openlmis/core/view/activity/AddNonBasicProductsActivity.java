@@ -31,7 +31,7 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
 
     public static final String EMPTY_STRING = "";
     public static final int RESULT_CODE = 2000;
-    public static final String SELECTED_PRODUCTS = "SELECTED_PRODUCTS";
+    public static final String SELECTED_NON_BASIC_PRODUCTS = "SELECTED_PRODUCTS";
     @InjectView(R.id.non_basic_products)
     RecyclerView rvNonBasicProducts;
 
@@ -46,48 +46,40 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
 
     AddNonBasicProductsAdapter adapter;
 
-    private List<Product> previouslySelectedProducts;
+    private List<String> previouslyProductCodes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initRecyclerView();
         loading(getString(R.string.add_products_loading_message));
-        previouslySelectedProducts = (List<Product>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
+        previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_NON_BASIC_PRODUCTS);
         btnCancel.setOnClickListener(cancelListener());
         btnAddProducts.setOnClickListener(addProductsListener());
-        Subscription subscription = presenter.getAllNonBasicProductsViewModels(previouslySelectedProducts).subscribe(getOnViewModelsLoadedSubscriber());
+        Subscription subscription = presenter.getAllNonBasicProductsViewModels(previouslyProductCodes).subscribe(getOnViewModelsLoadedSubscriber());
         subscriptions.add(subscription);
 
     }
 
     @NonNull
     private View.OnClickListener addProductsListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<Product> selectedProducts = new ArrayList<>();
-                for (NonBasicProductsViewModel model : adapter.getModels()) {
-                    if (model.isChecked()) {
-                        selectedProducts.add(model.getProduct());
-                    }
+        return v -> {
+            List<Product> selectedProducts = new ArrayList<>();
+            for (NonBasicProductsViewModel model : adapter.getModels()) {
+                if (model.isChecked()) {
+                    selectedProducts.add(model.getProduct());
                 }
-                Intent intent = new Intent();
-                intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
-                setResult(RESULT_CODE, intent);
-                finish();
             }
+            Intent intent = new Intent();
+            intent.putExtra(SELECTED_NON_BASIC_PRODUCTS, (Serializable) selectedProducts);
+            setResult(RESULT_CODE, intent);
+            finish();
         };
     }
 
     @NonNull
     private View.OnClickListener cancelListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        };
+        return v -> finish();
     }
 
     private void initRecyclerView() {
