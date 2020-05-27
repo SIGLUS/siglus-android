@@ -205,11 +205,16 @@ public class RapidTestReportViewModel implements Serializable {
     }
 
     public boolean isEditable() {
-        return status.isEditable() && isDraft();
+        return status.isEditable() && (isDraft() || isReadyForCompleted());
     }
+
 
     public boolean isDraft() {
         return rapidTestForm.getStatus() == null || rapidTestForm.getStatus() == ProgramDataForm.STATUS.DRAFT;
+    }
+
+    private boolean isReadyForCompleted() {
+        return rapidTestForm.getStatus() == null || rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
     }
 
     public boolean validatePositive() {
