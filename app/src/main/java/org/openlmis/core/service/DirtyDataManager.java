@@ -237,24 +237,19 @@ public class DirtyDataManager {
     }
 
     private boolean isCorrectMovement(StockMovementItem previousMovement, StockMovementItem newestMovement) {
-        return checkFormula(newestMovement, newestMovement.getStockCard().calculateSOHFromLots(),
+        return checkFormula(newestMovement.getStockCard().calculateSOHFromLots(),
                 previousMovement.getStockOnHand(), newestMovement.getMovementQuantity());
     }
 
     private boolean isCorrectMovements(StockMovementItem previousMovement, StockMovementItem newestMovement) {
-        return checkFormula(newestMovement, newestMovement.getStockOnHand(),
+        return checkFormula(newestMovement.getStockOnHand(),
                 previousMovement.getStockOnHand(), newestMovement.getMovementQuantity());
     }
 
-    private boolean checkFormula(StockMovementItem newestMovement, Long currentSOH,
+    private boolean checkFormula(Long currentSOH,
                                  Long previousSOH, Long currentQuantity) {
-        if (newestMovement.isNegativeMovement()) {
-            return currentSOH == previousSOH - currentQuantity;
-        } else if (newestMovement.isPositiveMovement()) {
-            return currentSOH == previousSOH + currentQuantity;
-        } else {
-            return true;
-        }
+        return (currentSOH == previousSOH - currentQuantity)
+                || (currentSOH == previousSOH + currentQuantity);
     }
 
 }
