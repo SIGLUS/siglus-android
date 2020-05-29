@@ -19,7 +19,6 @@
 package org.openlmis.core.presenter;
 
 import android.util.Log;
-import android.util.Pair;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
@@ -30,20 +29,19 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Observer;
@@ -58,8 +56,8 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 public class StockCardPresenter extends Presenter {
     private static final String TAG = StockCardPresenter.class.getSimpleName();
 
-
     private List<InventoryViewModel> inventoryViewModels;
+    private static final String SHOULD_SHOW_ALERT_MSG = "should_show_alert_msg";
 
     @Inject
     StockRepository stockRepository;
@@ -67,8 +65,6 @@ public class StockCardPresenter extends Presenter {
     ProductRepository productRepository;
     @Inject
     StockService stockService;
-    @Inject
-    StockMovementRepository stockMovementRepository;
 
     @Inject
     DirtyDataManager dirtyDataManager;
@@ -76,6 +72,9 @@ public class StockCardPresenter extends Presenter {
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
     private StockCardListView view;
+
+    private final static String KEY_DELETED_STOCKCARDS = "deleted_stockcard";
+    private final static String KEY_ALL_STOCKCARDS = "all_stockcard";
 
     public StockCardPresenter() {
         inventoryViewModels = new ArrayList<>();
@@ -85,37 +84,28 @@ public class StockCardPresenter extends Presenter {
         return inventoryViewModels;
     }
 
-    private Observer<Pair<ArchiveStatus, List<StockCard>>> afterCorrectDirtyDataHandler() {
-        return new Observer<Pair<ArchiveStatus, List<StockCard>>>() {
-            @Override
-            public void onCompleted() {
-                Log.d(TAG, "afterCorrectDirtyDataHandler onCompleted");
-            }
+    public Observable<List<StockCard>> correctDirtyObservable(ArchiveStatus status) {
+        return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
+            Map<String, List<StockCard>> stockCardMap = new HashMap<>();
+            List<StockCard> allStockCards = stockRepository.list();
+            List<StockCard> deletedStockCards = dirtyDataManager.correctDataForStockCardOverView(allStockCards);
 
-            @Override
-            public void onError(Throwable e) {
-                Log.d(TAG, "afterCorrectDirtyDataHandler onError: ", e);
-                view.loaded();
-            }
+            stockCardMap.put(KEY_ALL_STOCKCARDS, allStockCards);
+            stockCardMap.put(KEY_DELETED_STOCKCARDS, deletedStockCards);
 
-            @Override
-            public void onNext(Pair<ArchiveStatus, List<StockCard>> statusListPair) {
-                ArchiveStatus status = statusListPair.first;
-                List<StockCard> deletedStocks = statusListPair.second;
-                if (!CollectionUtils.isEmpty(deletedStocks)) {
-                    view.showWarning();
-                } else {
-                    loadStockCardsInner(status);
+            stockService.monthlyUpdateAvgMonthlyConsumption();
+            subscriber.onNext(from(allStockCards).filter(stockCard -> {
+                if (status.isArchived()) {
+                    return showInArchiveView(stockCard);
                 }
-            }
-        };
-    }
+                return showInOverview(stockCard);
+            }).toList());
 
-    public Observable correctDirtyObservable(ArchiveStatus status) {
-        return Observable.create(subscriber -> {
-            List<StockCard> deletedStockCards = dirtyDataManager.correctData();
-            subscriber.onNext(new Pair<>(status, deletedStockCards));
-            subscriber.onCompleted();
+            if (!CollectionUtils.isEmpty(deletedStockCards)) {
+                subscriber.onError(new LMISException(SHOULD_SHOW_ALERT_MSG));
+            } else {
+                subscriber.onCompleted();
+            }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -130,7 +120,7 @@ public class StockCardPresenter extends Presenter {
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
                 && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            Subscription subscription = correctDirtyObservable(status).subscribe(afterCorrectDirtyDataHandler());
+            Subscription subscription = correctDirtyObservable(status).subscribe(afterLoadHandler);
             subscriptions.add(subscription);
         } else {
             loadStockCardsInner(status);
@@ -150,6 +140,7 @@ public class StockCardPresenter extends Presenter {
 
     public void refreshStockCardsObservable() {
         view.loading();
+        Log.e(TAG, "1 loadStockCards, start: " + new Date().toString());
         Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
@@ -166,6 +157,7 @@ public class StockCardPresenter extends Presenter {
                     @Override
                     public void onError(Throwable e) {
                         ToastUtil.show(e.getMessage());
+                        Log.e(TAG, "loadStockCards,error end: " + new Date().toString());
                         view.loaded();
                     }
 
@@ -202,33 +194,16 @@ public class StockCardPresenter extends Presenter {
     }
 
     private Observable<List<StockCard>> getLoadStockCardsObservable(final ArchiveStatus status) {
-        return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
-            @Override
-            public void call(Subscriber<? super List<StockCard>> subscriber) {
-                stockService.monthlyUpdateAvgMonthlyConsumption();
-                subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
-                    @Override
-                    public boolean apply(StockCard stockCard) {
-                        if (status.isArchived()) {
-                            return showInArchiveView(stockCard);
-                        }
-                        return showInOverview(stockCard);
-                    }
-                }).toList());
-                subscriber.onCompleted();
-            }
+        return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
+            stockService.monthlyUpdateAvgMonthlyConsumption();
+            subscriber.onNext(from(stockRepository.list()).filter(stockCard -> {
+                if (status.isArchived()) {
+                    return showInArchiveView(stockCard);
+                }
+                return showInOverview(stockCard);
+            }).toList());
+            subscriber.onCompleted();
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
-
-
-    private void adjustmentMovement(List<StockCard> stockCardList) {
-        for (StockCard stockCard : stockCardList) {
-            try {
-                List<StockMovementItem> movementItemList = stockMovementRepository.listLastTwoStockMovements(stockCard.getId());
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private boolean showInOverview(StockCard stockCard) {
@@ -248,19 +223,20 @@ public class StockCardPresenter extends Presenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                ToastUtil.show(e.getMessage());
+                if (SHOULD_SHOW_ALERT_MSG.equals(e.getMessage())) {
+                    view.showWarning();
+                } else {
+                    e.printStackTrace();
+                    ToastUtil.show(e.getMessage());
+                }
                 view.loaded();
             }
 
             @Override
             public void onNext(List<StockCard> stockCards) {
-                List<InventoryViewModel> inventoryViewModelList = from(stockCards).transform(new Function<StockCard, InventoryViewModel>() {
-                    @Override
-                    public InventoryViewModel apply(StockCard stockCard) {
-                        return new InventoryViewModel(stockCard);
-                    }
-                }).toList();
+                List<InventoryViewModel> inventoryViewModelList = from(stockCards)
+                        .transform(InventoryViewModel::new)
+                        .toList();
                 inventoryViewModels.clear();
                 inventoryViewModels.addAll(inventoryViewModelList);
                 view.refresh(inventoryViewModels);
@@ -269,38 +245,31 @@ public class StockCardPresenter extends Presenter {
     }
 
     private Observable<List<StockCard>> createOrGetKitStockCardsObservable() {
-        return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
-            @Override
-            public void call(Subscriber<? super List<StockCard>> subscriber) {
-                try {
-                    final List<Product> kits = productRepository.listActiveProducts(IsKit.Yes);
-                    subscriber.onNext(createStockCardsIfNotExist(kits));
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
+            try {
+                final List<Product> kits = productRepository.listActiveProducts(IsKit.Yes);
+                subscriber.onNext(createStockCardsIfNotExist(kits));
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     private List<StockCard> createStockCardsIfNotExist(List<Product> kits) {
-        return from(kits).transform(new Function<Product, StockCard>() {
-            @Override
-            public StockCard apply(Product product) {
-                StockCard stockCard = null;
-                try {
-                    //TODO
-                    stockCard = stockRepository.queryStockCardByProductId(product.getId());
-                    if (stockCard == null) {
-                        stockCard = new StockCard();
-                        stockCard.setProduct(product);
-                        stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
-                    }
-                } catch (LMISException e) {
-                    new LMISException(e, "createStockCardsIfNotExist").reportToFabric();
+        return from(kits).transform(product -> {
+            StockCard stockCard = null;
+            try {
+                stockCard = stockRepository.queryStockCardByProductId(product.getId());
+                if (stockCard == null) {
+                    stockCard = new StockCard();
+                    stockCard.setProduct(product);
+                    stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
                 }
-                return stockCard;
+            } catch (LMISException e) {
+                new LMISException(e, "createStockCardsIfNotExist").reportToFabric();
             }
+            return stockCard;
         }).toList();
     }
 

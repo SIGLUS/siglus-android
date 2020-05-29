@@ -70,8 +70,14 @@ public class DirtyDataManager {
     }
 
     public List<StockCard> correctData() {
-        List<StockCard> stockCards = stockRepository.list();
+        return doCorrectDirtyData(stockRepository.list());
+    }
 
+    public List<StockCard> correctDataForStockCardOverView(List<StockCard> stockCards) {
+        return doCorrectDirtyData(stockCards);
+    }
+
+    private List<StockCard> doCorrectDirtyData(List<StockCard> stockCards) {
         List<StockCard> deletedStockCards = checkTheLastTwoMovementAndLotSOH(stockCards);
         saveDeletedInfoToDB(deletedStockCards);
 
@@ -80,6 +86,7 @@ public class DirtyDataManager {
         sharedPreferenceMgr.setDeletedProduct(productCodes);
         return deletedStockCards;
     }
+
 
     public List<StockCard> scanAllStockMovements() {
         List<StockCard> stockCards = stockRepository.list();
