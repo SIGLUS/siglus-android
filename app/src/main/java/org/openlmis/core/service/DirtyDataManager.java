@@ -2,6 +2,7 @@ package org.openlmis.core.service;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.LongSparseArray;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.gson.Gson;
@@ -30,7 +31,9 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -180,7 +183,8 @@ public class DirtyDataManager {
                 List<StockMovementItem> stockMovementItems = stockMovementRepository.listLastTwoStockMovements(stockCard.getId());
                 if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
                     if (!isCorrectMovement(stockMovementItems.get(0), stockMovementItems.get(1))
-                            || !isCorrectLotOnHand(stockCard)) {
+                            || !isCorrectLotOnHand(stockCard)
+                            || !isCorrectSOHBetweenMovementAndStockCard(stockCard, stockMovementItems.get(1))) {
                         deleted.add(stockCard);
                     }
                 }
@@ -243,7 +247,17 @@ public class DirtyDataManager {
                 lotOnHand != null && lotOnHand.getQuantityOnHand() >= 0);
     }
 
+    private boolean isCorrectSOHBetweenMovementAndStockCard(StockCard stockCard, StockMovementItem newestMovement) {
+        return stockCard.calculateSOHFromLots() == newestMovement.getStockOnHand();
+    }
+
     private boolean isCorrectMovement(StockMovementItem previousMovement, StockMovementItem newestMovement) {
+//        Log.e(TAG, "isCorrectMovement: code=" + newestMovement.getStockCard().getProduct().getCode() +
+//                ",currentSOH=" + newestMovement.getStockCard().calculateSOHFromLots() +
+//                ",previousSOH=" + previousMovement.getStockOnHand() +
+//                ",currentQuantity=" + newestMovement.getMovementQuantity() +
+//                ",movement SOH=" + newestMovement.getStockOnHand() +
+//                ",Stock Card SOH=" + newestMovement.getStockCard().getStockOnHand());
         return checkFormula(newestMovement.getStockCard().calculateSOHFromLots(),
                 previousMovement.getStockOnHand(), newestMovement.getMovementQuantity());
     }

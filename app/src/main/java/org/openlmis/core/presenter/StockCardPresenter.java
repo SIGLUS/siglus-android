@@ -85,28 +85,34 @@ public class StockCardPresenter extends Presenter {
     }
 
     public Observable<List<StockCard>> correctDirtyObservable(ArchiveStatus status) {
-        return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
-            Map<String, List<StockCard>> stockCardMap = new HashMap<>();
-            List<StockCard> allStockCards = stockRepository.list();
-            List<StockCard> deletedStockCards = dirtyDataManager.correctDataForStockCardOverView(allStockCards);
+        return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber ->
+                checkDataAndEmitter(subscriber, status))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
-            stockCardMap.put(KEY_ALL_STOCKCARDS, allStockCards);
-            stockCardMap.put(KEY_DELETED_STOCKCARDS, deletedStockCards);
+    private void checkDataAndEmitter(Subscriber<? super List<StockCard>> subscriber, ArchiveStatus status) {
+        Log.e(TAG, "checkDataAndEmitter: start");
+        Map<String, List<StockCard>> stockCardMap = new HashMap<>();
+        List<StockCard> allStockCards = stockRepository.list();
+        List<StockCard> deletedStockCards = dirtyDataManager.correctDataForStockCardOverView(allStockCards);
 
-            stockService.monthlyUpdateAvgMonthlyConsumption();
-            subscriber.onNext(from(allStockCards).filter(stockCard -> {
-                if (status.isArchived()) {
-                    return showInArchiveView(stockCard);
-                }
-                return showInOverview(stockCard);
-            }).toList());
+        stockCardMap.put(KEY_ALL_STOCKCARDS, allStockCards);
+        stockCardMap.put(KEY_DELETED_STOCKCARDS, deletedStockCards);
 
-            if (!CollectionUtils.isEmpty(deletedStockCards)) {
-                subscriber.onError(new LMISException(SHOULD_SHOW_ALERT_MSG));
-            } else {
-                subscriber.onCompleted();
+        stockService.monthlyUpdateAvgMonthlyConsumption();
+        subscriber.onNext(from(allStockCards).filter(stockCard -> {
+            if (status.isArchived()) {
+                return showInArchiveView(stockCard);
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            return showInOverview(stockCard);
+        }).toList());
+
+        if (!CollectionUtils.isEmpty(deletedStockCards)) {
+            subscriber.onError(new LMISException(SHOULD_SHOW_ALERT_MSG));
+        } else {
+            subscriber.onCompleted();
+        }
     }
 
     public void loadStockCards(ArchiveStatus status) {
@@ -118,6 +124,7 @@ public class StockCardPresenter extends Presenter {
             view.loading();
         }
 
+        Log.e(TAG, "loadStockCards: start");
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
                 && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             Subscription subscription = correctDirtyObservable(status).subscribe(afterLoadHandler);
@@ -141,17 +148,14 @@ public class StockCardPresenter extends Presenter {
     public void refreshStockCardsObservable() {
         view.loading();
         Log.e(TAG, "1 loadStockCards, start: " + new Date().toString());
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                refreshStockCardViewModelsSOH();
-                subscriber.onNext(null);
-                subscriber.onCompleted();
-            }
+        Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
+            refreshStockCardViewModelsSOH();
+            checkDataAndEmitter(subscriber, Active);
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Void>() {
+                .subscribe(new Subscriber<List<StockCard>>() {
                     @Override
                     public void onCompleted() {
+                        view.loaded();
                     }
 
                     @Override
@@ -162,11 +166,22 @@ public class StockCardPresenter extends Presenter {
                     }
 
                     @Override
-                    public void onNext(Void aVoid) {
+                    public void onNext(List<StockCard> stockCards) {
+                        refreshViewModels(stockCards);
                         view.refreshBannerText();
-                        loadStockCards(Active, false);
+                        view.loaded();
+                        view.refresh(inventoryViewModels);
+                        Log.e(TAG, "onNext: ");
                     }
                 });
+    }
+
+    private void refreshViewModels(List<StockCard> stockCards) {
+        List<InventoryViewModel> inventoryViewModelList = from(stockCards)
+                .transform(InventoryViewModel::new)
+                .toList();
+        inventoryViewModels.clear();
+        inventoryViewModels.addAll(inventoryViewModelList);
     }
 
     public void refreshStockCardViewModelsSOH() {
@@ -219,6 +234,7 @@ public class StockCardPresenter extends Presenter {
             @Override
             public void onCompleted() {
                 view.loaded();
+                Log.e(TAG, "getLoadStockCardsSubscriber onCompleted: ");
             }
 
             @Override
@@ -234,12 +250,10 @@ public class StockCardPresenter extends Presenter {
 
             @Override
             public void onNext(List<StockCard> stockCards) {
-                List<InventoryViewModel> inventoryViewModelList = from(stockCards)
-                        .transform(InventoryViewModel::new)
-                        .toList();
-                inventoryViewModels.clear();
-                inventoryViewModels.addAll(inventoryViewModelList);
+                refreshViewModels(stockCards);
                 view.refresh(inventoryViewModels);
+                Log.e(TAG, "getLoadStockCardsSubscriber onNext: ");
+
             }
         };
     }
