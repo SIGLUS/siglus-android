@@ -2,7 +2,6 @@ package org.openlmis.core.service;
 
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.LongSparseArray;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.gson.Gson;
@@ -31,10 +30,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Nullable;
 
 import roboguice.RoboGuice;
@@ -252,25 +248,24 @@ public class DirtyDataManager {
     }
 
     private boolean isCorrectMovement(StockMovementItem previousMovement, StockMovementItem newestMovement) {
-//        Log.e(TAG, "isCorrectMovement: code=" + newestMovement.getStockCard().getProduct().getCode() +
-//                ",currentSOH=" + newestMovement.getStockCard().calculateSOHFromLots() +
-//                ",previousSOH=" + previousMovement.getStockOnHand() +
-//                ",currentQuantity=" + newestMovement.getMovementQuantity() +
-//                ",movement SOH=" + newestMovement.getStockOnHand() +
-//                ",Stock Card SOH=" + newestMovement.getStockCard().getStockOnHand());
-        return checkFormula(newestMovement.getStockCard().calculateSOHFromLots(),
+        return checkFormula(newestMovement, newestMovement.getStockCard().calculateSOHFromLots(),
                 previousMovement.getStockOnHand(), newestMovement.getMovementQuantity());
     }
 
     private boolean isCorrectMovements(StockMovementItem previousMovement, StockMovementItem newestMovement) {
-        return checkFormula(newestMovement.getStockOnHand(),
+        return checkFormula(newestMovement, newestMovement.getStockOnHand(),
                 previousMovement.getStockOnHand(), newestMovement.getMovementQuantity());
     }
 
-    private boolean checkFormula(Long currentSOH,
+    private boolean checkFormula(StockMovementItem newestMovement, Long currentSOH,
                                  Long previousSOH, Long currentQuantity) {
-        return (currentSOH == previousSOH - currentQuantity)
-                || (currentSOH == previousSOH + currentQuantity);
+        if (newestMovement.isNegativeMovement()) {
+            return currentSOH == previousSOH - currentQuantity;
+        } else if (newestMovement.isPositiveMovement()) {
+            return currentSOH == previousSOH + currentQuantity;
+        } else {
+            return (currentSOH == previousSOH - currentQuantity)
+                    || (currentSOH == previousSOH + currentQuantity);
+        }
     }
-
 }
