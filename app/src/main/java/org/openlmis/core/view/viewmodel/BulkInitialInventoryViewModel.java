@@ -22,6 +22,7 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
 
     private DraftInitialInventory draftInventory;
     private boolean done;
+    private String  from;
 
     public BulkInitialInventoryViewModel(StockCard stockCard) {
         super(stockCard);

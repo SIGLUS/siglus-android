@@ -21,6 +21,7 @@ import lombok.Data;
 public class PhysicalInventoryViewModel extends InventoryViewModel {
     private DraftInventory draftInventory;
     private boolean done;
+    private String  from;
 
     public PhysicalInventoryViewModel(StockCard stockCard) {
         super(stockCard);

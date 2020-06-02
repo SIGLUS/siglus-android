@@ -31,6 +31,7 @@ import rx.Subscription;
 @ContentView(R.layout.activity_bulk_initial_inventory)
 public class BulkInitialInventoryActivity extends InventoryActivity {
     private static final String TAG = BulkInitialInventoryActivity.class.getSimpleName();
+    public static final String KEY_FROM_INITIAL_COMPLETED = "Initial-Completed";
 
     public static final int REQUEST_CODE = 1050;
     public final String EMPTY_STRING = "";
@@ -148,7 +149,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
     @Override
     public boolean validateInventory() {
-        int position = mAdapter.validateAll();
+        int position = ((BulkInitialInventoryAdapter) mAdapter).validateAllForCompletedClick(KEY_FROM_INITIAL_COMPLETED);
         setTotal();
         if (position >= 0) {
             clearSearch();

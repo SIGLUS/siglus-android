@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -14,10 +13,13 @@ import org.openlmis.core.view.adapter.PhysicalInventoryLotMovementAdapter;
 import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
+
 
 import roboguice.inject.InjectView;
 
 public class PhysicalInventoryLotListView extends BaseLotListView {
+    private static final String TAG = PhysicalInventoryLotListView.class.getSimpleName();
     @InjectView(R.id.btn_done)
     ViewGroup btnDone;
 
@@ -45,20 +47,12 @@ public class PhysicalInventoryLotListView extends BaseLotListView {
     @Override
     protected void init(Context context) {
         super.init(context);
-        btnDone.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateLotList()) {
-                    markDone(true);
-                }
+        btnDone.setOnClickListener(v -> {
+            if (validateLotList()) {
+                markDone(true);
             }
         });
-        btnEdit.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                markDone(false);
-            }
-        });
+        btnEdit.setOnClickListener(v -> markDone(false));
     }
 
     public void initLotListView(InventoryViewModel viewModel, PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener statusChangeListener) {
@@ -70,6 +64,10 @@ public class PhysicalInventoryLotListView extends BaseLotListView {
     @Override
     public void initExistingLotListView() {
         existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        FluentIterable.from(viewModel.getExistingLotMovementViewModelList()).transform(lotMovementViewModel -> {
+            lotMovementViewModel.setFrom(((PhysicalInventoryViewModel) viewModel).getFrom());
+            return lotMovementViewModel;
+        }).toList();
         existingLotMovementAdapter = new PhysicalInventoryLotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
@@ -77,6 +75,10 @@ public class PhysicalInventoryLotListView extends BaseLotListView {
     @Override
     public void initNewLotListView() {
         newLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        FluentIterable.from(viewModel.getNewLotMovementViewModelList()).transform(lotMovementViewModel -> {
+            lotMovementViewModel.setFrom(((PhysicalInventoryViewModel) viewModel).getFrom());
+            return lotMovementViewModel;
+        }).toList();
         newLotMovementAdapter = new PhysicalInventoryLotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
         newLotListView.setAdapter(newLotMovementAdapter);
     }

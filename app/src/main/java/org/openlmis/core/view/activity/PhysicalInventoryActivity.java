@@ -29,6 +29,8 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     PhysicalInventoryPresenter presenter;
 
+    public static final String KEY_FROM_PHYSICAL_COMPLETED = "Physical-Completed";
+
     @Override
     public void initUI() {
         super.initUI();
@@ -79,9 +81,8 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         }
     };
 
-    @Override
-    public boolean validateInventory() {
-        int position = mAdapter.validateAll();
+    private boolean validateInventoryFromCompleted() {
+        int position = ((PhysicalInventoryAdapter) mAdapter).validateAllForCompletedClick("Physical-Completed");
         setTotal(presenter.getInventoryViewModelList().size());
         if (position >= 0) {
             clearSearch();
@@ -92,7 +93,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     }
 
     public void signPhysicalInventory() {
-        if (validateInventory()) {
+        if (validateInventoryFromCompleted()) {
             showSignDialog();
         }
     }

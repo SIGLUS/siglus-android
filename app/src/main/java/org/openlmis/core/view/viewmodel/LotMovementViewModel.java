@@ -29,6 +29,7 @@ public class LotMovementViewModel implements Serializable {
     boolean valid = true;
     boolean quantityLessThanSoh = true;
     boolean isDataChanged = false;
+    private String from;
 
     public LotMovementViewModel(String lotNumber, String expiryDate, MovementReasonManager.MovementType movementType) {
         this.lotNumber = lotNumber;

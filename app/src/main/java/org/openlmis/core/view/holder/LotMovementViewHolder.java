@@ -1,5 +1,6 @@
 package org.openlmis.core.view.holder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -121,7 +122,11 @@ public class LotMovementViewHolder extends BaseViewHolder {
         if (!viewModel.isQuantityLessThanSoh()) {
             setQuantityError(getString(R.string.msg_invalid_quantity));
         } else {
-            setQuantityError(null);
+            if (PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED.equals(viewModel.getFrom())) {
+                lyLotAmount.setError(getString(R.string.msg_empty_quantity));
+            } else {
+                setQuantityError(null);
+            }
         }
     }
 
@@ -143,30 +148,27 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
     @NonNull
     private View.OnClickListener getOnClickListenerForDeleteIcon(final LotMovementViewModel viewModel, final LotMovementAdapter lotMovementAdapter) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-                        Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
-                        Html.fromHtml(context.getResources().getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(), viewModel.getExpiryDate(), lotMovementAdapter.getProductName())),
-                        getString(R.string.btn_remove_lot),
-                        getString(R.string.btn_cancel), "confirm_dialog");
-                dialogFragment.show(((BaseActivity) context).getFragmentManager(), "confirm_dialog");
-                dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
-                    @Override
-                    public void positiveClick(String tag) {
-                        lotMovementAdapter.remove(viewModel);
-                        if (context instanceof InventoryActivity) {
-                            ((InventoryActivity) context).productListRecycleView.getAdapter().notifyDataSetChanged();
-                        }
+        return v -> {
+            final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+                    Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
+                    Html.fromHtml(context.getResources().getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(), viewModel.getExpiryDate(), lotMovementAdapter.getProductName())),
+                    getString(R.string.btn_remove_lot),
+                    getString(R.string.btn_cancel), "confirm_dialog");
+            dialogFragment.show(((BaseActivity) context).getFragmentManager(), "confirm_dialog");
+            dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+                @Override
+                public void positiveClick(String tag) {
+                    lotMovementAdapter.remove(viewModel);
+                    if (context instanceof InventoryActivity) {
+                        ((InventoryActivity) context).productListRecycleView.getAdapter().notifyDataSetChanged();
                     }
+                }
 
-                    @Override
-                    public void negativeClick(String tag) {
-                        dialogFragment.dismiss();
-                    }
-                });
-            }
+                @Override
+                public void negativeClick(String tag) {
+                    dialogFragment.dismiss();
+                }
+            });
         };
     }
 
@@ -191,6 +193,16 @@ public class LotMovementViewHolder extends BaseViewHolder {
             this.viewModel.setDataChanged(true);
             viewModel.setQuantity(editable.toString());
             lyLotAmount.setErrorEnabled(false);
+            updateVgLotSOHAndError(context);
+            if (movementChangeListener != null) {
+                movementChangeListener.movementChange();
+            }
+            if (context instanceof BulkInitialInventoryActivity && movementChangedListenerWithStatus != null) {
+                movementChangedListenerWithStatus.movementChange(editable.toString());
+            }
+        }
+
+        private void updateVgLotSOHAndError(Context context) {
             if (context instanceof NewStockMovementActivity) {
                 if (viewModel.isNewAdded()) {
                     if (viewModel.validateLotWithPositiveQuantity()) {
@@ -225,12 +237,10 @@ public class LotMovementViewHolder extends BaseViewHolder {
                     setQuantityError(getString(R.string.msg_empty_quantity));
                 }
             }
-
-            if (movementChangeListener != null) {
-                movementChangeListener.movementChange();
-            }
-            if (context instanceof BulkInitialInventoryActivity && movementChangedListenerWithStatus != null) {
-                movementChangedListenerWithStatus.movementChange(editable.toString());
+            if (context instanceof BulkInitialInventoryActivity) {
+                if (!viewModel.validateLotWithPositiveQuantity()) {
+                    setQuantityError(getString(R.string.msg_empty_quantity));
+                }
             }
         }
     }

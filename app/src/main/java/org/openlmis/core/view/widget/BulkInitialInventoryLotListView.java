@@ -16,6 +16,7 @@ import org.openlmis.core.view.adapter.BulkLotInfoReviewListAdapter;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import roboguice.inject.InjectView;
 
@@ -93,6 +94,10 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     @Override
     public void initExistingLotListView() {
         existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        FluentIterable.from(viewModel.getExistingLotMovementViewModelList()).transform(lotMovementViewModel -> {
+            lotMovementViewModel.setFrom(((BulkInitialInventoryViewModel) viewModel).getFrom());
+            return lotMovementViewModel;
+        }).toList();
         existingLotMovementAdapter = new BulkInitialInventoryLotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
         existingLotMovementAdapter.setMovementChangedListenerWithStatus(movementChangedListenerWithStatus);
         existingLotListView.setAdapter(existingLotMovementAdapter);
@@ -101,6 +106,10 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     @Override
     public void initNewLotListView() {
         newLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        FluentIterable.from(viewModel.getNewLotMovementViewModelList()).transform(lotMovementViewModel -> {
+            lotMovementViewModel.setFrom(((BulkInitialInventoryViewModel) viewModel).getFrom());
+            return lotMovementViewModel;
+        }).toList();
         newLotMovementAdapter = new BulkInitialInventoryLotMovementAdapter(viewModel.getNewLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
         newLotMovementAdapter.setMovementChangedListenerWithStatus(movementChangedListenerWithStatus);
         newLotListView.setAdapter(newLotMovementAdapter);

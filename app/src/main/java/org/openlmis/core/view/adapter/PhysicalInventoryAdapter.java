@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import com.viethoa.RecyclerViewFastScroller;
 
 import org.openlmis.core.R;
+import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
@@ -89,10 +90,27 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
         return false;
     }
 
+    public int validateAllForCompletedClick(String from) {
+        int position = -1;
+        for (int i = 0; i < data.size(); i++) {
+            ((PhysicalInventoryViewModel) data.get(i)).setFrom(from);
+            if (!data.get(i).validate()) {
+                if (position == -1 || i < position) {
+                    position = i;
+                }
+            }
+        }
+
+        this.notifyDataSetChanged();
+        return position;
+    }
+
     @Override
     public int validateAll() {
         int position = -1;
         for (int i = 0; i < data.size(); i++) {
+            ((PhysicalInventoryViewModel) data.get(i))
+                    .setFrom(PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED);
             if (!data.get(i).validate()) {
                 if (position == -1 || i < position) {
                     position = i;
