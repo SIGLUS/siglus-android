@@ -27,12 +27,10 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RapidTestReportBodyLeftHeaderAdapter;
 import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
-import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.RapidTestRnrForm;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -148,14 +146,11 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     private RapidTestReportGridViewHolder.QuantityChangeListener getQuantityChangeListener() {
-        return new RapidTestReportGridViewHolder.QuantityChangeListener() {
-            @Override
-            public void updateTotal(RapidTestFormGridViewModel.ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {
-                presenter.getViewModel().updateTotal(columnCode, gridColumnCode);
-                presenter.getViewModel().updateAPEWaring();
-                adapter.updateTotal();
-                adapter.updateAPE();
-            }
+        return (columnCode, gridColumnCode) -> {
+            presenter.getViewModel().updateTotal(columnCode, gridColumnCode);
+            presenter.getViewModel().updateAPEWaring();
+            adapter.updateTotal();
+            adapter.updateAPE();
         };
     }
 
@@ -222,13 +217,10 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     private Action1<? super RapidTestReportViewModel> getOnSubmittedAction() {
-        return new Action1<RapidTestReportViewModel>() {
-            @Override
-            public void call(RapidTestReportViewModel viewModel) {
-                showMessageNotifyDialog();
-                updateUIAfterSubmit();
-                loaded();
-            }
+        return (Action1<RapidTestReportViewModel>) viewModel -> {
+            showMessageNotifyDialog();
+            updateUIAfterSubmit();
+            loaded();
         };
     }
 
@@ -242,14 +234,11 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     protected Action1<? super Void> getOnSignedAction() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                if (presenter.getViewModel().isAuthorized()) {
-                    onSaveForm();
-                } else {
-                    onSubmitForm();
-                }
+        return (Action1<Void>) aVoid -> {
+            if (presenter.getViewModel().isAuthorized()) {
+                onSaveForm();
+            } else {
+                onSubmitForm();
             }
         };
     }
@@ -267,24 +256,18 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     private Action1<? super RapidTestReportViewModel> getOnSavedAction() {
-        return new Action1<RapidTestReportViewModel>() {
-            @Override
-            public void call(RapidTestReportViewModel viewModel) {
-                loaded();
-                finish();
-            }
+        return (Action1<RapidTestReportViewModel>) viewModel -> {
+            loaded();
+            finish();
         };
     }
 
     @NonNull
     private Action1<RapidTestReportViewModel> getOnViewModelLoadedAction() {
-        return new Action1<RapidTestReportViewModel>() {
-            @Override
-            public void call(RapidTestReportViewModel viewModel) {
-                updateUI();
-                if (presenter.isSubmitted()) {
-                    showMessageNotifyDialog();
-                }
+        return viewModel -> {
+            updateUI();
+            if (presenter.isSubmitted()) {
+                showMessageNotifyDialog();
             }
         };
     }

@@ -7,28 +7,14 @@
 
     <EditText
         android:id="@+id/et_consume_rapid_test_report_grid"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/border_right_black"
-        android:gravity="center"
-        android:inputType="number" />
+        style="@style/RapidTestForm.SecondPartGridItem" />
 
     <EditText
         android:id="@+id/et_positive_rapid_test_report_grid"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/border_right_black"
-        android:gravity="center"
-        android:inputType="number" />
+        style="@style/RapidTestForm.SecondPartGridItem" />
 
     <EditText
         android:id="@+id/et_unjustified_rapid_test_report_grid"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/al_border_right_black_bold"
-        android:gravity="center"
-        android:inputType="number" />
+        style="@style/RapidTestForm.SecondPartGridItem"
+        android:background="@drawable/al_border_right_black_bold" />
 </LinearLayout>

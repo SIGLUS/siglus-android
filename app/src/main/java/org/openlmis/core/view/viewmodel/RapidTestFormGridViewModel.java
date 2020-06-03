@@ -20,10 +20,10 @@ public class RapidTestFormGridViewModel {
     }
 
     public enum ColumnCode {
-        HIVDetermine,
-        HIVUnigold,
-        Syphillis,
-        Malaria;
+        HIVDETERMINE,
+        HIVUNIGOLD,
+        SYPHILLIS,
+        MALARIA;
 
         @Override
         public String toString() {
@@ -32,9 +32,9 @@ public class RapidTestFormGridViewModel {
     }
 
     ColumnCode columnCode;
-    String consumptionValue = "";
-    String positiveValue = "";
-    String unjustifiedValue = "";
+    String consumptionValue = StringUtils.EMPTY;
+    String positiveValue = StringUtils.EMPTY;
+    String unjustifiedValue = StringUtils.EMPTY;
 
 
     ProgramDataColumn positiveColumn;
@@ -55,7 +55,8 @@ public class RapidTestFormGridViewModel {
     public boolean validate() {
         try {
             return isEmpty()
-                    || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue) && Long.parseLong(unjustifiedValue) >= 0) ;
+                    || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue)
+                    && Long.parseLong(unjustifiedValue) >= 0);
         } catch (NumberFormatException e) {
             return false;
         }
@@ -63,8 +64,10 @@ public class RapidTestFormGridViewModel {
 
     public boolean validatePositive() {
         try {
-            return (StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue) && StringUtils.isEmpty(unjustifiedValue))
-                    || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue)) ;
+            return (StringUtils.isEmpty(consumptionValue)
+                    && StringUtils.isEmpty(positiveValue)
+                    && StringUtils.isEmpty(unjustifiedValue))
+                    || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue));
         } catch (NumberFormatException e) {
             return false;
         }
@@ -73,7 +76,8 @@ public class RapidTestFormGridViewModel {
     public boolean validateUnjustified() {
         try {
             return isEmpty()
-                    || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue) && Long.parseLong(unjustifiedValue) >= 0) ;
+                    || (Long.parseLong(consumptionValue) >= Long.parseLong(positiveValue)
+                    && Long.parseLong(unjustifiedValue) >= 0);
         } catch (NumberFormatException e) {
             return false;
         }
@@ -97,13 +101,13 @@ public class RapidTestFormGridViewModel {
     public void clear(RapidTestGridColumnCode column) {
         switch (column) {
             case positive:
-                positiveValue =  "";
+                positiveValue = StringUtils.EMPTY;
                 break;
             case consumption:
-                consumptionValue =  "";
+                consumptionValue = StringUtils.EMPTY;
                 break;
             case unjustified:
-                unjustifiedValue =  "";
+                unjustifiedValue = StringUtils.EMPTY;
                 break;
         }
     }
@@ -129,15 +133,19 @@ public class RapidTestFormGridViewModel {
     }
 
     public boolean isNeedAddGridViewWarning() {
-       return isAPE && isNeedAllAPEValue && !isAllNotEmpty();
+        return isAPE && isNeedAllAPEValue && !isAllNotEmpty();
     }
 
-    private  boolean isAllNotEmpty() {
-        return StringUtils.isNotEmpty(consumptionValue) && StringUtils.isNotEmpty(positiveValue) && StringUtils.isNotEmpty(unjustifiedValue);
+    private boolean isAllNotEmpty() {
+        return StringUtils.isNotEmpty(consumptionValue)
+                && StringUtils.isNotEmpty(positiveValue)
+                && StringUtils.isNotEmpty(unjustifiedValue);
     }
 
     public boolean isAddUnjustified() {
-        return  StringUtils.isEmpty(unjustifiedValue) && ! (StringUtils.isEmpty(consumptionValue) && StringUtils.isEmpty(positiveValue));
+        return StringUtils.isEmpty(unjustifiedValue)
+                && !(StringUtils.isEmpty(consumptionValue)
+                && StringUtils.isEmpty(positiveValue));
     }
 
     private String generateFullColumnName(String prefix) {

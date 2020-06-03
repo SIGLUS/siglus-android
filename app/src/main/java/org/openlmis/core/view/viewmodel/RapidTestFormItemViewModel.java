@@ -7,6 +7,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
+import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,54 +22,40 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 @Data
 public class RapidTestFormItemViewModel {
 
-    public static final String CONSUME_HIVDETERMINE = "CONSUME_HIVDETERMINE";
-    public static final String POSITIVE_HIVDETERMINE = "POSITIVE_HIVDETERMINE";
-    public static final String UNJUSTIFILED_HIVDETERMINE = "UNJUSTIFILED_HIVDETERMINE";
-    public static final String CONSUME_HIVUNIGOLD = "CONSUME_HIVUNIGOLD";
-    public static final String POSITIVE_HIVUNIGOLD = "POSITIVE_HIVUNIGOLD";
-    public static final String UNJUSTIFILED_HIVUNIGOLD = "UNJUSTIFILED_HIVUNIGOLD";
-    public static final String CONSUME_SYPHILLIS = "CONSUME_SYPHILLIS";
-    public static final String POSITIVE_SYPHILLIS = "POSITIVE_SYPHILLIS";
-    public static final String UNJUSTIFILED_SYPHILLIS = "UNJUSTIFILED_SYPHILLIS";
-    public static final String CONSUME_MALARIA = "CONSUME_MALARIA";
-    public static final String POSITIVE_MALARIA = "POSITIVE_MALARIA";
-    public static final String UNJUSTIFILED_MALARIA = "UNJUSTIFILED_MALARIA";
-
     MovementReasonManager.MovementReason issueReason;
 
-    RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVDetermine);
-    RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVUnigold);
-    RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Syphillis);
-    RapidTestFormGridViewModel gridMalaria = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Malaria);
+    RapidTestFormGridViewModel gridHIVDetermine = new RapidTestFormGridViewModel(ColumnCode.HIVDETERMINE);
+    RapidTestFormGridViewModel gridHIVUnigold = new RapidTestFormGridViewModel(ColumnCode.HIVUNIGOLD);
+    RapidTestFormGridViewModel gridSyphillis = new RapidTestFormGridViewModel(ColumnCode.SYPHILLIS);
+    RapidTestFormGridViewModel gridMalaria = new RapidTestFormGridViewModel(ColumnCode.MALARIA);
 
-     List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = Arrays.asList(gridHIVDetermine, gridHIVUnigold, gridSyphillis, gridMalaria);
+    List<RapidTestFormGridViewModel> rapidTestFormGridViewModelList = Arrays.asList(gridHIVDetermine, gridHIVUnigold, gridSyphillis, gridMalaria);
 
-     Map<String, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
+    Map<ColumnCode, RapidTestFormGridViewModel> rapidTestFormGridViewModelMap = new HashMap<>();
 
     public RapidTestFormItemViewModel(MovementReasonManager.MovementReason issueReason) {
         this.issueReason = issueReason;
         for (RapidTestFormGridViewModel viewModel : rapidTestFormGridViewModelList) {
-            rapidTestFormGridViewModelMap.put(StringUtils.upperCase(viewModel.getColumnCode().name()), viewModel);
+            rapidTestFormGridViewModelMap.put(viewModel.getColumnCode(), viewModel);
         }
     }
 
     public void setColumnValue(ProgramDataColumn column, int value) {
-        String[] columnNames = column.getCode().split("_");
-        String columnName = columnNames[1];
-        rapidTestFormGridViewModelMap.get(columnName).setValue(column, value);
+        rapidTestFormGridViewModelMap.get(ColumnCode.valueOf(column.getCode().split("_")[1]))
+                .setValue(column, value);
     }
 
     public void updateUnjustifiedColumn() {
-        for (RapidTestFormGridViewModel viewModel: rapidTestFormGridViewModelList) {
-            if(viewModel.isAddUnjustified()) {
+        for (RapidTestFormGridViewModel viewModel : rapidTestFormGridViewModelList) {
+            if (viewModel.isAddUnjustified()) {
                 viewModel.unjustifiedValue = "0";
             }
         }
     }
 
     public void setAPEItem() {
-        for (RapidTestFormGridViewModel viewModel: rapidTestFormGridViewModelList) {
-                viewModel.isAPE = true;
+        for (RapidTestFormGridViewModel viewModel : rapidTestFormGridViewModelList) {
+            viewModel.isAPE = true;
         }
     }
 
@@ -117,7 +104,7 @@ public class RapidTestFormItemViewModel {
         return true;
     }
 
-    public void clearValue(RapidTestFormGridViewModel.ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {
-        rapidTestFormGridViewModelMap.get(columnCode.toString()).clear(gridColumnCode);
+    public void clearValue(ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {
+        rapidTestFormGridViewModelMap.get(columnCode).clear(gridColumnCode);
     }
 }

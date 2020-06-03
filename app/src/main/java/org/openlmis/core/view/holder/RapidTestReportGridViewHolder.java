@@ -49,11 +49,9 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     private void updateGridViewHaveValueAlert() {
-        if (viewModel.isNeedAddGridViewWarning()){
+        if (viewModel.isNeedAddGridViewWarning()) {
             warningLinerLayout.setBackground(context.getResources().getDrawable(R.drawable.border_bg_red));
-            return;
         }
-        warningLinerLayout.setBackground(null);
     }
 
     private void updateEditTextMaxLength() {
@@ -93,7 +91,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     private void updateAlert() {
-        if (editable && !viewModel.validate() && !viewModel.getIsAPE()) {
+        if (editable && !viewModel.validate()) {
             etPositive.setTextColor(context.getResources().getColor(R.color.color_red));
             etConsume.setTextColor(context.getResources().getColor(R.color.color_red));
             etUnjustified.setTextColor(context.getResources().getColor(R.color.color_red));
@@ -113,30 +111,28 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
         @Override
         public void afterTextChanged(Editable s) {
-            RapidTestGridColumnCode  gridColumnCode = switchEditIdToGridColumn(editText);
+            RapidTestGridColumnCode gridColumnCode = switchEditIdToGridColumn(editText);
             viewModel.setValue(gridColumnCode, s.toString());
-            if (viewModel.getIsAPE()) {
-                updateGridViewHaveValueAlert();
-                return;
+            if (!viewModel.getIsAPE()) {
+                updateTotal(gridColumnCode);
             }
-            updateTotal(gridColumnCode);
             updateAlert();
         }
 
         private RapidTestGridColumnCode switchEditIdToGridColumn(EditText editText) {
             RapidTestGridColumnCode column = RapidTestGridColumnCode.unjustified;
             switch (editText.getId()) {
-                case  R.id.et_consume_rapid_test_report_grid:
+                case R.id.et_consume_rapid_test_report_grid:
                     column = RapidTestGridColumnCode.consumption;
                     break;
-                case  R.id.et_positive_rapid_test_report_grid:
+                case R.id.et_positive_rapid_test_report_grid:
                     column = RapidTestGridColumnCode.positive;
                     break;
-                case  R.id.et_unjustified_rapid_test_report_grid:
+                case R.id.et_unjustified_rapid_test_report_grid:
                     column = RapidTestGridColumnCode.unjustified;
                     break;
             }
-            return  column;
+            return column;
         }
 
     }

@@ -669,6 +669,14 @@
         <item name="android:background">@drawable/border_top_rapid_test_body_left</item>
         <item name="android:gravity">center</item>
     </style>
+    <style name="RapidTestForm.SecondPartGridItem">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/border_right_black</item>
+        <item name="android:gravity">center</item>
+        <item name="android:inputType">number</item>
+    </style>
 
     <style name="PatientDataForm" />
 

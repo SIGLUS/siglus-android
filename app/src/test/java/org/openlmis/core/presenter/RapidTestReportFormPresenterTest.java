@@ -75,11 +75,11 @@ public class RapidTestReportFormPresenterTest {
         ProgramDataForm form = new ProgramDataForm();
         ProgramDataFormItem programDataFormItem1 = new ProgramDataFormItem();
         programDataFormItem1.setName("MOBILE_UNIT");
-        programDataFormItem1.setProgramDataColumn(new ProgramDataColumnBuilder().setCode("CONSUME_" + StringUtils.upperCase(RapidTestFormGridViewModel.ColumnCode.Syphillis.name())).build());
+        programDataFormItem1.setProgramDataColumn(new ProgramDataColumnBuilder().setCode("CONSUME_" + RapidTestFormGridViewModel.ColumnCode.SYPHILLIS.name()).build());
         programDataFormItem1.setValue(100);
         ProgramDataFormItem programDataFormItem2 = new ProgramDataFormItem();
         programDataFormItem2.setName("PNCTL");
-        programDataFormItem2.setProgramDataColumn(new ProgramDataColumnBuilder().setCode("POSITIVE_" + StringUtils.upperCase(RapidTestFormGridViewModel.ColumnCode.Syphillis.name())).build());
+        programDataFormItem2.setProgramDataColumn(new ProgramDataColumnBuilder().setCode("POSITIVE_" + RapidTestFormGridViewModel.ColumnCode.SYPHILLIS.name()).build());
         programDataFormItem2.setValue(300);
         form.getProgramDataFormItemListWrapper().add(programDataFormItem1);
         form.getProgramDataFormItemListWrapper().add(programDataFormItem2);

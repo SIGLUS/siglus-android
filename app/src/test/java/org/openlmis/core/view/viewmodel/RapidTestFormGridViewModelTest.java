@@ -16,10 +16,10 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(LMISTestRunner.class)
 public class RapidTestFormGridViewModelTest {
-    RapidTestFormGridViewModel viewModel = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.Malaria);
+    RapidTestFormGridViewModel viewModel = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.MALARIA);
 
     @Test
-    public void shouldValidate() throws Exception {
+    public void shouldValidate() {
         assertTrue(viewModel.validate());
 
         viewModel.setConsumptionValue("100");
@@ -40,15 +40,18 @@ public class RapidTestFormGridViewModelTest {
     }
 
     @Test
-    public void shouldConvertFormGridViewModelToDataModel() throws Exception {
+    public void shouldConvertFormGridViewModelToDataModel() {
         viewModel.setConsumptionValue("20");
         viewModel.setPositiveValue("1001");
+        viewModel.setUnjustifiedValue("121");
         ProgramDataColumn consumeColumn = new ProgramDataColumn();
         consumeColumn.setCode("CONSUME_MALARIA");
         viewModel.setConsumeColumn(consumeColumn);
         ProgramDataColumn positiveColumn = new ProgramDataColumn();
         positiveColumn.setCode("POSITIVE_MALARIA");
         viewModel.setPositiveColumn(positiveColumn);
+        ProgramDataColumn unjustifiedColumn = new ProgramDataColumn();
+        unjustifiedColumn.setCode("UNJUSTIFIED_MALARIA");
 
         MovementReasonManager.MovementReason reason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ACC_EMERGENCY", "Acc emergency");
         List<ProgramDataFormItem> programDataFormItems = viewModel.convertFormGridViewModelToDataModel(reason);
@@ -58,5 +61,8 @@ public class RapidTestFormGridViewModelTest {
         assertThat(programDataFormItems.get(1).getName(), is("ACC_EMERGENCY"));
         assertThat(programDataFormItems.get(1).getProgramDataColumn().getCode(), is("POSITIVE_MALARIA"));
         assertThat(programDataFormItems.get(1).getValue(), is(1001));
+        assertThat(programDataFormItems.get(2).getName(), is("ACC_EMERGENCY"));
+        assertThat(programDataFormItems.get(2).getProgramDataColumn().getCode(), is("UNJUSTIFIED_MALARIA"));
+        assertThat(programDataFormItems.get(2).getValue(), is(121));
     }
 }

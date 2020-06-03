@@ -2,9 +2,7 @@ package org.openlmis.core.view.viewmodel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
@@ -17,7 +15,6 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.util.Lists.newArrayList;
@@ -32,7 +29,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.consumption;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.positive;
 
 @RunWith(LMISTestRunner.class)
 public class RapidTestReportViewModelTest {
@@ -91,19 +87,23 @@ public class RapidTestReportViewModelTest {
         rapidTestForm.setStatus(ProgramDataForm.STATUS.DRAFT);
         viewModel.setRapidTestForm(rapidTestForm);
         assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel.getStatus());
-
-        rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
-        viewModel.setRapidTestForm(rapidTestForm);
-        assertEquals(RapidTestReportViewModel.Status.COMPLETED, viewModel.getStatus());
+        assertTrue(viewModel.isEditable());
 
         rapidTestForm.setStatus(ProgramDataForm.STATUS.SUBMITTED);
         viewModel.setRapidTestForm(rapidTestForm);
         assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel.getStatus());
+        assertTrue(viewModel.isEditable());
+
+        rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+        viewModel.setRapidTestForm(rapidTestForm);
+        assertEquals(RapidTestReportViewModel.Status.COMPLETED, viewModel.getStatus());
+        assertFalse(viewModel.isEditable());
 
         rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
         rapidTestForm.setSynced(true);
         viewModel.setRapidTestForm(rapidTestForm);
         assertEquals(RapidTestReportViewModel.Status.SYNCED, viewModel.getStatus());
+        assertFalse(viewModel.isEditable());
     }
 
     @Test
@@ -112,9 +112,10 @@ public class RapidTestReportViewModelTest {
         MovementReasonManager.MovementReason reason1 = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ACC_EMERGENCY", "Acc emergency");
 
         RapidTestFormItemViewModel itemViewModel = new RapidTestFormItemViewModel(reason1);
-        RapidTestFormGridViewModel gridViewModel = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVDetermine);
+        RapidTestFormGridViewModel gridViewModel = new RapidTestFormGridViewModel(RapidTestFormGridViewModel.ColumnCode.HIVDETERMINE);
         gridViewModel.setPositiveValue("100");
         gridViewModel.setConsumptionValue("1200");
+        gridViewModel.setUnjustifiedValue("110");
         itemViewModel.setRapidTestFormGridViewModelList(newArrayList(gridViewModel));
         List<RapidTestFormItemViewModel> itemViewModelList = newArrayList(itemViewModel);
         this.viewModel.setItemViewModelList(itemViewModelList);
@@ -129,11 +130,13 @@ public class RapidTestReportViewModelTest {
         Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null, null);
         this.viewModel.convertFormViewModelToDataModel(program);
 
-        assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().size(), is(2));
+        assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().size(), is(3));
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(0).getProgramDataColumn().getCode(), is("CONSUME_HIVDETERMINE"));
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(0).getForm(), is(viewModel.getRapidTestForm()));
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(1).getProgramDataColumn().getCode(), is("POSITIVE_HIVDETERMINE"));
         assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(1).getForm(), is(viewModel.getRapidTestForm()));
+        assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(2).getProgramDataColumn().getCode(), is("UNJUSTIFIED_HIVDETERMINE"));
+        assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().get(2).getForm(), is(viewModel.getRapidTestForm()));
     }
 
     @Test
@@ -181,11 +184,11 @@ public class RapidTestReportViewModelTest {
     public void shouldUpdateTotal() throws Exception {
         viewModel = new RapidTestReportViewModel(Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
         viewModel.getItemViewModelList().get(0).getGridHIVDetermine().setConsumptionValue("100");
-        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, consumption);
+        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDETERMINE, consumption);
         assertEquals("100", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
 
         viewModel.getItemViewModelList().get(1).getGridHIVDetermine().setConsumptionValue("2333");
-        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDetermine, consumption);
+        viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDETERMINE, consumption);
         assertEquals("2433", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
     }
 }
