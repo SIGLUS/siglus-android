@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -122,8 +123,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
         if (!viewModel.isQuantityLessThanSoh()) {
             setQuantityError(getString(R.string.msg_invalid_quantity));
         } else {
-            if (PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED.equals(viewModel.getFrom())) {
-                lyLotAmount.setError(getString(R.string.msg_empty_quantity));
+            if (PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED.equals(viewModel.getFrom())
+                    && StringUtils.isBlank(etLotAmount.getText())) {
+                lyLotAmount.setError(getString(R.string.msg_empty_quantity) + etLotAmount.getText());
             } else {
                 setQuantityError(null);
             }
