@@ -127,7 +127,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
                     && StringUtils.isBlank(etLotAmount.getText())) {
                 lyLotAmount.setError(getString(R.string.msg_empty_quantity) + etLotAmount.getText());
             } else {
-                setQuantityError(null);
+                lyLotAmount.setError(null);
             }
         }
     }
