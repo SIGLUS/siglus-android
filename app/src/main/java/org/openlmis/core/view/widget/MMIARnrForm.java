@@ -38,7 +38,6 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ViewUtil;
-import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -107,13 +106,10 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void setMarginForFreezeHeader() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                final MarginLayoutParams marginLayoutParams = (MarginLayoutParams) getLayoutParams();
-                marginLayoutParams.topMargin = rightHeaderView.getLayoutParams().height;
-                setLayoutParams(marginLayoutParams);
-            }
+        post(() -> {
+            final MarginLayoutParams marginLayoutParams = (MarginLayoutParams) getLayoutParams();
+            marginLayoutParams.topMargin = rightHeaderView.getLayoutParams().height;
+            setLayoutParams(marginLayoutParams);
         });
     }
 
@@ -171,12 +167,7 @@ public class MMIARnrForm extends LinearLayout {
 
 
     private List<RnrFormItem> filterRnrFormItem(List<RnrFormItem> rnrFormItemList, final String category) {
-        return from(rnrFormItemList).filter(new Predicate<RnrFormItem>() {
-            @Override
-            public boolean apply(RnrFormItem rnrFormItem) {
-                return category.equals(rnrFormItem.getCategory());
-            }
-        }).toList();
+        return from(rnrFormItemList).filter(rnrFormItem -> category.equals(rnrFormItem.getCategory())).toList();
     }
 
     private void addViewByMedicineType(List<RnrFormItem> categoriedFormItems) {
@@ -210,12 +201,9 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     public void setItemSize(final View leftView, final ViewGroup rightView) {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                setRightItemWidth(rightView);
-                ViewUtil.syncViewHeight(leftView, rightView);
-            }
+        post(() -> {
+            setRightItemWidth(rightView);
+            ViewUtil.syncViewHeight(leftView, rightView);
         });
     }
 
@@ -300,7 +288,7 @@ public class MMIARnrForm extends LinearLayout {
 
             try {
                 if (!(TextUtils.isEmpty(item.getValidate()) || isArchived)) {
-                    tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
+                    tvValidate.setText(DateUtil.convertDate(item.getValidate(), DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
                 }
             } catch (ParseException e) {
                 new LMISException(e, "MMIARnrForm.addRightView").reportToFabric();
@@ -344,9 +332,9 @@ public class MMIARnrForm extends LinearLayout {
     }
 
 
-    private String getValue(Boolean isArchived, Long vaule) {
+    private String getValue(Boolean isArchived, Long value) {
         if (isArchived) return String.valueOf(0);
-        return vaule == null ? "" : String.valueOf(vaule.longValue());
+        return value == null ? "" : String.valueOf(value.longValue());
 
     }
 

@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -12,15 +11,16 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
-import org.openlmis.core.view.activity.DummyActivity;
 import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -85,10 +85,11 @@ public class MMIARegimeListTest {
         ArrayList<RegimenItem> regimenItems = new ArrayList<>();
         regimenItems.add(regimenItem);
         rnRForm.setRegimenItemListWrapper(regimenItems);
+        rnRForm.setRegimenThreeLinesWrapper(getRegimeItemThreeLines());
 
         when(presenter.getRnRForm()).thenReturn(rnRForm);
 
-        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application),new TextView(RuntimeEnvironment.application), presenter);
+        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application), new TextView(RuntimeEnvironment.application), presenter);
 
         assertNull(mmiaRegimeList.getChildAt(1).findViewById(R.id.image_view_del));
     }
@@ -106,12 +107,27 @@ public class MMIARegimeListTest {
         ArrayList<RegimenItem> regimenItems = new ArrayList<>();
         regimenItems.add(regimenItem);
         rnRForm.setRegimenItemListWrapper(regimenItems);
+        rnRForm.setRegimenThreeLinesWrapper(getRegimeItemThreeLines());
 
         when(presenter.getRnRForm()).thenReturn(rnRForm);
 
-        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application),new TextView(RuntimeEnvironment.application), presenter);
+        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application), new TextView(RuntimeEnvironment.application), presenter);
 
         assertEquals(4, mmiaRegimeList.getChildCount());
+    }
+
+    private List<RegimenItemThreeLines> getRegimeItemThreeLines() {
+        List<RegimenItemThreeLines> list = new ArrayList<>();
+        RegimenItemThreeLines firtLine = new RegimenItemThreeLines();
+        firtLine.setRegimeTypes(RuntimeEnvironment.application.getResources().getString(R.string.mmia_1stline));
+        list.add(firtLine);
+        RegimenItemThreeLines secondLine = new RegimenItemThreeLines();
+        secondLine.setRegimeTypes(RuntimeEnvironment.application.getResources().getString(R.string.mmia_2ndline));
+        list.add(secondLine);
+        RegimenItemThreeLines thirdLine = new RegimenItemThreeLines();
+        thirdLine.setRegimeTypes(RuntimeEnvironment.application.getResources().getString(R.string.mmia_3rdline));
+        list.add(thirdLine);
+        return list;
     }
 
     @Test
@@ -119,10 +135,11 @@ public class MMIARegimeListTest {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.DRAFT);
         rnRForm.setRegimenItemListWrapper(newArrayList(generateRegimenItem()));
+        rnRForm.setRegimenThreeLinesWrapper(getRegimeItemThreeLines());
 
         when(presenter.getRnRForm()).thenReturn(rnRForm);
 
-        mmiaRegimeList.initView(new TextView(LMISTestApp.getContext()),new TextView(LMISTestApp.getContext()), presenter);
+        mmiaRegimeList.initView(new TextView(LMISTestApp.getContext()), new TextView(LMISTestApp.getContext()), presenter);
 
         assertThat(mmiaRegimeList.getChildAt(1).findViewById(R.id.image_view_del).getVisibility(), is(View.VISIBLE));
     }

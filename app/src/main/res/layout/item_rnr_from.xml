@@ -8,66 +8,45 @@
     <TextView
         android:id="@+id/tv_issued_unit"
         style="@style/ItemRnr.AmountText"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
         tools:text="8" />
 
     <TextView
         android:id="@+id/tv_initial_amount"
         style="@style/ItemRnr.AmountText"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
         tools:text="9" />
 
     <TextView
         android:id="@+id/tv_received"
         style="@style/ItemRnr.AmountText"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
         tools:text="9" />
 
     <EditText
         android:id="@+id/et_issued"
         style="@style/ItemRnr.AmountText"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:background="@null"
-        android:inputType="number"
         android:enabled="false"
+        android:inputType="number"
         tools:text="9" />
 
     <EditText
         android:id="@+id/et_adjustment"
         style="@style/ItemRnr.AmountText"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:background="@null"
-        android:inputType="numberSigned"
         android:enabled="false"
+        android:inputType="numberSigned"
         tools:text="9" />
 
     <EditText
         android:id="@+id/et_inventory"
         style="@style/ItemRnr.AmountText"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:background="@null"
-        android:inputType="number"
         android:enabled="false"
+        android:inputType="number"
         tools:text="9" />
 
     <TextView
         android:id="@+id/tv_validate"
         style="@style/ItemRnr.AmountText"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:enabled="false"
         tools:text="9" />
 

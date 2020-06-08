@@ -8,10 +8,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,7 +17,6 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.presenter.MMIARequisitionPresenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +29,6 @@ public class MMIARegimeThreeLineList extends LinearLayout {
     Map<String, RegimenItemThreeLines> dataMap;
     private List<EditText> patientsTotalEdits = new ArrayList<>();
     private List<EditText> patientsPharmacyEdits = new ArrayList<>();
-    private MMIARequisitionPresenter presenter;
     private LayoutInflater layoutInflater;
     private TextView mmiaThreeLinePatientsTotal;
     private TextView mmiaThreeLinePharmacyTotal;
@@ -109,20 +105,16 @@ public class MMIARegimeThreeLineList extends LinearLayout {
         Long pharmacyAmount = itemThreeLines.getPharmacyAmount();
 
         tvNameText.setText(itemThreeLines.getRegimeTypes());
-        patientsTotalEdit.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
         if (patientsAmount != null) {
             patientsTotalEdit.setText(String.valueOf(patientsAmount));
         }
         patientsTotalEdit.addTextChangedListener(new EditTextWatcher(itemThreeLines, COUNTTYPE.PATIENTSAMOUNT));
-        patientsTotalEdit.setOnEditorActionListener(getOnEditorActionListener(COUNTTYPE.PATIENTSAMOUNT));
         patientsTotalEdits.add(patientsTotalEdit);
-        patientsTotalEdit.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
 
         if (pharmacyAmount != null) {
             patientsPharmacyEdit.setText(String.valueOf(pharmacyAmount));
         }
         patientsPharmacyEdit.addTextChangedListener(new EditTextWatcher(itemThreeLines, COUNTTYPE.PHARMACYAMOUNT));
-        patientsPharmacyEdit.setOnEditorActionListener(getOnEditorActionListener(COUNTTYPE.PHARMACYAMOUNT));
         patientsPharmacyEdits.add(patientsPharmacyEdit);
 
         addView(viewItem);
@@ -215,14 +207,5 @@ public class MMIARegimeThreeLineList extends LinearLayout {
 
     public long getTotal(COUNTTYPE counttype) {
         return RnRForm.caculateTotalRegimenTypeAmount(dataList, counttype);
-    }
-
-    private TextView.OnEditorActionListener getOnEditorActionListener(COUNTTYPE counttype) {
-        return new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                return false;
-            }
-        };
     }
 }

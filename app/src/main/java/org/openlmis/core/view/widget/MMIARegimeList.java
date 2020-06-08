@@ -24,7 +24,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
@@ -115,13 +114,10 @@ public class MMIARegimeList extends LinearLayout {
             addPaediatricsBtnView();
         }
 
-        editTotalTexts.get(editTotalTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
         totalView.setText(String.valueOf(getTotal(COUNTTYPE.AMOUNT)));
         totalPharmcy.setText(String.valueOf(getTotal(COUNTTYPE.PHARMACY)));
-        if (!isPharmacyEmpty) {
-            editPharmacyTexts.get(editPharmacyTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
-            editPharmacyTexts.get(editPharmacyTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
-        }
+        editTotalTexts.get(editTotalTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
+        editPharmacyTexts.get(editPharmacyTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
     private boolean isCustomEnable() {
@@ -132,12 +128,7 @@ public class MMIARegimeList extends LinearLayout {
         final TextView view = (TextView) layoutInflater.inflate(R.layout.item_add_custom_regime, this, false);
         view.setText(R.string.label_add_adult_regime);
         view.setBackgroundResource(R.color.color_green_light);
-        view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFragment().startActivityForResult(SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
-            }
-        });
+        view.setOnClickListener(v -> getFragment().startActivityForResult(SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME));
         addView(view);
     }
 
@@ -145,12 +136,7 @@ public class MMIARegimeList extends LinearLayout {
         final TextView view = (TextView) layoutInflater.inflate(R.layout.item_add_custom_regime, this, false);
         view.setText(R.string.label_add_child_regime);
         view.setBackgroundResource(R.color.color_regime_baby);
-        view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFragment().startActivityForResult(SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
-            }
-        });
+        view.setOnClickListener(v -> getFragment().startActivityForResult(SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME));
         addView(view);
     }
 
@@ -236,24 +222,21 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     private TextView.OnEditorActionListener getOnEditorActionListener(int position, COUNTTYPE counttype) {
-        return new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (COUNTTYPE.AMOUNT == counttype && actionId == EditorInfo.IME_ACTION_NEXT) {
-                    if ((position + 1) < editTotalTexts.size()) {
-                        editTotalTexts.get(position + 1).requestFocus();
-                        return true;
-                    }
-                } else if (COUNTTYPE.PHARMACY == counttype && actionId == EditorInfo.IME_ACTION_NEXT) {
-                    if ((position + 1) < editPharmacyTexts.size()) {
-                        editTotalTexts.get(position + 1).requestFocus();
-                        return true;
-                    }
-                } else {
-                    return false;
+        return (v, actionId, event) -> {
+            if (COUNTTYPE.AMOUNT == counttype && actionId == EditorInfo.IME_ACTION_NEXT) {
+                if ((position + 1) < editTotalTexts.size()) {
+                    editTotalTexts.get(position + 1).requestFocus();
+                    return true;
                 }
+            } else if (COUNTTYPE.PHARMACY == counttype && actionId == EditorInfo.IME_ACTION_NEXT) {
+                if ((position + 1) < editPharmacyTexts.size()) {
+                    editPharmacyTexts.get(position + 1).requestFocus();
+                    return true;
+                }
+            } else {
                 return false;
             }
+            return false;
         };
     }
 
@@ -268,12 +251,7 @@ public class MMIARegimeList extends LinearLayout {
     private void setDelIconForCustomRegime(final RegimenItem item, View view) {
         if (item.getRegimen().isCustom() && isCustomEnable()) {
             View ivDel = ((ViewStub) view.findViewById(R.id.vs_del)).inflate();
-            ivDel.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showDelConfirmDialog(item);
-                }
-            });
+            ivDel.setOnClickListener(v -> showDelConfirmDialog(item));
         }
     }
 
@@ -314,16 +292,6 @@ public class MMIARegimeList extends LinearLayout {
             public void negativeClick(String tag) {
             }
         });
-    }
-
-    public void highLightTotal() {
-        totalView.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
-        if (isPharmacyEmpty) {
-            totalPharmcy.setVisibility(GONE);
-        } else {
-            totalPharmcy.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
-        }
-
     }
 
     public void deHighLightTotal() {

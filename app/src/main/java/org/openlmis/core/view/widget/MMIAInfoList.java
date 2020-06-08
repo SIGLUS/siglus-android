@@ -36,7 +36,6 @@ import org.openlmis.core.model.BaseInfoItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +98,7 @@ public class MMIAInfoList extends LinearLayout {
         }
 
         addItemView();
-        editTexts.get(editTexts.size() - 2).setImeOptions(EditorInfo.IME_ACTION_DONE);
+        editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
     private void addItemView() {
@@ -120,22 +119,32 @@ public class MMIAInfoList extends LinearLayout {
         linearLayout.removeView(tableHeader);
         addView(tableHeader);
         sortedByDisplayOrder(list);
-        for (BaseInfoItem item : list) {
-            addTableViewItem(item);
+        for (int i = 0; i < list.size(); i++) {
+            addTableViewItem(list.get(i), getPosition(i, tableName));
+        }
+    }
+
+    private int getPosition(int i, String tableName) {
+        if (ATTR_TABLE_TRAV.equals(tableName)) {
+            return i;
+        } else if (ATTR_TABLE_DISPENSED.equals(tableName)) {
+            return i + tableMap.get(ATTR_TABLE_TRAV).size();
+        } else if (ATTR_TABLE_PATIENTS.equals(tableName)) {
+            return i + tableMap.get(ATTR_TABLE_TRAV).size() + tableMap.get(ATTR_TABLE_DISPENSED).size();
+        } else if (ATTR_TABLE_PROPHYLAXIS.equals(tableName)) {
+            return i + tableMap.get(ATTR_TABLE_TRAV).size() + tableMap.get(ATTR_TABLE_DISPENSED).size()
+                    + tableMap.get(ATTR_TABLE_PATIENTS).size();
+        } else {
+            return i;
         }
     }
 
     private void sortedByDisplayOrder(List<BaseInfoItem> list) {
-        Collections.sort(list, new Comparator<BaseInfoItem>() {
-            @Override
-            public int compare(BaseInfoItem o1, BaseInfoItem o2) {
-                return o1.getDisplayOrder() - o2.getDisplayOrder();
-            }
-        });
+        Collections.sort(list, (o1, o2) -> o1.getDisplayOrder() - o2.getDisplayOrder());
     }
 
 
-    private void addTableViewItem(BaseInfoItem item) {
+    private void addTableViewItem(BaseInfoItem item, int position) {
         View view = layoutInflater.inflate(R.layout.item_mmia_info, this, false);
         TextView textView = (TextView) view.findViewById(R.id.tv_name);
         EditText editText = (EditText) view.findViewById(R.id.et_value);
@@ -151,6 +160,21 @@ public class MMIAInfoList extends LinearLayout {
         editText.addTextChangedListener(new EditTextWatcher(item));
         setTotalViewBackground(item, editText);
         addView(view);
+        editText.setOnEditorActionListener(getOnEditorActionListener(position));
+    }
+
+    private TextView.OnEditorActionListener getOnEditorActionListener(int position) {
+        return (v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                if ((position + 1) < editTexts.size()) {
+                    editTexts.get(position + 1).requestFocus();
+                    return true;
+                }
+            } else {
+                return false;
+            }
+            return false;
+        };
     }
 
     private void setTotalViewBackground(BaseInfoItem item, EditText etValue) {
@@ -216,7 +240,7 @@ public class MMIAInfoList extends LinearLayout {
             try {
                 totalRegimenNumber += Long.parseLong(item.getValue());
             } catch (NumberFormatException e) {
-                new LMISException(e,"MMIAInfoList.getTotal").reportToFabric();
+                new LMISException(e, "MMIAInfoList.getTotal").reportToFabric();
             }
         }
         return totalRegimenNumber;

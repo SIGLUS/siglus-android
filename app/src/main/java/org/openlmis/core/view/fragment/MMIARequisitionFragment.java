@@ -26,7 +26,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -50,7 +49,6 @@ import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
 import org.openlmis.core.view.widget.MMIARnrForm;
-import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
@@ -202,12 +200,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     }
 
     private void disableFreezeHeaderScroll() {
-        rnrItemsHeaderFreezeRight.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+        rnrItemsHeaderFreezeRight.setOnTouchListener((v, event) -> true);
     }
 
     @Override
@@ -237,25 +230,17 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
         rnrItemsHeaderFreezeRight.addView(rightHeaderView);
 
-        rnrFormList.post(new Runnable() {
-            @Override
-            public void run() {
-                ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView);
-            }
-        });
+        rnrFormList.post(() -> ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView));
     }
 
 
     protected void bindListeners() {
         etComment.addTextChangedListener(commentTextWatcher);
         actionPanelView.setListener(getOnCompleteListener(), getOnSaveListener());
-        scrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                scrollView.requestFocus();
-                hideImm();
-                return false;
-            }
+        scrollView.setOnTouchListener((v, event) -> {
+            scrollView.requestFocus();
+            hideImm();
+            return false;
         });
 
         bindFreezeHeaderListener();
@@ -339,29 +324,17 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
 
     private void bindFreezeHeaderListener() {
         ViewTreeObserver verticalViewTreeObserver = scrollView.getViewTreeObserver();
-        verticalViewTreeObserver.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                hideOrDisplayRnrItemsHeader();
-            }
-        });
+        verticalViewTreeObserver.addOnScrollChangedListener(() -> hideOrDisplayRnrItemsHeader());
 
-        rnrFormList.getRnrItemsHorizontalScrollView().setOnScrollChangedListener(new RnrFormHorizontalScrollView.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged(int l, int t, int oldl, int oldt) {
-                rnrItemsHeaderFreezeRight.scrollBy(l - oldl, 0);
-            }
-        });
+        rnrFormList.getRnrItemsHorizontalScrollView().setOnScrollChangedListener((l, t, oldl, oldt)
+                -> rnrItemsHeaderFreezeRight.scrollBy(l - oldl, 0));
     }
 
     private void initActionBarHeight() {
-        containerView.post(new Runnable() {
-            @Override
-            public void run() {
-                int[] initialTopLocationOfRnrForm = new int[2];
-                containerView.getLocationOnScreen(initialTopLocationOfRnrForm);
-                actionBarHeight = initialTopLocationOfRnrForm[1];
-            }
+        containerView.post(() -> {
+            int[] initialTopLocationOfRnrForm = new int[2];
+            containerView.getLocationOnScreen(initialTopLocationOfRnrForm);
+            actionBarHeight = initialTopLocationOfRnrForm[1];
         });
     }
 
@@ -399,10 +372,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         tvMismatch.setVisibility(View.INVISIBLE);
     }
 
-    private boolean hasEmptyColumn() {
-        return regimeListView.hasEmptyField() || mmiaInfoListView.hasEmptyField() || mmiaRegimeThreeLineListView.hasEmptyField();
-    }
-
     @Override
     protected void finish() {
         getActivity().setResult(Activity.RESULT_OK);
@@ -435,15 +404,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     }
 
     protected Action1<? super Void> getOnSignedAction() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                if (presenter.getRnRForm().isSubmitted()) {
-                    presenter.submitRequisition();
-                    showMessageNotifyDialog();
-                } else {
-                    presenter.authoriseRequisition();
-                }
+        return (Action1<Void>) aVoid -> {
+            if (presenter.getRnRForm().isSubmitted()) {
+                presenter.submitRequisition();
+                showMessageNotifyDialog();
+            } else {
+                presenter.authoriseRequisition();
             }
         };
     }
