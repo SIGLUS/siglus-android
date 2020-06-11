@@ -1,0 +1,635 @@
+{
+  "kitChangeProducts": [
+    {
+      "product": {
+        "id": 1584,
+        "code": "SCOD12-AL",
+        "primaryName": "KITS  (DE PME APE AL)75 TRATAMENTO",
+        "strength": "75",
+        "form": {
+          "id": 34,
+          "code": "KIT",
+          "displayOrder": 34
+        },
+        "dispensingUnit": "KIT",
+        "dosesPerDispensingUnit": 1,
+        "storeRefrigerated": false,
+        "storeRoomTemperature": false,
+        "hazardous": false,
+        "flammable": false,
+        "controlledSubstance": false,
+        "lightSensitive": false,
+        "approvedByWHO": false,
+        "packSize": 1,
+        "active": false,
+        "fullSupply": true,
+        "tracer": false,
+        "packRoundingThreshold": 0,
+        "roundToZero": false,
+        "archived": false,
+        "isKit": false,
+        "nos": false,
+        "isBasic": false,
+        "isHiv": false
+      },
+      "supportedPrograms": [
+        "ESS_MEDS"
+      ],
+      "productPrograms": [
+        {
+          "programCode": "ESS_MEDS",
+          "productCode": "SCOD12-AL",
+          "category": "Other",
+          "active": true
+        }
+      ]
+    },
+    {
+      "product": {
+        "id": 1583,
+        "code": "SCOD10-AL",
+        "primaryName": "KITS  (DE PME US AL)180 TRATAMENTO",
+        "strength": "180",
+        "form": {
+          "id": 34,
+          "code": "KIT",
+          "displayOrder": 34
+        },
+        "dispensingUnit": "KIT",
+        "dosesPerDispensingUnit": 1,
+        "storeRefrigerated": false,
+        "storeRoomTemperature": false,
+        "hazardous": false,
+        "flammable": false,
+        "controlledSubstance": false,
+        "lightSensitive": false,
+        "approvedByWHO": false,
+        "packSize": 1,
+        "active": false,
+        "fullSupply": true,
+        "tracer": false,
+        "packRoundingThreshold": 0,
+        "roundToZero": false,
+        "archived": false,
+        "isKit": false,
+        "nos": false,
+        "isBasic": false,
+        "isHiv": false
+      },
+      "supportedPrograms": [
+        "ESS_MEDS"
+      ],
+      "productPrograms": [
+        {
+          "programCode": "ESS_MEDS",
+          "productCode": "SCOD10-AL",
+          "category": "Other",
+          "active": true
+        }
+      ]
+    },
+    {
+      "product": {
+        "id": 1243,
+        "code": "26A01",
+        "primaryName": "KIT PME US; SEM DOSAGEM; KIT",
+        "description": "KIT PME US",
+        "strength": "Sem Dosagem",
+        "form": {
+          "id": 34,
+          "code": "KIT",
+          "displayOrder": 34
+        },
+        "dispensingUnit": "1",
+        "dosesPerDispensingUnit": 1,
+        "packSize": 1,
+        "active": true,
+        "fullSupply": true,
+        "tracer": false,
+        "packRoundingThreshold": 0,
+        "roundToZero": false,
+        "isKit": true,
+        "nos": false,
+        "isBasic": true,
+        "isHiv": false,
+        "kitProductList": [
+          {
+            "kitCode": "26A01",
+            "productCode": "08F01",
+            "quantity": 100
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "13A02",
+            "quantity": 500
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "15C08",
+            "quantity": 5
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "04A03Z",
+            "quantity": 25
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "04B05Z",
+            "quantity": 40
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08Q07",
+            "quantity": 10
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08K04",
+            "quantity": 2000
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "24W026",
+            "quantity": 100
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "02E02",
+            "quantity": 25
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "23D02",
+            "quantity": 96
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "18C05",
+            "quantity": 5
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "14A03Z",
+            "quantity": 1000
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "23C01",
+            "quantity": 40
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08A01",
+            "quantity": 1500
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08F06",
+            "quantity": 500
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08G01",
+            "quantity": 300
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08I01",
+            "quantity": 4000
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08I03",
+            "quantity": 50
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "07A06",
+            "quantity": 25
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08A04",
+            "quantity": 10
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08A06",
+            "quantity": 25
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "11A23",
+            "quantity": 50
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "05A09",
+            "quantity": 500
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "24B08",
+            "quantity": 100
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "12D0XZ",
+            "quantity": 25
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08N06",
+            "quantity": 30
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "20A09ZY",
+            "quantity": 3
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "27A01",
+            "quantity": 10
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "02A01",
+            "quantity": 300
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "23B01",
+            "quantity": 6
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "11A0XX",
+            "quantity": 100
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "15C0ZX",
+            "quantity": 5
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "20A05",
+            "quantity": 2
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08H03Z",
+            "quantity": 300
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "07I07",
+            "quantity": 5
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "27A02",
+            "quantity": 1
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "06A07",
+            "quantity": 5000
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "26B03",
+            "quantity": 2500
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "17C07",
+            "quantity": 25
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "07A02",
+            "quantity": 500
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "23A02Y",
+            "quantity": 8
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "13A01",
+            "quantity": 5
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08N01",
+            "quantity": 150
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "10A07",
+            "quantity": 150
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "05A01",
+            "quantity": 400
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08A08",
+            "quantity": 25
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "08A07X",
+            "quantity": 600
+          },
+          {
+            "kitCode": "26A01",
+            "productCode": "07A03",
+            "quantity": 5000
+          }
+        ]
+      },
+      "supportedPrograms": [
+        "ESS_MEDS",
+        "PME"
+      ],
+      "productPrograms": [
+        {
+          "programCode": "ESS_MEDS",
+          "productCode": "26A01",
+          "category": "Other",
+          "active": true
+        },
+        {
+          "programCode": "PME",
+          "productCode": "26A01",
+          "category": "Other",
+          "active": true
+        }
+      ]
+    },
+    {
+      "product": {
+        "id": 1244,
+        "code": "26A02",
+        "primaryName": "KIT PME APE; SEM DOSAGEM; KIT",
+        "description": "KIT PME APE",
+        "strength": "Sem Dosagem",
+        "form": {
+          "id": 34,
+          "code": "KIT",
+          "displayOrder": 34
+        },
+        "dispensingUnit": "1",
+        "dosesPerDispensingUnit": 1,
+        "packSize": 1,
+        "active": true,
+        "fullSupply": true,
+        "tracer": false,
+        "packRoundingThreshold": 0,
+        "roundToZero": false,
+        "isKit": true,
+        "nos": false,
+        "isBasic": true,
+        "isHiv": false
+      },
+      "supportedPrograms": [
+        "ESS_MEDS",
+        "PME"
+      ],
+      "productPrograms": [
+        {
+          "programCode": "ESS_MEDS",
+          "productCode": "26A02",
+          "category": "Other",
+          "active": true
+        },
+        {
+          "programCode": "PME",
+          "productCode": "26A02",
+          "category": "Other",
+          "active": true
+        }
+      ]
+    },
+    {
+      "product": {
+        "id": 1585,
+        "code": "SCOD12",
+        "primaryName": "KITS  (DE PME APE)250KIT",
+        "description": "KITS  (DE PME APE)",
+        "strength": "250",
+        "form": {
+          "id": 34,
+          "code": "KIT",
+          "displayOrder": 34
+        },
+        "dispensingUnit": "1",
+        "dosesPerDispensingUnit": 1,
+        "storeRefrigerated": false,
+        "storeRoomTemperature": false,
+        "hazardous": false,
+        "flammable": false,
+        "controlledSubstance": false,
+        "lightSensitive": false,
+        "approvedByWHO": false,
+        "packSize": 1,
+        "active": false,
+        "fullSupply": true,
+        "tracer": false,
+        "packRoundingThreshold": 0,
+        "roundToZero": false,
+        "archived": false,
+        "isKit": false,
+        "nos": false,
+        "isBasic": false,
+        "isHiv": false
+      },
+      "supportedPrograms": [
+        "PME"
+      ],
+      "productPrograms": [
+        {
+          "programCode": "PME",
+          "productCode": "SCOD12",
+          "category": "Other",
+          "active": true
+        }
+      ]
+    },
+    {
+      "product": {
+        "id": 1246,
+        "code": "26B01",
+        "primaryName": "KIT AL/US (Artemeter+Lumefantr; 170 Tratamentos+ 400 Testes; KIT",
+        "description": "KIT AL/US (Artemeter+Lumefantrina)",
+        "strength": "170 Tratamentos+ 400 Testes",
+        "form": {
+          "id": 34,
+          "code": "KIT",
+          "displayOrder": 34
+        },
+        "dispensingUnit": "1",
+        "dosesPerDispensingUnit": 1,
+        "packSize": 1,
+        "active": true,
+        "fullSupply": true,
+        "tracer": false,
+        "packRoundingThreshold": 0,
+        "roundToZero": false,
+        "isKit": true,
+        "nos": false,
+        "isBasic": false,
+        "isHiv": false,
+        "kitProductList": [
+          {
+            "kitCode": "26B01",
+            "productCode": "08O05",
+            "quantity": 30
+          },
+          {
+            "kitCode": "26B01",
+            "productCode": "08O05Z",
+            "quantity": 15
+          },
+          {
+            "kitCode": "26B01",
+            "productCode": "08O05Y",
+            "quantity": 10
+          },
+          {
+            "kitCode": "26B01",
+            "productCode": "08O05X",
+            "quantity": 30
+          },
+          {
+            "kitCode": "26B01",
+            "productCode": "22A08",
+            "quantity": 7
+          }
+        ]
+      },
+      "supportedPrograms": [
+        "ESS_MEDS"
+      ],
+      "productPrograms": [
+        {
+          "programCode": "ESS_MEDS",
+          "productCode": "26B01",
+          "category": "Other",
+          "active": true
+        }
+      ]
+    },
+    {
+      "product": {
+        "id": 1247,
+        "code": "26B02",
+        "primaryName": "KIT AL/APE (Artemeter+Lumefant; 75 Tratamentos+ 200 Tests; KIT",
+        "description": "KIT AL/APE (Artemeter+Lumefantrina)",
+        "strength": "75 Tratamentos+ 200 Tests",
+        "form": {
+          "id": 34,
+          "code": "KIT",
+          "displayOrder": 34
+        },
+        "dispensingUnit": "1",
+        "dosesPerDispensingUnit": 1,
+        "packSize": 1,
+        "active": true,
+        "fullSupply": true,
+        "tracer": false,
+        "packRoundingThreshold": 0,
+        "roundToZero": false,
+        "isKit": true,
+        "nos": false,
+        "isBasic": true,
+        "isHiv": false
+      },
+      "supportedPrograms": [
+        "ESS_MEDS"
+      ],
+      "productPrograms": [
+        {
+          "programCode": "ESS_MEDS",
+          "productCode": "26B02",
+          "category": "Other",
+          "active": true
+        }
+      ]
+    },
+    {
+      "product": {
+        "id": 1582,
+        "code": "SCOD10",
+        "primaryName": "KITS  (DE PME US)1000KIT",
+        "description": "KITS  (DE PME US)",
+        "strength": "1000",
+        "form": {
+          "id": 34,
+          "code": "KIT",
+          "displayOrder": 34
+        },
+        "dispensingUnit": "1",
+        "dosesPerDispensingUnit": 1,
+        "storeRefrigerated": false,
+        "storeRoomTemperature": false,
+        "hazardous": false,
+        "flammable": false,
+        "controlledSubstance": false,
+        "lightSensitive": false,
+        "approvedByWHO": false,
+        "packSize": 1,
+        "active": false,
+        "fullSupply": true,
+        "tracer": false,
+        "packRoundingThreshold": 0,
+        "roundToZero": false,
+        "archived": false,
+        "isKit": false,
+        "nos": false,
+        "isBasic": false,
+        "isHiv": false,
+        "kitProductList": [
+          {
+            "kitCode": "SCOD10",
+            "productCode": "11A22",
+            "quantity": 250
+          },
+          {
+            "kitCode": "SCOD10",
+            "productCode": "23D03",
+            "quantity": 40
+          },
+          {
+            "kitCode": "SCOD10",
+            "productCode": "23D05",
+            "quantity": 96
+          },
+          {
+            "kitCode": "SCOD10",
+            "productCode": "10A07Z",
+            "quantity": 150
+          }
+        ]
+      },
+      "supportedPrograms": [
+        "PME"
+      ],
+      "productPrograms": [
+        {
+          "programCode": "PME",
+          "productCode": "SCOD10",
+          "category": "Other",
+          "active": true
+        }
+      ]
+    }
+  ]
+}

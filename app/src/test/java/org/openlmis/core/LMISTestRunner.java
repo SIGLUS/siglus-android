@@ -20,6 +20,7 @@ package org.openlmis.core;
 
 import org.junit.runners.model.InitializationError;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.training.TrainingSqliteOpenHelper;
 import org.robolectric.DefaultTestLifecycle;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -78,6 +79,7 @@ public class LMISTestRunner extends RobolectricTestRunner {
         public void afterTest(Method method) {
             super.afterTest(method);
             LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
+            TrainingSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
             RoboGuice.Util.reset();
         }
     }

@@ -18,11 +18,16 @@ public class MockClient implements Client {
     @Override
     public Response execute(Request request) throws IOException {
         String requestUrl = request.getUrl();
-        requestUrl = requestUrl.split("8000")[1];
+        System.out.println("1 +++++++++++ request = [" + requestUrl + "]");
+        // The following port number should be same with the ENV which you running
+//        requestUrl = requestUrl.split("8081")[1];
+        requestUrl = requestUrl.split("8081")[1];
+        System.out.println("+++++++++++ request = [" + requestUrl + "]");
         if (urlToResponseMap.keySet().contains(requestUrl)) {
             return urlToResponseMap.get(requestUrl);
         }
-        return null;
+        throw new IOException(requestUrl);
+//        return null;
     }
 
     public static MockClient MockClientBuilder() {
@@ -30,12 +35,6 @@ public class MockClient implements Client {
     }
 
     public MockClient addMockedResponse(String requestUrl, int mockedStatus, String mockedReason, byte[] responseBody) {
-        Response response = new Response(requestUrl, mockedStatus, mockedReason, new ArrayList<Header>(),
-                new TypedByteArray("application/json", responseBody));
-        urlToResponseMap.put(requestUrl, response);
-        return this;
-    }
-    public MockClient addResponseAndParam(String requestUrl, int mockedStatus, String mockedReason, byte[] responseBody){
         Response response = new Response(requestUrl, mockedStatus, mockedReason, new ArrayList<Header>(),
                 new TypedByteArray("application/json", responseBody));
         urlToResponseMap.put(requestUrl, response);

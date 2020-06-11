@@ -32,6 +32,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
+import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
@@ -43,6 +44,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.CmmRepository;
+import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
@@ -54,10 +56,12 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
@@ -81,7 +85,6 @@ import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -105,6 +108,7 @@ public class SyncUpManagerTest {
     private MalariaProgramRepository mockedMalariaprogramRepository;
     private ProductRepository productRepository;
     private StockMovementRepository stockMovementRepository;
+    private DirtyDataRepository mockedDirtyDataRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -117,6 +121,7 @@ public class SyncUpManagerTest {
         mockedLmisRestApi = mock(LMISRestApi.class);
         mockedMalariaprogramRepository = mock(MalariaProgramRepository.class);
         stockMovementRepository = mock(StockMovementRepository.class);
+        mockedDirtyDataRepository = mock(DirtyDataRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
@@ -426,6 +431,72 @@ public class SyncUpManagerTest {
         verify(mockedCmmRepository, never()).save(cmm);
     }
 
+    @Test
+    public void shouldSyncDeletedProductToWeb() throws Exception {
+        String unSyncedProductCode = "08N04Z";
+        SyncUpDeletedMovementResponse response = new SyncUpDeletedMovementResponse();
+        response.setErrorCodes(newArrayList(unSyncedProductCode));
+
+
+        String unSyncedProductCode1 = "08N04Z";
+        SyncUpDeletedMovementResponse response1 = new SyncUpDeletedMovementResponse();
+        response1.setErrorCodes(newArrayList(unSyncedProductCode1));
+
+
+        List<DirtyDataItemInfo> dirtyDataItems = createDirtyDateItem();
+        DirtyDataItemInfo item = dirtyDataItems.get(0);
+        when(mockedDirtyDataRepository.listunSyced()).thenReturn(dirtyDataItems);
+        when(mockedLmisRestApi.syncUpDeletedData(any(Long.class), anyList())).thenReturn(response);
+
+        assertThat(item.isSynced(), is(false));
+
+        syncUpManager.syncDeleteMovement();
+
+        for (int i = 0; i < dirtyDataItems.size(); i++) {
+            if (unSyncedProductCode.equals(dirtyDataItems.get(i).getProductCode())) {
+                assertThat(dirtyDataItems.get(i).isSynced(), is(false));
+            } else {
+                assertThat(dirtyDataItems.get(i).isSynced(), is(true));
+            }
+        }
+
+        assertEquals(response, response1);
+    }
+
+    private List<DirtyDataItemInfo> createDirtyDateItem() {
+        List<DirtyDataItemInfo> list = new ArrayList<>();
+        DirtyDataItemInfo dirtyDataItemInfo = new DirtyDataItemInfo();
+        dirtyDataItemInfo.setSynced(false);
+        dirtyDataItemInfo.setProductCode("08N04Z");
+        String json08N04Z = JsonFileReader.readString(getClass(), "delete_08N04Z.json");
+        dirtyDataItemInfo.setJsonData(json08N04Z);
+        list.add(dirtyDataItemInfo);
+
+        DirtyDataItemInfo dirtyDataItemInfo1 = new DirtyDataItemInfo();
+        dirtyDataItemInfo1.setSynced(false);
+        dirtyDataItemInfo1.setProductCode("04F07");
+        String json04F07 = JsonFileReader.readString(getClass(), "delete_04F07.json");
+        dirtyDataItemInfo1.setJsonData(json04F07);
+        list.add(dirtyDataItemInfo1);
+
+        DirtyDataItemInfo dirtyDataItemInfo2 = new DirtyDataItemInfo();
+        dirtyDataItemInfo2.setSynced(false);
+        dirtyDataItemInfo2.setProductCode("02C02");
+        String json02C02 = JsonFileReader.readString(getClass(), "delete_02C02.json");
+        dirtyDataItemInfo2.setJsonData(json02C02);
+        list.add(dirtyDataItemInfo2);
+
+
+        DirtyDataItemInfo dirtyDataItemInfo3 = new DirtyDataItemInfo();
+        dirtyDataItemInfo3.setSynced(false);
+        dirtyDataItemInfo3.setProductCode("02C01");
+        String json02C01 = JsonFileReader.readString(getClass(), "delete_02C01.json");
+        dirtyDataItemInfo3.setJsonData(json02C01);
+        list.add(dirtyDataItemInfo3);
+
+        return list;
+    }
+
     private List<Cmm> createCmmsData() throws LMISException, ParseException {
         Cmm cmm = new Cmm();
         cmm.setStockCard(createTestStockCardData());
@@ -445,6 +516,7 @@ public class SyncUpManagerTest {
             bind(SyncErrorsRepository.class).toInstance(mockedSyncErrorsRepository);
             bind(CmmRepository.class).toInstance(mockedCmmRepository);
             bind(ProgramDataFormRepository.class).toInstance(mockedProgramDataFormRepository);
+            bind(DirtyDataRepository.class).toInstance(mockedDirtyDataRepository);
         }
     }
 }

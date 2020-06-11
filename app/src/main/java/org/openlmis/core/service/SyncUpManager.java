@@ -344,7 +344,7 @@ public class SyncUpManager {
             }).toList();
 
             for (int start = 0; start < entries.size(); ) {
-                int end = (start + unitCount) >= entries.size() ? entries.size(): start + unitCount;
+                int end = (start + unitCount) >= entries.size() ? entries.size() : start + unitCount;
                 List<DirtyDataItemEntry> sub = entries.subList(start, end);
                 try {
                     SyncUpDeletedMovementResponse response = lmisRestApi.syncUpDeletedData(Long.parseLong(facilityId), sub);
@@ -361,7 +361,12 @@ public class SyncUpManager {
                     return dirtyDataItemInfo.getProductCode();
                 }
             }).filter(s -> !errorProducts.contains(s)).toList();
-            dirtyDataRepository.updateToSynced(shouldMarkedToSynced);
+            for (DirtyDataItemInfo item : itemInfos) {
+                if (shouldMarkedToSynced.contains(item.getProductCode())) {
+                    item.setSynced(true);
+                    dirtyDataRepository.save(item);
+                }
+            }
             return errorProducts.size() == 0;
         } else {
             return true;

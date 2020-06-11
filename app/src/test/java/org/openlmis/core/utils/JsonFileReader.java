@@ -8,6 +8,10 @@ import java.io.InputStreamReader;
 public class JsonFileReader {
     public static String readJson(Class clazz, String fileName) {
         InputStream in = clazz.getClassLoader().getResourceAsStream("data/" + fileName);
+        return readFromDataDirToString(in);
+    }
+
+    private static String readFromDataDirToString(InputStream in) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuffer sb = new StringBuffer();
         try {
@@ -21,5 +25,10 @@ public class JsonFileReader {
             e.printStackTrace();
         }
         return sb.toString();
+    }
+
+    public static String readString(Class clazz, String fileName) {
+        InputStream in = clazz.getClassLoader().getResourceAsStream("String/" + fileName);
+        return readFromDataDirToString(in);
     }
 }

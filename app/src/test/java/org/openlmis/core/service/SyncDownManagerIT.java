@@ -49,7 +49,7 @@ public class SyncDownManagerIT {
     private UserRepository userRepository;
     private StockRepository stockRepository;
     private LotRepository lotRepository;
-    private User defaultUser;
+    private User defaultUser1;
     private SharedPreferenceMgr sharedPreferenceMgr;
     private ProgramDataFormRepository programDataFormRepository;
     private StockMovementRepository stockMovementRepository;
@@ -67,14 +67,14 @@ public class SyncDownManagerIT {
         syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncDownManager.class);
         sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
 
-        defaultUser = new User();
-        defaultUser.setUsername("cs_gelo");
-        defaultUser.setPassword("password");
-        defaultUser.setFacilityId("808");
-        defaultUser.setFacilityName("CS Gelo");
-        defaultUser.setFacilityCode("HF615");
-        userRepository.createOrUpdate(defaultUser);
-        UserInfoMgr.getInstance().setUser(defaultUser);
+        defaultUser1 = new User();
+        defaultUser1.setUsername("cs_gelo");
+        defaultUser1.setPassword("password");
+        defaultUser1.setFacilityId("808");
+        defaultUser1.setFacilityName("CS Gelo");
+        defaultUser1.setFacilityCode("HF615");
+        userRepository.createOrUpdate(defaultUser1);
+        UserInfoMgr.getInstance().setUser(defaultUser1);
     }
 
     private void testSyncProgress(SyncDownManager.SyncProgress progress) {
@@ -89,13 +89,7 @@ public class SyncDownManagerIT {
         }
     }
 
-
-    @Test
-    public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
-        //given
-        String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
-        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", json, RuntimeEnvironment.application);
-
+    private void mockReponse(LMISRestManagerMock lmisRestManager) {
         Date now = new Date();
         Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
         String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
@@ -109,12 +103,29 @@ public class SyncDownManagerIT {
         String fetchMovementDate = JsonFileReader.readJson(getClass(), "fetchStockMovementDate.json");
         String fetchRequisitionsData = JsonFileReader.readJson(getClass(), "fetchRequisitionsData.json");
         String fetchProgramDataFacilities = JsonFileReader.readJson(getClass(), "fetchProgramDataFacilities.json");
-        lmisRestManager.addNewMockedResponse("/rest-api/programs/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramsJson);
+        String rapidTestsResponseJson = JsonFileReader.readJson(getClass(), "SyncDownRapidTestsResponse.json");
+        String syncDownKitChagneResponseJson = JsonFileReader.readJson(getClass(), "fetchKitChangeReponse.json");
+        String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
+
+
+        lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + getDefaultUser().getFacilityId(), 200, "OK", rapidTestsResponseJson);
+        lmisRestManager.addNewMockedResponse("/rest-api/programs/" + getDefaultUser().getFacilityId(), 200, "OK", fetchProgramsJson);
         lmisRestManager.addNewMockedResponse("/rest-api/services?" + "programCode=PTV", 200, "OK", fetchPTVServiceJson);
-        lmisRestManager.addNewMockedResponse("/rest-api/report-types/mapping/" + defaultUser.getFacilityId(), 200, "OK", fetchReportTypesMapping);
-        lmisRestManager.addNewMockedResponse("/rest-api/requisitions?" + "facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", fetchRequisitionsData);
-        lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramDataFacilities);
-        lmisRestManager.addNewMockedResponse("/rest-api/facilities/" + defaultUser.getFacilityId() + "/stockCards?" + "startTime=" + startDateStr + "&endTime=" + endDateStr, 200, "OK", fetchMovementDate);
+        lmisRestManager.addNewMockedResponse("/rest-api/report-types/mapping/" + getDefaultUser().getFacilityId(), 200, "OK", fetchReportTypesMapping);
+        lmisRestManager.addNewMockedResponse("/rest-api/requisitions?" + "facilityCode=" + getDefaultUser().getFacilityCode() + "&startDate=" + getStartDateWithDB_DATE_FORMAT(), 200, "OK", fetchRequisitionsData);
+        lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + getDefaultUser().getFacilityId(), 200, "OK", fetchProgramDataFacilities);
+        lmisRestManager.addNewMockedResponse("/rest-api/facilities/" + getDefaultUser().getFacilityId() + "/stockCards?" + "startTime=" + startDateStr + "&endTime=" + endDateStr, 200, "OK", fetchMovementDate);
+        lmisRestManager.addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=" + sharedPreferenceMgr.getLastSyncProductTime(), 200, "OK", syncDownKitChagneResponseJson);
+        lmisRestManager.addNewMockedResponse("/rest-api/latest-products", 200, "OK", json);
+    }
+
+    @Test
+    public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
+        //given
+        String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", json, RuntimeEnvironment.application);
+        mockReponse(lmisRestManager);
+
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
         //When
@@ -126,10 +137,22 @@ public class SyncDownManagerIT {
         checkShouldSyncDownLatestProductWithArchivedStatus();
     }
 
+    private Date getStartDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return DateUtil.dateMinusMonth(calendar.getTime(),
+                sharedPreferenceMgr.getMonthOffsetThatDefinedOldData());
+    }
+
+    private String getStartDateWithDB_DATE_FORMAT() {
+        return DateUtil.formatDate(getStartDate(), DateUtil.DB_DATE_FORMAT);
+    }
+
     private void checkShouldSyncDownLatestProductWithArchivedStatus() throws LMISException {
         Product product = productRepository.getByCode("08A12");
         assertFalse(product.isArchived());
-        assertEquals("Amoxicilina+Acido clavulânico250mg + 62,5mgSuspensão", product.getPrimaryName());
+//        assertEquals("Amoxicilina+Acido clavulânico250mg + 62,5mgSuspensão", product.getPrimaryName());
         assertEquals("Suspensão", product.getType());
         assertEquals("250mg + 62,5mg", product.getStrength());
 
@@ -145,36 +168,12 @@ public class SyncDownManagerIT {
         cal.setTime(new Date());
         cal.add(Calendar.YEAR, -1);
         sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, cal.getTimeInMillis()).apply();
-        sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_DOWN_RAPID_TESTS, true).apply();
+        sharedPreferenceMgr.setRapidTestsDataSynced(true);
 
         //given
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
-        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", productJson, RuntimeEnvironment.application);
-
-        Date now = new Date();
-        Date startDate = DateUtil.minusDayOfMonth(now, 30);
-        String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
-
-        Date endDate = DateUtil.addDayOfMonth(now, 1);
-        String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
-
-        String stockMovementJson = JsonFileReader.readJson(getClass(), "SyncDownStockMovementsResponse.json");
-        lmisRestManager.addNewMockedResponse("/rest-api/facilities/" + defaultUser.getFacilityId()
-                + "/stockCards?startTime=" + startDateStr + "&endTime=" + endDateStr, 200, "OK", stockMovementJson);
-
-        String emptyRequisitions = "{\"requisitions\": []}";
-        lmisRestManager.addNewMockedResponse("/rest-api/requisitions?facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", emptyRequisitions);
-        String fetchProgramsJson = JsonFileReader.readJson(getClass(), "fetchProgramsDown.json");
-        String fetchPTVServiceJson = JsonFileReader.readJson(getClass(), "fetchfetchPTVService.json");
-        String fetchReportTypesMapping = JsonFileReader.readJson(getClass(), "fetchReportTypesMapping.json");
-        String fetchRequisitionsData = JsonFileReader.readJson(getClass(), "fetchRequisitionsData.json");
-        String fetchProgramDataFacilities = JsonFileReader.readJson(getClass(), "fetchProgramDataFacilities.json");
-        lmisRestManager.addNewMockedResponse("/rest-api/programs/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramsJson);
-        lmisRestManager.addNewMockedResponse("/rest-api/services?" + "programCode=PTV", 200, "OK", fetchPTVServiceJson);
-        lmisRestManager.addNewMockedResponse("/rest-api/report-types/mapping/" + defaultUser.getFacilityId(), 200, "OK", fetchReportTypesMapping);
-        lmisRestManager.addNewMockedResponse("/rest-api/requisitions?" + "facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", fetchRequisitionsData);
-        lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramDataFacilities);
-
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
+        mockReponse(lmisRestManager);
 
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
@@ -194,46 +193,18 @@ public class SyncDownManagerIT {
         Lot lot = lotRepository.getLotByLotNumberAndProductId("6MK07", product.getId());
         assertEquals("2019-10-30", DateUtil.formatDate(lot.getExpirationDate(), DateUtil.DB_DATE_FORMAT));
         LotOnHand lotOnHand = lotRepository.getLotOnHandByLot(lot);
-        assertEquals(5, lotOnHand.getQuantityOnHand(), 0L);
+        assertEquals(0, lotOnHand.getQuantityOnHand(), 0L);
     }
 
     @Test
     public void shouldSyncDownRapidTests() throws Exception {
-        //set shared preferences to have synced all historical data already
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTime(new Date());
-//        cal.add(Calendar.YEAR, -1);
-
-        Date now = new Date();
-        Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
-        String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
-
-        Date endDate = DateUtil.addDayOfMonth(now, 1);
-        String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
-
-//        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, cal.getTimeInMillis()).apply();
-
         //given
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
-        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", productJson, RuntimeEnvironment.application);
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
 
         sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
         sharedPreferenceMgr.setRequisitionDataSynced(true);
-        String fetchProgramsJson = JsonFileReader.readJson(getClass(), "fetchProgramsDown.json");
-        String fetchPTVServiceJson = JsonFileReader.readJson(getClass(), "fetchfetchPTVService.json");
-        String fetchReportTypesMapping = JsonFileReader.readJson(getClass(), "fetchReportTypesMapping.json");
-        String fetchMovementDate = JsonFileReader.readJson(getClass(), "fetchStockMovementDate.json");
-        String fetchRequisitionsData = JsonFileReader.readJson(getClass(), "fetchRequisitionsData.json");
-        String fetchProgramDataFacilities = JsonFileReader.readJson(getClass(), "fetchProgramDataFacilities.json");
-        lmisRestManager.addNewMockedResponse("/rest-api/programs/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramsJson);
-        lmisRestManager.addNewMockedResponse("/rest-api/services?" + "programCode=PTV", 200, "OK", fetchPTVServiceJson);
-        lmisRestManager.addNewMockedResponse("/rest-api/report-types/mapping/" + defaultUser.getFacilityId(), 200, "OK", fetchReportTypesMapping);
-        lmisRestManager.addNewMockedResponse("/rest-api/requisitions?" + "facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", fetchRequisitionsData);
-        lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + defaultUser.getFacilityId(), 200, "OK", fetchProgramDataFacilities);
-        lmisRestManager.addNewMockedResponse("/rest-api/facilities/" + defaultUser.getFacilityId() + "/stockCards?" + "startTime=" + startDateStr + "&endTime=" + endDateStr, 200, "OK", fetchMovementDate);
-        String rapidTestsResponseJson = JsonFileReader.readJson(getClass(), "SyncDownRapidTestsResponse.json");
-        lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + defaultUser.getFacilityId(), 200, "OK", rapidTestsResponseJson);
-
+        mockReponse(lmisRestManager);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
         //when
@@ -242,8 +213,73 @@ public class SyncDownManagerIT {
 
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
+        Product product26A02 = productRepository.getByCode("26A02");
+
+        assertFalse(product26A02.isKit());
+
+        String syncDownKitChagneResponseJson = JsonFileReader.readJson(getClass(), "fetchKitChangeReponse.json");
+        lmisRestManager.addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=" + sharedPreferenceMgr.getLastSyncProductTime(), 200, "OK", syncDownKitChagneResponseJson);
+
+
+        syncDownManager.fetchKitChangeProduct();
+        List<ProgramDataForm> programDataForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
+        assertEquals(16, programDataForms.size());
+    }
+
+    @Test
+    public void shouldSyncDownLastYearSilently() throws LMISException {
+        //given
+        String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
+
+        mockReponse(lmisRestManager);
+        syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+        sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
+        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+        syncDownManager.syncDownServerData();
+
+//        /rest-api/latest-products
+        String syncDownKitChagneResponseJson = JsonFileReader.readJson(getClass(), "fetchKitChangeReponse.json");
+        lmisRestManager.addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=1578289583857", 200, "OK", syncDownKitChagneResponseJson);
 
         List<ProgramDataForm> programDataForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
         assertEquals(0, programDataForms.size());
+
+    }
+
+    @Test
+    @Ignore
+    public void shouldSyncDownKitChange() throws LMISException {
+        //given
+        String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
+
+        mockReponse(lmisRestManager);
+        syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+
+        //when
+        TestSubscriber<SyncDownManager.SyncProgress> subscriber = new TestSubscriber<>();
+        syncDownManager.syncDownServerData(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        Product product26A02 = productRepository.getByCode("26A02");
+        assertFalse(product26A02.isKit());
+
+        sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
+        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+        syncDownManager.syncDownServerData();
+
+//        /rest-api/latest-products
+        String syncDownKitChagneResponseJson = JsonFileReader.readJson(getClass(), "fetchKitChangeReponse.json");
+        lmisRestManager.addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=1578289583857", 200, "OK", syncDownKitChagneResponseJson);
+
+        List<ProgramDataForm> programDataForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
+        assertEquals(16, programDataForms.size());
+
+    }
+
+    private User getDefaultUser() {
+        return UserInfoMgr.getInstance().getUser();
     }
 }

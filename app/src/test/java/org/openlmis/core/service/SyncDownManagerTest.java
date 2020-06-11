@@ -232,6 +232,11 @@ public class SyncDownManagerTest {
     }
 
     @Test
+    public void shouldSyncDownLastYearStockCard() {
+
+    }
+
+    @Test
     public void shouldUpdateNotifyBannerListWhenSOHIsZeroAndProductIsDeActive() throws Exception {
         //given
         Product product = new Product();
@@ -500,6 +505,7 @@ public class SyncDownManagerTest {
         public void onNext(SyncProgress syncProgress) {
             syncProgresses.add(syncProgress);
         }
+
     }
 
     public class MyTestModule extends AbstractModule {

@@ -3,7 +3,6 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.LMISApp;
@@ -83,28 +82,6 @@ public class DirtyDataRepository {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public void updateToSynced(List<String> productCodes) {
-        List<DirtyDataItemInfo> dataItemInfoList = listunSyced();
-        for (DirtyDataItemInfo item : dataItemInfoList) {
-            if (productCodes.contains(item.getProductCode())) {
-                item.setSynced(true);
-                save(item);
-            }
-        }
-    }
-
-    public void createOrUpdateWithItem(DirtyDataItemInfo itemInfo) {
-        try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-                    () -> {
-                        deleteItemInfoGenericDao.refresh(itemInfo);
-                        return null;
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private boolean hasBackedData(List<DirtyDataItemInfo> infos) {
