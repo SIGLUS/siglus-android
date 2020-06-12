@@ -681,6 +681,7 @@
         <item name="android:background">@drawable/border_right_black</item>
         <item name="android:gravity">center</item>
         <item name="android:inputType">number</item>
+        <item name="android:maxLength">@integer/max_length_rapid_test_no_total</item>
     </style>
 
     <style name="PatientDataForm" />

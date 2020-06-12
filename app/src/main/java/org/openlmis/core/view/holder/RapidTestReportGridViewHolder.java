@@ -1,5 +1,6 @@
 package org.openlmis.core.view.holder;
 
+import android.support.annotation.IntegerRes;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.view.View;
@@ -14,8 +15,6 @@ import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGrid
 import roboguice.inject.InjectView;
 
 public class RapidTestReportGridViewHolder extends BaseViewHolder {
-    public static final int MAX_INPUT_LENGTH = 9;
-    public static final int MAX_TOTAL_LENGTH = 11;
     @InjectView(R.id.et_consume_rapid_test_report_grid)
     EditText etConsume;
 
@@ -56,12 +55,14 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
     private void updateEditTextMaxLength() {
         if (isInTotalRow()) {
-            etConsume.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_TOTAL_LENGTH)});
-            etPositive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_TOTAL_LENGTH)});
-        } else {
-            etConsume.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_INPUT_LENGTH)});
-            etPositive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_INPUT_LENGTH)});
+            int maxLength = getInteger(R.integer.max_length_rapid_test_total);
+            etConsume.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+            etPositive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
         }
+    }
+
+    private int getInteger(@IntegerRes int id) {
+        return context.getResources().getInteger(id);
     }
 
     public void setEditable(Boolean editable) {

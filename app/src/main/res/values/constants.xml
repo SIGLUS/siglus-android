@@ -5,4 +5,6 @@
     <integer name="document_number_length">9</integer>
     <integer name="signature_length">5</integer>
     <integer name="edit_amount_initial_inventory_length">5</integer>
+    <integer name="max_length_rapid_test_no_total">6</integer>
+    <integer name="max_length_rapid_test_total">7</integer>
 </resources>
