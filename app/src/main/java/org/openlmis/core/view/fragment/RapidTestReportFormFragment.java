@@ -244,7 +244,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     public void updateUIAfterSubmit() {
-        adapter.setEditable(false);
         adapter.notifyDataSetChanged();
         rapidBodyLeftAdapter.notifyDataSetChanged();
         updateButtonName();
