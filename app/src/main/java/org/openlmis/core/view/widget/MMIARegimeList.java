@@ -117,7 +117,9 @@ public class MMIARegimeList extends LinearLayout {
         totalView.setText(String.valueOf(getTotal(COUNTTYPE.AMOUNT)));
         totalPharmcy.setText(String.valueOf(getTotal(COUNTTYPE.PHARMACY)));
         editTotalTexts.get(editTotalTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
-        editPharmacyTexts.get(editPharmacyTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
+        if (editPharmacyTexts.size() > 0) {
+            editPharmacyTexts.get(editPharmacyTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
+        }
     }
 
     private boolean isCustomEnable() {
