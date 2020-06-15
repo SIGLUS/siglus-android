@@ -13,7 +13,6 @@ import com.google.inject.Singleton;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
@@ -31,6 +30,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import roboguice.RoboGuice;
@@ -94,7 +94,7 @@ public class DirtyDataManager {
         List<String> productCodes = getCodeFromStockCard(deletedStockCards);
         deleteAndReset(productCodes);
         sharedPreferenceMgr.setDeletedProduct(productCodes);
-        return stockCards;
+        return deletedStockCards;
     }
 
     private List<String> getCodeFromStockCard(List<StockCard> stockCardList) {
@@ -115,13 +115,7 @@ public class DirtyDataManager {
             } catch (LMISException e) {
                 e.printStackTrace();
             }
-            final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-            DirtyDataItemInfo dirtyDataItems = convertStockMovementItemsToStockMovementEntriesForSave(
-                    facilityId,
-                    stockMovementItems,
-                    stockCard.getProduct().getCode());
-
-            dirtyDataRepository.save(dirtyDataItems);
+            saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
         }
     }
 
@@ -207,7 +201,7 @@ public class DirtyDataManager {
                     saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
                     continue;
                 }
-                for (int i = 0; i < stockMovementItems.size() - DO_NOT_CHECK_NEWEST_TWO; i++) {
+                for (int i = 0; i <= stockMovementItems.size() - DO_NOT_CHECK_NEWEST_TWO; i++) {
                     if (!isCorrectMovements(stockMovementItems.get(i), stockMovementItems.get(i + 1))) {
                         debugLog(stockMovementItems.get(i), stockMovementItems.get(i + 1), stockCard);
                         deleted.add(stockCard);
