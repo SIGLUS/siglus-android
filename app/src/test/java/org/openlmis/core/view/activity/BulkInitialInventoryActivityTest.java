@@ -22,6 +22,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.BulkInitialInventoryPresenterTest;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
@@ -31,6 +32,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Scheduler;
+import rx.Single;
 import rx.Subscriber;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
@@ -43,6 +45,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockingDetails;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -55,6 +58,7 @@ public class BulkInitialInventoryActivityTest {
     private LongSparseArray<Product> noBasicProducts;
     private LongSparseArray<Product> basicProducts;
     private ProductRepository productRepositoryMock;
+    private SingleClickButtonListener singleClickButtonListener;
 
 
     @Before
@@ -63,6 +67,7 @@ public class BulkInitialInventoryActivityTest {
 
         mockedAdapter = mock(BulkInitialInventoryAdapter.class);
         productRepositoryMock = mock(ProductRepository.class);
+        singleClickButtonListener = mock(SingleClickButtonListener.class);
 
         Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name").setStrength("10mg").build();
         data = newArrayList(new InventoryViewModel(product), new InventoryViewModel(product));
@@ -113,11 +118,15 @@ public class BulkInitialInventoryActivityTest {
 
         bulkInventoryActivity.presenter.addNonBasicProductsToInventory(newArrayList(noBasicProducts.get(1), noBasicProducts.get(2), noBasicProducts.get(3), noBasicProducts.get(4), noBasicProducts.get(5)));
         List<InventoryViewModel> viewModels = bulkInventoryActivity.presenter.getInventoryViewModelList();
-        assertEquals(viewModels.get(0).getViewType(),BulkInitialInventoryAdapter.ITEM_BASIC_HEADER);
-        assertEquals(viewModels.get(1).getViewType(),BulkInitialInventoryAdapter.ITEM_BASIC);
-        assertEquals(viewModels.get(6).getViewType(),BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER);
-        assertEquals(viewModels.get(7).getViewType(),BulkInitialInventoryAdapter.ITEM_NO_BASIC);
+        assertEquals(viewModels.get(0).getViewType(), BulkInitialInventoryAdapter.ITEM_BASIC_HEADER);
+        assertEquals(viewModels.get(1).getViewType(), BulkInitialInventoryAdapter.ITEM_BASIC);
+        assertEquals(viewModels.get(6).getViewType(), BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER);
+        assertEquals(viewModels.get(7).getViewType(), BulkInitialInventoryAdapter.ITEM_NO_BASIC);
         assertEquals(12, viewModels.size());
+
+        bulkInventoryActivity.btnSave.performClick();
+//        verify(bulkInventoryActivity).btnSave.getVisibility()
+//        assertThat(bulkInventoryActivity, new StartedMatcher(BulkInitialInventoryActivity.class));
     }
 
     @NonNull
