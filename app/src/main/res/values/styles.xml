@@ -85,7 +85,9 @@
         <item name="android:layout_margin">@dimen/margin_normal</item>
     </style>
 
-    <style name="InventoryCard.EditQuantity" parent="Edit.Quantity" />
+    <style name="InventoryCard.EditQuantity" parent="Edit.Quantity">
+        <item name="android:maxLength">@integer/edit_amount_request_length</item>
+    </style>
 
     <style name="Inventory.TextTotal" parent="Text.Gray.Normal">
         <item name="android:paddingEnd">@dimen/padding_normal</item>
