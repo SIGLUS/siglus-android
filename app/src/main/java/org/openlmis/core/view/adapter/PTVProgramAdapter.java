@@ -64,10 +64,8 @@ public class PTVProgramAdapter extends RecyclerView.Adapter<PTVProgramViewHolder
 
     @Override
     public PTVProgramViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (ptvProgram.getStatus().equals(ViaReportStatus.SUBMITTED)) {
-            return new PTVProgramViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.ptv_report_form_row, parent, false), true);
-        }
-        return new PTVProgramViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.ptv_report_form_row, parent, false), false);
+        return new PTVProgramViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.ptv_report_form_row, parent, false),
+                ptvProgram.getStatus().equals(ViaReportStatus.SUBMITTED));
     }
 
     @Override

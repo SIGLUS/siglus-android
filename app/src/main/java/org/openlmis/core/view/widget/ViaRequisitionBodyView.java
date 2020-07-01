@@ -3,7 +3,6 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -77,19 +76,16 @@ public class ViaRequisitionBodyView extends FrameLayout {
     public void showListInputError(final int position) {
         requisitionFormList.setSelection(position);
         requisitionProductList.setSelection(position);
-        requisitionFormList.post(new Runnable() {
-            @Override
-            public void run() {
-                View childAt = ListViewUtil.getViewByPosition(position, requisitionFormList);
-                EditText requestAmount = (EditText) childAt.findViewById(R.id.et_request_amount);
-                EditText approvedAmount = (EditText) childAt.findViewById(R.id.et_approved_amount);
-                if (requestAmount.isEnabled()) {
-                    requestAmount.requestFocus();
-                    requestAmount.setError(getResources().getString(R.string.hint_error_input));
-                } else {
-                    approvedAmount.requestFocus();
-                    approvedAmount.setError(getResources().getString(R.string.hint_error_input));
-                }
+        requisitionFormList.post(() -> {
+            View childAt = ListViewUtil.getViewByPosition(position, requisitionFormList);
+            EditText requestAmount = (EditText) childAt.findViewById(R.id.et_request_amount);
+            EditText approvedAmount = (EditText) childAt.findViewById(R.id.et_approved_amount);
+            if (requestAmount.isEnabled()) {
+                requestAmount.requestFocus();
+                requestAmount.setError(getResources().getString(R.string.hint_error_input));
+            } else {
+                approvedAmount.requestFocus();
+                approvedAmount.setError(getResources().getString(R.string.hint_error_input));
             }
         });
     }
@@ -100,22 +96,13 @@ public class ViaRequisitionBodyView extends FrameLayout {
         this.requisitionProductAdapter = new RequisitionProductAdapter(context, presenter);
         requisitionFormList.setAdapter(requisitionFormAdapter);
         requisitionProductList.setAdapter(requisitionProductAdapter);
-        requisitionProductList.post(new Runnable() {
-            @Override
-            public void run() {
-                productHeaderView.getLayoutParams().height = bodyHeaderView.getHeight();
-            }
-        });
+        requisitionProductList.post(() -> productHeaderView.getLayoutParams().height = bodyHeaderView.getHeight());
         scrollInSync(requisitionFormList, requisitionProductList);
     }
 
     public void autoScrollLeftToRight() {
         if (!presenter.isHistoryForm()) {
-            formLayout.post(new Runnable() {
-                public void run() {
-                    formLayout.fullScroll(FOCUS_RIGHT);
-                }
-            });
+            formLayout.post(() -> formLayout.fullScroll(FOCUS_RIGHT));
         }
     }
 
@@ -159,14 +146,11 @@ public class ViaRequisitionBodyView extends FrameLayout {
     }
 
     public void setHideImmOnTouchListener() {
-        formLayout.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (context instanceof BaseActivity) {
-                    ((BaseActivity) context).hideImm();
-                }
-                return false;
+        formLayout.setOnTouchListener((v, event) -> {
+            if (context instanceof BaseActivity) {
+                ((BaseActivity) context).hideImm();
             }
+            return false;
         });
 
     }

@@ -138,20 +138,14 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
         return false;
     }
 
-    private final Action1<ArrayList<RnrFormItem>>  nextMainPageAction = new Action1<ArrayList<RnrFormItem>>() {
-        @Override
-        public void call(ArrayList<RnrFormItem> rnrFormItemList) {
-            loaded();
-            goToParentPage(rnrFormItemList);
-        }
+    private final Action1<ArrayList<RnrFormItem>> nextMainPageAction = rnrFormItemList -> {
+        loaded();
+        goToParentPage(rnrFormItemList);
     };
 
-    private Action1<Throwable> errorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            loaded();
-            showErrorMessage(throwable.getMessage());
-        }
+    private Action1<Throwable> errorAction = throwable -> {
+        loaded();
+        showErrorMessage(throwable.getMessage());
     };
 
     public static Intent getIntentToMe(Context context, Date periodBegin, ArrayList<String> addedDrugsInVIAs) {

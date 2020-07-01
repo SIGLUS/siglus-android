@@ -88,14 +88,11 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
             adjustTheoreticalIcon.setVisibility(View.GONE);
         } else {
             adjustTheoreticalIcon.setVisibility(View.VISIBLE);
-            adjustTheoreticalIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                            Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
-                            context.getString(R.string.btn_ok));
-                    dialogFragment.show(((Activity)context).getFragmentManager(), "adjustmentTheoreticalDialog");
-                }
+            adjustTheoreticalIcon.setOnClickListener(v -> {
+                DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+                        Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
+                        context.getString(R.string.btn_ok));
+                dialogFragment.show(((Activity) context).getFragmentManager(), "adjustmentTheoreticalDialog");
             });
         }
     }
@@ -109,12 +106,12 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
         requestAmount.setError(null);
         approvedAmount.setText(entry.getApprovedAmount());
 
-        if (status == RnRForm.STATUS.SUBMITTED) {
+        if (status == RnRForm.STATUS.SUBMITTED || status == RnRForm.STATUS.SUBMITTED_MISSED) {
             showDisabledAmount(requestAmount);
             showEnabledAmount(approvedAmount);
             approvedAmount.addTextChangedListener(mySimpleTextWatcher);
 
-        } else if (status == RnRForm.STATUS.DRAFT) {
+        } else if (status == RnRForm.STATUS.DRAFT || status == RnRForm.STATUS.DRAFT_MISSED) {
             showEnabledAmount(requestAmount);
             showDisabledAmount(approvedAmount);
             requestAmount.addTextChangedListener(mySimpleTextWatcher);

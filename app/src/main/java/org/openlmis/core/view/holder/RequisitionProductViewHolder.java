@@ -18,6 +18,7 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 
 public class RequisitionProductViewHolder extends BaseViewHolder {
+    private static final String TAG = RequisitionProductViewHolder.class.getSimpleName();
 
     @InjectView(R.id.tx_FNM)
     TextView productCode;
@@ -64,7 +65,8 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
 
     public Boolean hideDeleteIconInVIAPage() {
         return !(presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
-                    || presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT_MISSED))
+                || presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT_MISSED)
+                || presenter.getRnrFormStatus().equals(RnRForm.STATUS.SUBMITTED_MISSED))
                 || (presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency());
     }
 
