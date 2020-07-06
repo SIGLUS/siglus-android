@@ -18,14 +18,13 @@
 
 package org.openlmis.core.presenter;
 
-import android.util.Log;
-
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
@@ -33,12 +32,12 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.service.DirtyDataManager;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +68,9 @@ public class StockCardPresenter extends Presenter {
     @Inject
     DirtyDataManager dirtyDataManager;
 
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
+
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
     private StockCardListView view;
@@ -92,7 +94,6 @@ public class StockCardPresenter extends Presenter {
     }
 
     private void checkDataAndEmitter(Subscriber<? super List<StockCard>> subscriber, ArchiveStatus status) {
-        Log.e(TAG, "checkDataAndEmitter: start");
         Map<String, List<StockCard>> stockCardMap = new HashMap<>();
         List<StockCard> allStockCards = stockRepository.list();
         List<StockCard> deletedStockCards = dirtyDataManager.correctDataForStockCardOverView(allStockCards);
@@ -124,14 +125,21 @@ public class StockCardPresenter extends Presenter {
             view.loading();
         }
 
-        Log.e(TAG, "loadStockCards: start");
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+        if (shouldStartDataCheck()) {
             Subscription subscription = correctDirtyObservable(status).subscribe(afterLoadHandler);
             subscriptions.add(subscription);
+            sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
         } else {
             loadStockCardsInner(status);
         }
+    }
+
+    private boolean shouldStartDataCheck() {
+        long now = LMISApp.getInstance().getCurrentTimeMillis();
+        long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
+        return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
+                && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
+                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
     }
 
     private void loadStockCardsInner(ArchiveStatus status) {
@@ -147,7 +155,6 @@ public class StockCardPresenter extends Presenter {
 
     public void refreshStockCardsObservable() {
         view.loading();
-        Log.e(TAG, "1 loadStockCards, start: " + new Date().toString());
         Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
             refreshStockCardViewModelsSOH();
             checkDataAndEmitter(subscriber, Active);
@@ -161,7 +168,6 @@ public class StockCardPresenter extends Presenter {
                     @Override
                     public void onError(Throwable e) {
                         ToastUtil.show(e.getMessage());
-                        Log.e(TAG, "loadStockCards,error end: " + new Date().toString());
                         view.loaded();
                     }
 
@@ -171,7 +177,6 @@ public class StockCardPresenter extends Presenter {
                         view.refreshBannerText();
                         view.loaded();
                         view.refresh(inventoryViewModels);
-                        Log.e(TAG, "onNext: ");
                     }
                 });
     }
@@ -234,7 +239,6 @@ public class StockCardPresenter extends Presenter {
             @Override
             public void onCompleted() {
                 view.loaded();
-                Log.e(TAG, "getLoadStockCardsSubscriber onCompleted: ");
             }
 
             @Override
@@ -252,7 +256,6 @@ public class StockCardPresenter extends Presenter {
             public void onNext(List<StockCard> stockCards) {
                 refreshViewModels(stockCards);
                 view.refresh(inventoryViewModels);
-                Log.e(TAG, "getLoadStockCardsSubscriber onNext: ");
 
             }
         };

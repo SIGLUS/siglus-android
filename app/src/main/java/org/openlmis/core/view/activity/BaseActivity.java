@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -252,7 +253,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
                 loadingDialog = null;
                 isLoading = false;
                 if (isPageLoadTimerInProgress) {
-                    Log.d(this.getTitle() + " page", "load time " + (LMISApp.getInstance().getCurrentTimeMillis() - onCreateStartMili) + " ms");
+                    Log.d(this.getTitle() + " page", " load time " + (LMISApp.getInstance().getCurrentTimeMillis() - onCreateStartMili)
+                            + " ms" + " in " + BuildConfig.VERSION_CODE);
                     isPageLoadTimerInProgress = false;
                 }
             }

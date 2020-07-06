@@ -36,6 +36,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,6 +86,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_SILENT_FAILED = "silent_failed";
     public static final String KEY_DOWNLOADED_LATEST_VERSIONCODE = "downloaded_latest_versioncode";
     public static final String KEY_DELETED_THREE_PRODUCT = "deleted_three_products";
+    public static final String KEY_DELETED_PRODUCT_TIME = "deleted_product_time";
 
     final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
@@ -402,5 +404,13 @@ public class SharedPreferenceMgr {
 
     public String getUserFacilityId() {
         return sharedPreferences.getString(KEY_USER_FACILITY_ID, StringUtils.EMPTY);
+    }
+
+    public Date getCheckDataDate() {
+        return new Date(sharedPreferences.getLong(KEY_DELETED_PRODUCT_TIME, 0L));
+    }
+
+    public void setCheckDataDate(long time) {
+        sharedPreferences.edit().putLong(KEY_DELETED_PRODUCT_TIME, time).apply();
     }
 }
