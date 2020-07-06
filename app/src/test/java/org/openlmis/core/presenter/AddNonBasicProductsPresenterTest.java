@@ -1,6 +1,8 @@
 package org.openlmis.core.presenter;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+
 import com.google.inject.AbstractModule;
 
 import org.junit.Before;
@@ -14,6 +16,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -77,6 +80,10 @@ public class AddNonBasicProductsPresenterTest {
         assertThat(expectedNonBasicProducts.size(), is(actualProductsViewModels.size()));
         for (int index = 0; index < expectedNonBasicProducts.size(); index++) {
             assertThat(expectedNonBasicProducts.get(index).getCode(), is(actualProductsViewModels.get(index).getProductCode()));
+            assertThat(expectedNonBasicProducts.get(index).getType(), is(actualProductsViewModels.get(index).getProductType()));
+            assertThat(expectedNonBasicProducts.get(index), is(actualProductsViewModels.get(index).getProduct()));
+            assertFalse(actualProductsViewModels.get(index).isChecked());
+            assertThat(actualProductsViewModels.get(index).getStyledProductName().toString(), is(getStyledProductName(expectedNonBasicProducts.get(index))));
         }
     }
 
@@ -94,10 +101,14 @@ public class AddNonBasicProductsPresenterTest {
 
 
         assertThat(allNonBasicProductFromDB.size(), is(actualProductsViewModel.size() + 1));
-        for (NonBasicProductsViewModel model: actualProductsViewModel){
+        for (NonBasicProductsViewModel model : actualProductsViewModel) {
             assertNotEquals(model.getProductCode(), addedNonBasicProductCode);
         }
 
+    }
+
+    private String getStyledProductName(Product product) {
+        return  product.getPrimaryName() + " ["+product.getCode() +"]";
     }
 
 

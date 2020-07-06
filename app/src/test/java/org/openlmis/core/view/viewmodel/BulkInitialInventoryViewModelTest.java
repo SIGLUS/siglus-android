@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(LMISTestRunner.class)
 public class BulkInitialInventoryViewModelTest {
     private BulkInitialInventoryViewModel viewModel;
+
     @Before
     public void setUp() throws Exception {
         StockCard stockCard = StockCardBuilder.buildStockCard();
@@ -51,8 +52,9 @@ public class BulkInitialInventoryViewModelTest {
         assertEquals("lot1", newViewModel.getExistingLotMovementViewModelList().get(0).getLotNumber());
         assertEquals("lot2", newViewModel.getNewLotMovementViewModelList().get(0).getLotNumber());
     }
+
     @Test
-    public void shouldReturnTrueWhenDataChange(){
+    public void shouldReturnTrueWhenDataChange() {
         LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder().setLotNumber("lot1").setQuantity("100").setExpiryDate("Feb 2015").build();
         LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder().setLotNumber("lot2").setExpiryDate("Feb 2015").build();
 
@@ -60,9 +62,29 @@ public class BulkInitialInventoryViewModelTest {
         viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel2));
         viewModel.setDone(true);
 
-        assertThat(viewModel.getFormattedProductName(),is("Primary product name [productCode]"));
-        assertThat(viewModel.getFormattedProductUnit(),is("serious Adult"));
+        assertThat(viewModel.getFormattedProductName(), is("Primary product name [productCode]"));
+        assertThat(viewModel.getFormattedProductUnit(), is("serious Adult"));
+        assertTrue(viewModel.isDataChanged());
+    }
+
+    @Test
+    public void shouldCompareWithDraft() {
+        LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder().setLotNumber("lot1").setQuantity("100").setExpiryDate("Feb 2015").build();
+        LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder().setLotNumber("lot2").setExpiryDate("Feb 2015").build();
+
+        viewModel.setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
+        viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel2));
+        viewModel.setDone(true);
+
+        BulkInitialInventoryViewModel newViewModel = new BulkInitialInventoryViewModel(viewModel.getStockCard());
+        newViewModel.getExistingLotMovementViewModelList().add(new LotMovementViewModelBuilder().setLotNumber("lot3").setExpiryDate("Feb 2020").build());
+        newViewModel.setInitialDraftInventory(new DraftInitialInventory(viewModel));
+
+        assertThat(viewModel.getFormattedProductName(), is("Primary product name [productCode]"));
+        assertThat(viewModel.getFormattedProductUnit(), is("serious Adult"));
         assertTrue(viewModel.isDataChanged());
 
+        assertEquals(viewModel.getGreenName().toString(), "Primary product name [productCode]");
+        assertEquals(viewModel.getGreenUnit().toString(), "serious Adult");
     }
 }

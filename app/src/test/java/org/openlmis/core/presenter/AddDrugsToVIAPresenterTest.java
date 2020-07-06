@@ -29,7 +29,9 @@ import rx.observers.TestSubscriber;
 
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -113,6 +115,16 @@ public class AddDrugsToVIAPresenterTest {
         assertThat(subscriber.getOnNextEvents().get(0).get(0).getRequestAmount(), is(12L));
         assertThat(subscriber.getOnNextEvents().get(0).get(1).getProduct().getCode(), is("P2"));
         assertThat(subscriber.getOnNextEvents().get(0).get(1).getRequestAmount(), is(34L));
+    }
+
+    @Test
+    public void shouldEqualBetweenViewModels() {
+        InventoryViewModel inventoryViewModel1 = buildInventoryViewModel("P1", "34");
+        inventoryViewModel1.setChecked(true);
+        InventoryViewModel inventoryViewModel2 = buildInventoryViewModel("P2", "34");
+        inventoryViewModel2.setChecked(true);
+        assertEquals(inventoryViewModel1, inventoryViewModel2);
+        assertTrue(inventoryViewModel1.validate());
     }
 
     @NonNull

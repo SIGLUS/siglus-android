@@ -10,7 +10,6 @@ import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
@@ -21,7 +20,7 @@ import lombok.Data;
 public class PhysicalInventoryViewModel extends InventoryViewModel {
     private DraftInventory draftInventory;
     private boolean done;
-    private String  from;
+    private String from;
 
     public PhysicalInventoryViewModel(StockCard stockCard) {
         super(stockCard);
@@ -43,18 +42,8 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
     }
 
     private boolean isDifferentFromDraft() {
-        List<DraftLotItem> newAddedDraftLotItems = FluentIterable.from(draftInventory.getDraftLotItemListWrapper()).filter(new Predicate<DraftLotItem>() {
-            @Override
-            public boolean apply(DraftLotItem draftLotItem) {
-                return draftLotItem.isNewAdded();
-            }
-        }).toList();
-        List<DraftLotItem> existingDraftLotItems = FluentIterable.from(draftInventory.getDraftLotItemListWrapper()).filter(new Predicate<DraftLotItem>() {
-            @Override
-            public boolean apply(DraftLotItem draftLotItem) {
-                return !draftLotItem.isNewAdded();
-            }
-        }).toList();
+        List<DraftLotItem> newAddedDraftLotItems = FluentIterable.from(draftInventory.getDraftLotItemListWrapper()).filter(draftLotItem -> draftLotItem.isNewAdded()).toList();
+        List<DraftLotItem> existingDraftLotItems = FluentIterable.from(draftInventory.getDraftLotItemListWrapper()).filter(draftLotItem -> !draftLotItem.isNewAdded()).toList();
         for (DraftLotItem draftLotItem : existingDraftLotItems) {
             for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
                 if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
