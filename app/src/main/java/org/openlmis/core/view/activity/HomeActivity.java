@@ -341,12 +341,7 @@ public class HomeActivity extends BaseActivity {
             moveTaskToBack(true);
         } else {
             ToastUtil.show(R.string.msg_back_twice_to_exit);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exitPressedOnce = false;
-                }
-            }, BACK_TWICE_INTERVAL);
+            new Handler().postDelayed(() -> exitPressedOnce = false, BACK_TWICE_INTERVAL);
         }
         exitPressedOnce = !exitPressedOnce;
     }
@@ -416,26 +411,20 @@ public class HomeActivity extends BaseActivity {
 
     private InternetCheck.Callback validateConnectionListener() {
 
-        return new InternetCheck.Callback() {
-            @Override
-            public void launchResponse(Boolean internet) {
-                if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-                    ToastUtil.show(R.string.message_wipe_no_connection);
-                } else {
-                    WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(), R.string.message_warning_wipe_data, R.string.btn_positive, R.string.btn_negative);
-                    wipeDataDialog.show(getFragmentManager(), "WipeDataWarning");
-                }
+        return internet -> {
+            if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+                ToastUtil.show(R.string.message_wipe_no_connection);
+            } else {
+                WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(), R.string.message_warning_wipe_data, R.string.btn_positive, R.string.btn_negative);
+                wipeDataDialog.show(getFragmentManager(), "WipeDataWarning");
             }
         };
     }
 
     private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {
-        return new WarningDialogFragment.DialogDelegate() {
-            @Override
-            public void onPositiveClick() {
-                setRestartIntent();
-                LMISApp.getInstance().wipeAppData();
-            }
+        return () -> {
+            setRestartIntent();
+            LMISApp.getInstance().wipeAppData();
         };
     }
 

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -12,7 +11,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.UnpackNumAdapter;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -58,23 +56,15 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
         adapter = new UnpackNumAdapter(this, kitSOH, kitName);
         gridView.setAdapter(adapter);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                tvSelectNumWarning.setVisibility(View.INVISIBLE);
-            }
-        });
+        gridView.setOnItemClickListener((parent, view, position, id) -> tvSelectNumWarning.setVisibility(View.INVISIBLE));
 
-        btnNext.setOnClickListener(new SingleClickButtonListener() {
-            @Override
-            public void onSingleClick(View v) {
-                if (gridView.getCheckedItemPosition() == GridView.INVALID_POSITION) {
-                    tvSelectNumWarning.setVisibility(View.VISIBLE);
-                    return;
-                }
-                int unpackNum = gridView.getCheckedItemPosition() + 1;
-                startActivityForResult(UnpackKitActivity.getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName), Constants.REQUEST_UNPACK_KIT);
+        btnNext.setOnClickListener((v) -> {
+            if (gridView.getCheckedItemPosition() == GridView.INVALID_POSITION) {
+                tvSelectNumWarning.setVisibility(View.VISIBLE);
+                return;
             }
+            int unpackNum = gridView.getCheckedItemPosition() + 1;
+            startActivityForResult(UnpackKitActivity.getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName), Constants.REQUEST_UNPACK_KIT);
         });
     }
 

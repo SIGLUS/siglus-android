@@ -13,9 +13,7 @@ import org.openlmis.core.service.SyncUpManager;
 import org.openlmis.core.utils.Constants;
 
 import rx.Single;
-import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class TrainingSyncAdapter {
@@ -69,16 +67,9 @@ public class TrainingSyncAdapter {
     }
 
     public void requestSync() {
-        Single.create(new Single.OnSubscribe<String>() {
-            @Override
-            public void call(SingleSubscriber<? super String> singleSubscriber) {
-                singleSubscriber.onSuccess(onPerformSync());
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<String>() {
-            @Override
-            public void call(String message) {
-                Log.d("training sync", message);
-            }
-        });
+        Single.create((Single.OnSubscribe<String>) singleSubscriber -> singleSubscriber.onSuccess(onPerformSync()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(message -> Log.d("training sync", message));
     }
 }

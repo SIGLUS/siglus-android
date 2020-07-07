@@ -19,7 +19,6 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.BaseStockMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
@@ -108,16 +107,13 @@ public class BaseLotListView extends FrameLayout {
     }
 
     public AddLotDialogFragment.AddLotWithoutNumberListener getAddLotWithoutNumberListener() {
-        return new AddLotDialogFragment.AddLotWithoutNumberListener() {
-            @Override
-            public void addLotWithoutNumber(String expiryDate) {
-                btnAddNewLot.setEnabled(true);
-                String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getProduct().getCode(), expiryDate);
-                if (getLotNumbers().contains(lotNumber)) {
-                    ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
-                } else {
-                    addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
-                }
+        return expiryDate -> {
+            btnAddNewLot.setEnabled(true);
+            String lotNumber = LotMovementViewModel.generateLotNumberForProductWithoutLot(viewModel.getProduct().getCode(), expiryDate);
+            if (getLotNumbers().contains(lotNumber)) {
+                ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
+            } else {
+                addNewLot(new LotMovementViewModel(lotNumber, expiryDate, MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
             }
         };
     }
@@ -125,18 +121,10 @@ public class BaseLotListView extends FrameLayout {
     @NonNull
     public List<String> getLotNumbers() {
         final List<String> existingLots = new ArrayList<>();
-        existingLots.addAll(FluentIterable.from(viewModel.getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
-            @Override
-            public String apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.getLotNumber();
-            }
-        }).toList());
-        existingLots.addAll(FluentIterable.from(viewModel.getExistingLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
-            @Override
-            public String apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.getLotNumber();
-            }
-        }).toList());
+        existingLots.addAll(FluentIterable.from(viewModel.getNewLotMovementViewModelList())
+                .transform(lotMovementViewModel -> lotMovementViewModel.getLotNumber()).toList());
+        existingLots.addAll(FluentIterable.from(viewModel.getExistingLotMovementViewModelList())
+                .transform(lotMovementViewModel -> lotMovementViewModel.getLotNumber()).toList());
         return existingLots;
     }
 
@@ -164,12 +152,7 @@ public class BaseLotListView extends FrameLayout {
 
     @NonNull
     public OnDismissListener getOnAddNewLotDialogDismissListener() {
-        return new OnDismissListener() {
-            @Override
-            public void onDismissAction() {
-                setActionAddNewEnabled(true);
-            }
-        };
+        return () -> setActionAddNewEnabled(true);
     }
 
     @NonNull

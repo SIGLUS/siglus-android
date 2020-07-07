@@ -6,9 +6,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
@@ -24,19 +21,12 @@ import javax.annotation.Nullable;
 
 import roboguice.util.Strings;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class ProductPresenter extends Presenter {
-
-    @Inject
-    private ProductRepository productRepository;
-
-    @Inject
-    private ProgramRepository programRepository;
 
     @Inject
     private RegimenRepository regimenRepository;
@@ -49,22 +39,19 @@ public class ProductPresenter extends Presenter {
     }
 
     public Observable<List<RegimeProductViewModel>> loadRegimeProducts(Regimen.RegimeType type) {
-        return Observable.create(new Observable.OnSubscribe<List<RegimeProductViewModel>>() {
-            @Override
-            public void call(final Subscriber<? super List<RegimeProductViewModel>> subscriber) {
-                try {
-                    List<RegimeShortCode> regimeShortCodes = regimenRepository.listRegimeShortCode(type);
-                    List<RegimeProductViewModel> regimeProductViewModels = new ArrayList<>();
-                    for (RegimeShortCode item : regimeShortCodes) {
-                        RegimeProductViewModel regimeProductViewModel = new RegimeProductViewModel(item.getShortCode());
-                        regimeProductViewModels.add(regimeProductViewModel);
-                    }
-                    subscriber.onNext(regimeProductViewModels);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    new LMISException(e,"ProductPresenter.loadRegimeProducts").reportToFabric();
-                    subscriber.onError(e);
+        return Observable.create((Observable.OnSubscribe<List<RegimeProductViewModel>>) subscriber -> {
+            try {
+                List<RegimeShortCode> regimeShortCodes = regimenRepository.listRegimeShortCode(type);
+                List<RegimeProductViewModel> regimeProductViewModels = new ArrayList<>();
+                for (RegimeShortCode item : regimeShortCodes) {
+                    RegimeProductViewModel regimeProductViewModel = new RegimeProductViewModel(item.getShortCode());
+                    regimeProductViewModels.add(regimeProductViewModel);
                 }
+                subscriber.onNext(regimeProductViewModels);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e, "ProductPresenter.loadRegimeProducts").reportToFabric();
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
@@ -72,34 +59,31 @@ public class ProductPresenter extends Presenter {
     public Observable<Regimen> saveRegimes(List<RegimeProductViewModel> viewModels, final Regimen.RegimeType regimeType) {
         final String regimenName = generateRegimeName(viewModels);
 
-        return Observable.create(new Observable.OnSubscribe<Regimen>() {
-            @Override
-            public void call(Subscriber<? super Regimen> subscriber) {
-                Regimen regimen = from(viewModels).transform(new Function<RegimeProductViewModel, Regimen>() {
-                    @Nullable
-                    @Override
-                    public Regimen apply(@Nullable RegimeProductViewModel regimeProductViewModel) {
-                        try {
-                            Regimen regimen = regimenRepository.getByNameAndCategory(regimenName, regimeType);
-                            if (regimen == null) {
-                                regimen = new Regimen();
-                                regimen.setType(regimeType);
-                                regimen.setCode(regimeType + regimenName);
-                                regimen.setName(regimenName);
-                                regimen.setCustom(true);
-                                regimenRepository.create(regimen);
-                            }
-                            return regimen;
-                        } catch (LMISException e) {
-                            new LMISException(e,"ProductPresenter.saveRegimes").reportToFabric();
-                            subscriber.onError(e);
-                            return null;
+        return Observable.create((Observable.OnSubscribe<Regimen>) subscriber -> {
+            Regimen regimen = from(viewModels).transform(new Function<RegimeProductViewModel, Regimen>() {
+                @Nullable
+                @Override
+                public Regimen apply(@Nullable RegimeProductViewModel regimeProductViewModel) {
+                    try {
+                        Regimen regimen = regimenRepository.getByNameAndCategory(regimenName, regimeType);
+                        if (regimen == null) {
+                            regimen = new Regimen();
+                            regimen.setType(regimeType);
+                            regimen.setCode(regimeType + regimenName);
+                            regimen.setName(regimenName);
+                            regimen.setCustom(true);
+                            regimenRepository.create(regimen);
                         }
+                        return regimen;
+                    } catch (LMISException e) {
+                        new LMISException(e, "ProductPresenter.saveRegimes").reportToFabric();
+                        subscriber.onError(e);
+                        return null;
                     }
-                }).get(0);
-                subscriber.onNext(regimen);
-                subscriber.onCompleted();
-            }
+                }
+            }).get(0);
+            subscriber.onNext(regimen);
+            subscriber.onCompleted();
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
@@ -112,22 +96,14 @@ public class ProductPresenter extends Presenter {
     }
 
     public Observable<List<InventoryViewModel>> loadEmergencyProducts() {
-        return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
-            @Override
-            public void call(final Subscriber<? super List<InventoryViewModel>> subscriber) {
-                try {
-                    ImmutableList<InventoryViewModel> inventoryViewModels = from(stockRepository.listEmergencyStockCards()).transform(new Function<StockCard, InventoryViewModel>() {
-                        @Override
-                        public InventoryViewModel apply(StockCard stockCard) {
-                            return InventoryViewModel.buildEmergencyModel(stockCard);
-                        }
-                    }).toList();
-                    subscriber.onNext(inventoryViewModels);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    new LMISException(e,"ProductPresenter.loadEmergencyProducts").reportToFabric();
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
+            try {
+                ImmutableList<InventoryViewModel> inventoryViewModels = from(stockRepository.listEmergencyStockCards()).transform(stockCard -> InventoryViewModel.buildEmergencyModel(stockCard)).toList();
+                subscriber.onNext(inventoryViewModels);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e, "ProductPresenter.loadEmergencyProducts").reportToFabric();
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }

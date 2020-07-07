@@ -7,14 +7,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InitialInventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -58,17 +56,14 @@ public class InitialInventoryActivity extends InventoryActivity {
 
     private void initButtonPanel() {
         llSave.setVisibility(View.GONE);
-        btnDone.setOnClickListener(new SingleClickButtonListener() {
-            @Override
-            public void onSingleClick(View v) {
-                btnDone.setEnabled(false);
-                if (validateInventory()) {
-                    loading();
-                    Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
-                    subscriptions.add(subscription);
-                } else {
-                    btnDone.setEnabled(true);
-                }
+        btnDone.setOnClickListener((v) -> {
+            btnDone.setEnabled(false);
+            if (validateInventory()) {
+                loading();
+                Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
+                subscriptions.add(subscription);
+            } else {
+                btnDone.setEnabled(true);
             }
         });
     }
@@ -108,15 +103,10 @@ public class InitialInventoryActivity extends InventoryActivity {
         return getIntentToMe(context, false);
     }
 
-    protected InitialInventoryViewHolder.ViewHistoryListener viewHistoryListener = new InitialInventoryViewHolder.ViewHistoryListener() {
-        @Override
-        public void viewHistory(StockCard stockCard) {
-            startActivity(StockMovementHistoryActivity.getIntentToMe(InitialInventoryActivity.this,
-                    stockCard.getId(),
-                    stockCard.getProduct().getFormattedProductName(),
-                    true,
-                    false));
-        }
-    };
+    protected InitialInventoryViewHolder.ViewHistoryListener viewHistoryListener = stockCard -> startActivity(StockMovementHistoryActivity.getIntentToMe(InitialInventoryActivity.this,
+            stockCard.getId(),
+            stockCard.getProduct().getFormattedProductName(),
+            true,
+            false));
 
 }

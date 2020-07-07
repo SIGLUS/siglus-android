@@ -66,12 +66,7 @@ public class MalariaDataReportFormRowAdapter extends RecyclerView.Adapter<Patien
 
             @Override
             public void afterTextChanged(Editable editable) {
-                view.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyItemChanged(viewModels.size() - 1);
-                    }
-                });
+                view.post(() -> notifyItemChanged(viewModels.size() - 1));
             }
         };
     }

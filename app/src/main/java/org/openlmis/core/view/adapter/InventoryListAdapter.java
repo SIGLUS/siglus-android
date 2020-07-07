@@ -24,7 +24,6 @@ import android.text.TextUtils;
 import com.viethoa.RecyclerViewFastScroller;
 
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,12 +62,10 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
         if (TextUtils.isEmpty(keyword)) {
             filteredViewModels = data;
         } else {
-            filteredViewModels = from(data).filter(new Predicate<InventoryViewModel>() {
-                @Override
-                public boolean apply(InventoryViewModel inventoryViewModel) {
-                    return inventoryViewModel.getProduct().getProductFullName().toLowerCase().contains(keyword.toLowerCase());
-                }
-            }).toList();
+            filteredViewModels = from(data)
+                    .filter(inventoryViewModel ->
+                            inventoryViewModel.getProduct().getProductFullName().toLowerCase()
+                                    .contains(keyword.toLowerCase())).toList();
         }
         filteredList.clear();
         filteredList.addAll(filteredViewModels);

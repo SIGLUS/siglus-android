@@ -54,12 +54,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     }
 
     private PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener getRefreshCompleteCountListener() {
-        return new PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener() {
-            @Override
-            public void onStatusChange(boolean done) {
-                setTotal(presenter.getInventoryViewModelList().size());
-            }
-        };
+        return done -> setTotal(presenter.getInventoryViewModelList().size());
     }
 
     protected SingleClickButtonListener getSaveOnClickListener() {

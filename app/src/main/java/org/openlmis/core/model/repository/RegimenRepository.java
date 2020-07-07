@@ -23,7 +23,6 @@ import android.content.Context;
 
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
@@ -55,38 +54,20 @@ public class RegimenRepository {
     }
 
     public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category) throws LMISException {
-        return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
-            @Override
-            public Regimen operate(Dao<Regimen, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("name", name).and().eq("type", category).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder().where().eq("name", name).and().eq("type", category).queryForFirst());
     }
 
     public Regimen getByCode(final String code) throws LMISException {
-        return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
-            @Override
-            public Regimen operate(Dao<Regimen, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("code", code).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder().where().eq("code", code).queryForFirst());
     }
 
     public void deleteAllNoCustomRegimens() throws LMISException, SQLException {
-        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
-                    @Override
-                    public Regimen operate(Dao<Regimen, String> dao) throws SQLException, LMISException {
-                        DeleteBuilder<Regimen, String> deleteBuilder = dao.deleteBuilder();
-                        deleteBuilder.where().eq("isCustom", false);
-                        deleteBuilder.delete();
-                        return null;
-                    }
-                });
-            }
-        });
+        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), (Callable<Object>) () -> dbUtil.withDao(Regimen.class, (DbUtil.Operation<Regimen, Regimen>) dao -> {
+            DeleteBuilder<Regimen, String> deleteBuilder = dao.deleteBuilder();
+            deleteBuilder.where().eq("isCustom", false);
+            deleteBuilder.delete();
+            return null;
+        }));
     }
 
     public void batchSave(List<Regimen> regimens) {
@@ -115,27 +96,17 @@ public class RegimenRepository {
     }
 
     public List<Regimen> listDefaultRegime() throws LMISException {
-        return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, List<Regimen>>() {
-            @Override
-            public List<Regimen> operate(Dao<Regimen, String> dao) throws SQLException {
-                return dao.queryBuilder()
-                        .where()
-                        .eq("isCustom", false)
-                        .query();
-            }
-        });
+        return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
+                .where()
+                .eq("isCustom", false)
+                .query());
     }
 
     public List<RegimeShortCode> listRegimeShortCode(Regimen.RegimeType type) throws LMISException {
-        return dbUtil.withDao(RegimeShortCode.class, new DbUtil.Operation<RegimeShortCode, List<RegimeShortCode>>() {
-            @Override
-            public List<RegimeShortCode> operate(Dao<RegimeShortCode, String> dao) throws SQLException {
-                return dao.queryBuilder()
-                        .where()
-                        .eq("type", type)
-                        .query();
-            }
-        });
+        return dbUtil.withDao(RegimeShortCode.class, dao -> dao.queryBuilder()
+                .where()
+                .eq("type", type)
+                .query());
     }
 
     public void deleteRegimeDirtyData(String programCode) {

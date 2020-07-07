@@ -2,7 +2,6 @@ package org.openlmis.core.view.widget;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.TextInputLayout;
@@ -102,29 +101,23 @@ public class MovementDetailsView extends LinearLayout {
     }
 
     private void setSignatureListener() {
-        etMovementSignature.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (StringUtils.isEmpty(etMovementSignature.getText())) {
-                        showSignatureError(getContext().getString(R.string.msg_empty_signature));
-                    } else if (etMovementSignature.getText().length() < 2) {
-                        showSignatureError(getContext().getString(R.string.hint_signature_error_message));
-                    } else {
-                        lyMovementSignature.setErrorEnabled(false);
-                    }
+        etMovementSignature.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                if (StringUtils.isEmpty(etMovementSignature.getText())) {
+                    showSignatureError(getContext().getString(R.string.msg_empty_signature));
+                } else if (etMovementSignature.getText().length() < 2) {
+                    showSignatureError(getContext().getString(R.string.hint_signature_error_message));
+                } else {
+                    lyMovementSignature.setErrorEnabled(false);
                 }
             }
         });
     }
 
     public void setMovementDateClickListener() {
-        etMovementDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                etMovementDate.setEnabled(false);
-                showDatePickerDialog();
-            }
+        etMovementDate.setOnClickListener(view -> {
+            etMovementDate.setEnabled(false);
+            showDatePickerDialog();
         });
         etMovementDate.setKeyListener(null);
     }
@@ -141,12 +134,7 @@ public class MovementDetailsView extends LinearLayout {
                 new MovementDateListener(presenter.getViewModel(), presenter.getLastMovementDate(), etMovementDate),
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
         dialog.setButton(DatePickerDialog.BUTTON_POSITIVE, "Done", dialog);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                etMovementDate.setEnabled(true);
-            }
-        });
+        dialog.setOnDismissListener(dialog1 -> etMovementDate.setEnabled(true));
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(TRANSPARENT));
         }
@@ -189,12 +177,7 @@ public class MovementDetailsView extends LinearLayout {
     }
 
     public void requestFocus(final View view) {
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                view.getParent().requestChildFocus(view, view);
-            }
-        });
+        view.post(() -> view.getParent().requestChildFocus(view, view));
     }
 
     public void showMovementQuantityError(String errorMsg) {

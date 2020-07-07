@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.SelectEmergencyProductsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
 
@@ -20,12 +19,7 @@ public class SelectEmergencyProductAdapter extends InventoryListAdapter<SelectEm
     }
 
     public List<InventoryViewModel> getCheckedProducts() {
-        return from(data).filter(new Predicate<InventoryViewModel>() {
-            @Override
-            public boolean apply(InventoryViewModel viewModel) {
-                return viewModel.isChecked();
-            }
-        }).toList();
+        return from(data).filter(viewModel -> viewModel.isChecked()).toList();
     }
 
     @Override

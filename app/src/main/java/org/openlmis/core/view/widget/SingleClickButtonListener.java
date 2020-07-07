@@ -22,7 +22,7 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
 
         lastClickTime = currentClickTime;
 
-        if(elapsedTime <= minClickInterval) {
+        if (elapsedTime <= minClickInterval) {
             return;
         }
         if (!isViewClicked) {
@@ -40,12 +40,6 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
 
     private void startTimer() {
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                isViewClicked = false;
-            }
-        }, minClickInterval);
+        handler.postDelayed(() -> isViewClicked = false, minClickInterval);
     }
 }

@@ -16,7 +16,11 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
 
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -24,7 +28,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 public class StockMovementEntryTest {
 
     @Test
-    public void shouldCreateStockMovementEntryForSyncUp() throws ParseException {
+    public void shouldCreateStockMovementEntryForSyncUp() {
         StockCard stockCard = StockCardBuilder.buildStockCard();
 
         StockMovementItem stockMovementItem = new StockMovementItemBuilder()
@@ -65,10 +69,21 @@ public class StockMovementEntryTest {
 
         StockMovementEntry entry = new StockMovementEntry(stockMovementItem, "123");
         assertThat(entry.getFacilityId(), is("123"));
+        assertThat(entry.getProductCode(), is("productCode"));
+        assertEquals(entry.getQuantity(), 50);
+        assertThat(entry.getReasonName(), is("reason"));
+        assertThat(entry.getOccurred(), is("2016-01-01"));
+        assertThat(entry.getReferenceNumber(), is("123"));
+        assertNull(entry.getRequestedQuantity());
         assertThat(entry.getLotEventList().size(), is(2));
         assertThat(entry.getLotEventList().get(0).getLotNumber(), is("ABC"));
         assertThat(entry.getLotEventList().get(0).getExpirationDate(), is("2020-10-31"));
         assertThat(entry.getLotEventList().get(0).getQuantity(), is(30L));
         assertThat(entry.getLotEventList().get(0).getCustomProps().get("SOH"), is("50"));
+
+        StockMovementEntry entry1 = new StockMovementEntry(stockMovementItem, "123");
+
+        assertEquals(entry, entry1);
+        assertNotEquals(entry.getLotEventList().get(0), entry.getLotEventList().get(1));
     }
 }

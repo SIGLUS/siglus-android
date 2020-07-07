@@ -61,12 +61,9 @@ public class NewMovementLotListView extends MovementChangeLotListView {
 
     @NonNull
     protected LotMovementAdapter.MovementChangedListener getMovementChangedListener() {
-        return new LotMovementAdapter.MovementChangedListener() {
-            @Override
-            public void movementChange() {
-                updateAddPositiveLotAmountAlert();
-                updateSoonestToExpireNotIssuedBanner();
-            }
+        return () -> {
+            updateAddPositiveLotAmountAlert();
+            updateSoonestToExpireNotIssuedBanner();
         };
     }
 

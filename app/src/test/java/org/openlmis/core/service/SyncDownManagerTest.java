@@ -65,6 +65,7 @@ import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -312,6 +313,36 @@ public class SyncDownManagerTest {
         when(productRepository.getByCode(anyString())).thenReturn(null);
         syncDownManager.updateDeactivateProductNotifyList(product);
         verify(stockRepository, times(0)).queryStockCardByProductId(anyLong());
+    }
+
+    @Test
+    public void shouldEqualResponse() {
+        List<ProductAndSupportedPrograms> productsAndSupportedPrograms = new ArrayList<>();
+        ProductAndSupportedPrograms productAndSupportedPrograms = new ProductAndSupportedPrograms();
+        productWithKits = new Product();
+        productWithKits.setCode("ABC");
+        productAndSupportedPrograms.setProduct(productWithKits);
+        ProductProgram productProgram = new ProductProgramBuilder().setProductCode("ABC").setProgramCode("PR").setActive(true).build();
+        productAndSupportedPrograms.setProductPrograms(newArrayList(productProgram));
+
+        ProductAndSupportedPrograms productAndSupportedPrograms1 = new ProductAndSupportedPrograms();
+        productWithKits = new Product();
+        productWithKits.setCode("ABC");
+        productAndSupportedPrograms.setProduct(productWithKits);
+        ProductProgram productProgram1 = new ProductProgramBuilder().setProductCode("ABC").setProgramCode("PR").setActive(true).build();
+
+        productAndSupportedPrograms1.setProductPrograms(newArrayList(productProgram1));
+        productsAndSupportedPrograms.add(productAndSupportedPrograms);
+
+        SyncDownLatestProductsResponse response = new SyncDownLatestProductsResponse();
+        SyncDownLatestProductsResponse response1 = new SyncDownLatestProductsResponse();
+        response.setLatestUpdatedTime("today");
+        response1.setLatestUpdatedTime("today");
+        response.setLatestProducts(productsAndSupportedPrograms);
+        response1.setLatestProducts(productsAndSupportedPrograms);
+        assertEquals(response1, response);
+//        assertEquals(productAndSupportedPrograms, productAndSupportedPrograms1);
+
     }
 
     private void testSyncProgress(SyncProgress progress) throws SQLException {

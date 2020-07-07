@@ -48,9 +48,7 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Optional;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
@@ -58,7 +56,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
 
 import roboguice.RoboGuice;
 import roboguice.activity.RoboActionBarActivity;
@@ -89,12 +86,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
     public void injectPresenter() {
         Field[] fields = FieldUtils.getAllFields(this.getClass());
 
-        Optional<Field> annotatedFiled = FluentIterable.from(newArrayList(fields)).firstMatch(new Predicate<Field>() {
-            @Override
-            public boolean apply(Field field) {
-                return field.getAnnotation(InjectPresenter.class) != null;
-            }
-        });
+        Optional<Field> annotatedFiled = FluentIterable.from(newArrayList(fields)).firstMatch(field -> field.getAnnotation(InjectPresenter.class) != null);
 
         if (annotatedFiled.isPresent()) {
             InjectPresenter annotation = annotatedFiled.get().getAnnotation(InjectPresenter.class);
@@ -307,13 +299,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
     public String getDeletedProductCodeList() {
         ImmutableList<String> deletedList = FluentIterable.from(preferencesMgr.getDeletedProduct())
                 .limit(3)
-                .transform(new Function<String, String>() {
-                    @Nullable
-                    @Override
-                    public String apply(@Nullable String productCode) {
-                        return productCode;
-                    }
-                }).toList();
+                .transform((productCode) -> productCode).toList();
         return deletedList.toString();
     }
 

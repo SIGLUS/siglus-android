@@ -27,8 +27,6 @@ import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ReportTypeForm;
@@ -45,17 +43,14 @@ import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import lombok.Setter;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -82,28 +77,22 @@ public class RnRFormListPresenter extends Presenter {
     ReportTypeFormRepository reportTypeFormRepository;
 
     @Inject
-    SharedPreferenceMgr sharedPreferenceMgr;
-
-    @Inject
     RequisitionPeriodService requisitionPeriodService;
 
     @Inject
     private StockMovementRepository stockMovementRepository;
 
     @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {
+    public void attachView(BaseView v) {
     }
 
     public Observable<List<RnRFormViewModel>> loadRnRFormList() {
-        return Observable.create(new Observable.OnSubscribe<List<RnRFormViewModel>>() {
-            @Override
-            public void call(Subscriber<? super List<RnRFormViewModel>> subscriber) {
-                try {
-                    subscriber.onNext(buildFormListViewModels());
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<List<RnRFormViewModel>>) subscriber -> {
+            try {
+                subscriber.onNext(buildFormListViewModels());
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
@@ -122,12 +111,7 @@ public class RnRFormListPresenter extends Presenter {
 
         populateSyncErrorsOnViewModels(rnRFormViewModels);
 
-        Collections.sort(rnRFormViewModels, new Comparator<RnRFormViewModel>() {
-            @Override
-            public int compare(RnRFormViewModel lhs, RnRFormViewModel rhs) {
-                return rhs.getPeriodEndMonth().compareTo(lhs.getPeriodEndMonth());
-            }
-        });
+        Collections.sort(rnRFormViewModels, (lhs, rhs) -> rhs.getPeriodEndMonth().compareTo(lhs.getPeriodEndMonth()));
 
         generateInactiveFormListViewModels(rnRFormViewModels, typeForm);
 
@@ -190,12 +174,7 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     protected void generateRnrViewModelByRnrFormsInDB(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
-        viewModels.addAll(FluentIterable.from(rnRForms).transform(new Function<RnRForm, RnRFormViewModel>() {
-            @Override
-            public RnRFormViewModel apply(RnRForm form) {
-                return form.isEmergency() ? RnRFormViewModel.buildEmergencyViewModel(form) : RnRFormViewModel.buildNormalRnrViewModel(form);
-            }
-        }).toList());
+        viewModels.addAll(FluentIterable.from(rnRForms).transform(form -> form.isEmergency() ? RnRFormViewModel.buildEmergencyViewModel(form) : RnRFormViewModel.buildNormalRnrViewModel(form)).toList());
     }
 
     protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels, ReportTypeForm typeForm) throws LMISException {
@@ -239,17 +218,13 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     public Observable<Boolean> hasMissedPeriod() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    subscriber.onNext(requisitionPeriodService.hasMissedPeriod(programCode));
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    new LMISException(e,"hasMissedPeriod").reportToFabric();
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
+            try {
+                subscriber.onNext(requisitionPeriodService.hasMissedPeriod(programCode));
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e, "hasMissedPeriod").reportToFabric();
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }

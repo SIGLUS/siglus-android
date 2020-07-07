@@ -32,12 +32,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.ListUtil;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -148,54 +146,29 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     }
 
     public Date getEarliestLotExpiryDate() {
-        List<LotOnHand> lotOnHandList = FluentIterable.from(getNonEmptyLotOnHandList()).filter(new Predicate<LotOnHand>() {
-            @Override
-            public boolean apply(LotOnHand lotOnHand) {
-                return lotOnHand.getQuantityOnHand() > 0;
-            }
-        }).toList();
+        List<LotOnHand> lotOnHandList = FluentIterable.from(getNonEmptyLotOnHandList()).filter(lotOnHand -> lotOnHand.getQuantityOnHand() > 0).toList();
         if (lotOnHandList.isEmpty()) {
             return null;
         }
-        return Collections.min(lotOnHandList, new Comparator<LotOnHand>() {
-            @Override
-            public int compare(LotOnHand lhs, LotOnHand rhs) {
-                return lhs.getLot().getExpirationDate().compareTo(rhs.getLot().getExpirationDate());
-            }
-        }).getLot().getExpirationDate();
+        return Collections.min(lotOnHandList, (lhs, rhs) -> lhs.getLot().getExpirationDate().compareTo(rhs.getLot().getExpirationDate())).getLot().getExpirationDate();
     }
 
     public Date getLastStockMovementDate() {
         if (getStockMovementItemsWrapper().isEmpty()) {
             return null;
         }
-        return Collections.max(getStockMovementItemsWrapper(), new Comparator<StockMovementItem>() {
-            @Override
-            public int compare(StockMovementItem lhs, StockMovementItem rhs) {
-                return lhs.getMovementDate().compareTo(rhs.getMovementDate());
-            }
-        }).getMovementDate();
+        return Collections.max(getStockMovementItemsWrapper(), (lhs, rhs) -> lhs.getMovementDate().compareTo(rhs.getMovementDate())).getMovementDate();
     }
 
     public Date getLastStockMovementCreatedTime() {
         if (getStockMovementItemsWrapper().isEmpty()) {
             return null;
         }
-        return Collections.max(getStockMovementItemsWrapper(), new Comparator<StockMovementItem>() {
-            @Override
-            public int compare(StockMovementItem lhs, StockMovementItem rhs) {
-                return lhs.getCreatedTime().compareTo(rhs.getCreatedTime());
-            }
-        }).getCreatedTime();
+        return Collections.max(getStockMovementItemsWrapper(), (lhs, rhs) -> lhs.getCreatedTime().compareTo(rhs.getCreatedTime())).getCreatedTime();
     }
 
     public List<LotOnHand> getNonEmptyLotOnHandList() {
-        return FluentIterable.from(getLotOnHandListWrapper()).filter(new Predicate<LotOnHand>() {
-            @Override
-            public boolean apply(LotOnHand lotOnHand) {
-                return lotOnHand.getQuantityOnHand() > 0;
-            }
-        }).toList();
+        return FluentIterable.from(getLotOnHandListWrapper()).filter(lotOnHand -> lotOnHand.getQuantityOnHand() > 0).toList();
     }
 
     public List<LotOnHand> getNoneExpiredLotOnHandList() {

@@ -22,14 +22,12 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.User;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class UserRepository {
@@ -46,18 +44,13 @@ public class UserRepository {
 
     public User mapUserFromLocal(final User user) {
         try {
-            User userQueried = dbUtil.withDao(User.class, new DbUtil.Operation<User, User>() {
-                @Override
-                public User operate(Dao<User, String> dao) throws SQLException {
-                    return dao.queryBuilder().where().eq("username", user.getUsername()).and().eq("password", user.getPasswordMD5()).queryForFirst();
-                }
-            });
+            User userQueried = dbUtil.withDao(User.class, dao -> dao.queryBuilder().where().eq("username", user.getUsername()).and().eq("password", user.getPasswordMD5()).queryForFirst());
             if (userQueried != null) {
                 userQueried.setPassword(user.getPassword());
             }
             return userQueried;
         } catch (LMISException e) {
-            new LMISException(e,"UserRepository.mapUserFromLocal").reportToFabric();
+            new LMISException(e, "UserRepository.mapUserFromLocal").reportToFabric();
         }
         return null;
     }
@@ -72,31 +65,21 @@ public class UserRepository {
                 genericDao.update(user);
             }
         } catch (LMISException e) {
-            new LMISException(e,"UserRepository.createOrUpdate").reportToFabric();
+            new LMISException(e, "UserRepository.createOrUpdate").reportToFabric();
         }
     }
 
     protected List<User> getUserByUsername(final String userName) throws LMISException {
-        return dbUtil.withDao(User.class, new DbUtil.Operation<User, List<User>>() {
-            @Override
-            public List<User> operate(Dao<User, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("username", userName).query();
-            }
-        });
+        return dbUtil.withDao(User.class, dao -> dao.queryBuilder().where().eq("username", userName).query());
     }
 
     public User getLocalUser() {
         User user = null;
         try {
-            user = dbUtil.withDao(User.class, new DbUtil.Operation<User, User>() {
-                @Override
-                public User operate(Dao<User, String> dao) throws SQLException {
-                    return dao.queryBuilder().queryForFirst();
-                }
-            });
+            user = dbUtil.withDao(User.class, dao -> dao.queryBuilder().queryForFirst());
         } catch (LMISException e) {
             e.printStackTrace();
-            new LMISException(e,"UserRepository.getLocalUser").reportToFabric();
+            new LMISException(e, "UserRepository.getLocalUser").reportToFabric();
         }
         return user;
     }

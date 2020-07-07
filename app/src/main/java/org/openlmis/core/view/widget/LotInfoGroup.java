@@ -31,7 +31,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
-import java.util.Comparator;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -54,13 +53,11 @@ public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout {
 
     public void initLotInfoGroup(List<LotOnHand> lotOnHandList) {
         removeAllViews();
-        ImmutableList<LotOnHand> sortedLotOnHandList = FluentIterable.from(lotOnHandList).toSortedList(new Comparator<LotOnHand>() {
-            @Override
-            public int compare(LotOnHand lotOnHand1, LotOnHand lotOnHand2) {
-                return lotOnHand1.getLot().getExpirationDate().compareTo(lotOnHand2.getLot().getExpirationDate());
-            }
-        });
-        for (LotOnHand lotOnHand: sortedLotOnHandList) {
+        ImmutableList<LotOnHand> sortedLotOnHandList = FluentIterable
+                .from(lotOnHandList)
+                .toSortedList((lotOnHand1, lotOnHand2) -> lotOnHand1.getLot().getExpirationDate()
+                        .compareTo(lotOnHand2.getLot().getExpirationDate()));
+        for (LotOnHand lotOnHand : sortedLotOnHandList) {
             addLotInfoView(lotOnHand);
         }
     }

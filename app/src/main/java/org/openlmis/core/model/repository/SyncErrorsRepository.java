@@ -3,7 +3,6 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.SyncError;
@@ -11,7 +10,6 @@ import org.openlmis.core.model.SyncType;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class SyncErrorsRepository {
@@ -46,15 +44,9 @@ public class SyncErrorsRepository {
 
     public List<SyncError> getBySyncTypeAndObjectId(final SyncType syncType, final long syncObjectId) {
         try {
-            return dbUtil.withDao(SyncError.class, new DbUtil.Operation<SyncError, List<SyncError>>() {
-
-                @Override
-                public List<SyncError> operate(Dao<SyncError, String> dao) throws SQLException {
-                    return dao.queryBuilder()
-                            .where().eq("syncType", syncType)
-                            .and().eq("syncObjectId", syncObjectId).query();
-                }
-            });
+            return dbUtil.withDao(SyncError.class, dao -> dao.queryBuilder()
+                    .where().eq("syncType", syncType)
+                    .and().eq("syncObjectId", syncObjectId).query());
         } catch (LMISException e) {
             new LMISException(e,"SyncErrorsRepository.getBy").reportToFabric();
             return null;
@@ -63,16 +55,10 @@ public class SyncErrorsRepository {
 
     public Integer deleteBySyncTypeAndObjectId(final SyncType syncType, final long syncObjectId) {
         try {
-            return dbUtil.withDao(SyncError.class, new DbUtil.Operation<SyncError, Integer>() {
-
-                @Override
-                public Integer operate(Dao<SyncError, String> dao) throws SQLException {
-                    return dao.delete(dao.queryBuilder()
-                            .orderBy("id", false)
-                            .where().eq("syncType", syncType)
-                            .and().eq("syncObjectId", syncObjectId).query());
-                }
-            });
+            return dbUtil.withDao(SyncError.class, dao -> dao.delete(dao.queryBuilder()
+                    .orderBy("id", false)
+                    .where().eq("syncType", syncType)
+                    .and().eq("syncObjectId", syncObjectId).query()));
         } catch (LMISException e) {
             new LMISException(e,"SyncErrorsRepository.deleteBy").reportToFabric();
             return null;
@@ -80,12 +66,7 @@ public class SyncErrorsRepository {
     }
 
     public boolean hasSyncErrorOf(final SyncType syncType) throws LMISException {
-        SyncError syncError = dbUtil.withDao(SyncError.class, new DbUtil.Operation<SyncError, SyncError>() {
-            @Override
-            public SyncError operate(Dao<SyncError, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("syncType", syncType).queryForFirst();
-            }
-        });
+        SyncError syncError = dbUtil.withDao(SyncError.class, dao -> dao.queryBuilder().where().eq("syncType", syncType).queryForFirst());
         return syncError != null;
     }
 }

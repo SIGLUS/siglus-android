@@ -35,7 +35,6 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -239,16 +238,13 @@ public class RnRForm extends BaseModel {
     }
 
     private void sortRnrItemsListBasedOnProductCode(List<RnrFormItem> rnrFormItems) {
-        Collections.sort(rnrFormItems, new Comparator<RnrFormItem>() {
-            @Override
-            public int compare(RnrFormItem r1, RnrFormItem r2) {
-                if (r1.getProduct() != null && r2.getProduct() != null) {
-                    String code1 = r1.getProduct().getCode();
-                    String code2 = r2.getProduct().getCode();
-                    return code1.compareTo(code2);
-                } else {
-                    return 0;
-                }
+        Collections.sort(rnrFormItems, (r1, r2) -> {
+            if (r1.getProduct() != null && r2.getProduct() != null) {
+                String code1 = r1.getProduct().getCode();
+                String code2 = r2.getProduct().getCode();
+                return code1.compareTo(code2);
+            } else {
+                return 0;
             }
         });
     }
@@ -290,27 +286,11 @@ public class RnRForm extends BaseModel {
 
     public List<RnrFormItem> getDeactivatedAndUnsupportedProductItems(final List<String> supportedProductCodes) {
 
-        return from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
-            @Override
-            public boolean apply(RnrFormItem rnrFormItem) {
-                return !(rnrFormItem.getProduct().isActive() && supportedProductCodes.contains(rnrFormItem.getProduct().getCode()));
-
-            }
-        }).toList();
+        return from(getRnrFormItemListWrapper()).filter(rnrFormItem -> !(rnrFormItem.getProduct().isActive() && supportedProductCodes.contains(rnrFormItem.getProduct().getCode()))).toList();
     }
 
     public List<RnrFormItem> getRnrItems(final Product.IsKit isKit) {
-        return from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
-            @Override
-            public boolean apply(RnrFormItem rnrFormItem) {
-                return rnrFormItem.getProduct() != null;
-            }
-        }).filter(new Predicate<RnrFormItem>() {
-            @Override
-            public boolean apply(RnrFormItem rnrFormItem) {
-                return isKit.isKit() == rnrFormItem.getProduct().isKit();
-            }
-        }).toList();
+        return from(getRnrFormItemListWrapper()).filter(rnrFormItem -> rnrFormItem.getProduct() != null).filter(rnrFormItem -> isKit.isKit() == rnrFormItem.getProduct().isKit()).toList();
     }
 
     public void addSignature(String signature) {

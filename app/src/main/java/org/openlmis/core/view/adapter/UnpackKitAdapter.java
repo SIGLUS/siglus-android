@@ -18,13 +18,10 @@ import rx.functions.Action1;
 public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implements FilterableAdapter {
 
     private final SingleClickButtonListener onClickListener;
-    private Action1 setConfirmNoStockReceivedAction = new Action1<UnpackKitInventoryViewModel>() {
-        @Override
-        public void call(UnpackKitInventoryViewModel unpackKitInventoryViewModel) {
-            unpackKitInventoryViewModel.setConfirmedNoStockReceived(true);
-            unpackKitInventoryViewModel.getNewLotMovementViewModelList().clear();
-            UnpackKitAdapter.this.notifyDataSetChanged();
-        }
+    private Action1 setConfirmNoStockReceivedAction = (Action1<UnpackKitInventoryViewModel>) unpackKitInventoryViewModel -> {
+        unpackKitInventoryViewModel.setConfirmedNoStockReceived(true);
+        unpackKitInventoryViewModel.getNewLotMovementViewModelList().clear();
+        UnpackKitAdapter.this.notifyDataSetChanged();
     };
 
     public UnpackKitAdapter(List<InventoryViewModel> data, SingleClickButtonListener onClickListener) {

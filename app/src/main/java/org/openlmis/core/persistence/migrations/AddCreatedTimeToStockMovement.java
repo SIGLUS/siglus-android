@@ -19,8 +19,6 @@
 package org.openlmis.core.persistence.migrations;
 
 
-import com.j256.ormlite.dao.Dao;
-
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -29,7 +27,6 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.Migration;
 
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -52,8 +49,8 @@ public class AddCreatedTimeToStockMovement extends Migration {
         execSQL("CREATE INDEX `stock_items_created_time_idx` ON `stock_items` ( `createdTime` )");
         try {
             initCreatedTime();
-        }catch (LMISException e){
-            new LMISException(e,"AddCreatedTimeToStockMovement,up").reportToFabric();
+        } catch (LMISException e) {
+            new LMISException(e, "AddCreatedTimeToStockMovement,up").reportToFabric();
         }
     }
 
@@ -69,14 +66,11 @@ public class AddCreatedTimeToStockMovement extends Migration {
     }
 
     private void updateStockMovementItems(final List<StockMovementItem> stockMovementItems) throws LMISException {
-        dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
-            @Override
-            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                for (StockMovementItem stockMovementItem : stockMovementItems) {
-                    dao.update(stockMovementItem);
-                }
-                return null;
+        dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class, (DbUtil.Operation<StockMovementItem, Void>) dao -> {
+            for (StockMovementItem stockMovementItem : stockMovementItems) {
+                dao.update(stockMovementItem);
             }
+            return null;
         });
     }
 

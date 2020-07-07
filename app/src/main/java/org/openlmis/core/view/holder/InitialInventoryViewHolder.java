@@ -2,7 +2,6 @@ package org.openlmis.core.view.holder;
 
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -11,7 +10,6 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.InitialInventoryLotListView;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import roboguice.inject.InjectView;
 
@@ -44,12 +42,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     private void initView() {
-        taCheckbox.setOnClickListener(new SingleClickButtonListener() {
-            @Override
-            public void onSingleClick(View v) {
-                checkBox.setChecked(!checkBox.isChecked());
-            }
-        });
+        taCheckbox.setOnClickListener((v) -> checkBox.setChecked(!checkBox.isChecked()));
     }
 
     public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord, ViewHistoryListener listener) {
@@ -67,13 +60,10 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     public void setUpLotListView() {
-        lotListView.setUpdateCheckBoxListener(new InitialInventoryLotListView.UpdateCheckBoxListener() {
-            @Override
-            public void updateCheckBox() {
-                checkBox.setEnabled(true);
-                if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
-                    checkBox.setChecked(false);
-                }
+        lotListView.setUpdateCheckBoxListener(() -> {
+            checkBox.setEnabled(true);
+            if (viewModel.getNewLotMovementViewModelList().isEmpty()) {
+                checkBox.setChecked(false);
             }
         });
         lotListView.initLotListView(viewModel);
@@ -87,12 +77,9 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     protected void setUpCheckBox() {
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                checkBox.setEnabled(false);
-                checkedChangeAction(isChecked);
-            }
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            checkBox.setEnabled(false);
+            checkedChangeAction(isChecked);
         });
     }
 
@@ -120,12 +107,9 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private void initHistoryView(final ViewHistoryListener listener) {
         tvHistoryAction.setVisibility(viewModel.getProduct().isArchived() ? View.VISIBLE : View.GONE);
-        tvHistoryAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.viewHistory(viewModel.getStockCard());
-                }
+        tvHistoryAction.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.viewHistory(viewModel.getStockCard());
             }
         });
     }

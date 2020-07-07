@@ -51,12 +51,9 @@ public class InitialInventoryLotListView extends BaseLotListView {
     @NonNull
     @Override
     public OnDismissListener getOnAddNewLotDialogDismissListener() {
-        return new OnDismissListener() {
-            @Override
-            public void onDismissAction() {
-                setActionAddNewEnabled(true);
-                updateCheckBoxListener.updateCheckBox();
-            }
+        return () -> {
+            setActionAddNewEnabled(true);
+            updateCheckBoxListener.updateCheckBox();
         };
     }
 

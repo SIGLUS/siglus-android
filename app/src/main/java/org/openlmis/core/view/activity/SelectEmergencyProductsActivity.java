@@ -17,8 +17,6 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectEmergencyProductAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -66,12 +64,7 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
         Subscription subscription = presenter.loadEmergencyProducts().subscribe(subscriber);
         subscriptions.add(subscription);
 
-        btnNext.setOnClickListener(new SingleClickButtonListener() {
-            @Override
-            public void onSingleClick(View v) {
-                validateAndGotoRnrPage();
-            }
-        });
+        btnNext.setOnClickListener((v) -> validateAndGotoRnrPage());
     }
 
     private void validateAndGotoRnrPage() {
@@ -82,14 +75,9 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
         }
         btnNext.setEnabled(false);
 
-        ImmutableList<StockCard> immutableList = from(checkedViewModels).transform(new Function<InventoryViewModel, StockCard>() {
-            @Override
-            public StockCard apply(InventoryViewModel inventoryViewModel) {
-                return inventoryViewModel.getStockCard();
-            }
-        }).toList();
+        ImmutableList<StockCard> immutableList = from(checkedViewModels).transform(inventoryViewModel -> inventoryViewModel.getStockCard()).toList();
         ArrayList<StockCard> stockCards = new ArrayList<>();
-        for (StockCard stockCard: immutableList) {
+        for (StockCard stockCard : immutableList) {
             stockCards.add(stockCard);
         }
         startActivityForResult(VIARequisitionActivity.getIntentToMe(this, stockCards), Constants.REQUEST_FROM_RNR_LIST_PAGE);

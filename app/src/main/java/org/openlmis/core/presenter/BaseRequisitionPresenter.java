@@ -185,32 +185,26 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
     private InternetCheck.Callback checkInternetListener() {
 
-        return new InternetCheck.Callback() {
-            @Override
-            public void launchResponse(Boolean internet) {
-                if (internet) {
-                    syncService.requestSyncImmediatelyByTask();
-                } else {
-                    Log.d("Internet", "No hay conexion");
-                }
+        return internet -> {
+            if (internet) {
+                syncService.requestSyncImmediatelyByTask();
+            } else {
+                Log.d("Internet", "No hay conexion");
             }
         };
     }
 
     protected Observable<Void> createOrUpdateRnrForm() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    new LMISException(e, "BaseRequisitionPresenter,createOrUpdateRnrForm").reportToFabric();
-                    subscriber.onError(e);
-                } finally {
-                    stockService.monthlyUpdateAvgMonthlyConsumption();
-                }
+        return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+            try {
+                rnrFormRepository.createOrUpdateWithItems(rnRForm);
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e, "BaseRequisitionPresenter,createOrUpdateRnrForm").reportToFabric();
+                subscriber.onError(e);
+            } finally {
+                stockService.monthlyUpdateAvgMonthlyConsumption();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }

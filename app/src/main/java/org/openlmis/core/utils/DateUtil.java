@@ -31,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -148,15 +147,12 @@ public final class DateUtil {
     }
 
     public static void sortByDate(List<String> expiryDates) {
-        Collections.sort(expiryDates, new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                Date date = parseString(lhs, SIMPLE_DATE_FORMAT);
-                if (date != null) {
-                    return date.compareTo(parseString(rhs, SIMPLE_DATE_FORMAT));
-                } else {
-                    return 0;
-                }
+        Collections.sort(expiryDates, (lhs, rhs) -> {
+            Date date = parseString(lhs, SIMPLE_DATE_FORMAT);
+            if (date != null) {
+                return date.compareTo(parseString(rhs, SIMPLE_DATE_FORMAT));
+            } else {
+                return 0;
             }
         });
     }

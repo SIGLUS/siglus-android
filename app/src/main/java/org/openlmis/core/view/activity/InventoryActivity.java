@@ -97,21 +97,15 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
     @NonNull
     protected Action1<Object> getOnNextMainPageAction() {
-        return new Action1<Object>() {
-            @Override
-            public void call(Object o) {
-                loaded();
-                goToNextPage();
-            }
+        return o -> {
+            loaded();
+            goToNextPage();
         };
     }
 
-    protected Action1<Throwable> errorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            loaded();
-            showErrorMessage(throwable.getMessage());
-        }
+    protected Action1<Throwable> errorAction = throwable -> {
+        loaded();
+        showErrorMessage(throwable.getMessage());
     };
 
     @Override

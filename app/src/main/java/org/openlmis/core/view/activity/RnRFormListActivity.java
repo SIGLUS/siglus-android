@@ -194,12 +194,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
 
     @NonNull
     private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(final RnRForm form) {
-        return new WarningDialogFragment.DialogDelegate() {
-            @Override
-            public void onPositiveClick() {
-                deleteRnRForm(form);
-            }
-        };
+        return () -> deleteRnRForm(form);
     }
 
     private void goToRequisitionPage(long rnrFormId) {

@@ -26,7 +26,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
@@ -35,17 +34,13 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -80,7 +75,7 @@ public class NewStockMovementPresenter extends Presenter {
             viewModel.setMovementType(movementType);
             viewModel.setKit(isKit);
         } catch (LMISException e) {
-            new LMISException(e," NewStockM.loadData").reportToFabric();
+            new LMISException(e, " NewStockM.loadData").reportToFabric();
         }
         loadExistingLotMovementViewModels(movementType);
     }
@@ -107,15 +102,12 @@ public class NewStockMovementPresenter extends Presenter {
 
 
     protected Observable<StockMovementViewModel> getSaveMovementObservable() {
-        return Observable.create(new Observable.OnSubscribe<StockMovementViewModel>() {
-            @Override
-            public void call(Subscriber<? super StockMovementViewModel> subscriber) {
-                if (convertViewModelToDataModelAndSave()) {
-                    subscriber.onNext(viewModel);
-                    subscriber.onCompleted();
-                } else {
-                    subscriber.onError(new Exception(LMISApp.getContext().getResources().getString(R.string.msg_invalid_stock_movement)));
-                }
+        return Observable.create((Observable.OnSubscribe<StockMovementViewModel>) subscriber -> {
+            if (convertViewModelToDataModelAndSave()) {
+                subscriber.onNext(viewModel);
+                subscriber.onCompleted();
+            } else {
+                subscriber.onError(new Exception(LMISApp.getContext().getResources().getString(R.string.msg_invalid_stock_movement)));
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
@@ -137,32 +129,21 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     private void loadExistingLotMovementViewModels(final MovementReasonManager.MovementType movementType) {
-        List<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(stockCard.getNonEmptyLotOnHandList()).transform(new Function<LotOnHand, LotMovementViewModel>() {
-            @Override
-            public LotMovementViewModel apply(LotOnHand lotOnHand) {
-                return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
-                        DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                        lotOnHand.getQuantityOnHand().toString(), movementType);
-            }
-        }).filter(new Predicate<LotMovementViewModel>() {
-            @Override
-            public boolean apply(LotMovementViewModel lotMovementViewModel) {
-                for (LotMovementViewModel existingLot : viewModel.getExistingLotMovementViewModelList()) {
-                    if (existingLot.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
-                        return false;
-                    }
+        List<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(stockCard.getNonEmptyLotOnHandList()).transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+                DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+                lotOnHand.getQuantityOnHand().toString(), movementType)).filter(lotMovementViewModel -> {
+            for (LotMovementViewModel existingLot : viewModel.getExistingLotMovementViewModelList()) {
+                if (existingLot.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
+                    return false;
                 }
-                return true;
             }
-        }).toSortedList(new Comparator<LotMovementViewModel>() {
-            @Override
-            public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
-                Date localDate = DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-                if (localDate != null) {
-                    return localDate.compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                } else {
-                    return 0;
-                }
+            return true;
+        }).toSortedList((lot1, lot2) -> {
+            Date localDate = DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+            if (localDate != null) {
+                return localDate.compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+            } else {
+                return 0;
             }
         });
 
@@ -179,12 +160,7 @@ public class NewStockMovementPresenter extends Presenter {
 
     public String[] getMovementReasonDescriptionList() {
         if (ArrayUtils.isEmpty(reasonDescriptionList)) {
-            reasonDescriptionList = FluentIterable.from(movementReasons).transform(new Function<MovementReasonManager.MovementReason, String>() {
-                @Override
-                public String apply(MovementReasonManager.MovementReason movementReason) {
-                    return movementReason.getDescription();
-                }
-            }).toArray(String.class);
+            reasonDescriptionList = FluentIterable.from(movementReasons).transform(movementReason -> movementReason.getDescription()).toArray(String.class);
         }
         return reasonDescriptionList;
     }

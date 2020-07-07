@@ -14,7 +14,6 @@ import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.lang.reflect.Type;
@@ -45,7 +44,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
             stockMovementItem.setMovementType(movementReason.getMovementType());
             stockMovementItem.setReason(movementReason.getCode());
         } catch (MovementReasonNotFoundException e) {
-            new LMISException(e,"StockMovementItemAdapter,deserialize").reportToFabric();
+            new LMISException(e, "StockMovementItemAdapter,deserialize").reportToFabric();
             e.printStackTrace();
         }
 
@@ -69,7 +68,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
                 try {
                     this.setStockOnHand(Long.parseLong(extensions.get("soh")));
                 } catch (NumberFormatException e) {
-                    new LMISException(e,"convertToStockMovementItem").reportToFabric();
+                    new LMISException(e, "convertToStockMovementItem").reportToFabric();
                     e.printStackTrace();
                 }
             }
@@ -78,14 +77,12 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
             }
 
             if (lotMovementItems != null) {
-                List<LotMovementItem> lotMovementItemsWrapper = FluentIterable.from(this.lotMovementItems).transform(new Function<LotMovementItemResponse, LotMovementItem>() {
-                    @Override
-                    public LotMovementItem apply(LotMovementItemResponse lotMovementItemResponse) {
-                        LotMovementItem lotMovementItem = lotMovementItemResponse.convertToLotMovementItem();
-                        lotMovementItem.setStockMovementItem(movementItem);
-                        return lotMovementItem;
-                    }
-                }).toList();
+                List<LotMovementItem> lotMovementItemsWrapper = FluentIterable.from(this.lotMovementItems)
+                        .transform(lotMovementItemResponse -> {
+                            LotMovementItem lotMovementItem = lotMovementItemResponse.convertToLotMovementItem();
+                            lotMovementItem.setStockMovementItem(movementItem);
+                            return lotMovementItem;
+                        }).toList();
                 this.setLotMovementItemListWrapper(lotMovementItemsWrapper);
             }
             return movementItem;

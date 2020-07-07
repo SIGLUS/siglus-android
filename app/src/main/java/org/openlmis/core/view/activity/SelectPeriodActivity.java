@@ -28,7 +28,6 @@ import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.adapter.SelectPeriodAdapter;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -120,23 +119,20 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
             invalidateNextBtn();
         });
 
-        nextBtn.setOnClickListener(new SingleClickButtonListener() {
-            @Override
-            public void onSingleClick(View v) {
-                if (selectedInventory == null) {
-                    tvSelectPeriodWarning.setVisibility(View.VISIBLE);
-                    return;
-                }
-                loading();
-                nextBtn.setEnabled(false);
-                if (shouldCheckData()) {
-                    Subscription subscription = presenter
-                            .correctDirtyObservable(getProgramFromCode(programCode))
-                            .subscribe(afterCorrectDirtyDataHandler());
-                    subscriptions.add(subscription);
-                } else {
-                    goNextPage();
-                }
+        nextBtn.setOnClickListener((v) -> {
+            if (selectedInventory == null) {
+                tvSelectPeriodWarning.setVisibility(View.VISIBLE);
+                return;
+            }
+            loading();
+            nextBtn.setEnabled(false);
+            if (shouldCheckData()) {
+                Subscription subscription = presenter
+                        .correctDirtyObservable(getProgramFromCode(programCode))
+                        .subscribe(afterCorrectDirtyDataHandler());
+                subscriptions.add(subscription);
+            } else {
+                goNextPage();
             }
         });
     }

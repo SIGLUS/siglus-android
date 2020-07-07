@@ -48,13 +48,10 @@ public class SelectUnpackNumCardView extends CardView implements Checkable {
         inflate(getContext(), R.layout.view_unpack_num_card, this);
         setRadius(getResources().getDimension(R.dimen.cardview_radius));
 
-        post(new Runnable() {
-            @Override
-            public void run() {
-                ViewGroup.LayoutParams layoutParams = getLayoutParams();
-                layoutParams.height = getWidth();
-                setLayoutParams(layoutParams);
-            }
+        post(() -> {
+            ViewGroup.LayoutParams layoutParams = getLayoutParams();
+            layoutParams.height = getWidth();
+            setLayoutParams(layoutParams);
         });
 
         RoboGuice.injectMembers(getContext(), this);

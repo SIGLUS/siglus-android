@@ -23,7 +23,6 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.LMISApp;
@@ -34,13 +33,11 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.Constants;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class ProgramRepository {
 
@@ -67,12 +64,7 @@ public class ProgramRepository {
     }
 
     public List<Program> listEmergencyPrograms() throws LMISException {
-        return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
-            @Override
-            public List<Program> operate(Dao<Program, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("isSupportEmergency", true).query();
-            }
-        });
+        return dbUtil.withDao(Program.class, dao -> dao.queryBuilder().where().eq("isSupportEmergency", true).query());
     }
 
     public void createOrUpdate(Program program) throws LMISException {
@@ -91,15 +83,12 @@ public class ProgramRepository {
 
     private void createOrUpdateProgramWithRegimen(final List<Program> programs) throws LMISException {
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    for (Program program : programs) {
-                        createOrUpdate(program);
-                        regimenRepository.batchSave(new ArrayList(program.getRegimens()));
-                    }
-                    return null;
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+                for (Program program : programs) {
+                    createOrUpdate(program);
+                    regimenRepository.batchSave(new ArrayList(program.getRegimens()));
                 }
+                return null;
             });
         } catch (SQLException e) {
             throw new LMISException(e);
@@ -108,17 +97,14 @@ public class ProgramRepository {
 
     public void createOrUpdateProgramWithProduct(final List<Program> programs) throws LMISException {
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    for (Program program : programs) {
-                        createOrUpdate(program);
-                        for (Product product : program.getProducts()) {
-                            productRepository.createOrUpdate(product);
-                        }
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+                for (Program program : programs) {
+                    createOrUpdate(program);
+                    for (Product product : program.getProducts()) {
+                        productRepository.createOrUpdate(product);
                     }
-                    return null;
                 }
+                return null;
             });
         } catch (SQLException e) {
             throw new LMISException(e);
@@ -134,47 +120,27 @@ public class ProgramRepository {
     }
 
     public Program queryByCode(final String programCode) throws LMISException {
-        return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, Program>() {
-            @Override
-            public Program operate(Dao<Program, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("programCode", programCode).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(Program.class, dao -> dao.queryBuilder().where().eq("programCode", programCode).queryForFirst());
     }
 
     public List<Long> queryProgramIdsByProgramCodeOrParentCode(final String programCode) throws LMISException {
         List<Program> programs = queryProgramsByProgramCodeOrParentCode(programCode);
 
-        List<Long> programIds = FluentIterable.from(programs).transform(new Function<Program, Long>() {
-            @Override
-            public Long apply(Program program) {
-                return program.getId();
-            }
-        }).toList();
+        List<Long> programIds = FluentIterable.from(programs).transform(program -> program.getId()).toList();
         return programIds;
     }
 
     public List<String> queryProgramCodesByProgramCodeOrParentCode(final String programCode) throws LMISException {
         List<Program> programs = queryProgramsByProgramCodeOrParentCode(programCode);
 
-        List<String> programCodes = FluentIterable.from(programs).transform(new Function<Program, String>() {
-            @Override
-            public String apply(Program program) {
-                return program.getProgramCode();
-            }
-        }).toList();
+        List<String> programCodes = FluentIterable.from(programs).transform(program -> program.getProgramCode()).toList();
 
         return programCodes;
     }
 
     public List<Program> queryProgramsByProgramCodeOrParentCode(final String programCode) throws LMISException {
-        return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
-            @Override
-            public List<Program> operate(Dao<Program, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().eq("parentCode", programCode)
-                        .or().eq("programCode", programCode).query();
-            }
-        });
+        return dbUtil.withDao(Program.class, dao -> dao.queryBuilder().where().eq("parentCode", programCode)
+                .or().eq("programCode", programCode).query());
     }
 
     public void deleteProgramDirtyData(List<String> productCodeList) {

@@ -22,7 +22,6 @@ import java.util.List;
 
 import lombok.Setter;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -57,31 +56,28 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
 
     public Observable<List<ImplementationReportViewModel>> getImplementationViewModelsForCurrentMalariaProgram(final Period period) {
         this.period = period;
-        return Observable.create(new Observable.OnSubscribe<List<ImplementationReportViewModel>>() {
-            @Override
-            public void call(final Subscriber<? super List<ImplementationReportViewModel>> subscriber) {
-                try {
-                    malariaProgram = patientDataService.findForPeriod(period.getBegin(), period.getEnd());
-                    MalariaDataReportViewModel malariaDataReportViewModel = reportViewModelMapper.Map(malariaProgram);
-                    ImplementationReportViewModel usImplementationReportViewModel = malariaDataReportViewModel.getUsImplementationReportViewModel();
-                    if (malariaProgram != null) {
-                        createdBy = malariaProgram.getCreatedBy();
-                        status = malariaProgram.getStatus();
-                    } else {
-                        createdBy = "";
-                        status = ViaReportStatus.MISSING;
-                        List<Long> malariaProductsStockHand = patientDataService.getMalariaProductsStockHand();
-                        usImplementationReportViewModel.setExistingStock(malariaProductsStockHand);
-                    }
-                    viewModels.add(usImplementationReportViewModel);
-                    viewModels.add(malariaDataReportViewModel.getApeImplementationReportViewModel());
-                    viewModels.add(generateTotalViewModel(viewModels.get(0), viewModels.get(1)));
-                    subscriber.onNext(viewModels);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    new LMISException(e, "MalariaData:getImple").reportToFabric();
-                    subscriber.onError(e);
+        return Observable.create((Observable.OnSubscribe<List<ImplementationReportViewModel>>) subscriber -> {
+            try {
+                malariaProgram = patientDataService.findForPeriod(period.getBegin(), period.getEnd());
+                MalariaDataReportViewModel malariaDataReportViewModel = reportViewModelMapper.Map(malariaProgram);
+                ImplementationReportViewModel usImplementationReportViewModel = malariaDataReportViewModel.getUsImplementationReportViewModel();
+                if (malariaProgram != null) {
+                    createdBy = malariaProgram.getCreatedBy();
+                    status = malariaProgram.getStatus();
+                } else {
+                    createdBy = "";
+                    status = ViaReportStatus.MISSING;
+                    List<Long> malariaProductsStockHand = patientDataService.getMalariaProductsStockHand();
+                    usImplementationReportViewModel.setExistingStock(malariaProductsStockHand);
                 }
+                viewModels.add(usImplementationReportViewModel);
+                viewModels.add(malariaDataReportViewModel.getApeImplementationReportViewModel());
+                viewModels.add(generateTotalViewModel(viewModels.get(0), viewModels.get(1)));
+                subscriber.onNext(viewModels);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                new LMISException(e, "MalariaData:getImple").reportToFabric();
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
@@ -129,25 +125,22 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
     }
 
     public Observable<MalariaProgram> onSaveForm(final ViaReportStatus status, final String sign) {
-        return Observable.create(new Observable.OnSubscribe<MalariaProgram>() {
-            @Override
-            public void call(Subscriber<? super MalariaProgram> subscriber) {
-                try {
-                    MalariaProgram malariaProgram = getMalariaProgram();
-                    malariaProgram.setStatus(status);
-                    if (status.equals(ViaReportStatus.SUBMITTED)) {
-                        malariaProgram.setVerifiedBy(sign);
-                    } else {
-                        malariaProgram.setCreatedBy(sign);
-                    }
-                    patientDataService.save(malariaProgram);
-                    subscriber.onNext(malariaProgram);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                    new LMISException(e,"MalariaData:.onSaveForm").reportToFabric();
-
+        return Observable.create((Observable.OnSubscribe<MalariaProgram>) subscriber -> {
+            try {
+                MalariaProgram malariaProgram = getMalariaProgram();
+                malariaProgram.setStatus(status);
+                if (status.equals(ViaReportStatus.SUBMITTED)) {
+                    malariaProgram.setVerifiedBy(sign);
+                } else {
+                    malariaProgram.setCreatedBy(sign);
                 }
+                patientDataService.save(malariaProgram);
+                subscriber.onNext(malariaProgram);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
+                new LMISException(e, "MalariaData:.onSaveForm").reportToFabric();
+
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
@@ -175,7 +168,7 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
             }
             patientDataService.save(malariaProgram);
         } catch (Exception e) {
-            new LMISException(e,"MalariaData:"+e.getMessage()).reportToFabric();
+            new LMISException(e, "MalariaData:" + e.getMessage()).reportToFabric();
         }
     }
 

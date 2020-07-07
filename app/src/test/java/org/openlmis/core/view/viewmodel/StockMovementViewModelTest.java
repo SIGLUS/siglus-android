@@ -24,8 +24,11 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.widget.NewMovementLotListView;
 
@@ -301,8 +304,48 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
         stockMovementViewModel.newLotMovementViewModelList.clear();
         stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").setHasLotDataChanged(true).build());
+        stockMovementViewModel.setSignature("signa");
+        stockMovementViewModel.setReason(MovementReasonManager.getInstance().queryByCode(MovementReasonManager.DEFAULT_ISSUE));
         assertTrue(stockMovementViewModel.hasLotDataChanged());
+        assertTrue(stockMovementViewModel.movementQuantitiesExist());
+        assertFalse(stockMovementViewModel.isLotEmpty());
+        assertTrue(stockMovementViewModel.validateSignature());
+        assertTrue(stockMovementViewModel.validateMovementReason());
     }
 
+    @Test
+    public void shouldCreateFromStockMovementItemAndCheckViewModelEqual() {
+        Product product = new ProductBuilder().setType(Product.MEDICINE_TYPE_ADULT)
+                .setCode("productCode")
+                .setStrength("serious")
+                .setProductId(1)
+                .setPrimaryName("Primary product name")
+                .build();
+        StockCard stockCard = new StockCardBuilder()
+                .setProduct(product)
+                .setStockOnHand(200)
+                .setStockCardId(1)
+                .build();
+        StockMovementItem item = new StockMovementItem();
+        item.setStockCard(stockCard);
+        item.setDocumentNumber("documentNumber1");
+        item.setMovementDate(new Date());
+        item.setStockOnHand(200);
+        item.setSignature("signa");
+        item.setReason(MovementReasonManager.DEFAULT_ISSUE);
+
+        StockMovementViewModel stockMovementViewModel1 = new StockMovementViewModel(item);
+        StockMovementViewModel stockMovementViewModel2 = new StockMovementViewModel(item);
+
+
+        assertTrue(stockMovementViewModel1.validateSignature());
+        assertEquals(stockMovementViewModel1.documentNo, "documentNumber1");
+        assertFalse(stockMovementViewModel1.isDraft);
+        assertEquals(stockMovementViewModel1.movementDate, DateUtil.formatDate(new Date()));
+        assertTrue(stockMovementViewModel1.isLotEmpty());
+        assertTrue(stockMovementViewModel1.validateMovementReason());
+
+        assertEquals(stockMovementViewModel1, stockMovementViewModel2);
+    }
 
 }

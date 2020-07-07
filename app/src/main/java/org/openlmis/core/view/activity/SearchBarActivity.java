@@ -54,12 +54,7 @@ public abstract class SearchBarActivity extends BaseActivity {
             }
         });
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                return true;
-            }
-        });
+        searchView.setOnCloseListener(() -> true);
 
         return super.onCreateOptionsMenu(menu);
     }

@@ -3,17 +3,13 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class ProductProgramRepository {
@@ -33,23 +29,11 @@ public class ProductProgramRepository {
     }
 
     public ProductProgram queryByCode(final String productCode, final String programCode) throws LMISException {
-        return dbUtil.withDao(ProductProgram.class, new DbUtil.Operation<ProductProgram, ProductProgram>() {
-
-            @Override
-            public ProductProgram operate(Dao<ProductProgram, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().eq("programCode", programCode).and().eq("productCode", productCode).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder().where().eq("programCode", programCode).and().eq("productCode", productCode).queryForFirst());
     }
 
     public ProductProgram queryByCode(final String productCode, final List<String> programCodes) throws LMISException {
-        return dbUtil.withDao(ProductProgram.class, new DbUtil.Operation<ProductProgram, ProductProgram>() {
-
-            @Override
-            public ProductProgram operate(Dao<ProductProgram, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().in("programCode", programCodes).and().eq("productCode", productCode).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder().where().in("programCode", programCodes).and().eq("productCode", productCode).queryForFirst());
     }
 
     public void batchSave(final List<ProductProgram> productPrograms) {
@@ -63,12 +47,7 @@ public class ProductProgramRepository {
     }
 
     public List<ProductProgram> listActiveProductProgramsByProgramCodes(final List<String> programCodes) throws LMISException {
-        return dbUtil.withDao(ProductProgram.class, new DbUtil.Operation<ProductProgram, List<ProductProgram>>() {
-            @Override
-            public List<ProductProgram> operate(Dao<ProductProgram, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().eq("isActive", true).and().in("programCode", programCodes).query();
-            }
-        });
+        return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder().where().eq("isActive", true).and().in("programCode", programCodes).query());
     }
 
     public void createOrUpdate(ProductProgram productProgram) throws LMISException {
@@ -89,18 +68,8 @@ public class ProductProgramRepository {
 
     public List<Long> queryActiveProductIdsByProgramsWithKits(List<String> programCodes, boolean isWithKit) throws LMISException {
         List<ProductProgram> productPrograms = listActiveProductProgramsByProgramCodes(programCodes);
-        List<String> productCodes = FluentIterable.from(productPrograms).transform(new Function<ProductProgram, String>() {
-            @Override
-            public String apply(ProductProgram productProgram) {
-                return productProgram.getProductCode();
-            }
-        }).toList();
+        List<String> productCodes = FluentIterable.from(productPrograms).transform(productProgram -> productProgram.getProductCode()).toList();
 
-        return FluentIterable.from(productRepository.queryActiveProductsByCodesWithKits(productCodes, isWithKit)).transform(new Function<Product, Long>() {
-            @Override
-            public Long apply(Product product) {
-                return product.getId();
-            }
-        }).toList();
+        return FluentIterable.from(productRepository.queryActiveProductsByCodesWithKits(productCodes, isWithKit)).transform(product -> product.getId()).toList();
     }
 }

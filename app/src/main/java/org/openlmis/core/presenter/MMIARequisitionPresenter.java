@@ -40,7 +40,6 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -84,17 +83,14 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Override
     protected Observable<RnRForm> getRnrFormObservable(final long formId) {
-        return Observable.create(new Observable.OnSubscribe<RnRForm>() {
-            @Override
-            public void call(Subscriber<? super RnRForm> subscriber) {
-                try {
-                    rnRForm = getRnrForm(formId);
-                    subscriber.onNext(rnRForm);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    new LMISException(e, "MMIARequisitionPresenter.getRnrFormObservable").reportToFabric();
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
+            try {
+                rnRForm = getRnrForm(formId);
+                subscriber.onNext(rnRForm);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e, "MMIARequisitionPresenter.getRnrFormObservable").reportToFabric();
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
@@ -130,21 +126,18 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     public Observable<Void> addCustomRegimenItem(final Regimen regimen) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    if (!isRegimeItemExists(regimen)) {
-                        RegimenItem regimenItem = createRegimenItem(regimen);
-                        regimenItemRepository.create(regimenItem);
-                        rnRForm.getRegimenItemListWrapper().add(regimenItem);
-                    }
-                } catch (LMISException e) {
-                    new LMISException(e, "MMIARequisitionPresenter.addCustomRegimenItem").reportToFabric();
-                    subscriber.onError(e);
+        return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+            try {
+                if (!isRegimeItemExists(regimen)) {
+                    RegimenItem regimenItem = createRegimenItem(regimen);
+                    regimenItemRepository.create(regimenItem);
+                    rnRForm.getRegimenItemListWrapper().add(regimenItem);
                 }
-                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e, "MMIARequisitionPresenter.addCustomRegimenItem").reportToFabric();
+                subscriber.onError(e);
             }
+            subscriber.onCompleted();
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
@@ -170,18 +163,15 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     public Observable<Void> deleteRegimeItem(final RegimenItem item) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnRForm.getRegimenItemListWrapper().remove(item);
-                    regimenItemRepository.deleteRegimeItem(item);
-                } catch (LMISException e) {
-                    new LMISException(e, "MMIARequisitionPresenter.deleteRegimeItem").reportToFabric();
-                    subscriber.onError(e);
-                }
-                subscriber.onCompleted();
+        return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+            try {
+                rnRForm.getRegimenItemListWrapper().remove(item);
+                regimenItemRepository.deleteRegimeItem(item);
+            } catch (LMISException e) {
+                new LMISException(e, "MMIARequisitionPresenter.deleteRegimeItem").reportToFabric();
+                subscriber.onError(e);
             }
+            subscriber.onCompleted();
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
@@ -190,17 +180,14 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                                                   final List<BaseInfoItem> baseInfoItems,
                                                   final List<RegimenItemThreeLines> threeLineItems,
                                                   final String comment) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    setViewModels(rnrFormItems, regimenItems, baseInfoItems, threeLineItems, comment);
-                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    new LMISException(e, "MMIARequisitionPresenter.getSaveFormObservable").reportToFabric();
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+            try {
+                setViewModels(rnrFormItems, regimenItems, baseInfoItems, threeLineItems, comment);
+                rnrFormRepository.createOrUpdateWithItems(rnRForm);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e, "MMIARequisitionPresenter.getSaveFormObservable").reportToFabric();
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }

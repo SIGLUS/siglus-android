@@ -57,10 +57,8 @@ import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSession;
 
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
@@ -102,23 +100,20 @@ public class LMISRestManager {
             SSLContext sslContext = SSLContext.getDefault();
 
             client.setSslSocketFactory(sslContext.getSocketFactory());
-            client.setHostnameVerifier(new HostnameVerifier() {
-                //OVERRIDE HOSTNAME VERIFIER BECAUSE WE CONNECT TO ELB DIRECTLY DUE TO OCCASIONAL DNS ISSUES IN MOZAMBIQUE
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
+            //OVERRIDE HOSTNAME VERIFIER BECAUSE WE CONNECT TO ELB DIRECTLY DUE TO OCCASIONAL DNS ISSUES IN MOZAMBIQUE
+            client.setHostnameVerifier((hostname, session) -> {
 
-                    X509Certificate cert;
-                    try {
-                        cert = (X509Certificate) session.getPeerCertificates()[0];
-                        if (cert.getSubjectDN().getName().equals("CN=lmis.cmam.gov.mz")) {
-                            return true;
-                        }
-                    } catch (SSLPeerUnverifiedException e) {
-                        new LMISException(e, "LMISRestManager,verify").reportToFabric();
+                X509Certificate cert;
+                try {
+                    cert = (X509Certificate) session.getPeerCertificates()[0];
+                    if (cert.getSubjectDN().getName().equals("CN=lmis.cmam.gov.mz")) {
+                        return true;
                     }
-
-                    return getDefaultHostnameVerifier().verify(hostname, session);
+                } catch (SSLPeerUnverifiedException e) {
+                    new LMISException(e, "LMISRestManager,verify").reportToFabric();
                 }
+
+                return getDefaultHostnameVerifier().verify(hostname, session);
             });
         } catch (Exception e) {
             new LMISException(e, "LMISRestManager,ssl").reportToFabric();
@@ -149,25 +144,22 @@ public class LMISRestManager {
 
     @NonNull
     private RequestInterceptor getRequestInterceptor() {
-        return new RequestInterceptor() {
-            @Override
-            public void intercept(RequestFacade request) {
-                User user = UserInfoMgr.getInstance().getUser();
-                if (user != null) {
-                    String basic = Credentials.basic(user.getUsername(), user.getPassword());
-                    request.addHeader("Authorization", basic);
-                    request.addHeader("UserName", user.getUsername());
-                    request.addHeader("FacilityName", user.getFacilityName());
-                    request.addHeader("FacilityId", user.getFacilityId());
-                    request.addHeader("language", Locale.getDefault().getLanguage());
-                }
-
-                if (BuildConfig.MONITOR_DEVICE_ID) {
-                    request.addHeader("UniqueId", getAndroidId());
-                }
-
-                addDeviceInfoToRequestHeader(request);
+        return request -> {
+            User user = UserInfoMgr.getInstance().getUser();
+            if (user != null) {
+                String basic = Credentials.basic(user.getUsername(), user.getPassword());
+                request.addHeader("Authorization", basic);
+                request.addHeader("UserName", user.getUsername());
+                request.addHeader("FacilityName", user.getFacilityName());
+                request.addHeader("FacilityId", user.getFacilityId());
+                request.addHeader("language", Locale.getDefault().getLanguage());
             }
+
+            if (BuildConfig.MONITOR_DEVICE_ID) {
+                request.addHeader("UniqueId", getAndroidId());
+            }
+
+            addDeviceInfoToRequestHeader(request);
         };
     }
 

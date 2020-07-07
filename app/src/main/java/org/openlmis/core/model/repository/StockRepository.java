@@ -22,7 +22,6 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.LMISApp;
@@ -39,14 +38,12 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Function;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
@@ -76,16 +73,13 @@ public class StockRepository {
 
     public void batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(final List<StockCard> stockCards) {
         try {
-            dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
-                @Override
-                public Object operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
-                    for (StockCard stockCard : stockCards) {
-                        dao.createOrUpdate(stockCard);
-                        updateProductOfStockCard(stockCard.getProduct());
-                        stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotInfo(stockCard.getStockMovementItemsWrapper());
-                    }
-                    return null;
+            dbUtil.withDaoAsBatch(StockCard.class, dao -> {
+                for (StockCard stockCard : stockCards) {
+                    dao.createOrUpdate(stockCard);
+                    updateProductOfStockCard(stockCard.getProduct());
+                    stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotInfo(stockCard.getStockMovementItemsWrapper());
                 }
+                return null;
             });
         } catch (LMISException e) {
             new LMISException(e, "StockRepository.batchSave").reportToFabric();
@@ -114,14 +108,11 @@ public class StockRepository {
 
     protected void saveStockCardAndBatchUpdateMovements(final StockCard stockCard) {
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    createOrUpdate(stockCard);
-                    lotRepository.createOrUpdateLotsInformation(stockCard.getLotOnHandListWrapper());
-                    stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
-                    return null;
-                }
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+                createOrUpdate(stockCard);
+                lotRepository.createOrUpdateLotsInformation(stockCard.getLotOnHandListWrapper());
+                stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
+                return null;
             });
         } catch (SQLException e) {
             new LMISException(e, "StockRepository.saveStock").reportToFabric();
@@ -138,14 +129,11 @@ public class StockRepository {
 
     public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard) {
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    createOrUpdate(stockCard);
-                    stockMovementRepository.batchCreateStockMovementItemAndLotItems(stockCard.generateInitialStockMovementItem());
-                    updateProductOfStockCard(stockCard.getProduct());
-                    return null;
-                }
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+                createOrUpdate(stockCard);
+                stockMovementRepository.batchCreateStockMovementItemAndLotItems(stockCard.generateInitialStockMovementItem());
+                updateProductOfStockCard(stockCard.getProduct());
+                return null;
             });
         } catch (SQLException e) {
             new LMISException(e, "StockRepository.addStock").reportToFabric();
@@ -154,14 +142,11 @@ public class StockRepository {
 
     public synchronized void addStockMovementAndUpdateStockCard(final StockMovementItem stockMovementItem) {
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    StockCard stockcard = stockMovementItem.getStockCard();
-                    createOrUpdate(stockcard);
-                    stockMovementRepository.batchCreateStockMovementItemAndLotItems(stockMovementItem);
-                    return null;
-                }
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+                StockCard stockcard = stockMovementItem.getStockCard();
+                createOrUpdate(stockcard);
+                stockMovementRepository.batchCreateStockMovementItemAndLotItems(stockMovementItem);
+                return null;
             });
         } catch (SQLException e) {
             new LMISException(e, "StockRepository.addStock").reportToFabric();
@@ -206,23 +191,13 @@ public class StockRepository {
     }
 
     public List<StockCard> listStockCardsByProductIds(final List<Long> productIds) throws LMISException {
-        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
-            @Override
-            public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().in("product_id", productIds).query();
-            }
-        });
+        return dbUtil.withDao(StockCard.class, dao -> dao.queryBuilder().where().in("product_id", productIds).query());
     }
 
     public List<StockCard> listEmergencyStockCards() throws LMISException {
         List<Program> programs = programRepository.listEmergencyPrograms();
 
-        List<String> programCodes = from(programs).transform(new Function<Program, String>() {
-            @Override
-            public String apply(Program program) {
-                return program.getProgramCode();
-            }
-        }).toList();
+        List<String> programCodes = from(programs).transform(program -> program.getProgramCode()).toList();
         List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
         return listStockCardsByProductIds(productIds);
     }
@@ -232,22 +207,14 @@ public class StockRepository {
     }
 
     public StockCard queryStockCardByProductId(final long productId) throws LMISException {
-        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, StockCard>() {
-            @Override
-            public StockCard operate(Dao<StockCard, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("product_id", productId).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(StockCard.class, dao -> dao.queryBuilder().where().eq("product_id", productId).queryForFirst());
     }
 
     public void updateStockCardWithProduct(final StockCard stockCard) throws LMISException {
-        dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
-            @Override
-            public Object operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
-                dao.update(stockCard);
-                updateProductOfStockCard(stockCard.getProduct());
-                return null;
-            }
+        dbUtil.withDaoAsBatch(StockCard.class, dao -> {
+            dao.update(stockCard);
+            updateProductOfStockCard(stockCard.getProduct());
+            return null;
         });
     }
 
@@ -314,30 +281,22 @@ public class StockRepository {
     }
 
     private List<LotOnHand> getLotOnHandByStockCard(final long stockCardId) throws LMISException {
-        return dbUtil.withDao(LotOnHand.class, new DbUtil.Operation<LotOnHand, List<LotOnHand>>() {
-            @Override
-            public List<LotOnHand> operate(Dao<LotOnHand, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder()
-                        .where()
-                        .eq("stockCard_id", stockCardId)
-                        .query();
-            }
-        });
+        return dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
+                .where()
+                .eq("stockCard_id", stockCardId)
+                .query());
     }
 
     public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards) throws SQLException {
-        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                for (StockCard stockCard : stockCards) {
-                    if (stockCard.getId() <= 0) {
-                        saveStockCardAndBatchUpdateMovements(stockCard);
-                    } else {
-                        stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
-                    }
+        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+            for (StockCard stockCard : stockCards) {
+                if (stockCard.getId() <= 0) {
+                    saveStockCardAndBatchUpdateMovements(stockCard);
+                } else {
+                    stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
                 }
-                return null;
             }
+            return null;
         });
     }
 
@@ -447,12 +406,9 @@ public class StockRepository {
                 addNewStockMovementItem.setCreatedAt(now);
                 addNewStockMovementItem.setUpdatedAt(now);
                 addNewStockMovementItem.setStockCard(stockCard);
-                dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
-                    @Override
-                    public Void operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
-                        dao.createOrUpdate(addNewStockMovementItem);
-                        return null;
-                    }
+                dbUtil.withDao(StockMovementItem.class, (DbUtil.Operation<StockMovementItem, Void>) dao -> {
+                    dao.createOrUpdate(addNewStockMovementItem);
+                    return null;
                 });
             }
 
@@ -461,12 +417,7 @@ public class StockRepository {
     }
 
     private List<StockCard> getStockCardById(int stockCardId) throws LMISException {
-        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
-            @Override
-            public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().eq("id", stockCardId).query();
-            }
-        });
+        return dbUtil.withDao(StockCard.class, dao -> dao.queryBuilder().where().eq("id", stockCardId).query());
     }
 
     public void resetLotsOnHand(List<String> productCodeList) {

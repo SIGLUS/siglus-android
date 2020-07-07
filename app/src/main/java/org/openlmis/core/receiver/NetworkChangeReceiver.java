@@ -49,20 +49,17 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
     private InternetCheck.Callback synchronizeListener(final SyncService syncService) {
 
-        return new InternetCheck.Callback() {
-            @Override
-            public void launchResponse(Boolean internet) {
-                if (internet) {
-                    Log.d(TAG, "network connected, start sync service...");
-                    LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkConnected);
-                    syncService.requestSyncImmediatelyByTask();
-                    syncService.kickOff();
-                } else {
-                    Log.d(TAG, "there is no internet connection in network receiver");
-                    Log.d(TAG, "network disconnect, stop sync service...");
-                    LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkDisconnected);
-                    syncService.shutDown();
-                }
+        return internet -> {
+            if (internet) {
+                Log.d(TAG, "network connected, start sync service...");
+                LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkConnected);
+                syncService.requestSyncImmediatelyByTask();
+                syncService.kickOff();
+            } else {
+                Log.d(TAG, "there is no internet connection in network receiver");
+                Log.d(TAG, "network disconnect, stop sync service...");
+                LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkDisconnected);
+                syncService.shutDown();
             }
         };
     }

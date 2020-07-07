@@ -55,13 +55,10 @@ public class MalariaDataReportViewHolderDraft extends MalariaDataReportViewHolde
 
 
     private View.OnClickListener goToPTVDataFormActivity() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((BaseActivity) context).loading();
-                ((Activity) context).startActivityForResult(PTVDataReportFormActivity.getIntentToMe(context, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
-                ((BaseActivity) context).loaded();
-            }
+        return v -> {
+            ((BaseActivity) context).loading();
+            ((Activity) context).startActivityForResult(PTVDataReportFormActivity.getIntentToMe(context, viewModel.getPeriod().getBegin()), Constants.REQUEST_CREATE_OR_MODIFY_PATIENT_DATA_REPORT_FORM);
+            ((BaseActivity) context).loaded();
         };
     }
 

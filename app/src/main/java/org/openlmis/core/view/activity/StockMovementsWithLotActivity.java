@@ -48,7 +48,6 @@ import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.LotInfoGroup;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
@@ -275,12 +274,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
                         unpackKit();
                         break;
                     case R.id.btn_new_movement:
-                        String[] selections = FluentIterable.from(movementTypes).transform(new Function<MovementReasonManager.MovementType, String>() {
-                            @Override
-                            public String apply(MovementReasonManager.MovementType movementType) {
-                                return movementType.getDescription();
-                            }
-                        }).toArray(String.class);
+                        String[] selections = FluentIterable.from(movementTypes).transform(movementType -> movementType.getDescription()).toArray(String.class);
                         newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), selections);
                         newMovementDialog.show(getFragmentManager(), "");
                         break;

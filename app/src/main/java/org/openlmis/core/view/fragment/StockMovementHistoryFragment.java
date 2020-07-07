@@ -122,12 +122,9 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     public void initData() {
         isFirstLoading = true;
         baseView.loading();
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-                loadData();
-            }
+        swipeRefreshLayout.post(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            loadData();
         });
     }
 
@@ -162,22 +159,16 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     private void firstLoadingScrollToBottom() {
         addFooterViewIfMoreThanOneScreen();
-        historyListView.post(new Runnable() {
-            @Override
-            public void run() {
-                historyListView.setSelection(historyListView.getCount() - 1);
-                baseView.loaded();
-            }
+        historyListView.post(() -> {
+            historyListView.setSelection(historyListView.getCount() - 1);
+            baseView.loaded();
         });
     }
 
     private void addFooterViewIfMoreThanOneScreen() {
-        historyListView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (isGreaterThanOneScreen()) {
-                    addFooterView();
-                }
+        historyListView.post(() -> {
+            if (isGreaterThanOneScreen()) {
+                addFooterView();
             }
         });
     }

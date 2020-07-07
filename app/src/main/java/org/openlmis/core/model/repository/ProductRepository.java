@@ -24,7 +24,6 @@ import android.database.Cursor;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -36,7 +35,6 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
@@ -69,12 +67,7 @@ public class ProductRepository {
     }
 
     public List<Product> listActiveProducts(final Product.IsKit isKit) throws LMISException {
-        List<Product> activeProducts = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
-            @Override
-            public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("isActive", true).and().eq("isKit", isKit.isKit()).query();
-            }
-        });
+        List<Product> activeProducts = dbUtil.withDao(Product.class, dao -> dao.queryBuilder().where().eq("isActive", true).and().eq("isKit", isKit.isKit()).query());
         Collections.sort(activeProducts);
         return activeProducts;
     }
@@ -150,14 +143,11 @@ public class ProductRepository {
 
     public void save(final List<Product> products) {
         try {
-            dbUtil.withDaoAsBatch(Product.class, new DbUtil.Operation<Product, Void>() {
-                @Override
-                public Void operate(Dao<Product, String> dao) throws SQLException {
-                    for (Product product : products) {
-                        dao.create(product);
-                    }
-                    return null;
+            dbUtil.withDaoAsBatch(Product.class, (DbUtil.Operation<Product, Void>) dao -> {
+                for (Product product : products) {
+                    dao.create(product);
                 }
+                return null;
             });
         } catch (LMISException e) {
             new LMISException(e, "ProductRepository.save").reportToFabric();
@@ -165,14 +155,11 @@ public class ProductRepository {
     }
 
     public void batchCreateOrUpdateProducts(final List<Product> productList) throws LMISException {
-        dbUtil.withDaoAsBatch(Product.class, new DbUtil.Operation<Product, Void>() {
-            @Override
-            public Void operate(Dao<Product, String> dao) throws LMISException {
-                for (Product product : productList) {
-                    createOrUpdate(product);
-                }
-                return null;
+        dbUtil.withDaoAsBatch(Product.class, (DbUtil.Operation<Product, Void>) dao -> {
+            for (Product product : productList) {
+                createOrUpdate(product);
             }
+            return null;
         });
     }
 
@@ -228,104 +215,58 @@ public class ProductRepository {
     }
 
     protected KitProduct queryKitProductByCode(final String kitCode, final String productCode) throws LMISException {
-        return dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, KitProduct>() {
-            @Override
-            public KitProduct operate(Dao<KitProduct, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("kitCode", kitCode).and().eq("productCode", productCode).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(KitProduct.class, dao -> dao.queryBuilder().where().eq("kitCode", kitCode).and().eq("productCode", productCode).queryForFirst());
     }
 
     private void deleteKitProductByCode(final String productCode) throws SQLException {
         TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                return dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, KitProduct>() {
-                    @Override
-                    public KitProduct operate(Dao<KitProduct, String> dao) throws SQLException {
-                        DeleteBuilder<KitProduct, String> deleteBuilder = dao.deleteBuilder();
-                        deleteBuilder.where().eq("kitCode", productCode);
-                        deleteBuilder.delete();
-                        return null;
-                    }
+                return dbUtil.withDao(KitProduct.class, (DbUtil.Operation<KitProduct, KitProduct>) dao -> {
+                    DeleteBuilder<KitProduct, String> deleteBuilder = dao.deleteBuilder();
+                    deleteBuilder.where().eq("kitCode", productCode);
+                    deleteBuilder.delete();
+                    return null;
                 });
             }
         });
     }
 
     public List<KitProduct> queryKitProductByKitCode(final String kitCode) throws LMISException {
-        return dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, List<KitProduct>>() {
-            @Override
-            public List<KitProduct> operate(Dao<KitProduct, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("kitCode", kitCode).query();
-            }
-        });
+        return dbUtil.withDao(KitProduct.class, dao -> dao.queryBuilder().where().eq("kitCode", kitCode).query());
     }
 
     public Product getByCode(final String code) throws LMISException {
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, Product>() {
-            @Override
-            public Product operate(Dao<Product, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("code", code).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(Product.class, dao -> dao.queryBuilder().where().eq("code", code).queryForFirst());
     }
 
     public Product getProductById(final long id) throws LMISException {
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, Product>() {
-            @Override
-            public Product operate(Dao<Product, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("id", id).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(Product.class, dao -> dao.queryBuilder().where().eq("id", id).queryForFirst());
     }
 
 
     public List<Product> queryActiveProductsByCodesWithKits(final List<String> productCodes, final boolean isWithKit) throws LMISException {
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
-            @Override
-            public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                Where<Product, String> queryBuilder = dao.queryBuilder().where().in("code", productCodes).and().eq("isActive", true).and().eq("isArchived", false);
-                if (!isWithKit) {
-                    queryBuilder.and().eq("isKit", false);
-                }
-                return queryBuilder.query();
+        return dbUtil.withDao(Product.class, dao -> {
+            Where<Product, String> queryBuilder = dao.queryBuilder().where().in("code", productCodes).and().eq("isActive", true).and().eq("isArchived", false);
+            if (!isWithKit) {
+                queryBuilder.and().eq("isKit", false);
             }
+            return queryBuilder.query();
         });
     }
 
     public List<KitProduct> queryKitProductByProductCode(final String productCode) throws LMISException {
-        return dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, List<KitProduct>>() {
-            @Override
-            public List<KitProduct> operate(Dao<KitProduct, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("productCode", productCode).query();
-            }
-        });
+        return dbUtil.withDao(KitProduct.class, dao -> dao.queryBuilder().where().eq("productCode", productCode).query());
     }
 
     public List<String> listArchivedProductCodes() throws LMISException {
-        List<Product> isArchived = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
-            @Override
-            public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                return dao.queryBuilder().selectColumns("code").where().eq("isArchived", true).query();
-            }
-        });
+        List<Product> isArchived = dbUtil.withDao(Product.class, dao -> dao.queryBuilder().selectColumns("code").where().eq("isArchived", true).query());
 
-        return FluentIterable.from(isArchived).transform(new Function<Product, String>() {
-            @Override
-            public String apply(Product product) {
-                return product.getCode();
-            }
-        }).toList();
+        return FluentIterable.from(isArchived).transform(product -> product.getCode()).toList();
     }
 
     public List<Product> queryProductsByProductIds(final List<Long> productIds) throws LMISException {
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
-            @Override
-            public List<Product> operate(Dao<Product, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().in("id", productIds).query();
-            }
-        });
+        return dbUtil.withDao(Product.class, dao -> dao.queryBuilder().where().in("id", productIds).query());
     }
 
     public List<Product> queryActiveProductsInVIAProgramButNotInDraftVIAForm() throws LMISException {
@@ -395,16 +336,13 @@ public class ProductRepository {
 
     public List<Product> getProductsByCodes(final List<String> codes) throws LMISException {
         final List<Product> products = new ArrayList<>();
-        dbUtil.withDaoAsBatch(context, Product.class, new DbUtil.Operation<Product, Void>() {
-            @Override
-            public Void operate(Dao<Product, String> dao) throws SQLException, LMISException {
-                for (String code : codes) {
-                    Product product = dao.queryBuilder().where().eq("code", code).queryForFirst();
-                    products.add(product);
+        dbUtil.withDaoAsBatch(context, Product.class, (DbUtil.Operation<Product, Void>) dao -> {
+            for (String code : codes) {
+                Product product = dao.queryBuilder().where().eq("code", code).queryForFirst();
+                products.add(product);
 
-                }
-                return null;
             }
+            return null;
         });
         return products;
     }

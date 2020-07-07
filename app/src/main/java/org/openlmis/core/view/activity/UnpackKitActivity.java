@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -86,12 +85,9 @@ public class UnpackKitActivity extends BaseActivity {
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new UnpackKitAdapter(presenter.getInventoryViewModels(), signDialogListener);
         productListRecycleView.setAdapter(mAdapter);
-        productListRecycleView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.requestFocus();
-                return false;
-            }
+        productListRecycleView.setOnTouchListener((v, event) -> {
+            v.requestFocus();
+            return false;
         });
     }
 

@@ -30,7 +30,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 
 import java.sql.SQLException;
-import java.util.concurrent.Callable;
 
 import static com.j256.ormlite.dao.DaoManager.createDao;
 
@@ -86,12 +85,7 @@ public class DbUtil {
         SQLiteOpenHelper openHelper = LmisSqliteOpenHelper.getInstance(context);
         try {
             final Dao<DomainType, String> dao = initialiseDao(openHelper, domainClass);
-            return dao.callBatchTasks(new Callable<ReturnType>() {
-                @Override
-                public ReturnType call() throws Exception {
-                    return operation.operate(dao);
-                }
-            });
+            return dao.callBatchTasks(() -> operation.operate(dao));
         } catch (SQLException e) {
             throw new LMISException(e);
         } catch (Exception e) {
@@ -104,12 +98,7 @@ public class DbUtil {
         SQLiteOpenHelper openHelper = LmisSqliteOpenHelper.getInstance(context);
         try {
             final Dao<DomainType, String> dao = initialiseDao(openHelper, domainClass);
-            return dao.callBatchTasks(new Callable<ReturnType>() {
-                @Override
-                public ReturnType call() throws Exception {
-                    return operation.operate(dao);
-                }
-            });
+            return dao.callBatchTasks(() -> operation.operate(dao));
         } catch (SQLException e) {
             throw new LMISException(e);
         } catch (Exception e) {

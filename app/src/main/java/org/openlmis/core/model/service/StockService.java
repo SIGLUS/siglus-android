@@ -17,7 +17,6 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Optional;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.Ordering;
 
 import java.util.ArrayList;
@@ -159,29 +158,15 @@ public class StockService {
     }
 
     private boolean hasStockOutInThisPeriod(List<StockMovementItem> stockMovementItems) {
-        return from(stockMovementItems).anyMatch(new Predicate<StockMovementItem>() {
-            @Override
-            public boolean apply(StockMovementItem stockMovementItem) {
-                return stockMovementItem.getStockOnHand() == 0;
-            }
-        });
+        return from(stockMovementItems).anyMatch(stockMovementItem -> stockMovementItem.getStockOnHand() == 0);
     }
 
     private boolean isStockOutStatusInherited(StockCard stockCard, final Period period) {
-        List<StockMovementItem> orderedMovements = Ordering.from(new Comparator<StockMovementItem>() {
-            @Override
-            public int compare(StockMovementItem lhs, StockMovementItem rhs) {
-                return lhs.getMovementDate().compareTo(rhs.getMovementDate());
-            }
-        }).sortedCopy(stockCard.getStockMovementItemsWrapper());
+        List<StockMovementItem> orderedMovements = Ordering.from((Comparator<StockMovementItem>) (lhs, rhs) -> lhs.getMovementDate().compareTo(rhs.getMovementDate()))
+                .sortedCopy(stockCard.getStockMovementItemsWrapper());
 
         Optional<StockMovementItem> lastMovementBeforePeriod = from(orderedMovements)
-                .filter(new Predicate<StockMovementItem>() {
-                    @Override
-                    public boolean apply(StockMovementItem stockMovementItem) {
-                        return new DateTime(stockMovementItem.getMovementDate()).isBefore(period.getBegin());
-                    }
-                })
+                .filter(stockMovementItem -> new DateTime(stockMovementItem.getMovementDate()).isBefore(period.getBegin()))
                 .last();
 
         return lastMovementBeforePeriod.isPresent() && lastMovementBeforePeriod.get().getStockOnHand() == 0;

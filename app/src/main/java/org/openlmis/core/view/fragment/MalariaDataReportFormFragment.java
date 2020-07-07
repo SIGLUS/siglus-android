@@ -2,7 +2,6 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,7 +20,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.Period;
-import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.MalariaDataReportFormPresenter;
 import org.openlmis.core.utils.Constants;
@@ -50,8 +48,6 @@ public class MalariaDataReportFormFragment extends BaseReportFragment implements
     @Inject
     private MalariaDataReportFormRowAdapter adapter;
 
-    @Inject
-    private MalariaProgramRepository malariaProgramRepository;
 
     private Period period;
     private List<Subscription> subscriptions;
@@ -86,18 +82,15 @@ public class MalariaDataReportFormFragment extends BaseReportFragment implements
     }
 
     private Action1<List<ImplementationReportViewModel>> malariaDataReportDataSubscriber() {
-        return new Action1<List<ImplementationReportViewModel>>() {
-            @Override
-            public void call(List<ImplementationReportViewModel> implementationReportViewModels) {
-                ImplementationReportViewModel viewModel = implementationReportViewModels.get(0);
-                if (viewModel.getStatus() == ViaReportStatus.SYNCED) {
-                    actionPanelView.setVisibility(View.GONE);
-                } else if (malariaDataReportFormPresenter.isSubmittedForApproval()) {
-                    actionPanelView.getBtnComplete().setText(R.string.submit_for_approval);
-                }
-                adapter.setViewModels(implementationReportViewModels);
-                adapter.notifyDataSetChanged();
+        return implementationReportViewModels -> {
+            ImplementationReportViewModel viewModel = implementationReportViewModels.get(0);
+            if (viewModel.getStatus() == ViaReportStatus.SYNCED) {
+                actionPanelView.setVisibility(View.GONE);
+            } else if (malariaDataReportFormPresenter.isSubmittedForApproval()) {
+                actionPanelView.getBtnComplete().setText(R.string.submit_for_approval);
             }
+            adapter.setViewModels(implementationReportViewModels);
+            adapter.notifyDataSetChanged();
         };
     }
 
@@ -132,19 +125,16 @@ public class MalariaDataReportFormFragment extends BaseReportFragment implements
 
     @NonNull
     private Action1<? super MalariaProgram> getOnSaveActionForStatus(final ViaReportStatus status) {
-        return new Action1<MalariaProgram>() {
-            @Override
-            public void call(MalariaProgram malariaProgram) {
-                ToastUtil.show(R.string.succesfully_saved);
-                loaded();
-                malariaDataReportFormPresenter.setStatus(malariaProgram.getStatus());
-                malariaDataReportFormPresenter.setCreatedBy(malariaProgram.getCreatedBy());
-                if (malariaProgram.getStatus().equals(DRAFT) && !malariaProgram.getCreatedBy().isEmpty()) {
-                    showMessageNotifyDialog();
-                    actionPanelView.getBtnComplete().setText(R.string.btn_complete);
-                } else {
-                    finishWithResult();
-                }
+        return (Action1<MalariaProgram>) malariaProgram -> {
+            ToastUtil.show(R.string.succesfully_saved);
+            loaded();
+            malariaDataReportFormPresenter.setStatus(malariaProgram.getStatus());
+            malariaDataReportFormPresenter.setCreatedBy(malariaProgram.getCreatedBy());
+            if (malariaProgram.getStatus().equals(DRAFT) && !malariaProgram.getCreatedBy().isEmpty()) {
+                showMessageNotifyDialog();
+                actionPanelView.getBtnComplete().setText(R.string.btn_complete);
+            } else {
+                finishWithResult();
             }
         };
     }
@@ -158,13 +148,7 @@ public class MalariaDataReportFormFragment extends BaseReportFragment implements
         new AlertDialog.Builder(getActivity())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setMessage(R.string.ifLeave)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finishWithResult();
-                    }
-
-                })
+                .setPositiveButton("Yes", (dialog, which) -> finishWithResult())
                 .setNegativeButton("No", null)
                 .show();
     }

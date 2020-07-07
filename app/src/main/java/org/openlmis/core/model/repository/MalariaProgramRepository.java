@@ -4,7 +4,6 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
@@ -15,7 +14,6 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.roboguice.shaded.goole.common.base.Optional;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -47,14 +45,11 @@ public class MalariaProgramRepository {
     }
 
     public MalariaProgram getPatientDataReportByPeriodAndType(final DateTime beginDate, final DateTime endDate) throws LMISException {
-        return (MalariaProgram) dbUtil.withDao(MalariaProgram.class, new DbUtil.Operation<MalariaProgram, Object>() {
-            @Override
-            public MalariaProgram operate(Dao<MalariaProgram, String> dao) throws SQLException, LMISException {
-                MalariaProgram queryPatientDataReport = dao.queryBuilder().where()
-                        .eq("startPeriodDate", beginDate)
-                        .and().eq("endPeriodDate", endDate).queryForFirst();
-                return queryPatientDataReport;
-            }
+        return (MalariaProgram) dbUtil.withDao(MalariaProgram.class, (DbUtil.Operation<MalariaProgram, Object>) dao -> {
+            MalariaProgram queryPatientDataReport = dao.queryBuilder().where()
+                    .eq("startPeriodDate", beginDate)
+                    .and().eq("endPeriodDate", endDate).queryForFirst();
+            return queryPatientDataReport;
         });
     }
 
@@ -63,12 +58,9 @@ public class MalariaProgramRepository {
     }
 
     public MalariaProgram getFirstMovement() throws LMISException {
-        return dbUtil.withDao(MalariaProgram.class, new DbUtil.Operation<MalariaProgram, MalariaProgram>() {
-            @Override
-            public MalariaProgram operate(Dao<MalariaProgram, String> dao) throws SQLException, LMISException {
-                MalariaProgram malariaProgram = dao.queryBuilder().orderBy("createdAt", true).queryForFirst();
-                return malariaProgram;
-            }
+        return dbUtil.withDao(MalariaProgram.class, dao -> {
+            MalariaProgram malariaProgram = dao.queryBuilder().orderBy("createdAt", true).queryForFirst();
+            return malariaProgram;
         });
     }
 

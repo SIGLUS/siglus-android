@@ -3,7 +3,6 @@ package org.openlmis.core.view.holder;
 import android.annotation.SuppressLint;
 import android.text.Html;
 import android.text.Spanned;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.PopupMenu;
@@ -195,20 +194,14 @@ public class RnRFormViewHolder extends BaseViewHolder {
         ivDelete.setVisibility(View.VISIBLE);
 
         if (itemClickListener != null) {
-            ivDelete.setOnClickListener(new SingleClickButtonListener() {
-                @Override
-                public void onSingleClick(View v) {
-                    PopupMenu popup = new PopupMenu(v.getContext(), v);
-                    popup.inflate(R.menu.menu_rnr_list_item);
-                    popup.show();
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            itemClickListener.deleteForm(form);
-                            return false;
-                        }
-                    });
-                }
+            ivDelete.setOnClickListener((v) -> {
+                PopupMenu popup = new PopupMenu(v.getContext(), v);
+                popup.inflate(R.menu.menu_rnr_list_item);
+                popup.show();
+                popup.setOnMenuItemClickListener(item -> {
+                    itemClickListener.deleteForm(form);
+                    return false;
+                });
             });
         }
     }

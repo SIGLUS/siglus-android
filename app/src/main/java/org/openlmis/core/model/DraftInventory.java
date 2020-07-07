@@ -27,7 +27,6 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
@@ -73,21 +72,15 @@ public class DraftInventory extends BaseModel {
     }
 
     private void setupDraftLotList(List<LotMovementViewModel> existingLotMovementViewModelList, List<LotMovementViewModel> lotMovementViewModelList) {
-        getDraftLotItemListWrapper().addAll(FluentIterable.from(existingLotMovementViewModelList).transform(new Function<LotMovementViewModel, DraftLotItem>() {
-            @Override
-            public DraftLotItem apply(LotMovementViewModel lotMovementViewModel) {
-                DraftLotItem draftLotItem = new DraftLotItem(lotMovementViewModel, stockCard.getProduct(), false);
-                draftLotItem.setDraftInventory(DraftInventory.this);
-                return draftLotItem;
-            }
+        getDraftLotItemListWrapper().addAll(FluentIterable.from(existingLotMovementViewModelList).transform(lotMovementViewModel -> {
+            DraftLotItem draftLotItem = new DraftLotItem(lotMovementViewModel, stockCard.getProduct(), false);
+            draftLotItem.setDraftInventory(DraftInventory.this);
+            return draftLotItem;
         }).toList());
-        getDraftLotItemListWrapper().addAll(FluentIterable.from(lotMovementViewModelList).transform(new Function<LotMovementViewModel, DraftLotItem>() {
-            @Override
-            public DraftLotItem apply(LotMovementViewModel lotMovementViewModel) {
-                DraftLotItem draftLotItem = new DraftLotItem(lotMovementViewModel, stockCard.getProduct(), true);
-                draftLotItem.setDraftInventory(DraftInventory.this);
-                return draftLotItem;
-            }
+        getDraftLotItemListWrapper().addAll(FluentIterable.from(lotMovementViewModelList).transform(lotMovementViewModel -> {
+            DraftLotItem draftLotItem = new DraftLotItem(lotMovementViewModel, stockCard.getProduct(), true);
+            draftLotItem.setDraftInventory(DraftInventory.this);
+            return draftLotItem;
         }).toList());
     }
 }

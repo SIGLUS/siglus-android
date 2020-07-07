@@ -110,12 +110,7 @@ public class ViaReportConsultationNumberView extends LinearLayout {
     }
 
     public void addTextChangedListener() {
-        etExternalConsultationsPerformed.post(new Runnable() {
-            @Override
-            public void run() {
-                etExternalConsultationsPerformed.addTextChangedListener(etConsultationNumbersTextWatcher);
-            }
-        });
+        etExternalConsultationsPerformed.post(() -> etExternalConsultationsPerformed.addTextChangedListener(etConsultationNumbersTextWatcher));
     }
 
     TextWatcher etConsultationNumbersTextWatcher = new SingleTextWatcher() {

@@ -122,14 +122,11 @@ public class PTVDataReportFormActivity extends BaseActivity {
 
     @NonNull
     private View.OnClickListener addSaveListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updatePTVProgram();
-                isCompleted = false;
-                changeButtonsState(false);
-                ptvProgramPresenter.savePTVProgram(isCompleted).subscribe(savePTVProgramSubscriber());
-            }
+        return v -> {
+            updatePTVProgram();
+            isCompleted = false;
+            changeButtonsState(false);
+            ptvProgramPresenter.savePTVProgram(isCompleted).subscribe(savePTVProgramSubscriber());
         };
     }
 
@@ -183,12 +180,9 @@ public class PTVDataReportFormActivity extends BaseActivity {
 
     @NonNull
     private View.OnClickListener addCompleteListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSignDialog();
-                changeButtonsState(false);
-            }
+        return v -> {
+            showSignDialog();
+            changeButtonsState(false);
         };
     }
 
@@ -342,12 +336,7 @@ public class PTVDataReportFormActivity extends BaseActivity {
 
     @NonNull
     private DialogInterface.OnClickListener changeButtonStateListener() {
-        return new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                changeButtonsState(true);
-            }
-        };
+        return (dialog, which) -> changeButtonsState(true);
     }
 
 }

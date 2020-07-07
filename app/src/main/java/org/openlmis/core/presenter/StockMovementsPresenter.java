@@ -19,22 +19,18 @@
 package org.openlmis.core.presenter;
 
 
-import android.content.Context;
-
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +38,6 @@ import java.util.List;
 import lombok.Getter;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -61,9 +56,6 @@ public class StockMovementsPresenter extends Presenter {
     StockCard stockCard;
 
     StockMovementView view;
-
-    @Inject
-    Context context;
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
@@ -117,22 +109,15 @@ public class StockMovementsPresenter extends Presenter {
     }
 
     protected Observable<List<StockMovementViewModel>> loadStockMovementViewModelsObserver() {
-        return Observable.create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
-            @Override
-            public void call(final Subscriber<? super List<StockMovementViewModel>> subscriber) {
-                try {
-                    List<StockMovementViewModel> list = from(stockMovementRepository.listLastFiveStockMovements(stockCard.getId())).transform(new Function<StockMovementItem, StockMovementViewModel>() {
-                        @Override
-                        public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
-                            return new StockMovementViewModel(stockMovementItem);
-                        }
-                    }).toList();
+        return Observable.create((Observable.OnSubscribe<List<StockMovementViewModel>>) subscriber -> {
+            try {
+                List<StockMovementViewModel> list = from(stockMovementRepository.listLastFiveStockMovements(stockCard.getId()))
+                        .transform(stockMovementItem -> new StockMovementViewModel(stockMovementItem)).toList();
 
-                    subscriber.onNext(list);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
+                subscriber.onNext(list);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
@@ -147,7 +132,7 @@ public class StockMovementsPresenter extends Presenter {
             boolean isUnpackable = stockCard.getProduct().isKit() && kitProducts.size() > 0 && stockCard.getStockOnHand() != 0;
             view.updateUnpackKitMenu(isUnpackable);
         } catch (LMISException e) {
-            new LMISException(e,"StockMovementsPresenter.updateMenus").reportToFabric();
+            new LMISException(e, "StockMovementsPresenter.updateMenus").reportToFabric();
         }
     }
 

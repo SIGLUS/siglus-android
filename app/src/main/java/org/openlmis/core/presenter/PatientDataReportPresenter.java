@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import org.joda.time.DateTime;
 import org.openlmis.core.enums.VIAReportType;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.model.PTVProgram;
@@ -16,13 +15,11 @@ import org.openlmis.core.service.PatientDataService;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.malaria.PatientDataReportViewModel;
 import org.roboguice.shaded.goole.common.base.Optional;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -40,21 +37,18 @@ public class PatientDataReportPresenter extends Presenter {
     private PTVProgramRepository ptvProgramRepository;
 
     @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {
+    public void attachView(BaseView v) {
 
     }
 
     public Observable<List<PatientDataReportViewModel>> getViewModels(final VIAReportType reportType) {
-        return Observable.create(new Observable.OnSubscribe<List<PatientDataReportViewModel>>() {
-            @Override
-            public void call(Subscriber<? super List<PatientDataReportViewModel>> subscriber) {
-                try {
-                    List<PatientDataReportViewModel> viewModels = generateViewModelsForAvailablePeriods(reportType);
-                    subscriber.onNext(viewModels);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<List<PatientDataReportViewModel>>) subscriber -> {
+            try {
+                List<PatientDataReportViewModel> viewModels = generateViewModelsForAvailablePeriods(reportType);
+                subscriber.onNext(viewModels);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
@@ -96,22 +90,12 @@ public class PatientDataReportPresenter extends Presenter {
     }
 
     private Optional<MalariaProgram> findMalariaProgramForPeriod(List<MalariaProgram> malariaPrograms, final Period period) {
-        return FluentIterable.from(malariaPrograms).firstMatch(new Predicate<MalariaProgram>() {
-            @Override
-            public boolean apply(MalariaProgram malariaProgram) {
-                return malariaProgram.getStartPeriodDate().equals(period.getBegin())
-                        && malariaProgram.getEndPeriodDate().equals(period.getEnd());
-            }
-        });
+        return FluentIterable.from(malariaPrograms).firstMatch(malariaProgram -> malariaProgram.getStartPeriodDate().equals(period.getBegin())
+                && malariaProgram.getEndPeriodDate().equals(period.getEnd()));
     }
 
     private Optional<PTVProgram> findPTVProgramForPeriod(List<PTVProgram> ptvPrograms, final Period period) {
-        return FluentIterable.from(ptvPrograms).firstMatch(new Predicate<PTVProgram>() {
-            @Override
-            public boolean apply(PTVProgram ptvProgram) {
-                return ptvProgram.getStartPeriod().equals(period.getBegin().toDate())
-                        && ptvProgram.getEndPeriod().equals(period.getEnd().toDate());
-            }
-        });
+        return FluentIterable.from(ptvPrograms).firstMatch(ptvProgram -> ptvProgram.getStartPeriod().equals(period.getBegin().toDate())
+                && ptvProgram.getEndPeriod().equals(period.getEnd().toDate()));
     }
 }

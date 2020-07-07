@@ -56,14 +56,11 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
 
     public void sortBySOH(final boolean asc) {
 
-        Comparator<InventoryViewModel> stockCardComparator = new Comparator<InventoryViewModel>() {
-            @Override
-            public int compare(InventoryViewModel lhs, InventoryViewModel rhs) {
-                if (asc) {
-                    return (int) (lhs.getStockOnHand() - rhs.getStockOnHand());
-                } else {
-                    return (int) (rhs.getStockOnHand() - lhs.getStockOnHand());
-                }
+        Comparator<InventoryViewModel> stockCardComparator = (lhs, rhs) -> {
+            if (asc) {
+                return (int) (lhs.getStockOnHand() - rhs.getStockOnHand());
+            } else {
+                return (int) (rhs.getStockOnHand() - lhs.getStockOnHand());
             }
         };
 
@@ -75,14 +72,11 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
 
     public void sortByName(final boolean asc) {
 
-        Comparator<InventoryViewModel> stockCardComparator = new Comparator<InventoryViewModel>() {
-            @Override
-            public int compare(InventoryViewModel lhs, InventoryViewModel rhs) {
-                if (asc) {
-                    return lhs.getProduct().getPrimaryName().compareTo(rhs.getProduct().getPrimaryName());
-                } else {
-                    return rhs.getProduct().getPrimaryName().compareTo(lhs.getProduct().getPrimaryName());
-                }
+        Comparator<InventoryViewModel> stockCardComparator = (lhs, rhs) -> {
+            if (asc) {
+                return lhs.getProduct().getPrimaryName().compareTo(rhs.getProduct().getPrimaryName());
+            } else {
+                return rhs.getProduct().getPrimaryName().compareTo(lhs.getProduct().getPrimaryName());
             }
         };
 

@@ -8,7 +8,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.KitProduct;
-import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -19,19 +18,16 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -56,67 +52,55 @@ public class UnpackKitPresenter extends Presenter {
     }
 
     public Observable<List<InventoryViewModel>> getKitProductsObservable(final String kitCode, final int kitNum) {
-        return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
-            @Override
-            public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
-                try {
-                    UnpackKitPresenter.this.kitCode = kitCode;
-                    inventoryViewModels.clear();
-                    List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(kitCode);
-                    for (KitProduct kitProduct : kitProducts) {
-                        final Product product = productRepository.getByCode(kitProduct.getProductCode());
-                        InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
-                        setExistingLotViewModels(inventoryViewModel);
-                        inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity() * kitNum);
-                        inventoryViewModel.setChecked(true);
-                        inventoryViewModels.add(inventoryViewModel);
-                    }
-
-                    subscriber.onNext(inventoryViewModels);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
+        return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
+            try {
+                UnpackKitPresenter.this.kitCode = kitCode;
+                inventoryViewModels.clear();
+                List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(kitCode);
+                for (KitProduct kitProduct : kitProducts) {
+                    final Product product = productRepository.getByCode(kitProduct.getProductCode());
+                    InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
+                    setExistingLotViewModels(inventoryViewModel);
+                    inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity() * kitNum);
+                    inventoryViewModel.setChecked(true);
+                    inventoryViewModels.add(inventoryViewModel);
                 }
+
+                subscriber.onNext(inventoryViewModels);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     public Observable saveUnpackProductsObservable(final int kitUnpackQuantity, final String documentNumber, final String signature) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(final Subscriber<? super Void> subscriber) {
-                try {
-                    List<StockCard> stockCards = new ArrayList<>();
-                    Collection<StockCard> list = FluentIterable.from(inventoryViewModels).filter(new Predicate<InventoryViewModel>() {
-                        @Override
-                        public boolean apply(InventoryViewModel inventoryViewModel) {
-                            return inventoryViewModel.getLotListQuantityTotalAmount() > 0;
-                        }
-                    }).transform(new Function<InventoryViewModel, StockCard>() {
-                        @Override
-                        public StockCard apply(InventoryViewModel inventoryViewModel) {
+        return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+            try {
+                List<StockCard> stockCards = new ArrayList<>();
+                Collection<StockCard> list = FluentIterable.from(inventoryViewModels)
+                        .filter(inventoryViewModel -> inventoryViewModel.getLotListQuantityTotalAmount() > 0)
+                        .transform(inventoryViewModel -> {
                             try {
                                 return createStockCardForProductWithLot(inventoryViewModel, documentNumber, signature);
                             } catch (LMISException e) {
                                 subscriber.onError(e);
                             }
                             return null;
-                        }
-                    }).toList();
-                    for (StockCard stockCard : list) {
-                        stockCards.add(stockCard);
-                    }
-
-                    stockCards.add(getStockCardForKit(kitUnpackQuantity, documentNumber, signature));
-                    stockRepository.batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(stockCards);
-
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                } catch (LMISException exception) {
-                    subscriber.onError(exception);
+                        }).toList();
+                for (StockCard stockCard : list) {
+                    stockCards.add(stockCard);
                 }
 
+                stockCards.add(getStockCardForKit(kitUnpackQuantity, documentNumber, signature));
+                stockRepository.batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(stockCards);
+
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            } catch (LMISException exception) {
+                subscriber.onError(exception);
             }
+
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
@@ -191,24 +175,17 @@ public class UnpackKitPresenter extends Presenter {
     private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
         StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
         if (stockCard != null) {
-            List<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(stockCard.getNonEmptyLotOnHandList()).transform(new Function<LotOnHand, LotMovementViewModel>() {
-                @Override
-                public LotMovementViewModel apply(LotOnHand lotOnHand) {
-                    return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+            List<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(stockCard.getNonEmptyLotOnHandList())
+                    .transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
                             DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                            lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE);
-                }
-            }).toSortedList(new Comparator<LotMovementViewModel>() {
-                @Override
-                public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
-                    Date localDate = DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-                    if (localDate != null) {
-                        return localDate.compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                    } else {
-                        return 0;
-                    }
-                }
-            });
+                            lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE)).toSortedList((lot1, lot2) -> {
+                        Date localDate = DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+                        if (localDate != null) {
+                            return localDate.compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                        } else {
+                            return 0;
+                        }
+                    });
             inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
         }
     }

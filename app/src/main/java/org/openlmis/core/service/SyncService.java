@@ -34,7 +34,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.User;
 import org.openlmis.core.training.TrainingSyncAdapter;
 import org.openlmis.core.utils.Constants;
-import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
 
@@ -139,12 +138,7 @@ public class SyncService extends Service {
 
     private Account findFirstLmisAccount() {
         List<Account> accounts = newArrayList(accountManager.getAccounts());
-        List<Account> lmisAccounts = from(accounts).filter(new Predicate<Account>() {
-            @Override
-            public boolean apply(Account input) {
-                return syncAccountType.equals(input.type);
-            }
-        }).toList();
+        List<Account> lmisAccounts = from(accounts).filter(input -> syncAccountType.equals(input.type)).toList();
 
         if (lmisAccounts.size() > 0) {
             return lmisAccounts.get(0);

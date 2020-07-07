@@ -21,7 +21,6 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.Where;
 
@@ -54,7 +53,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class RnrFormRepository {
 
@@ -132,14 +130,11 @@ public class RnrFormRepository {
 
     public void createRnRsWithItems(final List<RnRForm> forms) throws LMISException {
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    for (RnRForm form : forms) {
-                        createOrUpdateWithItems(form);
-                    }
-                    return null;
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+                for (RnRForm form : forms) {
+                    createOrUpdateWithItems(form);
                 }
+                return null;
             });
         } catch (SQLException e) {
             throw new LMISException(e);
@@ -148,14 +143,11 @@ public class RnrFormRepository {
 
     public void createOrUpdateWithItems(final RnRForm form) throws LMISException {
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    genericDao.createOrUpdate(form);
-                    createOrUpdateRnrWrappers(form);
-                    genericDao.refresh(form);
-                    return null;
-                }
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+                genericDao.createOrUpdate(form);
+                createOrUpdateRnrWrappers(form);
+                genericDao.refresh(form);
+                return null;
             });
         } catch (SQLException e) {
             throw new LMISException(e);
@@ -164,16 +156,11 @@ public class RnrFormRepository {
 
     public boolean isPeriodUnique(final RnRForm form) {
         try {
-            return null == dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
-                @Override
-                public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
-                    return dao.queryBuilder().where().eq("program_id", form.getProgram().getId())
-                            .and().eq("status", RnRForm.STATUS.AUTHORIZED)
-                            .and().eq("periodBegin", form.getPeriodBegin())
-                            .and().eq("periodEnd", form.getPeriodEnd())
-                            .queryForFirst();
-                }
-            });
+            return null == dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("program_id", form.getProgram().getId())
+                    .and().eq("status", RnRForm.STATUS.AUTHORIZED)
+                    .and().eq("periodBegin", form.getPeriodBegin())
+                    .and().eq("periodEnd", form.getPeriodEnd())
+                    .queryForFirst());
 
         } catch (LMISException e) {
             new LMISException(e, "RnrFormRepository.isPeriodUnique").reportToFabric();
@@ -208,26 +195,16 @@ public class RnrFormRepository {
             e.reportToFabric();
             throw e;
         }
-        RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
-            @Override
-            public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("program_id", program.getId())
-                        .and().between("periodBegin", reportTypeForm.getStartTime(), new Date())
-                        .and().ne("status", RnRForm.STATUS.AUTHORIZED)
-                        .queryForFirst();
-            }
-        });
+        RnRForm rnRForm = dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("program_id", program.getId())
+                .and().between("periodBegin", reportTypeForm.getStartTime(), new Date())
+                .and().ne("status", RnRForm.STATUS.AUTHORIZED)
+                .queryForFirst());
         assignCategoryForRnrItems(rnRForm);
         return rnRForm;
     }
 
     public RnRForm queryRnRForm(final long id) throws LMISException {
-        RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
-            @Override
-            public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("id", id).queryForFirst();
-            }
-        });
+        RnRForm rnRForm = dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("id", id).queryForFirst());
         assignCategoryForRnrItems(rnRForm);
 
         return rnRForm;
@@ -310,12 +287,7 @@ public class RnrFormRepository {
     }
 
     protected List<RnRForm> listUnsynced() throws LMISException {
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
-            @Override
-            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.AUTHORIZED).query();
-            }
-        });
+        return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.AUTHORIZED).query());
     }
 
     protected List<RnRForm> listNotSynchronizedFromStarTime() throws LMISException {
@@ -367,26 +339,23 @@ public class RnrFormRepository {
 
     private RnRForm createInitRnrForm(final RnRForm rnrForm) throws LMISException {
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    create(rnrForm);
-                    List<StockCard> stockCards = new ArrayList<>();
-                    List<StockCard> stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
-                    if (Constants.VIA_PROGRAM_CODE.equals(rnrForm.getProgram().getProgramCode())) {
-                        List<StockCard> stockCardsBelongToProgram = stockRepository.getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
-                        stockCards.clear();
-                        stockCards.addAll(combineStockCard(stockCardWithMovement, stockCardsBelongToProgram));
-                    } else {
-                        stockCards.addAll(stockCardWithMovement);
-                    }
-                    rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCards));
-                    regimenItemRepository.batchCreateOrUpdate(generateRegimeItems(rnrForm));
-                    regimenItemThreeLineRepository.batchCreateOrUpdate(generateRegimeThreeLineItems(rnrForm));
-                    baseInfoItemRepository.batchCreateOrUpdate(generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW));
-                    genericDao.refresh(rnrForm);
-                    return null;
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+                create(rnrForm);
+                List<StockCard> stockCards = new ArrayList<>();
+                List<StockCard> stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
+                if (Constants.VIA_PROGRAM_CODE.equals(rnrForm.getProgram().getProgramCode())) {
+                    List<StockCard> stockCardsBelongToProgram = stockRepository.getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
+                    stockCards.clear();
+                    stockCards.addAll(combineStockCard(stockCardWithMovement, stockCardsBelongToProgram));
+                } else {
+                    stockCards.addAll(stockCardWithMovement);
                 }
+                rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCards));
+                regimenItemRepository.batchCreateOrUpdate(generateRegimeItems(rnrForm));
+                regimenItemThreeLineRepository.batchCreateOrUpdate(generateRegimeThreeLineItems(rnrForm));
+                baseInfoItemRepository.batchCreateOrUpdate(generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW));
+                genericDao.refresh(rnrForm);
+                return null;
             });
         } catch (SQLException e) {
             throw new LMISException(e);
@@ -441,17 +410,14 @@ public class RnrFormRepository {
 
         final long programId = programRepository.queryByCode(programCode).getId();
 
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
-            @Override
-            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
-                where.in("program_id", programId).and().between("periodBegin", typeForm.getStartTime(), new Date());
+        return dbUtil.withDao(RnRForm.class, dao -> {
+            Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
+            where.in("program_id", programId).and().between("periodBegin", typeForm.getStartTime(), new Date());
 
-                if (!isWithEmergency) {
-                    where.and().eq("emergency", false);
-                }
-                return where.query();
+            if (!isWithEmergency) {
+                where.and().eq("emergency", false);
             }
+            return where.query();
         });
     }
 
@@ -469,17 +435,14 @@ public class RnrFormRepository {
             return new ArrayList<>();
         }
 
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
-            @Override
-            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                Where<RnRForm, String> where = dao.queryBuilder().where().
-                        eq("program_id", programId).and().
-                        eq("synced", false).and().
-                        eq("status", RnRForm.STATUS.AUTHORIZED).and().
-                        between("periodBegin", reportTypeForm.getStartTime(), new Date());
+        return dbUtil.withDao(RnRForm.class, dao -> {
+            Where<RnRForm, String> where = dao.queryBuilder().where().
+                    eq("program_id", programId).and().
+                    eq("synced", false).and().
+                    eq("status", RnRForm.STATUS.AUTHORIZED).and().
+                    between("periodBegin", reportTypeForm.getStartTime(), new Date());
 
-                return where.query();
-            }
+            return where.query();
         });
     }
 
@@ -487,17 +450,14 @@ public class RnrFormRepository {
 
         final long programId = programRepository.queryByCode(programCode).getId();
 
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
-            @Override
-            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
-                where.in("program_id", programId);
+        return dbUtil.withDao(RnRForm.class, dao -> {
+            Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
+            where.in("program_id", programId);
 
-                if (!isWithEmergency) {
-                    where.and().eq("emergency", false);
-                }
-                return where.query();
+            if (!isWithEmergency) {
+                where.and().eq("emergency", false);
             }
+            return where.query();
         });
     }
 

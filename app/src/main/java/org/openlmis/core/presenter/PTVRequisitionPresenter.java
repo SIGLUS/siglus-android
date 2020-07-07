@@ -32,7 +32,6 @@ import java.util.Date;
 
 import roboguice.RoboGuice;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -85,32 +84,26 @@ public class PTVRequisitionPresenter extends BaseRequisitionPresenter {
 
     @Override
     protected Observable<RnRForm> getRnrFormObservable(long formId) {
-        return Observable.create(new Observable.OnSubscribe<RnRForm>() {
-            @Override
-            public void call(Subscriber<? super RnRForm> subscriber) {
-                try {
-                    rnRForm = getRnrForm(formId);
-                    subscriber.onNext(rnRForm);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    new LMISException(e,"getRnrFormObservable").reportToFabric();
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
+            try {
+                rnRForm = getRnrForm(formId);
+                subscriber.onNext(rnRForm);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e,"getRnrFormObservable").reportToFabric();
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     public Observable<Void> getSaveFormObservable() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    new LMISException(e,"getSaveFormObservable").reportToFabric();
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+            try {
+                rnrFormRepository.createOrUpdateWithItems(rnRForm);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                new LMISException(e,"getSaveFormObservable").reportToFabric();
+                subscriber.onError(e);
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }

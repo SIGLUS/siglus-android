@@ -3,7 +3,6 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
@@ -19,7 +18,6 @@ import java.util.List;
 import lombok.Getter;
 import roboguice.inject.ContextSingleton;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -38,30 +36,27 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
     protected RapidTestReportViewModel viewModel;
 
     @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {
+    public void attachView(BaseView v) {
 
     }
 
     public Observable<RapidTestReportViewModel> loadViewModel(final long formId, final Period period) {
-        return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
-            @Override
-            public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
-                try {
-                    if (formId == 0) {
-                        generateNewRapidTestForm(period);
-                        saveForm();
-                        List<ProgramDataFormBasicItem> basicItems = programBasicItemsRepository.createInitProgramForm(viewModel.getRapidTestForm(), period.getEnd().toDate());
-                        viewModel.setBasicItems(basicItems);
-                        saveForm();
-                    } else {
-                        convertProgramDataFormToRapidTestReportViewModel(programDataFormRepository.queryById(formId));
-                    }
-                    subscriber.onNext(viewModel);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                    e.reportToFabric();
+        return Observable.create((Observable.OnSubscribe<RapidTestReportViewModel>) subscriber -> {
+            try {
+                if (formId == 0) {
+                    generateNewRapidTestForm(period);
+                    saveForm();
+                    List<ProgramDataFormBasicItem> basicItems = programBasicItemsRepository.createInitProgramForm(viewModel.getRapidTestForm(), period.getEnd().toDate());
+                    viewModel.setBasicItems(basicItems);
+                    saveForm();
+                } else {
+                    convertProgramDataFormToRapidTestReportViewModel(programDataFormRepository.queryById(formId));
                 }
+                subscriber.onNext(viewModel);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                subscriber.onError(e);
+                e.reportToFabric();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
@@ -76,32 +71,26 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
     }
 
     public Observable<RapidTestReportViewModel> onSaveDraftForm() {
-        return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
-            @Override
-            public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
-                try {
-                    saveForm();
-                    subscriber.onNext(viewModel);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<RapidTestReportViewModel>) subscriber -> {
+            try {
+                saveForm();
+                subscriber.onNext(viewModel);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<RapidTestReportViewModel> onAuthoriseDraftForm() {
-        return Observable.create(new Observable.OnSubscribe<RapidTestReportViewModel>() {
-            @Override
-            public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
-                try {
-                    saveForm();
-                    syncService.requestSyncImmediatelyByTask();
-                    subscriber.onNext(viewModel);
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<RapidTestReportViewModel>) subscriber -> {
+            try {
+                saveForm();
+                syncService.requestSyncImmediatelyByTask();
+                subscriber.onNext(viewModel);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

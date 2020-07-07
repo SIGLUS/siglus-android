@@ -40,7 +40,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.ALReportAdapter;
 import org.openlmis.core.view.holder.ALReportViewHolder;
-import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
@@ -231,15 +230,12 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
 
     @Override
     protected Action1<? super Void> getOnSignedAction() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                if (presenter.getRnRForm().isSubmitted()) {
-                    presenter.submitRequisition();
-                    showMessageNotifyDialog();
-                } else {
-                    presenter.authoriseRequisition();
-                }
+        return (Action1<Void>) aVoid -> {
+            if (presenter.getRnRForm().isSubmitted()) {
+                presenter.submitRequisition();
+                showMessageNotifyDialog();
+            } else {
+                presenter.authoriseRequisition();
             }
         };
     }
@@ -271,12 +267,9 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
     }
 
     private ALReportViewHolder.QuantityChangeListener getQuantityChangeListener() {
-        return new ALReportViewHolder.QuantityChangeListener() {
-            @Override
-            public void updateTotal(ALGridViewModel.ALColumnCode columnCode, ALGridViewModel.ALGridColumnCode gridColumnCode) {
-                presenter.alReportViewModel.updateTotal(columnCode, gridColumnCode);
-                adapter.updateTotal();
-            }
+        return (columnCode, gridColumnCode) -> {
+            presenter.alReportViewModel.updateTotal(columnCode, gridColumnCode);
+            adapter.updateTotal();
         };
     }
 }

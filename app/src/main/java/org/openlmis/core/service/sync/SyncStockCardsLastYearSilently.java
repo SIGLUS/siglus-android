@@ -19,8 +19,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Scheduler;
-import rx.Subscriber;
-import rx.functions.FuncN;
 
 public class SyncStockCardsLastYearSilently {
 
@@ -48,7 +46,7 @@ public class SyncStockCardsLastYearSilently {
         Date now = getActualDate();
 
         for (int month = startMonth; month <= monthsInAYear; month++) {
-            Observable<SyncDownStockCardResponse> objectObservable = createObservableToFetchStockMovements(month,now);
+            Observable<SyncDownStockCardResponse> objectObservable = createObservableToFetchStockMovements(month, now);
             tasks.add(objectObservable);
         }
 
@@ -57,16 +55,13 @@ public class SyncStockCardsLastYearSilently {
 
     @NonNull
     private Observable<List<StockCard>> zipObservables(List<Observable<SyncDownStockCardResponse>> tasks) {
-        return Observable.zip(tasks, new FuncN<List<StockCard>>() {
-            @Override
-            public List<StockCard> call(Object... args) {
-                List<StockCard> stockCards = new ArrayList<>();
-                for (Object object : args) {
-                    stockCards.addAll(((SyncDownStockCardResponse) object).getStockCards());
-                }
-
-                return stockCards;
+        return Observable.zip(tasks, args -> {
+            List<StockCard> stockCards = new ArrayList<>();
+            for (Object object : args) {
+                stockCards.addAll(((SyncDownStockCardResponse) object).getStockCards());
             }
+
+            return stockCards;
         });
     }
 
@@ -74,18 +69,15 @@ public class SyncStockCardsLastYearSilently {
         final String startDateStr = getStartDate(now, month);
         final String endDateStr = getEndDate(now, month);
 
-        return Observable.create(new Observable.OnSubscribe<SyncDownStockCardResponse>() {
-            @Override
-            public void call(Subscriber<? super SyncDownStockCardResponse> subscriber) {
-                try {
-                    SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi
-                            .fetchStockMovementData(facilityId, startDateStr, endDateStr);
-                    subscriber.onNext(syncDownStockCardResponse);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<SyncDownStockCardResponse>) subscriber -> {
+            try {
+                SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi
+                        .fetchStockMovementData(facilityId, startDateStr, endDateStr);
+                subscriber.onNext(syncDownStockCardResponse);
+                subscriber.onCompleted();
+            } catch (LMISException e) {
+                e.printStackTrace();
+                subscriber.onError(e);
             }
         }).subscribeOn(scheduler);
     }

@@ -33,7 +33,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.roboguice.shaded.goole.common.base.Optional;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
@@ -145,12 +144,7 @@ public final class MovementReasonManager {
 
 
     public List<MovementReason> buildReasonListForMovementType(final MovementType type){
-        return FluentIterable.from(currentReasonList).filter(new Predicate<MovementReason>() {
-            @Override
-            public boolean apply(MovementReason movementReason) {
-                return movementReason.getMovementType() == type && movementReason.canBeDisplayOnMovementMenu();
-            }
-        }).toList();
+        return FluentIterable.from(currentReasonList).filter(movementReason -> movementReason.getMovementType() == type && movementReason.canBeDisplayOnMovementMenu()).toList();
     }
 
     public MovementReason queryByDesc(final String reason) throws MovementReasonNotFoundException{
@@ -160,12 +154,7 @@ public final class MovementReasonManager {
     public MovementReason queryByDesc(final String desc, Locale locale) throws MovementReasonNotFoundException{
         ArrayList<MovementReason> reasonList = initReasonList(locale);
 
-        Optional<MovementReason> matched = FluentIterable.from(reasonList).firstMatch(new Predicate<MovementReason>() {
-            @Override
-            public boolean apply(MovementReason movementReason) {
-                return movementReason.getDescription().equalsIgnoreCase(desc);
-            }
-        });
+        Optional<MovementReason> matched = FluentIterable.from(reasonList).firstMatch(movementReason -> movementReason.getDescription().equalsIgnoreCase(desc));
 
         if (!matched.isPresent()){
             throw new MovementReasonNotFoundException(desc);
@@ -175,12 +164,7 @@ public final class MovementReasonManager {
 
 
     public MovementReason queryByCode(final String code) throws MovementReasonNotFoundException{
-        Optional<MovementReason> matched = FluentIterable.from(currentReasonList).firstMatch(new Predicate<MovementReason>() {
-            @Override
-            public boolean apply(MovementReason movementReason) {
-                return movementReason.getCode().equalsIgnoreCase(code);
-            }
-        });
+        Optional<MovementReason> matched = FluentIterable.from(currentReasonList).firstMatch(movementReason -> movementReason.getCode().equalsIgnoreCase(code));
 
         if (!matched.isPresent()){
             throw new MovementReasonNotFoundException(code);

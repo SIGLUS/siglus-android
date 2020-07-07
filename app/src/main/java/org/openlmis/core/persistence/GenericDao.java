@@ -20,11 +20,8 @@ package org.openlmis.core.persistence;
 
 import android.content.Context;
 
-import com.j256.ormlite.dao.Dao;
-
 import org.openlmis.core.exceptions.LMISException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,80 +44,48 @@ public class GenericDao<Model> {
     }
 
     public Model create(final Model object) throws LMISException {
-        return dbUtil.withDao(context, type, new DbUtil.Operation<Model, Model>() {
-            @Override
-            public Model operate(Dao<Model, String> dao) throws SQLException {
-                dao.create(object);
-                return object;
-            }
+        return dbUtil.withDao(context, type, dao -> {
+            dao.create(object);
+            return object;
         });
     }
 
     public Model createOrUpdate(final Model object) throws LMISException {
-        return dbUtil.withDao(context, type, new DbUtil.Operation<Model, Model>() {
-            @Override
-            public Model operate(Dao<Model, String> dao) throws SQLException {
-                dao.createOrUpdate(object);
-                return object;
-            }
+        return dbUtil.withDao(context, type, dao -> {
+            dao.createOrUpdate(object);
+            return object;
         });
     }
 
     public List<Model> queryForAll() throws LMISException {
-        return dbUtil.withDao(context, type, new DbUtil.Operation<Model, List<Model>>() {
-            @Override
-            public List<Model> operate(Dao<Model, String> dao) throws SQLException {
-                return dao.queryForAll();
-            }
-        });
+        return dbUtil.withDao(context, type, dao -> dao.queryForAll());
     }
 
     public Integer update(final Model object) throws LMISException {
-        return dbUtil.withDao(context, type, new DbUtil.Operation<Model, Integer>() {
-            @Override
-            public Integer operate(Dao<Model, String> dao) throws SQLException {
-                return dao.update(object);
-            }
-        });
+        return dbUtil.withDao(context, type, dao -> dao.update(object));
     }
 
     public Model getById(final String id) throws LMISException {
-        return dbUtil.withDao(context, type, new DbUtil.Operation<Model, Model>() {
-            @Override
-            public Model operate(Dao<Model, String> dao) throws SQLException {
-                return dao.queryForId(id);
-            }
-        });
+        return dbUtil.withDao(context, type, dao -> dao.queryForId(id));
     }
 
     public void refresh(final Model model) throws LMISException {
-        dbUtil.withDao(context, type, new DbUtil.Operation<Model, Void>() {
-            @Override
-            public Void operate(Dao<Model, String> dao) throws SQLException {
-                dao.refresh(model);
-                return null;
-            }
+        dbUtil.withDao(context, type, (DbUtil.Operation<Model, Void>) dao -> {
+            dao.refresh(model);
+            return null;
         });
     }
 
     public Integer delete(final Model object) throws LMISException {
-        return dbUtil.withDao(context, type, new DbUtil.Operation<Model, Integer>() {
-            @Override
-            public Integer operate(Dao<Model, String> dao) throws SQLException {
-                return dao.delete(object);
-            }
-        });
+        return dbUtil.withDao(context, type, dao -> dao.delete(object));
     }
 
     public boolean create(final List<Model> models) throws LMISException {
-        return dbUtil.withDaoAsBatch(context, type, new DbUtil.Operation<Model, Boolean>() {
-            @Override
-            public Boolean operate(final Dao<Model, String> dao) throws LMISException, SQLException {
-                for (Model model : models) {
-                    dao.createOrUpdate(model);
-                }
-                return true;
+        return dbUtil.withDaoAsBatch(context, type, dao -> {
+            for (Model model : models) {
+                dao.createOrUpdate(model);
             }
+            return true;
         });
     }
 

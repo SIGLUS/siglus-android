@@ -16,8 +16,6 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectRegimeProductAdapter;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
-import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,12 +74,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
         Subscription subscription = presenter.loadRegimeProducts(regimeType).subscribe(subscriber);
         subscriptions.add(subscription);
 
-        btnNext.setOnClickListener(new SingleClickButtonListener() {
-            @Override
-            public void onSingleClick(View v) {
-                validateAndSaveRegime(regimeType);
-            }
-        });
+        btnNext.setOnClickListener((v) -> validateAndSaveRegime(regimeType));
     }
 
     private void validateAndSaveRegime(Regimen.RegimeType regimeType) {
@@ -103,12 +96,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
 
 
     private List<RegimeProductViewModel> getCheckedProducts() {
-        return from(viewModels).filter(new Predicate<RegimeProductViewModel>() {
-            @Override
-            public boolean apply(RegimeProductViewModel viewModel) {
-                return viewModel.isChecked();
-            }
-        }).toList();
+        return from(viewModels).filter(viewModel -> viewModel.isChecked()).toList();
     }
 
     Subscriber<List<RegimeProductViewModel>> subscriber = new Subscriber<List<RegimeProductViewModel>>() {

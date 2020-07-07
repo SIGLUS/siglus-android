@@ -21,7 +21,6 @@ package org.openlmis.core.utils;
 import android.text.InputFilter;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
@@ -70,44 +69,35 @@ public final class TextStyleUtil {
     }
 
     public static InputFilter getEditTextInhibitInputSpace() {
-        return new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                if (source.length() <= 0) {
-                    return null;
-                }
-                if (source.equals(" ")) {
-                    return "";
-                } else {
-                    return null;
-                }
+        return (source, start, end, dest, dstart, dend) -> {
+            if (source.length() <= 0) {
+                return null;
+            }
+            if (source.equals(" ")) {
+                return "";
+            } else {
+                return null;
             }
         };
     }
 
     public static InputFilter getEditTextInhibitInputSpeChat() {
-        return new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                String speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\" -_×÷'\"€£¥₩~`•√Π÷×¶∆£¢^°©®™℅]";
-                Pattern pattern = Pattern.compile(speChat);
-                Matcher matcher = pattern.matcher(source.toString());
-                if (matcher.find()) return "";
-                else return null;
-            }
+        return (source, start, end, dest, dstart, dend) -> {
+            String speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\" -_×÷'\"€£¥₩~`•√Π÷×¶∆£¢^°©®™℅]";
+            Pattern pattern = Pattern.compile(speChat);
+            Matcher matcher = pattern.matcher(source.toString());
+            if (matcher.find()) return "";
+            else return null;
         };
     }
 
     public static InputFilter getEditTextInhibitInputNumber() {
-        return new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                String speChat = "[\\d]";
-                Pattern pattern = Pattern.compile(speChat);
-                Matcher matcher = pattern.matcher(source.toString());
-                if (matcher.find()) return "";
-                else return null;
-            }
+        return (source, start, end, dest, dstart, dend) -> {
+            String speChat = "[\\d]";
+            Pattern pattern = Pattern.compile(speChat);
+            Matcher matcher = pattern.matcher(source.toString());
+            if (matcher.find()) return "";
+            else return null;
         };
     }
 }

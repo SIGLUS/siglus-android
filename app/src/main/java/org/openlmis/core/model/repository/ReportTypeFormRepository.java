@@ -3,7 +3,6 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ReportTypeForm;
@@ -11,7 +10,6 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.utils.Constants;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class ReportTypeFormRepository {
@@ -27,14 +25,11 @@ public class ReportTypeFormRepository {
     }
 
     public void batchCreateOrUpdateReportTypes(final List<ReportTypeForm> reportTypeFormList) throws LMISException {
-        dbUtil.withDaoAsBatch(ReportTypeForm.class, new DbUtil.Operation<ReportTypeForm, Void>() {
-            @Override
-            public Void operate(Dao<ReportTypeForm, String> dao) throws SQLException, LMISException {
-                for (ReportTypeForm reportTypeForm : reportTypeFormList) {
-                    createOrUpdate(reportTypeForm);
-                }
-                return null;
+        dbUtil.withDaoAsBatch(ReportTypeForm.class, (DbUtil.Operation<ReportTypeForm, Void>) dao -> {
+            for (ReportTypeForm reportTypeForm : reportTypeFormList) {
+                createOrUpdate(reportTypeForm);
             }
+            return null;
         });
     }
 
@@ -49,12 +44,7 @@ public class ReportTypeFormRepository {
     }
 
     public ReportTypeForm queryByCode(final String reportTypeCode) throws LMISException {
-        return dbUtil.withDao(ReportTypeForm.class, new DbUtil.Operation<ReportTypeForm, ReportTypeForm>() {
-            @Override
-            public ReportTypeForm operate(Dao<ReportTypeForm, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().eq("code", reportTypeCode).queryForFirst();
-            }
-        });
+        return dbUtil.withDao(ReportTypeForm.class, dao -> dao.queryBuilder().where().eq("code", reportTypeCode).queryForFirst());
     }
 
     public List<ReportTypeForm> listAll() throws LMISException {

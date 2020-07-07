@@ -56,12 +56,9 @@ public class RapidTestReportsActivity extends BaseReportListActivity {
     }
 
     private Action1<? super List<RapidTestReportViewModel>> getRefreshReportListSubscriber() {
-        return new Action1<List<RapidTestReportViewModel>>() {
-            @Override
-            public void call(List<RapidTestReportViewModel> viewModels) {
-                loaded();
-                rapidTestReportAdapter.notifyDataSetChanged();
-            }
+        return (Action1<List<RapidTestReportViewModel>>) viewModels -> {
+            loaded();
+            rapidTestReportAdapter.notifyDataSetChanged();
         };
     }
 

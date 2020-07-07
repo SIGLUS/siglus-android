@@ -231,15 +231,12 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
 
     @Override
     protected Action1<? super Void> getOnSignedAction() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                if (presenter.getRnRForm().isSubmitted()) {
-                    presenter.submitRequisition();
-                    showMessageNotifyDialog();
-                } else {
-                    presenter.authoriseRequisition();
-                }
+        return (Action1<Void>) aVoid -> {
+            if (presenter.getRnRForm().isSubmitted()) {
+                presenter.submitRequisition();
+                showMessageNotifyDialog();
+            } else {
+                presenter.authoriseRequisition();
             }
         };
     }

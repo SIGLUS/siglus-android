@@ -3,14 +3,12 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.PatientDispensation;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class PatientDispensationRepository {
@@ -30,12 +28,9 @@ public class PatientDispensationRepository {
     }
 
     public List<PatientDispensation> getAllByProgramId(final long id) throws LMISException {
-        return dbUtil.withDao(PatientDispensation.class, new DbUtil.Operation<PatientDispensation, List<PatientDispensation>>() {
-            @Override
-            public List<PatientDispensation> operate(Dao<PatientDispensation, String> dao) throws SQLException, LMISException {
-                List<PatientDispensation> patientDispensations = dao.queryBuilder().where().eq("ptvProgramId", id).query();
-                return patientDispensations;
-            }
+        return dbUtil.withDao(PatientDispensation.class, dao -> {
+            List<PatientDispensation> patientDispensations = dao.queryBuilder().where().eq("ptvProgramId", id).query();
+            return patientDispensations;
         });
     }
 }

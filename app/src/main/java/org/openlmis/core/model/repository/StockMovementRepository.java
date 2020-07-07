@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
@@ -19,7 +18,6 @@ import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,26 +52,18 @@ public class StockMovementRepository {
     }
 
     public List<StockMovementItem> listUnSynced() throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
-            @Override
-            public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("synced", false)
-                        .and().isNotNull("stockCard_id").query();
-            }
-        });
+        return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder().where().eq("synced", false)
+                .and().isNotNull("stockCard_id").query());
     }
 
     protected void batchCreateOrUpdateStockMovementsAndLotInfo(final List<StockMovementItem> stockMovementItems) throws LMISException {
-        dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
-            @Override
-            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
-                for (StockMovementItem stockMovementItem : stockMovementItems) {
-                    updateDateTimeIfEmpty(stockMovementItem);
-                    dao.createOrUpdate(stockMovementItem);
-                    lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
-                }
-                return null;
+        dbUtil.withDaoAsBatch(StockMovementItem.class, (DbUtil.Operation<StockMovementItem, Void>) dao -> {
+            for (StockMovementItem stockMovementItem : stockMovementItems) {
+                updateDateTimeIfEmpty(stockMovementItem);
+                dao.createOrUpdate(stockMovementItem);
+                lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
             }
+            return null;
         });
     }
 
@@ -108,45 +98,32 @@ public class StockMovementRepository {
     }
 
     public void batchCreateOrUpdateStockMovementsAndLotMovements(final List<StockMovementItem> stockMovementItems) throws LMISException {
-        dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
-            @Override
-            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
-                for (StockMovementItem stockMovementItem : stockMovementItems) {
-                    updateDateTimeIfEmpty(stockMovementItem);
-                    dao.createOrUpdate(stockMovementItem);
-                    for (LotMovementItem lotMovementItem : stockMovementItem.getLotMovementItemListWrapper()) {
-                        Lot existingLot = lotRepository.getLotByLotNumberAndProductId(lotMovementItem.getLot().getLotNumber(), lotMovementItem.getLot().getProduct().getId());
-                        lotMovementItem.setLot(existingLot);
-                        lotRepository.createLotMovementItem(lotMovementItem);
-                    }
+        dbUtil.withDaoAsBatch(StockMovementItem.class, (DbUtil.Operation<StockMovementItem, Void>) dao -> {
+            for (StockMovementItem stockMovementItem : stockMovementItems) {
+                updateDateTimeIfEmpty(stockMovementItem);
+                dao.createOrUpdate(stockMovementItem);
+                for (LotMovementItem lotMovementItem : stockMovementItem.getLotMovementItemListWrapper()) {
+                    Lot existingLot = lotRepository.getLotByLotNumberAndProductId(lotMovementItem.getLot().getLotNumber(), lotMovementItem.getLot().getProduct().getId());
+                    lotMovementItem.setLot(existingLot);
+                    lotRepository.createLotMovementItem(lotMovementItem);
                 }
-                return null;
             }
+            return null;
         });
     }
 
     public StockMovementItem getFirstStockMovement() throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
-            @Override
-            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder()
-                        .orderBy("movementDate", true)
-                        .orderBy("createdTime", true)
-                        .queryForFirst();
-            }
-        });
+        return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
+                .orderBy("movementDate", true)
+                .orderBy("createdTime", true)
+                .queryForFirst());
     }
 
     private StockMovementItem getLatestStockMovement() throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
-            @Override
-            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder()
-                        .orderBy("movementDate", false)
-                        .orderBy("createdTime", false)
-                        .queryForFirst();
-            }
-        });
+        return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
+                .orderBy("movementDate", false)
+                .orderBy("createdTime", false)
+                .queryForFirst());
     }
 
     public List<String> queryStockMovementDatesByProgram(final String programCode) {
@@ -184,75 +161,50 @@ public class StockMovementRepository {
     }
 
     public StockMovementItem queryFirstStockMovementByStockCardId(final long stockCardId) throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
-            @Override
-            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder()
-                        .orderBy("movementDate", true)
-                        .orderBy("createdTime", true)
-                        .where()
-                        .eq("stockCard_id", stockCardId)
-                        .queryForFirst();
-            }
-        });
+        return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
+                .orderBy("movementDate", true)
+                .orderBy("createdTime", true)
+                .where()
+                .eq("stockCard_id", stockCardId)
+                .queryForFirst());
     }
 
     public List<StockMovementItem> queryStockMovementHistory(final long stockCardId, final long startIndex, final long maxRows) throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
-            @Override
-            public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder().offset(startIndex).limit(maxRows)
-                        .orderBy("movementDate", true)
-                        .orderBy("createdTime", true)
-                        .orderBy("id", true)
-                        .where().eq("stockCard_id", stockCardId).query();
-            }
-        });
+        return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder().offset(startIndex).limit(maxRows)
+                .orderBy("movementDate", true)
+                .orderBy("createdTime", true)
+                .orderBy("id", true)
+                .where().eq("stockCard_id", stockCardId).query());
     }
 
     public List<StockMovementItem> queryStockItemsByCreatedDate(final long stockCardId, final Date periodBeginDate, final Date periodEndDate) throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
-            @Override
-            public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder()
-                        .orderBy("movementDate", true)
-                        .orderBy("createdTime", true)
-                        .where()
-                        .eq("stockCard_id", stockCardId)
-                        .and().gt("createdTime", periodBeginDate)//difference from the api above
-                        .and().le("createdTime", periodEndDate)
-                        .query();
-            }
-        });
+        return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
+                .orderBy("movementDate", true)
+                .orderBy("createdTime", true)
+                .where()
+                .eq("stockCard_id", stockCardId)
+                .and().gt("createdTime", periodBeginDate)//difference from the api above
+                .and().le("createdTime", periodEndDate)
+                .query());
     }
 
     public List<StockMovementItem> queryStockMovementsByMovementDate(final long stockCardId, final Date startDate, final Date endDate) throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
-            @Override
-            public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder()
-                        .orderBy("movementDate", true)
-                        .orderBy("createdTime", true)
-                        .where()
-                        .eq("stockCard_id", stockCardId)
-                        .and().ge("movementDate", startDate)
-                        .and().le("movementDate", endDate)
-                        .query();
-            }
-        });
+        return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
+                .orderBy("movementDate", true)
+                .orderBy("createdTime", true)
+                .where()
+                .eq("stockCard_id", stockCardId)
+                .and().ge("movementDate", startDate)
+                .and().le("movementDate", endDate)
+                .query());
     }
 
     public List<StockMovementItem> listLastFiveStockMovements(final long stockCardId) throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
-            @Override
-            public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return Lists.reverse(dao.queryBuilder().limit(5L)
-                        .orderBy("movementDate", false)
-                        .orderBy("createdTime", false)
-                        .orderBy("id", false)
-                        .where().eq("stockCard_id", stockCardId).query());
-            }
-        });
+        return dbUtil.withDao(StockMovementItem.class, dao -> Lists.reverse(dao.queryBuilder().limit(5L)
+                .orderBy("movementDate", false)
+                .orderBy("createdTime", false)
+                .orderBy("id", false)
+                .where().eq("stockCard_id", stockCardId).query()));
     }
 
     public List<StockMovementItem> listLastTwoStockMovements(final long stockCardId) throws LMISException {

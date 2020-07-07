@@ -351,24 +351,21 @@ public class LoginPresenter extends Presenter {
     }
 
     public void syncLocalUserData(Subscriber<SyncLocalUserProgress> subscriber) {
-        Observable.create(new Observable.OnSubscribe<SyncLocalUserProgress>() {
-            @Override
-            public void call(Subscriber<? super SyncLocalUserProgress> subscriber) {
-                if (SharedPreferenceMgr.getInstance().getLastSyncProductTime() == null) {
-                    subscriber.onNext(SyncLocalUserProgress.SyncLastSyncProductFail);
-                    return;
-                }
-
-                if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced()) {
-                    subscriber.onNext(SyncLocalUserProgress.SyncLastMonthStockDataFail);
-                    return;
-                }
-                if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
-                    subscriber.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
-                    return;
-                }
-                subscriber.onNext(SyncLocalUserProgress.SyncLastDataSuccess);
+        Observable.create((Observable.OnSubscribe<SyncLocalUserProgress>) subscriber1 -> {
+            if (SharedPreferenceMgr.getInstance().getLastSyncProductTime() == null) {
+                subscriber1.onNext(SyncLocalUserProgress.SyncLastSyncProductFail);
+                return;
             }
+
+            if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced()) {
+                subscriber1.onNext(SyncLocalUserProgress.SyncLastMonthStockDataFail);
+                return;
+            }
+            if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
+                subscriber1.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
+                return;
+            }
+            subscriber1.onNext(SyncLocalUserProgress.SyncLastDataSuccess);
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);

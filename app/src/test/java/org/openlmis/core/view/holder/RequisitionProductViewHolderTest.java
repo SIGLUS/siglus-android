@@ -31,6 +31,7 @@ import java.sql.Date;
 import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -111,6 +112,14 @@ public class RequisitionProductViewHolderTest {
 
         SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) viaRequisitionActivity.getFragmentManager().findFragmentByTag("del_confirm_dialog");
         assertNotNull(del_confirm_dialog);
+    }
+
+    @Test
+    public void shouldEqual() {
+        RequisitionFormItemViewModel viewModel1 = new RequisitionFormItemViewModel(formItem);
+        RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
+
+        assertEquals(viewModel, viewModel1);
     }
 
 }

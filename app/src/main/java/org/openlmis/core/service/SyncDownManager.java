@@ -68,7 +68,6 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 @Singleton
@@ -114,23 +113,20 @@ public class SyncDownManager {
         }
 
         isSyncing = true;
-        Observable.create(new Observable.OnSubscribe<SyncProgress>() {
-            @Override
-            public void call(Subscriber<? super SyncProgress> subscriber) {
-                try {
-                    SyncDownPrograms(subscriber);
-                    syncDownService(subscriber);
-                    syncDownReportType(subscriber);
-                    syncDownProducts(subscriber);
-                    syncDownLastMonthStockCards(subscriber);
-                    syncDownRequisition(subscriber);
-                    syncDownRapidTests(subscriber);
-                    isSyncing = false;
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    isSyncing = false;
-                    subscriber.onError(e);
-                }
+        Observable.create((Observable.OnSubscribe<SyncProgress>) subscriber1 -> {
+            try {
+                SyncDownPrograms(subscriber1);
+                syncDownService(subscriber1);
+                syncDownReportType(subscriber1);
+                syncDownProducts(subscriber1);
+                syncDownLastMonthStockCards(subscriber1);
+                syncDownRequisition(subscriber1);
+                syncDownRapidTests(subscriber1);
+                isSyncing = false;
+                subscriber1.onCompleted();
+            } catch (LMISException e) {
+                isSyncing = false;
+                subscriber1.onError(e);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
@@ -247,16 +243,13 @@ public class SyncDownManager {
     }
 
     private void syncChangeKit() {
-        Observable.create(new Observable.OnSubscribe<SyncProgress>() {
-            @Override
-            public void call(Subscriber<? super SyncProgress> subscriber) {
-                try {
-                    Log.d(TAG, " sync the kit change.");
-                    fetchKitChangeProduct();
-                    subscriber.onNext(SyncProgress.ShouldGoToInitialInventory);
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                }
+        Observable.create((Observable.OnSubscribe<SyncProgress>) subscriber -> {
+            try {
+                Log.d(TAG, " sync the kit change.");
+                fetchKitChangeProduct();
+                subscriber.onNext(SyncProgress.ShouldGoToInitialInventory);
+            } catch (LMISException e) {
+                e.printStackTrace();
             }
         }).subscribeOn(Schedulers.newThread()).subscribeOn(Schedulers.io()).subscribe();
     }
@@ -481,27 +474,19 @@ public class SyncDownManager {
     }
 
     private Observable<Void> zipObservables(List<Observable<Void>> tasks) {
-        return Observable.zip(tasks, new FuncN<Void>() {
-            @Override
-            public Void call(Object... args) {
-                return null;
-            }
-        });
+        return Observable.zip(tasks, args -> null);
     }
 
 
     public Observable<Void> saveStockCards(final List<StockCard> stockCards, Scheduler scheduler) {
 
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    stockRepository.batchCreateSyncDownStockCardsAndMovements(stockCards);
-                    stockService.immediatelyUpdateAvgMonthlyConsumption();
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
-                }
+        return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+            try {
+                stockRepository.batchCreateSyncDownStockCardsAndMovements(stockCards);
+                stockService.immediatelyUpdateAvgMonthlyConsumption();
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
             }
         }).observeOn(scheduler);
     }

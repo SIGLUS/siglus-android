@@ -42,12 +42,7 @@ public class ConfirmGenerateLotNumberDialogFragment extends BaseDialogFragment {
         }
 
         btnConfirm.setOnClickListener(positiveClickListener);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ConfirmGenerateLotNumberDialogFragment.this.dismiss();
-            }
-        });
+        btnCancel.setOnClickListener(v -> ConfirmGenerateLotNumberDialogFragment.this.dismiss());
     }
 
     @Nullable

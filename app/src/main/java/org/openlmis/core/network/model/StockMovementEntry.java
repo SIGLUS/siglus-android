@@ -20,10 +20,8 @@ package org.openlmis.core.network.model;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
@@ -63,12 +61,7 @@ public class StockMovementEntry {
         this.getCustomProps().put("SOH", String.valueOf(stockMovementItem.getStockOnHand()));
 
         if (stockMovementItem.getLotMovementItemListWrapper() != null) {
-            lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper()).transform(new Function<LotMovementItem, LotMovementEntry>() {
-                @Override
-                public LotMovementEntry apply(LotMovementItem lotMovementItem) {
-                    return new LotMovementEntry(lotMovementItem);
-                }
-            }).toList());
+            lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper()).transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());
         }
     }
 }

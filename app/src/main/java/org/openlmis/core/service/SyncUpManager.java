@@ -43,7 +43,6 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
-import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
@@ -79,9 +78,6 @@ public class SyncUpManager {
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
-
-    @Inject
-    StockRepository stockRepository;
 
     @Inject
     StockMovementRepository stockMovementRepository;
