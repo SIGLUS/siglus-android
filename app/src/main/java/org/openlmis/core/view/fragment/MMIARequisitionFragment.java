@@ -303,6 +303,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
                         ToastUtil.show(R.string.msg_requisition_not_unique);
                     } else if (shouldCommentMandatory()) {
                         etComment.setError(getString(R.string.mmia_comment_should_not_empty));
+                        etComment.requestFocus();
                     } else {
                         showSignDialog();
                     }
