@@ -133,6 +133,10 @@ public class RnRForm extends BaseModel {
         return getStatus() == STATUS.SUBMITTED || getStatus() == STATUS.SUBMITTED_MISSED;
     }
 
+    public boolean canRemoveAddedProducts() {
+        return isDraft() || isMissed() || isSubmitted();
+    }
+
     public boolean isAuthorized() {
         return getStatus() == STATUS.AUTHORIZED;
     }

@@ -106,12 +106,11 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
         requestAmount.setError(null);
         approvedAmount.setText(entry.getApprovedAmount());
 
-        if (status == RnRForm.STATUS.SUBMITTED || status == RnRForm.STATUS.SUBMITTED_MISSED) {
+        if (status == RnRForm.STATUS.SUBMITTED) {
             showDisabledAmount(requestAmount);
             showEnabledAmount(approvedAmount);
             approvedAmount.addTextChangedListener(mySimpleTextWatcher);
-
-        } else if (status == RnRForm.STATUS.DRAFT || status == RnRForm.STATUS.DRAFT_MISSED) {
+        } else if (status == RnRForm.STATUS.DRAFT) {
             showEnabledAmount(requestAmount);
             showDisabledAmount(approvedAmount);
             requestAmount.addTextChangedListener(mySimpleTextWatcher);
