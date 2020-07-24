@@ -111,6 +111,7 @@ public final class Constants {
     public static final String PARAM_MOVEMENT_TYPE = "movementType";
     public static final String PARAM_LOT_DETAILS = "lotDetails";
     public static final String PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER = "confirmGenerateLotNumberMessage";
+    public static final String PARAM_STOCK_ITEM = "stockCardItem";
 
     // Request Params
     public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;

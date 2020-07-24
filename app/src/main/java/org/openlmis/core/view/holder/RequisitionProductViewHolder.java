@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.ToastUtil;

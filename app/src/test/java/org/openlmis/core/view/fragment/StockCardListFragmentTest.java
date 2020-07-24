@@ -119,14 +119,14 @@ public class StockCardListFragmentTest {
 
         fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
-        verify(fragment.presenter).refreshStockCardsObservable();
+        verify(fragment.presenter).refreshStockCardsObservable(0);
     }
 
     @Test
-    public void shouldRefreshAndShowBannerWhenNeedShowBanner(){
+    public void shouldRefreshAndShowBannerWhenNeedShowBanner() {
         fragment.productsUpdateBanner = productUpdateBanner;
         fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
-        verify(fragment.presenter).refreshStockCardsObservable();
+        verify(fragment.presenter).refreshStockCardsObservable(0);
     }
 }

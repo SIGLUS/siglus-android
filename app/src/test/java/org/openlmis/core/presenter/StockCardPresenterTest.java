@@ -71,14 +71,6 @@ public class StockCardPresenterTest {
     }
 
     @Test
-    public void testRefreshStockCardViewModelsSOH() throws Exception {
-
-        presenter.refreshStockCardViewModelsSOH();
-
-        verify(stockRepository, times(2)).refresh(any(StockCard.class));
-    }
-
-    @Test
     public void shouldRefreshStockCardModelListWithGetLoadStockCardsSubscriber() throws Exception {
         ArrayList<StockCard> cardList = new ArrayList<>();
         cardList.addAll(this.stockCardList);

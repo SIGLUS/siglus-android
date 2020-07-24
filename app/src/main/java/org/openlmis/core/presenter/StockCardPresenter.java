@@ -153,10 +153,11 @@ public class StockCardPresenter extends Presenter {
         subscriptions.add(subscription);
     }
 
-    public void refreshStockCardsObservable() {
+    //FIXME: should only refresh the stock that changed
+    public void refreshStockCardsObservable(long stockCardId) {
         view.loading();
         Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
-            refreshStockCardViewModelsSOH();
+            refreshStockCardViewModelsSOH(stockCardId);
             checkDataAndEmitter(subscriber, Active);
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<StockCard>>() {
@@ -189,11 +190,13 @@ public class StockCardPresenter extends Presenter {
         inventoryViewModels.addAll(inventoryViewModelList);
     }
 
-    public void refreshStockCardViewModelsSOH() {
+    public void refreshStockCardViewModelsSOH(long stockCardId) {
         for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
             final StockCard stockCard = inventoryViewModel.getStockCard();
-            stockRepository.refresh(stockCard);
-            inventoryViewModel.setStockOnHand(stockCard.calculateSOHFromLots());
+            if (stockCardId == stockCard.getId()) {
+                stockRepository.refresh(stockCard);
+                inventoryViewModel.setStockOnHand(stockCard.calculateSOHFromLots());
+            }
         }
     }
 

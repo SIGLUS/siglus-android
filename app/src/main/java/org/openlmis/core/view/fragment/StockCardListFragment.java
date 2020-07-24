@@ -136,7 +136,8 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
-                presenter.refreshStockCardsObservable();
+                long stockCardId = data.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
+                presenter.refreshStockCardsObservable(stockCardId);
             } else if (requestCode == Constants.REQUEST_UNPACK_KIT) {
                 presenter.loadKits();
             }
