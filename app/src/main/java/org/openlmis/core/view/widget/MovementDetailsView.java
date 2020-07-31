@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.listener.MovementDateListener;
 
 import java.util.Calendar;
@@ -112,6 +113,7 @@ public class MovementDetailsView extends LinearLayout {
                 }
             }
         });
+        etMovementSignature.setFilters(TextStyleUtil.getSignatureLimitation());
     }
 
     public void setMovementDateClickListener() {

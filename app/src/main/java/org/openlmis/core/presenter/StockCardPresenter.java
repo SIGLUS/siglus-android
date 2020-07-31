@@ -153,7 +153,6 @@ public class StockCardPresenter extends Presenter {
         subscriptions.add(subscription);
     }
 
-    //FIXME: should only refresh the stock that changed
     public void refreshStockCardsObservable(long stockCardId) {
         view.loading();
         Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {

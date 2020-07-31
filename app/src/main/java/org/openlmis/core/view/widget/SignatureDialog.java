@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,10 +89,7 @@ public class SignatureDialog extends BaseDialogFragment {
         SingleClickButtonListener singleClickButtonListener = getSingleClickButtonListener();
         btnCancel.setOnClickListener(singleClickButtonListener);
         btnSign.setOnClickListener(singleClickButtonListener);
-        etSignature.setFilters(new InputFilter[]{TextStyleUtil.getEditTextInhibitInputSpace(),
-                TextStyleUtil.getEditTextInhibitInputSpeChat(),
-                TextStyleUtil.getEditTextInhibitInputNumber(),
-                new InputFilter.LengthFilter(5)});
+        etSignature.setFilters(TextStyleUtil.getSignatureLimitation());
     }
 
     private void setDialogAttributes() {
