@@ -22,10 +22,9 @@
             style="@style/Dialog.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            android:hint="@string/hint_signature"
             android:inputType="textPersonName"
-            android:maxLength="@integer/signature_length" />
+            android:maxLength="@integer/signature_length"
+            android:hint="@string/hint_signature" />
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout

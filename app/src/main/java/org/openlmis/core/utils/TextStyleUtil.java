@@ -18,6 +18,7 @@
 package org.openlmis.core.utils;
 
 
+import android.text.InputFilter;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -26,6 +27,9 @@ import android.text.style.ForegroundColorSpan;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class TextStyleUtil {
     private TextStyleUtil() {
@@ -62,5 +66,38 @@ public final class TextStyleUtil {
         styledUnitBuilder.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
                 length, unit.length(), Spannable.SPAN_POINT_MARK);
         return styledUnitBuilder;
+    }
+
+    public static InputFilter getEditTextInhibitInputSpace() {
+        return (source, start, end, dest, dstart, dend) -> {
+            if (source.length() <= 0) {
+                return null;
+            }
+            if (source.equals(" ")) {
+                return "";
+            } else {
+                return null;
+            }
+        };
+    }
+
+    public static InputFilter getEditTextInhibitInputSpeChat() {
+        return (source, start, end, dest, dstart, dend) -> {
+            String speChat = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\" -_×÷'\"€£¥₩~`•√Π÷×¶∆£¢^°©®™℅]";
+            Pattern pattern = Pattern.compile(speChat);
+            Matcher matcher = pattern.matcher(source.toString());
+            if (matcher.find()) return "";
+            else return null;
+        };
+    }
+
+    public static InputFilter getEditTextInhibitInputNumber() {
+        return (source, start, end, dest, dstart, dend) -> {
+            String speChat = "[\\d]";
+            Pattern pattern = Pattern.compile(speChat);
+            Matcher matcher = pattern.matcher(source.toString());
+            if (matcher.find()) return "";
+            else return null;
+        };
     }
 }

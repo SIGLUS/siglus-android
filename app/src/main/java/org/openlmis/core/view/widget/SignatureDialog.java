@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
 
 import lombok.Getter;
@@ -88,6 +90,10 @@ public class SignatureDialog extends BaseDialogFragment {
         SingleClickButtonListener singleClickButtonListener = getSingleClickButtonListener();
         btnCancel.setOnClickListener(singleClickButtonListener);
         btnSign.setOnClickListener(singleClickButtonListener);
+        etSignature.setFilters(new InputFilter[]{TextStyleUtil.getEditTextInhibitInputSpace(),
+                TextStyleUtil.getEditTextInhibitInputSpeChat(),
+                TextStyleUtil.getEditTextInhibitInputNumber(),
+                new InputFilter.LengthFilter(5)});
     }
 
     private void setDialogAttributes() {
