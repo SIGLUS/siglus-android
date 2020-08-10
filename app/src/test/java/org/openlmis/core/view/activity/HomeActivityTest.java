@@ -21,13 +21,13 @@ package org.openlmis.core.view.activity;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.google.inject.AbstractModule;
 
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISApp;
@@ -49,9 +49,6 @@ import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowToast;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 import roboguice.RoboGuice;
 
@@ -221,12 +218,35 @@ public class HomeActivityTest {
     }
 
     @Test
+    public void shouldShowMMIARapidTestALButtons() {
+        when(mockSharedPreferenceMgr.getReportTypesData()).thenReturn(ReportTypeBuilder.getReportTypeForms(getClass(), "HomeActivityEntry.json"));
+        HomeActivity homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
+
+        assertEquals(homeActivity.btnMMIAList.getVisibility(), View.VISIBLE);
+        assertEquals(homeActivity.btnRapidTestReport.getVisibility(), View.VISIBLE);
+        assertEquals(homeActivity.btnALReport.getVisibility(), View.VISIBLE);
+        assertEquals(homeActivity.btnPTVReport.getVisibility(), View.GONE);
+    }
+
+    @Test
+    public void shouldNotShowMMIAAndPTVBoth() {
+        when(mockSharedPreferenceMgr.getReportTypesData()).thenReturn(ReportTypeBuilder.getReportTypeForms(getClass(), "HomeActivityNoMMIAAndPTV.json"));
+        HomeActivity homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
+
+        assertEquals(homeActivity.btnMMIAList.getVisibility(), View.GONE);
+        assertEquals(homeActivity.btnRapidTestReport.getVisibility(), View.VISIBLE);
+        assertEquals(homeActivity.btnALReport.getVisibility(), View.VISIBLE);
+        assertEquals(homeActivity.btnPTVReport.getVisibility(), View.GONE);
+    }
+
+
+    @Test
     public void shouldShowWarningDialogWhenWipeDataWiped() throws Exception {
         WarningDialogFragment.DialogDelegate delegate = anyObject();
         int message = anyInt();
         int positiveMessageButton = anyInt();
         int negativeMessageButton = anyInt();
-        when(warningDialogFragmentBuilder.build(delegate,message,positiveMessageButton,negativeMessageButton)).thenReturn(mock(WarningDialogFragment.class));
+        when(warningDialogFragmentBuilder.build(delegate, message, positiveMessageButton, negativeMessageButton)).thenReturn(mock(WarningDialogFragment.class));
 
         homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
     }

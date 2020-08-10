@@ -11,6 +11,11 @@ public class JsonFileReader {
         return readFromDataDirToString(in);
     }
 
+    public static String readJson(Class clazz, String dir, String fileName) {
+        InputStream inputStream = clazz.getClassLoader().getResourceAsStream(dir + "/" + fileName);
+        return readFromDataDirToString(inputStream);
+    }
+
     private static String readFromDataDirToString(InputStream in) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuffer sb = new StringBuffer();

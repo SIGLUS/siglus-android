@@ -1,0 +1,52 @@
+[
+  {
+    "active": true,
+    "code": "TEST_KIT",
+    "description": "RAPID TEST",
+    "name": "RAPID TEST",
+    "startTime": "2019-04-01 00:00:00",
+    "createdAt": "2020-08-07 22:02:34",
+    "id": 0,
+    "updatedAt": "2020-08-07 22:02:34"
+  },
+  {
+    "active": false,
+    "code": "MMIA",
+    "description": "MMIA",
+    "name": "MMIA",
+    "startTime": "2018-05-21 00:00:00",
+    "createdAt": "2020-08-07 22:02:34",
+    "id": 0,
+    "updatedAt": "2020-08-07 22:02:34"
+  },
+  {
+    "active": false,
+    "code": "PTV",
+    "description": "PTV",
+    "name": "PTV",
+    "startTime": "2018-05-21 00:00:00",
+    "createdAt": "2020-08-07 22:02:34",
+    "id": 0,
+    "updatedAt": "2020-08-07 22:02:34"
+  },
+  {
+    "active": true,
+    "code": "MALARIA",
+    "description": "AL",
+    "name": "AL",
+    "startTime": "2019-04-21 00:00:00",
+    "createdAt": "2020-08-07 22:02:34",
+    "id": 0,
+    "updatedAt": "2020-08-07 22:02:34"
+  },
+  {
+    "active": false,
+    "code": "VIA",
+    "description": "Balance Requisition",
+    "name": "Balance Requisition",
+    "startTime": "2018-05-21 00:00:00",
+    "createdAt": "2020-08-07 22:02:34",
+    "id": 0,
+    "updatedAt": "2020-08-07 22:02:34"
+  }
+]

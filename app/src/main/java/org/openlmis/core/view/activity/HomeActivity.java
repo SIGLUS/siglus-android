@@ -232,14 +232,11 @@ public class HomeActivity extends BaseActivity {
             }
         }
 
-        if (btnPTVReport.getVisibility() == View.VISIBLE && btnMMIAList.getVisibility() == View.VISIBLE) {
+        if (btnPTVReport.getVisibility() == View.VISIBLE || btnMMIAList.getVisibility() == View.VISIBLE) {
             ReportTypeForm ptv = getReportType(Constants.PTV_REPORT, reportTypes);
             ReportTypeForm mmia = getReportType(Constants.MMIA_REPORT, reportTypes);
-            if (ptv != null && !ptv.active) {
-                btnPTVReport.setVisibility(View.GONE);
-            } else if (mmia != null && !mmia.active) {
-                btnMMIAList.setVisibility(View.GONE);
-            }
+            btnPTVReport.setVisibility((ptv == null || !ptv.active) ? View.GONE : View.VISIBLE);
+            btnMMIAList.setVisibility(mmia == null || !mmia.active ? View.GONE : View.VISIBLE);
         }
     }
 
