@@ -1,10 +1,8 @@
 package org.openlmis.core.view.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Pair;
 import android.view.View;
 
 import com.google.inject.AbstractModule;
@@ -22,7 +20,6 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.presenter.AddNonBasicProductsPresenterTest;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
@@ -44,7 +41,6 @@ import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
@@ -113,7 +109,6 @@ public class SelectPeriodActivityTest {
 
         verify(mockedPresenter).loadData("MMIA", null);
         assertThat(selectPeriodActivity.tvInstruction.getText().toString(), is(expectedFormattedText.toString()));
-
     }
 
     @Test

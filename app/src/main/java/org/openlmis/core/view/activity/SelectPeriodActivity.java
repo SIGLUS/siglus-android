@@ -72,6 +72,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private String programCode;
     private boolean isMissedPeriod;
     private Period period;
+    private DateTime periodEndMonth;
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
@@ -86,6 +87,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         this.programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
         isMissedPeriod = getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
         period = (Period) getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
+        periodEndMonth = (DateTime) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_END_MONTH);
         super.onCreate(savedInstanceState);
 
         init();
@@ -103,7 +105,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_training_select_close_of_period, date.toString("dd MMM"))));
         } else {
-            tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_select_close_of_period, date.monthOfYear().getAsShortText(), date.toString("dd MMM"))));
+            tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_select_close_of_period,
+                    getPreviousPeriodEndMonth(periodEndMonth, date),
+                    date.toString("dd MMM"))));
         }
 
         presenter.loadData(programCode, period);
@@ -111,6 +115,11 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         vgContainer.setAdapter(adapter);
 
         bindListeners();
+    }
+
+    private String getPreviousPeriodEndMonth(DateTime periodEndDateTime, DateTime now) {
+        return periodEndDateTime != null ? periodEndDateTime.monthOfYear().getAsShortText() : now.monthOfYear().getAsShortText();
+
     }
 
     private void bindListeners() {
@@ -232,6 +241,14 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         Intent intent = new Intent(context, SelectPeriodActivity.class);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, programCode);
         intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
+        return intent;
+    }
+
+    public static Intent getIntentToMe(Context context, String programCode, boolean isMissedPeriod, DateTime periodEnd) {
+        Intent intent = new Intent(context, SelectPeriodActivity.class);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, programCode);
+        intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
+        intent.putExtra(Constants.PARAM_PERIOD_END_MONTH, periodEnd);
         return intent;
     }
 

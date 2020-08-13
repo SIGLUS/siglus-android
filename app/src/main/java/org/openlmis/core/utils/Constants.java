@@ -100,6 +100,7 @@ public final class Constants {
     public static final String PARAM_IS_KIT = "isKit";
     public static final String PARAM_SELECTED_INVENTORY_DATE = "selectedInventoryDate";
     public static final String PARAM_IS_MISSED_PERIOD = "isMissedPeriod";
+    public static final String PARAM_PERIOD_END_MONTH = "period_end_month";
     public static final String PARAM_PERIOD = "period";
     public static final String PARAM_USERNAME = "username";
     public static final String PARAM_PASSWORD = "password";
