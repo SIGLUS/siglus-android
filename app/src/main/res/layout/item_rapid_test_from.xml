@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:enabled="false"
-        android:inputType="number" />
+        android:inputType="number"
+        android:maxLength="@integer/max_length_rapid_test_no_total" />
 
     <TextView
         android:id="@+id/tv_received"
@@ -46,7 +47,8 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:enabled="false"
-        android:inputType="numberSigned" />
+        android:inputType="numberSigned"
+        android:maxLength="@integer/max_length_rapid_test_no_total" />
 
     <TextView
         android:id="@+id/tv_expire"
