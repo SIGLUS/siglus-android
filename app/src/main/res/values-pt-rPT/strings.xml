@@ -224,7 +224,8 @@
     <string name="table_trav_label_transfers">Transferências</string>
     <string name="table_dispensed">Meses dispensados</string>
     <string name="table_dispensed_label_dt">Dispensa para 3 Meses (DT)</string>
-    <string name="table_dispensed_label_dispense">Mês dispensado</string>
+    <string name="table_dispensed_label_ds">Dispensa para 6 Meses (DS)</string>
+    <string name="table_dispensed_label_dm">Mês dispensado</string>
     <string name="table_dispensed_label_therapeutic"># de Meses terapêuticos dispensados</string>
     <string name="table_patients">Faixa etária dos pacientes em TRAV</string>
     <string name="table_patients_adults">Adultos</string>

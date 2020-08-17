@@ -239,6 +239,13 @@
 
     <style name="MMIA.Regime" parent="MMIA" />
 
+    <style name="MMIA.Regime.Title" parent="MMIA.Regime">
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
+    </style>
+
     <style name="MMIA.Regime.Total" parent="MMIA.Regime" />
 
     <style name="MMIA.Regime.Total.Label">

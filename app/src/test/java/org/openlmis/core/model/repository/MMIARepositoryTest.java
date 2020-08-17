@@ -24,7 +24,6 @@ import com.google.inject.AbstractModule;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
@@ -64,7 +63,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -192,13 +190,37 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGenerateBaseInfoItems() throws Exception {
+    public void shouldGenerateBaseInfoItems() {
         RnRForm rnRForm = new RnRForm();
         List<BaseInfoItem> baseInfoItems = mmiaRepository.generateBaseInfoItems(rnRForm, MMIARepository.ReportType.OLD);
         assertThat(baseInfoItems.size(), is(7));
         assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_NEW_PATIENTS));
         assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_PTV));
         assertThat(baseInfoItems.get(baseInfoItems.size() - 1).getName(), is(mmiaRepository.ATTR_TOTAL_PATIENTS));
+    }
+
+    @Test
+    public void shouldGenerateBaseInfoItemsNew() {
+        RnRForm rnRForm = new RnRForm();
+        List<BaseInfoItem> baseInfoItems = mmiaRepository.generateBaseInfoItems(rnRForm, MMIARepository.ReportType.NEW);
+        assertThat(baseInfoItems.size(), is(17));
+        assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_NEW));
+        assertThat(baseInfoItems.get(1).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_MAINTENANCE));
+        assertThat(baseInfoItems.get(2).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_ALTERATION));
+        assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSIT));
+        assertThat(baseInfoItems.get(4).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSFER));
+        assertThat(baseInfoItems.get(5).getName(), is(mmiaRepository.ATTR_TABLE_DISPENSED_DM));
+        assertThat(baseInfoItems.get(6).getName(), is(mmiaRepository.ATTR_TABLE_DISPENSED_DT));
+        assertThat(baseInfoItems.get(7).getName(), is(mmiaRepository.ATTR_TABLE_DISPENSED_DS));
+        assertThat(baseInfoItems.get(8).getName(), is(mmiaRepository.ATTR_TABLE_DISPENSED_THERAPEUTIC));
+        assertThat(baseInfoItems.get(9).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_ADULTS));
+        assertThat(baseInfoItems.get(10).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_0TO4));
+        assertThat(baseInfoItems.get(11).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_5TO9));
+        assertThat(baseInfoItems.get(12).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_10TO14));
+        assertThat(baseInfoItems.get(13).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PPE));
+        assertThat(baseInfoItems.get(14).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PREP));
+        assertThat(baseInfoItems.get(15).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_CHILD));
+        assertThat(baseInfoItems.get(16).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_TOTAL));
     }
 
     @Test

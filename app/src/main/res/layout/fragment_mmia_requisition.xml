@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,7 +20,8 @@
                 android:id="@+id/rnr_form_list"
                 style="@style/MMIA.RnrTable.Body"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                tools:layout_height="120dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -27,9 +29,11 @@
                 android:layout_margin="@dimen/margin_small"
                 android:layout_weight="1"
                 android:baselineAligned="false"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:layout_height="120dp">
 
                 <LinearLayout
+
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
@@ -39,7 +43,9 @@
                         android:id="@+id/regime_list"
                         style="@style/MMIA.RegimeList"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        tools:background="@color/color_regime_baby"
+                        tools:layout_height="120dp" />
 
                     <LinearLayout
                         style="@style/MMIA.RegimeTotal"
@@ -63,7 +69,9 @@
                             style="@style/MMIA.RegimeTotalText" />
                     </LinearLayout>
 
-                    <include layout="@layout/fragment_mmia_requisition_therapetuic" />
+                    <include
+                        layout="@layout/fragment_mmia_requisition_therapetuic"
+                        tools:layout_height="120dp" />
                 </LinearLayout>
 
                 <include

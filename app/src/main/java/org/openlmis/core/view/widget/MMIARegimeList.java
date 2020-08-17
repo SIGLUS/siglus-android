@@ -220,7 +220,6 @@ public class MMIARegimeList extends LinearLayout {
         View view = layoutInflater.inflate(R.layout.item_regime_header, this, false);
         view.findViewById(R.id.et_total_pharmacy_title).setVisibility(isPharmacyEmpty ? GONE : VISIBLE);
         addView(view);
-
     }
 
     private TextView.OnEditorActionListener getOnEditorActionListener(int position, COUNTTYPE counttype) {
@@ -379,7 +378,7 @@ public class MMIARegimeList extends LinearLayout {
             Long count = 0L;
             try {
                 count = Long.parseLong(editable.toString());
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
             }
             if (COUNTTYPE.AMOUNT == counttype) {
                 item.setAmount(count);

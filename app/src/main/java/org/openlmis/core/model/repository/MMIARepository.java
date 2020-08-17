@@ -52,55 +52,57 @@ import roboguice.inject.InjectResource;
 
 public class MMIARepository extends RnrFormRepository {
     @InjectResource(R.string.table_trav)
-    private String ATTR_TABLE_TRAV;
+    public String ATTR_TABLE_TRAV;
     @InjectResource(R.string.table_trav_label_new)
-    private String ATTR_TABLE_TRAV_NEW;
+    public String ATTR_TABLE_TRAV_NEW;
     @InjectResource(R.string.table_trav_label_maintenance)
-    private String ATTR_TABLE_TRAV_MAINTENANCE;
+    public String ATTR_TABLE_TRAV_MAINTENANCE;
     @InjectResource(R.string.table_trav_label_alteration)
-    private String ATTR_TABLE_TRAV_ALTERATION;
+    public String ATTR_TABLE_TRAV_ALTERATION;
     @InjectResource(R.string.table_trav_label_transit)
-    private String ATTR_TABLE_TRAV_TRANSIT;
+    public String ATTR_TABLE_TRAV_TRANSIT;
     @InjectResource(R.string.table_trav_label_transfers)
-    private String ATTR_TABLE_TRAV_TRANSFER;
+    public String ATTR_TABLE_TRAV_TRANSFER;
 
     @InjectResource(R.string.table_dispensed)
-    private String ATTR_TABLE_DISPENSED;
+    public String ATTR_TABLE_DISPENSED;
     @InjectResource(R.string.table_dispensed_label_dt)
-    private String ATTR_TABLE_DISPENSED_DT;
-    @InjectResource(R.string.table_dispensed_label_dispense)
-    private String ATTR_TABLE_DISPENSED_DISPENSE;
+    public String ATTR_TABLE_DISPENSED_DT;
+    @InjectResource(R.string.table_dispensed_label_dm)
+    public String ATTR_TABLE_DISPENSED_DM;
     @InjectResource(R.string.table_dispensed_label_therapeutic)
-    private String ATTR_TABLE_DISPENSED_THERAPEUTIC;
+    public String ATTR_TABLE_DISPENSED_THERAPEUTIC;
+    @InjectResource(R.string.table_dispensed_label_ds)
+    public String ATTR_TABLE_DISPENSED_DS;
 
     @InjectResource(R.string.table_patients)
-    private String ATTR_TABLE_PATIENTS;
+    public String ATTR_TABLE_PATIENTS;
     @InjectResource(R.string.table_patients_adults)
-    private String ATTR_TABLE_PATIENTS_ADULTS;
+    public String ATTR_TABLE_PATIENTS_ADULTS;
     @InjectResource(R.string.table_patients_0to4)
-    private String ATTR_TABLE_PATIENTS_0TO4;
+    public String ATTR_TABLE_PATIENTS_0TO4;
     @InjectResource(R.string.table_patients_5to9)
-    private String ATTR_TABLE_PATIENTS_5TO9;
+    public String ATTR_TABLE_PATIENTS_5TO9;
     @InjectResource(R.string.table_patients_10to14)
-    private String ATTR_TABLE_PATIENTS_10TO14;
+    public String ATTR_TABLE_PATIENTS_10TO14;
 
     @InjectResource(R.string.table_prophylaxis)
-    private String ATTR_TABLE_PROPHYLAXIS;
+    public String ATTR_TABLE_PROPHYLAXIS;
     @InjectResource(R.string.table_prophylaxis_ppe)
-    private String ATTR_TABLE_PROPHYLAXIS_PPE;
+    public String ATTR_TABLE_PROPHYLAXIS_PPE;
     @InjectResource(R.string.table_prophylaxis_prep)
-    private String ATTR_TABLE_PROPHYLAXIS_PREP;
+    public String ATTR_TABLE_PROPHYLAXIS_PREP;
     @InjectResource(R.string.table_prophylaxis_child)
-    private String ATTR_TABLE_PROPHYLAXIS_CHILD;
+    public String ATTR_TABLE_PROPHYLAXIS_CHILD;
     @InjectResource(R.string.table_prophylaxis_total)
-    private String ATTR_TABLE_PROPHYLAXIS_TOTAL;
+    public String ATTR_TABLE_PROPHYLAXIS_TOTAL;
 
     @InjectResource(R.string.mmia_1stline)
-    private String ATTR_REGIME_TYPE_FIRST_LINE;
+    public String ATTR_REGIME_TYPE_FIRST_LINE;
     @InjectResource(R.string.mmia_2ndline)
-    private String ATTR_REGIME_TYPE_SECOND_LINE;
+    public String ATTR_REGIME_TYPE_SECOND_LINE;
     @InjectResource(R.string.mmia_3rdline)
-    private String ATTR_REGIME_TYPE_THIRD_LINE;
+    public String ATTR_REGIME_TYPE_THIRD_LINE;
 
 
     @InjectResource(R.string.label_new_patients)
@@ -181,12 +183,9 @@ public class MMIARepository extends RnrFormRepository {
             attrs.add(ATTR_TOTAL_MONTH_DISPENSE);
             attrs.add(ATTR_TOTAL_PATIENTS);
 
-            return FluentIterable.from(attrs).transform(new Function<String, BaseInfoItem>() {
-                @Override
-                public BaseInfoItem apply(String attr) {
-                    return new BaseInfoItem(attr, BaseInfoItem.TYPE.INT, form, "", 0);
-                }
-            }).toList();
+            return FluentIterable.from(attrs)
+                    .transform(attr -> new BaseInfoItem(attr, BaseInfoItem.TYPE.INT, form, "", 0))
+                    .toList();
         }
 
         Map<String, String> mAttrs = new HashMap<>();
@@ -194,16 +193,13 @@ public class MMIARepository extends RnrFormRepository {
 
         initDisplayOrder();
 
-        return FluentIterable.from(mAttrs.keySet()).transform(new Function<String, BaseInfoItem>() {
-            @Override
-            public BaseInfoItem apply(String key) {
-                return new BaseInfoItem(key, BaseInfoItem.TYPE.INT, form, mAttrs.get(key), getDisplayOrder(key));
-            }
-        }).toList();
+        return FluentIterable.from(mAttrs.keySet())
+                .transform(key -> new BaseInfoItem(key, BaseInfoItem.TYPE.INT, form, mAttrs.get(key), getDisplayOrder(key)))
+                .toSortedList((o1, o2) -> o1.getDisplayOrder() - o2.getDisplayOrder());
     }
 
 
-    Map<String, Integer> displayOrderMap = new HashMap<String, Integer>();
+    Map<String, Integer> displayOrderMap = new HashMap<>();
 
     private void initAttrs(Map<String, String> mAttrs) {
         mAttrs.put(ATTR_TABLE_TRAV_NEW, ATTR_TABLE_TRAV);
@@ -211,8 +207,9 @@ public class MMIARepository extends RnrFormRepository {
         mAttrs.put(ATTR_TABLE_TRAV_ALTERATION, ATTR_TABLE_TRAV);
         mAttrs.put(ATTR_TABLE_TRAV_TRANSIT, ATTR_TABLE_TRAV);
         mAttrs.put(ATTR_TABLE_TRAV_TRANSFER, ATTR_TABLE_TRAV);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DM, ATTR_TABLE_DISPENSED);
         mAttrs.put(ATTR_TABLE_DISPENSED_DT, ATTR_TABLE_DISPENSED);
-        mAttrs.put(ATTR_TABLE_DISPENSED_DISPENSE, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DS, ATTR_TABLE_DISPENSED);
         mAttrs.put(ATTR_TABLE_DISPENSED_THERAPEUTIC, ATTR_TABLE_DISPENSED);
         mAttrs.put(ATTR_TABLE_PATIENTS_ADULTS, ATTR_TABLE_PATIENTS);
         mAttrs.put(ATTR_TABLE_PATIENTS_0TO4, ATTR_TABLE_PATIENTS);
@@ -232,19 +229,20 @@ public class MMIARepository extends RnrFormRepository {
         displayOrderMap.put(ATTR_TABLE_TRAV_TRANSIT, 4);
         displayOrderMap.put(ATTR_TABLE_TRAV_TRANSFER, 5);
         displayOrderMap.put(ATTR_TABLE_DISPENSED, 6);
-        displayOrderMap.put(ATTR_TABLE_DISPENSED_DT, 7);
-        displayOrderMap.put(ATTR_TABLE_DISPENSED_DISPENSE, 8);
-        displayOrderMap.put(ATTR_TABLE_DISPENSED_THERAPEUTIC, 9);
-        displayOrderMap.put(ATTR_TABLE_PATIENTS, 10);
-        displayOrderMap.put(ATTR_TABLE_PATIENTS_ADULTS, 11);
-        displayOrderMap.put(ATTR_TABLE_PATIENTS_0TO4, 12);
-        displayOrderMap.put(ATTR_TABLE_PATIENTS_5TO9, 13);
-        displayOrderMap.put(ATTR_TABLE_PATIENTS_10TO14, 14);
-        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS, 15);
-        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_PPE, 16);
-        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_PREP, 17);
-        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_CHILD, 18);
-        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_TOTAL, 19);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DM, 7);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DT, 8);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DS, 9);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_THERAPEUTIC, 10);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS, 11);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS_ADULTS, 12);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS_0TO4, 13);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS_5TO9, 14);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS_10TO14, 15);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS, 16);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_PPE, 17);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_PREP, 18);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_CHILD, 19);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_TOTAL, 20);
     }
 
     private int getDisplayOrder(String attrName) {
