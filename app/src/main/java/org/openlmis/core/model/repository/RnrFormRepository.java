@@ -19,6 +19,7 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
@@ -55,6 +56,7 @@ import java.util.Date;
 import java.util.List;
 
 public class RnrFormRepository {
+    private static final String TAG = RnrFormRepository.class.getSimpleName();
 
     @Inject
     DbUtil dbUtil;
@@ -385,17 +387,22 @@ public class RnrFormRepository {
         List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
 
         for (RnrFormItem item : rnrForm.getRnrFormItemListWrapper()) {
-            if (item.getProduct() != null && productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes) != null) {
-                item.setCategory(productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes).getCategory());
+            ProductProgram productProgram = null;
+            if (item.getProduct() != null) {
+                productProgram = productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes);
+            }
+            if (productProgram != null) {
+                Log.e(TAG, item.getProduct().getCode() + " <-->" + productProgram.getCategory());
+                item.setCategory(productProgram.getCategory());
             }
         }
     }
 
-    protected long lastRnrInventory(StockCard stockCard) throws LMISException {
+    protected long lastRnrInventory(StockCard stockCard) {
         return lastRnrInventory(stockCard.getProduct());
     }
 
-    protected long lastRnrInventory(Product product) throws LMISException {
+    protected long lastRnrInventory(Product product) {
         if (rnrFormItemListWrapper != null) {
             for (RnrFormItem item : rnrFormItemListWrapper) {
                 if (item.getProduct() != null && (item.getProduct().getId() == product.getId())) {

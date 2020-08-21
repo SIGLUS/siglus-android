@@ -18,6 +18,13 @@
 
 package org.openlmis.core.utils;
 
+import android.graphics.Bitmap;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -244,5 +251,33 @@ public final class DateUtil {
         CALENDAR_NOW.setTime(date);
         CALENDAR_NOW.set(Calendar.DAY_OF_MONTH, CALENDAR_NOW.getActualMaximum(Calendar.DAY_OF_MONTH));
         return CALENDAR_NOW.getTime();
+    }
+
+
+    public static Bitmap createBarcode(String str) {
+
+        try {
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(str, BarcodeFormat.CODE_128, 70, 40);
+
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
+
+            int[] pixels = new int[width * height];
+            for (int y = 0; y < height; y++) {
+                int offset = y * width;
+                for (int x = 0; x < width; x++) {
+                    pixels[offset + x] = bitMatrix.get(x, y) ? 0xff000000 : 0xFFFFFFFF;
+                }
+            }
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            bitmap.setHasAlpha(true);
+            bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+            return bitmap;
+
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 }

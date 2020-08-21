@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mmia_threapeutic_layout"
+    android:id="@+id/mmia_therapeutic_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/border_bg_light_gray_blod"

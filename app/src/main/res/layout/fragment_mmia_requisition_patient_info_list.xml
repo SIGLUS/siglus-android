@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <org.openlmis.core.view.widget.MMIAInfoList
-        android:id="@+id/mmia_info_list"
+    <org.openlmis.core.view.widget.MMIAPatientInfoList
+        android:id="@+id/mmia_patient_info_list"
         tools:layout_height="120dp"
         style="@style/MMIA.RegimeList"
         android:layout_width="match_parent"

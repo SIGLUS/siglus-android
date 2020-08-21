@@ -47,10 +47,10 @@ import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
-import org.openlmis.core.view.widget.MMIAInfoList;
+import org.openlmis.core.view.widget.MMIAPatientInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
-import org.openlmis.core.view.widget.MMIARnrForm;
+import org.openlmis.core.view.widget.MMIARnrFormProductList;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -87,8 +87,8 @@ public class MMIARequisitionFragmentTest {
     private Program program;
     private RnRForm form;
     private MMIARegimeList regimeListView;
-    private MMIAInfoList mmiaInfoListView;
-    private MMIARnrForm rnrFormList;
+    private MMIAPatientInfoList mmiaPatientInfoListView;
+    private MMIARnrFormProductList rnrFormList;
 //    private MMIARegimeThreeLineList mmiaRegimeThreeLineList;
 
 
@@ -105,16 +105,16 @@ public class MMIARequisitionFragmentTest {
             }
         });
 
-        rnrFormList = mock(MMIARnrForm.class);
+        rnrFormList = mock(MMIARnrFormProductList.class);
 //        mmiaRegimeThreeLineList = mock(MMIARegimeThreeLineList.class);
         SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
         mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
 
         regimeListView = mock(MMIARegimeList.class);
-        mmiaInfoListView = mock(MMIAInfoList.class);
+        mmiaPatientInfoListView = mock(MMIAPatientInfoList.class);
         mockRnrItemsHeaderFreeze = mock(ViewGroup.class);
         mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
         mmiaRequisitionFragment.rnrFormList = rnrFormList;
 //        mmiaRequisitionFragment.mmiaRegimeThreeLineListView = mmiaRegimeThreeLineList;
         mmiaRequisitionFragment.rnrItemsHeaderFreeze = mockRnrItemsHeaderFreeze;
@@ -124,7 +124,7 @@ public class MMIARequisitionFragmentTest {
         when(rnrFormList.getRnrItemsHorizontalScrollView()).thenReturn(mock(RnrFormHorizontalScrollView.class));
 
         EditText patientTotalView = mock(EditText.class);
-        when(mmiaInfoListView.getPatientTotalView()).thenReturn(patientTotalView);
+        when(mmiaPatientInfoListView.getPatientTotalView()).thenReturn(patientTotalView);
 
         program = new Program();
         program.setProgramCode("MMIA");
@@ -141,7 +141,7 @@ public class MMIARequisitionFragmentTest {
         MMIARequisitionActivity mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class, intent).create().get();
         MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
         fragment.regimeListView = regimeListView;
-        fragment.mmiaInfoListView = mmiaInfoListView;
+        fragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
         fragment.rnrFormList = rnrFormList;
 //        fragment.mmiaRegimeThreeLineListView = mmiaRegimeThreeLineList;
 
@@ -152,7 +152,7 @@ public class MMIARequisitionFragmentTest {
         MMIARequisitionActivity mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).create().get();
         MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
         fragment.regimeListView = regimeListView;
-        fragment.mmiaInfoListView = mmiaInfoListView;
+        fragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
         fragment.rnrFormList = rnrFormList;
 //        fragment.mmiaRegimeThreeLineListView = mmiaRegimeThreeLineList;
 
@@ -170,7 +170,7 @@ public class MMIARequisitionFragmentTest {
 
         verify(rnrFormList).initView(any(ArrayList.class));
         verify(regimeListView).initView(mmiaRequisitionFragment.tvRegimeTotal, mmiaRequisitionFragment.tvRegimeTotalPharmacy, mmiaFormPresenter);
-        verify(mmiaInfoListView).initView(baseInfoItems);
+        verify(mmiaPatientInfoListView).initView(baseInfoItems);
     }
 
     @Test
@@ -242,15 +242,15 @@ public class MMIARequisitionFragmentTest {
     @Test
     public void shouldDeHighLightWhenTotalMatches() {
         when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(20L);
+        when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
         mmiaRequisitionFragment.refreshRequisitionForm(form);
 
         verify(regimeListView).deHighLightTotal();
-        verify(mmiaInfoListView).deHighLightTotal();
+        verify(mmiaPatientInfoListView).deHighLightTotal();
         assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
     }
 
@@ -263,11 +263,11 @@ public class MMIARequisitionFragmentTest {
         linesList.add(new RegimenItemThreeLines(2, getString(R.string.mmia_3rdline)));
         form.setRegimenThreeLinesWrapper(linesList);
         mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
         mmiaRequisitionFragment.refreshRequisitionForm(form);
         verify(regimeListView).deHighLightTotal();
-        verify(mmiaInfoListView).deHighLightTotal();
+        verify(mmiaPatientInfoListView).deHighLightTotal();
         assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
         assertFalse(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.isCompleted());
         assertTrue(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.hasEmptyField());
@@ -282,14 +282,14 @@ public class MMIARequisitionFragmentTest {
     @Test
     public void shouldDeHighlightWhenTotalNotMatchesAndLessThanFiveWithEmptyField() {
         when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(40L);
+        when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
         when(regimeListView.hasEmptyField()).thenReturn(false);
-        when(mmiaInfoListView.hasEmptyField()).thenReturn(true);
+        when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(true);
 
         form.setComments("ab");
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
         mmiaRequisitionFragment.refreshRequisitionForm(form);
 
@@ -299,14 +299,14 @@ public class MMIARequisitionFragmentTest {
     @Test
     public void shouldDeHighlightWhenTotalNotMatchesAndMoreThanFive() {
         when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(40L);
+        when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
         when(regimeListView.hasEmptyField()).thenReturn(false);
-        when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
+        when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
         form.setComments("abdasdsa");
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
         mmiaRequisitionFragment.refreshRequisitionForm(form);
 
@@ -316,14 +316,14 @@ public class MMIARequisitionFragmentTest {
     @Test
     public void shouldDeHighlightWhenTotalMatchesAndCommentLengthLessThanFiveAndWithoutEmptyField() {
         when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(20L);
+        when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
         when(regimeListView.hasEmptyField()).thenReturn(false);
-        when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
+        when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
         mmiaRequisitionFragment.etComment.setText("ab");
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
         mmiaRequisitionFragment.refreshRequisitionForm(form);
 
@@ -333,14 +333,14 @@ public class MMIARequisitionFragmentTest {
     @Test
     public void shouldDeHighlightWhenTotalMatchesWithoutEmptyField() {
         when(regimeListView.getTotal(MMIARegimeList.COUNTTYPE.AMOUNT)).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(20L);
+        when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
         when(regimeListView.hasEmptyField()).thenReturn(false);
-        when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
+        when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
         mmiaRequisitionFragment.etComment.setText("abcde");
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
         mmiaRequisitionFragment.refreshRequisitionForm(form);
 

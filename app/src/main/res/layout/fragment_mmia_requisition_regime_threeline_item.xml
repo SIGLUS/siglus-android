@@ -7,15 +7,15 @@
     <TextView
         android:id="@+id/tv_title"
         style="@style/MMIA.Regime.Total.Label"
-        android:layout_toStartOf="@id/therapetuic_total"
+        android:layout_toStartOf="@id/therapeutic_total"
         android:text="@string/mmia_1stline" />
 
     <EditText
-        android:id="@+id/therapetuic_total"
+        android:id="@+id/therapeutic_total"
         style="@style/MMIA.Regime.Total.Edit"
-        android:layout_toStartOf="@id/therapetuic_pharmacy" />
+        android:layout_toStartOf="@id/therapeutic_pharmacy" />
 
     <EditText
-        android:id="@+id/therapetuic_pharmacy"
+        android:id="@+id/therapeutic_pharmacy"
         style="@style/MMIA.Regime.Total.Edit.End" />
 </RelativeLayout>

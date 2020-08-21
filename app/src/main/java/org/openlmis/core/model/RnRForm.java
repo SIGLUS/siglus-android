@@ -31,7 +31,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
-import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -221,19 +220,9 @@ public class RnRForm extends BaseModel {
     }
 
     private List<RnrFormItem> sortProductList(List<RnrFormItem> rnrFormItems) {
-        List<RnrFormItem> existingList = newArrayList(from(rnrFormItems).filter(new Predicate<RnrFormItem>() {
-            @Override
-            public boolean apply(RnrFormItem rnrFormItem) {
-                return !rnrFormItem.isManualAdd();
-            }
-        }).toList());
+        List<RnrFormItem> existingList = newArrayList(from(rnrFormItems).filter(rnrFormItem -> !rnrFormItem.isManualAdd()).toList());
 
-        List<RnrFormItem> newlyAddedList = newArrayList(from(rnrFormItems).filter(new Predicate<RnrFormItem>() {
-            @Override
-            public boolean apply(RnrFormItem rnrFormItem) {
-                return rnrFormItem.isManualAdd();
-            }
-        }).toList());
+        List<RnrFormItem> newlyAddedList = newArrayList(from(rnrFormItems).filter(rnrFormItem -> rnrFormItem.isManualAdd()).toList());
         sortRnrItemsListBasedOnProductCode(existingList);
         sortRnrItemsListBasedOnProductCode(newlyAddedList);
         rnrFormItems = existingList;

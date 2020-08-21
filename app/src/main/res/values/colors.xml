@@ -27,8 +27,8 @@
     <color name="color_text_primary">#212121</color>
     <color name="color_text_secondary">#727272</color>
 
-    <color name="color_white">#FFFFFF</color>
-    <color name="color_black">#000</color>
+    <color name="color_white">#FFFFFFFF</color>
+    <color name="color_black">#F000</color>
     <color name="color_gray">#616161</color>
     <color name="color_green_light">#C2FFC1</color>
     <color name="color_white_alpha">#90FFFFFF</color>

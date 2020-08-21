@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MMIAInfoList extends LinearLayout {
+public class MMIAPatientInfoList extends LinearLayout {
     private Context context;
     private EditText totalPatientsView = null;
     private List<EditText> editTexts = new ArrayList<>();
@@ -56,12 +56,12 @@ public class MMIAInfoList extends LinearLayout {
 
     private boolean hasDataChanged = false;
 
-    public MMIAInfoList(Context context) {
+    public MMIAPatientInfoList(Context context) {
         super(context);
         init(context);
     }
 
-    public MMIAInfoList(Context context, AttributeSet attrs) {
+    public MMIAPatientInfoList(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }

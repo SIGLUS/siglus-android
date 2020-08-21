@@ -99,8 +99,8 @@ public class MMIARegimeThreeLineList extends LinearLayout {
     private void addViewItem(RegimenItemThreeLines itemThreeLines) {
         View viewItem = layoutInflater.inflate(R.layout.fragment_mmia_requisition_regime_threeline_item, this, false);
         TextView tvNameText = viewItem.findViewById(R.id.tv_title);
-        EditText patientsTotalEdit = viewItem.findViewById(R.id.therapetuic_total);
-        EditText patientsPharmacyEdit = viewItem.findViewById(R.id.therapetuic_pharmacy);
+        EditText patientsTotalEdit = viewItem.findViewById(R.id.therapeutic_total);
+        EditText patientsPharmacyEdit = viewItem.findViewById(R.id.therapeutic_pharmacy);
         Long patientsAmount = itemThreeLines.getPatientsAmount();
         Long pharmacyAmount = itemThreeLines.getPharmacyAmount();
 

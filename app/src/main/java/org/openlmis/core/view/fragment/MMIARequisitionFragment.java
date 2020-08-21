@@ -45,10 +45,10 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
-import org.openlmis.core.view.widget.MMIAInfoList;
+import org.openlmis.core.view.widget.MMIAPatientInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
-import org.openlmis.core.view.widget.MMIARnrForm;
+import org.openlmis.core.view.widget.MMIARnrFormProductList;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
@@ -63,18 +63,18 @@ import rx.functions.Action1;
 public class MMIARequisitionFragment extends BaseReportFragment implements MMIARequisitionPresenter.MMIARequisitionView {
     private static final String TAG = MMIARequisitionFragment.class.getSimpleName();
     @InjectView(R.id.rnr_form_list)
-    protected MMIARnrForm rnrFormList;
+    protected MMIARnrFormProductList rnrFormList;
 
     @InjectView(R.id.mmia_regime_three_line_list)
     protected MMIARegimeThreeLineList mmiaRegimeThreeLineListView;
-    @InjectView(R.id.mmia_threapeutic_layout)
+    @InjectView(R.id.mmia_therapeutic_layout)
     protected LinearLayout mmiaThreaPeuticLayout;
 
     @InjectView(R.id.regime_list)
     protected MMIARegimeList regimeListView;
 
-    @InjectView(R.id.mmia_info_list)
-    protected MMIAInfoList mmiaInfoListView;
+    @InjectView(R.id.mmia_patient_info_list)
+    protected MMIAPatientInfoList mmiaPatientInfoListView;
 
     @InjectView(R.id.tv_regime_total)
     protected TextView tvRegimeTotal;
@@ -215,7 +215,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
             tvRegimeTotalPharmacy.setVisibility(View.GONE);
         }
         regimeListView.initView(tvRegimeTotal, tvRegimeTotalPharmacy, presenter);
-        mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
+        mmiaPatientInfoListView.initView(form.getBaseInfoItemListWrapper());
         InflateFreezeHeaderView();
         getActivity().setTitle(getString(R.string.label_mmia_title, DateUtil.formatDateWithoutYear(form.getPeriodBegin()), DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
         etComment.setText(form.getComments());
@@ -254,7 +254,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
                 loading();
                 Subscription subscription = presenter.getSaveFormObservable(rnrFormList.itemFormList,
                         regimeListView.getDataList(),
-                        mmiaInfoListView.getDataList(),
+                        mmiaPatientInfoListView.getDataList(),
                         mmiaRegimeThreeLineListView.getDataList(),
                         etComment.getText().toString())
                         .subscribe(getOnSavedSubscriber());
@@ -292,11 +292,11 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
             public void onSingleClick(View v) {
                 if (rnrFormList.isCompleted()
                         && regimeListView.isCompleted()
-                        && mmiaInfoListView.isCompleted()
+                        && mmiaPatientInfoListView.isCompleted()
                         && mmiaRegimeThreeLineListView.isCompleted()) {
                     presenter.setViewModels(rnrFormList.itemFormList,
                             regimeListView.getDataList(),
-                            mmiaInfoListView.getDataList(),
+                            mmiaPatientInfoListView.getDataList(),
                             mmiaRegimeThreeLineListView.getDataList(),
                             etComment.getText().toString());
                     if (!presenter.validateFormPeriod()) {
@@ -369,7 +369,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         if (mmiaThreaPeuticLayout.getVisibility() != View.GONE) {
             mmiaRegimeThreeLineListView.deHighLightTotal();
         }
-        mmiaInfoListView.deHighLightTotal();
+        mmiaPatientInfoListView.deHighLightTotal();
         tvMismatch.setVisibility(View.INVISIBLE);
     }
 

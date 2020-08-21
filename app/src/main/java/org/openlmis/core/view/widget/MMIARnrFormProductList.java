@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -47,7 +48,7 @@ import lombok.Getter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public class MMIARnrForm extends LinearLayout {
+public class MMIARnrFormProductList extends LinearLayout {
     private Context context;
     private ViewGroup leftViewGroup;
 
@@ -66,12 +67,12 @@ public class MMIARnrForm extends LinearLayout {
     @Getter
     private ViewGroup rightHeaderView;
 
-    public MMIARnrForm(Context context) {
+    public MMIARnrFormProductList(Context context) {
         super(context);
         init(context);
     }
 
-    public MMIARnrForm(Context context, AttributeSet attrs) {
+    public MMIARnrFormProductList(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
@@ -185,7 +186,7 @@ public class MMIARnrForm extends LinearLayout {
     private void addDividerView(String medicineType) {
         View leftView = inflaterLeftView();
         leftViewGroup.addView(leftView);
-        setLeftViewColor(medicineType, leftView);
+        setLeftViewColor(medicineType, leftView, null);
         ViewGroup rightView = inflateRightView();
 
         rightViewGroup.addView(rightView);
@@ -227,30 +228,45 @@ public class MMIARnrForm extends LinearLayout {
     private View addLeftView(RnrFormItem item, boolean isHeaderView, String medicineType) {
         View view = inflaterLeftView();
         TextView tvPrimaryName = (TextView) view.findViewById(R.id.tv_primary_name);
+        TextView tvProductCodeHeader = (TextView) view.findViewById(R.id.tv_product_code_header);
+        ImageButton barProductCode = (ImageButton) view.findViewById(R.id.tv_product_code);
+        tvProductCodeHeader.setVisibility(isHeaderView ? VISIBLE : GONE);
+        barProductCode.setVisibility(isHeaderView ? GONE : VISIBLE);
         if (isHeaderView) {
             tvPrimaryName.setText(R.string.label_rnrfrom_left_header);
             tvPrimaryName.setGravity(Gravity.CENTER);
-            view.setBackgroundResource(R.color.color_mmia_info_name);
+            tvProductCodeHeader.setText("Code");
+            tvProductCodeHeader.setGravity(Gravity.CENTER);
         } else {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
-            setLeftViewColor(medicineType, view);
+            barProductCode.setImageBitmap(DateUtil.createBarcode(product.getCode()));
+            setLeftViewColor(medicineType, view, barProductCode);
             leftViewGroup.addView(view);
         }
 
         return view;
     }
 
-    private void setLeftViewColor(String medicineType, View view) {
+    private void setLeftViewColor(String medicineType, View view, ImageButton barcode) {
         switch (medicineType) {
             case Product.MEDICINE_TYPE_ADULT:
                 view.setBackgroundResource(R.color.color_green_light);
+                if (barcode != null) {
+                    barcode.setBackgroundResource(R.color.color_green_light);
+                }
                 break;
             case Product.MEDICINE_TYPE_CHILDREN:
                 view.setBackgroundResource(R.color.color_regime_baby);
+                if (barcode != null) {
+                    barcode.setBackgroundResource(R.color.color_regime_baby);
+                }
                 break;
             case Product.MEDICINE_TYPE_SOLUTION:
                 view.setBackgroundResource(R.color.color_regime_other);
+                if (barcode != null) {
+                    barcode.setBackgroundResource(R.color.color_regime_other);
+                }
                 break;
             default:
                 break;

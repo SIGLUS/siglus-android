@@ -261,6 +261,8 @@
         <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
         <item name="android:inputType">number</item>
         <item name="android:paddingStart">6dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxLength">6</item>
         <item name="android:background">@drawable/border_bg_light_right_gray</item>
     </style>
 
@@ -378,6 +380,7 @@
         <item name="android:inputType">number</item>
         <item name="android:saveEnabled">false</item>
         <item name="android:imeOptions">actionNext</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="ItemMovement" />
@@ -427,7 +430,9 @@
 
     <style name="ItemRegime.Text" parent="MMIA.SpreadList" />
 
-    <style name="ItemRegime.EditText" parent="ItemMMIA.EditText" />
+    <style name="ItemRegime.EditText" parent="ItemMMIA.EditText" >
+        <item name="android:gravity">center</item>
+    </style>
 
     <style name="ItemRequisition" />
 
@@ -520,7 +525,6 @@
     </style>
 
     <style name="ItemRnr.PrimaryName" parent="Text.Gray.Regular">
-        <item name="android:background">@color/color_green_light</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:padding">@dimen/padding_small</item>
     </style>

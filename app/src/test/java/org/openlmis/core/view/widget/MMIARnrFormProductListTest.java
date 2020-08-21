@@ -1,13 +1,12 @@
 package org.openlmis.core.view.widget;
 
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -15,26 +14,23 @@ import org.openlmis.core.model.RnrFormItem;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.openlmis.core.model.Product.MEDICINE_TYPE_ADULT;
 import static org.openlmis.core.model.Product.MEDICINE_TYPE_CHILDREN;
-import static org.openlmis.core.model.Product.MEDICINE_TYPE_OTHER;
 import static org.openlmis.core.model.Product.MEDICINE_TYPE_SOLUTION;
 
 @RunWith(LMISTestRunner.class)
-public class MMIARnrFormTest {
+public class MMIARnrFormProductListTest {
 
-    private MMIARnrForm mmiaRnrForm;
+    private MMIARnrFormProductList mmiaRnrFormProductList;
 
     @Before
     public void setUp() {
-        mmiaRnrForm = new MMIARnrForm(RuntimeEnvironment.application);
-        mmiaRnrForm.setLayoutParams(new ViewGroup.MarginLayoutParams(100,100));
+        mmiaRnrFormProductList = new MMIARnrFormProductList(RuntimeEnvironment.application);
+        mmiaRnrFormProductList.setLayoutParams(new ViewGroup.MarginLayoutParams(100,100));
     }
 
     @Test
@@ -49,20 +45,20 @@ public class MMIARnrFormTest {
         // Product.MEDICINE_TYPE_ADULT
         list.add(getRnrFormItem(4L, "product4", "08S39Z", MEDICINE_TYPE_ADULT));
 
-        mmiaRnrForm.initView(list);
+        mmiaRnrFormProductList.initView(list);
 
-        ViewGroup leftViewGroup = (ViewGroup) mmiaRnrForm.findViewById(R.id.rnr_from_list_product_name);
+        ViewGroup leftViewGroup =  mmiaRnrFormProductList.findViewById(R.id.rnr_from_list_product_name);
 
-        String text = ((TextView) leftViewGroup.getChildAt(0)).getText().toString();
+        String text = ((TextView)((LinearLayout)leftViewGroup.getChildAt(0)).getChildAt(2)).getText().toString();
         assertThat(text, is(list.get(1).getProduct().getPrimaryName()));
 
-        String text1 = ((TextView) leftViewGroup.getChildAt(1)).getText().toString();
+        String text1 = ((TextView)((LinearLayout)leftViewGroup.getChildAt(1)).getChildAt(2)).getText().toString();
         assertThat(text1, is(list.get(3).getProduct().getPrimaryName()));
 
-        String text2 = ((TextView) leftViewGroup.getChildAt(4)).getText().toString();
+        String text2 = ((TextView)((LinearLayout)leftViewGroup.getChildAt(4)).getChildAt(2)).getText().toString();
         assertThat(text2, is(list.get(2).getProduct().getPrimaryName()));
 
-        String text3 = ((TextView) leftViewGroup.getChildAt(6)).getText().toString();
+        String text3 = ((TextView)((LinearLayout)leftViewGroup.getChildAt(6)).getChildAt(2)).getText().toString();
         assertThat(text3, is(list.get(0).getProduct().getPrimaryName()));
     }
 
