@@ -23,8 +23,6 @@ import android.content.Context;
 
 
 import com.google.inject.Inject;
-import com.j256.ormlite.misc.TransactionManager;
-import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
@@ -34,9 +32,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class RegimenRepository {
 
@@ -59,15 +55,6 @@ public class RegimenRepository {
 
     public Regimen getByCode(final String code) throws LMISException {
         return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder().where().eq("code", code).queryForFirst());
-    }
-
-    public void deleteAllNoCustomRegimens() throws LMISException, SQLException {
-        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), (Callable<Object>) () -> dbUtil.withDao(Regimen.class, (DbUtil.Operation<Regimen, Regimen>) dao -> {
-            DeleteBuilder<Regimen, String> deleteBuilder = dao.deleteBuilder();
-            deleteBuilder.where().eq("isCustom", false);
-            deleteBuilder.delete();
-            return null;
-        }));
     }
 
     public void batchSave(List<Regimen> regimens) {

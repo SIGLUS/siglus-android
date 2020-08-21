@@ -139,7 +139,8 @@ public class ProgramRepository {
     }
 
     public List<Program> queryProgramsByProgramCodeOrParentCode(final String programCode) throws LMISException {
-        return dbUtil.withDao(Program.class, dao -> dao.queryBuilder().where().eq("parentCode", programCode)
+        return dbUtil.withDao(Program.class, dao -> dao.queryBuilder()
+                .where().eq("parentCode", programCode)
                 .or().eq("programCode", programCode).query());
     }
 

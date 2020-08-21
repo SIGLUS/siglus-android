@@ -24,21 +24,11 @@ public class SelectRegimeProductsViewHolder extends BaseViewHolder {
 
     public SelectRegimeProductsViewHolder(View itemView) {
         super(itemView);
-        taCheckbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                triggerCheckbox();
-            }
-        });
+        taCheckbox.setOnClickListener(v -> triggerCheckbox());
     }
 
     public void populate(final RegimeProductViewModel viewModel) {
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                viewModel.setChecked(isChecked);
-            }
-        });
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setChecked(isChecked));
         checkBox.setChecked(viewModel.isChecked());
         tvShortCode.setText(viewModel.getShortCode());
     }

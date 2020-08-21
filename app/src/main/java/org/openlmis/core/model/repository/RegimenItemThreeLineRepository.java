@@ -36,15 +36,4 @@ public class RegimenItemThreeLineRepository {
             return null;
         });
     }
-
-    public void deleteRegimeThreeLineItem(final RegimenItemThreeLines item) throws LMISException {
-        dbUtil.withDao(RegimenItemThreeLines.class, (DbUtil.Operation<RegimenItemThreeLines, Void>) dao -> {
-            dao.delete(item);
-            return null;
-        });
-    }
-
-    public List<RegimenItemThreeLines> listAll() throws LMISException {
-        return dbUtil.withDao(RegimenItemThreeLines.class, dao -> dao.queryForAll());
-    }
 }

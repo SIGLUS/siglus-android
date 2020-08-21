@@ -247,7 +247,10 @@ public class ProductRepository {
 
     public List<Product> queryActiveProductsByCodesWithKits(final List<String> productCodes, final boolean isWithKit) throws LMISException {
         return dbUtil.withDao(Product.class, dao -> {
-            Where<Product, String> queryBuilder = dao.queryBuilder().where().in("code", productCodes).and().eq("isActive", true).and().eq("isArchived", false);
+            Where<Product, String> queryBuilder = dao.queryBuilder()
+                    .where().in("code", productCodes)
+                    .and().eq("isActive", true)
+                    .and().eq("isArchived", false);
             if (!isWithKit) {
                 queryBuilder.and().eq("isKit", false);
             }

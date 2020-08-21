@@ -47,7 +47,10 @@ public class ProductProgramRepository {
     }
 
     public List<ProductProgram> listActiveProductProgramsByProgramCodes(final List<String> programCodes) throws LMISException {
-        return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder().where().eq("isActive", true).and().in("programCode", programCodes).query());
+        return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder()
+                .where().eq("isActive", true)
+                .and().in("programCode", programCodes)
+                .query());
     }
 
     public void createOrUpdate(ProductProgram productProgram) throws LMISException {
