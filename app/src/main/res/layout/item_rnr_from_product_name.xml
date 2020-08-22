@@ -8,18 +8,11 @@
     android:orientation="horizontal"
     android:showDividers="middle">
 
-    <ImageButton
-        android:id="@+id/tv_product_code"
-        style="@style/ItemRnr.PrimaryName"
-        android:layout_width="76dp"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:text="Code" />
-
     <TextView
         android:id="@+id/tv_product_code_header"
         style="@style/ItemRnr.PrimaryName"
-        android:layout_width="76dp"
+        android:layout_width="80dp"
+        android:gravity="center"
         android:layout_height="match_parent"
         tools:text="Product name" />
 

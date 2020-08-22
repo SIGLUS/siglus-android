@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginStart="80dp"
     style="@style/ItemRegime.Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -33,6 +32,7 @@
         style="@style/ItemRegime.EditText"
         android:layout_width="@dimen/mmia_spread_item_common_width"
         android:layout_height="match_parent"
+        android:inputType="numberSigned"
         tools:hint="Total patients" />
 
     <EditText
@@ -40,5 +40,6 @@
         style="@style/ItemRegime.EditText"
         android:layout_width="@dimen/mmia_spread_item_common_width"
         android:layout_height="match_parent"
-        tools:hint="Community pharmacy" />
+        android:inputType="numberSigned"
+        tools:hint="Community pharmacy"/>
 </LinearLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_marginStart="80dp"
     android:id="@+id/tv_name"
     style="@style/ItemRegime.Text"
     android:layout_width="match_parent"

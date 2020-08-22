@@ -81,7 +81,6 @@ public class MMIARegimeList extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
-
         setOrientation(LinearLayout.VERTICAL);
         layoutInflater = LayoutInflater.from(context);
     }
@@ -104,7 +103,6 @@ public class MMIARegimeList extends LinearLayout {
         if (isCustomEnable()) {
             addAdultBtnView();
         }
-
 
         for (int i = 0; i < paediatrics.size(); i++) {
             addItemView(paediatrics.get(i), adults.size() + i);

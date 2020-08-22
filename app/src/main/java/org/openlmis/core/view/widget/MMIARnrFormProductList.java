@@ -19,6 +19,7 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.drawable.BitmapDrawable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -28,7 +29,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -186,7 +186,7 @@ public class MMIARnrFormProductList extends LinearLayout {
     private void addDividerView(String medicineType) {
         View leftView = inflaterLeftView();
         leftViewGroup.addView(leftView);
-        setLeftViewColor(medicineType, leftView, null);
+        setLeftViewColor(medicineType, leftView);
         ViewGroup rightView = inflateRightView();
 
         rightViewGroup.addView(rightView);
@@ -229,44 +229,34 @@ public class MMIARnrFormProductList extends LinearLayout {
         View view = inflaterLeftView();
         TextView tvPrimaryName = (TextView) view.findViewById(R.id.tv_primary_name);
         TextView tvProductCodeHeader = (TextView) view.findViewById(R.id.tv_product_code_header);
-        ImageButton barProductCode = (ImageButton) view.findViewById(R.id.tv_product_code);
-        tvProductCodeHeader.setVisibility(isHeaderView ? VISIBLE : GONE);
-        barProductCode.setVisibility(isHeaderView ? GONE : VISIBLE);
         if (isHeaderView) {
             tvPrimaryName.setText(R.string.label_rnrfrom_left_header);
-            tvPrimaryName.setGravity(Gravity.CENTER);
-            tvProductCodeHeader.setText("Code");
-            tvProductCodeHeader.setGravity(Gravity.CENTER);
+            tvPrimaryName.setGravity(Gravity.CENTER_VERTICAL);
+            tvProductCodeHeader.setText(R.string.label_product_codes);
         } else {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
-            barProductCode.setImageBitmap(DateUtil.createBarcode(product.getCode()));
-            setLeftViewColor(medicineType, view, barProductCode);
+            tvProductCodeHeader.setText(product.getCode());
+            tvProductCodeHeader.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                    new BitmapDrawable(getResources(), DateUtil.createBarcode(product.getCode())),
+                    null, null);
+            setLeftViewColor(medicineType, view);
             leftViewGroup.addView(view);
         }
 
         return view;
     }
 
-    private void setLeftViewColor(String medicineType, View view, ImageButton barcode) {
+    private void setLeftViewColor(String medicineType, View view) {
         switch (medicineType) {
             case Product.MEDICINE_TYPE_ADULT:
                 view.setBackgroundResource(R.color.color_green_light);
-                if (barcode != null) {
-                    barcode.setBackgroundResource(R.color.color_green_light);
-                }
                 break;
             case Product.MEDICINE_TYPE_CHILDREN:
                 view.setBackgroundResource(R.color.color_regime_baby);
-                if (barcode != null) {
-                    barcode.setBackgroundResource(R.color.color_regime_baby);
-                }
                 break;
             case Product.MEDICINE_TYPE_SOLUTION:
                 view.setBackgroundResource(R.color.color_regime_other);
-                if (barcode != null) {
-                    barcode.setBackgroundResource(R.color.color_regime_other);
-                }
                 break;
             default:
                 break;
