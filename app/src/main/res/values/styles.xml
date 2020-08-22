@@ -312,7 +312,7 @@
     <style name="MMIA.RegimeTotalText">
         <item name="android:background">@color/color_page_gray</item>
         <item name="android:freezesText">true</item>
-        <item name="android:gravity">center_vertical</item>
+        <item name="android:gravity">center</item>
         <item name="android:padding">4dp</item>
         <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
         <item name="android:layout_height">match_parent</item>

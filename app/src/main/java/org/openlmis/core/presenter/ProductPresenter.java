@@ -11,15 +11,11 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
-import roboguice.util.Strings;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -56,43 +52,28 @@ public class ProductPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public Observable<Regimen> saveRegimes(List<RegimeProductViewModel> viewModels, final Regimen.RegimeType regimeType) {
-        final String regimenName = generateRegimeName(viewModels);
+    public Observable<Regimen> saveRegimes(RegimeProductViewModel viewModel, final Regimen.RegimeType regimeType) {
+        final String regimenName = viewModel.getShortCode();
 
         return Observable.create((Observable.OnSubscribe<Regimen>) subscriber -> {
-            Regimen regimen = from(viewModels).transform(new Function<RegimeProductViewModel, Regimen>() {
-                @Nullable
-                @Override
-                public Regimen apply(@Nullable RegimeProductViewModel regimeProductViewModel) {
-                    try {
-                        Regimen regimen = regimenRepository.getByNameAndCategory(regimenName, regimeType);
-                        if (regimen == null) {
-                            regimen = new Regimen();
-                            regimen.setType(regimeType);
-                            regimen.setCode(regimeType + regimenName);
-                            regimen.setName(regimenName);
-                            regimen.setCustom(true);
-                            regimenRepository.create(regimen);
-                        }
-                        return regimen;
-                    } catch (LMISException e) {
-                        new LMISException(e, "ProductPresenter.saveRegimes").reportToFabric();
-                        subscriber.onError(e);
-                        return null;
-                    }
+            Regimen regimen = null;
+            try {
+                regimen = regimenRepository.getByNameAndCategory(regimenName, regimeType);
+                if (regimen == null) {
+                    regimen = new Regimen();
+                    regimen.setType(regimeType);
+                    regimen.setCode(regimeType + regimenName);
+                    regimen.setName(regimenName);
+                    regimen.setCustom(true);
+                    regimenRepository.create(regimen);
                 }
-            }).get(0);
+            } catch (LMISException e) {
+                new LMISException(e, "ProductPresenter.saveRegimes").reportToFabric();
+                subscriber.onError(e);
+            }
             subscriber.onNext(regimen);
             subscriber.onCompleted();
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    private String generateRegimeName(List<RegimeProductViewModel> viewModels) {
-        List<String> list = new ArrayList<>();
-        for (RegimeProductViewModel model : viewModels) {
-            list.add(model.getShortCode());
-        }
-        return Strings.join("+", list);
     }
 
     public Observable<List<InventoryViewModel>> loadEmergencyProducts() {

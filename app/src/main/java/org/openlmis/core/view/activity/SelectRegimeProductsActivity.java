@@ -90,7 +90,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
         }
         btnNext.setEnabled(false);
         loading();
-        Subscription subscription = presenter.saveRegimes(checkedViewModels, regimeType).subscribe(saveSubscriber);
+        Subscription subscription = presenter.saveRegimes(checkedViewModels.get(0), regimeType).subscribe(saveSubscriber);
         subscriptions.add(subscription);
     }
 

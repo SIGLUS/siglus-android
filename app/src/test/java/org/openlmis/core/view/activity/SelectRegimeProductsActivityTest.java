@@ -33,7 +33,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,19 +49,11 @@ public class SelectRegimeProductsActivityTest {
     public void setUp() throws Exception {
         presenter = mock(ProductPresenter.class);
 
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
-            @Override
-            public void configure(Binder binder) {
-                binder.bind(ProductPresenter.class).toInstance(presenter);
-            }
-        });
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
+                (Module) binder -> binder.bind(ProductPresenter.class).toInstance(presenter));
 
 
-        Observable<List<RegimeProductViewModel>> value = Observable.create(new Observable.OnSubscribe<List<RegimeProductViewModel>>() {
-            @Override
-            public void call(Subscriber<? super List<RegimeProductViewModel>> subscriber) {
-
-            }
+        Observable<List<RegimeProductViewModel>> value = Observable.create(subscriber -> {
         });
         when(presenter.loadRegimeProducts(Regimen.RegimeType.Adults)).thenReturn(value);
 
@@ -71,7 +63,7 @@ public class SelectRegimeProductsActivityTest {
     }
 
     @Test
-    public void shouldShowToastWhenHasNotChecked() throws Exception {
+    public void shouldShowToastWhenHasNotChecked() {
         LMISTestApp.getInstance().setCurrentTimeMillis(100000);
         SingleClickButtonListener.isViewClicked = false;
 
@@ -96,27 +88,23 @@ public class SelectRegimeProductsActivityTest {
     }
 
     @Test
-    public void shouldSaveRegimeWhenOneProductHasChecked() throws Exception {
+    public void shouldSaveRegimeWhenOneProductHasChecked() {
         LMISTestApp.getInstance().setCurrentTimeMillis(100000);
         SingleClickButtonListener.isViewClicked = false;
 
-        Observable<Regimen> value = Observable.create(new Observable.OnSubscribe<Regimen>() {
-            @Override
-            public void call(Subscriber<? super Regimen> subscriber) {
-
-            }
+        Observable<Regimen> value = Observable.create(subscriber -> {
         });
-        when(presenter.saveRegimes(anyList(), any(Regimen.RegimeType.class))).thenReturn(value);
+        when(presenter.saveRegimes(anyObject(), any(Regimen.RegimeType.class))).thenReturn(value);
 
         selectProductsActivity.viewModels = getInventoryViewModels();
         selectProductsActivity.viewModels.get(0).setChecked(true);
         selectProductsActivity.btnNext.performClick();
 
-        verify(presenter).saveRegimes(newArrayList(selectProductsActivity.viewModels.get(0)), Regimen.RegimeType.Adults);
+        verify(presenter).saveRegimes(selectProductsActivity.viewModels.get(0), Regimen.RegimeType.Adults);
     }
 
     @Test
-    public void shouldReturnRegimeWhenOnNext() throws Exception {
+    public void shouldReturnRegimeWhenOnNext() {
         ShadowActivity shadowActivity = shadowOf(selectProductsActivity);
         Regimen regimen = new Regimen();
         String regimenName = "regimenName";

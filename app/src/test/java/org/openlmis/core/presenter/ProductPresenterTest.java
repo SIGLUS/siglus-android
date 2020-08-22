@@ -117,7 +117,7 @@ public class ProductPresenterTest {
         verify(regimenRepository).create(regimenArgumentCaptor.capture());
 
         Regimen regimen = regimenArgumentCaptor.getValue();
-        assertThat(regimen.getName(), is("3TC 150mg+3TC 150mg"));
+        assertThat(regimen.getName(), is("3TC 150mg"));
         assertThat(regimen.getType(), is(Regimen.RegimeType.Adults));
         assertThat(regimen.isCustom(), is(true));
     }
@@ -136,7 +136,7 @@ public class ProductPresenterTest {
         verify(regimenRepository, never()).create(any(Regimen.class));
     }
 
-    private ArrayList<RegimeProductViewModel> getInventoryViewModels() {
-        return newArrayList(new RegimeProductViewModel("3TC 150mg"), new RegimeProductViewModel("3TC 150mg"));
+    private RegimeProductViewModel getInventoryViewModels() {
+        return new RegimeProductViewModel("3TC 150mg");
     }
 }
