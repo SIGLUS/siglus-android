@@ -243,6 +243,8 @@
     <string name="table_prophylaxis_child">Exposed child</string>
     <string name="table_prophylaxis_total">Total Nr of Patients In TARV at HF</string>
     <string name="hint_has_not_new_data">You are at the end of the list</string>
+    <string name="label_mmia_regime_adult"><![CDATA[Adults & Adolescents]]></string>
+    <string name="label_mmia_regime_children">Pediatrics</string>
 
     <string name="RECEIVE">Entries</string>
     <string name="ISSUE">Issues</string>

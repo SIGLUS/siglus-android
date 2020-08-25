@@ -3,7 +3,7 @@
     style="@style/ItemRegime.Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_mmia_speed_list_header"
+    android:background="@drawable/border_bg_light_gray"
     android:minHeight="@dimen/mmia_ragime_title_minHeight">
 
     <TextView
@@ -17,7 +17,7 @@
         android:text="@string/total_title" />
 
     <TextView
-        android:id="@+id/et_total_pharmacy_title"
+        android:id="@+id/tv_total_pharmacy_title"
         style="@style/MMIA.Regime.Title"
         android:text="@string/total_pharmacy" />
 </LinearLayout>

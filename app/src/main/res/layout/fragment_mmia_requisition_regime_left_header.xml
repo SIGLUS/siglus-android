@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@drawable/border_bg_light_gray"
+    android:gravity="center"
+    android:minWidth="50dp"
+    android:orientation="vertical">
+
+
+    <org.openlmis.core.view.widget.RotateTextView
+
+        android:id="@+id/regime_left_header_adult"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/label_mmia_regime_adult" />
+
+    <View
+        android:layout_width="50dp"
+        android:layout_height="1dp"
+        android:background="@color/color_gray" />
+
+    <org.openlmis.core.view.widget.RotateTextView
+        android:id="@+id/regime_left_header_children"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="bottom|center_horizontal"
+        android:text="@string/label_mmia_regime_children" />
+
+</LinearLayout>

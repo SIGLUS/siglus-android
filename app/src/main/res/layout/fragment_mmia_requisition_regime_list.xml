@@ -1,55 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="0dp"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+
+    <include layout="@layout/item_regime_header" />
+
+    <org.openlmis.core.view.widget.MMIARegimeListWrap
+        android:id="@+id/regime_list_wrap"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:background="@color/color_red">
-
-        <LinearLayout
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@color/color_red"
-            tools:layout_height="400dp">
-
-            <TextView
-                android:id="@+id/mmia_regime_leftmost_adult"
-                android:layout_marginTop="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|center_vertical"
-                android:rotation="270"
-                android:text="Adults"
-                tools:layout_width="40dp"
-                tools:text="Adults" />
-
-            <TextView
-                android:id="@+id/mmia_regime_leftmost_children"
-                android:layout_marginBottom="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/mmia_regime_leftmost_adult"
-                android:layout_gravity="bottom"
-                android:rotation="270"
-                android:text="Children"
-                tools:layout_width="40dp"
-                tools:text="Children" />
-        </LinearLayout>
-
-        <org.openlmis.core.view.widget.MMIARegimeList
-            android:id="@+id/regime_list"
-            style="@style/MMIA.RegimeList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:background="@color/color_regime_baby"
-            tools:layout_height="120dp" />
-    </LinearLayout>
-
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         style="@style/MMIA.RegimeTotal"

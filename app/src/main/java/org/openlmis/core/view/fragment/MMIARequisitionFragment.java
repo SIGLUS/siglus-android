@@ -48,6 +48,7 @@ import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.view.widget.MMIAPatientInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
+import org.openlmis.core.view.widget.MMIARegimeListWrap;
 import org.openlmis.core.view.widget.MMIARnrFormProductList;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
@@ -70,8 +71,8 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     @InjectView(R.id.mmia_therapeutic_layout)
     protected LinearLayout mmiaThreaPeuticLayout;
 
-    @InjectView(R.id.regime_list)
-    protected MMIARegimeList regimeListView;
+    @InjectView(R.id.regime_list_wrap)
+    protected MMIARegimeListWrap regimeWrap;
 
     @InjectView(R.id.mmia_patient_info_list)
     protected MMIAPatientInfoList mmiaPatientInfoListView;
@@ -80,6 +81,9 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     protected TextView tvRegimeTotal;
     @InjectView(R.id.tv_regime_total_pharmacy)
     protected TextView tvRegimeTotalPharmacy;
+
+    @InjectView(R.id.tv_total_pharmacy_title)
+    protected TextView tvTotalPharmacyTitle;
 
     @InjectView(R.id.mmia_regime_three_line_total)
     protected TextView mmiaRegimeThreeLineTotal;
@@ -174,19 +178,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     }
 
     private void setRegimenListener() {
-        regimeListView.setRegimeListener(new MMIARegimeList.MMIARegimeListener() {
-            @Override
-            public void loading() {
-                MMIARequisitionFragment.this.loading();
-            }
-
-            @Override
-            public void loaded() {
-                MMIARequisitionFragment.this.loaded();
-            }
-        });
-
-        mmiaRegimeThreeLineListView.setRegimeThreeLineListener(new MMIARegimeThreeLineList.MMIARegimeThreeLineListener() {
+        regimeWrap.setRegimeListener(new MMIARegimeList.MMIARegimeListener() {
             @Override
             public void loading() {
                 MMIARequisitionFragment.this.loading();
@@ -213,8 +205,9 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         } else {
             mmiaThreaPeuticLayout.setVisibility(View.GONE);
             tvRegimeTotalPharmacy.setVisibility(View.GONE);
+            tvTotalPharmacyTitle.setVisibility(View.GONE);
         }
-        regimeListView.initView(tvRegimeTotal, tvRegimeTotalPharmacy, presenter);
+        regimeWrap.initView(tvRegimeTotal, tvRegimeTotalPharmacy, tvTotalPharmacyTitle, presenter);
         mmiaPatientInfoListView.initView(form.getBaseInfoItemListWrapper());
         InflateFreezeHeaderView();
         getActivity().setTitle(getString(R.string.label_mmia_title, DateUtil.formatDateWithoutYear(form.getPeriodBegin()), DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
@@ -253,7 +246,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
             public void onSingleClick(View v) {
                 loading();
                 Subscription subscription = presenter.getSaveFormObservable(rnrFormList.itemFormList,
-                        regimeListView.getDataList(),
+                        regimeWrap.getDataList(),
                         mmiaPatientInfoListView.getDataList(),
                         mmiaRegimeThreeLineListView.getDataList(),
                         etComment.getText().toString())
@@ -291,11 +284,11 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
             @Override
             public void onSingleClick(View v) {
                 if (rnrFormList.isCompleted()
-                        && regimeListView.isCompleted()
+                        && regimeWrap.isCompleted()
                         && mmiaPatientInfoListView.isCompleted()
                         && mmiaRegimeThreeLineListView.isCompleted()) {
                     presenter.setViewModels(rnrFormList.itemFormList,
-                            regimeListView.getDataList(),
+                            regimeWrap.getDataList(),
                             mmiaPatientInfoListView.getDataList(),
                             mmiaRegimeThreeLineListView.getDataList(),
                             etComment.getText().toString());
@@ -365,7 +358,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     };
 
     private void highlightTotalDifference() {
-        regimeListView.deHighLightTotal();
+        regimeWrap.deHighLightTotal();
         if (mmiaThreaPeuticLayout.getVisibility() != View.GONE) {
             mmiaRegimeThreeLineListView.deHighLightTotal();
         }
@@ -424,7 +417,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FOR_CUSTOM_REGIME) {
-            regimeListView.addCustomRegimenItem((Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN));
+            regimeWrap.addCustomRegimenItem((Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN));
         }
     }
 }

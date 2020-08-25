@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.openlmis.core.view.widget.MMIARegimeList xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/regime_list"
+    style="@style/MMIA.RegimeList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@color/color_regime_baby"
+    tools:layout_height="120dp" />

@@ -1,8 +1,6 @@
 package org.openlmis.core.view.widget;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -33,8 +31,6 @@ public class MMIARegimeThreeLineList extends LinearLayout {
     private TextView mmiaThreeLinePatientsTotal;
     private TextView mmiaThreeLinePharmacyTotal;
 
-    private MMIARegimeThreeLineListener mmiaRegimeThreeLineListener;
-
     private String ATTR_FIRST_LINE;
     private String ATTR_SECOND_LINE;
     private String ATTR_THIRD_LINE;
@@ -56,12 +52,6 @@ public class MMIARegimeThreeLineList extends LinearLayout {
 
     public MMIARegimeThreeLineList(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public MMIARegimeThreeLineList(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
@@ -156,16 +146,6 @@ public class MMIARegimeThreeLineList extends LinearLayout {
 
     public List<RegimenItemThreeLines> getDataList() {
         return dataList;
-    }
-
-    public interface MMIARegimeThreeLineListener {
-        void loading();
-
-        void loaded();
-    }
-
-    public void setRegimeThreeLineListener(MMIARegimeThreeLineListener regimeListener) {
-        this.mmiaRegimeThreeLineListener = regimeListener;
     }
 
     class EditTextWatcher implements TextWatcher {
