@@ -44,7 +44,7 @@ public class MMIARnrFormProductListTest {
         // Product.MEDICINE_TYPE_ADULT
         list.add(getRnrFormItem(4L, "product4", "08S39Z", MEDICINE_TYPE_ADULT));
 
-        mmiaRnrFormProductList.initView(list);
+        mmiaRnrFormProductList.initView(list, false);
 
         ViewGroup leftViewGroup =  mmiaRnrFormProductList.findViewById(R.id.rnr_from_list_product_name);
 

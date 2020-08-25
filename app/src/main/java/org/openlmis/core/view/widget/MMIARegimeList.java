@@ -128,10 +128,11 @@ public class MMIARegimeList extends LinearLayout {
         int childSize = getChildCount();
 
         int[] firstItemLocations = new int[2];
-        getChildAt(0).getLocationOnScreen(firstItemLocations);
         int[] theDividerLocations = new int[2];
-        getChildAt(isCustomEnable() ? adults.size() + 1 : adults.size()).getLocationOnScreen(theDividerLocations);
         int[] lastItemLocations = new int[2];
+
+        getChildAt(0).getLocationOnScreen(firstItemLocations);
+        getChildAt(isCustomEnable() ? adults.size() + 1 : adults.size()).getLocationOnScreen(theDividerLocations);
         getChildAt(childSize - 1).getLocationOnScreen(lastItemLocations);
 
         adultHeight = theDividerLocations[1] - firstItemLocations[1];
@@ -168,7 +169,7 @@ public class MMIARegimeList extends LinearLayout {
         paediatrics = new ArrayList<>();
 
         for (RegimenItem item : regimenItems) {
-            if (item == null) {
+            if (item == null || item.getRegimen() == null) {
                 continue;
             }
             if (Regimen.RegimeType.Paediatrics.equals(item.getRegimen().getType())) {
