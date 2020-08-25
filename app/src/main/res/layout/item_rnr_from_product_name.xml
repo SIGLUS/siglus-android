@@ -12,8 +12,8 @@
         android:id="@+id/tv_product_code_header"
         style="@style/ItemRnr.PrimaryName"
         android:layout_width="80dp"
-        android:gravity="center"
         android:layout_height="match_parent"
+        android:gravity="center"
         tools:text="Product name" />
 
     <TextView
@@ -21,7 +21,6 @@
         style="@style/ItemRnr.PrimaryName"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
         tools:text="Product name" />
 </LinearLayout>
 

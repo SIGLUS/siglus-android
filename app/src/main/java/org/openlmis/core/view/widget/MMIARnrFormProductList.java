@@ -67,6 +67,8 @@ public class MMIARnrFormProductList extends LinearLayout {
     @Getter
     private ViewGroup rightHeaderView;
 
+    private boolean dataWithOldFormat = false;
+
     public MMIARnrFormProductList(Context context) {
         super(context);
         init(context);
@@ -93,7 +95,8 @@ public class MMIARnrFormProductList extends LinearLayout {
         rightViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list);
     }
 
-    public void initView(List<RnrFormItem> list) {
+    public void initView(List<RnrFormItem> list, boolean shouldOldData) {
+        this.dataWithOldFormat = shouldOldData;
         addHeaderView();
         addItemView(list);
     }
@@ -171,8 +174,8 @@ public class MMIARnrFormProductList extends LinearLayout {
         return from(rnrFormItemList).filter(rnrFormItem -> category.equals(rnrFormItem.getCategory())).toList();
     }
 
-    private void addViewByMedicineType(List<RnrFormItem> categoriedFormItems) {
-        for (RnrFormItem item : categoriedFormItems) {
+    private void addViewByMedicineType(List<RnrFormItem> categoryFormItems) {
+        for (RnrFormItem item : categoryFormItems) {
             addRnrFormItemView(item.getCategory(), item);
         }
     }
@@ -185,6 +188,9 @@ public class MMIARnrFormProductList extends LinearLayout {
 
     private void addDividerView(String medicineType) {
         View leftView = inflaterLeftView();
+        if (dataWithOldFormat) {
+            leftView.findViewById(R.id.tv_product_code_header).setVisibility(View.GONE);
+        }
         leftViewGroup.addView(leftView);
         setLeftViewColor(medicineType, leftView);
         ViewGroup rightView = inflateRightView();
@@ -231,15 +237,23 @@ public class MMIARnrFormProductList extends LinearLayout {
         TextView tvProductCodeHeader = (TextView) view.findViewById(R.id.tv_product_code_header);
         if (isHeaderView) {
             tvPrimaryName.setText(R.string.label_rnrfrom_left_header);
-            tvPrimaryName.setGravity(Gravity.CENTER_VERTICAL);
-            tvProductCodeHeader.setText(R.string.label_product_codes);
+            tvPrimaryName.setGravity(Gravity.CENTER);
+            if (dataWithOldFormat) {
+                tvProductCodeHeader.setVisibility(GONE);
+            } else {
+                tvProductCodeHeader.setText(R.string.label_product_codes);
+            }
         } else {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
-            tvProductCodeHeader.setText(product.getCode());
-            tvProductCodeHeader.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                    new BitmapDrawable(getResources(), DateUtil.createBarcode(product.getCode())),
-                    null, null);
+            if (dataWithOldFormat) {
+                tvProductCodeHeader.setVisibility(GONE);
+            } else {
+                tvProductCodeHeader.setText(product.getCode());
+                tvProductCodeHeader.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+                        new BitmapDrawable(getResources(), DateUtil.createBarcode(product.getCode())),
+                        null, null);
+            }
             setLeftViewColor(medicineType, view);
             leftViewGroup.addView(view);
         }

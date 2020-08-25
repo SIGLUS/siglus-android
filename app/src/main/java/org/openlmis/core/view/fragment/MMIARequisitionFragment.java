@@ -198,10 +198,10 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     @Override
     public void refreshRequisitionForm(RnRForm form) {
         scrollView.setVisibility(View.VISIBLE);
-        rnrFormList.initView(form.getRnrFormItemListWrapper());
-        List<RegimenItemThreeLines> dataList = form.getRegimenThreeLineListWrapper();
-        if (dataList != null && !dataList.isEmpty()) {
-            mmiaRegimeThreeLineListView.initView(mmiaRegimeThreeLineTotal, mmiaRegimeThreeLinePharmacy, dataList);
+        List<RegimenItemThreeLines> regimeTypes = form.getRegimenThreeLineListWrapper();
+        rnrFormList.initView(form.getRnrFormItemListWrapper(), !(regimeTypes != null && !regimeTypes.isEmpty()));
+        if (regimeTypes != null && !regimeTypes.isEmpty()) {
+            mmiaRegimeThreeLineListView.initView(mmiaRegimeThreeLineTotal, mmiaRegimeThreeLinePharmacy, regimeTypes);
         } else {
             mmiaThreaPeuticLayout.setVisibility(View.GONE);
             tvRegimeTotalPharmacy.setVisibility(View.GONE);

@@ -47,14 +47,10 @@ public class MMIARegimeListWrap extends LinearLayout {
         leftHeaderAdult.setBackgroundResource(R.color.color_green_light);
         leftHeaderChildren.setBackgroundResource(R.color.color_regime_baby);
 
-        regimeList.post(() -> {
-            LayoutParams adultParams = (LayoutParams) leftHeaderAdult.getLayoutParams();
-            adultParams.height = regimeList.adultHeight;
-            leftHeaderAdult.setLayoutParams(adultParams);
-            LayoutParams childrenParams = (LayoutParams) leftHeaderChildren.getLayoutParams();
-            childrenParams.height = regimeList.childrenHeight;
-            leftHeaderChildren.setLayoutParams(childrenParams);
-        });
+        if (regimeList.isPharmacyEmpty) {
+            regimeLeftHeader.setVisibility(GONE);
+        }
+        regimeList.post(this::updateLeftHeader);
     }
 
     public void updateLeftHeader() {
