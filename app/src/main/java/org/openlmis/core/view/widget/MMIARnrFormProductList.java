@@ -19,7 +19,6 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.drawable.BitmapDrawable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -29,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -189,7 +189,7 @@ public class MMIARnrFormProductList extends LinearLayout {
     private void addDividerView(String medicineType) {
         View leftView = inflaterLeftView();
         if (dataWithOldFormat) {
-            leftView.findViewById(R.id.tv_product_code_header).setVisibility(View.GONE);
+            leftView.findViewById(R.id.mmia_product_barcode_column).setVisibility(View.GONE);
         }
         leftViewGroup.addView(leftView);
         setLeftViewColor(medicineType, leftView);
@@ -234,25 +234,27 @@ public class MMIARnrFormProductList extends LinearLayout {
     private View addLeftView(RnrFormItem item, boolean isHeaderView, String medicineType) {
         View view = inflaterLeftView();
         TextView tvPrimaryName = (TextView) view.findViewById(R.id.tv_primary_name);
-        TextView tvProductCodeHeader = (TextView) view.findViewById(R.id.tv_product_code_header);
+        LinearLayout linearLayoutBarCode = (LinearLayout) view.findViewById(R.id.mmia_product_barcode_column);
+        ImageView imageView = linearLayoutBarCode.findViewById(R.id.mmia_product_barcode_column_img);
+        TextView textView = linearLayoutBarCode.findViewById(R.id.mmia_product_barcode_column_code);
         if (isHeaderView) {
             tvPrimaryName.setText(R.string.label_rnrfrom_left_header);
             tvPrimaryName.setGravity(Gravity.CENTER);
+            imageView.setVisibility(GONE);
             if (dataWithOldFormat) {
-                tvProductCodeHeader.setVisibility(GONE);
+                linearLayoutBarCode.setVisibility(GONE);
             } else {
-                tvProductCodeHeader.setText(R.string.label_product_codes);
+                textView.setText(R.string.label_product_codes);
             }
         } else {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
             if (dataWithOldFormat) {
-                tvProductCodeHeader.setVisibility(GONE);
+                linearLayoutBarCode.setVisibility(GONE);
+                imageView.setVisibility(GONE);
             } else {
-                tvProductCodeHeader.setText(product.getCode());
-                tvProductCodeHeader.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                        new BitmapDrawable(getResources(), DateUtil.createBarcode(product.getCode())),
-                        null, null);
+                imageView.setImageBitmap(DateUtil.createBarcode(product.getCode()));
+                textView.setText(product.getCode());
             }
             setLeftViewColor(medicineType, view);
             leftViewGroup.addView(view);

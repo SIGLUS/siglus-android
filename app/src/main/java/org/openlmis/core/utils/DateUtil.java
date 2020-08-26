@@ -257,7 +257,7 @@ public final class DateUtil {
     public static Bitmap createBarcode(String str) {
 
         try {
-            BitMatrix bitMatrix = new MultiFormatWriter().encode(str, BarcodeFormat.CODE_128, 70, 40);
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(str, BarcodeFormat.CODE_128, 80, 40);
 
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();

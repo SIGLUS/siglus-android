@@ -3,7 +3,7 @@
     style="@style/ItemRegime.Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_bg_light_gray"
+    android:background="@drawable/border_bg_light_gray_no_bottom"
     android:minHeight="@dimen/mmia_ragime_title_minHeight">
 
     <TextView
