@@ -52,15 +52,12 @@ public final class SyncErrorsMap {
         if (errorMessage.contains(ERROR_RNR_PERIOD_INVALID)) {
             return context.getString(R.string.error_rnr_period_invalid);
         }
-        if (errorMessage.contains(ERROR_RNR_FIELD_MANDATORY_NEGATIVE)) {
+        if (errorMessage.contains(ERROR_RNR_FIELD_MANDATORY_NEGATIVE)
+                || errorMessage.contains(ERROR_RNR_VALIDATION_EQUATION_NOT_EQUAL)
+                || errorMessage.contains(ERROR_RNR_REPORT_START_DATE_INVALID)) {
             return context.getString(R.string.error_rnr_field_mandatory_negative);
         }
-        if (errorMessage.contains(ERROR_RNR_VALIDATION_EQUATION_NOT_EQUAL)) {
-            return context.getString(R.string.error_rnr_validation_equation_not_equal);
-        }
-        if (errorMessage.contains(ERROR_RNR_REPORT_START_DATE_INVALID)) {
-            return context.getString(R.string.error_rnr_report_start_date_invalid);
-        }
-        return errorMessage;
+
+        return context.getString(R.string.error_rnr_report_start_date_invalid);
     }
 }
