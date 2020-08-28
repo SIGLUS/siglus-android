@@ -32,6 +32,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -55,9 +56,11 @@ public class ProductRepository {
     @Inject
     DbUtil dbUtil;
 
-
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    LotRepository lotRepository;
 
     @Inject
     public ProductRepository(Context context) {
@@ -167,9 +170,7 @@ public class ProductRepository {
     public void createOrUpdate(Product product) throws LMISException {
         Product existingProduct = getByCode(product.getCode());
         if (existingProduct != null) {
-            if (existingProduct.isKit() != product.isKit()) {//isKit changed
-                stockRepository.deletedData(product, product.isKit());
-            }
+            deleteWrongKitInfo(existingProduct, product);
             product.setId(existingProduct.getId());
             product.setArchived(existingProduct.isArchived());
             updateProduct(product);
@@ -184,6 +185,23 @@ public class ProductRepository {
             e.printStackTrace();
 
         }
+    }
+
+    private void deleteWrongKitInfo(Product existingProduct, Product product) {
+        try {
+            if (existingProduct.isKit() != product.isKit()) {//isKit changed
+                StockCard stockCard = stockRepository.queryStockCardByProductCode(product.getCode());
+                lotRepository.deleteLotInfo(stockCard);
+                stockRepository.deletedData(stockCard);
+                Product localProduct = getByCode(product.getCode());
+                if (stockCard != null && !product.isKit()) {
+                    genericDao.delete(localProduct);
+                }
+            }
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+
     }
 
     public void updateProduct(Product product) throws LMISException {

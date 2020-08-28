@@ -8,8 +8,10 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,17 @@ public class LotRepository {
     DbUtil dbUtil;
     @Inject
     Context context;
+
+    GenericDao<Lot> lotGenericDao;
+    GenericDao<LotOnHand> lotOnHandGenericDao;
+    GenericDao<LotMovementItem> lotMovementItemGenericDao;
+
+    @Inject
+    public LotRepository(Context context) {
+        lotGenericDao = new GenericDao<>(Lot.class, context);
+        lotOnHandGenericDao = new GenericDao<>(LotOnHand.class, context);
+        lotMovementItemGenericDao = new GenericDao<>(LotMovementItem.class, context);
+    }
 
     public void batchCreateLotsAndLotMovements(final List<LotMovementItem> lotMovementItemListWrapper) throws LMISException {
         dbUtil.withDaoAsBatch(LotMovementItem.class, dao -> {
@@ -124,12 +137,25 @@ public class LotRepository {
         });
     }
 
-    public List<Lot> queryAllLot() {
-        try {
-            return new GenericDao<>(Lot.class, context).queryForAll();
-        } catch (LMISException e) {
-            new LMISException(e, "queryAllLot").reportToFabric();
+    public void deleteLotInfo(final StockCard stockCard) throws LMISException {
+        List<Lot> lots = dbUtil.withDao(Lot.class, dao -> dao.queryBuilder()
+                .where().eq("product_id", stockCard.getProduct().getId()).query());
+        List<LotOnHand> lotOnHands = dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
+                .where().eq("stockCard_id", stockCard.getId())
+                .query());
+        List<Long> lotIds = FluentIterable.from(lots).transform(lot -> lot.getId()).toList();
+        List<LotMovementItem> lotMovementItems = dbUtil.withDao(LotMovementItem.class, dao -> dao.queryBuilder()
+                .where().in("lot_id", lotIds)
+                .query());
+
+        for (LotMovementItem item : lotMovementItems) {
+            lotMovementItemGenericDao.delete(item);
         }
-        return null;
+        for (LotOnHand lotOnHand : lotOnHands) {
+            lotOnHandGenericDao.delete(lotOnHand);
+        }
+        for (Lot lot : lots) {
+            lotGenericDao.delete(lot);
+        }
     }
 }

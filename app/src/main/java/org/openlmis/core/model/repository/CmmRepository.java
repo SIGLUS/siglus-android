@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Cmm;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -53,6 +54,15 @@ public class CmmRepository {
                     + "SET cmmValue=-1.0,synced=0 WHERE stockCard_id=(SELECT stockCard_id "
                     + "FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' ));";
             LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(resetCmmValueAndSynced);
+        }
+    }
+
+    public void deleteCmm(final StockCard stockCard) throws LMISException {
+        List<Cmm> cmms = dbUtil.withDao(Cmm.class, dao -> dao.queryBuilder()
+                .where().eq("stockCard_id", stockCard != null ? stockCard.getId() : "0")
+                .query());
+        for (Cmm cmm : cmms) {
+            cmmDao.delete(cmm);
         }
     }
 }

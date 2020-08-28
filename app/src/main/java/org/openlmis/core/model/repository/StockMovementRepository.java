@@ -11,6 +11,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
@@ -244,5 +245,15 @@ public class StockMovementRepository {
             cursor.close();
         }
         return items;
+    }
+
+    public void deleteStockMovementItems(final StockCard stockCard) throws LMISException {
+        List<StockMovementItem> items = dbUtil.withDao(StockMovementItem.class,
+                dao -> dao.queryBuilder()
+                        .where().eq("stockCard_id", stockCard.getId())
+                        .query());
+        for (StockMovementItem item : items) {
+            genericDao.delete(item);
+        }
     }
 }
