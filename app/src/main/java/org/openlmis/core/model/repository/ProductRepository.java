@@ -191,11 +191,13 @@ public class ProductRepository {
         try {
             if (existingProduct.isKit() != product.isKit()) {//isKit changed
                 StockCard stockCard = stockRepository.queryStockCardByProductCode(product.getCode());
-                lotRepository.deleteLotInfo(stockCard);
-                stockRepository.deletedData(stockCard);
-                Product localProduct = getByCode(product.getCode());
-                if (stockCard != null && !product.isKit()) {
-                    genericDao.delete(localProduct);
+                if (stockCard != null) {
+                    lotRepository.deleteLotInfo(stockCard);
+                    stockRepository.deletedData(stockCard);
+                    Product localProduct = getByCode(product.getCode());
+                    if (!product.isKit()) {
+                        genericDao.delete(localProduct);
+                    }
                 }
             }
         } catch (LMISException e) {

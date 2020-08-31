@@ -139,7 +139,7 @@ public class LotRepository {
 
     public void deleteLotInfo(final StockCard stockCard) throws LMISException {
         List<Lot> lots = dbUtil.withDao(Lot.class, dao -> dao.queryBuilder()
-                .where().eq("product_id", stockCard.getProduct().getId()).query());
+                .where().eq("product_id", stockCard.getProduct() != null ? stockCard.getProduct().getId() : "null").query());
         List<LotOnHand> lotOnHands = dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
                 .where().eq("stockCard_id", stockCard.getId())
                 .query());
