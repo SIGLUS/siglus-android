@@ -58,6 +58,6 @@ public final class SyncErrorsMap {
             return context.getString(R.string.error_rnr_field_mandatory_negative);
         }
 
-        return context.getString(R.string.error_rnr_report_start_date_invalid);
+        return context.getString(R.string.sync_server_error);
     }
 }
