@@ -168,11 +168,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
     }
 
     private void showBanner() {
-        if (isActivated) {
-            banner.setVisibility(View.GONE);
-        } else {
-            banner.setVisibility(View.VISIBLE);
-        }
+        banner.setVisibility(isActivated ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -267,7 +263,6 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
     }
 
     public SingleClickButtonListener getSingleClickButtonListener() {
-        final Context context = this;
         return new SingleClickButtonListener() {
             @Override
             public void onSingleClick(View v) {

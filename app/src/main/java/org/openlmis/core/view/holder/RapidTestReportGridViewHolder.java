@@ -66,9 +66,9 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     public void setEditable(Boolean editable) {
-        etConsume.setFocusableInTouchMode(editable);
-        etPositive.setFocusableInTouchMode(editable);
-        etUnjustified.setFocusableInTouchMode(editable);
+        etConsume.setFocusable(editable);
+        etPositive.setFocusable(editable);
+        etUnjustified.setFocusable(editable);
     }
 
     public void populateData(RapidTestFormGridViewModel viewModel) {

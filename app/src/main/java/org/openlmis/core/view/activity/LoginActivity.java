@@ -29,7 +29,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -143,16 +142,13 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         }
 
         etPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideImm();
-                    startLogin(false);
-                    return true;
-                }
-                return false;
+        etPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                hideImm();
+                startLogin(false);
+                return true;
             }
+            return false;
         });
 
         if (BuildConfig.DEBUG) {

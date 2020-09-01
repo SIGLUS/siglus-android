@@ -515,7 +515,7 @@
     <string name="msg_product_code_6x2">6x2</string>
     <string name="msg_product_code_6x3">6x3</string>
     <string name="msg_product_code_6x4">6x4</string>
-    <string name="title_add_non_basic_products">Add products to be issued</string>
+    <string name="title_add_non_basic_products">Add products to initial inventory</string>
     <string name="title_non_basic_products">Non basic products</string>
     <string name="add_products_loading_message">Downloading Non Basic Products</string>
     <string name="create_ptv_data_report">Create PTV Data Report</string>
