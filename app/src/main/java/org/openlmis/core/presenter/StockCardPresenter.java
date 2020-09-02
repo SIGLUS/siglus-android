@@ -18,9 +18,12 @@
 
 package org.openlmis.core.presenter;
 
+import android.util.Log;
+
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -96,7 +99,10 @@ public class StockCardPresenter extends Presenter {
     private void checkDataAndEmitter(Subscriber<? super List<StockCard>> subscriber, ArchiveStatus status) {
         Map<String, List<StockCard>> stockCardMap = new HashMap<>();
         List<StockCard> allStockCards = stockRepository.list();
-        List<StockCard> deletedStockCards = dirtyDataManager.correctDataForStockCardOverView(allStockCards);
+        List<StockCard> deletedStockCards = new ArrayList<>();
+        if (shouldStartDataCheck()) {
+            deletedStockCards = dirtyDataManager.correctDataForStockCardOverView(allStockCards);
+        }
 
         stockCardMap.put(KEY_ALL_STOCKCARDS, allStockCards);
         stockCardMap.put(KEY_DELETED_STOCKCARDS, deletedStockCards);
@@ -154,15 +160,18 @@ public class StockCardPresenter extends Presenter {
     }
 
     public void refreshStockCardsObservable(long stockCardId) {
+        DateTime dateTime = DateTime.now();
         view.loading();
         Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
             refreshStockCardViewModelsSOH(stockCardId);
             checkDataAndEmitter(subscriber, Active);
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<StockCard>>() {
                     @Override
                     public void onCompleted() {
                         view.loaded();
+                        Log.d(TAG, "refreshStockCardsObservable onCompleted: " + (DateTime.now().getMillis() - dateTime.getMillis()));
                     }
 
                     @Override
@@ -173,9 +182,10 @@ public class StockCardPresenter extends Presenter {
 
                     @Override
                     public void onNext(List<StockCard> stockCards) {
+                        view.loaded();
+                        Log.d(TAG, "refreshStockCardsObservable onNext: " + (DateTime.now().getMillis() - dateTime.getMillis()));
                         refreshViewModels(stockCards);
                         view.refreshBannerText();
-                        view.loaded();
                         view.refresh(inventoryViewModels);
                     }
                 });
@@ -189,12 +199,13 @@ public class StockCardPresenter extends Presenter {
         inventoryViewModels.addAll(inventoryViewModelList);
     }
 
-    public void refreshStockCardViewModelsSOH(long stockCardId) {
+    private void refreshStockCardViewModelsSOH(long stockCardId) {
         for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
             final StockCard stockCard = inventoryViewModel.getStockCard();
             if (stockCardId == stockCard.getId()) {
                 stockRepository.refresh(stockCard);
                 inventoryViewModel.setStockOnHand(stockCard.calculateSOHFromLots());
+                break;
             }
         }
     }
