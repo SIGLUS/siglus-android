@@ -43,7 +43,6 @@ import org.openlmis.core.view.widget.MovementTypeDialog;
 
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -200,23 +199,17 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void addClickListeners(final StockMovementViewModel model, final Date previousMovementDate) {
-        txReason.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (model.isDraft()) {
-                    new MovementTypeDialog(context, new MovementSelectListener(model)).show();
-                    trackStockMovementEvent(TrackerActions.SelectReason);
-                }
+        txReason.setOnClickListener(v -> {
+            if (model.isDraft()) {
+                new MovementTypeDialog(context, new MovementSelectListener(model)).show();
+                trackStockMovementEvent(TrackerActions.SelectReason);
             }
         });
 
-        txMovementDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (model.isDraft()) {
-                    showDatePickerDialog(model, previousMovementDate);
-                    trackStockMovementEvent(TrackerActions.SelectMovementDate);
-                }
+        txMovementDate.setOnClickListener(v -> {
+            if (model.isDraft()) {
+                showDatePickerDialog(model, previousMovementDate);
+                trackStockMovementEvent(TrackerActions.SelectMovementDate);
             }
         });
     }
@@ -286,11 +279,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         List<StockMovementItem> stockMovements = stockCard.getStockMovementItemsWrapper();
         if (stockMovements != null) {
             if (!stockMovements.isEmpty()) {
-                Collections.sort(stockMovements, new Comparator<StockMovementItem>() {
-                    public int compare(StockMovementItem item1, StockMovementItem item2) {
-                        return item1.getMovementDate().compareTo(item2.getMovementDate());
-                    }
-                });
+                Collections.sort(stockMovements, (item1, item2) -> item1.getMovementDate().compareTo(item2.getMovementDate()));
                 return stockMovements.get(stockMovements.size() - 1).getMovementDate();
             }
         }

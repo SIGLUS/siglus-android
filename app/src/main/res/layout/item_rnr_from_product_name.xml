@@ -12,11 +12,11 @@
         android:id="@+id/mmia_product_barcode_column"
         android:layout_width="80dp"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
+            tools:background="@color/color_red"
+            tools:src="@drawable/barcode08s18wi"
             android:id="@+id/mmia_product_barcode_column_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

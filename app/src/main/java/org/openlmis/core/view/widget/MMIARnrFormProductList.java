@@ -19,6 +19,8 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -40,8 +42,13 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ViewUtil;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import lombok.Getter;
@@ -207,7 +214,7 @@ public class MMIARnrFormProductList extends LinearLayout {
         return (ViewGroup) layoutInflater.inflate(R.layout.item_rnr_from, this, false);
     }
 
-    public void setItemSize(final View leftView, final ViewGroup rightView) {
+    private void setItemSize(final View leftView, final ViewGroup rightView) {
         post(() -> {
             setRightItemWidth(rightView);
             ViewUtil.syncViewHeight(leftView, rightView);
@@ -231,6 +238,43 @@ public class MMIARnrFormProductList extends LinearLayout {
         return addLeftView(null, true, null);
     }
 
+    private void saveBitmap(Bitmap bitmap, String message, String bitName) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR);
+        int minute = calendar.get(Calendar.MINUTE);
+        int second = calendar.get(Calendar.SECOND);
+        int millisecond = calendar.get(Calendar.MILLISECOND);
+
+        String fileName = message + "_at_" + year + "_" + month + "_" + day + "_" + hour + "_" + minute + "_" + second + "_" + millisecond;
+        String fileLocation = Environment.getExternalStorageDirectory().getPath() + "/DCIM/AndroidBarcodeGenerator/" + fileName + bitName;
+        String folderLocation = Environment.getExternalStorageDirectory().getPath() + "/DCIM/AndroidBarcodeGenerator/";
+        File file = new File(fileLocation);
+        File folder = new File(folderLocation);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        if (file.exists()) {
+            file.delete();
+        }
+
+        FileOutputStream out;
+        try {
+            out = new FileOutputStream(file);
+            if (bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)) {
+                out.flush();
+                out.close();
+            }
+        } catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+
     private View addLeftView(RnrFormItem item, boolean isHeaderView, String medicineType) {
         View view = inflaterLeftView();
         TextView tvPrimaryName = (TextView) view.findViewById(R.id.tv_primary_name);
@@ -253,6 +297,7 @@ public class MMIARnrFormProductList extends LinearLayout {
                 linearLayoutBarCode.setVisibility(GONE);
                 imageView.setVisibility(GONE);
             } else {
+//                saveBitmap(DateUtil.createBarcode(product.getCode()),product.getCode(),".png");
                 imageView.setImageBitmap(DateUtil.createBarcode(product.getCode()));
                 textView.setText(product.getCode());
             }

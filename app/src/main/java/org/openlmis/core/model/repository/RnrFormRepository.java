@@ -19,7 +19,6 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
@@ -392,7 +391,6 @@ public class RnrFormRepository {
                 productProgram = productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes);
             }
             if (productProgram != null) {
-                Log.e(TAG, item.getProduct().getCode() + " <-->" + productProgram.getCategory());
                 item.setCategory(productProgram.getCategory());
             }
         }
