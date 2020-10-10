@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mmia_therapeutic_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,28 +9,17 @@
     android:orientation="vertical"
     android:showDividers="middle">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_gray"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_horizontal"
-            android:text="@string/mmia_therapeutic"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/font_size_regular" />
-    </RelativeLayout>
+    <TextView
+        style="@style/MMIA.SpreadHeader"
+        android:text="@string/mmia_therapeutic" />
 
     <org.openlmis.core.view.widget.MMIARegimeThreeLineList
         android:id="@+id/mmia_regime_three_line_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@drawable/divider_horizontal"
-        android:showDividers="middle">
+        android:showDividers="middle"
+        tools:layout_height="120dp">
 
     </org.openlmis.core.view.widget.MMIARegimeThreeLineList>
 
@@ -41,12 +31,7 @@
         android:gravity="end"
         android:showDividers="middle">
 
-        <TextView
-            style="@style/MMIA.RegimeTotalLabel"
-            android:layout_width="@dimen/mmia_spread_item_common_width"
-            android:layout_height="match_parent"
-            android:minHeight="30dp"
-            android:text="@string/total" />
+        <TextView style="@style/MMIA.RegimeTotalLabel" />
 
         <TextView
             android:id="@+id/mmia_regime_three_line_total"

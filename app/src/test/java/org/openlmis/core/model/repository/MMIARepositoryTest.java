@@ -203,24 +203,20 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public void shouldGenerateBaseInfoItemsNew() {
         RnRForm rnRForm = new RnRForm();
         List<BaseInfoItem> baseInfoItems = mmiaRepository.generateBaseInfoItems(rnRForm, MMIARepository.ReportType.NEW);
-        assertThat(baseInfoItems.size(), is(17));
+        assertThat(baseInfoItems.size(), is(13));
         assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_NEW));
         assertThat(baseInfoItems.get(1).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_MAINTENANCE));
         assertThat(baseInfoItems.get(2).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_ALTERATION));
         assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSIT));
         assertThat(baseInfoItems.get(4).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSFER));
-        assertThat(baseInfoItems.get(5).getName(), is(mmiaRepository.ATTR_TABLE_DISPENSED_DM));
-        assertThat(baseInfoItems.get(6).getName(), is(mmiaRepository.ATTR_TABLE_DISPENSED_DT));
-        assertThat(baseInfoItems.get(7).getName(), is(mmiaRepository.ATTR_TABLE_DISPENSED_DS));
-        assertThat(baseInfoItems.get(8).getName(), is(mmiaRepository.ATTR_TABLE_DISPENSED_THERAPEUTIC));
-        assertThat(baseInfoItems.get(9).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_ADULTS));
-        assertThat(baseInfoItems.get(10).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_0TO4));
-        assertThat(baseInfoItems.get(11).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_5TO9));
-        assertThat(baseInfoItems.get(12).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_10TO14));
-        assertThat(baseInfoItems.get(13).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PPE));
-        assertThat(baseInfoItems.get(14).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PREP));
-        assertThat(baseInfoItems.get(15).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_CHILD));
-        assertThat(baseInfoItems.get(16).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_TOTAL));
+        assertThat(baseInfoItems.get(5).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_ADULTS));
+        assertThat(baseInfoItems.get(6).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_0TO4));
+        assertThat(baseInfoItems.get(7).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_5TO9));
+        assertThat(baseInfoItems.get(8).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_10TO14));
+        assertThat(baseInfoItems.get(9).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PPE));
+        assertThat(baseInfoItems.get(10).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PREP));
+        assertThat(baseInfoItems.get(11).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_CHILD));
+        assertThat(baseInfoItems.get(12).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_TOTAL));
     }
 
     @Test

@@ -6,7 +6,6 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:gravity="start|center_vertical"
         android:id="@+id/tv_name"
         style="@style/ItemMMIA.Label"
         android:layout_width="0dp"

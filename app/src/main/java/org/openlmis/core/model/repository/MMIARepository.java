@@ -64,17 +64,6 @@ public class MMIARepository extends RnrFormRepository {
     @InjectResource(R.string.table_trav_label_transfers)
     public String ATTR_TABLE_TRAV_TRANSFER;
 
-    @InjectResource(R.string.table_dispensed)
-    public String ATTR_TABLE_DISPENSED;
-    @InjectResource(R.string.table_dispensed_label_dt)
-    public String ATTR_TABLE_DISPENSED_DT;
-    @InjectResource(R.string.table_dispensed_label_dm)
-    public String ATTR_TABLE_DISPENSED_DM;
-    @InjectResource(R.string.table_dispensed_label_therapeutic)
-    public String ATTR_TABLE_DISPENSED_THERAPEUTIC;
-    @InjectResource(R.string.table_dispensed_label_ds)
-    public String ATTR_TABLE_DISPENSED_DS;
-
     @InjectResource(R.string.table_patients)
     public String ATTR_TABLE_PATIENTS;
     @InjectResource(R.string.table_patients_adults)
@@ -207,10 +196,6 @@ public class MMIARepository extends RnrFormRepository {
         mAttrs.put(ATTR_TABLE_TRAV_ALTERATION, ATTR_TABLE_TRAV);
         mAttrs.put(ATTR_TABLE_TRAV_TRANSIT, ATTR_TABLE_TRAV);
         mAttrs.put(ATTR_TABLE_TRAV_TRANSFER, ATTR_TABLE_TRAV);
-        mAttrs.put(ATTR_TABLE_DISPENSED_DM, ATTR_TABLE_DISPENSED);
-        mAttrs.put(ATTR_TABLE_DISPENSED_DT, ATTR_TABLE_DISPENSED);
-        mAttrs.put(ATTR_TABLE_DISPENSED_DS, ATTR_TABLE_DISPENSED);
-        mAttrs.put(ATTR_TABLE_DISPENSED_THERAPEUTIC, ATTR_TABLE_DISPENSED);
         mAttrs.put(ATTR_TABLE_PATIENTS_ADULTS, ATTR_TABLE_PATIENTS);
         mAttrs.put(ATTR_TABLE_PATIENTS_0TO4, ATTR_TABLE_PATIENTS);
         mAttrs.put(ATTR_TABLE_PATIENTS_5TO9, ATTR_TABLE_PATIENTS);
@@ -228,11 +213,6 @@ public class MMIARepository extends RnrFormRepository {
         displayOrderMap.put(ATTR_TABLE_TRAV_ALTERATION, 3);
         displayOrderMap.put(ATTR_TABLE_TRAV_TRANSIT, 4);
         displayOrderMap.put(ATTR_TABLE_TRAV_TRANSFER, 5);
-        displayOrderMap.put(ATTR_TABLE_DISPENSED, 6);
-        displayOrderMap.put(ATTR_TABLE_DISPENSED_DM, 7);
-        displayOrderMap.put(ATTR_TABLE_DISPENSED_DT, 8);
-        displayOrderMap.put(ATTR_TABLE_DISPENSED_DS, 9);
-        displayOrderMap.put(ATTR_TABLE_DISPENSED_THERAPEUTIC, 10);
         displayOrderMap.put(ATTR_TABLE_PATIENTS, 11);
         displayOrderMap.put(ATTR_TABLE_PATIENTS_ADULTS, 12);
         displayOrderMap.put(ATTR_TABLE_PATIENTS_0TO4, 13);

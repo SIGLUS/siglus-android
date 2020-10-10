@@ -48,7 +48,6 @@ public class MMIAPatientInfoList extends LinearLayout {
     private List<BaseInfoItem> dataList;
     private Map<String, List<BaseInfoItem>> tableMap = new HashMap<>();
     private String ATTR_TABLE_TRAV;
-    private String ATTR_TABLE_DISPENSED;
     private String ATTR_TABLE_PATIENTS;
     private String ATTR_TABLE_PROPHYLAXIS;
 
@@ -79,7 +78,6 @@ public class MMIAPatientInfoList extends LinearLayout {
 
     private void initTableName() {
         ATTR_TABLE_TRAV = getString(R.string.table_trav);
-        ATTR_TABLE_DISPENSED = getString(R.string.table_dispensed);
         ATTR_TABLE_PATIENTS = getString(R.string.table_patients);
         ATTR_TABLE_PROPHYLAXIS = getString(R.string.table_prophylaxis);
         ATTR_TABLE_ORIGIN = getString(R.string.label_mmia_speed_info_header);
@@ -104,7 +102,6 @@ public class MMIAPatientInfoList extends LinearLayout {
     private void addItemView() {
         if (tableMap.size() != 1) {
             addTableView(tableMap.get(ATTR_TABLE_TRAV), ATTR_TABLE_TRAV);
-            addTableView(tableMap.get(ATTR_TABLE_DISPENSED), ATTR_TABLE_DISPENSED);
             addTableView(tableMap.get(ATTR_TABLE_PATIENTS), ATTR_TABLE_PATIENTS);
             addTableView(tableMap.get(ATTR_TABLE_PROPHYLAXIS), ATTR_TABLE_PROPHYLAXIS);
         } else {
@@ -113,10 +110,8 @@ public class MMIAPatientInfoList extends LinearLayout {
     }
 
     private void addTableView(List<BaseInfoItem> list, String tableName) {
-        LinearLayout linearLayout = (LinearLayout) layoutInflater.inflate(R.layout.item_mmia_requisitions_bottom, this, false);
-        TextView tableHeader = (TextView) linearLayout.findViewById(R.id.header);
+        TextView tableHeader = (TextView) layoutInflater.inflate(R.layout.item_mmia_requisitions_bottom, this, false);
         tableHeader.setText(tableName);
-        linearLayout.removeView(tableHeader);
         addView(tableHeader);
         sortedByDisplayOrder(list);
         for (int i = 0; i < list.size(); i++) {
@@ -127,13 +122,10 @@ public class MMIAPatientInfoList extends LinearLayout {
     private int getPosition(int i, String tableName) {
         if (ATTR_TABLE_TRAV.equals(tableName)) {
             return i;
-        } else if (ATTR_TABLE_DISPENSED.equals(tableName)) {
-            return i + tableMap.get(ATTR_TABLE_TRAV).size();
         } else if (ATTR_TABLE_PATIENTS.equals(tableName)) {
-            return i + tableMap.get(ATTR_TABLE_TRAV).size() + tableMap.get(ATTR_TABLE_DISPENSED).size();
+            return i + tableMap.get(ATTR_TABLE_TRAV).size();
         } else if (ATTR_TABLE_PROPHYLAXIS.equals(tableName)) {
-            return i + tableMap.get(ATTR_TABLE_TRAV).size() + tableMap.get(ATTR_TABLE_DISPENSED).size()
-                    + tableMap.get(ATTR_TABLE_PATIENTS).size();
+            return i + tableMap.get(ATTR_TABLE_TRAV).size() + tableMap.get(ATTR_TABLE_PATIENTS).size();
         } else {
             return i;
         }

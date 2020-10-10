@@ -237,6 +237,59 @@
 
     <style name="MMIA" />
 
+    <style name="MMIA.Type.Dispensed.Column.Generic" parent="MMIA">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MMIA.Type.Dispensed.Column.Linear" parent="MMIA.Type.Dispensed.Column.Generic">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/border_bg</item>
+    </style>
+
+    <style name="MMIA.Type.Dispensed.Column.Relative" parent="MMIA.Type.Dispensed.Column.Generic">
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="MMIA.Type.Dispensed.Left.Header" parent="MMIA">
+        <item name="android:gravity">end|center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginEnd">2dp</item>
+    </style>
+
+    <style name="MMIA.Type.Dispensed.Generic.Header" parent="MMIA">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@color/color_text_secondary</item>
+    </style>
+
+    <style name="MMIA.Type.Dispensed.Generic.Edit" parent="MMIA">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/border_bg_bottom_right_gray</item>
+        <item name="android:maxLength">7</item>
+        <item name="android:inputType">number</item>
+    </style>
+
+    <style name="MMIA.Type.Dispensed.DT.Edit" parent="MMIA.Type.Dispensed.Generic.Edit">
+        <item name="android:layout_alignEnd">@id/type_dispensed_dm_title</item>
+        <item name="android:background">@drawable/border_bg_bottom_right_gray</item>
+    </style>
+
+    <style name="MMIA.Type.Dispensed.DM.Edit" parent="MMIA.Type.Dispensed.Generic.Edit">
+        <item name="android:layout_alignEnd">@id/type_dispensed_dt_title</item>
+        <item name="android:background">@drawable/border_bg_bottom_right_gray</item>
+    </style>
+
+    <style name="MMIA.Type.Dispensed.Total.Edit" parent="MMIA.Type.Dispensed.Generic.Edit">
+        <item name="android:layout_alignEnd">@id/type_dispensed_adjustment_title</item>
+        <item name="android:background">@drawable/border_bg_bottom_right_gray</item>
+    </style>
+
     <style name="MMIA.Regime" parent="MMIA" />
 
     <style name="MMIA.Regime.Title" parent="MMIA.Regime">
@@ -296,13 +349,29 @@
         <item name="android:padding">@dimen/divider</item>
     </style>
 
+    <style name="MMIA.PatientList" parent="Divider.Horizontal">
+        <item name="android:background">@drawable/mmia_spread_list_bg</item>
+        <item name="android:padding">@dimen/divider</item>
+    </style>
+
     <style name="MMIA.RegimeTotal" parent="Divider.Vertical">
         <item name="android:layout_gravity">end</item>
         <item name="android:background">@drawable/mmia_spread_regime_total_bg</item>
         <item name="android:orientation">horizontal</item>
     </style>
 
+    <style name="MMIA.RegimeLeftHeader">
+        <item name="android:layout_width">@dimen/button_height_medium</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">bottom|center_horizontal</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
     <style name="MMIA.RegimeTotalLabel">
+        <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:minHeight">30dp</item>
+        <item name="android:text">@string/total</item>
         <item name="android:background">@color/color_divider</item>
         <item name="android:gravity">end|center_vertical</item>
         <item name="android:paddingEnd">@dimen/padding_small</item>
@@ -330,6 +399,8 @@
         <item name="android:background">@color/color_black</item>
         <item name="android:gravity">center</item>
         <item name="android:minHeight">38dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="MMIA.CommentLayout">
@@ -371,7 +442,7 @@
 
     <style name="ItemMMIA.Label" parent="MMIA.SpreadList">
         <item name="android:background">@color/color_mmia_info_name</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">end|center_vertical</item>
     </style>
 
     <style name="ItemMMIA.EditText" parent="MMIA.SpreadList">
@@ -430,7 +501,7 @@
 
     <style name="ItemRegime.Text" parent="MMIA.SpreadList" />
 
-    <style name="ItemRegime.EditText" parent="ItemMMIA.EditText" >
+    <style name="ItemRegime.EditText" parent="ItemMMIA.EditText">
         <item name="android:gravity">center</item>
     </style>
 

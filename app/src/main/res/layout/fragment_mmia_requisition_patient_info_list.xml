@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_mmia_requisition_patient_info"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="0dp"
     android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/margin_small"
+    android:layout_weight="3"
+    tools:layout_width="match_parent"
     android:orientation="vertical">
 
     <org.openlmis.core.view.widget.MMIAPatientInfoList
         android:id="@+id/mmia_patient_info_list"
-        tools:layout_height="120dp"
-        style="@style/MMIA.RegimeList"
+        style="@style/MMIA.PatientList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:layout_height="120dp" />
+
+    <include layout="@layout/fragment_mmia_requisition_dispensed" />
 
     <android.support.design.widget.TextInputLayout
         style="@style/MMIA.CommentLayout"
@@ -23,9 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_mmia_comment"
-            android:inputType="text"
-            android:maxLength="500"
-            android:minHeight="50dp" />
+            android:inputType="text" />
 
         <TextView
             android:id="@+id/tv_total_mismatch"
