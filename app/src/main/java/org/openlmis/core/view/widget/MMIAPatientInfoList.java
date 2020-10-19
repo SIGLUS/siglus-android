@@ -42,7 +42,6 @@ import java.util.Map;
 
 public class MMIAPatientInfoList extends LinearLayout {
     private Context context;
-    private EditText totalPatientsView = null;
     private List<EditText> editTexts = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private List<BaseInfoItem> dataList;
@@ -63,10 +62,6 @@ public class MMIAPatientInfoList extends LinearLayout {
     public MMIAPatientInfoList(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
-    }
-
-    public EditText getPatientTotalView() {
-        return totalPatientsView;
     }
 
     private void init(Context context) {
@@ -135,7 +130,6 @@ public class MMIAPatientInfoList extends LinearLayout {
         Collections.sort(list, (o1, o2) -> o1.getDisplayOrder() - o2.getDisplayOrder());
     }
 
-
     private void addTableViewItem(BaseInfoItem item, int position) {
         View view = layoutInflater.inflate(R.layout.item_mmia_info, this, false);
         TextView textView = (TextView) view.findViewById(R.id.tv_name);
@@ -144,11 +138,6 @@ public class MMIAPatientInfoList extends LinearLayout {
         textView.setText(item.getName());
         editTexts.add(editText);
         editText.setText(item.getValue());
-        if (isTotalInfoView(item)) {
-            totalPatientsView = editText;
-        } else {
-            editText.addTextChangedListener(new EditTextWatcher(item));
-        }
         editText.addTextChangedListener(new EditTextWatcher(item));
         setTotalViewBackground(item, editText);
         addView(view);
@@ -175,18 +164,8 @@ public class MMIAPatientInfoList extends LinearLayout {
         }
     }
 
-    public boolean hasDataChanged() {
-        return hasDataChanged;
-    }
-
     public List<BaseInfoItem> getDataList() {
         return dataList;
-    }
-
-    public void deHighLightTotal() {
-        if (totalPatientsView != null) {
-            totalPatientsView.setBackground(getResources().getDrawable(R.color.color_page_gray));
-        }
     }
 
     public boolean hasEmptyField() {

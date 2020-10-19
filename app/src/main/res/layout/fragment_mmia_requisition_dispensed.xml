@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.openlmis.core.view.widget.MMIADispensedInfoList xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mmia_requisition_dispensed_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -83,53 +84,45 @@
                 style="@style/MMIA.Type.Dispensed.Generic.Edit" />
         </LinearLayout>
 
-        <RelativeLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
+        <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
 
             <TextView
                 android:id="@+id/type_dispensed_dt_title"
                 style="@style/MMIA.Type.Dispensed.Generic.Header"
-                android:layout_above="@id/type_dispensed_dt_from_last"
                 android:text="@string/table_dispensed_label_dt" />
 
             <EditText
                 android:id="@+id/type_dispensed_dt_from_last"
-                style="@style/MMIA.Type.Dispensed.DT.Edit"
-                android:layout_above="@id/type_dispensed_dt_from_within" />
+                style="@style/MMIA.Type.Dispensed.DT.Edit" />
 
             <EditText
                 android:id="@+id/type_dispensed_dt_from_within"
-                style="@style/MMIA.Type.Dispensed.DT.Edit"
-                android:layout_above="@id/type_dispensed_dt_within" />
+                style="@style/MMIA.Type.Dispensed.DT.Edit" />
 
             <EditText
                 android:id="@+id/type_dispensed_dt_within"
-                style="@style/MMIA.Type.Dispensed.DT.Edit"
-                android:layout_above="@id/type_dispensed_dt_total" />
+                style="@style/MMIA.Type.Dispensed.DT.Edit" />
 
             <TextView
                 android:id="@+id/type_dispensed_dt_total"
-                style="@style/MMIA.Type.Dispensed.DT.Edit"
-                android:layout_alignParentBottom="true" />
-        </RelativeLayout>
+                style="@style/MMIA.Type.Dispensed.DT.Edit" />
+        </LinearLayout>
 
-        <RelativeLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
+        <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
 
             <TextView
                 android:id="@+id/type_dispensed_dm_title"
                 style="@style/MMIA.Type.Dispensed.Generic.Header"
-                android:layout_above="@id/type_dispensed_dm_within"
                 android:text="@string/table_dispensed_label_dm" />
 
             <EditText
                 android:id="@+id/type_dispensed_dm_within"
-                style="@style/MMIA.Type.Dispensed.DM.Edit"
-                android:layout_above="@id/type_dispensed_dm_total" />
+                style="@style/MMIA.Type.Dispensed.DM.Edit" />
 
             <TextView
                 android:id="@+id/type_dispensed_dm_total"
-                style="@style/MMIA.Type.Dispensed.DM.Edit"
-                android:layout_alignParentBottom="true" />
-        </RelativeLayout>
+                style="@style/MMIA.Type.Dispensed.DM.Edit" />
+        </LinearLayout>
 
         <RelativeLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
 
@@ -140,6 +133,7 @@
                 android:text="@string/table_dispensed_label_adjustment" />
 
             <TextView
+                android:id="@+id/type_dispensed_adjustment_text"
                 style="@style/MMIA.Type.Dispensed.Total.Edit"
                 android:layout_below="@+id/type_dispensed_adjustment_title"
                 android:background="@drawable/border_bg_light_gray" />
@@ -161,4 +155,4 @@
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
     </LinearLayout>
-</LinearLayout>
+</org.openlmis.core.view.widget.MMIADispensedInfoList>

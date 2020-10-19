@@ -23,23 +23,20 @@
                 android:layout_height="wrap_content"
                 tools:layout_height="220dp" />
 
-            <HorizontalScrollView
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margin_small"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                tools:layout_height="320dp">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/margin_small"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    tools:layout_height="320dp">
+                <include layout="@layout/fragment_mmia_requisition_regime_list" />
 
-                    <include layout="@layout/fragment_mmia_requisition_regime_list" />
+                <include layout="@layout/fragment_mmia_requisition_patient_info_list" />
+            </LinearLayout>
 
-                    <include layout="@layout/fragment_mmia_requisition_patient_info_list" />
-                </LinearLayout>
-            </HorizontalScrollView>
+            <include layout="@layout/fragment_mmia_requisition_dispensed" />
 
             <org.openlmis.core.view.widget.ActionPanelView
                 android:id="@+id/action_panel"

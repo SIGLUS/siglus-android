@@ -58,16 +58,16 @@ public class RegimenRepositoryTest {
     @Test
     public void shouldListRegimeShortCodeAdults() throws Exception {
         List<RegimeShortCode> regimeShortCodes = repository.listRegimeShortCode(Regimen.RegimeType.Adults);
-        assertThat(regimeShortCodes.size(), is(16));
-        assertThat(regimeShortCodes.get(0).getShortCode(), is("ABC+3TC+DTG"));
-        assertThat(regimeShortCodes.get(15).getCode(), is("08S19"));
+        assertThat(regimeShortCodes.size(), is(13));
+        assertThat(regimeShortCodes.get(0).getShortCode(), is("ABC+3TC+EFV"));
+        assertThat(regimeShortCodes.get(12).getCode(), is("AdultPlus13"));
     }
 
     @Test
     public void shouldListRegimeShortCodePaediatrics() throws Exception {
         List<RegimeShortCode> regimeShortCodes = repository.listRegimeShortCode(Regimen.RegimeType.Paediatrics);
-        assertThat(regimeShortCodes.size(), is(2));
-        assertThat(regimeShortCodes.get(0).getShortCode(), is("ABC 60mg+3TC 30mg"));
-        assertThat(regimeShortCodes.get(1).getCode(), is("08S01B"));
+        assertThat(regimeShortCodes.size(), is(1));
+        assertThat(regimeShortCodes.get(0).getShortCode(), is("AZT+3TC+ABC (2FDC+ABC Baby)"));
+//        assertThat(regimeShortCodes.get(1).getCode(), is("08S01B"));
     }
 }

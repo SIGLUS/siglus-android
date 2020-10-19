@@ -30,7 +30,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -195,9 +194,6 @@ public class MMIARnrFormProductList extends LinearLayout {
 
     private void addDividerView(String medicineType) {
         View leftView = inflaterLeftView();
-        if (dataWithOldFormat) {
-            leftView.findViewById(R.id.mmia_product_barcode_column).setVisibility(View.GONE);
-        }
         leftViewGroup.addView(leftView);
         setLeftViewColor(medicineType, leftView);
         ViewGroup rightView = inflateRightView();
@@ -278,29 +274,15 @@ public class MMIARnrFormProductList extends LinearLayout {
     private View addLeftView(RnrFormItem item, boolean isHeaderView, String medicineType) {
         View view = inflaterLeftView();
         TextView tvPrimaryName = (TextView) view.findViewById(R.id.tv_primary_name);
-        LinearLayout linearLayoutBarCode = (LinearLayout) view.findViewById(R.id.mmia_product_barcode_column);
-        ImageView imageView = linearLayoutBarCode.findViewById(R.id.mmia_product_barcode_column_img);
-        TextView textView = linearLayoutBarCode.findViewById(R.id.mmia_product_barcode_column_code);
+        TextView textView = (TextView) view.findViewById(R.id.mmia_product_barcode_column_code);
         if (isHeaderView) {
             tvPrimaryName.setText(R.string.label_rnrfrom_left_header);
             tvPrimaryName.setGravity(Gravity.CENTER);
-            imageView.setVisibility(GONE);
-            if (dataWithOldFormat) {
-                linearLayoutBarCode.setVisibility(GONE);
-            } else {
-                textView.setText(R.string.label_product_codes);
-            }
+            textView.setText(R.string.label_product_codes);
         } else {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
-            if (dataWithOldFormat) {
-                linearLayoutBarCode.setVisibility(GONE);
-                imageView.setVisibility(GONE);
-            } else {
-//                saveBitmap(DateUtil.createBarcode(product.getCode()),product.getCode(),".png");
-                imageView.setImageBitmap(DateUtil.createBarcode(product.getCode()));
-                textView.setText(product.getCode());
-            }
+            textView.setText(product.getCode());
             setLeftViewColor(medicineType, view);
             leftViewGroup.addView(view);
         }

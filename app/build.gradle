@@ -178,8 +178,7 @@ dependencies {
             'org.apmem.tools:layouts:1.10@aar',
             'org.roboguice:roboguice:3.0.1',
             'org.apache.commons:commons-lang3:3.3.2',
-            'net.danlew:android.joda:2.9.1',
-            'com.google.zxing:core:3.3.3'
+            'net.danlew:android.joda:2.9.1'
     implementation 'org.projectlombok:lombok:1.12.6'
     testImplementation 'junit:junit:4.12',
             'org.hamcrest:hamcrest-all:1.3',

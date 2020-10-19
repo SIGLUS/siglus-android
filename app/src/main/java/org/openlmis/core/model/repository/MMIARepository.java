@@ -86,6 +86,19 @@ public class MMIARepository extends RnrFormRepository {
     @InjectResource(R.string.table_prophylaxis_total)
     public String ATTR_TABLE_PROPHYLAXIS_TOTAL;
 
+    @InjectResource(R.string.table_dispensed)
+    public String ATTR_TABLE_DISPENSED;
+    public String ATTR_TABLE_DISPENSED_DS5 = "dispensed_ds5";
+    public String ATTR_TABLE_DISPENSED_DS4 = "dispensed_ds4";
+    public String ATTR_TABLE_DISPENSED_DS3 = "dispensed_ds3";
+    public String ATTR_TABLE_DISPENSED_DS2 = "dispensed_ds2";
+    public String ATTR_TABLE_DISPENSED_DS1 = "dispensed_ds1";
+    public String ATTR_TABLE_DISPENSED_DS = "dispensed_ds";
+    public String ATTR_TABLE_DISPENSED_DT2 = "dispensed_dt2";
+    public String ATTR_TABLE_DISPENSED_DT1 = "dispensed_dt1";
+    public String ATTR_TABLE_DISPENSED_DT = "dispensed_dt";
+    public String ATTR_TABLE_DISPENSED_DM = "dispensed_dm";
+
     @InjectResource(R.string.mmia_1stline)
     public String ATTR_REGIME_TYPE_FIRST_LINE;
     @InjectResource(R.string.mmia_2ndline)
@@ -204,6 +217,16 @@ public class MMIARepository extends RnrFormRepository {
         mAttrs.put(ATTR_TABLE_PROPHYLAXIS_PREP, ATTR_TABLE_PROPHYLAXIS);
         mAttrs.put(ATTR_TABLE_PROPHYLAXIS_CHILD, ATTR_TABLE_PROPHYLAXIS);
         mAttrs.put(ATTR_TABLE_PROPHYLAXIS_TOTAL, ATTR_TABLE_PROPHYLAXIS);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DS5, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DS4, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DS3, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DS2, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DS1, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DS, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DT2, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DT1, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DT, ATTR_TABLE_DISPENSED);
+        mAttrs.put(ATTR_TABLE_DISPENSED_DM, ATTR_TABLE_DISPENSED);
     }
 
     private void initDisplayOrder() {
@@ -223,6 +246,17 @@ public class MMIARepository extends RnrFormRepository {
         displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_PREP, 18);
         displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_CHILD, 19);
         displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_TOTAL, 20);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED, 21);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DS5, 22);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DS4, 23);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DS3, 24);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DS2, 25);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DS1, 26);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DS, 27);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DT2, 28);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DT1, 29);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DT, 30);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_DM, 31);
     }
 
     private int getDisplayOrder(String attrName) {

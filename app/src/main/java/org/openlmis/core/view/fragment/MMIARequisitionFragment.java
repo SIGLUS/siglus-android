@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
@@ -45,6 +46,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
+import org.openlmis.core.view.widget.MMIADispensedInfoList;
 import org.openlmis.core.view.widget.MMIAPatientInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
@@ -52,6 +54,7 @@ import org.openlmis.core.view.widget.MMIARegimeListWrap;
 import org.openlmis.core.view.widget.MMIARnrFormProductList;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -76,6 +79,8 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
 
     @InjectView(R.id.mmia_patient_info_list)
     protected MMIAPatientInfoList mmiaPatientInfoListView;
+    @InjectView(R.id.mmia_requisition_dispensed_info)
+    protected MMIADispensedInfoList mmiaDispensedInfoList;
 
     @InjectView(R.id.tv_regime_total)
     protected TextView tvRegimeTotal;
@@ -202,10 +207,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         rnrFormList.initView(form.getRnrFormItemListWrapper(), !(regimeTypes != null && !regimeTypes.isEmpty()));
         if (regimeTypes != null && !regimeTypes.isEmpty()) {
             mmiaRegimeThreeLineListView.initView(mmiaRegimeThreeLineTotal, mmiaRegimeThreeLinePharmacy, regimeTypes);
+            mmiaDispensedInfoList.initView(form.getBaseInfoItemListWrapper(), presenter);
         } else {
             mmiaThreaPeuticLayout.setVisibility(View.GONE);
             tvRegimeTotalPharmacy.setVisibility(View.GONE);
             tvTotalPharmacyTitle.setVisibility(View.GONE);
+            mmiaDispensedInfoList.setVisibility(View.GONE);
         }
         regimeWrap.initView(tvRegimeTotal, tvRegimeTotalPharmacy, tvTotalPharmacyTitle, presenter);
         mmiaPatientInfoListView.initView(form.getBaseInfoItemListWrapper());
@@ -247,7 +254,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
                 loading();
                 Subscription subscription = presenter.getSaveFormObservable(rnrFormList.itemFormList,
                         regimeWrap.getDataList(),
-                        mmiaPatientInfoListView.getDataList(),
+                        combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
                         mmiaRegimeThreeLineListView.getDataList(),
                         etComment.getText().toString())
                         .subscribe(getOnSavedSubscriber());
@@ -286,10 +293,11 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
                 if (rnrFormList.isCompleted()
                         && regimeWrap.isCompleted()
                         && mmiaPatientInfoListView.isCompleted()
+                        && mmiaDispensedInfoList.isCompleted()
                         && mmiaRegimeThreeLineListView.isCompleted()) {
                     presenter.setViewModels(rnrFormList.itemFormList,
                             regimeWrap.getDataList(),
-                            mmiaPatientInfoListView.getDataList(),
+                            combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
                             mmiaRegimeThreeLineListView.getDataList(),
                             etComment.getText().toString());
                     if (!presenter.validateFormPeriod()) {
@@ -305,6 +313,11 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         };
     }
 
+    private List<BaseInfoItem> combinePatientAndDispensed(List<BaseInfoItem> patients, List<BaseInfoItem> dispensed) {
+        List<BaseInfoItem> newList = new ArrayList<>(patients);
+        newList.addAll(dispensed);
+        return newList;
+    }
 
     private boolean shouldCommentMandatory() {
         boolean isTotalEqual = Long.parseLong(mmiaRegimeThreeLineTotal.getText().toString())
@@ -362,7 +375,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         if (mmiaThreaPeuticLayout.getVisibility() != View.GONE) {
             mmiaRegimeThreeLineListView.deHighLightTotal();
         }
-        mmiaPatientInfoListView.deHighLightTotal();
+//        mmiaPatientInfoListView.deHighLightTotal();
         tvMismatch.setVisibility(View.INVISIBLE);
     }
 

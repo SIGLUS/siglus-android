@@ -186,6 +186,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new UpdateKitProductUnSynced());
             add(new CreateInitialInventoryDraftTables());
             add(new DirtyDataProductTable());
+//            add(new AddVersionCodeToProgramProductTable());
         }
     };
     private static int instanceCount = 0;

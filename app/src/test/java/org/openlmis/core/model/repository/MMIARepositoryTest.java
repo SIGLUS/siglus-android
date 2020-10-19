@@ -203,7 +203,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public void shouldGenerateBaseInfoItemsNew() {
         RnRForm rnRForm = new RnRForm();
         List<BaseInfoItem> baseInfoItems = mmiaRepository.generateBaseInfoItems(rnRForm, MMIARepository.ReportType.NEW);
-        assertThat(baseInfoItems.size(), is(13));
+        assertThat(baseInfoItems.size(), is(23));
         assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_NEW));
         assertThat(baseInfoItems.get(1).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_MAINTENANCE));
         assertThat(baseInfoItems.get(2).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_ALTERATION));

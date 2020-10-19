@@ -35,6 +35,7 @@ import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.view.BaseView;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Inject
     private RegimenItemRepository regimenItemRepository;
+    @Inject
+    private RnrFormRepository rnrFormRepository;
 
     @Override
     protected RnrFormRepository initRnrFormRepository() {
@@ -106,6 +109,18 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             view.refreshRequisitionForm(rnRForm);
             view.setProcessButtonName(rnRForm.isDraft() ? context.getResources().getString(R.string.btn_submit) : context.getResources().getString(R.string.btn_complete));
         }
+    }
+
+    public RnRForm getLastRnrForm() {
+        try {
+            List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, "MMIA");
+            if (rnRForms == null && rnRForms.size() == 0) return null;
+            Collections.sort(rnRForms, (lhs, rhs) -> rhs.getPeriodBegin().compareTo(lhs.getPeriodBegin()));
+            return rnRForms.get(1);
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setViewModels(List<RnrFormItem> formItems,

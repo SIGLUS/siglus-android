@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.BuildConfig;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.persistence.DbUtil;
@@ -53,6 +54,15 @@ public class ProductProgramRepository {
                 .query());
     }
 
+
+    public List<ProductProgram> listActiveProductProgramsForMMIA(final List<String> programCodes) throws LMISException {
+        return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder()
+                .where().eq("isActive", true)
+                .and().eq("versionCode", BuildConfig.VERSION_CODE)
+                .and().in("programCode", programCodes)
+                .query());
+    }
+
     public void createOrUpdate(ProductProgram productProgram) throws LMISException {
         ProductProgram existingProductProgram = queryByCode(productProgram.getProductCode(), productProgram.getProgramCode());
         if (existingProductProgram == null) {
@@ -74,5 +84,12 @@ public class ProductProgramRepository {
         List<String> productCodes = FluentIterable.from(productPrograms).transform(productProgram -> productProgram.getProductCode()).toList();
 
         return FluentIterable.from(productRepository.queryActiveProductsByCodesWithKits(productCodes, isWithKit)).transform(product -> product.getId()).toList();
+    }
+
+    public List<Long> queryActiveProductIdsForMMIA(List<String> programCodes) throws LMISException {
+        List<ProductProgram> productPrograms = listActiveProductProgramsForMMIA(programCodes);
+        List<String> productCodes = FluentIterable.from(productPrograms).transform(productProgram -> productProgram.getProductCode()).toList();
+
+        return FluentIterable.from(productRepository.queryActiveProductsByCodesWithKits(productCodes, false)).transform(product -> product.getId()).toList();
     }
 }

@@ -250,6 +250,7 @@
 
     <style name="MMIA.Type.Dispensed.Column.Relative" parent="MMIA.Type.Dispensed.Column.Generic">
         <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">bottom|center</item>
     </style>
 
     <style name="MMIA.Type.Dispensed.Left.Header" parent="MMIA">

@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.google.inject.AbstractModule;
 
@@ -116,9 +115,6 @@ public class MMIARequisitionFragmentTest {
         when(rnrFormList.getRightHeaderView()).thenReturn(mock(ViewGroup.class));
         when(rnrFormList.getLeftHeaderView()).thenReturn(mock(ViewGroup.class));
         when(rnrFormList.getRnrItemsHorizontalScrollView()).thenReturn(mock(RnrFormHorizontalScrollView.class));
-
-        EditText patientTotalView = mock(EditText.class);
-        when(mmiaPatientInfoListView.getPatientTotalView()).thenReturn(patientTotalView);
 
         program = new Program();
         program.setProgramCode("MMIA");
@@ -242,7 +238,6 @@ public class MMIARequisitionFragmentTest {
         mmiaRequisitionFragment.refreshRequisitionForm(form);
 
         verify(regimeListWrap).deHighLightTotal();
-        verify(mmiaPatientInfoListView).deHighLightTotal();
         assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
     }
 
@@ -259,7 +254,6 @@ public class MMIARequisitionFragmentTest {
 
         mmiaRequisitionFragment.refreshRequisitionForm(form);
         verify(regimeListWrap).deHighLightTotal();
-        verify(mmiaPatientInfoListView).deHighLightTotal();
         assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
         assertFalse(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.isCompleted());
         assertTrue(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.hasEmptyField());
