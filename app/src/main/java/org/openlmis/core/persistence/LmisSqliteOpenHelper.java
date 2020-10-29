@@ -62,6 +62,7 @@ import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovement
 import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
 import org.openlmis.core.persistence.migrations.AddSyncErrorsMessageTable;
 import org.openlmis.core.persistence.migrations.AddSyncTagToStockMovementItem;
+import org.openlmis.core.persistence.migrations.AddVersionCodeToProgramProductTable;
 import org.openlmis.core.persistence.migrations.ChangeMalariaTreatments;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
@@ -186,7 +187,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new UpdateKitProductUnSynced());
             add(new CreateInitialInventoryDraftTables());
             add(new DirtyDataProductTable());
-//            add(new AddVersionCodeToProgramProductTable());
+            add(new AddVersionCodeToProgramProductTable());
         }
     };
     private static int instanceCount = 0;
@@ -233,7 +234,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onDowngrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        throw new RuntimeException("Unexpected downgrade happened, users are not supposed to obtain older versions!!!");
+        throw new RuntimeException("Unexpected downgrade happened, old=" + oldVersion + ",new=" + newVersion);
     }
 
     @Override

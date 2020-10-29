@@ -38,6 +38,9 @@ public class ProductProgramRepository {
     }
 
     public void batchSave(final List<ProductProgram> productPrograms) {
+        if (productPrograms == null || productPrograms.size() == 0) {
+            return;
+        }
         try {
             for (ProductProgram productProgram : productPrograms) {
                 createOrUpdate(productProgram);
