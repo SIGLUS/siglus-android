@@ -225,7 +225,16 @@
     <string name="table_dispensed">Meses dispensados</string>
     <string name="table_dispensed_label_dt">Dispensa para 3 Meses (DT)</string>
     <string name="table_dispensed_label_ds">Dispensa para 6 Meses (DS)</string>
-    <string name="table_dispensed_label_dm">Mês dispensado</string>
+    <string name="table_dispensed_label_dm">Dispensa Mensal(DM)</string>
+    <string name="table_dispensed_left_5months">5 meses atrás</string>
+    <string name="table_dispensed_left_4months">4 meses atrás</string>
+    <string name="table_dispensed_left_3months">3 meses atrás</string>
+    <string name="table_dispensed_left_2months">2 meses atrás</string>
+    <string name="table_dispensed_left_last_months">Mês Anterior</string>
+    <string name="table_dispensed_left_within_months">Levantaram no mês</string>
+    <string name="table_dispensed_left_total">Total Pacientes Tratamento</string>
+    <string name="table_dispensed_label_total">Total</string>
+    <string name="table_dispensed_label_adjustment">Ajuste</string>
     <string name="table_dispensed_label_therapeutic"># de Meses terapêuticos dispensados</string>
     <string name="table_patients">Faixa etária dos pacientes em TRAV</string>
     <string name="table_patients_adults">Adultos</string>
