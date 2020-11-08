@@ -8,4 +8,31 @@
     <integer name="edit_amount_request_length">5</integer>
     <integer name="max_length_rapid_test_no_total">6</integer>
     <integer name="max_length_rapid_test_total">7</integer>
+    <!--table key-->
+    <string name="table_dispensed_key">table_dispensed_key</string>
+    <string name="table_arvt_key">table_arvt_key</string>
+    <string name="table_patients_key">table_patients_key</string>
+    <string name="table_prophylaxy_key">table_prophylaxy_key</string>
+
+    <!--item key-->
+    <string name="table_trav_label_new_key">table_trav_label_new_key</string>
+    <string name="table_trav_label_maintenance_key">table_trav_label_maintenance_key</string>
+    <string name="table_trav_label_alteration_key">table_trav_label_alteration_key</string>
+    <string name="table_trav_label_transit_key">table_trav_label_transit_key</string>
+    <string name="table_trav_label_transfers_key">table_trav_label_transfers_key</string>
+    <string name="table_patients_adults_key">table_patients_adults_key</string>
+    <string name="table_patients_0to4_key">table_patients_0to4_key</string>
+    <string name="table_patients_5to9_key">table_patients_5to9_key</string>
+    <string name="table_patients_10to14_key">table_patients_10to14_key</string>
+    <string name="table_prophylaxis_ppe_key">table_prophylaxis_ppe_key</string>
+    <string name="table_prophylaxis_prep_key">table_prophylaxis_prep_key</string>
+    <string name="table_prophylaxis_child_key">table_prophylaxis_child_key</string>
+    <string name="table_prophylaxis_total_key">table_prophylaxis_total_key</string>
+
+    <!--three lines key-->
+    <string name="key_regime_3lines_1">key_regime_3lines_1</string>
+    <string name="key_regime_3lines_2">key_regime_3lines_2</string>
+    <string name="key_regime_3lines_3">key_regime_3lines_3</string>
+
+
 </resources>

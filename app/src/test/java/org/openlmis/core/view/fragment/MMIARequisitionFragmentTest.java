@@ -245,9 +245,9 @@ public class MMIARequisitionFragmentTest {
     @Test
     public void shouldDisplayRegimeThreeLine() {
         List<RegimenItemThreeLines> linesList = new ArrayList<>();
-        linesList.add(new RegimenItemThreeLines(0, getString(R.string.mmia_1stline)));
-        linesList.add(new RegimenItemThreeLines(1, getString(R.string.mmia_2ndline)));
-        linesList.add(new RegimenItemThreeLines(2, getString(R.string.mmia_3rdline)));
+        linesList.add(new RegimenItemThreeLines(0, getString(R.string.key_regime_3lines_1)));
+        linesList.add(new RegimenItemThreeLines(1, getString(R.string.key_regime_3lines_2)));
+        linesList.add(new RegimenItemThreeLines(2, getString(R.string.key_regime_3lines_3)));
         form.setRegimenThreeLinesWrapper(linesList);
         mmiaRequisitionFragment.regimeWrap = regimeListWrap;
         mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;

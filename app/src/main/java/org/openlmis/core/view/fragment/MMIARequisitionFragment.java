@@ -90,10 +90,15 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     @InjectView(R.id.tv_total_pharmacy_title)
     protected TextView tvTotalPharmacyTitle;
 
+    @InjectView(R.id.tv__total_patients_title)
+    protected TextView tvTotalPatientsTitle;
+
     @InjectView(R.id.mmia_regime_three_line_total)
     protected TextView mmiaRegimeThreeLineTotal;
     @InjectView(R.id.mmia_regime_three_line_pharmacy)
     protected TextView mmiaRegimeThreeLinePharmacy;
+    @InjectView(R.id.type_dispensed_total_within)
+    protected TextView mmiaTotalDispensedWithMonth;
 
     @InjectView(R.id.et_comment)
     protected TextView etComment;
@@ -212,6 +217,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
             mmiaThreaPeuticLayout.setVisibility(View.GONE);
             tvRegimeTotalPharmacy.setVisibility(View.GONE);
             tvTotalPharmacyTitle.setVisibility(View.GONE);
+            tvTotalPatientsTitle.setText(R.string.total_title_old);
             mmiaDispensedInfoList.setVisibility(View.GONE);
         }
         regimeWrap.initView(tvRegimeTotal, tvRegimeTotalPharmacy, tvTotalPharmacyTitle, presenter);
@@ -320,13 +326,17 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
     }
 
     private boolean shouldCommentMandatory() {
-        boolean isTotalEqual = Long.parseLong(mmiaRegimeThreeLineTotal.getText().toString())
-                != Long.parseLong(tvRegimeTotal.getText().toString());
-        boolean isPhaymacyEqual = Long.parseLong(mmiaRegimeThreeLinePharmacy.getText().toString())
-                != Long.parseLong(tvRegimeTotalPharmacy.getText().toString());
+        long totalRegimes = getLongFromTextView(tvRegimeTotal) + getLongFromTextView(tvRegimeTotalPharmacy);
+        long totalLines = getLongFromTextView(mmiaRegimeThreeLineTotal) + getLongFromTextView(mmiaRegimeThreeLinePharmacy);
+        long totalWithinMonths = getLongFromTextView(mmiaTotalDispensedWithMonth);
+
         boolean isCommentEmpty = TextUtils.isEmpty(etComment.getText().toString());
 
-        return isCommentEmpty && (isTotalEqual || isPhaymacyEqual);
+        return isCommentEmpty && (totalRegimes != totalLines || totalLines != totalWithinMonths);
+    }
+
+    private long getLongFromTextView(TextView textView){
+        return Long.parseLong(textView.getText().toString());
     }
 
     private void bindFreezeHeaderListener() {

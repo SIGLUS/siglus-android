@@ -32,8 +32,11 @@ public class MMIARegimeThreeLineList extends LinearLayout {
     private TextView mmiaThreeLinePharmacyTotal;
 
     private String ATTR_FIRST_LINE;
+    private String ATTR_FIRST_LINE_KEY;
     private String ATTR_SECOND_LINE;
+    private String ATTR_SECOND_LINE_KEY;
     private String ATTR_THIRD_LINE;
+    private String ATTR_THIRD_LINE_KEY;
 
     public enum COUNTTYPE {
         PATIENTSAMOUNT,
@@ -59,8 +62,12 @@ public class MMIARegimeThreeLineList extends LinearLayout {
         setOrientation(LinearLayout.VERTICAL);
         layoutInflater = LayoutInflater.from(getContext());
         ATTR_FIRST_LINE = getString(R.string.mmia_1stline);
+        ATTR_FIRST_LINE_KEY = getString(R.string.key_regime_3lines_1);
         ATTR_SECOND_LINE = getString(R.string.mmia_2ndline);
+        ATTR_SECOND_LINE_KEY = getString(R.string.key_regime_3lines_2);
         ATTR_THIRD_LINE = getString(R.string.mmia_3rdline);
+        ATTR_THIRD_LINE_KEY = getString(R.string.key_regime_3lines_3);
+
     }
 
     private String getString(int id) {
@@ -73,9 +80,9 @@ public class MMIARegimeThreeLineList extends LinearLayout {
         dataMap = new HashMap<>();
         this.dataList = dataList;
         initCategoryList();
-        addViewItem(dataMap.get(ATTR_FIRST_LINE));
-        addViewItem(dataMap.get(ATTR_SECOND_LINE));
-        addViewItem(dataMap.get(ATTR_THIRD_LINE));
+        addViewItem(dataMap.get(ATTR_FIRST_LINE_KEY));
+        addViewItem(dataMap.get(ATTR_SECOND_LINE_KEY));
+        addViewItem(dataMap.get(ATTR_THIRD_LINE_KEY));
         mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(COUNTTYPE.PATIENTSAMOUNT)));
         mmiaThreeLinePharmacyTotal.setText(String.valueOf(getTotal(COUNTTYPE.PHARMACYAMOUNT)));
     }
@@ -86,6 +93,14 @@ public class MMIARegimeThreeLineList extends LinearLayout {
         }
     }
 
+    private Map<String,String> linesMap() {
+        Map<String,String> linesMap = new HashMap<>();
+        linesMap.put(ATTR_FIRST_LINE_KEY,ATTR_FIRST_LINE);
+        linesMap.put(ATTR_SECOND_LINE_KEY,ATTR_SECOND_LINE);
+        linesMap.put(ATTR_THIRD_LINE_KEY,ATTR_THIRD_LINE);
+        return linesMap;
+    }
+
     private void addViewItem(RegimenItemThreeLines itemThreeLines) {
         View viewItem = layoutInflater.inflate(R.layout.fragment_mmia_requisition_regime_threeline_item, this, false);
         TextView tvNameText = viewItem.findViewById(R.id.tv_title);
@@ -94,7 +109,8 @@ public class MMIARegimeThreeLineList extends LinearLayout {
         Long patientsAmount = itemThreeLines.getPatientsAmount();
         Long pharmacyAmount = itemThreeLines.getPharmacyAmount();
 
-        tvNameText.setText(itemThreeLines.getRegimeTypes());
+        Map<String,String> linesMap = linesMap();
+        tvNameText.setText(linesMap.get(itemThreeLines.getRegimeTypes()));
         if (patientsAmount != null) {
             patientsTotalEdit.setText(String.valueOf(patientsAmount));
         }

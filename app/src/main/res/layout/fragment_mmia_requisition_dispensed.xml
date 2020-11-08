@@ -81,7 +81,7 @@
 
             <TextView
                 android:id="@+id/type_dispensed_ds_total"
-                style="@style/MMIA.Type.Dispensed.Generic.Edit" />
+                style="@style/MMIA.Type.Dispensed.Generic.Total" />
         </LinearLayout>
 
         <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
@@ -105,7 +105,7 @@
 
             <TextView
                 android:id="@+id/type_dispensed_dt_total"
-                style="@style/MMIA.Type.Dispensed.DT.Edit" />
+                style="@style/MMIA.Type.Dispensed.Generic.Total" />
         </LinearLayout>
 
         <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
@@ -121,7 +121,7 @@
 
             <TextView
                 android:id="@+id/type_dispensed_dm_total"
-                style="@style/MMIA.Type.Dispensed.DM.Edit" />
+                style="@style/MMIA.Type.Dispensed.Generic.Total" />
         </LinearLayout>
 
         <RelativeLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
@@ -151,7 +151,7 @@
 
             <TextView
                 android:id="@+id/type_dispensed_total_total"
-                style="@style/MMIA.Type.Dispensed.Total.Edit"
+                style="@style/MMIA.Type.Dispensed.Generic.Total"
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
     </LinearLayout>

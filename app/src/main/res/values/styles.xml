@@ -275,6 +275,14 @@
         <item name="android:maxLength">7</item>
         <item name="android:inputType">number</item>
     </style>
+    <style name="MMIA.Type.Dispensed.Generic.Total" parent="MMIA">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/border_bg_bottom_gray</item>
+        <item name="android:maxLength">7</item>
+        <item name="android:inputType">number</item>
+    </style>
 
     <style name="MMIA.Type.Dispensed.DT.Edit" parent="MMIA.Type.Dispensed.Generic.Edit">
         <item name="android:layout_alignEnd">@id/type_dispensed_dm_title</item>

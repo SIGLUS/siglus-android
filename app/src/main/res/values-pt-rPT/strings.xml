@@ -71,11 +71,11 @@
     <!--MMIA-->
     <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
     <string name="label_AL_title">AL - %1$s à %2$s</string>
-    <string name="label_rnrfrom_left_header">Produto</string>
+    <string name="label_rnrfrom_left_header">MEDICAMENTO</string>
     <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
     <string name="total">Total</string>
     <string name="total_title">Total doentes</string>
-    <string name="total_pharmacy">APE</string>
+    <string name="total_pharmacy">Farmácia Comunitária</string>
     <string name="ape">APEs</string>
     <string name="label_mmia_speed_info_header">Número de pacientes em TARV</string>
     <string name="hint_mmia_comment">Observações</string>
@@ -91,7 +91,7 @@
     <string name="button_inventory">Inventário</string>
     <string name="label_inventory">Inventário</string>
     <string name="label_validate">Validade</string>
-    <string name="label_issued_unit">Unidade de Saída</string>
+    <string name="label_issued_unit">Unidade</string>
     <string name="hint_error_input">Entrada inválida</string>
     <string name="btn_save">Guardar</string>
     <string name="msg_back_confirm">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar \"SIM\", o rascunho será APAGADO.</string>
@@ -216,13 +216,13 @@
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>
 
-    <string name="table_trav">Tipo de pacientes em TARV</string>
+    <string name="table_trav">Tipo de doentes em TARV</string>
     <string name="table_trav_label_new">Novos</string>
     <string name="table_trav_label_maintenance">Manutenção</string>
     <string name="table_trav_label_alteration">Alteração</string>
     <string name="table_trav_label_transit">Trânsito</string>
     <string name="table_trav_label_transfers">Transferências</string>
-    <string name="table_dispensed">Meses dispensados</string>
+    <string name="table_dispensed">Tipo de Dispensa</string>
     <string name="table_dispensed_label_dt">Dispensa para 3 Meses (DT)</string>
     <string name="table_dispensed_label_ds">Dispensa para 6 Meses (DS)</string>
     <string name="table_dispensed_label_dm">Dispensa Mensal(DM)</string>
@@ -236,7 +236,7 @@
     <string name="table_dispensed_label_total">Total</string>
     <string name="table_dispensed_label_adjustment">Ajuste</string>
     <string name="table_dispensed_label_therapeutic"># de Meses terapêuticos dispensados</string>
-    <string name="table_patients">Faixa etária dos pacientes em TRAV</string>
+    <string name="table_patients">Faixa Etária dos Pacientes TARV</string>
     <string name="table_patients_adults">Adultos</string>
     <string name="table_patients_0to4">Pediátricos 0 aos 4 anos</string>
     <string name="table_patients_5to9">Pediátricos 5 aos 9 anos</string>

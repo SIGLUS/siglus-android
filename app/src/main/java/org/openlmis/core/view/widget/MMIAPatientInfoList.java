@@ -41,18 +41,68 @@ import java.util.List;
 import java.util.Map;
 
 public class MMIAPatientInfoList extends LinearLayout {
+
+    public String ATTR_TABLE_TRAV;
+    public String ATTR_TABLE_TRAV_KEY;
+
+    public String ATTR_TABLE_TRAV_NEW;
+    public String ATTR_TABLE_TRAV_NEW_KEY;
+
+    public String ATTR_TABLE_TRAV_MAINTENANCE;
+    public String ATTR_TABLE_TRAV_MAINTENANCE_KEY;
+
+    public String ATTR_TABLE_TRAV_ALTERATION;
+    public String ATTR_TABLE_TRAV_ALTERATION_KEY;
+
+    public String ATTR_TABLE_TRAV_TRANSIT;
+    public String ATTR_TABLE_TRAV_TRANSIT_KEY;
+
+    public String ATTR_TABLE_TRAV_TRANSFER;
+    public String ATTR_TABLE_TRAV_TRANSFER_KEY;
+
+    public String ATTR_TABLE_PATIENTS;
+    public String ATTR_TABLE_PATIENTS_KEY;
+
+
+    public String ATTR_TABLE_PATIENTS_ADULTS;
+    public String ATTR_TABLE_PATIENTS_ADULTS_KEY;
+
+    public String ATTR_TABLE_PATIENTS_0TO4;
+    public String ATTR_TABLE_PATIENTS_0TO4_KEY;
+
+    public String ATTR_TABLE_PATIENTS_5TO9;
+    public String ATTR_TABLE_PATIENTS_5TO9_KEY;
+
+    public String ATTR_TABLE_PATIENTS_10TO14;
+    public String ATTR_TABLE_PATIENTS_10TO14_KEY;
+
+
+    public String ATTR_TABLE_PROPHYLAXIS;
+    public String ATTR_TABLE_PROPHYLAXIS_KEY;
+
+
+    public String ATTR_TABLE_PROPHYLAXIS_PPE;
+    public String ATTR_TABLE_PROPHYLAXIS_PPE_KEY;
+
+    public String ATTR_TABLE_PROPHYLAXIS_PREP;
+    public String ATTR_TABLE_PROPHYLAXIS_PREP_KEY;
+
+    public String ATTR_TABLE_PROPHYLAXIS_CHILD;
+    public String ATTR_TABLE_PROPHYLAXIS_CHILD_KEY;
+
+    public String ATTR_TABLE_PROPHYLAXIS_TOTAL;
+    public String ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY;
+
+    private String ATTR_TABLE_ORIGIN;
     private Context context;
     private List<EditText> editTexts = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private List<BaseInfoItem> dataList;
     private Map<String, List<BaseInfoItem>> tableMap = new HashMap<>();
-    private String ATTR_TABLE_TRAV;
-    private String ATTR_TABLE_PATIENTS;
-    private String ATTR_TABLE_PROPHYLAXIS;
 
-    private String ATTR_TABLE_ORIGIN;
 
     private boolean hasDataChanged = false;
+    private boolean dataWithOldFormat = false;
 
     public MMIAPatientInfoList(Context context) {
         super(context);
@@ -69,6 +119,8 @@ public class MMIAPatientInfoList extends LinearLayout {
         setOrientation(LinearLayout.VERTICAL);
         layoutInflater = LayoutInflater.from(context);
         initTableName();
+        initTableKey();
+        initItem();
     }
 
     private void initTableName() {
@@ -76,6 +128,42 @@ public class MMIAPatientInfoList extends LinearLayout {
         ATTR_TABLE_PATIENTS = getString(R.string.table_patients);
         ATTR_TABLE_PROPHYLAXIS = getString(R.string.table_prophylaxis);
         ATTR_TABLE_ORIGIN = getString(R.string.label_mmia_speed_info_header);
+    }
+
+    private void initTableKey() {
+        ATTR_TABLE_TRAV_KEY = getString(R.string.table_arvt_key);
+        ATTR_TABLE_PATIENTS_KEY = getString(R.string.table_patients_key);
+        ATTR_TABLE_PROPHYLAXIS_KEY = getString(R.string.table_prophylaxy_key);
+    }
+
+    private void initItem() {
+        ATTR_TABLE_TRAV_NEW = getString(R.string.table_trav_label_new);
+        ATTR_TABLE_TRAV_NEW_KEY = getString(R.string.table_trav_label_new_key);
+        ATTR_TABLE_TRAV_MAINTENANCE = getString(R.string.table_trav_label_maintenance);
+        ATTR_TABLE_TRAV_MAINTENANCE_KEY = getString(R.string.table_trav_label_maintenance_key);
+        ATTR_TABLE_TRAV_ALTERATION = getString(R.string.table_trav_label_alteration);
+        ATTR_TABLE_TRAV_ALTERATION_KEY = getString(R.string.table_trav_label_alteration_key);
+        ATTR_TABLE_TRAV_TRANSIT = getString(R.string.table_trav_label_transit);
+        ATTR_TABLE_TRAV_TRANSIT_KEY = getString(R.string.table_trav_label_transit_key);
+        ATTR_TABLE_TRAV_TRANSFER = getString(R.string.table_trav_label_transfers);
+        ATTR_TABLE_TRAV_TRANSFER_KEY = getString(R.string.table_trav_label_transfers_key);
+        ATTR_TABLE_PATIENTS_ADULTS = getString(R.string.table_patients_adults);
+        ATTR_TABLE_PATIENTS_ADULTS_KEY = getString(R.string.table_patients_adults_key);
+        ATTR_TABLE_PATIENTS_0TO4 = getString(R.string.table_patients_0to4);
+        ATTR_TABLE_PATIENTS_0TO4_KEY = getString(R.string.table_patients_0to4_key);
+        ATTR_TABLE_PATIENTS_5TO9 = getString(R.string.table_patients_5to9);
+        ATTR_TABLE_PATIENTS_5TO9_KEY = getString(R.string.table_patients_5to9_key);
+        ATTR_TABLE_PATIENTS_10TO14 = getString(R.string.table_patients_10to14);
+        ATTR_TABLE_PATIENTS_10TO14_KEY = getString(R.string.table_patients_10to14_key);
+        ATTR_TABLE_PROPHYLAXIS_PPE = getString(R.string.table_prophylaxis_ppe);
+        ATTR_TABLE_PROPHYLAXIS_PPE_KEY = getString(R.string.table_prophylaxis_ppe_key);
+        ATTR_TABLE_PROPHYLAXIS_PREP = getString(R.string.table_prophylaxis_prep);
+        ATTR_TABLE_PROPHYLAXIS_PREP_KEY = getString(R.string.table_prophylaxis_prep_key);
+        ATTR_TABLE_PROPHYLAXIS_CHILD = getString(R.string.table_prophylaxis_child);
+        ATTR_TABLE_PROPHYLAXIS_CHILD_KEY = getString(R.string.table_prophylaxis_child_key);
+        ATTR_TABLE_PROPHYLAXIS_TOTAL = getString(R.string.table_prophylaxis_total);
+        ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY = getString(R.string.table_prophylaxis_total_key);
+
     }
 
     private String getString(int id) {
@@ -96,10 +184,11 @@ public class MMIAPatientInfoList extends LinearLayout {
 
     private void addItemView() {
         if (tableMap.size() != 1) {
-            addTableView(tableMap.get(ATTR_TABLE_TRAV), ATTR_TABLE_TRAV);
-            addTableView(tableMap.get(ATTR_TABLE_PATIENTS), ATTR_TABLE_PATIENTS);
-            addTableView(tableMap.get(ATTR_TABLE_PROPHYLAXIS), ATTR_TABLE_PROPHYLAXIS);
+            addTableView(tableMap.get(ATTR_TABLE_TRAV_KEY), ATTR_TABLE_TRAV);
+            addTableView(tableMap.get(ATTR_TABLE_PATIENTS_KEY), ATTR_TABLE_PATIENTS);
+            addTableView(tableMap.get(ATTR_TABLE_PROPHYLAXIS_KEY), ATTR_TABLE_PROPHYLAXIS);
         } else {
+            this.dataWithOldFormat = true;
             addTableView(dataList, ATTR_TABLE_ORIGIN);
         }
     }
@@ -108,6 +197,16 @@ public class MMIAPatientInfoList extends LinearLayout {
         TextView tableHeader = (TextView) layoutInflater.inflate(R.layout.item_mmia_requisitions_bottom, this, false);
         tableHeader.setText(tableName);
         addView(tableHeader);
+        if (dataWithOldFormat) {
+            View view = layoutInflater.inflate(R.layout.item_mmia_info, this, false);
+            TextView textView = (TextView) view.findViewById(R.id.tv_name);
+            EditText editText = (EditText) view.findViewById(R.id.et_value);
+            editText.setBackgroundResource(R.color.color_mmia_info_name);
+            editText.setTextColor(getResources().getColor(R.color.color_text_secondary));
+            textView.setText(R.string.patient_column_name_left);
+            editText.setText(R.string.patient_column_name_right);
+            addView(view);
+        }
         sortedByDisplayOrder(list);
         for (int i = 0; i < list.size(); i++) {
             addTableViewItem(list.get(i), getPosition(i, tableName));
@@ -115,12 +214,12 @@ public class MMIAPatientInfoList extends LinearLayout {
     }
 
     private int getPosition(int i, String tableName) {
-        if (ATTR_TABLE_TRAV.equals(tableName)) {
+        if (ATTR_TABLE_TRAV_KEY.equals(tableName)) {
             return i;
-        } else if (ATTR_TABLE_PATIENTS.equals(tableName)) {
-            return i + tableMap.get(ATTR_TABLE_TRAV).size();
-        } else if (ATTR_TABLE_PROPHYLAXIS.equals(tableName)) {
-            return i + tableMap.get(ATTR_TABLE_TRAV).size() + tableMap.get(ATTR_TABLE_PATIENTS).size();
+        } else if (ATTR_TABLE_PATIENTS_KEY.equals(tableName)) {
+            return i + tableMap.get(ATTR_TABLE_TRAV_KEY).size();
+        } else if (ATTR_TABLE_PROPHYLAXIS_KEY.equals(tableName)) {
+            return i + tableMap.get(ATTR_TABLE_TRAV_KEY).size() + tableMap.get(ATTR_TABLE_PATIENTS_KEY).size();
         } else {
             return i;
         }
@@ -130,12 +229,31 @@ public class MMIAPatientInfoList extends LinearLayout {
         Collections.sort(list, (o1, o2) -> o1.getDisplayOrder() - o2.getDisplayOrder());
     }
 
+    private Map<String, String> nameMap() {
+        Map<String, String> nameMap = new HashMap<>();
+        nameMap.put(ATTR_TABLE_TRAV_NEW_KEY, ATTR_TABLE_TRAV_NEW);
+        nameMap.put(ATTR_TABLE_TRAV_MAINTENANCE_KEY, ATTR_TABLE_TRAV_MAINTENANCE);
+        nameMap.put(ATTR_TABLE_TRAV_ALTERATION_KEY, ATTR_TABLE_TRAV_ALTERATION);
+        nameMap.put(ATTR_TABLE_TRAV_TRANSIT_KEY, ATTR_TABLE_TRAV_TRANSIT);
+        nameMap.put(ATTR_TABLE_TRAV_TRANSFER_KEY, ATTR_TABLE_TRAV_TRANSFER);
+        nameMap.put(ATTR_TABLE_PATIENTS_ADULTS_KEY, ATTR_TABLE_PATIENTS_ADULTS);
+        nameMap.put(ATTR_TABLE_PATIENTS_0TO4_KEY, ATTR_TABLE_PATIENTS_0TO4);
+        nameMap.put(ATTR_TABLE_PATIENTS_5TO9_KEY, ATTR_TABLE_PATIENTS_5TO9);
+        nameMap.put(ATTR_TABLE_PATIENTS_10TO14_KEY, ATTR_TABLE_PATIENTS_10TO14);
+        nameMap.put(ATTR_TABLE_PROPHYLAXIS_PPE_KEY, ATTR_TABLE_PROPHYLAXIS_PPE);
+        nameMap.put(ATTR_TABLE_PROPHYLAXIS_PREP_KEY, ATTR_TABLE_PROPHYLAXIS_PREP);
+        nameMap.put(ATTR_TABLE_PROPHYLAXIS_CHILD_KEY, ATTR_TABLE_PROPHYLAXIS_CHILD);
+        nameMap.put(ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY, ATTR_TABLE_PROPHYLAXIS_TOTAL);
+        return nameMap;
+    }
+
     private void addTableViewItem(BaseInfoItem item, int position) {
         View view = layoutInflater.inflate(R.layout.item_mmia_info, this, false);
         TextView textView = (TextView) view.findViewById(R.id.tv_name);
         EditText editText = (EditText) view.findViewById(R.id.et_value);
 
-        textView.setText(item.getName());
+        Map<String, String> nameMap = nameMap();
+        textView.setText(dataWithOldFormat ? item.getName() : nameMap.get(item.getName()));
         editTexts.add(editText);
         editText.setText(item.getValue());
         editText.addTextChangedListener(new EditTextWatcher(item));
@@ -218,7 +336,12 @@ public class MMIAPatientInfoList extends LinearLayout {
     }
 
     private boolean isTotalInfoView(BaseInfoItem item) {
-        return getString(R.string.table_prophylaxis_total).equals(item.getName());
+        if (dataWithOldFormat) {
+            return getString(R.string.label_total_month_dispense).equals(item.getName());
+        } else {
+            return (getString(R.string.table_prophylaxis_total_key).equals(item.getName())
+                    || getString(R.string.table_patients_key).equals(item.getName()));
+        }
     }
 
     public boolean isCompleted() {
