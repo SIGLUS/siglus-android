@@ -338,6 +338,7 @@ public class MMIARnrFormProductList extends LinearLayout {
     private void enableEditText(Boolean enable, EditText etIssued, EditText etAdjustment, EditText etInventory) {
         etIssued.setEnabled(enable);
         etAdjustment.setEnabled(enable);
+        etAdjustment.setSingleLine(false);
         etInventory.setEnabled(enable);
     }
 

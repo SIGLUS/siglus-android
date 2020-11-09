@@ -40,6 +40,17 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS5;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS4;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS3;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS2;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS1;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DT2;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DT1;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DT;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DM;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,8 +62,7 @@ import javax.annotation.Nullable;
 import roboguice.inject.InjectResource;
 
 public class MMIARepository extends RnrFormRepository {
-    @InjectResource(R.string.table_trav)
-    public String ATTR_TABLE_TRAV;
+
     @InjectResource(R.string.table_arvt_key)
     public String ATTR_TABLE_TRAV_KEY;
     @InjectResource(R.string.table_trav_label_new_key)
@@ -66,8 +76,6 @@ public class MMIARepository extends RnrFormRepository {
     @InjectResource(R.string.table_trav_label_transfers_key)
     public String ATTR_TABLE_TRAV_TRANSFER_KEY;
 
-    @InjectResource(R.string.table_patients)
-    public String ATTR_TABLE_PATIENTS;
     @InjectResource(R.string.table_patients_key)
     public String ATTR_TABLE_PATIENTS_KEY;
     @InjectResource(R.string.table_patients_adults_key)
@@ -79,8 +87,6 @@ public class MMIARepository extends RnrFormRepository {
     @InjectResource(R.string.table_patients_10to14_key)
     public String ATTR_TABLE_PATIENTS_10TO14_KEY;
 
-    @InjectResource(R.string.table_prophylaxis)
-    public String ATTR_TABLE_PROPHYLAXIS;
     @InjectResource(R.string.table_prophylaxy_key)
     public String ATTR_TABLE_PROPHYLAXIS_KEY;
     @InjectResource(R.string.table_prophylaxis_ppe_key)
@@ -94,20 +100,9 @@ public class MMIARepository extends RnrFormRepository {
     @InjectResource(R.string.table_prophylaxis_total_key)
     public String ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY;
 
-    @InjectResource(R.string.table_dispensed)
-    public String ATTR_TABLE_DISPENSED;
     @InjectResource(R.string.table_dispensed_key)
     public String ATTR_TABLE_DISPENSED_KEY;
-    public String ATTR_TABLE_DISPENSED_DS5 = "dispensed_ds5";
-    public String ATTR_TABLE_DISPENSED_DS4 = "dispensed_ds4";
-    public String ATTR_TABLE_DISPENSED_DS3 = "dispensed_ds3";
-    public String ATTR_TABLE_DISPENSED_DS2 = "dispensed_ds2";
-    public String ATTR_TABLE_DISPENSED_DS1 = "dispensed_ds1";
-    public String ATTR_TABLE_DISPENSED_DS = "dispensed_ds";
-    public String ATTR_TABLE_DISPENSED_DT2 = "dispensed_dt2";
-    public String ATTR_TABLE_DISPENSED_DT1 = "dispensed_dt1";
-    public String ATTR_TABLE_DISPENSED_DT = "dispensed_dt";
-    public String ATTR_TABLE_DISPENSED_DM = "dispensed_dm";
+
 
     @InjectResource(R.string.key_regime_3lines_1)
     public String ATTR_REGIME_TYPE_FIRST_LINE_KEY;
@@ -240,23 +235,23 @@ public class MMIARepository extends RnrFormRepository {
     }
 
     private void initDisplayOrder() {
-        displayOrderMap.put(ATTR_TABLE_TRAV, 0);
+        displayOrderMap.put(ATTR_TABLE_TRAV_KEY, 0);
         displayOrderMap.put(ATTR_TABLE_TRAV_NEW_KEY, 1);
         displayOrderMap.put(ATTR_TABLE_TRAV_MAINTENANCE_KEY, 2);
         displayOrderMap.put(ATTR_TABLE_TRAV_ALTERATION_KEY, 3);
         displayOrderMap.put(ATTR_TABLE_TRAV_TRANSIT_KEY, 4);
         displayOrderMap.put(ATTR_TABLE_TRAV_TRANSFER_KEY, 5);
-        displayOrderMap.put(ATTR_TABLE_PATIENTS, 11);
+        displayOrderMap.put(ATTR_TABLE_PATIENTS_KEY, 11);
         displayOrderMap.put(ATTR_TABLE_PATIENTS_ADULTS_KEY, 12);
         displayOrderMap.put(ATTR_TABLE_PATIENTS_0TO4_KEY, 13);
         displayOrderMap.put(ATTR_TABLE_PATIENTS_5TO9_KEY, 14);
         displayOrderMap.put(ATTR_TABLE_PATIENTS_10TO14_KEY, 15);
-        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS, 16);
+        displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_KEY, 16);
         displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_PPE_KEY, 17);
         displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_PREP_KEY, 18);
         displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_CHILD_KEY, 19);
         displayOrderMap.put(ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY, 20);
-        displayOrderMap.put(ATTR_TABLE_DISPENSED, 21);
+        displayOrderMap.put(ATTR_TABLE_DISPENSED_KEY, 21);
         displayOrderMap.put(ATTR_TABLE_DISPENSED_DS5, 22);
         displayOrderMap.put(ATTR_TABLE_DISPENSED_DS4, 23);
         displayOrderMap.put(ATTR_TABLE_DISPENSED_DS3, 24);

@@ -5,7 +5,7 @@
     android:layout_width="0dp"
     android:layout_height="match_parent"
     android:layout_marginStart="@dimen/margin_small"
-    android:layout_weight="3"
+    android:layout_weight="2"
     android:orientation="vertical"
     tools:layout_width="match_parent">
 
@@ -19,13 +19,13 @@
     <android.support.design.widget.TextInputLayout
         style="@style/MMIA.CommentLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small">
 
         <EditText
             android:id="@+id/et_comment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/hint_mmia_comment"
             android:inputType="textMultiLine"
             tools:text="This is a Long text for test the EditText MultiLine char, anybody can edit anything in this line, ^_^, Good Luck!!" />

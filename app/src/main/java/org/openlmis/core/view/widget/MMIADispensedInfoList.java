@@ -26,6 +26,18 @@ import java.util.Map;
 import static org.openlmis.core.model.RnRForm.STATUS.DRAFT_MISSED;
 import static org.openlmis.core.model.RnRForm.STATUS.SUBMITTED_MISSED;
 
+
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS5;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS4;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS3;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS2;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS1;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DT2;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DT1;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DT;
+import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DM;
+
 public class MMIADispensedInfoList extends LinearLayout {
     private TextView dsTotal;
     private TextView dtTotal;
@@ -76,13 +88,13 @@ public class MMIADispensedInfoList extends LinearLayout {
     private void init() {
         ATTR_TABLE_DISPENSED_KEY = getString(R.string.table_dispensed_key);
 
-        currentAndPreviousMap.put("dispensed_ds5", "dispensed_ds4");
-        currentAndPreviousMap.put("dispensed_ds4", "dispensed_ds3");
-        currentAndPreviousMap.put("dispensed_ds3", "dispensed_ds2");
-        currentAndPreviousMap.put("dispensed_ds2", "dispensed_ds1");
-        currentAndPreviousMap.put("dispensed_ds1", "dispensed_ds");
-        currentAndPreviousMap.put("dispensed_dt2", "dispensed_dt1");
-        currentAndPreviousMap.put("dispensed_dt1", "dispensed_dt");
+        currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DS5, ATTR_TABLE_DISPENSED_DS4);
+        currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DS4, ATTR_TABLE_DISPENSED_DS3);
+        currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DS3, ATTR_TABLE_DISPENSED_DS2);
+        currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DS2, ATTR_TABLE_DISPENSED_DS1);
+        currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DS1, ATTR_TABLE_DISPENSED_DS);
+        currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DT2, ATTR_TABLE_DISPENSED_DT1);
+        currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DT1, ATTR_TABLE_DISPENSED_DT);
     }
 
     private String getString(int id) {
@@ -181,7 +193,7 @@ public class MMIADispensedInfoList extends LinearLayout {
         editText.addTextChangedListener(new EditTextWatcher(getBaseInfoItemFromListByKey(list, key)));
         editText.setFocusable(lastInfos.size() == 0);
         editText.setEnabled(lastInfos.size() == 0);
-        if (key.startsWith("dispensed_ds")) {
+        if (key.startsWith(ATTR_TABLE_DISPENSED_DS)) {
             dsLists.add(editText);
         } else {
             dtLists.add(editText);
@@ -190,14 +202,15 @@ public class MMIADispensedInfoList extends LinearLayout {
     }
 
     private void initDSColumn(List<BaseInfoItem> list) {
-        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last4), list, "dispensed_ds5");
-        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last3), list, "dispensed_ds4");
-        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last2), list, "dispensed_ds3");
-        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last), list, "dispensed_ds2");
-        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_within), list, "dispensed_ds1");
+        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last4), list, ATTR_TABLE_DISPENSED_DS5);
+        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last3), list, ATTR_TABLE_DISPENSED_DS4);
+        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last2), list, ATTR_TABLE_DISPENSED_DS3);
+        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last), list, ATTR_TABLE_DISPENSED_DS3);
+        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_within), list, ATTR_TABLE_DISPENSED_DS1);
+
 
         EditText dsWithin = getEditText(R.id.type_dispensed_ds_within);
-        BaseInfoItem item = getBaseInfoItemFromListByKey(list, "dispensed_ds");
+        BaseInfoItem item = getBaseInfoItemFromListByKey(list, ATTR_TABLE_DISPENSED_DS);
         dsWithin.setText(item.getValue());
         dsWithin.addTextChangedListener(new EditTextWatcher(item));
         dsLists.add(dsWithin);
@@ -208,10 +221,10 @@ public class MMIADispensedInfoList extends LinearLayout {
     }
 
     private void initDTDMColumn(List<BaseInfoItem> list) {
-        initEditTextCell(getEditText(R.id.type_dispensed_dt_from_last), list, "dispensed_dt2");
-        initEditTextCell(getEditText(R.id.type_dispensed_dt_from_within), list, "dispensed_dt1");
+        initEditTextCell(getEditText(R.id.type_dispensed_dt_from_last), list, ATTR_TABLE_DISPENSED_DS2);
+        initEditTextCell(getEditText(R.id.type_dispensed_dt_from_within), list, ATTR_TABLE_DISPENSED_DT1);
         EditText dtWithin = getEditText(R.id.type_dispensed_dt_within);
-        BaseInfoItem dtItem = getBaseInfoItemFromListByKey(list, "dispensed_dt");
+        BaseInfoItem dtItem = getBaseInfoItemFromListByKey(list, ATTR_TABLE_DISPENSED_DT);
         dtWithin.setText(dtItem.getValue());
         dtWithin.addTextChangedListener(new EditTextWatcher(dtItem));
         dtLists.add(dtWithin);
@@ -220,7 +233,7 @@ public class MMIADispensedInfoList extends LinearLayout {
         dtTotal = getTextView(R.id.type_dispensed_dt_total);
 
         EditText dmWithin = getEditText(R.id.type_dispensed_dm_within);
-        BaseInfoItem dmItem = getBaseInfoItemFromListByKey(list, "dispensed_dm");
+        BaseInfoItem dmItem = getBaseInfoItemFromListByKey(list, ATTR_TABLE_DISPENSED_DM);
         dmWithin.setText(dmItem.getValue());
         dmWithin.addTextChangedListener(new EditTextWatcher(dmItem));
         dmLists.add(dmWithin);

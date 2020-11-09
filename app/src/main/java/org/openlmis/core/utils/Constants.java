@@ -153,6 +153,17 @@ public final class Constants {
 
     public static final String IS_USER_TRIGGERED_SYCED = "isUserTriggered";
 
+     public static final String ATTR_TABLE_DISPENSED_DS5 = "dispensed_ds5";
+     public static final String ATTR_TABLE_DISPENSED_DS4 = "dispensed_ds4";
+     public static final String ATTR_TABLE_DISPENSED_DS3 = "dispensed_ds3";
+     public static final String ATTR_TABLE_DISPENSED_DS2 = "dispensed_ds2";
+     public static final String ATTR_TABLE_DISPENSED_DS1 = "dispensed_ds1";
+     public static final String ATTR_TABLE_DISPENSED_DS = "dispensed_ds";
+     public static final String ATTR_TABLE_DISPENSED_DT2 = "dispensed_dt2";
+     public static final String ATTR_TABLE_DISPENSED_DT1 = "dispensed_dt1";
+     public static final String ATTR_TABLE_DISPENSED_DT = "dispensed_dt";
+     public static final String ATTR_TABLE_DISPENSED_DM = "dispensed_dm";
+
     private Constants() {
 
     }
