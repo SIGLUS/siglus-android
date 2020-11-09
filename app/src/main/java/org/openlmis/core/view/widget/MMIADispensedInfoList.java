@@ -205,7 +205,7 @@ public class MMIADispensedInfoList extends LinearLayout {
         initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last4), list, ATTR_TABLE_DISPENSED_DS5);
         initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last3), list, ATTR_TABLE_DISPENSED_DS4);
         initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last2), list, ATTR_TABLE_DISPENSED_DS3);
-        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last), list, ATTR_TABLE_DISPENSED_DS3);
+        initEditTextCell(getEditText(R.id.type_dispensed_ds_from_last), list, ATTR_TABLE_DISPENSED_DS2);
         initEditTextCell(getEditText(R.id.type_dispensed_ds_from_within), list, ATTR_TABLE_DISPENSED_DS1);
 
 
@@ -221,7 +221,7 @@ public class MMIADispensedInfoList extends LinearLayout {
     }
 
     private void initDTDMColumn(List<BaseInfoItem> list) {
-        initEditTextCell(getEditText(R.id.type_dispensed_dt_from_last), list, ATTR_TABLE_DISPENSED_DS2);
+        initEditTextCell(getEditText(R.id.type_dispensed_dt_from_last), list, ATTR_TABLE_DISPENSED_DT2);
         initEditTextCell(getEditText(R.id.type_dispensed_dt_from_within), list, ATTR_TABLE_DISPENSED_DT1);
         EditText dtWithin = getEditText(R.id.type_dispensed_dt_within);
         BaseInfoItem dtItem = getBaseInfoItemFromListByKey(list, ATTR_TABLE_DISPENSED_DT);

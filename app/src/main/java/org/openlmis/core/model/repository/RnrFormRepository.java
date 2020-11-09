@@ -411,33 +411,35 @@ public class RnrFormRepository {
 
     private String getCategory(String productCode) {
         Map<String, String> productCategoryMap = new HashMap<>();
-        productCategoryMap.put("08S01", Product.MEDICINE_TYPE_ADULT);
-        productCategoryMap.put("08S01ZY", Product.MEDICINE_TYPE_ADULT);
-        productCategoryMap.put("08S13", Product.MEDICINE_TYPE_ADULT);
-        productCategoryMap.put("08S15", Product.MEDICINE_TYPE_ADULT);
-        productCategoryMap.put("08S18WI", Product.MEDICINE_TYPE_ADULT);
+        productCategoryMap.put("08S30Y", Product.MEDICINE_TYPE_ADULT);
         productCategoryMap.put("08S18Y", Product.MEDICINE_TYPE_ADULT);
         productCategoryMap.put("08S18Z", Product.MEDICINE_TYPE_ADULT);
-        productCategoryMap.put("08S21", Product.MEDICINE_TYPE_ADULT);
-        productCategoryMap.put("08S22", Product.MEDICINE_TYPE_ADULT);
-        productCategoryMap.put("08S32", Product.MEDICINE_TYPE_ADULT);
         productCategoryMap.put("08S39Z", Product.MEDICINE_TYPE_ADULT);
         productCategoryMap.put("08S40", Product.MEDICINE_TYPE_ADULT);
+        productCategoryMap.put("08S01", Product.MEDICINE_TYPE_ADULT);
         productCategoryMap.put("08S42", Product.MEDICINE_TYPE_ADULT);
+        productCategoryMap.put("08S13", Product.MEDICINE_TYPE_ADULT);
         productCategoryMap.put("08S36", Product.MEDICINE_TYPE_ADULT);
+        productCategoryMap.put("08S01ZY", Product.MEDICINE_TYPE_ADULT);
+        productCategoryMap.put("08S21", Product.MEDICINE_TYPE_ADULT);
+        productCategoryMap.put("08S22", Product.MEDICINE_TYPE_ADULT);
+        productCategoryMap.put("08S18WI", Product.MEDICINE_TYPE_ADULT);
+        productCategoryMap.put("08S32", Product.MEDICINE_TYPE_ADULT);
+        productCategoryMap.put("08S15", Product.MEDICINE_TYPE_ADULT);
 
         productCategoryMap.put("08S01B", Product.MEDICINE_TYPE_CHILDREN);
         productCategoryMap.put("08S01ZZ", Product.MEDICINE_TYPE_CHILDREN);
         productCategoryMap.put("08S19", Product.MEDICINE_TYPE_CHILDREN);
         productCategoryMap.put("08S20", Product.MEDICINE_TYPE_CHILDREN);
-        productCategoryMap.put("08S30YX", Product.MEDICINE_TYPE_CHILDREN);
         productCategoryMap.put("08S32Z", Product.MEDICINE_TYPE_CHILDREN);
         productCategoryMap.put("08S34B", Product.MEDICINE_TYPE_CHILDREN);
-        productCategoryMap.put("08S38Y", Product.MEDICINE_TYPE_CHILDREN);
         productCategoryMap.put("08S39B", Product.MEDICINE_TYPE_CHILDREN);
         productCategoryMap.put("08S39Y", Product.MEDICINE_TYPE_CHILDREN);
         productCategoryMap.put("08S40Z", Product.MEDICINE_TYPE_CHILDREN);
         productCategoryMap.put("08S42B", Product.MEDICINE_TYPE_CHILDREN);
+        productCategoryMap.put("08S38Y", Product.MEDICINE_TYPE_CHILDREN);
+        productCategoryMap.put("08S30YX", Product.MEDICINE_TYPE_CHILDREN);
+
 
         productCategoryMap.put("08S17", Product.MEDICINE_TYPE_SOLUTION);
         productCategoryMap.put("08S23", Product.MEDICINE_TYPE_SOLUTION);
