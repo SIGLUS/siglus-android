@@ -296,6 +296,9 @@ public class RnRForm extends BaseModel {
             submittedTime = DateUtil.today();
         }
     }
+    public boolean isOldMMIALayout(){
+        return baseInfoItemList.size() == 7;
+    }
 
     public enum Emergency {
         Yes(true),
