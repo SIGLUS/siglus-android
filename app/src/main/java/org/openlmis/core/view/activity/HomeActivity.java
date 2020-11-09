@@ -379,12 +379,17 @@ public class HomeActivity extends BaseActivity {
 
     private void exportDB() {
         File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
+        File currentXML = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//shared_prefs//LMISPreference.xml");
         File tempBackup = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_copy");
+        File currentXMLBackup = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//shared_prefs//LMISPreferenceBackup.xml");
         File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
+        File xmlExternalBackup = new File(Environment.getExternalStorageDirectory(), "LMISPreferenceBackup.xml");
         try {
             FileUtil.copy(currentDB, tempBackup);
+            FileUtil.copy(currentXML, currentXMLBackup);
             ExportSqliteOpenHelper.removePrivateUserInfo(this);
             FileUtil.copy(tempBackup, externalBackup);
+            FileUtil.copy(currentXMLBackup, xmlExternalBackup);
             ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
         } catch (Exception e) {
             new LMISException(e, "HomeActivity.exportDB").reportToFabric();
@@ -392,6 +397,9 @@ public class HomeActivity extends BaseActivity {
         } finally {
             if (tempBackup.canRead()) {
                 tempBackup.delete();
+            }
+            if (currentXMLBackup.canRead()) {
+                currentXMLBackup.delete();
             }
         }
     }
