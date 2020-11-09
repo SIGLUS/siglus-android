@@ -245,7 +245,7 @@
     <string name="table_dispensed_left_total">Total patients with treatment</string>
     <string name="table_dispensed_label_dt">Dispensed for 3 Months(DT)</string>
     <string name="table_dispensed_label_ds">Dispensed for 6 Months(DS)</string>
-    <string name="table_dispensed_label_dm">Dispensed for a Months</string>
+    <string name="table_dispensed_label_dm">Dispensed for Month</string>
     <string name="table_dispensed_label_total">Total</string>
     <string name="table_dispensed_label_adjustment">Adjustment</string>
     <string name="table_dispensed_label_therapeutic"># of therapeutic months dispensed</string>
