@@ -79,7 +79,7 @@
     <string name="label_AL_title">AL - %1$s to %2$s</string>
     <string name="label_rnrfrom_left_header">PRODUCT</string>
     <string name="label_rnrfrom_left_header_old">Medicine</string>
-    <string name="label_regime_header_name">Therapeutic Regime</string>
+    <string name="label_regime_header_name">THERAPEUTIC REGIME</string>
     <string name="total">Total</string>
     <string name="total_title">Total patients</string>
     <string name="total_title_old">TOTAL</string>
@@ -245,8 +245,8 @@
     <string name="table_dispensed_left_total">Total patients with treatment</string>
     <string name="table_dispensed_label_dt">Dispensed for 3 Months(DT)</string>
     <string name="table_dispensed_label_ds">Dispensed for 6 Months(DS)</string>
-    <string name="table_dispensed_label_dm">Dispensed for Month</string>
-    <string name="table_dispensed_label_total">Total</string>
+    <string name="table_dispensed_label_dm">Dispensed for a Month</string>
+    <string name="table_dispensed_label_total">TOTAL</string>
     <string name="table_dispensed_label_adjustment">Adjustment</string>
     <string name="table_dispensed_label_therapeutic"># of therapeutic months dispensed</string>
     <string name="table_patients">Age range for patients in ARV treatment</string>
@@ -257,7 +257,7 @@
     <string name="table_prophylaxis">Prophylaxy</string>
     <string name="table_prophylaxis_ppe">PPE</string>
     <string name="table_prophylaxis_prep">PrEP</string>
-    <string name="table_prophylaxis_child">Exposed child</string>
+    <string name="table_prophylaxis_child">Exposed Child</string>
     <string name="table_prophylaxis_total">Total patients in ARVT on the HF</string>
     <string name="hint_has_not_new_data">You are at the end of the list</string>
     <string name="label_mmia_regime_adult"><![CDATA[Adults & Adolescents]]></string>
