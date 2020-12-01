@@ -87,7 +87,7 @@ public class AutoUpdateApk {
     private static final long HOURS = 60 * MINUTES;
 
     // 3-4 hours in dev.mode, 1-2 days for stable releases
-    private long updateInterval = 3 * HOURS; // how often to check
+    private long updateInterval = 3*HOURS; // how often to check
     private static int NOTIFICATION_ID = 12;
     private static final String CHANNEL_ID = "upgrade_channel_id";
     private static final String CHANNEL_NAME = "upgrade_channel_name";

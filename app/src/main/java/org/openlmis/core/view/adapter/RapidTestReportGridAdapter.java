@@ -28,7 +28,13 @@ public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestRe
 
     @Override
     public RapidTestReportGridViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report_grid, parent, false);
+        View itemView;
+        if (editable){
+            itemView = LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report_grid, parent, false);
+        }else {
+            itemView = LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report_grid_total, parent, false);
+        }
+
         itemView.getLayoutParams().width = RapidTestReportFormFragment.GRID_SIZE;
         return new RapidTestReportGridViewHolder(itemView);
     }

@@ -2,10 +2,10 @@ package org.openlmis.core.view.holder;
 
 import android.support.annotation.IntegerRes;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -18,11 +18,20 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_consume_rapid_test_report_grid)
     EditText etConsume;
 
+    @InjectView(R.id.et_consume_rapid_test_report_grid_total)
+    TextView etConsumeTotal;
+
     @InjectView(R.id.et_positive_rapid_test_report_grid)
     EditText etPositive;
 
+    @InjectView(R.id.et_positive_rapid_test_report_grid_total)
+    TextView etPositiveTotal;
+
     @InjectView(R.id.et_unjustified_rapid_test_report_grid)
     EditText etUnjustified;
+
+    @InjectView(R.id.et_unjustified_rapid_test_report_grid_total)
+    TextView etUnjustifiedTotal;
 
     @InjectView(R.id.et_warning_border)
     LinearLayout warningLinerLayout;
@@ -41,7 +50,6 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         this.quantityChangeListener = quantityChangeListener;
         populateData(viewModel);
         setEditable(editable);
-        updateEditTextMaxLength();
         setTextWatcher();
         updateAlert();
         updateGridViewHaveValueAlert();
@@ -53,38 +61,31 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         }
     }
 
-    private void updateEditTextMaxLength() {
-        if (isInTotalRow()) {
-            int maxLength = getInteger(R.integer.max_length_rapid_test_total);
-            etConsume.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
-            etPositive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
-        }
-    }
+
 
     private int getInteger(@IntegerRes int id) {
         return context.getResources().getInteger(id);
     }
 
     public void setEditable(Boolean editable) {
-        etConsume.setFocusable(editable);
-        etPositive.setFocusable(editable);
-        etUnjustified.setFocusable(editable);
+        if (editable){
+            etConsume.setFocusable(editable);
+            etPositive.setFocusable(editable);
+            etUnjustified.setFocusable(editable);
+        }
     }
 
     public void populateData(RapidTestFormGridViewModel viewModel) {
-        etConsume.setText(viewModel.getConsumptionValue());
-        etPositive.setText(viewModel.getPositiveValue());
-        etUnjustified.setText(viewModel.getUnjustifiedValue());
+        (editable?etConsume:etConsumeTotal).setText(viewModel.getConsumptionValue());
+        (editable?etPositive:etPositiveTotal).setText(viewModel.getPositiveValue());
+        (editable?etUnjustified:etUnjustifiedTotal).setText(viewModel.getUnjustifiedValue());
     }
 
     private void setTextWatcher() {
-        TextWatcher textWatcherConsume = new TextWatcher(etConsume);
-        TextWatcher textWatcherPositive = new TextWatcher(etPositive);
-        TextWatcher textWatcherUnjustified = new TextWatcher(etUnjustified);
-        etPositive.removeTextChangedListener(textWatcherPositive);
-        etConsume.removeTextChangedListener(textWatcherConsume);
-        etUnjustified.removeTextChangedListener(textWatcherUnjustified);
         if (editable) {
+            TextWatcher textWatcherConsume = new TextWatcher(etConsume);
+            TextWatcher textWatcherPositive = new TextWatcher(etPositive);
+            TextWatcher textWatcherUnjustified = new TextWatcher(etUnjustified);
             etConsume.addTextChangedListener(textWatcherConsume);
             etPositive.addTextChangedListener(textWatcherPositive);
             etUnjustified.addTextChangedListener(textWatcherUnjustified);
@@ -97,9 +98,9 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
             etConsume.setTextColor(context.getResources().getColor(R.color.color_red));
             etUnjustified.setTextColor(context.getResources().getColor(R.color.color_red));
         } else {
-            etPositive.setTextColor(context.getResources().getColor(R.color.color_black));
-            etConsume.setTextColor(context.getResources().getColor(R.color.color_black));
-            etUnjustified.setTextColor(context.getResources().getColor(R.color.color_black));
+            (editable?etPositive:etPositiveTotal).setTextColor(context.getResources().getColor(R.color.color_black));
+            (editable?etConsume:etConsumeTotal).setTextColor(context.getResources().getColor(R.color.color_black));
+            (editable?etUnjustified:etUnjustifiedTotal).setTextColor(context.getResources().getColor(R.color.color_black));
         }
     }
 
@@ -145,6 +146,7 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     public boolean isInTotalRow() {
+
         return quantityChangeListener == null;
     }
 
