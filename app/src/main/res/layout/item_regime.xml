@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="4"
         android:orientation="horizontal">
 
         <TextView
@@ -16,7 +16,7 @@
             style="@style/ItemRegime.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="4"
             tools:text="Regime Name" />
 
         <ViewStub
@@ -30,16 +30,18 @@
     <EditText
         android:id="@+id/regime_amount"
         style="@style/ItemRegime.EditText"
-        android:layout_width="@dimen/mmia_spread_item_common_width"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="2"
         android:inputType="numberSigned"
         tools:hint="Total patients" />
 
     <EditText
         android:id="@+id/regime_pharmacy_amount"
         style="@style/ItemRegime.EditText"
-        android:layout_width="@dimen/mmia_spread_item_common_width"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="2"
         android:inputType="numberSigned"
         tools:hint="Community pharmacy"/>
 </LinearLayout>

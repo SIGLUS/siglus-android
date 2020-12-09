@@ -305,7 +305,7 @@
         <item name="android:background">@null</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
+        <item name="android:layout_width">0dp</item>
     </style>
 
     <style name="MMIA.Regime.Total" parent="MMIA.Regime" />

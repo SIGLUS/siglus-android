@@ -8,17 +8,20 @@
 
     <TextView
         style="@style/MMIA.Regime.Title"
-        android:layout_width="wrap_content"
-        android:layout_weight="1"
+        android:layout_width="0dp"
+
+        android:layout_weight="5"
         android:text="@string/label_regime_header_name" />
 
     <TextView
         android:id="@+id/tv__total_patients_title"
         style="@style/MMIA.Regime.Title"
+        android:layout_weight="2"
         android:text="@string/total_title" />
 
     <TextView
         android:id="@+id/tv_total_pharmacy_title"
         style="@style/MMIA.Regime.Title"
+        android:layout_weight="2"
         android:text="@string/total_pharmacy" />
 </LinearLayout>

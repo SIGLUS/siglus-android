@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/regime_list"
     style="@style/MMIA.RegimeList"
-    android:layout_width="match_parent"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_weight="8"
     tools:background="@color/color_regime_baby"
     tools:layout_height="120dp" />
