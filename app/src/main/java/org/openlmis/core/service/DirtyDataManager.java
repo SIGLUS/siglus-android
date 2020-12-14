@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.j256.ormlite.dao.GenericRawResults;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
@@ -28,8 +29,11 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -64,15 +68,27 @@ public class DirtyDataManager {
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
 
+    final Map<String, String> lotsOnHands = new HashMap<>();
+
     public DirtyDataManager() {
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
     }
 
     public List<StockCard> correctData() {
+        try {
+            GenericRawResults<String[]> rawResults = stockRepository.lotOnHands();
+            for (String[] resultArray : rawResults) {
+                lotsOnHands.put(resultArray[0], resultArray[1]);
+            }
+            rawResults.close();
+        } catch (LMISException | SQLException e) {
+            e.printStackTrace();
+        }
         return doCorrectDirtyData(stockRepository.list());
     }
 
-    public List<StockCard> correctDataForStockCardOverView(List<StockCard> stockCards) {
+    public List<StockCard> correctDataForStockCardOverView(List<StockCard> stockCards, Map<String, String> inputLotsOnHands) {
+        lotsOnHands.putAll(inputLotsOnHands);
         return doCorrectDirtyData(stockCards);
     }
 
@@ -168,21 +184,58 @@ public class DirtyDataManager {
 
     private List<StockCard> checkTheLastTwoMovementAndLotSOH(List<StockCard> stockCards) {
         List<StockCard> deleted = new ArrayList<>();
+        Log.d("performance", "check The Last TwoMovement");
+        HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
+        Log.d("performance", "getLastStockMovementMap");
         for (StockCard stockCard : stockCards) {
-            try {
-                List<StockMovementItem> stockMovementItems = stockMovementRepository.listLastTwoStockMovements(stockCard.getId());
-                if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
-                    if (!isCorrectMovement(stockMovementItems.get(0), stockMovementItems.get(1))
-                            || !isCorrectLotOnHand(stockCard)
-                            || !isCorrectSOHBetweenMovementAndStockCard(stockCard, stockMovementItems.get(1))) {
-                        deleted.add(stockCard);
-                    }
+            List<StockMovementItem> stockMovementItems = stockMovementItemsMap.get((int) stockCard.getId());
+            if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
+                StockMovementItem movementItemOne = stockMovementItems.get(0);
+                StockMovementItem movementItemTwo = stockMovementItems.get(1);
+                StockMovementItem currentStockMovement = getCurrentStockMovementItem(movementItemOne, movementItemTwo);
+                StockMovementItem preStockMovement = movementItemOne != currentStockMovement ? movementItemOne : movementItemTwo;
+                if (!isCorrectMovement(preStockMovement, currentStockMovement)
+                        || !isCorrectLotOnHand(stockCard)
+                        || !isCorrectSOHBetweenMovementAndStockCard(stockCard, currentStockMovement)) {
+                    deleted.add(stockCard);
                 }
-            } catch (LMISException e) {
-                e.printStackTrace();
             }
         }
+        Log.d("performance", "check The Last TwoMovement");
         return deleted;
+    }
+
+    private StockMovementItem getCurrentStockMovementItem(StockMovementItem movementItemOne, StockMovementItem movementItemTwo) {
+        StockMovementItem currentStockMovement;
+        if (movementItemOne.getMovementDate().after(movementItemTwo.getMovementDate())) {
+            currentStockMovement = movementItemOne;
+        } else {
+            if (movementItemOne.getMovementDate().equals(movementItemTwo.getMovementDate())) {
+                currentStockMovement = movementItemOne.getCreatedTime().after(movementItemTwo.getCreatedTime()) ?
+                        movementItemOne : movementItemTwo;
+            } else {
+                currentStockMovement = movementItemTwo;
+            }
+        }
+        return currentStockMovement;
+    }
+
+    private HashMap<Integer, List<StockMovementItem>> getLastStockMovementMap() {
+        List<StockMovementItem> stockMovements = stockMovementRepository.listLastTwoStockMovements();
+        HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = new HashMap<Integer, List<StockMovementItem>>();
+        for (StockMovementItem item : stockMovements) {
+            long id = item.getStockCard().getId();
+            if (!stockMovementItemsMap.containsKey((int) id)) {
+                List<StockMovementItem> list = new ArrayList<StockMovementItem>();
+                list.add(item);
+
+                stockMovementItemsMap.put((int) id, list);
+            } else {
+                stockMovementItemsMap.get((int) id).add(item);
+
+            }
+        }
+        return stockMovementItemsMap;
     }
 
     private List<StockCard> checkAllMovementAndLotSOHAndSaveToDB(List<StockCard> stockCards) {
@@ -219,7 +272,7 @@ public class DirtyDataManager {
     private void debugLog(StockMovementItem previousMovement, StockMovementItem currentMovement, StockCard stockCard) {
         if (!DEBUG_ALL_MOVEMENT) return;
         Log.e(TAG, stockCard.getProduct().getCode()
-                + "(" + stockCard.calculateSOHFromLots() + ")"
+                + "(" + stockCard.calculateSOHFromLots(lotsOnHands) + ")"
                 + ":previous id=" + previousMovement.getId()
                 + ",current id =" + currentMovement.getId()
                 + ";previousSOH = " + previousMovement.getStockOnHand()
@@ -238,11 +291,11 @@ public class DirtyDataManager {
     }
 
     private boolean isCorrectSOHBetweenMovementAndStockCard(StockCard stockCard, StockMovementItem newestMovement) {
-        return stockCard.calculateSOHFromLots() == newestMovement.getStockOnHand();
+        return stockCard.calculateSOHFromLots(lotsOnHands) == newestMovement.getStockOnHand();
     }
 
     private boolean isCorrectMovement(StockMovementItem previousMovement, StockMovementItem newestMovement) {
-        return checkFormula(newestMovement, newestMovement.getStockCard().calculateSOHFromLots(),
+        return checkFormula(newestMovement, newestMovement.getStockOnHand(),
                 previousMovement.getStockOnHand(), newestMovement.getMovementQuantity());
     }
 

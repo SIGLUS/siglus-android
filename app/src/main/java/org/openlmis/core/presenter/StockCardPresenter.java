@@ -22,7 +22,9 @@ import android.util.Log;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.GenericRawResults;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -31,6 +33,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
@@ -40,6 +43,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +71,6 @@ public class StockCardPresenter extends Presenter {
     ProductRepository productRepository;
     @Inject
     StockService stockService;
-
     @Inject
     DirtyDataManager dirtyDataManager;
 
@@ -77,6 +80,8 @@ public class StockCardPresenter extends Presenter {
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
     private StockCardListView view;
+
+    final Map<String, String> lotsOnHands = new HashMap<>();
 
     private final static String KEY_DELETED_STOCKCARDS = "deleted_stockcard";
     private final static String KEY_ALL_STOCKCARDS = "all_stockcard";
@@ -100,8 +105,12 @@ public class StockCardPresenter extends Presenter {
         Map<String, List<StockCard>> stockCardMap = new HashMap<>();
         List<StockCard> allStockCards = stockRepository.list();
         List<StockCard> deletedStockCards = new ArrayList<>();
+
         if (shouldStartDataCheck()) {
-            deletedStockCards = dirtyDataManager.correctDataForStockCardOverView(allStockCards);
+            Log.d("overview", "1");
+            deletedStockCards = dirtyDataManager
+                    .correctDataForStockCardOverView(allStockCards, lotsOnHands);
+            Log.d("overview", "2");
         }
 
         stockCardMap.put(KEY_ALL_STOCKCARDS, allStockCards);
@@ -129,6 +138,16 @@ public class StockCardPresenter extends Presenter {
     public void loadStockCards(ArchiveStatus status, Boolean showLoading) {
         if (showLoading) {
             view.loading();
+        }
+        try {
+            GenericRawResults<String[]> rawResults = stockRepository.lotOnHands();
+            for (String[] resultArray : rawResults) {
+                lotsOnHands.put(resultArray[0], resultArray[1]);
+            }
+            rawResults.close();
+            Log.d("lotOnHands", rawResults.toString());
+        } catch (LMISException | SQLException e) {
+            e.printStackTrace();
         }
 
         if (shouldStartDataCheck()) {
@@ -192,9 +211,10 @@ public class StockCardPresenter extends Presenter {
     }
 
     private void refreshViewModels(List<StockCard> stockCards) {
-        List<InventoryViewModel> inventoryViewModelList = from(stockCards)
-                .transform(InventoryViewModel::new)
-                .toList();
+        List<InventoryViewModel> inventoryViewModelList = new ArrayList<>();
+        for (StockCard stockCard : stockCards) {
+            inventoryViewModelList.add(new InventoryViewModel(stockCard, lotsOnHands));
+        }
         inventoryViewModels.clear();
         inventoryViewModels.addAll(inventoryViewModelList);
     }
@@ -204,7 +224,15 @@ public class StockCardPresenter extends Presenter {
             final StockCard stockCard = inventoryViewModel.getStockCard();
             if (stockCardId == stockCard.getId()) {
                 stockRepository.refresh(stockCard);
-                inventoryViewModel.setStockOnHand(stockCard.calculateSOHFromLots());
+                try {
+                    GenericRawResults<String[]> rawResults = stockRepository.refreshedLotOnHands(stockCardId);
+                    for (String[] resultArray : rawResults) {
+                        lotsOnHands.put(resultArray[0], resultArray[1]);
+                    }
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+                inventoryViewModel.setStockOnHand(stockCard.calculateSOHFromLots(lotsOnHands));
                 break;
             }
         }
@@ -229,7 +257,7 @@ public class StockCardPresenter extends Presenter {
     private Observable<List<StockCard>> getLoadStockCardsObservable(final ArchiveStatus status) {
         return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
             stockService.monthlyUpdateAvgMonthlyConsumption();
-            subscriber.onNext(from(stockRepository.list()).filter(stockCard -> {
+            subscriber.onNext(from(stockRepository.list()).filter((stockCard) -> {
                 if (status.isArchived()) {
                     return showInArchiveView(stockCard);
                 }
@@ -240,11 +268,14 @@ public class StockCardPresenter extends Presenter {
     }
 
     private boolean showInOverview(StockCard stockCard) {
-        return !stockCard.getProduct().isKit() && (stockCard.calculateSOHFromLots() > 0 || (stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived()));
+        return !stockCard.getProduct().isKit() && (stockCard.calculateSOHFromLots(lotsOnHands) > 0
+                || (stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived()));
     }
 
     private boolean showInArchiveView(StockCard stockCard) {
-        return stockCard.calculateSOHFromLots() == 0 && (stockCard.getProduct().isArchived() || !stockCard.getProduct().isActive());
+        return stockCard.calculateSOHFromLots(lotsOnHands) == 0
+                && (stockCard.getProduct().isArchived()
+                || !stockCard.getProduct().isActive());
     }
 
     private Observer<List<StockCard>> getLoadStockCardsSubscriber() {

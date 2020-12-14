@@ -87,8 +87,8 @@ public class DirtyDataManagerTest {
         List<StockMovementItem> stockMovementsForStockCard1 = Arrays.asList(stockMovementItem11, stockMovementItem12);
         List<StockMovementItem> stockMovementsForStockCard2 = Arrays.asList(stockMovementItem21, stockMovementItem22);
         when(stockRepository.list()).thenReturn(list);
-        when(stockMovementRepository.listLastTwoStockMovements(1)).thenReturn(stockMovementsForStockCard1);
-        when(stockMovementRepository.listLastTwoStockMovements(2)).thenReturn(stockMovementsForStockCard2);
+        when(stockMovementRepository.listLastTwoStockMovements()).thenReturn(stockMovementsForStockCard1);
+        when(stockMovementRepository.listLastTwoStockMovements()).thenReturn(stockMovementsForStockCard2);
         when(stockMovementRepository.queryMovementByStockCardId(2)).thenReturn(stockMovementsForStockCard2);
 
         //When
@@ -145,7 +145,7 @@ public class DirtyDataManagerTest {
         List<StockCard> list = Arrays.asList(stockCard);
         List<StockMovementItem> duplicateMovement = Arrays.asList(stockMovementItem, stockMovementItem1);
 
-        when(stockMovementRepository.listLastTwoStockMovements(1)).thenReturn(duplicateMovement);
+        when(stockMovementRepository.listLastTwoStockMovements()).thenReturn(duplicateMovement);
 
         List<StockCard> wrongStockCards = dirtyDataManager.correctDataForStockCardOverView(list);
 

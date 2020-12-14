@@ -21,6 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.LMISApp;
@@ -415,5 +416,14 @@ public class StockRepository {
         if (!getLotsOnHandItemsCursor.isClosed()) {
             getLotsOnHandItemsCursor.close();
         }
+    }
+
+    public GenericRawResults<String[]> lotOnHands() throws LMISException {
+        return dbUtil.withDao(LotOnHand.class, dao -> (dao.queryRaw("select stockCard_id, sum(quantityOnHand) from lots_on_hand group by stockCard_id")));
+    }
+
+    public GenericRawResults<String[]> refreshedLotOnHands(Long stockCardId) throws LMISException {
+        String querySql = "select stockCard_id, sum(quantityOnHand) from lots_on_hand where stockCard_id = "+ stockCardId;
+        return dbUtil.withDao(LotOnHand.class,dao -> dao.queryRaw(querySql));
     }
 }

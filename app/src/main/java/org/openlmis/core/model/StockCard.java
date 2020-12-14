@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -136,6 +137,17 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
         for (LotOnHand lotOnHand : lots) {
             totalSOHFromLots += lotOnHand.getQuantityOnHand();
+        }
+        return totalSOHFromLots;
+    }
+
+    public long calculateSOHFromLots(Map<String, String> lotsOnHands) {
+        long totalSOHFromLots;
+        String quantityOnHand = lotsOnHands.get(Long.toString(this.getId()));
+        if (quantityOnHand == null) {
+            totalSOHFromLots = stockOnHand;
+        } else {
+            totalSOHFromLots = Integer.parseInt(quantityOnHand);
         }
         return totalSOHFromLots;
     }

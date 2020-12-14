@@ -26,6 +26,8 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.holder.StockCardViewHolder.StockOnHandStatus;
 
+import java.util.Map;
+
 import lombok.Data;
 import lombok.Setter;
 
@@ -64,6 +66,15 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
     private String signature;
     StockCard stockCard;
 
+
+    public InventoryViewModel(StockCard stockCard, Map<String,String> lotsOnHands) {
+        this(stockCard.getProduct());
+
+        this.stockCard = stockCard;
+        this.stockCardId = stockCard.getId();
+        this.stockOnHand = stockCard.calculateSOHFromLots(lotsOnHands);
+        this.checked = true;
+    }
 
     public InventoryViewModel(StockCard stockCard) {
         this(stockCard.getProduct());

@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
@@ -208,12 +209,36 @@ public class StockMovementRepository {
                 .where().eq("stockCard_id", stockCardId).query()));
     }
 
-    public List<StockMovementItem> listLastTwoStockMovements(final long stockCardId) throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, dao -> Lists.reverse(dao.queryBuilder().limit(2L)
-                .orderBy("movementDate", false)
-                .orderBy("createdTime", false)
-                .orderBy("id", false)
-                .where().eq("stockCard_id", stockCardId).query()));
+    public List<StockMovementItem> listLastTwoStockMovements() {
+        String rawSql = "select * from stock_items as t1 where t1.id in " +
+                "(select t2.id from stock_items as t2 where t1.stockCard_id = t2.stockCard_id " +
+                "order by t2.movementDate desc,  t2.createdTime desc limit 2)";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        List<StockMovementItem> items = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                StockMovementItem item = new StockMovementItem();
+                Date createTime = DateUtil.parseString(cursor.getString(cursor.getColumnIndexOrThrow("createdTime")), DateUtil.DATE_TIME_FORMAT);
+                item.setCreatedTime(createTime);
+                Date movementDate = DateUtil.parseString(cursor.getString(cursor.getColumnIndexOrThrow("movementDate")), DateUtil.DB_DATE_FORMAT);
+                item.setMovementDate(movementDate);
+                item.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                item.setStockOnHand(cursor.getInt(cursor.getColumnIndexOrThrow("stockOnHand")));
+                item.setMovementQuantity(cursor.getInt(cursor.getColumnIndexOrThrow("movementQuantity")));
+                item.setMovementType(MovementReasonManager.MovementType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("movementType"))));
+                StockCard stockCard = new StockCard();
+                stockCard.setId(cursor.getInt(cursor.getColumnIndexOrThrow("stockCard_id")));
+                item.setStockCard(stockCard);
+                items.add(item);
+
+            } while (cursor.moveToNext());
+        }
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return items;
     }
 
     public List<StockMovementItem> queryMovementByStockCardId(final long stockCardId) throws LMISException {
