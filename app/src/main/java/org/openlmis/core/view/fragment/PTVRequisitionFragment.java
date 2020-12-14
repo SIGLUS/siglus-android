@@ -267,8 +267,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         int medicineWidth = (int) (getResources().getDimension(R.dimen.ptv_view_item_width)
                 + getResources().getDimension(R.dimen.border_width))
                 * rnRForm.getRnrFormItemListWrapper().size();
-        int viewWidth = (int) (getResources().getDimension(R.dimen.ptv_view_item_width)
-                + getResources().getDimension(R.dimen.ptv_view_right_header_width)
+        int viewWidth = (int) (getResources().getDimension(R.dimen.ptv_view_right_header_width)
                 + medicineWidth);
         medicines.getLayoutParams().width = medicineWidth;
         llTitle.getLayoutParams().width = viewWidth;
