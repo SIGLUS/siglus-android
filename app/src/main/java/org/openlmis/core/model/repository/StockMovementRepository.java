@@ -210,9 +210,9 @@ public class StockMovementRepository {
     }
 
     public List<StockMovementItem> listLastTwoStockMovements() {
-        String rawSql = "select * from stock_items as t1 where t1.id in " +
-                "(select t2.id from stock_items as t2 where t1.stockCard_id = t2.stockCard_id " +
-                "order by t2.movementDate desc,  t2.createdTime desc limit 2)";
+        String rawSql = "select * from stock_items as t1 where t1.id in "
+                + "(select t2.id from stock_items as t2 where t1.stockCard_id = t2.stockCard_id "
+                + "order by t2.movementDate desc,  t2.createdTime desc limit 2)";
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
         List<StockMovementItem> items = new ArrayList<>();
 

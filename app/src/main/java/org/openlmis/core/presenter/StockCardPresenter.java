@@ -24,7 +24,6 @@ import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -33,7 +32,6 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
