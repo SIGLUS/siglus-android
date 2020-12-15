@@ -24,7 +24,9 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import roboguice.RoboGuice;
 
@@ -118,7 +120,7 @@ public class DirtyDataManagerTest {
     }
 
     @Test
-    public void shouldScanDuplicateInventory() throws LMISException {
+    public void shouldScanDuplicateInventory()  {
         Product product = ProductBuilder.create()
                 .setCode("productCode1")
                 .setProductId(1l)
@@ -147,7 +149,10 @@ public class DirtyDataManagerTest {
 
         when(stockMovementRepository.listLastTwoStockMovements()).thenReturn(duplicateMovement);
 
-        List<StockCard> wrongStockCards = dirtyDataManager.correctDataForStockCardOverView(list);
+        Map<String, String> lotsOnHands = new HashMap<>();
+        lotsOnHands.put("1l", "0");
+        List<StockCard> wrongStockCards = dirtyDataManager
+                .correctDataForStockCardOverView(list, lotsOnHands);
 
         assertThat(wrongStockCards.size(), is(1));
         assertThat(wrongStockCards.get(0).getProduct().getCode(), is("productCode1"));
