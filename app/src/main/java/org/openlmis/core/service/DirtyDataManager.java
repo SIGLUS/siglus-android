@@ -211,8 +211,8 @@ public class DirtyDataManager {
             currentStockMovement = movementItemOne;
         } else {
             if (movementItemOne.getMovementDate().equals(movementItemTwo.getMovementDate())) {
-                currentStockMovement = movementItemOne.getCreatedTime().after(movementItemTwo.getCreatedTime()) ?
-                        movementItemOne : movementItemTwo;
+                currentStockMovement = movementItemOne.getCreatedTime().after(movementItemTwo.getCreatedTime())
+                        ? movementItemOne : movementItemTwo;
             } else {
                 currentStockMovement = movementItemTwo;
             }
