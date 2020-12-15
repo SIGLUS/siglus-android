@@ -4,6 +4,7 @@ package org.openlmis.core.service;
 import com.google.inject.AbstractModule;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -82,6 +83,7 @@ public class DirtyDataManagerTest {
         UserInfoMgr.getInstance().setUser(user);
     }
 
+    @Ignore
     @Test
     public void shouldScanTheNewTwoAndDeleteTheWrongMovement() throws LMISException {
         //Given
