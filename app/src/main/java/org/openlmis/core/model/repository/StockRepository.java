@@ -418,12 +418,26 @@ public class StockRepository {
         }
     }
 
+    public List<String> cardIdsIfLotOnHandLessZero() {
+        List<String> cardIds = new ArrayList<>();
+        try {
+            GenericRawResults<String[]> stockCardIds = dbUtil.withDao(LotOnHand.class, dao -> (dao.queryRaw("select distinct stockCard_id from lots_on_hand where quantityOnHand < 0")));
+            for (String[] resultArray : stockCardIds) {
+                cardIds.add(resultArray[0]);
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+
+        return cardIds;
+    }
+
     public GenericRawResults<String[]> lotOnHands() throws LMISException {
         return dbUtil.withDao(LotOnHand.class, dao -> (dao.queryRaw("select stockCard_id, sum(quantityOnHand) from lots_on_hand group by stockCard_id")));
     }
 
     public GenericRawResults<String[]> refreshedLotOnHands(Long stockCardId) throws LMISException {
-        String querySql = "select stockCard_id, sum(quantityOnHand) from lots_on_hand where stockCard_id = "+ stockCardId;
-        return dbUtil.withDao(LotOnHand.class,dao -> dao.queryRaw(querySql));
+        String querySql = "select stockCard_id, sum(quantityOnHand) from lots_on_hand where stockCard_id = " + stockCardId;
+        return dbUtil.withDao(LotOnHand.class, dao -> dao.queryRaw(querySql));
     }
 }

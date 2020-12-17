@@ -15,7 +15,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
-import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
@@ -186,16 +185,18 @@ public class DirtyDataManager {
         List<StockCard> deleted = new ArrayList<>();
         Log.d("performance", "check The Last TwoMovement");
         HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
+        List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
         Log.d("performance", "getLastStockMovementMap");
         for (StockCard stockCard : stockCards) {
             List<StockMovementItem> stockMovementItems = stockMovementItemsMap.get((int) stockCard.getId());
-            if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
+            if (!isCorrectOnHand(stockCard, cardIdsLotOnHandLessZero)) {
+                deleted.add(stockCard);
+            } else if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
                 StockMovementItem movementItemOne = stockMovementItems.get(0);
                 StockMovementItem movementItemTwo = stockMovementItems.get(1);
                 StockMovementItem currentStockMovement = getCurrentStockMovementItem(movementItemOne, movementItemTwo);
                 StockMovementItem preStockMovement = movementItemOne != currentStockMovement ? movementItemOne : movementItemTwo;
                 if (!isCorrectMovement(preStockMovement, currentStockMovement)
-                        || !isCorrectLotOnHand(stockCard)
                         || !isCorrectSOHBetweenMovementAndStockCard(stockCard, currentStockMovement)) {
                     deleted.add(stockCard);
                 }
@@ -240,6 +241,7 @@ public class DirtyDataManager {
 
     private List<StockCard> checkAllMovementAndLotSOHAndSaveToDB(List<StockCard> stockCards) {
         List<StockCard> deleted = new ArrayList<>();
+        List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
         for (StockCard stockCard : stockCards) {
             try {
                 List<StockMovementItem> stockMovementItems = stockMovementRepository.queryMovementByStockCardId(stockCard.getId());
@@ -249,7 +251,7 @@ public class DirtyDataManager {
                 if (stockMovementItems.size() < DO_NOT_CHECK_NEWEST_TWO) {
                     continue;
                 }
-                if (!isCorrectLotOnHand(stockCard)) {
+                if (!isCorrectOnHand(stockCard, cardIdsLotOnHandLessZero)) {
                     deleted.add(stockCard);
                     saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
                     continue;
@@ -281,13 +283,8 @@ public class DirtyDataManager {
                 + ",currentSOH=" + currentMovement.getStockOnHand());
     }
 
-    private boolean isCorrectLotOnHand(StockCard stockCard) {
-        List<LotOnHand> lotOnHands = stockCard.getLotOnHandListWrapper();
-        if (CollectionUtils.isEmpty(lotOnHands)) {
-            return true;
-        }
-        return FluentIterable.from(lotOnHands).allMatch(lotOnHand ->
-                lotOnHand != null && lotOnHand.getQuantityOnHand() >= 0);
+    private boolean isCorrectOnHand(StockCard stockCard, List<String> cardIds) {
+        return stockCard.getStockOnHand() >= 0 && !cardIds.contains(String.valueOf(stockCard.getId()));
     }
 
     private boolean isCorrectSOHBetweenMovementAndStockCard(StockCard stockCard, StockMovementItem newestMovement) {
