@@ -26,12 +26,12 @@
         <TextView style="@style/MMIA.RegimeTotalLabel" />
 
         <TextView
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:id="@+id/tv_regime_total"
             style="@style/MMIA.RegimeTotalText" />
 
         <TextView
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:id="@+id/tv_regime_total_pharmacy"
             style="@style/MMIA.RegimeTotalText" />
     </LinearLayout>

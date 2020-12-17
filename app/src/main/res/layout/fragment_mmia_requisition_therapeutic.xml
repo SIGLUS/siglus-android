@@ -31,14 +31,14 @@
         android:gravity="end"
         android:showDividers="middle">
 
-        <TextView style="@style/MMIA.RegimeTotalLabel" />
+        <TextView style="@style/MMIA.RegimeThreeLineTotalLabel" />
 
         <TextView
             android:id="@+id/mmia_regime_three_line_total"
-            style="@style/MMIA.RegimeTotalText" />
+            style="@style/MMIA.RegimeThreeLineTotalText" />
 
         <TextView
             android:id="@+id/mmia_regime_three_line_pharmacy"
-            style="@style/MMIA.RegimeTotalText" />
+            style="@style/MMIA.RegimeThreeLineTotalText" />
     </LinearLayout>
 </LinearLayout>

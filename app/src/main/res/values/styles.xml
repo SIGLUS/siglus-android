@@ -379,7 +379,18 @@
     <style name="MMIA.RegimeTotalLabel">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:layout_weight">5</item>
+        <item name="android:minHeight">30dp</item>
+        <item name="android:text">@string/total</item>
+        <item name="android:background">@color/color_divider</item>
+        <item name="android:gravity">end|center_vertical</item>
+        <item name="android:paddingEnd">@dimen/padding_small</item>
+        <item name="android:paddingStart">@dimen/padding_small</item>
+    </style>
+
+    <style name="MMIA.RegimeThreeLineTotalLabel">
+        <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:minHeight">30dp</item>
         <item name="android:text">@string/total</item>
         <item name="android:background">@color/color_divider</item>
@@ -394,6 +405,16 @@
         <item name="android:gravity">center</item>
         <item name="android:padding">4dp</item>
         <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:minHeight">30dp</item>
+    </style>
+
+    <style name="MMIA.RegimeThreeLineTotalText">
+        <item name="android:background">@color/color_page_gray</item>
+        <item name="android:freezesText">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:layout_width">@dimen/mmia_spread_item_common_width</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:minHeight">30dp</item>
     </style>
