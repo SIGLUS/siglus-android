@@ -140,6 +140,8 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
                 presenter.refreshStockCardsObservable(stockCardId);
             } else if (requestCode == Constants.REQUEST_UNPACK_KIT) {
                 presenter.loadKits();
+            } else if (requestCode == Constants.REQUEST_ARCHIVED_LIST_PAGE) {
+                loadStockCards();
             }
         }
     }
