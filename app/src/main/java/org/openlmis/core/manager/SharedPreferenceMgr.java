@@ -36,6 +36,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -391,8 +392,13 @@ public class SharedPreferenceMgr {
     }
 
     public void setDeletedProduct(List<String> products) {
+        Set<String> deletedProductsCode = new HashSet<>();
+        if (!products.isEmpty()){
+            deletedProductsCode.addAll(getDeletedProduct());
+        }
+        deletedProductsCode.addAll(products);
         Gson gson = new GsonBuilder().create();
-        String json = gson.toJson(products);
+        String json = gson.toJson(deletedProductsCode);
         sharedPreferences.edit().putString(KEY_DELETED_THREE_PRODUCT, json).apply();
     }
 
@@ -404,8 +410,12 @@ public class SharedPreferenceMgr {
             }.getType();
             return gson.fromJson(json, type);
         }
-        return null;
+        return new ArrayList<>();
     }
+
+
+
+
 
     public void setUserFacilityId(String facilityId) {
         sharedPreferences.edit().putString(KEY_USER_FACILITY_ID, facilityId).apply();

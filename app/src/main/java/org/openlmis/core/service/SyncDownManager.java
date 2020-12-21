@@ -102,6 +102,8 @@ public class SyncDownManager {
     StockService stockService;
     @Inject
     SyncStockCardsLastYearSilently syncStockCardsLastYearSilently;
+    @Inject
+    DirtyDataManager dirtyDataManager;
 
     public SyncDownManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -485,6 +487,7 @@ public class SyncDownManager {
             try {
                 stockRepository.batchCreateSyncDownStockCardsAndMovements(stockCards);
                 stockService.immediatelyUpdateAvgMonthlyConsumption();
+                dirtyDataManager.scanAllStockMovements();
                 subscriber.onCompleted();
             } catch (Exception e) {
                 subscriber.onError(e);

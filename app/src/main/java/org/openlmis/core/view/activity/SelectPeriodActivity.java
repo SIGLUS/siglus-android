@@ -21,6 +21,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
+import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ProgramUtil;
@@ -75,7 +76,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private DateTime periodEndMonth;
 
     @Inject
-    SharedPreferenceMgr sharedPreferenceMgr;
+    DirtyDataManager dirtyDataManager;
 
     @Override
     protected ScreenName getScreenName() {
@@ -197,7 +198,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     @NonNull
     private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate(final Constants.Program program) {
         return () -> {
-            sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
+            dirtyDataManager.deleteAndReset();
             finish();
         };
     }

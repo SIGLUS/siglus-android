@@ -14,8 +14,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
+
 
 import lombok.Setter;
 
@@ -125,6 +130,7 @@ public class WarningDialogFragment extends DialogFragment {
                     delegate.onPositiveClick();
                 }
                 dismiss();
+
             }
         };
     }

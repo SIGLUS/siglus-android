@@ -40,6 +40,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
+import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.HomeActivity;
@@ -76,6 +77,9 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
+
+    @Inject
+    DirtyDataManager dirtyDataManager;
 
     StockCardListAdapter mAdapter;
 
@@ -162,7 +166,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     @NonNull
     private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate() {
         return () -> {
-            sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
+            dirtyDataManager.deleteAndReset();
             Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
             getActivity().startActivity(intent);
             getActivity().finish();

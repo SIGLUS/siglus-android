@@ -99,12 +99,23 @@ public class DirtyDataManager {
     }
 
     private List<StockCard> doCorrectDirtyData(List<StockCard> stockCards) {
-        List<StockCard> deletedStockCards = checkTheLastTwoMovementAndLotSOH(stockCards);
+        List<StockCard> deletedStockCards = new ArrayList<>();
+        Log.d("signature","1");
+        List<String> stockCard_ids = checkTheSignatureIsNullMoreThanTwo();
+        for (int i=stockCards.size()-1; i>=0;i--) {
+            if (stockCard_ids.contains(String.valueOf(stockCards.get(i).getId()))) {
+                deletedStockCards.add(stockCards.get(i));
+                stockCards.remove(stockCards.get(i));
+            }
+        }
+        Log.d("signature","2");
+        List<StockCard> lastTwoMovementAndLotSOHWrong = checkTheLastTwoMovementAndLotSOH(stockCards);
+        deletedStockCards.addAll(lastTwoMovementAndLotSOHWrong);
         saveDeletedInfoToDB(deletedStockCards);
-
         List<String> productCodes = getCodeFromStockCard(deletedStockCards);
-        deleteAndReset(productCodes);
-        sharedPreferenceMgr.setDeletedProduct(productCodes);
+        if (!productCodes.isEmpty()){
+            sharedPreferenceMgr.setDeletedProduct(productCodes);
+        }
         return deletedStockCards;
     }
 
@@ -120,12 +131,12 @@ public class DirtyDataManager {
 
     public List<StockCard> scanAllStockMovements() {
         sharedPreferenceMgr.updateLatestMonthlyCheckDirtyDataTime();
-
         List<StockCard> stockCards = stockRepository.list();
         List<StockCard> deletedStockCards = checkAllMovementAndLotSOHAndSaveToDB(stockCards);
         List<String> productCodes = getCodeFromStockCard(deletedStockCards);
-        deleteAndReset(productCodes);
-        sharedPreferenceMgr.setDeletedProduct(productCodes);
+        if (!productCodes.isEmpty()) {
+            sharedPreferenceMgr.setDeletedProduct(productCodes);
+        }
         return deletedStockCards;
     }
 
@@ -164,7 +175,8 @@ public class DirtyDataManager {
         dirtyDataRepository.save(dirtyDataItems);
     }
 
-    private void deleteAndReset(List<String> productCodes) {
+    public void deleteAndReset() {
+        List<String> productCodes = sharedPreferenceMgr.getDeletedProduct();
         if (productCodes.size() > 0) {
             dirtyDataRepository.deleteDirtyDataByProductCode(productCodes);
             try {
@@ -177,6 +189,7 @@ public class DirtyDataManager {
             cmmRepository.resetCmm(productCodes);
             rnrFormRepository.deleteRnrFormDirtyData(productCodes);
             programRepository.deleteProgramDirtyData(productCodes);
+            sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
         }
     }
 
@@ -198,10 +211,21 @@ public class DirtyDataManager {
         return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type));
     }
 
+    private List<String> checkTheSignatureIsNullMoreThanTwo () {
+        List<String> deleted = new ArrayList<>();
+        try {
+            deleted = stockMovementRepository.signatureIsNull();
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        return deleted;
+    }
+
     private List<StockCard> checkTheLastTwoMovementAndLotSOH(List<StockCard> stockCards) {
         List<StockCard> deleted = new ArrayList<>();
         Log.d("performance", "check The Last TwoMovement");
         HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
+        Log.d("performance", "check The Last TwoMovement1");
         List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
         Log.d("performance", "getLastStockMovementMap");
         for (StockCard stockCard : stockCards) {
@@ -220,6 +244,8 @@ public class DirtyDataManager {
             }
         }
         Log.d("performance", "check The Last TwoMovement");
+        Log.d("dirty","daily" + deleted.toString());
+
         return deleted;
     }
 
@@ -239,7 +265,9 @@ public class DirtyDataManager {
     }
 
     private HashMap<Integer, List<StockMovementItem>> getLastStockMovementMap() {
+        Log.d("TwoStockMovements","1");
         List<StockMovementItem> stockMovements = stockMovementRepository.listLastTwoStockMovements();
+        Log.d("TwoStockMovements","2");
         HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = new HashMap<Integer, List<StockMovementItem>>();
         for (StockMovementItem item : stockMovements) {
             long id = item.getStockCard().getId();
@@ -258,6 +286,13 @@ public class DirtyDataManager {
 
     private List<StockCard> checkAllMovementAndLotSOHAndSaveToDB(List<StockCard> stockCards) {
         List<StockCard> deleted = new ArrayList<>();
+        List<String> stockCard_ids = checkTheSignatureIsNullMoreThanTwo();
+        for (int i=stockCards.size()-1; i>=0;i--) {
+            if (stockCard_ids.contains(String.valueOf(stockCards.get(i).getId()))) {
+                deleted.add(stockCards.get(i));
+                stockCards.remove(stockCards.get(i));
+            }
+        }
         List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
         for (StockCard stockCard : stockCards) {
             try {
@@ -265,12 +300,12 @@ public class DirtyDataManager {
                 if (CollectionUtils.isEmpty(stockMovementItems)) {
                     continue;
                 }
-                if (stockMovementItems.size() < DO_NOT_CHECK_NEWEST_TWO) {
-                    continue;
-                }
                 if (!isCorrectOnHand(stockCard, cardIdsLotOnHandLessZero)) {
                     deleted.add(stockCard);
                     saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
+                    continue;
+                }
+                if (stockMovementItems.size() < DO_NOT_CHECK_NEWEST_TWO) {
                     continue;
                 }
                 for (int i = 0; i <= stockMovementItems.size() - DO_NOT_CHECK_NEWEST_TWO; i++) {
@@ -285,6 +320,7 @@ public class DirtyDataManager {
                 e.printStackTrace();
             }
         }
+        Log.d("dirty","month"+deleted.toString());
         return deleted;
     }
 

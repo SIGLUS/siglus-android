@@ -320,7 +320,7 @@ public class HomeActivity extends BaseActivity {
         dirtyDataManager.dirtyDataMonthlyCheck();
         if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())) {
             showDeletedWarningDialog(() -> {
-                sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
+                dirtyDataManager.deleteAndReset();
             });
         }
     }

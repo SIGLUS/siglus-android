@@ -122,7 +122,7 @@ public class StockCardPresenter extends Presenter {
             return showInOverview(stockCard);
         }).toList());
 
-        if (!CollectionUtils.isEmpty(deletedStockCards)) {
+        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())) {
             subscriber.onError(new LMISException(SHOULD_SHOW_ALERT_MSG));
         } else {
             subscriber.onCompleted();
@@ -286,6 +286,7 @@ public class StockCardPresenter extends Presenter {
             @Override
             public void onError(Throwable e) {
                 if (SHOULD_SHOW_ALERT_MSG.equals(e.getMessage())) {
+                    Log.d("dirty","showWarning");
                     view.showWarning();
                 } else {
                     e.printStackTrace();

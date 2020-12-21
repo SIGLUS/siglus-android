@@ -2,7 +2,6 @@ package org.openlmis.core.view.widget;
 
 import android.os.Handler;
 import android.view.View;
-
 import org.openlmis.core.LMISApp;
 
 public abstract class SingleClickButtonListener implements View.OnClickListener {

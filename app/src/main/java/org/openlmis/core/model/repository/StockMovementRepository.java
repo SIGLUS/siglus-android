@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.GenericRawResults;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
@@ -20,9 +21,12 @@ import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StockMovementRepository {
     @Inject
@@ -280,5 +284,20 @@ public class StockMovementRepository {
         for (StockMovementItem item : items) {
             genericDao.delete(item);
         }
+    }
+
+    public List<String> signatureIsNull() throws LMISException {
+        List<String> stockCard_ids = new ArrayList<>();
+        String querySql = "select stockCard_id,count(stockCard_id) as res from stock_items where signature IS NULL group by stockCard_id having res > 1";
+        GenericRawResults<String[]> rawResults = dbUtil.withDao(StockMovementItem.class,dao -> dao.queryRaw(querySql));
+        try {
+            for (String[] resultArray : rawResults) {
+                stockCard_ids.add(resultArray[0]);
+            }
+            rawResults.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return stockCard_ids;
     }
 }
