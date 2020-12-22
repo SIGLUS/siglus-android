@@ -26,7 +26,6 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -101,9 +100,9 @@ public class DirtyDataManager {
     private List<StockCard> doCorrectDirtyData(List<StockCard> stockCards) {
         List<StockCard> deletedStockCards = new ArrayList<>();
         Log.d("signature","1");
-        List<String> stockCard_ids = checkTheSignatureIsNullMoreThanTwo();
+        List<String> stockCardIds = checkTheSignatureIsNullMoreThanTwo();
         for (int i=stockCards.size()-1; i>=0;i--) {
-            if (stockCard_ids.contains(String.valueOf(stockCards.get(i).getId()))) {
+            if (stockCardIds.contains(String.valueOf(stockCards.get(i).getId()))) {
                 deletedStockCards.add(stockCards.get(i));
                 stockCards.remove(stockCards.get(i));
             }
@@ -211,7 +210,7 @@ public class DirtyDataManager {
         return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type));
     }
 
-    private List<String> checkTheSignatureIsNullMoreThanTwo () {
+    private List<String> checkTheSignatureIsNullMoreThanTwo() {
         List<String> deleted = new ArrayList<>();
         try {
             deleted = stockMovementRepository.signatureIsNull();
@@ -286,9 +285,9 @@ public class DirtyDataManager {
 
     private List<StockCard> checkAllMovementAndLotSOHAndSaveToDB(List<StockCard> stockCards) {
         List<StockCard> deleted = new ArrayList<>();
-        List<String> stockCard_ids = checkTheSignatureIsNullMoreThanTwo();
+        List<String> stockCardIds = checkTheSignatureIsNullMoreThanTwo();
         for (int i=stockCards.size()-1; i>=0;i--) {
-            if (stockCard_ids.contains(String.valueOf(stockCards.get(i).getId()))) {
+            if (stockCardIds.contains(String.valueOf(stockCards.get(i).getId()))) {
                 deleted.add(stockCards.get(i));
                 stockCards.remove(stockCards.get(i));
             }

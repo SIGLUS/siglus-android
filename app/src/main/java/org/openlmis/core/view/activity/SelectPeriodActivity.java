@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -31,7 +30,6 @@ import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 
