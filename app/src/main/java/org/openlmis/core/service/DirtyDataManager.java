@@ -11,10 +11,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.j256.ormlite.dao.GenericRawResults;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
@@ -24,6 +26,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -37,6 +40,10 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import roboguice.RoboGuice;
+import rx.Observable;
+import rx.schedulers.Schedulers;
+
+import static org.openlmis.core.utils.DateUtil.today;
 
 
 @Singleton
@@ -101,10 +108,20 @@ public class DirtyDataManager {
         return deletedStockCards;
     }
 
+    public void dirtyDataMonthlyCheck() {
+        DateTime recordLastMonthlyCheckPeriod = SharedPreferenceMgr.getInstance().getLatestMonthlyCheckDirtyDataTime();
+        Period period = Period.of(today());
+        if (recordLastMonthlyCheckPeriod.isBefore(period.getBegin())) {
+            Observable.create((Observable.OnSubscribe<Void>) subscriber ->
+                    scanAllStockMovements())
+                    .subscribeOn(Schedulers.io());
+        }
+    }
 
     public List<StockCard> scanAllStockMovements() {
-        List<StockCard> stockCards = stockRepository.list();
+        sharedPreferenceMgr.updateLatestMonthlyCheckDirtyDataTime();
 
+        List<StockCard> stockCards = stockRepository.list();
         List<StockCard> deletedStockCards = checkAllMovementAndLotSOHAndSaveToDB(stockCards);
         List<String> productCodes = getCodeFromStockCard(deletedStockCards);
         deleteAndReset(productCodes);

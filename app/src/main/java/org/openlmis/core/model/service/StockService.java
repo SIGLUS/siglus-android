@@ -57,12 +57,7 @@ public class StockService {
         Period period = Period.of(today());
         if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
             immediatelyUpdateAvgMonthlyConsumption();
-            monthlyCheckAllMovement();
         }
-    }
-
-    private List<StockCard> monthlyCheckAllMovement() {
-        return dirtyDataManager.scanAllStockMovements();
     }
 
     public void immediatelyUpdateAvgMonthlyConsumption() {

@@ -53,6 +53,7 @@ import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.persistence.ExportSqliteOpenHelper;
+import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.FileUtil;
@@ -117,6 +118,8 @@ public class HomeActivity extends BaseActivity {
     SyncService syncService;
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
+    @Inject
+    DirtyDataManager dirtyDataManager;
 
     @Inject
     WarningDialogFragmentBuilder warningDialogFragmentBuilder;
@@ -314,6 +317,7 @@ public class HomeActivity extends BaseActivity {
             setSyncedTime();
         }
 
+        dirtyDataManager.dirtyDataMonthlyCheck();
         if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())) {
             showDeletedWarningDialog(() -> {
                 sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());

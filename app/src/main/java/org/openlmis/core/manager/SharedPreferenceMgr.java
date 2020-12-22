@@ -70,6 +70,7 @@ public class SharedPreferenceMgr {
     public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
     public static final String KEY_ENABLE_QA_DEBUG = "enable_qa_debug";
     public static final String LATEST_UPDATE_LOW_STOCK_AVG_TIME = "latest_update_low_stock_avg_time";
+    public static final String LATEST_MONTHLY_CHECK_DIRTY_DATA_TIME = "last_monthly_check_dirty_data_time";
     public static final String KEY_HAS_LOT_INFO = "has_lot_info";
     public static final String KEY_HAS_DELETED_OLD_STOCK_MOVEMENT = "has_deleted_old_stock_movement";
     public static final String KEY_HAS_DELETED_OLD_RNR = "has_deleted_old_rnr";
@@ -301,6 +302,14 @@ public class SharedPreferenceMgr {
 
     public DateTime getLatestUpdateLowStockAvgTime() {
         return new DateTime(sharedPreferences.getLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME, 0));
+    }
+
+    public DateTime getLatestMonthlyCheckDirtyDataTime() {
+        return new DateTime(sharedPreferences.getLong(LATEST_MONTHLY_CHECK_DIRTY_DATA_TIME, 0));
+    }
+
+    public void updateLatestMonthlyCheckDirtyDataTime() {
+        sharedPreferences.edit().putLong(LATEST_MONTHLY_CHECK_DIRTY_DATA_TIME, LMISApp.getInstance().getCurrentTimeMillis()).apply();
     }
 
     public void updateLatestLowStockAvgTime() {
