@@ -142,18 +142,16 @@ public class MMIADispensedInfoList extends LinearLayout {
     }
 
     private String getValue(String cellName) {
-        if (lastInfos.size() == 0
-                && (presenter.getRnrFormStatus() == DRAFT_MISSED
-                || presenter.getRnrFormStatus() == SUBMITTED_MISSED)) {
-            return currentInfos.get(cellName);
-        } else if (lastInfos.size() > 0 && presenter.getRnrFormStatus() == DRAFT_MISSED) {
-            String val = lastInfos.get(currentAndPreviousMap.get(cellName));
-            updateDataList(cellName, val);
-            return val;
-        } else if (lastInfos.size() > 0 && presenter.getRnrFormStatus() == SUBMITTED_MISSED) {
+        if (lastInfos.size() == 0) {
             return currentInfos.get(cellName);
         } else {
-            return currentInfos.get(cellName);
+            if (presenter.getRnRForm().isDraft()) {
+                String val = lastInfos.get(currentAndPreviousMap.get(cellName));
+                updateDataList(cellName, val);
+                return val;
+            } else {
+                return currentInfos.get(cellName);
+            }
         }
     }
 
