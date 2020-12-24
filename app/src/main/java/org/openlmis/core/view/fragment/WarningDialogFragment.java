@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 
@@ -123,7 +124,11 @@ public class WarningDialogFragment extends DialogFragment {
             @Override
             public void onSingleClick(View v) {
                 if (delegate != null && v.getId() == R.id.btn_del) {
-                    delegate.onPositiveClick();
+                    try {
+                        delegate.onPositiveClick();
+                    } catch (LMISException e) {
+                        e.printStackTrace();
+                    }
                 }
                 dismiss();
 
@@ -132,6 +137,6 @@ public class WarningDialogFragment extends DialogFragment {
     }
 
     public interface DialogDelegate {
-        void onPositiveClick();
+        void onPositiveClick() throws LMISException;
     }
 }

@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.misc.TransactionManager;
 
+import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -47,6 +48,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
@@ -454,4 +456,47 @@ public class StockRepository {
         String querySql = "select stockCard_id, sum(quantityOnHand) from lots_on_hand where stockCard_id = " + stockCardId;
         return dbUtil.withDao(LotOnHand.class, dao -> dao.queryRaw(querySql));
     }
+
+    public List<StockCard> queryCheckedStockCards(Set<String> filterStockCardIds){
+        String querySql = "select * from stock_cards where id NOT IN ("
+                + StringUtils.join(filterStockCardIds, ",")
+                + ")";
+        List<StockCard> checkedStockCards = new ArrayList<>();
+
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(querySql, null);
+        if (cursor.moveToFirst()) {
+            do {
+                StockCard stockCard = new StockCard();
+                try {
+                    stockCard.setProduct(productRepository.getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+                stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+                stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
+                stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+                try {
+                    stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+                checkedStockCards.add(stockCard);
+            } while (cursor.moveToNext());
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return checkedStockCards;
+    }
+
+    public void resetQuantityOnHand (Map<String,List<StockMovementItem>> stockMovementItemsMap) {
+        for (Map.Entry map : stockMovementItemsMap.entrySet()) {
+            String updateSql = "update lots_on_hand set quantityOnHand = "+
+                    stockMovementItemsMap.get(map.getKey()).get(0).getMovementQuantity()+" "+
+                    "where stockCard_id = "+map.getKey();
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
+        }
+
+    }
+
 }

@@ -4,17 +4,24 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class LotRepository {
 
@@ -156,6 +163,29 @@ public class LotRepository {
         }
         for (Lot lot : lots) {
             lotGenericDao.delete(lot);
+        }
+    }
+
+    public void deleteLotMovementItems(List<StockMovementItem> stockMovementItems){
+        List<String> stockMovementItemIds = new ArrayList<>();
+        for(StockMovementItem item : stockMovementItems) {
+            stockMovementItemIds.add(String.valueOf(item.getId()));
+        }
+        String deleteRowSql = "delete from lot_movement_items where stockMovementItem_id in ("
+                + StringUtils.join(stockMovementItemIds, ",")
+                + ")";
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRowSql);
+    }
+
+    public void resetLotMovementItems(Map<String,List<StockMovementItem>> stockMovementItemsMap) {
+        List<StockMovementItem> keepMovements = new ArrayList<>();
+        for (Map.Entry map : stockMovementItemsMap.entrySet()) {
+            keepMovements.addAll(stockMovementItemsMap.get(map.getKey()));
+        }
+        for (StockMovementItem item : keepMovements) {
+            String updateSql = "update lot_movement_items set stockOnHand = " + item.getMovementQuantity() +" "+
+                    " where stockMovementItem_id =" + item.getId();
+            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
         }
     }
 }

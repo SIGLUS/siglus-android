@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
+import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +13,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockCard;
@@ -282,6 +284,7 @@ public class StockMovementRepository {
         return items;
     }
 
+
     public void deleteStockMovementItems(final StockCard stockCard) throws LMISException {
         List<StockMovementItem> items = dbUtil.withDao(StockMovementItem.class,
                 dao -> dao.queryBuilder()
@@ -333,7 +336,7 @@ public class StockMovementRepository {
         Map<Integer, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
         if (cursor.moveToFirst()) {
             do {
-                getStockMovmentItems(stockCardsMovements, cursor);
+                getStockMovementItems(stockCardsMovements, cursor);
             } while (cursor.moveToNext());
         }
 
@@ -371,7 +374,7 @@ public class StockMovementRepository {
         Map<Integer, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
         if (cursor.moveToFirst()) {
             do {
-                getStockMovmentItems(stockCardsMovements, cursor);
+                getStockMovementItems(stockCardsMovements, cursor);
             } while (cursor.moveToNext());
         }
 
@@ -381,7 +384,7 @@ public class StockMovementRepository {
         return stockCardsMovements;
     }
 
-    private void getStockMovmentItems(Map<Integer, List<StockMovementItem>> stockCardsMovements, Cursor cursor) {
+    private void getStockMovementItems(Map<Integer, List<StockMovementItem>> stockCardsMovements, Cursor cursor) {
         Integer stockCardId = cursor.getInt(cursor.getColumnIndexOrThrow("stockCard_id"));
         List<StockMovementItem> stockMovementItems = new ArrayList<>();
         String strMovementItems = cursor.getString(cursor.getColumnIndexOrThrow("movementItems"));
@@ -391,6 +394,7 @@ public class StockMovementRepository {
             StockMovementItem movementItem = new StockMovementItem();
             StockCard stockCard = new StockCard();
             stockCard.setId(stockCardId);
+            movementItem.setId(Long.parseLong(listMovementItem[0]));
             movementItem.setMovementType(MovementReasonManager.MovementType.valueOf(listMovementItem[1]));
             movementItem.setMovementQuantity(Long.parseLong(listMovementItem[2]));
             movementItem.setStockOnHand(Long.parseLong(listMovementItem[3]));
@@ -401,5 +405,15 @@ public class StockMovementRepository {
             stockMovementItems.add(movementItem);
         }
         stockCardsMovements.put(stockCardId, stockMovementItems);
+    }
+
+    public void resetKeepItemToNotSynced(Map<String,List<StockMovementItem>> stockMovementItemsMap) {
+        List<String> keepMovements = new ArrayList<>();
+        for (Map.Entry map : stockMovementItemsMap.entrySet()) {
+            keepMovements.add(String.valueOf(stockMovementItemsMap.get(map.getKey()).get(0).getId()));
+        }
+        String updateSql = "update stock_items set synced = 0 where id in ("+
+                StringUtils.join(keepMovements,",")+ ")";
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
     }
 }

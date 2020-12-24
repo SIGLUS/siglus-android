@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
@@ -38,6 +39,7 @@ import org.openlmis.core.utils.DateUtil;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -88,7 +90,9 @@ public class SharedPreferenceMgr {
     public static final String KEY_SILENT_FAILED = "silent_failed";
     public static final String KEY_DOWNLOADED_LATEST_VERSIONCODE = "downloaded_latest_versioncode";
     public static final String KEY_DELETED_THREE_PRODUCT = "deleted_three_products";
+    public static final String KEY_DELETED_MOVEMENT_ITEM = "deleted_movement_line";
     public static final String KEY_DELETED_PRODUCT_TIME = "deleted_product_time";
+    public static final String KEY_KEEP_MOVEMENT_LINE = "keep_movement_line";
 
     final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
@@ -413,7 +417,49 @@ public class SharedPreferenceMgr {
         return new ArrayList<>();
     }
 
+    public void setDeletedMovementItems(List<StockMovementItem> stockMovementItems) {
+        Set<StockMovementItem> deleteStockMovementItems = new HashSet<>();
+        if (!stockMovementItems.isEmpty()){
+            deleteStockMovementItems.addAll(getDeletedMovementItems());
+        }
+        deleteStockMovementItems.addAll(stockMovementItems);
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(deleteStockMovementItems);
+        sharedPreferences.edit().putString(KEY_DELETED_MOVEMENT_ITEM, json).apply();
+    }
 
+    public List<StockMovementItem> getDeletedMovementItems() {
+            String json = sharedPreferences.getString(KEY_DELETED_MOVEMENT_ITEM, null);
+            if (json != null) {
+                Gson gson = new GsonBuilder().create();
+                Type type = new TypeToken<List<StockMovementItem>>() {
+                }.getType();
+                return gson.fromJson(json, type);
+            }
+            return new ArrayList<>();
+    }
+
+    public void setKeepMovementItemsMap(HashMap<String,List<StockMovementItem>> keepStockMovementItemsMap){
+        HashMap<String,List<StockMovementItem>> keepMovementMap = new HashMap<>();
+        if (!keepStockMovementItemsMap.isEmpty()) {
+            keepMovementMap.putAll(getKeepMovementItemsMap());
+        }
+        keepMovementMap.putAll(keepStockMovementItemsMap);
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(keepMovementMap);
+        sharedPreferences.edit().putString(KEY_KEEP_MOVEMENT_LINE, json).apply();
+    }
+
+    public HashMap<String,List<StockMovementItem>> getKeepMovementItemsMap() {
+        String json = sharedPreferences.getString(KEY_KEEP_MOVEMENT_LINE, null);
+        if (json != null) {
+            Gson gson = new GsonBuilder().create();
+            Type type = new TypeToken<HashMap<String,List<StockMovementItem>>>() {
+            }.getType();
+            return gson.fromJson(json, type);
+        }
+        return new HashMap<>();
+    }
 
 
 

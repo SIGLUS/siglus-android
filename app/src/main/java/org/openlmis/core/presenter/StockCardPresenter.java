@@ -121,7 +121,8 @@ public class StockCardPresenter extends Presenter {
             return showInOverview(stockCard);
         }).toList());
 
-        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())) {
+        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct()) ||
+                !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
             subscriber.onError(new LMISException(SHOULD_SHOW_ALERT_MSG));
         } else {
             subscriber.onCompleted();
@@ -149,9 +150,10 @@ public class StockCardPresenter extends Presenter {
     private boolean shouldStartDataCheck() {
         long now = LMISApp.getInstance().getCurrentTimeMillis();
         long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
-        return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-                && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
-                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
+//        return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
+//                && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
+//                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
+        return true;
     }
 
     private void loadStockCardsInner(ArchiveStatus status) {

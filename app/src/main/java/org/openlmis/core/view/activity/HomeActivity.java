@@ -316,8 +316,10 @@ public class HomeActivity extends BaseActivity {
             setSyncedTime();
         }
 
+
         dirtyDataManager.dirtyDataMonthlyCheck();
-        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())) {
+        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
+                || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
             showDeletedWarningDialog(() -> {
                 dirtyDataManager.deleteAndReset();
             });
