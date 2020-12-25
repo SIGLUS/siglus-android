@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -24,7 +25,12 @@ import org.roboguice.shaded.goole.common.collect.Lists;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 
 public class StockMovementRepository {
@@ -298,5 +304,69 @@ public class StockMovementRepository {
             e.printStackTrace();
         }
         return stockCardIds;
+    }
+
+    public void deleteStockMovementItems(List<StockMovementItem> deletedStockMovementItems) {
+
+    }
+
+    public Map<Integer, List<StockMovementItem>> queryNoSignatureStockCardsMovements() throws LMISException {
+        Map<Integer, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
+        String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' " +
+                "|| stockOnHand || ',' || movementDate || ',' || createdTime,  ';') as movementItems ";
+        String stockCardHavingSignatureNotNull = "( select stockCard_id from stock_items group by stockCard_id having signature not null ) ";
+        String querySql = selectResult
+                + "from stock_items "
+                + "where stockCard_id not in "
+                + stockCardHavingSignatureNotNull
+                + "group by stockCard_id;";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(querySql, null);
+        if (cursor.moveToFirst()) {
+            do {
+
+            } while (cursor.moveToNext());
+        }
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return stockCardsMovements;
+    }
+
+
+    public Map<Integer, List<StockMovementItem>> queryHavingSignatureAndDuplicatedDirtyDataNoAffectCalculatedStockCardsMovements(Set<String> filterStockCards) throws LMISException {
+        String filterIds = StringUtils.join(filterStockCards != null ? filterStockCards :new HashSet<>(), ',');
+        Map<Integer, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
+        String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
+                + "|| stockOnHand || ',' || movementDate || ',' || createdTime,  ';') as movementItems ";
+        String havingDuplicatedNoSignature = "( select stockCard_id from stock_items where signature IS NULL and stockCard_id not in ( "
+                + filterIds
+                + ") group by stockCard_id having count(stockCard_id) > 1) ";
+        String minSignatureTimeForHavingDirtyData =  "( select stockCard_id, min(movementDate) as minMovementDate, "
+                + "min(createdTime) as minCreatedTime from stock_items where stockCard_id in "
+                + havingDuplicatedNoSignature
+                + "and signature not null group by stockCard_id) as minSignatureTimeTable ";
+        String joinStockItemAndMinSignatureTime = "(select stock_items.*, minSignatureTimeTable.* "
+                + "from stock_items left join "
+                + minSignatureTimeForHavingDirtyData
+                + "on minSignatureTimeTable.stockCard_id = stock_items.stockCard_id ) as result ";
+        String querySql = selectResult
+                + "from "
+                + joinStockItemAndMinSignatureTime
+                + "where result.minMovementDate not null " +
+                "and result.MovementDate <= result.minMovementDate " +
+                "and result.createdTime <= minCreatedTime " +
+                "group by stockCard_id having count(stockCard_id) >2 ";
+
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(querySql, null);
+        if (cursor.moveToFirst()) {
+            do {
+            } while (cursor.moveToNext());
+        }
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return stockCardsMovements;
     }
 }

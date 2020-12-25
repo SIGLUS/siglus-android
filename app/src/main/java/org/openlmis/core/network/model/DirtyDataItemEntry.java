@@ -6,6 +6,7 @@ import lombok.Data;
 public class DirtyDataItemEntry {
     private String productCode;
     private String clientMovements;
+    private boolean fullyDelete = true;
 
     public DirtyDataItemEntry(String productCode, String jsonData) {
         this.productCode = productCode;
