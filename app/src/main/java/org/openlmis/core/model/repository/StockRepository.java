@@ -19,6 +19,7 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -43,7 +44,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
@@ -432,8 +435,19 @@ public class StockRepository {
         return cardIds;
     }
 
-    public GenericRawResults<String[]> lotOnHands() throws LMISException {
-        return dbUtil.withDao(LotOnHand.class, dao -> (dao.queryRaw("select stockCard_id, sum(quantityOnHand) from lots_on_hand group by stockCard_id")));
+    public Map<String, String> lotOnHands() {
+        Map<String, String> lotsOnHands = new HashMap<>();
+        try {
+            GenericRawResults<String[]> rawResults = dbUtil.withDao(LotOnHand.class, dao -> (dao.queryRaw("select stockCard_id, sum(quantityOnHand) from lots_on_hand group by stockCard_id")));
+            for (String[] resultArray : rawResults) {
+                lotsOnHands.put(resultArray[0], resultArray[1]);
+            }
+            rawResults.close();
+            Log.d("lotOnHands", rawResults.toString());
+        } catch (LMISException | SQLException e) {
+            new LMISException(e, "StockRepository.getLotOnHands").reportToFabric();
+        }
+        return lotsOnHands;
     }
 
     public GenericRawResults<String[]> refreshedLotOnHands(Long stockCardId) throws LMISException {

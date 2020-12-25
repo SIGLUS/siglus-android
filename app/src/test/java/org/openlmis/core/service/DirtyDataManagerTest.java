@@ -83,7 +83,6 @@ public class DirtyDataManagerTest {
         UserInfoMgr.getInstance().setUser(user);
     }
 
-    @Ignore
     @Test
     public void shouldScanTheNewTwoAndDeleteTheWrongMovement() throws LMISException {
         //Given

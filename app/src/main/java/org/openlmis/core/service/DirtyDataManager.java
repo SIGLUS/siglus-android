@@ -9,7 +9,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.j256.ormlite.dao.GenericRawResults;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
@@ -30,7 +29,6 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.lang.reflect.Type;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,15 +78,7 @@ public class DirtyDataManager {
     }
 
     public List<StockCard> correctData() {
-        try {
-            GenericRawResults<String[]> rawResults = stockRepository.lotOnHands();
-            for (String[] resultArray : rawResults) {
-                lotsOnHands.put(resultArray[0], resultArray[1]);
-            }
-            rawResults.close();
-        } catch (LMISException | SQLException e) {
-            e.printStackTrace();
-        }
+        lotsOnHands.putAll(stockRepository.lotOnHands());
         return doCorrectDirtyData(stockRepository.list());
     }
 

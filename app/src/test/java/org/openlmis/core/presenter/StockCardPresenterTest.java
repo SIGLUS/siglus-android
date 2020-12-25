@@ -15,11 +15,16 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.roboguice.shaded.goole.common.collect.ImmutableMap;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
@@ -86,29 +91,36 @@ public class StockCardPresenterTest {
         verify(stockCardListView).loaded();
     }
 
-    @Ignore
     @Test
     public void shouldLoadActiveOrArchivedStockCards() throws Exception {
         testLoadStockCard(Archived);
         testLoadStockCard(Active);
     }
 
-    @Ignore
     @Test
     public void shouldLoadStockCardsWithActiveProductsWithNoSOH() throws Exception {
-        when(stockRepository.list()).thenReturn(newArrayList(stockCard(false, true, false, 0), stockCard(false, false, false, 0), stockCard(false, true, true, 0)));
+        // given
+        List<StockCard> stockCards = newArrayList(stockCard(false, true, false, 0),
+                stockCard(false, false, false, 0),
+                stockCard(false, true, true, 0));
+        when(stockRepository.list()).thenReturn(stockCards);
+        Map<String, String> lots = ImmutableMap.of(String.valueOf(stockCards.get(0).getId()), "0",
+                String.valueOf(stockCards.get(1).getId()), "0",
+                String.valueOf(stockCards.get(2).getId()), "0");
+        when(stockRepository.lotOnHands()).thenReturn(lots);
         TestSubscriber<List<StockCard>> afterLoadHandler = new TestSubscriber<>();
         presenter.afterLoadHandler = afterLoadHandler;
 
+        // when
         presenter.loadStockCards(StockCardPresenter.ArchiveStatus.Active);
         afterLoadHandler.awaitTerminalEvent();
 
+        //then
         List<StockCard> loadedStockCards = afterLoadHandler.getOnNextEvents().get(0);
         assertEquals(1, loadedStockCards.size());
         assertTrue(loadedStockCards.get(0).getProduct().isActive());
     }
 
-    @Ignore
     @Test
     public void shouldLoadStockCardsWithDeactivatedProductWithSOH() throws Exception {
         when(stockRepository.list()).thenReturn(newArrayList(stockCard(false, true, false, 10), stockCard(false, false, false, 10)));
@@ -179,7 +191,10 @@ public class StockCardPresenterTest {
                 .setIsArchived(isProductArchived)
                 .setIsKit(isKit)
                 .build();
+
         StockCard stockCard = new StockCard();
+        Random rand = new Random();
+        stockCard.setId(rand.nextInt(900)+ 100);
         stockCard.setProduct(product);
         stockCard.setStockOnHand(soh);
         return stockCard;

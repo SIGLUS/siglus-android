@@ -24,14 +24,12 @@ import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 
@@ -364,10 +362,10 @@ public class StockMovementRepository {
         String querySql = selectResult
                 + "from "
                 + joinStockItemAndMinSignatureTime
-                + "where result.minMovementDate not null " +
-                "and result.MovementDate <= result.minMovementDate " +
-                "and result.createdTime <= minCreatedTime " +
-                "group by stockCard_id having count(stockCard_id) >2 ";
+                + "where result.minMovementDate not null "
+                + "and result.MovementDate <= result.minMovementDate "
+                + "and result.createdTime <= minCreatedTime "
+                + "group by stockCard_id having count(stockCard_id) >2 ";
 
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(querySql, null);
         Map<Integer, List<StockMovementItem>> stockCardsMovements = new HashMap<>();

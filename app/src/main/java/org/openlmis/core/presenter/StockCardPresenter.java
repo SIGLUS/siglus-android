@@ -41,7 +41,6 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -137,17 +136,7 @@ public class StockCardPresenter extends Presenter {
         if (showLoading) {
             view.loading();
         }
-        try {
-            GenericRawResults<String[]> rawResults = stockRepository.lotOnHands();
-            for (String[] resultArray : rawResults) {
-                lotsOnHands.put(resultArray[0], resultArray[1]);
-            }
-            rawResults.close();
-            Log.d("lotOnHands", rawResults.toString());
-        } catch (LMISException | SQLException e) {
-            e.printStackTrace();
-        }
-
+        lotsOnHands.putAll(stockRepository.lotOnHands());
         if (shouldStartDataCheck()) {
             Subscription subscription = correctDirtyObservable(status).subscribe(afterLoadHandler);
             subscriptions.add(subscription);
