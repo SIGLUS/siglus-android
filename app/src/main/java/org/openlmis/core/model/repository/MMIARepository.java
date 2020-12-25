@@ -316,7 +316,8 @@ public class MMIARepository extends RnrFormRepository {
         if (rnRForms.size() == 1) {
             return stockMovementItems.get(0).calculatePreviousSOH();
         }
-        return lastRnrInventory(stockCard);
+        Long lastRnrInventory = lastRnrInventory(stockCard.getProduct());
+        return lastRnrInventory != null ? lastRnrInventory : stockMovementItems.get(0).calculatePreviousSOH();
     }
 
     private void assignMMIATotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {
@@ -351,7 +352,8 @@ public class MMIARepository extends RnrFormRepository {
             rnrFormItem.setProduct(product);
             RnrFormItem stockFormItem = getStockCardRnr(product, rnrFormItems);
             if (stockFormItem == null) {
-                rnrFormItem.setInitialAmount(lastRnrInventory(product));
+                Long lastInventory = lastRnrInventory(product);
+                rnrFormItem.setInitialAmount(lastInventory != null ? lastInventory : 0);
             } else {
                 rnrFormItem = stockFormItem;
             }

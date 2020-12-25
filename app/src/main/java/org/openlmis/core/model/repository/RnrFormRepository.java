@@ -448,10 +448,11 @@ public class RnrFormRepository {
     }
 
     protected long lastRnrInventory(StockCard stockCard) {
-        return lastRnrInventory(stockCard.getProduct());
+        Long inventory = lastRnrInventory(stockCard.getProduct());
+        return inventory != null ? inventory : 0;
     }
 
-    protected long lastRnrInventory(Product product) {
+    protected Long lastRnrInventory(Product product) {
         if (rnrFormItemListWrapper != null) {
             for (RnrFormItem item : rnrFormItemListWrapper) {
                 if (item.getProduct() != null && (item.getProduct().getId() == product.getId())) {
@@ -459,7 +460,7 @@ public class RnrFormRepository {
                 }
             }
         }
-        return 0;
+        return null;
     }
 
     private List<RnRForm> list(String programCode, final boolean isWithEmergency, ReportTypeForm typeForm) throws LMISException {
