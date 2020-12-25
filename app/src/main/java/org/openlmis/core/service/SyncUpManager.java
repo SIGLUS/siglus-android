@@ -335,7 +335,7 @@ public class SyncUpManager {
                 @Nullable
                 @Override
                 public DirtyDataItemEntry apply(@Nullable DirtyDataItemInfo dirtyDataItemInfo) {
-                    return new DirtyDataItemEntry(dirtyDataItemInfo.getProductCode(), dirtyDataItemInfo.getJsonData());
+                    return new DirtyDataItemEntry(dirtyDataItemInfo.getProductCode(), dirtyDataItemInfo.getJsonData(), dirtyDataItemInfo.isFullyDelete());
                 }
             }).toList();
 

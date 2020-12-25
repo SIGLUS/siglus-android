@@ -20,9 +20,13 @@ public class DirtyDataItemInfo extends BaseModel {
     @DatabaseField
     String productCode;
 
-    public DirtyDataItemInfo(String productCode, boolean sync_status, String json_data) {
+    @DatabaseField
+    boolean fullyDelete = true;
+
+    public DirtyDataItemInfo(String productCode, boolean sync_status, String json_data, boolean fullyDelete) {
         this.productCode = productCode;
         this.synced = sync_status;
         this.jsonData = json_data;
+        this.fullyDelete = fullyDelete;
     }
 }

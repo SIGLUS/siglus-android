@@ -8,8 +8,9 @@ public class DirtyDataItemEntry {
     private String clientMovements;
     private boolean fullyDelete = true;
 
-    public DirtyDataItemEntry(String productCode, String jsonData) {
+    public DirtyDataItemEntry(String productCode, String jsonData, boolean fullyDelete) {
         this.productCode = productCode;
         this.clientMovements = jsonData;
+        this.fullyDelete = fullyDelete;
     }
 }

@@ -100,7 +100,7 @@ public class DirtyDataManager {
         Log.d("signature","2");
         List<StockCard> lastTwoMovementAndLotSOHWrong = checkTheLastTwoMovementAndLotSOH(stockCards);
         deletedStockCards.addAll(lastTwoMovementAndLotSOHWrong);
-        saveDeletedInfoToDB(deletedStockCards);
+        saveFullyDeletedInfo(deletedStockCards);
         List<String> productCodes = getCodeFromStockCard(deletedStockCards);
         if (!productCodes.isEmpty()){
             sharedPreferenceMgr.setDeletedProduct(productCodes);
@@ -139,7 +139,7 @@ public class DirtyDataManager {
         }).toList();
     }
 
-    private void saveDeletedInfoToDB(List<StockCard> deletedStockCards) {
+    private void saveFullyDeletedInfo(List<StockCard> deletedStockCards) {
         for (StockCard stockCard : deletedStockCards) {
             List<StockMovementItem> stockMovementItems = null;
             try {
@@ -147,20 +147,17 @@ public class DirtyDataManager {
             } catch (LMISException e) {
                 e.printStackTrace();
             }
-            saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
+            saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode(), true);
         }
     }
 
-    private void saveDeletedMovementToDB(List<StockMovementItem> movementItems, String productCode) {
+    private void saveDeletedMovementToDB(List<StockMovementItem> movementItems, String productCode, boolean fullyDelete) {
         final String facilityId = sharedPreferenceMgr.getUserFacilityId();
         if (TextUtils.isEmpty(facilityId)) {
             return;
         }
         DirtyDataItemInfo dirtyDataItems = convertStockMovementItemsToStockMovementEntriesForSave(
-                facilityId,
-                movementItems,
-                productCode);
-
+                facilityId, movementItems, productCode, fullyDelete);
         dirtyDataRepository.save(dirtyDataItems);
     }
 
@@ -184,7 +181,8 @@ public class DirtyDataManager {
 
     private DirtyDataItemInfo convertStockMovementItemsToStockMovementEntriesForSave(final String facilityId,
                                                                                      List<StockMovementItem> stockMovementItems,
-                                                                                     String productCode) {
+                                                                                     String productCode,
+                                                                                     boolean fullyDelete) {
         List<StockMovementEntry> movementEntries = FluentIterable.from(stockMovementItems).transform(stockMovementItem -> {
             if (stockMovementItem.getStockCard().getProduct() != null) {
                 return new StockMovementEntry(stockMovementItem, facilityId);
@@ -197,7 +195,7 @@ public class DirtyDataManager {
         Type type = new TypeToken<List<StockMovementEntry>>() {
         }.getType();
         gson.toJson(movementEntries, type);
-        return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type));
+        return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type), fullyDelete);
     }
 
     private List<String> checkTheSignatureIsNullMoreThanTwo() {
@@ -291,7 +289,7 @@ public class DirtyDataManager {
                 }
                 if (!isCorrectOnHand(stockCard, cardIdsLotOnHandLessZero)) {
                     deleted.add(stockCard);
-                    saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
+                    saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode(), true);
                     continue;
                 }
                 if (stockMovementItems.size() < DO_NOT_CHECK_NEWEST_TWO) {
@@ -301,7 +299,7 @@ public class DirtyDataManager {
                     if (!isCorrectMovements(stockMovementItems.get(i), stockMovementItems.get(i + 1))) {
                         debugLog(stockMovementItems.get(i), stockMovementItems.get(i + 1), stockCard);
                         deleted.add(stockCard);
-                        saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode());
+                        saveDeletedMovementToDB(stockMovementItems, stockCard.getProduct().getCode(), true);
                         break;
                     }
                 }
