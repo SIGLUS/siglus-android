@@ -43,6 +43,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.network.model.UserResponse;
+import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncDownManager.SyncLocalUserProgress;
@@ -103,6 +104,9 @@ public class LoginPresenter extends Presenter {
 
     @Inject
     private DirtyDataRepository dirtyDataRepository;
+
+    @Inject
+    private DirtyDataManager dirtyDataManager;
 
     @Inject
     InternetCheck internetCheck;
@@ -412,6 +416,7 @@ public class LoginPresenter extends Presenter {
         return new Subscriber<Void>() {
             @Override
             public void onCompleted() {
+                dirtyDataManager.initialDirtyDataCheck();
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(false);
                 view.sendSyncFinishedBroadcast();

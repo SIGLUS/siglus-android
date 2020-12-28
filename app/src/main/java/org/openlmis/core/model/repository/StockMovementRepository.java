@@ -263,6 +263,29 @@ public class StockMovementRepository {
         );
     }
 
+    public Map<String, List<StockMovementItem>> queryStockMovement(Set<String> stockCardIds) {
+        String ids = StringUtils.join(stockCardIds != null ? stockCardIds : new HashSet<>(), ',');
+        String rawSql = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
+                + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
+                + "|| createdTime,  ';') as movementItems "
+                + "from stock_items where stockCard_id in ( "
+                + ids
+                + ")  GROUP BY stockCard_id";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        Map<String, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
+        if (cursor.moveToFirst()) {
+            do {
+                getStockMovementItems(stockCardsMovements, cursor);
+            } while (cursor.moveToNext());
+        }
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return stockCardsMovements;
+
+    }
+
     public List<StockMovementItem> queryEachStockCardNewestMovement() {
         String rawSql = "SELECT *,MAX(createdTime) FROM stock_items GROUP BY stockCard_id";
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
@@ -432,7 +455,8 @@ public class StockMovementRepository {
         Collections.sort(stockMovementItems,sort);
         stockCardsMovements.put(stockCardId, stockMovementItems);
     }
-    static class SortClass implements Comparator {
+
+    public static class SortClass implements Comparator {
         @Override
         public int compare(Object o1, Object o2) {
             StockMovementItem item1 = (StockMovementItem) o1;

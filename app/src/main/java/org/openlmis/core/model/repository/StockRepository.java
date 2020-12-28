@@ -468,19 +468,8 @@ public class StockRepository {
         if (cursor.moveToFirst()) {
             do {
                 StockCard stockCard = new StockCard();
-                try {
-                    stockCard.setProduct(productRepository.getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                }
                 stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
-                stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
                 stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
-                try {
-                    stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                }
                 checkedStockCards.add(stockCard);
             } while (cursor.moveToNext());
         }

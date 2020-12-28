@@ -487,7 +487,6 @@ public class SyncDownManager {
             try {
                 stockRepository.batchCreateSyncDownStockCardsAndMovements(stockCards);
                 stockService.immediatelyUpdateAvgMonthlyConsumption();
-                dirtyDataManager.scanAllStockMovements();
                 subscriber.onCompleted();
             } catch (Exception e) {
                 subscriber.onError(e);

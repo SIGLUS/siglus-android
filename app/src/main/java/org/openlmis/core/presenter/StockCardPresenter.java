@@ -139,18 +139,19 @@ public class StockCardPresenter extends Presenter {
             view.loading();
         }
         lotsOnHands.putAll(stockRepository.lotOnHands());
+        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct()) ||
+                !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
+            view.showWarning();
+            return;
+        }
         if (shouldStartDataCheck()) {
             Subscription subscription = correctDirtyObservable(status).subscribe(afterLoadHandler);
             subscriptions.add(subscription);
             sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
         } else {
-            if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct()) ||
-                    !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
-                view.showWarning();
-            } else {
-                loadStockCardsInner(status);
-            }
+            loadStockCardsInner(status);
         }
+
     }
 
     private boolean shouldStartDataCheck() {

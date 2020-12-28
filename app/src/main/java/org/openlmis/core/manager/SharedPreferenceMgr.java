@@ -395,12 +395,12 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putInt(KEY_DOWNLOADED_LATEST_VERSIONCODE, val).apply();
     }
 
-    public void setDeletedProduct(List<String> products) {
+    public void setDeletedProduct(Set<String> products) {
         Set<String> deletedProductsCode = new HashSet<>();
         if (!products.isEmpty()){
             deletedProductsCode.addAll(getDeletedProduct());
+            deletedProductsCode.addAll(products);
         }
-        deletedProductsCode.addAll(products);
         Gson gson = new GsonBuilder().create();
         String json = gson.toJson(deletedProductsCode);
         sharedPreferences.edit().putString(KEY_DELETED_THREE_PRODUCT, json).apply();
