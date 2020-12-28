@@ -348,7 +348,7 @@ public class StockRepository {
         return stockCard;
     }
 
-    public void deleteStockDirtyData(List<String> productCodeList) {
+    public void deleteStockMovementsForDirtyData(List<String> productCodeList) {
 
         for (String productCode : productCodeList) {
             String deleteLotMovementItems = "DELETE FROM lot_movement_items "

@@ -144,13 +144,11 @@ public class DirtyDataRepository {
         }
     }
 
-    public void deleteDirtyDataByProductCode(List<String> productCodeList) {
+    public void deleteDraftForDirtyData() {
         String deleteDraftLotItems = "DELETE FROM draft_lot_items";
         String deleteDraftInventory = "DELETE FROM draft_inventory";
-        stockRepository.deleteStockDirtyData(productCodeList);
-        rnrFormRepository.deleteRnrFormDirtyData(productCodeList);
-        programRepository.deleteProgramDirtyData(productCodeList);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteDraftLotItems);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteDraftInventory);
     }
+
 }

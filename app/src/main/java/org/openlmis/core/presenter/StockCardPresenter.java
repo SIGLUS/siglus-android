@@ -144,7 +144,12 @@ public class StockCardPresenter extends Presenter {
             subscriptions.add(subscription);
             sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
         } else {
-            loadStockCardsInner(status);
+            if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct()) ||
+                    !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
+                view.showWarning();
+            } else {
+                loadStockCardsInner(status);
+            }
         }
     }
 

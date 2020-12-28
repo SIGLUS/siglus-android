@@ -108,13 +108,9 @@ public class DirtyDataManager {
     }
 
     public void dirtyDataMonthlyCheck() {
-        DateTime recordLastMonthlyCheckPeriod = SharedPreferenceMgr.getInstance().getLatestMonthlyCheckDirtyDataTime();
-        Period period = Period.of(today());
-        if (recordLastMonthlyCheckPeriod.isBefore(period.getBegin())) {
-            Observable.create((Observable.OnSubscribe<Void>) subscriber ->
-                    scanAllStockMovements())
-                    .subscribeOn(Schedulers.io());
-        }
+        Observable.create((Observable.OnSubscribe<Void>) subscriber ->
+                scanAllStockMovements())
+                .subscribeOn(Schedulers.io());
     }
 
     public List<StockCard> scanAllStockMovements() {
@@ -174,30 +170,35 @@ public class DirtyDataManager {
         List<StockMovementItem> deletedStockMovementItems = sharedPreferenceMgr.getDeletedMovementItems();
         Map<String, List<StockMovementItem>> keepStockMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
         List<String> productCodes = sharedPreferenceMgr.getDeletedProduct();
-        if (deletedStockMovementItems.size() > 0) {
-            stockMovementRepository.deleteStockMovementItems(deletedStockMovementItems);
-            lotRepository.deleteLotMovementItems(deletedStockMovementItems);
-            sharedPreferenceMgr.setDeletedMovementItems(new ArrayList<>());
-        }
-        if (keepStockMovementItemsMap.size() > 0) {
-            List<LotMovementItem> lotMovementItems = lotRepository.resetKeepLotMovementItems(keepStockMovementItemsMap);
-            stockRepository.resetKeepLotsOnHand(lotMovementItems, keepStockMovementItemsMap);
-            stockMovementRepository.resetKeepItemToNotSynced(keepStockMovementItemsMap);
-            sharedPreferenceMgr.setKeepMovementItemsMap(new HashMap<>());
-        }
-        if (productCodes.size() > 0) {
-            dirtyDataRepository.deleteDirtyDataByProductCode(productCodes);
-            try {
-                stockRepository.insertNewInventory(productCodes);
-            } catch (LMISException e) {
-                e.printStackTrace();
+        if (deletedStockMovementItems.size() > 0
+                || keepStockMovementItemsMap.size() > 0
+                || productCodes.size() > 0) {
+            dirtyDataRepository.deleteDraftForDirtyData();
+            if (deletedStockMovementItems.size() > 0) {
+                stockMovementRepository.deleteStockMovementItems(deletedStockMovementItems);
+                lotRepository.deleteLotMovementItems(deletedStockMovementItems);
+                sharedPreferenceMgr.setDeletedMovementItems(new ArrayList<>());
             }
-            stockRepository.resetStockCard(productCodes);
-            stockRepository.resetLotsOnHand(productCodes);
-            cmmRepository.resetCmm(productCodes);
-            rnrFormRepository.deleteRnrFormDirtyData(productCodes);
-            programRepository.deleteProgramDirtyData(productCodes);
-            sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
+            if (keepStockMovementItemsMap.size() > 0) {
+                List<LotMovementItem> lotMovementItems = lotRepository.resetKeepLotMovementItems(keepStockMovementItemsMap);
+                stockRepository.resetKeepLotsOnHand(lotMovementItems, keepStockMovementItemsMap);
+                stockMovementRepository.resetKeepItemToNotSynced(keepStockMovementItemsMap);
+                sharedPreferenceMgr.setKeepMovementItemsMap(new HashMap<>());
+            }
+            if (productCodes.size() > 0) {
+                stockRepository.deleteStockMovementsForDirtyData(productCodes);
+                try {
+                    stockRepository.insertNewInventory(productCodes);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+                stockRepository.resetStockCard(productCodes);
+                stockRepository.resetLotsOnHand(productCodes);
+                cmmRepository.resetCmm(productCodes);
+                rnrFormRepository.deleteRnrFormDirtyData(productCodes);
+                programRepository.deleteProgramDirtyData(productCodes);
+                sharedPreferenceMgr.setDeletedProduct(new ArrayList<>());
+            }
         }
     }
 
@@ -206,7 +207,7 @@ public class DirtyDataManager {
                                                                                      String productCode,
                                                                                      boolean fullyDelete) {
         List<StockMovementEntry> movementEntries = FluentIterable.from(stockMovementItems).transform(stockMovementItem -> {
-                return new StockMovementEntry(stockMovementItem, facilityId, productCode);
+            return new StockMovementEntry(stockMovementItem, facilityId, productCode);
         }).toList();
 
         Gson gson = new GsonBuilder().create();
