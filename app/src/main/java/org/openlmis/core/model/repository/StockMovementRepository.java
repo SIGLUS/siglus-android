@@ -26,6 +26,8 @@ import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -325,13 +327,13 @@ public class StockMovementRepository {
     public Map<Integer, List<StockMovementItem>> queryNoSignatureStockCardsMovements() {
         String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
                 + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
-                + "|| createdTime,  ';') as movementItems ";
+                + "|| createdTime,  ';') as movementItems ,count(*) as count ";
         String stockCardHavingSignatureNotNull = "( select stockCard_id from stock_items group by stockCard_id having signature not null ) ";
         String querySql = selectResult
                 + "from stock_items "
                 + "where stockCard_id not in "
                 + stockCardHavingSignatureNotNull
-                + "group by stockCard_id;";
+                + "group by stockCard_id having count >1;";
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(querySql, null);
         Map<Integer, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
         if (cursor.moveToFirst()) {
@@ -404,7 +406,29 @@ public class StockMovementRepository {
             movementItem.setCreatedTime(createTime);
             stockMovementItems.add(movementItem);
         }
+        SortClass sort = new SortClass();
+        Collections.sort(stockMovementItems,sort);
         stockCardsMovements.put(stockCardId, stockMovementItems);
+    }
+    static class SortClass implements Comparator {
+        @Override
+        public int compare(Object o1, Object o2) {
+            StockMovementItem item1 = (StockMovementItem) o1;
+            StockMovementItem item2 = (StockMovementItem) o2;
+            int flag1 = item1.getMovementDate().toString().compareTo(item2.getMovementDate().toString());
+            int flag2 = item1.getCreatedTime().toString().compareTo(item2.getCreatedTime().toString());
+            if (flag1 < 0){
+                return -1;
+            }else if (flag1 == 0){
+                if (flag2 < 0){
+                    return -1;
+                }else {
+                    return 1;
+                }
+            }else {
+                return 1;
+            }
+        }
     }
 
     public void resetKeepItemToNotSynced(Map<String,List<StockMovementItem>> stockMovementItemsMap) {
@@ -416,4 +440,5 @@ public class StockMovementRepository {
                 StringUtils.join(keepMovements,",")+ ")";
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
     }
+
 }
