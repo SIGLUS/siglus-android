@@ -2,6 +2,7 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -415,19 +416,13 @@ public class StockMovementRepository {
         public int compare(Object o1, Object o2) {
             StockMovementItem item1 = (StockMovementItem) o1;
             StockMovementItem item2 = (StockMovementItem) o2;
-            int flag1 = item1.getMovementDate().toString().compareTo(item2.getMovementDate().toString());
-            int flag2 = item1.getCreatedTime().toString().compareTo(item2.getCreatedTime().toString());
-            if (flag1 < 0){
-                return -1;
-            }else if (flag1 == 0){
-                if (flag2 < 0){
-                    return -1;
-                }else {
-                    return 1;
-                }
-            }else {
-                return 1;
+            int compareDate = item1.getMovementDate().compareTo(item2.getMovementDate());
+            if (compareDate == 0){
+                return item1.getCreatedTime().compareTo(item2.getCreatedTime());
+            }else   {
+             return compareDate;
             }
+
         }
     }
 
