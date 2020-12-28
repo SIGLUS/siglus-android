@@ -41,6 +41,8 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.InjectPresenter;
@@ -55,13 +57,17 @@ import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 import roboguice.RoboGuice;
 import roboguice.activity.RoboActionBarActivity;
 import rx.Subscription;
 
+import static org.roboguice.shaded.goole.common.collect.Iterators.limit;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public abstract class BaseActivity extends RoboActionBarActivity implements BaseView {
@@ -70,6 +76,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
     SharedPreferenceMgr preferencesMgr;
     @Inject
     WarningDialogFragmentBuilder warningDialogFragmentBuilder;
+    @Inject
+    StockMovementRepository stockMovementRepository;
 
     protected RetainedFragment dataFragment;
     protected Presenter presenter;
@@ -297,13 +305,25 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         }
     }
 
-
     public String getDeletedProductCodeList() {
-        ImmutableList<String> deletedList = FluentIterable.from(preferencesMgr.getDeletedProduct())
+        List<StockMovementItem> deleteStockMovementItems = preferencesMgr.getDeletedMovementItems();
+        List<String> deleteProductCodes = preferencesMgr.getDeletedProduct();
+        Set<String> deleteStockCardIds = new HashSet<>();
+        Set<String> productCodes = new HashSet<>();
+        if (!deleteStockMovementItems.isEmpty()){
+            for (StockMovementItem item : deleteStockMovementItems) {
+                deleteStockCardIds.add(String.valueOf(item.getStockCard().getId()));
+            }
+        }
+        Map<String,String> productCodeMap =stockMovementRepository.queryStockCardIdAndProductCode(deleteStockCardIds);
+        productCodes.addAll(productCodeMap.values());
+        productCodes.addAll(deleteProductCodes);
+        ImmutableList<String> deletedList = FluentIterable.from(productCodes)
                 .limit(3)
                 .transform((productCode) -> productCode).toList();
         return deletedList.toString();
     }
+
 
     public void showDeletedWarningDialog(WarningDialogFragment.DialogDelegate dialogDelegate) {
         WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder

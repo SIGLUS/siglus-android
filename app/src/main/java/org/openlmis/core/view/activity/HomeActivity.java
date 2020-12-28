@@ -317,6 +317,7 @@ public class HomeActivity extends BaseActivity {
         }
 
 
+
         dirtyDataManager.dirtyDataMonthlyCheck();
         if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
                 || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
