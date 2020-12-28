@@ -30,6 +30,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
@@ -457,7 +458,7 @@ public class StockRepository {
         return dbUtil.withDao(LotOnHand.class, dao -> dao.queryRaw(querySql));
     }
 
-    public List<StockCard> queryCheckedStockCards(Set<String> filterStockCardIds){
+    public List<StockCard> queryCheckedStockCards(Set<String> filterStockCardIds) {
         String querySql = "select * from stock_cards where id NOT IN ("
                 + StringUtils.join(filterStockCardIds, ",")
                 + ")";
@@ -489,14 +490,39 @@ public class StockRepository {
         return checkedStockCards;
     }
 
-    public void resetQuantityOnHand (Map<String,List<StockMovementItem>> stockMovementItemsMap) {
-        for (Map.Entry map : stockMovementItemsMap.entrySet()) {
-            String updateSql = "update lots_on_hand set quantityOnHand = "+
-                    stockMovementItemsMap.get(map.getKey()).get(0).getMovementQuantity()+" "+
-                    "where stockCard_id = "+map.getKey();
-            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
+    public void resetKeepLotsOnHand(List<LotMovementItem> lotMovementItems, Map<String, List<StockMovementItem>> stockMovementItemsMap) {
+        try {
+            Map<String, LotMovementItem> idToLotMovements = new HashMap<>();
+            for(LotMovementItem item : lotMovementItems) {
+                idToLotMovements.put(String.valueOf(item.getLot().getId()), item);
+            }
+
+            List<LotOnHand> lotOnHands = getLotOnHandByStockCards(stockMovementItemsMap.keySet());
+            for (LotOnHand lotOnHand : lotOnHands) {
+                if (idToLotMovements.containsKey(String.valueOf(lotOnHand.getLot().getId()))) {
+                    LotMovementItem lotMovementItem = idToLotMovements.get(String.valueOf(lotOnHand.getLot().getId()));
+                    lotOnHand.setQuantityOnHand(lotMovementItem.getStockOnHand());
+                } else {
+                    lotOnHand.setQuantityOnHand((long) 0);
+                }
+            }
+            dbUtil.withDaoAsBatch(LotOnHand.class, (DbUtil.Operation<LotOnHand, Void>) dao -> {
+                for (LotOnHand lotOnHand : lotOnHands) {
+                    dao.createOrUpdate(lotOnHand);
+                }
+                return null;
+            });
+        } catch (LMISException e) {
+            e.printStackTrace();
         }
 
+    }
+
+    private List<LotOnHand> getLotOnHandByStockCards(final Set<String> stockCardIds) throws LMISException {
+        return dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
+                .where()
+                .in("stockCard_id", stockCardIds)
+                .query());
     }
 
 }

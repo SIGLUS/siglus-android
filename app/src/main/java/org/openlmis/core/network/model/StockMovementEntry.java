@@ -64,4 +64,22 @@ public class StockMovementEntry {
             lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper()).transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());
         }
     }
+
+    public StockMovementEntry(StockMovementItem stockMovementItem, String facilityId, String productCode) {
+        this.setProductCode(productCode);
+        this.setQuantity(stockMovementItem.getMovementQuantity());
+        this.setReasonName(stockMovementItem.getReason());
+        this.setFacilityId(facilityId);
+        this.setType("ADJUSTMENT");
+        this.setOccurred(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
+        this.setCreatedTime(new DateTime(stockMovementItem.getCreatedTime()).toString(ISODateTimeFormat.basicDateTime()));
+        this.setReferenceNumber(stockMovementItem.getDocumentNumber());
+        this.setRequestedQuantity(stockMovementItem.getRequested());
+        this.getCustomProps().put("signature", stockMovementItem.getSignature());
+        this.getCustomProps().put("SOH", String.valueOf(stockMovementItem.getStockOnHand()));
+
+        if (stockMovementItem.getLotMovementItemListWrapper() != null) {
+            lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper()).transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());
+        }
+    }
 }

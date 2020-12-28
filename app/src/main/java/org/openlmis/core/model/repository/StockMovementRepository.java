@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
-import com.j256.ormlite.stmt.DeleteBuilder;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +13,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockCard;
@@ -325,7 +323,7 @@ public class StockMovementRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRowSql);
     }
 
-    public Map<Integer, List<StockMovementItem>> queryNoSignatureStockCardsMovements() {
+    public Map<String, List<StockMovementItem>> queryNoSignatureStockCardsMovements() {
         String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
                 + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
                 + "|| createdTime,  ';') as movementItems ,count(*) as count ";
@@ -336,7 +334,7 @@ public class StockMovementRepository {
                 + stockCardHavingSignatureNotNull
                 + "group by stockCard_id having count >1;";
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(querySql, null);
-        Map<Integer, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
+        Map<String, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
         if (cursor.moveToFirst()) {
             do {
                 getStockMovementItems(stockCardsMovements, cursor);
@@ -349,7 +347,29 @@ public class StockMovementRepository {
         return stockCardsMovements;
     }
 
-    public Map<Integer, List<StockMovementItem>> queryHavingSignatureAndDuplicatedDirtyDataNoAffectCalculatedStockCardsMovements(Set<String> filterStockCards) {
+    public Map<String, String> queryStockCardIdAndProductCode(Set<String> stockCardsIds) {
+        String stockCardIds = StringUtils.join(stockCardsIds != null ? stockCardsIds : new HashSet<>(), ',');
+        String querySql = "select stock_cards.id, products.code from stock_cards "
+                + "join products on stock_cards.product_id = products.id where stock_cards.id in  ( "
+                + stockCardIds
+                + ");";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(querySql, null);
+        Map<String, String> cardMapProductCode = new HashMap<>();
+        if (cursor.moveToFirst()) {
+            do {
+                String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow("id"));
+                String code = cursor.getString(cursor.getColumnIndexOrThrow("code"));
+                cardMapProductCode.put(stockCardId, code);
+            } while (cursor.moveToNext());
+        }
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return cardMapProductCode;
+    }
+
+    public Map<String, List<StockMovementItem>> queryHavingSignatureAndDuplicatedDirtyDataNoAffectCalculatedStockCardsMovements(Set<String> filterStockCards) {
         String filterIds = StringUtils.join(filterStockCards != null ? filterStockCards : new HashSet<>(), ',');
         String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
                 + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
@@ -374,7 +394,7 @@ public class StockMovementRepository {
                 + "group by stockCard_id having count(stockCard_id) >2 ";
 
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(querySql, null);
-        Map<Integer, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
+        Map<String, List<StockMovementItem>> stockCardsMovements = new HashMap<>();
         if (cursor.moveToFirst()) {
             do {
                 getStockMovementItems(stockCardsMovements, cursor);
@@ -387,8 +407,8 @@ public class StockMovementRepository {
         return stockCardsMovements;
     }
 
-    private void getStockMovementItems(Map<Integer, List<StockMovementItem>> stockCardsMovements, Cursor cursor) {
-        Integer stockCardId = cursor.getInt(cursor.getColumnIndexOrThrow("stockCard_id"));
+    private void getStockMovementItems(Map<String, List<StockMovementItem>> stockCardsMovements, Cursor cursor) {
+        String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow("stockCard_id"));
         List<StockMovementItem> stockMovementItems = new ArrayList<>();
         String strMovementItems = cursor.getString(cursor.getColumnIndexOrThrow("movementItems"));
         String[] listMovementItems = strMovementItems.split(";");
@@ -396,7 +416,8 @@ public class StockMovementRepository {
             String[] listMovementItem = strMovementItem.split(",");
             StockMovementItem movementItem = new StockMovementItem();
             StockCard stockCard = new StockCard();
-            stockCard.setId(stockCardId);
+            stockCard.setId(Integer.parseInt(stockCardId));
+            movementItem.setStockCard(stockCard);
             movementItem.setId(Long.parseLong(listMovementItem[0]));
             movementItem.setMovementType(MovementReasonManager.MovementType.valueOf(listMovementItem[1]));
             movementItem.setMovementQuantity(Long.parseLong(listMovementItem[2]));

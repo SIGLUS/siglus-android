@@ -92,6 +92,7 @@ public class StockCardPresenter extends Presenter {
     }
 
     public Observable<List<StockCard>> correctDirtyObservable(ArchiveStatus status) {
+
         return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber ->
                 checkDataAndEmitter(subscriber, status))
                 .subscribeOn(Schedulers.io())
@@ -150,10 +151,9 @@ public class StockCardPresenter extends Presenter {
     private boolean shouldStartDataCheck() {
         long now = LMISApp.getInstance().getCurrentTimeMillis();
         long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
-//        return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-//                && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
-//                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
-        return true;
+        return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
+                && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
+                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
     }
 
     private void loadStockCardsInner(ArchiveStatus status) {

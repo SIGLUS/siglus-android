@@ -15,7 +15,9 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class DirtyDataRepository {
@@ -40,22 +42,49 @@ public class DirtyDataRepository {
         this.context = context;
     }
 
-    public void save(DirtyDataItemInfo fromRule) {
-        boolean updatedItem = false;
+    public void saveAll(List<DirtyDataItemInfo> dirtyDataItemsInfo) {
         try {
             List<DirtyDataItemInfo> itemInfos = listAll();
-
-            for (DirtyDataItemInfo fromDB : itemInfos) {
-                if (hasSavedNeedUpdate(fromDB, fromRule)) {
-                    fromRule.setId(fromDB.getId());
-                    fromRule.setProductCode(fromDB.getProductCode());
-                    deleteItemInfoGenericDao.createOrUpdate(fromRule);
-                    updatedItem = true;
+            Map<String, DirtyDataItemInfo> productCodeMapItem = new HashMap<>();
+            for(DirtyDataItemInfo info : itemInfos) {
+                productCodeMapItem.put(info.getProductCode(), info);
+            }
+            dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, (DbUtil.Operation<DirtyDataItemInfo, Void>) dao -> {
+                for (DirtyDataItemInfo item : dirtyDataItemsInfo) {
+                    if (productCodeMapItem.containsKey(item.getProductCode())) {
+                        DirtyDataItemInfo dbItem = productCodeMapItem.get(item.getProductCode());
+                        dbItem.setFullyDelete(item.isFullyDelete());
+                        dbItem.setSynced(false);
+                        dbItem.setJsonData(item.getJsonData());
+                        dao.createOrUpdate(dbItem);
+                    } else {
+                        dao.createOrUpdate(item);
+                    }
                 }
+                return null;
+            });
+
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void save(DirtyDataItemInfo item) {
+        try {
+            List<DirtyDataItemInfo> itemInfos = listAll();
+            Map<String, DirtyDataItemInfo> productCodeMapItem = new HashMap<>();
+            for(DirtyDataItemInfo info : itemInfos) {
+                productCodeMapItem.put(info.getProductCode(), info);
             }
-            if (!updatedItem) {
-                deleteItemInfoGenericDao.createOrUpdate(fromRule);
+            if (productCodeMapItem.containsKey(item.getProductCode())) {
+                DirtyDataItemInfo dbItem = productCodeMapItem.get(item.getProductCode());
+                dbItem.setSynced(false);
+                dbItem.setJsonData(item.getJsonData());
+                deleteItemInfoGenericDao.createOrUpdate(dbItem);
+            } else {
+                deleteItemInfoGenericDao.createOrUpdate(item);
             }
+
         } catch (LMISException e) {
             e.printStackTrace();
         }

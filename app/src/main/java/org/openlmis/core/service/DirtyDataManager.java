@@ -1,7 +1,5 @@
 package org.openlmis.core.service;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -17,6 +15,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
+import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -97,19 +96,14 @@ public class DirtyDataManager {
     }
 
     private List<StockCard> doCorrectDirtyData(List<StockCard> stockCards) {
-        HashMap<String,HashMap<String,List<StockMovementItem>>> stockCardIdWithDeleteAndKeepMap = checkDuplicateDataAllWithoutSignature();
-
-        filterStockCardIds.addAll(stockCardIdWithDeleteAndKeepMap.keySet());
-        List<StockCard> checkedStockCards  = stockRepository.queryCheckedStockCards(filterStockCardIds);
         List<StockCard> deletedStockCards = new ArrayList<>();
-        List<StockCard> lastTwoMovementAndLotSOHWrong = checkTheLastTwoMovementAndLotSOH(checkedStockCards);
+        List<StockCard> lastTwoMovementAndLotSOHWrong = checkTheLastTwoMovementAndLotSOH(stockCards);
         deletedStockCards.addAll(lastTwoMovementAndLotSOHWrong);
         saveFullyDeletedInfo(deletedStockCards);
         List<String> productCodes = getCodeFromStockCard(deletedStockCards);
-        if (!productCodes.isEmpty()){
+        if (!productCodes.isEmpty()) {
             sharedPreferenceMgr.setDeletedProduct(productCodes);
         }
-        HashMap<String,HashMap<String,List<StockMovementItem>>> stockCardIdWithDeleteMap = checkDuplicateDataNotAffectCalculate();
         return deletedStockCards;
     }
 
@@ -124,16 +118,24 @@ public class DirtyDataManager {
     }
 
     public List<StockCard> scanAllStockMovements() {
-        sharedPreferenceMgr.updateLatestMonthlyCheckDirtyDataTime();
-        HashMap<String,HashMap<String,List<StockMovementItem>>> stockCardIdWithDeleteAndKeepMap = checkDuplicateDataAllWithoutSignature();
-        filterStockCardIds.addAll(stockCardIdWithDeleteAndKeepMap.keySet());
-        List<StockCard> checkedStockCards  = stockRepository.queryCheckedStockCards(filterStockCardIds);
-        List<StockCard> deletedStockCards = checkAllMovementAndLotSOHAndSaveToDB(checkedStockCards);
-        List<String> productCodes = getCodeFromStockCard(deletedStockCards);
-        if (!productCodes.isEmpty()) {
-            sharedPreferenceMgr.setDeletedProduct(productCodes);
+        DateTime recordLastDirtyDataCheck = SharedPreferenceMgr.getInstance().getLatestMonthlyCheckDirtyDataTime();
+        Period period = Period.of(today());
+        if (recordLastDirtyDataCheck.isBefore(period.getBegin())) {
+            filterStockCardIds.clear();
+            sharedPreferenceMgr.updateLatestMonthlyCheckDirtyDataTime();
+            final String facilityId = sharedPreferenceMgr.getUserFacilityId();
+            Set<String> duplicatedStockCardIds = checkDuplicateDataAllWithoutSignature(facilityId);
+            filterStockCardIds.addAll(duplicatedStockCardIds);
+            List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards(filterStockCardIds);
+            List<StockCard> deletedStockCards = checkAllMovementAndLotSOHAndSaveToDB(checkedStockCards);
+            List<String> productCodes = getCodeFromStockCard(deletedStockCards);
+            if (!productCodes.isEmpty()) {
+                sharedPreferenceMgr.setDeletedProduct(productCodes);
+            }
+            checkDuplicateDataNotAffectCalculate(facilityId);
+            return deletedStockCards;
         }
-        return deletedStockCards;
+        return new ArrayList<>();
     }
 
     private List<String> getCodeFromStockCard(List<StockCard> stockCardList) {
@@ -170,16 +172,16 @@ public class DirtyDataManager {
 
     public void deleteAndReset() {
         List<StockMovementItem> deletedStockMovementItems = sharedPreferenceMgr.getDeletedMovementItems();
-        Map<String,List<StockMovementItem>> keepStockMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
+        Map<String, List<StockMovementItem>> keepStockMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
         List<String> productCodes = sharedPreferenceMgr.getDeletedProduct();
-        if(deletedStockMovementItems.size() > 0) {
+        if (deletedStockMovementItems.size() > 0) {
             stockMovementRepository.deleteStockMovementItems(deletedStockMovementItems);
             lotRepository.deleteLotMovementItems(deletedStockMovementItems);
             sharedPreferenceMgr.setDeletedMovementItems(new ArrayList<>());
         }
         if (keepStockMovementItemsMap.size() > 0) {
-            lotRepository.resetLotMovementItems(keepStockMovementItemsMap);
-            stockRepository.resetQuantityOnHand(keepStockMovementItemsMap);
+            List<LotMovementItem> lotMovementItems = lotRepository.resetKeepLotMovementItems(keepStockMovementItemsMap);
+            stockRepository.resetKeepLotsOnHand(lotMovementItems, keepStockMovementItemsMap);
             stockMovementRepository.resetKeepItemToNotSynced(keepStockMovementItemsMap);
             sharedPreferenceMgr.setKeepMovementItemsMap(new HashMap<>());
         }
@@ -204,11 +206,7 @@ public class DirtyDataManager {
                                                                                      String productCode,
                                                                                      boolean fullyDelete) {
         List<StockMovementEntry> movementEntries = FluentIterable.from(stockMovementItems).transform(stockMovementItem -> {
-            if (stockMovementItem.getStockCard().getProduct() != null) {
-                return new StockMovementEntry(stockMovementItem, facilityId);
-            } else {
-                return null;
-            }
+                return new StockMovementEntry(stockMovementItem, facilityId, productCode);
         }).toList();
 
         Gson gson = new GsonBuilder().create();
@@ -219,61 +217,62 @@ public class DirtyDataManager {
     }
 
 
-    private HashMap<String,HashMap<String,List<StockMovementItem>>> checkDuplicateDataAllWithoutSignature() {
-        HashMap<String,HashMap<String,List<StockMovementItem>>> stockCardIdWithDeleteAndKeepMap = new HashMap<>();
-        Map<Integer,List<StockMovementItem>> stockMovementItems = stockMovementRepository.queryNoSignatureStockCardsMovements();
-        HashMap<String,List<StockMovementItem>> keepMovementMap = new HashMap<>();
+    private Set<String> checkDuplicateDataAllWithoutSignature(String facilityId) {
+        Map<String, List<StockMovementItem>> stockMovementItems = stockMovementRepository.queryNoSignatureStockCardsMovements();
+        if (stockMovementItems.keySet().size() == 0) {
+            return new HashSet<>();
+        }
+        Map<String, String> stockCardIdToCode = stockMovementRepository.queryStockCardIdAndProductCode(stockMovementItems.keySet());
+        HashMap<String, List<StockMovementItem>> keepMovementMap = new HashMap<>();
+        List<StockMovementItem> deleteList = new ArrayList<>();
+        List<StockMovementItem> keepList = new ArrayList<>();
+        List<DirtyDataItemInfo> dirtyDataItemInfos = new ArrayList<>();
         for (Map.Entry map : stockMovementItems.entrySet()) {
-            HashMap<String,List<StockMovementItem>> deleteAndKeepMap = new HashMap<>();
-            List<StockMovementItem> deleteList = new ArrayList<>();
-            List<StockMovementItem> keepList = new ArrayList<>();
-            for(int i=0;i<stockMovementItems.get(map.getKey()).size();i++) {
-                if (i == stockMovementItems.get(map.getKey()).size()-1) {
-                    keepList.add(stockMovementItems.get(map.getKey()).get(i));
-                }else {
-                    deleteList.add(stockMovementItems.get(map.getKey()).get(i));
-                }
-            }
-            keepMovementMap.put(map.getKey().toString(),keepList);
-            sharedPreferenceMgr.setDeletedMovementItems(deleteList);
-            sharedPreferenceMgr.setKeepMovementItemsMap(keepMovementMap);
-            deleteAndKeepMap.put("delete",deleteList);
-            deleteAndKeepMap.put("keep",keepList);
-            stockCardIdWithDeleteAndKeepMap.put(map.getKey().toString(),deleteAndKeepMap);
+            List<StockMovementItem> items = (List<StockMovementItem>) map.getValue();
+            int count = items.size();
+            keepList.add(items.get(count - 1));
+            deleteList.addAll(items.subList(0, count - 1));
+            keepMovementMap.put(map.getKey().toString(), keepList);
+            dirtyDataItemInfos.add(
+                    convertStockMovementItemsToStockMovementEntriesForSave(facilityId, items, stockCardIdToCode.get(map.getKey()), true));
         }
-        return stockCardIdWithDeleteAndKeepMap;
+        sharedPreferenceMgr.setDeletedMovementItems(deleteList);
+        sharedPreferenceMgr.setKeepMovementItemsMap(keepMovementMap);
+        dirtyDataRepository.saveAll(dirtyDataItemInfos);
+        return stockMovementItems.keySet();
     }
 
-    private HashMap<String,HashMap<String,List<StockMovementItem>>> checkDuplicateDataNotAffectCalculate() {
-        HashMap<String,HashMap<String,List<StockMovementItem>>> stockCardIdWithDeleteMap = new HashMap<>();
-        Map<Integer,List<StockMovementItem>> stockMovementItems = stockMovementRepository.
+    private void checkDuplicateDataNotAffectCalculate(String facilityId) {
+        Map<String, List<StockMovementItem>> stockMovementItems = stockMovementRepository.
                 queryHavingSignatureAndDuplicatedDirtyDataNoAffectCalculatedStockCardsMovements(filterStockCardIds);
-
-        for(Map.Entry map : stockMovementItems.entrySet()) {
-            HashMap<String,List<StockMovementItem>> deleteMap = new HashMap<>();
-            List<StockMovementItem> deleteList = new ArrayList<>();
-            for (int i=0; i<stockMovementItems.get(map.getKey()).size();i++) {
-                if (i < stockMovementItems.get(map.getKey()).size()-2) {
-                    deleteList.add(stockMovementItems.get(map.getKey()).get(i));
-                }
-            }
-            sharedPreferenceMgr.setDeletedMovementItems(deleteList);
-            deleteMap.put("delete",deleteList);
-            stockCardIdWithDeleteMap.put(map.getKey().toString(),deleteMap);
+        if (stockMovementItems.keySet().size() == 0) {
+            return;
         }
-        return stockCardIdWithDeleteMap;
+        Map<String, String> stockCardIdToCode = stockMovementRepository.queryStockCardIdAndProductCode(stockMovementItems.keySet());
+        List<StockMovementItem> deleteList = new ArrayList<>();
+        List<DirtyDataItemInfo> dirtyDataItemInfos = new ArrayList<>();
+        for (Map.Entry map : stockMovementItems.entrySet()) {
+            List<StockMovementItem> items = (List<StockMovementItem>) map.getValue();
+            List<StockMovementItem> deleteItems = items.subList(0, items.size() - 2);
+            dirtyDataItemInfos.add(
+                    convertStockMovementItemsToStockMovementEntriesForSave(facilityId, items, stockCardIdToCode.get(map.getKey()), false));
+            deleteList.addAll(deleteItems);
+        }
+        dirtyDataRepository.saveAll(dirtyDataItemInfos);
+        sharedPreferenceMgr.setDeletedMovementItems(deleteList);
     }
+
     private List<StockCard> checkTheLastTwoMovementAndLotSOH(List<StockCard> stockCards) {
         List<StockCard> deleted = new ArrayList<>();
         Log.d("performance", "check The Last TwoMovement");
         HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
         Log.d("performance", "check The Last TwoMovement1");
         List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
-        Log.d("performance", "getLastStockMovementMap");
         for (StockCard stockCard : stockCards) {
             List<StockMovementItem> stockMovementItems = stockMovementItemsMap.get((int) stockCard.getId());
             if (!isCorrectOnHand(stockCard, cardIdsLotOnHandLessZero)) {
                 deleted.add(stockCard);
+                filterStockCardIds.add(String.valueOf(stockCard.getId()));
             } else if (stockMovementItems != null && stockMovementItems.size() == CHECK_NEWEST_TWO) {
                 StockMovementItem movementItemOne = stockMovementItems.get(0);
                 StockMovementItem movementItemTwo = stockMovementItems.get(1);
@@ -282,11 +281,12 @@ public class DirtyDataManager {
                 if (!isCorrectMovement(preStockMovement, currentStockMovement)
                         || !isCorrectSOHBetweenMovementAndStockCard(stockCard, currentStockMovement)) {
                     deleted.add(stockCard);
+                    filterStockCardIds.add(String.valueOf(stockCard.getId()));
                 }
             }
         }
         Log.d("performance", "check The Last TwoMovement");
-        Log.d("dirty","daily" + deleted.toString());
+        Log.d("dirty", "daily" + deleted.toString());
 
         return deleted;
     }
@@ -307,9 +307,8 @@ public class DirtyDataManager {
     }
 
     private HashMap<Integer, List<StockMovementItem>> getLastStockMovementMap() {
-        Log.d("TwoStockMovements","1");
+        Log.d("TwoStockMovements", "1");
         List<StockMovementItem> stockMovements = stockMovementRepository.listLastTwoStockMovements();
-        Log.d("TwoStockMovements","2");
         HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = new HashMap<Integer, List<StockMovementItem>>();
         for (StockMovementItem item : stockMovements) {
             long id = item.getStockCard().getId();
@@ -357,7 +356,7 @@ public class DirtyDataManager {
                 e.printStackTrace();
             }
         }
-        Log.d("dirty","month"+deleted.toString());
+        Log.d("dirty", "month" + deleted.toString());
         return deleted;
     }
 

@@ -7,7 +7,6 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
@@ -20,8 +19,10 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class LotRepository {
 
@@ -177,15 +178,36 @@ public class LotRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRowSql);
     }
 
-    public void resetLotMovementItems(Map<String,List<StockMovementItem>> stockMovementItemsMap) {
-        List<StockMovementItem> keepMovements = new ArrayList<>();
+    public  List<LotMovementItem> resetKeepLotMovementItems(Map<String, List<StockMovementItem>> stockMovementItemsMap) {
+        Set<String> keepMovementIds = new HashSet<>();
         for (Map.Entry map : stockMovementItemsMap.entrySet()) {
-            keepMovements.addAll(stockMovementItemsMap.get(map.getKey()));
+            List<StockMovementItem> items = (List<StockMovementItem>) map.getValue();
+            for (StockMovementItem item : items) {
+                keepMovementIds.add(String.valueOf(item.getId()));
+            }
         }
-        for (StockMovementItem item : keepMovements) {
-            String updateSql = "update lot_movement_items set stockOnHand = " + item.getMovementQuantity() +" "+
-                    " where stockMovementItem_id =" + item.getId();
-            LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
+        try {
+            List<LotMovementItem> lotMovementItems = getLotMovementByStockMovement(keepMovementIds);
+            for (LotMovementItem lotMovementItem: lotMovementItems) {
+                lotMovementItem.setStockOnHand(lotMovementItem.getMovementQuantity());
+            }
+            dbUtil.withDaoAsBatch(LotMovementItem.class, (DbUtil.Operation<LotMovementItem, Void>) dao -> {
+                for (LotMovementItem lotMovementItem : lotMovementItems) {
+                    dao.createOrUpdate(lotMovementItem);
+                }
+                return null;
+            });
+            return lotMovementItems;
+        } catch (LMISException e) {
+            new LMISException(e, "movementItems.get").reportToFabric();
         }
+        return new ArrayList<>();
+    }
+
+    private List<LotMovementItem> getLotMovementByStockMovement(final Set<String> stockMovementIds) throws LMISException {
+        return dbUtil.withDao(LotMovementItem.class, dao -> dao.queryBuilder()
+                .where()
+                .in("stockMovementItem_id", stockMovementIds)
+                .query());
     }
 }

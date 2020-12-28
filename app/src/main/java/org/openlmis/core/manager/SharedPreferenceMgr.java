@@ -421,8 +421,8 @@ public class SharedPreferenceMgr {
         Set<StockMovementItem> deleteStockMovementItems = new HashSet<>();
         if (!stockMovementItems.isEmpty()){
             deleteStockMovementItems.addAll(getDeletedMovementItems());
+            deleteStockMovementItems.addAll(stockMovementItems);
         }
-        deleteStockMovementItems.addAll(stockMovementItems);
         Gson gson = new GsonBuilder().create();
         String json = gson.toJson(deleteStockMovementItems);
         sharedPreferences.edit().putString(KEY_DELETED_MOVEMENT_ITEM, json).apply();
@@ -443,8 +443,8 @@ public class SharedPreferenceMgr {
         HashMap<String,List<StockMovementItem>> keepMovementMap = new HashMap<>();
         if (!keepStockMovementItemsMap.isEmpty()) {
             keepMovementMap.putAll(getKeepMovementItemsMap());
+            keepMovementMap.putAll(keepStockMovementItemsMap);
         }
-        keepMovementMap.putAll(keepStockMovementItemsMap);
         Gson gson = new GsonBuilder().create();
         String json = gson.toJson(keepMovementMap);
         sharedPreferences.edit().putString(KEY_KEEP_MOVEMENT_LINE, json).apply();
