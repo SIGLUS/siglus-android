@@ -51,6 +51,7 @@ import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
+import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -96,6 +97,9 @@ public class SyncUpManager {
 
     @Inject
     private DirtyDataRepository dirtyDataRepository;
+
+    @Inject
+    DbUtil dbUtil;
 
     protected LMISRestApi lmisRestApi;
 
@@ -344,10 +348,13 @@ public class SyncUpManager {
                 try {
                     lmisRestApi.syncUpDeletedData(Long.parseLong(facilityId), sub);
                     List<DirtyDataItemInfo> itemInfoList = itemInfos.subList(start, end);
-                    for (DirtyDataItemInfo item : itemInfoList) {
-                        item.setSynced(true);
-                    }
-                    dirtyDataRepository.saveAll(itemInfoList);
+                    dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, (DbUtil.Operation<DirtyDataItemInfo, Void>) dao -> {
+                        for (DirtyDataItemInfo item : itemInfoList) {
+                            item.setSynced(true);
+                            dao.createOrUpdate(item);
+                        }
+                        return null;
+                    });
                 } catch (LMISException e) {
                     isSyncedSuccessed = false;
                     new LMISException(e, "SyncUpManager.syncUpDeletedData").reportToFabric();
