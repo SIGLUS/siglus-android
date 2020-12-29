@@ -83,6 +83,8 @@ public class DirtyDataManager {
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
 
+    private boolean isSyncedMonthCheck = false;
+
     final Map<String, String> lotsOnHands = new HashMap<>();
 
     public DirtyDataManager() {
@@ -188,21 +190,24 @@ public class DirtyDataManager {
     public void scanAllStockMovements() {
         if (sharedPreferenceMgr.shouldSyncLastYearStockData()
                 || sharedPreferenceMgr.isSyncingLastYearStockCards()
-                || sharedPreferenceMgr.shouldInitialDataCheck()) {
+                || sharedPreferenceMgr.shouldInitialDataCheck()
+                || isSyncedMonthCheck) {
             return;
         }
         DateTime recordLastDirtyDataCheck = SharedPreferenceMgr.getInstance().getLatestMonthlyCheckDirtyDataTime();
         Period period = Period.of(today());
         if (recordLastDirtyDataCheck.isBefore(period.getBegin())) {
-            Set<String> filterStockCardIds = new HashSet<>();
+            isSyncedMonthCheck = true;
             sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
-            sharedPreferenceMgr.updateLatestMonthlyCheckDirtyDataTime();
+            Set<String> filterStockCardIds = new HashSet<>();
             final String facilityId = sharedPreferenceMgr.getUserFacilityId();
 
             Map<String, Object> duplicateMap = checkDuplicateDataAllWithoutSignature(facilityId, filterStockCardIds);
             Set<String> deleteProducts = checkAllMovementAndLotSOHAndSaveToDB(filterStockCardIds);
             List<StockMovementItem> duplicatedNotAffectCalculate = checkDuplicateDataNotAffectCalculate(facilityId, filterStockCardIds);
             saveToSharePreferenceMgr(duplicateMap, deleteProducts, duplicatedNotAffectCalculate);
+            isSyncedMonthCheck = false;
+            sharedPreferenceMgr.updateLatestMonthlyCheckDirtyDataTime();
         }
     }
 

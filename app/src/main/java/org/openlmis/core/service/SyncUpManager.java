@@ -328,7 +328,6 @@ public class SyncUpManager {
         int unitCount = 6;
         String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
         List<DirtyDataItemInfo> itemInfos = dirtyDataRepository.listunSyced();
-        List<String> errorProducts = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(itemInfos)) {
             List<DirtyDataItemEntry> entries = FluentIterable.from(itemInfos).transform(new Function<DirtyDataItemInfo, DirtyDataItemEntry>() {
@@ -338,32 +337,24 @@ public class SyncUpManager {
                     return new DirtyDataItemEntry(dirtyDataItemInfo.getProductCode(), dirtyDataItemInfo.getJsonData(), dirtyDataItemInfo.isFullyDelete());
                 }
             }).toList();
-
+            boolean isSyncedSuccessed = true;
             for (int start = 0; start < entries.size(); ) {
                 int end = (start + unitCount) >= entries.size() ? entries.size() : start + unitCount;
                 List<DirtyDataItemEntry> sub = entries.subList(start, end);
                 try {
-                    SyncUpDeletedMovementResponse response = lmisRestApi.syncUpDeletedData(Long.parseLong(facilityId), sub);
-                    errorProducts.addAll(response.getErrorCodes());
+                    lmisRestApi.syncUpDeletedData(Long.parseLong(facilityId), sub);
+                    List<DirtyDataItemInfo> itemInfoList = itemInfos.subList(start, end);
+                    for (DirtyDataItemInfo item : itemInfoList) {
+                        item.setSynced(true);
+                    }
+                    dirtyDataRepository.saveAll(itemInfoList);
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    isSyncedSuccessed = false;
+                    new LMISException(e, "SyncUpManager.syncUpDeletedData").reportToFabric();
                 }
                 start += unitCount;
             }
-            List<String> shouldMarkedToSynced = FluentIterable.from(itemInfos).transform(new Function<DirtyDataItemInfo, String>() {
-                @Nullable
-                @Override
-                public String apply(@Nullable DirtyDataItemInfo dirtyDataItemInfo) {
-                    return dirtyDataItemInfo.getProductCode();
-                }
-            }).filter(s -> !errorProducts.contains(s)).toList();
-            for (DirtyDataItemInfo item : itemInfos) {
-                if (shouldMarkedToSynced.contains(item.getProductCode())) {
-                    item.setSynced(true);
-                    dirtyDataRepository.save(item);
-                }
-            }
-            return errorProducts.size() == 0;
+            return isSyncedSuccessed;
         } else {
             return true;
         }

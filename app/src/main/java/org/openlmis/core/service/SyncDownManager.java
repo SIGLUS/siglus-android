@@ -364,6 +364,8 @@ public class SyncDownManager {
                 e1.reportToFabric();
                 throw e1;
             }
+        } else {
+            dirtyDataManager.initialDirtyDataCheck();
         }
     }
 
