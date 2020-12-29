@@ -350,7 +350,7 @@ public class StockMovementRepository {
         String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
                 + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
                 + "|| createdTime,  ';') as movementItems ,count(*) as count ";
-        String stockCardHavingSignatureNotNull = "( select stockCard_id from stock_items group by stockCard_id having signature not null ) ";
+        String stockCardHavingSignatureNotNull = "( select stockCard_id from stock_items where signature not null group by stockCard_id ) ";
         String querySql = selectResult
                 + "from stock_items "
                 + "where stockCard_id not in "
