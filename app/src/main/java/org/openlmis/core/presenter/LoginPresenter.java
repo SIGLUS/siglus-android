@@ -416,11 +416,11 @@ public class LoginPresenter extends Presenter {
         return new Subscriber<Void>() {
             @Override
             public void onCompleted() {
-                dirtyDataManager.initialDirtyDataCheck();
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(false);
                 view.sendSyncFinishedBroadcast();
                 sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+                dirtyDataManager.initialDirtyDataCheck();
             }
 
             @Override

@@ -33,6 +33,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -310,7 +311,7 @@ public class DirtyDataManager {
             List<StockMovementItem> items = (List<StockMovementItem>) map.getValue();
             int count = items.size();
             deleteList.addAll(items.subList(0, count - 1));
-            keepMovementMap.put(map.getKey().toString(), (List<StockMovementItem>) items.get(count - 1));
+            keepMovementMap.put(map.getKey().toString(), Arrays.asList(items.get(count - 1)));
             dirtyDataItemInfos.add(
                     convertStockMovementItemsToStockMovementEntriesForSave(facilityId, items, stockCardIdToCode.get(map.getKey()), true));
         }
