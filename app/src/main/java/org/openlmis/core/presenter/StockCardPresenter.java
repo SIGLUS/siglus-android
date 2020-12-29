@@ -147,7 +147,6 @@ public class StockCardPresenter extends Presenter {
         if (shouldStartDataCheck()) {
             Subscription subscription = correctDirtyObservable(status).subscribe(afterLoadHandler);
             subscriptions.add(subscription);
-            sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
         } else {
             loadStockCardsInner(status);
         }

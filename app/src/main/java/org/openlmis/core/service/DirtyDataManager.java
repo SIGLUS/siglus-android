@@ -100,6 +100,10 @@ public class DirtyDataManager {
 
     private List<StockCard> doCorrectDirtyData(List<StockCard> stockCards) {
         List<StockCard> deletedStockCards = new ArrayList<>();
+        if (sharedPreferenceMgr.shouldInitialDataCheck()) {
+            return deletedStockCards;
+        }
+        sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
         List<StockCard> lastTwoMovementAndLotSOHWrong = checkTheLastTwoMovementAndLotSOH(stockCards);
         deletedStockCards.addAll(lastTwoMovementAndLotSOHWrong);
         saveFullyDeletedInfo(deletedStockCards);
@@ -135,12 +139,15 @@ public class DirtyDataManager {
     }
 
     public void initialDirtyDataCheck() {
-        Set<String> filterStockCardIds = new HashSet<>();
-        final String facilityId = sharedPreferenceMgr.getUserFacilityId();
-        Map<String, Object> duplicateMap = checkDuplicateDataAllWithoutSignature(facilityId, filterStockCardIds);
-        Set<String> deleteProducts = checkSoh(filterStockCardIds);
-        List<StockMovementItem> duplicatedNotAffectCalculate = checkDuplicateDataNotAffectCalculate(facilityId, filterStockCardIds);
-        saveToSharePreferenceMgr(duplicateMap, deleteProducts, duplicatedNotAffectCalculate);
+        if (sharedPreferenceMgr.shouldInitialDataCheck()) {
+            Set<String> filterStockCardIds = new HashSet<>();
+            final String facilityId = sharedPreferenceMgr.getUserFacilityId();
+            Map<String, Object> duplicateMap = checkDuplicateDataAllWithoutSignature(facilityId, filterStockCardIds);
+            Set<String> deleteProducts = checkSoh(filterStockCardIds);
+            List<StockMovementItem> duplicatedNotAffectCalculate = checkDuplicateDataNotAffectCalculate(facilityId, filterStockCardIds);
+            saveToSharePreferenceMgr(duplicateMap, deleteProducts, duplicatedNotAffectCalculate);
+            sharedPreferenceMgr.setIsInitialDataCheck(false);
+        }
     }
 
     private void saveToSharePreferenceMgr(Map<String, Object> duplicateMap, Set<String> deleteProducts, List<StockMovementItem> duplicatedNotAffectCalculate) {
@@ -178,7 +185,9 @@ public class DirtyDataManager {
     }
 
     public void scanAllStockMovements() {
-        if (sharedPreferenceMgr.shouldSyncLastYearStockData() || sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+        if (sharedPreferenceMgr.shouldSyncLastYearStockData()
+                || sharedPreferenceMgr.isSyncingLastYearStockCards()
+                || sharedPreferenceMgr.shouldInitialDataCheck()) {
             return;
         }
         DateTime recordLastDirtyDataCheck = SharedPreferenceMgr.getInstance().getLatestMonthlyCheckDirtyDataTime();

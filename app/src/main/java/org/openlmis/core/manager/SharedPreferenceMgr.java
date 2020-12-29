@@ -61,6 +61,7 @@ public class SharedPreferenceMgr {
     private static final String KEY_NEEDS_INVENTORY = "init_inventory";
     private static final String KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS = "has_get_month_stock_cards_synced";
     private static final String KEY_SHOULD_SYNC_LAST_YEAR = "should_sync_last_year";
+    private static final String KEY_SHOULD_INITIAL_DATA_CHECK = "key_should_initial_data_check";
     private static final String KEY_IS_SYNCING_LAST_YEAR = "is_syncing_last_year";
     private static final String KEY_IS_REQUISITION_DATA_SYNCED = "is_requisition_data_synced";
     public static final String KEY_STOCK_SYNC_END_TIME = "sync_stock_end_time";
@@ -134,6 +135,14 @@ public class SharedPreferenceMgr {
 
     public void setShouldSyncLastYearStockCardData(boolean shouldSyncLastYearStockCardData) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_LAST_YEAR, shouldSyncLastYearStockCardData).apply();
+    }
+
+    public boolean shouldInitialDataCheck() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOULD_INITIAL_DATA_CHECK, true);
+    }
+
+    public void setIsInitialDataCheck(boolean isInitialDataCheck) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOULD_INITIAL_DATA_CHECK, isInitialDataCheck).apply();
     }
 
     public boolean isSyncingLastYearStockCards() {
