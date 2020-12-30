@@ -142,7 +142,9 @@ public class DirtyDataManager {
     }
 
     public void initialDirtyDataCheck() {
-        if (sharedPreferenceMgr.shouldInitialDataCheck()) {
+        if (sharedPreferenceMgr.shouldInitialDataCheck()
+                && !sharedPreferenceMgr.shouldSyncLastYearStockData()
+                && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
             Set<String> filterStockCardIds = new HashSet<>();
             final String facilityId = sharedPreferenceMgr.getUserFacilityId();
             Map<String, Object> duplicateMap = checkDuplicateDataAllWithoutSignature(facilityId, filterStockCardIds);

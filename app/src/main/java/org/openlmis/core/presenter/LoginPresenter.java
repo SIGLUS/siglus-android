@@ -418,9 +418,9 @@ public class LoginPresenter extends Presenter {
             public void onCompleted() {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(false);
-                view.sendSyncFinishedBroadcast();
                 sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
                 dirtyDataManager.initialDirtyDataCheck();
+                view.sendSyncFinishedBroadcast();
             }
 
             @Override
