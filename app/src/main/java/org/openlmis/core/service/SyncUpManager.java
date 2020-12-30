@@ -329,7 +329,7 @@ public class SyncUpManager {
     }
 
     public boolean syncDeleteMovement() {
-        int unitCount = 6;
+        int unitCount = 30;
         String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
         List<DirtyDataItemInfo> itemInfos = dirtyDataRepository.listunSyced();
 
