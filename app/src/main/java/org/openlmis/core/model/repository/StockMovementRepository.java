@@ -267,7 +267,7 @@ public class StockMovementRepository {
         String ids = StringUtils.join(stockCardIds != null ? stockCardIds : new HashSet<>(), ',');
         String rawSql = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
                 + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
-                + "|| createdTime,  ';') as movementItems "
+                + "|| createdTime || ',' || reason ,  ';') as movementItems "
                 + "from stock_items where stockCard_id in ( "
                 + ids
                 + ")  GROUP BY stockCard_id";
@@ -349,7 +349,7 @@ public class StockMovementRepository {
     public Map<String, List<StockMovementItem>> queryNoSignatureStockCardsMovements() {
         String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
                 + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
-                + "|| createdTime,  ';') as movementItems ,count(*) as count ";
+                + "|| createdTime || ',' || reason ,  ';') as movementItems ,count(*) as count ";
         String stockCardHavingSignatureNotNull = "( select stockCard_id from stock_items where signature not null group by stockCard_id ) ";
         String querySql = selectResult
                 + "from stock_items "
@@ -396,7 +396,7 @@ public class StockMovementRepository {
         String filterIds = StringUtils.join(filterStockCards != null ? filterStockCards : new HashSet<>(), ',');
         String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
                 + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
-                + "|| createdTime,  ';') as movementItems ";
+                + "|| createdTime || ',' || reason ,  ';') as movementItems ";
         String havingDuplicatedNoSignature = "( select stockCard_id from stock_items where signature IS NULL and stockCard_id not in ( "
                 + filterIds
                 + ") group by stockCard_id having count(stockCard_id) > 1) ";
@@ -449,6 +449,7 @@ public class StockMovementRepository {
             movementItem.setMovementDate(movementDate);
             Date createTime = DateUtil.parseString(listMovementItem[5], DateUtil.DATE_TIME_FORMAT);
             movementItem.setCreatedTime(createTime);
+            movementItem.setReason(listMovementItem[6]);
             stockMovementItems.add(movementItem);
         }
         SortClass sort = new SortClass();
