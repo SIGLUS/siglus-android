@@ -467,7 +467,8 @@ public class StockMovementRepository {
             if (compareMovementDate == 0) {
                 int compareCreatedTime = item1.getCreatedTime().compareTo(item2.getCreatedTime());
                 if (compareCreatedTime == 0) {
-                    return item1.getId() < item2.getId() ? 1 : -1;
+                    int comparedId = item1.getId() > item2.getId() ? 1 : -1;
+                    return comparedId;
                 }
                 return compareCreatedTime;
             } else {
