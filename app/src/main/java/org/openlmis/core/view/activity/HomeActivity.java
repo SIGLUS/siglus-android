@@ -253,30 +253,43 @@ public class HomeActivity extends BaseActivity {
 
 
     public void onClickStockCard(View view) {
-        startActivity(StockCardListActivity.class);
+        if (!isHaveDirtyData()) {
+            startActivity(StockCardListActivity.class);
+        }
     }
 
     public void onClickKitStockCard(View view) {
-        startActivity(KitStockCardListActivity.class);
+        if (!isHaveDirtyData()) {
+            startActivity(KitStockCardListActivity.class);
+        }
     }
 
     public void onClickInventory(View view) {
-        Intent intent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
-        startActivity(intent);
+        if (!isHaveDirtyData()) {
+            Intent intent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     public void onClickPatientDataReport(View view) {
-        startActivity(new Intent(this, ViaPatientDataReportActivity.class));
+        if (!isHaveDirtyData()) {
+            startActivity(new Intent(this, ViaPatientDataReportActivity.class));
+        }
     }
 
     public void onClickRapidTestHistory(View view) {
-        Intent intent = new Intent(this, RapidTestReportsActivity.class);
-        startActivity(intent);
+        if (!isHaveDirtyData()) {
+            Intent intent = new Intent(this, RapidTestReportsActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void onClickAL(View view) {
-        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.AL_PROGRAM));
-        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectAL, Constants.AL_PROGRAM_CODE);
+        if (!isHaveDirtyData()) {
+            startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.AL_PROGRAM));
+            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectAL, Constants.AL_PROGRAM_CODE);
+        }
     }
 
     public void syncData() {
@@ -285,18 +298,24 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickMMIAHistory(View view) {
-        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.MMIA_PROGRAM));
-        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectMMIA, Constants.MMIA_PROGRAM_CODE);
+        if (!isHaveDirtyData()) {
+            startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.MMIA_PROGRAM));
+            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectMMIA, Constants.MMIA_PROGRAM_CODE);
+        }
     }
 
     public void onClickVIAHistory(View view) {
-        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.VIA_PROGRAM));
-        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, Constants.VIA_PROGRAM_CODE);
+        if (!isHaveDirtyData()) {
+            startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.VIA_PROGRAM));
+            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, Constants.VIA_PROGRAM_CODE);
+        }
     }
 
     public void onClickPtvStockCard(View view) {
-        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.PTV_PROGRAM));
-        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectPTV, Constants.PTV_PROGRAM_CODE);
+        if (!isHaveDirtyData()) {
+            startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.PTV_PROGRAM));
+            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectPTV, Constants.PTV_PROGRAM_CODE);
+        }
     }
 
     @Override
@@ -319,12 +338,7 @@ public class HomeActivity extends BaseActivity {
 
 
         dirtyDataManager.dirtyDataMonthlyCheck();
-        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
-                || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
-            showDeletedWarningDialog(() -> {
-                dirtyDataManager.deleteAndReset();
-            });
-        }
+        isHaveDirtyData();
     }
 
     protected void setSyncedTime() {
@@ -453,6 +467,15 @@ public class HomeActivity extends BaseActivity {
         if (mgr != null) {
             mgr.set(AlarmManager.RTC, LMISApp.getInstance().getCurrentTimeMillis() + startAppInterval, mPendingIntent);
         }
+    }
+
+    private boolean isHaveDirtyData() {
+        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
+                || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
+            showDeletedWarningDialog(() -> { dirtyDataManager.deleteAndReset(); });
+            return true;
+        }
+        return false;
     }
 
 }

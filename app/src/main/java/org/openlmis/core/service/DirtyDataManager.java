@@ -356,7 +356,12 @@ public class DirtyDataManager {
         HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
         Log.d("performance", "check The Last TwoMovement1");
         List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
+        HashMap<String,List<StockMovementItem>> keepMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
+        Set<String> keepStockCardIds = keepMovementItemsMap.size() == 0 ? new HashSet<>() : keepMovementItemsMap.keySet();
         for (StockCard stockCard : stockCards) {
+            if (keepStockCardIds.contains(String.valueOf(stockCard.getId()))) {
+                continue;
+            }
             List<StockMovementItem> stockMovementItems = stockMovementItemsMap.get((int) stockCard.getId());
             if (!isPositiveOnHand(stockCard, cardIdsLotOnHandLessZero)) {
                 deleted.add(stockCard);
