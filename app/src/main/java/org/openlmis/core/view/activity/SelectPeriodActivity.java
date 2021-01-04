@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -22,6 +23,7 @@ import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ProgramUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
@@ -75,6 +77,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     @Inject
     DirtyDataManager dirtyDataManager;
+
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
 
     @Override
     protected ScreenName getScreenName() {
@@ -134,7 +139,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
             }
             loading();
             nextBtn.setEnabled(false);
-            if (shouldCheckData()) {
+            if (shouldCheckData() && shouldStartDataCheck()) {
                 Subscription subscription = presenter
                         .correctDirtyObservable(getProgramFromCode(programCode))
                         .subscribe(afterCorrectDirtyDataHandler());
@@ -158,6 +163,14 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private boolean shouldStartDataCheck() {
+        long now = LMISApp.getInstance().getCurrentTimeMillis();
+        long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
+        return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
+                && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
+                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
     }
 
     private boolean shouldCheckData() {
