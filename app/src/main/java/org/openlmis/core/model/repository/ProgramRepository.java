@@ -166,7 +166,7 @@ public class ProgramRepository {
                 }
             }
         }
-        if (!getProgramByProductCodeCursor.isClosed()) {
+        if (getProgramByProductCodeCursor != null && !getProgramByProductCodeCursor.isClosed()) {
             getProgramByProductCodeCursor.close();
         }
     }

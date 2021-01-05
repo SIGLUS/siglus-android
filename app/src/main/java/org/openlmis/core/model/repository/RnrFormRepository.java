@@ -589,10 +589,10 @@ public class RnrFormRepository {
                 }
             }
         }
-        if (!getProgramCodeCursor.isClosed()) {
+        if (getProgramCodeCursor != null && !getProgramCodeCursor.isClosed()) {
             getProgramCodeCursor.close();
         }
-        if (!getParentCodeCursor.isClosed()) {
+        if (getParentCodeCursor != null && !getParentCodeCursor.isClosed()) {
             getParentCodeCursor.close();
         }
     }
