@@ -37,6 +37,7 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RapidTestRep
     @Override
     public void onBindViewHolder(RapidTestReportRowViewHolder holder, int position) {
         final RapidTestFormItemViewModel viewModel = viewModels.get(position);
+        holder.setIsRecyclable(false);
         holder.populate(viewModel, editable, quantityChangeListener);
     }
 
