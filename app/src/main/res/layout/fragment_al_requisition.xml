@@ -87,7 +87,7 @@
 
                     <LinearLayout
                         android:id="@+id/al_header"
-                        android:layout_width="match_parent"
+                        android:layout_width="@dimen/al_view_header_list_width"
                         android:layout_height="@dimen/al_view_header_list_height"
                         android:layout_alignStart="@id/rv_al_row_item_list_container"
                         android:layout_alignEnd="@+id/rv_al_row_item_list_container">
