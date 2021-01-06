@@ -8,7 +8,7 @@
     <style name="Edit" />
 
     <style name="Edit.Quantity">
-        <item name="android:ems">8</item>
+        <item name="android:ems">9</item>
         <item name="android:inputType">number</item>
     </style>
 
