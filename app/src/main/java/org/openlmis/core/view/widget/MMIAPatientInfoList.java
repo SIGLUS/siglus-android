@@ -214,11 +214,11 @@ public class MMIAPatientInfoList extends LinearLayout {
     }
 
     private int getPosition(int i, String tableName) {
-        if (ATTR_TABLE_TRAV_KEY.equals(tableName)) {
+        if (ATTR_TABLE_TRAV.equals(tableName)) {
             return i;
-        } else if (ATTR_TABLE_PATIENTS_KEY.equals(tableName)) {
+        } else if (ATTR_TABLE_PATIENTS.equals(tableName)) {
             return i + tableMap.get(ATTR_TABLE_TRAV_KEY).size();
-        } else if (ATTR_TABLE_PROPHYLAXIS_KEY.equals(tableName)) {
+        } else if (ATTR_TABLE_PROPHYLAXIS.equals(tableName)) {
             return i + tableMap.get(ATTR_TABLE_TRAV_KEY).size() + tableMap.get(ATTR_TABLE_PATIENTS_KEY).size();
         } else {
             return i;
