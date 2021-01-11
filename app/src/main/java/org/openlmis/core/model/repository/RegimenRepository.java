@@ -86,6 +86,7 @@ public class RegimenRepository {
         return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
                 .where()
                 .eq("isCustom", false)
+                .and().eq("active", true)
                 .query());
     }
 
