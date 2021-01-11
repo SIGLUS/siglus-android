@@ -232,11 +232,11 @@ public class SharedPreferenceMgr {
 
 
     public boolean getKeyIsFirstLoginVersion87() {
-        return sharedPreferences.getBoolean(KEY_IS_FIRST_LOGIN_VERSION87, false);
+        return sharedPreferences.getBoolean(KEY_IS_FIRST_LOGIN_VERSION87, true);
     }
 
     public void setKeyIsFirstLoginVersion87() {
-        sharedPreferences.edit().putBoolean(KEY_IS_FIRST_LOGIN_VERSION87, true).apply();
+        sharedPreferences.edit().putBoolean(KEY_IS_FIRST_LOGIN_VERSION87, false).apply();
     }
 
 

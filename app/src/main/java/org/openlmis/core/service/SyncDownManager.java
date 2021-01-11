@@ -386,7 +386,7 @@ public class SyncDownManager {
         List<Product> productList = new ArrayList<>();
         for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
             Product product = productAndSupportedPrograms.getProduct();
-            productProgramRepository.batchSave(productAndSupportedPrograms.getProductPrograms());
+            productProgramRepository.batchSave(product, productAndSupportedPrograms.getProductPrograms());
 
             updateDeactivateProductNotifyList(product);
             productList.add(product);
@@ -427,7 +427,7 @@ public class SyncDownManager {
 
     private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws LMISException {
         boolean isFirstLoginVersion87 = sharedPreferenceMgr.getKeyIsFirstLoginVersion87();
-        return lmisRestApi.fetchLatestProducts(isFirstLoginVersion87 ? sharedPreferenceMgr.getLastSyncProductTime() : null);
+        return lmisRestApi.fetchLatestProducts(isFirstLoginVersion87 ? null : sharedPreferenceMgr.getLastSyncProductTime() );
     }
 
     public void fetchKitChangeProduct() throws LMISException {
@@ -435,7 +435,7 @@ public class SyncDownManager {
         List<Product> productList = new ArrayList<>();
         for (ProductAndSupportedPrograms productAndSupportedPrograms : responseAgain.getKitChangeProducts()) {
             Product product = productAndSupportedPrograms.getProduct();
-            productProgramRepository.batchSave(productAndSupportedPrograms.getProductPrograms());
+            productProgramRepository.batchSave(product, productAndSupportedPrograms.getProductPrograms());
             updateDeactivateProductNotifyList(product);
             productList.add(product);
         }

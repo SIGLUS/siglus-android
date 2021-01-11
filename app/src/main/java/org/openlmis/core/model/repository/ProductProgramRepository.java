@@ -5,10 +5,14 @@ import android.content.Context;
 import com.google.inject.Inject;
 
 import org.openlmis.core.BuildConfig;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
@@ -37,14 +41,14 @@ public class ProductProgramRepository {
         return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder().where().in("programCode", programCodes).and().eq("productCode", productCode).queryForFirst());
     }
 
-    public void batchSave(final List<ProductProgram> productPrograms) {
+    public void batchSave(final Product product, final List<ProductProgram> productPrograms) {
         if (productPrograms == null || productPrograms.size() == 0) {
+            deleteOldProductProgram(product);
             return;
         }
         try {
-            for (ProductProgram productProgram : productPrograms) {
-                createOrUpdate(productProgram);
-            }
+            deleteOldProductProgram(product);
+            createProductPrograms(productPrograms);
         } catch (LMISException e) {
             new LMISException(e, "ProductProgramRepository.batchSave").reportToFabric();
         }
@@ -95,4 +99,19 @@ public class ProductProgramRepository {
 
         return FluentIterable.from(productRepository.queryActiveProductsByCodesWithKits(productCodes, false)).transform(product -> product.getId()).toList();
     }
+
+    private void deleteOldProductProgram(Product product) {
+        String deleteRowSql = "delete from product_programs where productCode =" + "'" +product.getCode() +"'";
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRowSql);
+    }
+
+    private void createProductPrograms(List<ProductProgram> productPrograms) throws LMISException {
+        dbUtil.withDaoAsBatch(ProductProgram.class, (DbUtil.Operation<ProductProgram, Void>) dao -> {
+            for (ProductProgram item : productPrograms) {
+                dao.create(item);
+            }
+            return null;
+        });
+    }
+
 }
