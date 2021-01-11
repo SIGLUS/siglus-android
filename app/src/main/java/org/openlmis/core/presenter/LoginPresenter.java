@@ -404,6 +404,7 @@ public class LoginPresenter extends Presenter {
                         ToastUtil.show(R.string.msg_sync_requisition_failed);
                         break;
                     case SyncLastDataSuccess:
+                        dirtyDataManager.initialDirtyDataCheck();
                         goToNextPage();
                         break;
                 }
