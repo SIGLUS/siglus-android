@@ -101,7 +101,7 @@ public class ProductProgramRepository {
     }
 
     private void deleteOldProductProgram(Product product) {
-        String deleteRowSql = "delete from product_programs where productCode =" + "'" +product.getCode() +"'";
+        String deleteRowSql = "delete from product_programs where productCode =" + "'" + product.getCode() + "'";
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRowSql);
     }
 

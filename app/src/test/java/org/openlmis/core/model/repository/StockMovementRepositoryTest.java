@@ -195,7 +195,7 @@ public class StockMovementRepositoryTest {
         mmiaProductProgram.setActive(true);
         productPrograms.add(mmiaProductProgram);
 
-        productProgramRepository.batchSave(productPrograms);
+        productProgramRepository.batchSave(viaProduct, productPrograms);
 
         StockCard stockCard = new StockCard();
         stockCard.setProduct(mmiaProduct);
