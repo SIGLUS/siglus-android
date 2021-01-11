@@ -392,6 +392,7 @@ public class SyncDownManager {
             productList.add(product);
         }
         productRepository.batchCreateOrUpdateProducts(productList);
+        sharedPreferenceMgr.setKeyIsFirstLoginVersion87();
         sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
     }
 
@@ -425,7 +426,8 @@ public class SyncDownManager {
     }
 
     private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws LMISException {
-        return lmisRestApi.fetchLatestProducts(sharedPreferenceMgr.getLastSyncProductTime());
+        boolean isFirstLoginVersion87 = sharedPreferenceMgr.getKeyIsFirstLoginVersion87();
+        return lmisRestApi.fetchLatestProducts(isFirstLoginVersion87 ? sharedPreferenceMgr.getLastSyncProductTime() : null);
     }
 
     public void fetchKitChangeProduct() throws LMISException {
