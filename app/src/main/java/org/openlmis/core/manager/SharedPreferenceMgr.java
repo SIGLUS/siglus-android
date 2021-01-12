@@ -184,7 +184,12 @@ public class SharedPreferenceMgr {
             Gson gson = new GsonBuilder().setDateFormat(DateUtil.DATE_TIME_FORMAT).create();
             Type type = new TypeToken<List<ReportTypeForm>>() {
             }.getType();
-            return gson.fromJson(json, type);
+            //to fix upgrade from 86 to 87 , 86 not set date time format type
+            try {
+                return gson.fromJson(json, type);
+            } catch (Exception exception) {
+                return null;
+            }
         }
         return null;
 
