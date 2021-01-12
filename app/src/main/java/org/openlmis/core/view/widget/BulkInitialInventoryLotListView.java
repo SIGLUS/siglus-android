@@ -98,7 +98,7 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
             lotMovementViewModel.setFrom(((BulkInitialInventoryViewModel) viewModel).getFrom());
             return lotMovementViewModel;
         }).toList();
-        existingLotMovementAdapter = new BulkInitialInventoryLotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
+        existingLotMovementAdapter = new BulkInitialInventoryLotMovementAdapter(viewModel.getExistingLotMovementViewModelList(),viewModel.getProduct().getProductNameWithCodeAndStrength());
         existingLotMovementAdapter.setMovementChangedListenerWithStatus(movementChangedListenerWithStatus);
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
