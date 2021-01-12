@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -44,6 +45,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     @InjectView(R.id.rapid_view_basic_item_header)
     LinearLayout rnrBasicItemHeader;
+
+    @InjectView(R.id.rapid_view_basic_item_header_left)
+    TextView rnrBasicItemHeaderLeft;
 
     @InjectView(R.id.rapid_test_top_scrollview)
     RnrFormHorizontalScrollView rapidTestTopScrollView;
@@ -276,6 +280,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
         if (viewModel.getBasicItems().size() > 0) {
             rnrBasicItemHeader.setVisibility(View.VISIBLE);
+            int width = (int)(rnrBasicItemHeader.getWidth()*0.7);
+            rnrBasicItemHeaderLeft.setMaxWidth(width);
             rnrBasicItemListView.setVisibility(View.VISIBLE);
             rnrBasicItemListView.initView(viewModel.getBasicItems());
         } else {
