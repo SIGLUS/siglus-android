@@ -18,8 +18,10 @@
 
 package org.openlmis.core.service;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -103,8 +105,46 @@ public class SyncUpManager {
 
     protected LMISRestApi lmisRestApi;
 
+    private boolean isSyncing = false;
+
     public SyncUpManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
+    }
+
+    public void syncUpData(Context context) {
+        Log.d(TAG, "sync Up Data start");
+        if (isSyncing) {
+            return;
+        }
+
+        isSyncing = true;
+        boolean isSyncDeleted = syncDeleteMovement();
+        if (isSyncDeleted) {
+            boolean isSyncRnrSuccessful = syncRnr();
+            if (isSyncRnrSuccessful) {
+                sharedPreferenceMgr.setRnrLastSyncTime();
+            }
+
+            boolean isSyncStockSuccessful = syncStockCards();
+            if (isSyncStockSuccessful) {
+                sharedPreferenceMgr.setStockLastSyncTime();
+                syncArchivedProducts();
+            }
+
+            syncRapidTestForms();
+            syncUpUnSyncedStockCardCodes();
+            syncAppVersion();
+            syncUpCmms();
+
+            if (!sharedPreferenceMgr.shouldSyncLastYearStockData()
+                    && TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+                Intent intent = new Intent();
+                intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            }
+        }
+        Log.d(TAG, "sync Up Data end");
+        isSyncing = false;
     }
 
     public boolean syncRnr() {

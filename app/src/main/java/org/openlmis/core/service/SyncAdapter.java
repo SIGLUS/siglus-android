@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.util.CollectionUtils;
@@ -107,34 +106,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void triggerSync() {
         sendSyncStartBroadcast();
         syncDownManager.syncDownServerData();
-        boolean isSyncDeleted = syncUpManager.syncDeleteMovement();
-        if (isSyncDeleted) {
-            syncOtherData();
-        }
+        syncUpManager.syncUpData(context);
     }
 
-    private void syncOtherData() {
-        boolean isSyncRnrSuccessful = syncUpManager.syncRnr();
-        if (isSyncRnrSuccessful) {
-            sharedPreferenceMgr.setRnrLastSyncTime();
-        }
-
-        boolean isSyncStockSuccessful = syncUpManager.syncStockCards();
-        if (isSyncStockSuccessful) {
-            sharedPreferenceMgr.setStockLastSyncTime();
-            syncUpManager.syncArchivedProducts();
-        }
-
-        syncUpManager.syncRapidTestForms();
-        syncUpManager.syncUpUnSyncedStockCardCodes();
-        syncUpManager.syncAppVersion();
-        syncUpManager.syncUpCmms();
-
-        if (!sharedPreferenceMgr.shouldSyncLastYearStockData()
-                && TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-            sendSyncFinishedBroadcast();
-        }
-    }
 
     private void sendSyncStartBroadcast() {
         Intent intent = new Intent();
