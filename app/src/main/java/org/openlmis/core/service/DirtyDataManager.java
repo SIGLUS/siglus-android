@@ -198,7 +198,6 @@ public class DirtyDataManager {
             }
         }
         if (deleteStockCardIds.size() > 0) {
-            filterStockCardIds.addAll(deleteStockCardIds);
             Map<String, List<StockMovementItem>> idToStockItemsForDelete = stockMovementRepository.queryStockMovement(deleteStockCardIds);
            return covertMapFromStockIdToProductCode(filterStockCardIds, idToStockItemsForDelete);
         }
@@ -460,6 +459,7 @@ public class DirtyDataManager {
         if (idToStockItemForDelete.size() > 0) {
             Set<String> stockCardIds = idToStockItemForDelete.keySet();
             filterStockCardIds.addAll(stockCardIds);
+
             Map<String, String> stockCardIdToCode = stockMovementRepository.queryStockCardIdAndProductCode(stockCardIds);
             Map<String, List<StockMovementItem>> codeToStockItems = new HashMap<>();
             for(Map.Entry entry: idToStockItemForDelete.entrySet()) {

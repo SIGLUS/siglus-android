@@ -282,7 +282,15 @@ public class StockMovementRepository {
         if (!cursor.isClosed()) {
             cursor.close();
         }
-        return stockCardsMovements;
+        Map<String, List<StockMovementItem>> fullyStockCardsMovements = new HashMap<>();
+        for (String stockCardId : stockCardIds) {
+            List<StockMovementItem> movementItems = new ArrayList<>();
+            if (stockCardsMovements.containsKey(stockCardId)) {
+                movementItems = stockCardsMovements.get(stockCardId);
+            }
+            fullyStockCardsMovements.put(stockCardId, movementItems);
+        }
+        return fullyStockCardsMovements;
 
     }
 
