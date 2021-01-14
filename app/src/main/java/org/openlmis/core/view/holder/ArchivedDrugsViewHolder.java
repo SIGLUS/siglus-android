@@ -35,6 +35,11 @@ public class ArchivedDrugsViewHolder extends BaseViewHolder {
 
         if (!inventoryViewModel.getProduct().isActive()) {
             tvArchiveBack.setVisibility(View.GONE);
+<<<<<<< HEAD
+=======
+        } else {
+            tvArchiveBack.setVisibility(View.VISIBLE);
+>>>>>>> a01c40890... fix : add permsion check for write
         }
 
         setActionListeners(inventoryViewModel, listener);

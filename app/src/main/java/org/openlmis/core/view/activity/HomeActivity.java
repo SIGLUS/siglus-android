@@ -18,15 +18,23 @@
 
 package org.openlmis.core.view.activity;
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.Log;
 import android.util.Pair;
@@ -67,6 +75,9 @@ import java.util.List;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 
 @ContentView(R.layout.activity_home_page)
 public class HomeActivity extends BaseActivity {
@@ -120,6 +131,8 @@ public class HomeActivity extends BaseActivity {
     WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     private boolean exitPressedOnce = false;
+
+    private static final int PERMISSION_REQUEST_CODE = 200;
 
     @Override
     protected ScreenName getScreenName() {
@@ -362,6 +375,56 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void exportDB() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            exportDBHavePermission();
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("get permssion");
+                alertBuilder.setMessage("storage permssion");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(HomeActivity.this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+                Log.e("", "permission denied, show dialog");
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (permissions.length > 0 && grantResults.length > 0) {
+
+                boolean flag = true;
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                        flag = false;
+                    }
+                }
+                if (flag) {
+                    exportDBHavePermission();
+                } else {
+                    finish();
+                }
+
+            } else {
+                finish();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void exportDBHavePermission() {
         File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
         File tempBackup = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_copy");
         File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
@@ -426,7 +489,9 @@ public class HomeActivity extends BaseActivity {
 
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + startAppInterval, mPendingIntent);
+        if (mgr != null) {
+            mgr.set(AlarmManager.RTC, LMISApp.getInstance().getCurrentTimeMillis() + startAppInterval, mPendingIntent);
+        }
     }
 
 }
