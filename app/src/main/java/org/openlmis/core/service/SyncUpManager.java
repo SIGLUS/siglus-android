@@ -51,7 +51,6 @@ import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.utils.Constants;

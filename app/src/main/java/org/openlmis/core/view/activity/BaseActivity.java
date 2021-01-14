@@ -67,7 +67,6 @@ import roboguice.RoboGuice;
 import roboguice.activity.RoboActionBarActivity;
 import rx.Subscription;
 
-import static org.roboguice.shaded.goole.common.collect.Iterators.limit;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public abstract class BaseActivity extends RoboActionBarActivity implements BaseView {

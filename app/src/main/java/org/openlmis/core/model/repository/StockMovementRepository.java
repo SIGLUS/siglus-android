@@ -2,7 +2,6 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -490,8 +489,8 @@ public class StockMovementRepository {
         for (Map.Entry map : stockMovementItemsMap.entrySet()) {
             keepMovements.add(String.valueOf(stockMovementItemsMap.get(map.getKey()).get(0).getId()));
         }
-        String updateSql = "update stock_items set synced = 0 where id in ("+
-                StringUtils.join(keepMovements,",")+ ")";
+        String updateSql = "update stock_items set synced = 0 where id in ("
+                + StringUtils.join(keepMovements,",")+ ")";
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
     }
 

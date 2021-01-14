@@ -160,7 +160,7 @@ public class DirtyDataManager {
     private void saveToSharePreferenceMgr(Map<String, Object> duplicateMap, Set<String> deleteProducts, List<StockMovementItem> duplicatedNotAffectCalculate) {
         if (duplicateMap.containsKey(DELETE_ITEMS)) {
             List<StockMovementItem> deletedMovementItems = (List<StockMovementItem>) duplicateMap.get(DELETE_ITEMS);
-            if (deletedMovementItems.size() > 0 ) {
+            if (deletedMovementItems.size() > 0) {
                 sharedPreferenceMgr.setDeletedMovementItems(deletedMovementItems);
             }
         }
@@ -193,13 +193,13 @@ public class DirtyDataManager {
         List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
         for (StockCard stockCard : checkedStockCards) {
             if (!isPositiveOnHand(stockCard, cardIdsLotOnHandLessZero)
-            || stockCard.calculateSOHFromLots(lotsOnHands) != stockCard.getStockOnHand()) {
+                    || stockCard.calculateSOHFromLots(lotsOnHands) != stockCard.getStockOnHand()) {
                 deleteStockCardIds.add(String.valueOf(stockCard.getId()));
             }
         }
         if (deleteStockCardIds.size() > 0) {
             Map<String, List<StockMovementItem>> idToStockItemsForDelete = stockMovementRepository.queryStockMovement(deleteStockCardIds);
-           return covertMapFromStockIdToProductCode(filterStockCardIds, idToStockItemsForDelete);
+            return covertMapFromStockIdToProductCode(filterStockCardIds, idToStockItemsForDelete);
         }
         return new HashSet<>();
     }
@@ -379,7 +379,7 @@ public class DirtyDataManager {
         HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = getLastStockMovementMap();
         Log.d("performance", "check The Last TwoMovement1");
         List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
-        HashMap<String,List<StockMovementItem>> keepMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
+        HashMap<String, List<StockMovementItem>> keepMovementItemsMap = sharedPreferenceMgr.getKeepMovementItemsMap();
         Set<String> keepStockCardIds = keepMovementItemsMap.size() == 0 ? new HashSet<>() : keepMovementItemsMap.keySet();
         for (StockCard stockCard : stockCards) {
             if (keepStockCardIds.contains(String.valueOf(stockCard.getId()))) {
@@ -424,10 +424,10 @@ public class DirtyDataManager {
         return stockMovementItemsMap;
     }
 
-    private  Set<String> checkAllMovementAndLotSOHAndSaveToDB(Set<String> filterStockCardIds) {
+    private Set<String> checkAllMovementAndLotSOHAndSaveToDB(Set<String> filterStockCardIds) {
         List<StockCard> checkedStockCards = stockRepository.queryCheckedStockCards(filterStockCardIds);
         lotsOnHands.putAll(stockRepository.lotOnHands());
-        Map<String,  List<StockMovementItem>> idToStockItemForDelete = new HashMap<>();
+        Map<String, List<StockMovementItem>> idToStockItemForDelete = new HashMap<>();
         List<String> cardIdsLotOnHandLessZero = stockRepository.cardIdsIfLotOnHandLessZero();
         for (StockCard stockCard : checkedStockCards) {
             try {
@@ -440,7 +440,7 @@ public class DirtyDataManager {
                     continue;
                 }
                 if (stockMovementItems.size() >= 2) {
-                    for (int i = 0; i <= stockMovementItems.size()-2; i++) {
+                    for (int i = 0; i <= stockMovementItems.size() - 2; i++) {
                         if (!isCorrectMovements(stockMovementItems.get(i), stockMovementItems.get(i + 1))) {
                             debugLog(stockMovementItems.get(i), stockMovementItems.get(i + 1), stockCard);
                             idToStockItemForDelete.put(String.valueOf(stockCard.getId()), stockMovementItems);
@@ -462,8 +462,8 @@ public class DirtyDataManager {
 
             Map<String, String> stockCardIdToCode = stockMovementRepository.queryStockCardIdAndProductCode(stockCardIds);
             Map<String, List<StockMovementItem>> codeToStockItems = new HashMap<>();
-            for(Map.Entry entry: idToStockItemForDelete.entrySet()) {
-                codeToStockItems.put(stockCardIdToCode.get((String)entry.getKey()), ( List<StockMovementItem>)entry.getValue());
+            for (Map.Entry entry : idToStockItemForDelete.entrySet()) {
+                codeToStockItems.put(stockCardIdToCode.get((String) entry.getKey()), (List<StockMovementItem>) entry.getValue());
             }
             saveDeletedMovementToDB(codeToStockItems, true);
             return codeToStockItems.keySet();
@@ -473,7 +473,7 @@ public class DirtyDataManager {
 
     private boolean isCorrectStockOnHand(List<String> cardIdsLotOnHandLessZero, StockCard stockCard, List<StockMovementItem> stockMovementItems) {
         return !isPositiveOnHand(stockCard, cardIdsLotOnHandLessZero)
-                || !isCorrectSOHBetweenMovementAndStockCard(stockCard, stockMovementItems.get(stockMovementItems.size()- 1));
+                || !isCorrectSOHBetweenMovementAndStockCard(stockCard, stockMovementItems.get(stockMovementItems.size() - 1));
     }
 
     private void debugLog(StockMovementItem previousMovement, StockMovementItem currentMovement, StockCard stockCard) {

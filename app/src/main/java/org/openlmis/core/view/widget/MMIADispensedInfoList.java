@@ -23,10 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.openlmis.core.model.RnRForm.STATUS.DRAFT_MISSED;
-import static org.openlmis.core.model.RnRForm.STATUS.SUBMITTED_MISSED;
-
-
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS5;
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS4;
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS3;

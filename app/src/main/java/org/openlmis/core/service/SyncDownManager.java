@@ -427,7 +427,7 @@ public class SyncDownManager {
 
     private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws LMISException {
         boolean isFirstLoginVersion87 = sharedPreferenceMgr.getKeyIsFirstLoginVersion87();
-        return lmisRestApi.fetchLatestProducts(isFirstLoginVersion87 ? null : sharedPreferenceMgr.getLastSyncProductTime() );
+        return lmisRestApi.fetchLatestProducts(isFirstLoginVersion87 ? null : sharedPreferenceMgr.getLastSyncProductTime());
     }
 
     public void fetchKitChangeProduct() throws LMISException {
@@ -473,7 +473,7 @@ public class SyncDownManager {
         int numberOfElementsInAListForAnObservable = stockCards.size() / threadNumber;
         int startPosition = 0;
         for (int arrayNumber = 1; arrayNumber <= threadNumber; arrayNumber++) {
-            int endPosition = arrayNumber == threadNumber ? stockCards.size(): numberOfElementsInAListForAnObservable * arrayNumber;
+            int endPosition = arrayNumber == threadNumber ? stockCards.size() : numberOfElementsInAListForAnObservable * arrayNumber;
             observables.add(saveStockCards(stockCards.subList(startPosition, endPosition), scheduler));
             startPosition = endPosition;
         }

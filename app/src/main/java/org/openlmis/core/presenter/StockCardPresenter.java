@@ -122,8 +122,8 @@ public class StockCardPresenter extends Presenter {
             return showInOverview(stockCard);
         }).toList());
 
-        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct()) ||
-                !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
+        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
+                || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
             subscriber.onError(new LMISException(SHOULD_SHOW_ALERT_MSG));
         } else {
             subscriber.onCompleted();
@@ -139,8 +139,8 @@ public class StockCardPresenter extends Presenter {
             view.loading();
         }
         lotsOnHands.putAll(stockRepository.lotOnHands());
-        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct()) ||
-                !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
+        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
+                || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
             view.showWarning();
             return;
         }
@@ -282,7 +282,7 @@ public class StockCardPresenter extends Presenter {
             @Override
             public void onError(Throwable e) {
                 if (SHOULD_SHOW_ALERT_MSG.equals(e.getMessage())) {
-                    Log.d("dirty","showWarning");
+                    Log.d("dirty", "showWarning");
                     view.showWarning();
                 } else {
                     e.printStackTrace();
