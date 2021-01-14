@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
@@ -32,6 +33,8 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
 
     private ProductProgramRepository repository;
     private ProductRepository productRepository;
+    private Product productOne = new ProductBuilder().setCode("P1").build();
+    private Product productSecond = new ProductBuilder().setCode("P2").build();
 
     @Before
     public void setUp() throws Exception {
@@ -49,13 +52,14 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldBatchSaveAndQueryProductPrograms() throws Exception {
-        List<ProductProgram> productPrograms = Arrays.asList(
-                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setActive(true).build(),
-                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").setActive(false).build(),
+        List<ProductProgram> product1Programs = Arrays.asList(
                 new ProductProgramBuilder().setProgramCode("PR2").setProductCode("P1").setActive(true).build()
         );
-
-        repository.batchSave(productPrograms);
+        List<ProductProgram> product2Programs = Arrays.asList(
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").setActive(false).build()
+        );
+        repository.batchSave(productOne, product1Programs);
+        repository.batchSave(productSecond, product2Programs);
 
         ProductProgram productProgram = repository.queryByCode("P2", "PR1");
         assertFalse(productProgram.isActive());
@@ -67,13 +71,9 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
                 new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setActive(true).build(),
                 new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setActive(false).build()
         );
+        repository.batchSave(productOne, productPrograms);
 
-        repository.batchSave(productPrograms);
-
-        assertEquals(1, repository.listAll().size());
-
-        ProductProgram productProgram = repository.queryByCode("P1", "PR1");
-        assertFalse(productProgram.isActive());
+        assertEquals(0, repository.listAll().size());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
                 new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setActive(true).build(),
                 new ProductProgramBuilder().setProgramCode("PR2").setProductCode("P1").setActive(false).build()
         );
-        repository.batchSave(productPrograms);
+        repository.batchSave(productOne, productPrograms);
 
         List<ProductProgram> queriedProductPrograms = repository.listActiveProductProgramsByProgramCodes(Arrays.asList("PR1", "PR2"));
 
@@ -93,12 +93,15 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldQueryActiveProductIdsByProgramsWithKits() throws Exception {
-        List<ProductProgram> productPrograms = Arrays.asList(
+        List<ProductProgram> productOnePrograms = Arrays.asList(
                 new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setActive(true).build(),
-                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").setActive(false).build(),
                 new ProductProgramBuilder().setProgramCode("PR2").setProductCode("P1").setActive(true).build()
         );
-        repository.batchSave(productPrograms);
+        List<ProductProgram> productSecondPrograms = Arrays.asList(
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").setActive(false).build()
+        );
+        repository.batchSave(productOne, productOnePrograms);
+        repository.batchSave(productSecond, productSecondPrograms);
 
         when(productRepository.queryActiveProductsByCodesWithKits(anyList(), anyBoolean())).thenReturn(newArrayList(
                 new ProductBuilder().setCode("P1").setProductId(100L).build()
@@ -112,13 +115,16 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldQueryByProgramCodesAndProductCode() throws Exception {
-        List<ProductProgram> productPrograms = Arrays.asList(
+        List<ProductProgram> productOnePrograms = Arrays.asList(
                 new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").build(),
-                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").build(),
                 new ProductProgramBuilder().setProgramCode("PR2").setProductCode("P1").build()
         );
+        List<ProductProgram> productSecondPrograms = Arrays.asList(
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").build()
+        );
+        repository.batchSave(productOne, productOnePrograms);
+        repository.batchSave(productSecond, productSecondPrograms);
 
-        repository.batchSave(productPrograms);
         List<String> programCodes = newArrayList("PR1", "PR2");
 
 
@@ -129,12 +135,15 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldCreateOrUpdateProductPrograms() throws Exception {
-        List<ProductProgram> productPrograms = Arrays.asList(
+        List<ProductProgram> productOnePrograms = Arrays.asList(
                 new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setCategory("Adult").build(),
-                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").setCategory("Children").build(),
                 new ProductProgramBuilder().setProgramCode("PR2").setProductCode("P1").setCategory("Adult").build()
         );
-        repository.batchSave(productPrograms);
+        List<ProductProgram> productSecondPrograms = Arrays.asList(
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").setCategory("Children").build()
+        );
+        repository.batchSave(productOne, productOnePrograms);
+        repository.batchSave(productSecond, productSecondPrograms);
 
         ProductProgram updateProductPrograms =
                 new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setCategory("Other").build();
