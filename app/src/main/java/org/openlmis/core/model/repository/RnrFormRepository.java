@@ -365,7 +365,7 @@ public class RnrFormRepository {
         List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
 
         for (RnrFormItem item : rnrForm.getRnrFormItemListWrapper()) {
-            if (item.getProduct() != null) {
+            if (item.getProduct() != null && productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes) !=null) {
                 item.setCategory(productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes).getCategory());
             }
         }
