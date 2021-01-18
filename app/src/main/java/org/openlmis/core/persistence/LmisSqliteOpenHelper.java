@@ -217,11 +217,14 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-        for (Migration migration : MIGRATIONS) {
-            Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
-            migration.setSQLiteDatabase(database);
-            migration.up();
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            for (Migration migration : MIGRATIONS) {
+                Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
+                migration.setSQLiteDatabase(database);
+                migration.up();
+            }
         }
+
     }
 
     @Override
