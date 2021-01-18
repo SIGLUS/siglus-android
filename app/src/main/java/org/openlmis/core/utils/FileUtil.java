@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 
 public final class FileUtil {
@@ -42,6 +43,9 @@ public final class FileUtil {
 
     public static void copyInputStreamToFile(InputStream in, File file) {
         try {
+            PrintWriter writer = new PrintWriter(file);
+            writer.print("");
+            writer.close();
             OutputStream out = new FileOutputStream(file);
             byte[] buf = new byte[1024];
             int len;
