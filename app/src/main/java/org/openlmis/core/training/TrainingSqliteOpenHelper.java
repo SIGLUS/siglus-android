@@ -2,6 +2,7 @@ package org.openlmis.core.training;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
@@ -14,6 +15,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
 import java.util.Date;
+
 
 public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2017-02-14", DateUtil.DB_DATE_FORMAT);
@@ -40,6 +42,14 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     }
 
     @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            db.disableWriteAheadLogging();
+        }
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
 
     }
@@ -47,6 +57,12 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        getWritableDatabase().close();
     }
 
     public void updateTimeInDB() throws SQLException {
