@@ -25,6 +25,8 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.persistence.migrations.AddALToRegimen;
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCategoryColumnToProductPrograms;
@@ -94,6 +96,8 @@ import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.openlmis.core.persistence.Migration.TAG;
 
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
@@ -192,10 +196,12 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-        for (Migration migration : MIGRATIONS) {
-            Log.i("DB Creation", "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
-            migration.setSQLiteDatabase(database);
-            migration.up();
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            for (Migration migration : MIGRATIONS) {
+                Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
+                migration.setSQLiteDatabase(database);
+                migration.up();
+            }
         }
     }
 
