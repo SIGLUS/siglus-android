@@ -109,9 +109,6 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_rapid_test)
     Button btnRapidTestReport;
 
-    @InjectView(R.id.btn_patient_data)
-    Button btnPatientData;
-
     @InjectView(R.id.btn_ptv_card)
     Button btnPTVReport;
 
@@ -167,9 +164,6 @@ public class HomeActivity extends BaseActivity {
             btnRapidTestReport.setVisibility(View.GONE);
         }
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_patient_data)) {
-            btnPatientData.setVisibility(View.GONE);
-        }
         updateButtonConfigView();
     }
 
