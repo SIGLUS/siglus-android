@@ -51,6 +51,7 @@ public class ProgramDataFormRepository {
             genericDao.createOrUpdate(form);
             Log.d("---|show items size|---", "" + form.getProgramDataFormItemListWrapper().size());
             saveFormItems(form);
+            Log.d("---|show items size|---", "" + form.getFormBasicItemListWrapper().size());
             saveFormBasicItems(form);
             saveSignatures(form.getSignaturesWrapper());
             return null;
