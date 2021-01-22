@@ -53,7 +53,7 @@ public class StockHistoryViewModel {
         filteredMovementItemViewModelList.addAll(FluentIterable.from(allMovementItemViewModelList).filter(new Predicate<StockHistoryMovementItemViewModel>() {
             @Override
             public boolean apply(StockHistoryMovementItemViewModel stockHistoryMovementItemViewModel) {
-                return !(stockHistoryMovementItemViewModel.getStockMovementItem().getMovementDate()).before(DateUtil.minusDayOfMonth(new Date(LMISApp.getInstance().getCurrentTimeMillis()), days));
+                return !(stockHistoryMovementItemViewModel.getStockMovementItem().getMovementDate()).before(DateUtil.minusDayOfMonth(DateUtil.getCurrentDate(), days));
             }
         }).toList());
         return filteredMovementItemViewModelList;

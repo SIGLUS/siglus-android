@@ -25,6 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 import org.openlmis.core.model.Product;
+import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class ProductAdapter implements JsonDeserializer<Product> {
         Type form;
 
         public Product toProduct() {
-            setCreatedAt(new Date());
+            setCreatedAt(DateUtil.getCurrentDate());
             setUpdatedAt(this.getCreatedAt());
             Product product = this;
             if (form != null){

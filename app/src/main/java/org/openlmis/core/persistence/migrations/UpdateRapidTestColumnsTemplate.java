@@ -9,7 +9,7 @@ import java.util.Date;
 public class UpdateRapidTestColumnsTemplate extends Migration  {
     @Override
     public void up() {
-        String formatDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
+        String formatDate = DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT);
         execSQL("INSERT INTO program_data_columns (code, label, description, program_id, createdAt, updatedAt) "
                 + "VALUES (" +
                 "'UNJUSTIFIED_HIVDETERMINE', " +

@@ -67,14 +67,14 @@ public class StockMovementRepository {
 
     private void updateDateTimeIfEmpty(StockMovementItem stockMovementItem) {
         if (stockMovementItem.getCreatedTime() == null) {
-            stockMovementItem.setCreatedTime(new Date());
+            stockMovementItem.setCreatedTime(DateUtil.getCurrentDate());
         }
-        stockMovementItem.setCreatedAt(new Date());
-        stockMovementItem.setUpdatedAt(new Date());
+        stockMovementItem.setCreatedAt(DateUtil.getCurrentDate());
+        stockMovementItem.setUpdatedAt(DateUtil.getCurrentDate());
     }
 
     public void batchCreateStockMovementItemAndLotItems(final StockMovementItem stockMovementItem) throws LMISException {
-        stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+        stockMovementItem.setCreatedTime(DateUtil.getCurrentDate());
         create(stockMovementItem);
 
         lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());

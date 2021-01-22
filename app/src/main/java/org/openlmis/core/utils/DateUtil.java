@@ -22,6 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockCard;
@@ -54,6 +56,7 @@ public final class DateUtil {
     public static final int DAY_PERIOD_END = 20;
 
 
+    public static final SimpleDateFormat DATE_SIMPLE_FORMAT = new SimpleDateFormat(SIMPLE_DATE_FORMAT);
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
     public static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat(DATE_TIME_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR = new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH);
@@ -68,6 +71,19 @@ public final class DateUtil {
     public static final Calendar CALENDAR_NOW = Calendar.getInstance();
 
     private DateUtil() {
+    }
+
+    public static Date getCurrentDate() {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            String date = "2021-1-18";
+            try {
+                return DATE_SIMPLE_FORMAT.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return DateUtil.getCurrentDate();
     }
 
     public static Date truncateTimeStampInDate(Date date) {
@@ -187,7 +203,7 @@ public final class DateUtil {
     }
 
     public static long calculateTimeIntervalFromNow(long lastSyncedTimestamp) {
-        return new Date().getTime() - lastSyncedTimestamp;
+        return DateUtil.getCurrentDate().getTime() - lastSyncedTimestamp;
     }
 
     public static String formatExpiryDateString(List<String> expiryDates) {
