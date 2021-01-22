@@ -95,7 +95,7 @@ public class SyncStockCardsLastYearSilently {
 
     @NonNull
     private Date getActualDate() {
-        long syncEndTimeMillions = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, new Date().getTime());
+        long syncEndTimeMillions = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, DateUtil.getCurrentDate().getTime());
         return new Date(syncEndTimeMillions);
     }
 }

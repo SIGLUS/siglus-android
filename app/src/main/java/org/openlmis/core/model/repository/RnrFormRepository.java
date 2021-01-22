@@ -199,7 +199,7 @@ public class RnrFormRepository {
             throw e;
         }
         RnRForm rnRForm = dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("program_id", program.getId())
-                .and().between("periodBegin", reportTypeForm.getStartTime(), new Date())
+                .and().between("periodBegin", reportTypeForm.getStartTime(), DateUtil.getCurrentDate())
                 .and().ne("status", RnRForm.STATUS.AUTHORIZED)
                 .queryForFirst());
         assignCategoryForRnrItems(rnRForm);
@@ -277,7 +277,7 @@ public class RnrFormRepository {
         } catch (LMISException e) {
             new LMISException(e, "RnrFormRepository.hasOldDate").reportToFabric();
         }
-        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
+        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
         if (list != null && list.size() > 0) {
             for (RnRForm rnrForm : list) {
@@ -469,7 +469,7 @@ public class RnrFormRepository {
 
         return dbUtil.withDao(RnRForm.class, dao -> {
             Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
-            where.in("program_id", programId).and().between("periodBegin", typeForm.getStartTime(), new Date());
+            where.in("program_id", programId).and().between("periodBegin", typeForm.getStartTime(),  DateUtil.getCurrentDate());
 
             if (!isWithEmergency) {
                 where.and().eq("emergency", false);
@@ -497,7 +497,7 @@ public class RnrFormRepository {
                     eq("program_id", programId).and().
                     eq("synced", false).and().
                     eq("status", RnRForm.STATUS.AUTHORIZED).and().
-                    between("periodBegin", reportTypeForm.getStartTime(), new Date());
+                    between("periodBegin", reportTypeForm.getStartTime(), DateUtil.getCurrentDate());
 
             return where.query();
         });
@@ -532,7 +532,7 @@ public class RnrFormRepository {
     }
 
     public void deleteOldData() {
-        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()), DateUtil.DB_DATE_FORMAT);
+        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(DateUtil.getCurrentDate(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()), DateUtil.DB_DATE_FORMAT);
 
         String rawSqlDeleteRnrFormItems = "DELETE FROM rnr_form_items "
                 + "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "' );";

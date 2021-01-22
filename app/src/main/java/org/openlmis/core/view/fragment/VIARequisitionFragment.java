@@ -158,7 +158,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
     private void loadData() {
         if (isFromSelectEmergencyPage()) {
-            presenter.loadEmergencyData(emergencyStockCards, new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+            presenter.loadEmergencyData(emergencyStockCards, DateUtil.getCurrentDate());
         } else {
             presenter.loadData(formId, periodEndDate);
         }
@@ -198,7 +198,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
         consultationView.setEmergencyRnrHeader();
 
         getActivity().setTitle(getString(R.string.label_emergency_requisition_title,
-                DateUtil.formatDateWithoutYear(new Date(LMISApp.getInstance().getCurrentTimeMillis()))));
+                DateUtil.formatDateWithoutYear(DateUtil.getCurrentDate())));
         actionPanelView.setNegativeButtonVisibility(View.GONE);
     }
 

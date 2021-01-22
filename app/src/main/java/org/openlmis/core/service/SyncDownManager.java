@@ -521,7 +521,7 @@ public class SyncDownManager {
     }
 
     private void fetchLatestOneMonthMovements() throws LMISException {
-        Date now = new Date();
+        Date now = DateUtil.getCurrentDate();
         Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
         String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
 

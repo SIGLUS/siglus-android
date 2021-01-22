@@ -309,7 +309,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
         private void setMovementDate() {
             if (StringUtils.EMPTY.equals(txMovementDate.getText().toString())) {
-                String movementDate = DateUtil.formatDate(new Date());
+                String movementDate = DateUtil.formatDate(DateUtil.getCurrentDate());
                 txMovementDate.setText(movementDate);
                 model.setMovementDate(movementDate);
             }

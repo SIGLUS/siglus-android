@@ -184,7 +184,7 @@ public class StockRepository {
     }
 
     public boolean hasOldDate() {
-        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
+        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
         List<StockCard> list = list();
         if (hasStockCardData(list)) {
@@ -310,7 +310,7 @@ public class StockRepository {
     }
 
     public void deleteOldData() {
-        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()), DateUtil.DB_DATE_FORMAT);
+        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(DateUtil.getCurrentDate(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()), DateUtil.DB_DATE_FORMAT);
 
         String rawSqlDeleteLotItems = "DELETE FROM lot_movement_items "
                 + "WHERE StockMovementItem_id IN (SELECT id FROM stock_items WHERE movementDate < '" + dueDateShouldDataLivedInDB + "' );";

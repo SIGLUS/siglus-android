@@ -45,7 +45,7 @@ public class StockHistoryViewModel {
         filteredMovementItemViewModelList.addAll(FluentIterable.from(allMovementItemViewModelList)
                 .filter(stockHistoryMovementItemViewModel ->
                         !(stockHistoryMovementItemViewModel.getStockMovementItem().getMovementDate())
-                                .before(DateUtil.minusDayOfMonth(now, days))).toList());
+                                .before(DateUtil.minusDayOfMonth(DateUtil.getCurrentDate(), days))).toList());
         return filteredMovementItemViewModelList;
     }
 

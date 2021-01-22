@@ -16,6 +16,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.openlmis.core.utils.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,8 +62,8 @@ public class LotRepository {
 
         if (null != lotMovementItem.getMovementQuantity()) {
             if (existingLot == null) {
-                lot.setCreatedAt(new Date());
-                lot.setUpdatedAt(new Date());
+                lot.setCreatedAt(DateUtil.getCurrentDate());
+                lot.setUpdatedAt(DateUtil.getCurrentDate());
                 createOrUpdateLot(lot);
 
                 lotOnHand = new LotOnHand(lot, lotMovementItem.getStockMovementItem().getStockCard(), lotMovementItem.getMovementQuantity());
@@ -110,8 +111,8 @@ public class LotRepository {
     }
 
     public void createLotMovementItem(final LotMovementItem lotMovementItem) throws LMISException {
-        lotMovementItem.setCreatedAt(new Date());
-        lotMovementItem.setUpdatedAt(new Date());
+        lotMovementItem.setCreatedAt(DateUtil.getCurrentDate());
+        lotMovementItem.setUpdatedAt(DateUtil.getCurrentDate());
 
         dbUtil.withDao(LotMovementItem.class, (DbUtil.Operation<LotMovementItem, Void>) dao -> {
             dao.createOrUpdate(lotMovementItem);

@@ -37,7 +37,7 @@ public abstract class BaseModel implements Serializable {
     private long id;
 
     public BaseModel() {
-        createdAt = DateUtil.parseString(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT), DateUtil.DATE_TIME_FORMAT);
+        createdAt = DateUtil.parseString(DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT), DateUtil.DATE_TIME_FORMAT);
         updatedAt = createdAt;
     }
 

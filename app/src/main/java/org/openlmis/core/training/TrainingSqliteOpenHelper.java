@@ -27,7 +27,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     private TrainingSqliteOpenHelper(Context context) {
         super(context, "lmis_db", null, LmisSqliteOpenHelper.getDBVersion());
-        monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(TRAINING_ANCHOR_DATE, new Date());
+        monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(TRAINING_ANCHOR_DATE, DateUtil.getCurrentDate());
     }
 
     private synchronized void getConnection() throws SQLException {

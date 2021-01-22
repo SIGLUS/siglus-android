@@ -86,12 +86,12 @@ public class StockMovementRepository {
         if (stockMovementItem.getCreatedTime() == null) {
             stockMovementItem.setCreatedTime(now);
         }
-        stockMovementItem.setCreatedAt(now);
-        stockMovementItem.setUpdatedAt(now);
+        stockMovementItem.setCreatedAt(DateUtil.getCurrentDate());
+        stockMovementItem.setUpdatedAt(DateUtil.getCurrentDate());
     }
 
     public void batchCreateStockMovementItemAndLotItems(final StockMovementItem stockMovementItem) throws LMISException {
-        stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+        stockMovementItem.setCreatedTime(DateUtil.getCurrentDate());
         // Create Stock Movement history list
         create(stockMovementItem);
         if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())

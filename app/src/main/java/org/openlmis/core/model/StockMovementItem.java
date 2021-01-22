@@ -97,7 +97,7 @@ public class StockMovementItem extends BaseModel {
 
     public StockMovementItem(StockCard stockCard, InventoryViewModel model) {
         this.stockCard = stockCard;
-        this.movementDate = new Date();
+        this.movementDate = DateUtil.getCurrentDate();
         this.reason = MovementReasonManager.INVENTORY;
         this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
         populateLotQuantitiesAndCalculateNewSOH(model.getNewLotMovementViewModelList(), movementType);
@@ -142,7 +142,7 @@ public class StockMovementItem extends BaseModel {
     public StockMovementItem(StockCard stockCard) {
         this.stockCard = stockCard;
         this.stockOnHand = stockCard.calculateSOHFromLots();
-        this.movementDate = new Date();
+        this.movementDate = DateUtil.getCurrentDate();
     }
 
     public List<LotMovementItem> getLotMovementItemListWrapper() {
