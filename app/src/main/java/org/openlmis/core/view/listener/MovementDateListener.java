@@ -38,7 +38,7 @@ public class MovementDateListener implements DatePickerDialog.OnDateSetListener 
     }
 
     private boolean validateStockMovementDate(Date previousMovementDate, Date chosenDate) {
-        Calendar today = GregorianCalendar.getInstance();
+        Calendar today = DateUtil.getCurrentCalendar();
 
         return (previousMovementDate == null || !previousMovementDate.after(chosenDate)) && !chosenDate.after(today.getTime());
     }

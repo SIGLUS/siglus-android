@@ -105,7 +105,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private void init() {
         invalidateNextBtn();
 
-        DateTime date = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime date = new DateTime(DateUtil.getCurrentDate().getTime());
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_training_select_close_of_period, date.toString("dd MMM"))));
         } else {

@@ -107,13 +107,13 @@ public class Period implements Serializable {
     }
 
     private boolean isOpenForCurrentDate() {
-        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime today = new DateTime(DateUtil.getCurrentDate().getTime());
         Interval requisitionInterval = new Interval(getOpeningRequisitionDate(), getClosingRequisitionDate());
         return requisitionInterval.contains(today);
     }
 
     private boolean isBeforeCurrent() {
-        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime today = new DateTime(DateUtil.getCurrentDate().getTime());
         Period currentPeriod = new Period(today);
         return periodEnd.isBefore(currentPeriod.getBegin());
     }

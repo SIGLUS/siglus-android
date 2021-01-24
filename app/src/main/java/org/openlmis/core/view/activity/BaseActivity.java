@@ -45,6 +45,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -138,7 +139,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
             logout();
             return true;
         } else {
-            LMISApp.lastOperateTime = LMISApp.getInstance().getCurrentTimeMillis();
+            LMISApp.lastOperateTime = DateUtil.getCurrentDate().getTime();
             return super.dispatchTouchEvent(ev);
         }
     }
@@ -153,14 +154,14 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
     }
 
     private boolean alreadyTimeOuted() {
-        Long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
+        Long currentTimeMillis = DateUtil.getCurrentDate().getTime();
         return currentTimeMillis - LMISApp.lastOperateTime > APP_TIMEOUT;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         isPageLoadTimerInProgress = true;
-        onCreateStartMili = LMISApp.getInstance().getCurrentTimeMillis();
+        onCreateStartMili = DateUtil.getCurrentDate().getTime();
 
         setTheme(getThemeRes());
         super.onCreate(savedInstanceState);

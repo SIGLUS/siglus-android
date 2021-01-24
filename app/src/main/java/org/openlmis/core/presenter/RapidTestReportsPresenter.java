@@ -112,7 +112,7 @@ public class RapidTestReportsPresenter extends Presenter {
                     && (lastViewModel.getStatus() == Status.FIRST_MISSING
                     && lastViewModel.getPeriod().getEnd().isAfterNow())) {
 
-                DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+                DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
                 DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
                 addLastRapidTestViewModel(lastViewModel, dateTime, endDateTime);
             }
@@ -155,7 +155,7 @@ public class RapidTestReportsPresenter extends Presenter {
                 if (period.isPresent()) {
                     currentPeriod = period.get().getBegin();
                 } else {
-                    currentPeriod = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+                    currentPeriod = new DateTime(new DateTime(DateUtil.getCurrentDate().getTime()));
                 }
             } else {
                 currentPeriod = period.get().getEnd();
@@ -217,7 +217,7 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     private boolean isCanNotCreateRnr(Period currentPeriod) {
-        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
         return dateTime.isBefore(currentPeriod.getInventoryBegin());
     }
 
