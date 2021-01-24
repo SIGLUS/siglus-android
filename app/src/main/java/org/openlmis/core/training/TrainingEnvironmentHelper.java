@@ -6,6 +6,7 @@ import android.os.Environment;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
@@ -30,7 +31,7 @@ public class TrainingEnvironmentHelper {
 
 
     private void setSyncedForTrainingEnvironment() {
-        SharedPreferenceMgr.getInstance().setLastSyncProductTime(String.valueOf(LMISApp.getInstance().getCurrentTimeMillis()));
+        SharedPreferenceMgr.getInstance().setLastSyncProductTime(String.valueOf(DateUtil.getCurrentDate().getTime()));
         SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
         SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
         SharedPreferenceMgr.getInstance().setRapidTestsDataSynced(true);

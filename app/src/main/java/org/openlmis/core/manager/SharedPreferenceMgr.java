@@ -32,6 +32,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -244,7 +245,7 @@ public class SharedPreferenceMgr {
     }
 
     public void setRnrLastSyncTime() {
-        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_RNR_FORM, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_RNR_FORM, DateUtil.getCurrentDate().getTime()).apply();
     }
 
     public long getStockLastSyncTime() {
@@ -256,7 +257,7 @@ public class SharedPreferenceMgr {
     }
 
     public void setStockLastSyncTime() {
-        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_STOCKCARD, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_STOCKCARD, DateUtil.getCurrentDate().getTime()).apply();
     }
 
     public void setKeyHasCopiedTrainingDb(boolean hasCopiedTrainingDb) {
@@ -269,12 +270,12 @@ public class SharedPreferenceMgr {
 
     public boolean hasSyncedUpLatestMovementLastDay() {
         DateTime lastSyncTriggerDate = new DateTime(sharedPreferences.getLong(LAST_MOVEMENT_HANDSHAKE_DATE, 0));
-        DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime currentDate = new DateTime(DateUtil.getCurrentDate().getTime());
         return currentDate.minusDays(1).isBefore(lastSyncTriggerDate);
     }
 
     public void setLastMovementHandShakeDateToToday() {
-        sharedPreferences.edit().putLong(LAST_MOVEMENT_HANDSHAKE_DATE, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+        sharedPreferences.edit().putLong(LAST_MOVEMENT_HANDSHAKE_DATE, DateUtil.getCurrentDate().getTime()).apply();
     }
 
     public void setEnableQaDebug(boolean enabled) {
@@ -290,7 +291,7 @@ public class SharedPreferenceMgr {
     }
 
     public void updateLatestLowStockAvgTime() {
-        sharedPreferences.edit().putLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+        sharedPreferences.edit().putLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME, DateUtil.getCurrentDate().getTime()).apply();
     }
 
     public void setHasDeletedOldStockMovement(boolean hasDeletedOldStockMovement) {

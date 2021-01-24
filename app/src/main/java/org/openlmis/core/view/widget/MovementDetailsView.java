@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.listener.MovementDateListener;
 
 import java.util.Calendar;
@@ -135,7 +136,7 @@ public class MovementDetailsView extends LinearLayout {
     }
 
     private void showDatePickerDialog() {
-        final Calendar today = GregorianCalendar.getInstance();
+        final Calendar today = DateUtil.getCurrentCalendar();
 
         DatePickerDialog dialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Light_Dialog,
                 new MovementDateListener(presenter.getViewModel(), presenter.getLastMovementDate(), etMovementDate),

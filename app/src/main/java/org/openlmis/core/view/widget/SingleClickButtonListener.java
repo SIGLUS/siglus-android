@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.view.View;
 
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.utils.DateUtil;
 
 public abstract class SingleClickButtonListener implements View.OnClickListener {
 
@@ -17,7 +18,7 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
 
     @Override
     public final void onClick(View v) {
-        long currentClickTime = LMISApp.getInstance().getCurrentTimeMillis();
+        long currentClickTime = DateUtil.getCurrentDate().getTime();
         long elapsedTime = currentClickTime - lastClickTime;
 
         lastClickTime = currentClickTime;

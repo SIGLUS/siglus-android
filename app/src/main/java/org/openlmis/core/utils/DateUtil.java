@@ -75,15 +75,30 @@ public final class DateUtil {
 
     public static Date getCurrentDate() {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            String date = "2021-1-18";
-            try {
-                return DATE_SIMPLE_FORMAT.parse(date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(2021, 0, 18);
+            return calendar.getTime();
         }
         return DateUtil.getCurrentDate();
+    }
+
+    public static Date today() {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(2021, 0, 18);
+            return calendar.getTime();
+        }
+        return Calendar.getInstance().getTime();
+    }
+
+    public static  Calendar getCurrentCalendar() {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.set(2021, 0, 18);
+            return calendar;
+        }
+        return GregorianCalendar.getInstance();
+
     }
 
     public static Date truncateTimeStampInDate(Date date) {
@@ -136,10 +151,6 @@ public final class DateUtil {
             new LMISException(e).reportToFabric();
             return null;
         }
-    }
-
-    public static Date today() {
-        return Calendar.getInstance().getTime();
     }
 
     public static String convertDate(String date, String currentFormat, String expectFormat) throws ParseException {
