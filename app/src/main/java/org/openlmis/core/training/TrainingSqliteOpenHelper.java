@@ -82,8 +82,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     private void updateProgramDataFromPeriodsAndSubmitTime() throws SQLException {
         String sql = "UPDATE program_data_forms "
-                + "SET submittedTime = datetime(submittedTime, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX + ","
-                + "periodBegin = datetime(periodBegin, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX + ","
+                + "SET periodBegin = datetime(periodBegin, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX + ","
                 + "periodEnd = datetime(periodEnd, '+" + monthOffsetFromAnchor + " months') ||" + DATE_TIME_SUFFIX;
         dbConnection.update(sql, null, null);
     }
