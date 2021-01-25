@@ -79,7 +79,7 @@ public final class DateUtil {
             calendar.set(2021, 0, 18);
             return calendar.getTime();
         }
-        return DateUtil.getCurrentDate();
+        return new Date();
     }
 
     public static Date today() {
