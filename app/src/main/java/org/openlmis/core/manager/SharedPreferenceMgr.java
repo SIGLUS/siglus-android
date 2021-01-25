@@ -339,7 +339,7 @@ public class SharedPreferenceMgr {
     }
 
     public void updateLatestMonthlyCheckDirtyDataTime() {
-        sharedPreferences.edit().putLong(LATEST_MONTHLY_CHECK_DIRTY_DATA_TIME, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+        sharedPreferences.edit().putLong(LATEST_MONTHLY_CHECK_DIRTY_DATA_TIME, DateUtil.getCurrentDate().getTime()).apply();
     }
 
     public void updateLatestLowStockAvgTime() {

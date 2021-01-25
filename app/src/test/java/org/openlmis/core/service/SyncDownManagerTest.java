@@ -472,7 +472,7 @@ public class SyncDownManagerTest {
     }
 
     private SyncDownReportTypeResponse getReportTypeResponse() {
-        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
         ReportTypeForm reportTypeMMIA = new ReportTypeBuilder()
                 .setActive(true)
                 .setCode(Constants.MMIA_REPORT)

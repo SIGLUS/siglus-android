@@ -370,7 +370,7 @@ public class StockRepository {
     }
 
     public void insertNewInventory(List<String> productCodeList) throws LMISException {
-        Date now = new Date();
+        Date now = DateUtil.getCurrentDate();
         Cursor getStockCardCursor;
 
         for (String productCode : productCodeList) {

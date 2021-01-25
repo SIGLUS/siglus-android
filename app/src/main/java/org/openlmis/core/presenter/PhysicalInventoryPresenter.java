@@ -131,7 +131,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         return Observable.create(subscriber -> {
             try {
                 List<StockMovementItem> newestEachMovementItems = movementRepository.queryEachStockCardNewestMovement();
-                Date now = new Date();
+                Date now = DateUtil.getCurrentDate();
                 for (InventoryViewModel viewModel : inventoryViewModelList) {
                     viewModel.setSignature(sign);
                     StockCard stockCard = viewModel.getStockCard();

@@ -7,6 +7,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.utils.AutoUpdateApk;
+import org.openlmis.core.utils.DateUtil;
 
 @Singleton
 public class UpgradeManager {
@@ -14,7 +15,7 @@ public class UpgradeManager {
     private AutoUpdateApk autoUpdateApk = new AutoUpdateApk(LMISApp.getContext(), "", upgradeServerUrl);
 
     public void triggerUpgrade() {
-        if (Period.isWithinSubmissionWindow(DateTime.now())) {
+        if (Period.isWithinSubmissionWindow(new DateTime(DateUtil.getCurrentDate()))) {
             return; //skip self auto upgrade if it's within 18h-25th of a month
         }
         autoUpdateApk.checkUpdatesManually();

@@ -58,7 +58,7 @@ public class StockMovementRepository {
                 && stockMovementItem.getCreatedTime().before(latestStockMovement.getCreatedTime())) {
             String productCode = latestStockMovement.getStockCard().getProduct().getCode();
             String facilityCode = UserInfoMgr.getInstance().getFacilityCode();
-            LMISException e = new LMISException(facilityCode + ":" + productCode + ":" + (new Date()).toString());
+            LMISException e = new LMISException(facilityCode + ":" + productCode + ":" + (DateUtil.getCurrentDate()).toString());
             e.reportToFabric();
             throw e;
         }
@@ -82,7 +82,7 @@ public class StockMovementRepository {
     }
 
     private void updateDateTimeIfEmpty(StockMovementItem stockMovementItem) {
-        Date now = new Date();
+        Date now = DateUtil.getCurrentDate();
         if (stockMovementItem.getCreatedTime() == null) {
             stockMovementItem.setCreatedTime(now);
         }

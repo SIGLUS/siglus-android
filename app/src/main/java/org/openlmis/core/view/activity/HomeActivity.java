@@ -64,6 +64,7 @@ import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
@@ -521,7 +522,7 @@ public class HomeActivity extends BaseActivity {
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (mgr != null) {
-            mgr.set(AlarmManager.RTC, LMISApp.getInstance().getCurrentTimeMillis() + startAppInterval, mPendingIntent);
+            mgr.set(AlarmManager.RTC, DateUtil.getCurrentDate().getTime() + startAppInterval, mPendingIntent);
         }
     }
 

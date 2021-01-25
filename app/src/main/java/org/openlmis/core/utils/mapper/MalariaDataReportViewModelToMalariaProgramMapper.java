@@ -7,6 +7,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Implementation;
 import org.openlmis.core.model.MalariaProgram;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.malaria.MalariaDataReportViewModel;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +29,7 @@ public class MalariaDataReportViewModelToMalariaProgramMapper {
 
     private MalariaProgram generateMalariaProgramFromScratch(MalariaDataReportViewModel malariaDataReportViewModel) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, LMISException {
         String username = UserInfoMgr.getInstance().getUser().getUsername();
-        DateTime today = now();
+        DateTime today = new DateTime(DateUtil.getCurrentDate());
         Collection<Implementation> implementations = implementationsMapper.map(
                 malariaDataReportViewModel.getUsImplementationReportViewModel(),
                 malariaDataReportViewModel.getApeImplementationReportViewModel());
@@ -40,7 +41,7 @@ public class MalariaDataReportViewModelToMalariaProgramMapper {
 
     private MalariaProgram generateMalariaProgramFrom(MalariaDataReportViewModel malariaDataReportViewModel, MalariaProgram malariaProgram) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         String username = UserInfoMgr.getInstance().getUser().getUsername();
-        DateTime today = now();
+        DateTime today = new DateTime(DateUtil.getCurrentDate());
         Collection<Implementation> implementations = implementationsMapper.map(
                 malariaDataReportViewModel.getUsImplementationReportViewModel(),
                 malariaProgram.getImplementations());

@@ -41,7 +41,6 @@ public class StockHistoryViewModel {
 
     public List<StockHistoryMovementItemViewModel> filter(final int days) {
         filteredMovementItemViewModelList.clear();
-        Date now = new Date(LMISApp.getInstance().getCurrentTimeMillis());
         filteredMovementItemViewModelList.addAll(FluentIterable.from(allMovementItemViewModelList)
                 .filter(stockHistoryMovementItemViewModel ->
                         !(stockHistoryMovementItemViewModel.getStockMovementItem().getMovementDate())

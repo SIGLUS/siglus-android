@@ -12,6 +12,7 @@ import org.openlmis.core.model.PTVProgramStockInformation;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ServiceDispensation;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.PTVUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -34,7 +35,7 @@ public class ServiceDispensationRepositoryTest {
 
     @Test
     public void shouldSaveServiceDispensationsWhenPtvProgramStockInformationExists() throws Exception {
-        Period period = new Period(DateTime.now());
+        Period period = new Period(new DateTime(DateUtil.getCurrentDate()));
         PTVProgram ptvProgram = PTVUtil.createDummyPTVProgram(period);
         Product product = Product.dummyProduct();
         PTVProgramStockInformation ptvProgramStockInformation = new PTVProgramStockInformation();

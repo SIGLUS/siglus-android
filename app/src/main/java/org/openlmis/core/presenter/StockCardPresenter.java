@@ -154,7 +154,7 @@ public class StockCardPresenter extends Presenter {
     }
 
     private boolean shouldStartDataCheck() {
-        long now = LMISApp.getInstance().getCurrentTimeMillis();
+        long now = DateUtil.getCurrentDate().getTime();
         long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
         return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
                 && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
@@ -173,7 +173,7 @@ public class StockCardPresenter extends Presenter {
     }
 
     public void refreshStockCardsObservable(long stockCardId) {
-        DateTime dateTime = DateTime.now();
+        DateTime dateTime = new DateTime(DateUtil.getCurrentDate());
         view.loading();
         Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
             refreshStockCardViewModelsSOH(stockCardId);
@@ -184,7 +184,8 @@ public class StockCardPresenter extends Presenter {
                     @Override
                     public void onCompleted() {
                         view.loaded();
-                        Log.d(TAG, "refreshStockCardsObservable onCompleted: " + (DateTime.now().getMillis() - dateTime.getMillis()));
+                        Log.d(TAG, "refreshStockCardsObservable onCompleted: " + (new DateTime
+                                (DateUtil.getCurrentDate()).getMillis() - dateTime.getMillis()));
                     }
 
                     @Override
@@ -196,7 +197,8 @@ public class StockCardPresenter extends Presenter {
                     @Override
                     public void onNext(List<StockCard> stockCards) {
                         view.loaded();
-                        Log.d(TAG, "refreshStockCardsObservable onNext: " + (DateTime.now().getMillis() - dateTime.getMillis()));
+                        Log.d(TAG, "refreshStockCardsObservable onNext: " + (new DateTime
+                                (DateUtil.getCurrentDate()).getMillis() - dateTime.getMillis()));
                         refreshViewModels(stockCards);
                         view.refreshBannerText();
                         view.refresh(inventoryViewModels);

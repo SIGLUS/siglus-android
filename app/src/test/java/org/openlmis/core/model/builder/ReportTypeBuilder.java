@@ -23,7 +23,7 @@ public class ReportTypeBuilder {
     }
 
     public ReportTypeForm getMMIAReportTypeForm() {
-        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
         return this
                 .setActive(true)
                 .setCode(Constants.MMIA_PROGRAM_CODE)

@@ -500,7 +500,7 @@ public class SyncDownManager {
 
     private String getStartDate() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(DateUtil.getCurrentDate());
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         final Date startTime = DateUtil.dateMinusMonth(calendar.getTime(),
                 sharedPreferenceMgr.getMonthOffsetThatDefinedOldData());

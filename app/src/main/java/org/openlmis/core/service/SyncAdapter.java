@@ -89,7 +89,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private boolean shouldStartDataCheck() {
-        long now = LMISApp.getInstance().getCurrentTimeMillis();
+        long now = DateUtil.getCurrentDate().getTime();
         long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
         return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
                 && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)

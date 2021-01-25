@@ -16,7 +16,7 @@ public class StockMovementItemBuilder {
     String movementReason = "ISSUE1";
     MovementType movementType = MovementReasonManager.MovementType.ISSUE;
     int quantity = 12;
-    Date createdTime = new Date();
+    Date createdTime = DateUtil.getCurrentDate();
 
     public StockMovementItem build() {
         StockMovementItem stockMovementItem = new StockMovementItem();

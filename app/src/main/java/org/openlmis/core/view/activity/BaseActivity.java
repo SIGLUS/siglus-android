@@ -261,7 +261,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
                 loadingDialog = null;
                 isLoading = false;
                 if (isPageLoadTimerInProgress) {
-                    Log.d(this.getTitle() + " page", " load time " + (LMISApp.getInstance().getCurrentTimeMillis() - onCreateStartMili)
+                    Log.d(this.getTitle() + " page", " load time " + (DateUtil.getCurrentDate().getTime() - onCreateStartMili)
                             + " ms" + " in " + BuildConfig.VERSION_CODE);
                     isPageLoadTimerInProgress = false;
                 }

@@ -118,7 +118,7 @@ public class DirtyDataRepository {
     }
 
     public boolean hasOldDate() {
-        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), 1);
+        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(), 1);
         List<DirtyDataItemInfo> infos = listAll();
         if (hasBackedData(infos)) {
             for (DirtyDataItemInfo itemInfo : infos) {
@@ -131,7 +131,7 @@ public class DirtyDataRepository {
     }
 
     public void deleteOldData() {
-        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), 1);
+        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(), 1);
         try {
             dbUtil.withDao(DirtyDataItemInfo.class, dao -> {
                 DeleteBuilder<DirtyDataItemInfo, String> deleteBuilder = dao.deleteBuilder();

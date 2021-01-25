@@ -31,6 +31,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -184,7 +185,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     }
 
     public List<LotOnHand> getNoneExpiredLotOnHandList() {
-        DateTime now = DateTime.now();
+        DateTime now = new DateTime(DateUtil.getCurrentDate());
         return FluentIterable.from(getLotOnHandListWrapper())
                 .filter(lotOnHand -> now.isBefore(lotOnHand.getLot().getExpirationDate().getTime()))
                 .toList();

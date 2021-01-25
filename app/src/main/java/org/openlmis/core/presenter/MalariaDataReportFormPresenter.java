@@ -9,6 +9,7 @@ import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ViaReportStatus;
 import org.openlmis.core.service.PatientDataService;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.mapper.MalariaDataReportViewModelToMalariaProgramMapper;
 import org.openlmis.core.utils.mapper.MalariaProgramToMalariaDataReportViewModelMapper;
 import org.openlmis.core.view.BaseView;
@@ -84,7 +85,7 @@ public class MalariaDataReportFormPresenter extends BaseReportPresenter {
 
     public MalariaProgram getMalariaProgram() throws InvocationTargetException, NoSuchMethodException, LMISException, IllegalAccessException {
         MalariaDataReportViewModel reportViewModel = new MalariaDataReportViewModel(
-                DateTime.now(),
+                new DateTime(DateUtil.getCurrentDate()),
                 period.getBegin(),
                 period.getEnd(),
                 viewModels.get(0),

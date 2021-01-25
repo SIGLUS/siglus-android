@@ -105,7 +105,7 @@ public class StockMovementItem extends BaseModel {
 
     public StockMovementItem(StockCard stockCard, InventoryViewModel model, boolean fromInitialInventory) {
         this.stockCard = stockCard;
-        this.movementDate = new Date();
+        this.movementDate = DateUtil.getCurrentDate();
         this.reason = MovementReasonManager.INVENTORY;
         this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
 
