@@ -346,6 +346,9 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME, DateUtil.getCurrentDate().getTime()).apply();
     }
 
+    public void resetLatestLowStockAvgTime() {
+        sharedPreferences.edit().putLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME,0).apply();
+    }
     public void setHasDeletedOldStockMovement(boolean hasDeletedOldStockMovement) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_DELETED_OLD_STOCK_MOVEMENT, hasDeletedOldStockMovement).apply();
     }
