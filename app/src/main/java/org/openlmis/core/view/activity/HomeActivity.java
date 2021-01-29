@@ -522,7 +522,11 @@ public class HomeActivity extends BaseActivity {
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (mgr != null) {
-            mgr.set(AlarmManager.RTC, DateUtil.getCurrentDate().getTime() + startAppInterval, mPendingIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                mgr.setExact(AlarmManager.RTC, DateUtil.getCurrentDate().getTime() + startAppInterval, mPendingIntent);
+            } else {
+                mgr.set(AlarmManager.RTC, DateUtil.getCurrentDate().getTime() + startAppInterval, mPendingIntent);
+            }
         }
     }
 
