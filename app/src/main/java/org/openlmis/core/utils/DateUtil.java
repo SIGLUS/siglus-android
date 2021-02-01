@@ -75,7 +75,7 @@ public final class DateUtil {
     }
 
     public static Date getCurrentDate() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+        if (LMISApp.getInstance() != null && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(2021, 0, 18);
             return calendar.getTime();
@@ -84,7 +84,7 @@ public final class DateUtil {
     }
 
     public static Date today() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+        if (LMISApp.getInstance() != null && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(2021, 0, 18);
             return calendar.getTime();
@@ -93,7 +93,7 @@ public final class DateUtil {
     }
 
     public static  Calendar getCurrentCalendar() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+        if (LMISApp.getInstance() != null && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             Calendar calendar = GregorianCalendar.getInstance();
             calendar.set(2021, 0, 18);
             return calendar;

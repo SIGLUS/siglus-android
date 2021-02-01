@@ -83,7 +83,7 @@ public class PatientDataService {
     }
 
     private Optional<Period> calculateFirstAvailablePeriod(BaseModel baseModel) {
-        DateTime today = new DateTime(DateUtil.getCurrentDate().getTime());
+        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         Optional<Period> period;
         if (baseModel != null) {
             period = Optional.of(new Period(new DateTime(baseModel.getCreatedAt())));

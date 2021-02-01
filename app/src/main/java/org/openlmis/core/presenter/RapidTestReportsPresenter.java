@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -112,7 +113,7 @@ public class RapidTestReportsPresenter extends Presenter {
                     && (lastViewModel.getStatus() == Status.FIRST_MISSING
                     && lastViewModel.getPeriod().getEnd().isAfterNow())) {
 
-                DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
+                DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
                 DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
                 addLastRapidTestViewModel(lastViewModel, dateTime, endDateTime);
             }
@@ -155,7 +156,7 @@ public class RapidTestReportsPresenter extends Presenter {
                 if (period.isPresent()) {
                     currentPeriod = period.get().getBegin();
                 } else {
-                    currentPeriod = new DateTime(new DateTime(DateUtil.getCurrentDate().getTime()));
+                    currentPeriod = new DateTime(new DateTime(LMISApp.getInstance().getCurrentTimeMillis()));
                 }
             } else {
                 currentPeriod = period.get().getEnd();
@@ -217,7 +218,7 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     private boolean isCanNotCreateRnr(Period currentPeriod) {
-        DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
+        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         return dateTime.isBefore(currentPeriod.getInventoryBegin());
     }
 

@@ -52,6 +52,7 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.NetworkSchedulerService;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
@@ -134,7 +135,7 @@ public class LMISApp extends Application {
     }
 
     public long getCurrentTimeMillis() {
-        return System.currentTimeMillis();
+        return DateUtil.getCurrentDate().getTime();
     }
 
     public static Context getContext() {

@@ -522,7 +522,7 @@ public class HomeActivity extends BaseActivity {
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (mgr != null) {
-            mgr.set(AlarmManager.RTC, DateUtil.getCurrentDate().getTime() + startAppInterval, mPendingIntent);
+            mgr.set(AlarmManager.RTC, LMISApp.getInstance().getCurrentTimeMillis() + startAppInterval, mPendingIntent);
         }
     }
 

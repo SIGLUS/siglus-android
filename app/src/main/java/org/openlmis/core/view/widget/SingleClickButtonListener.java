@@ -17,7 +17,7 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
 
     @Override
     public final void onClick(View v) {
-        long currentClickTime = DateUtil.getCurrentDate().getTime();
+        long currentClickTime = LMISApp.getInstance().getCurrentTimeMillis();
         long elapsedTime = currentClickTime - lastClickTime;
 
         lastClickTime = currentClickTime;

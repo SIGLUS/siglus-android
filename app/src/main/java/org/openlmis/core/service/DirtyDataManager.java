@@ -109,7 +109,7 @@ public class DirtyDataManager {
         if (sharedPreferenceMgr.shouldInitialDataCheck()) {
             return deletedStockCards;
         }
-        sharedPreferenceMgr.setCheckDataDate(DateUtil.getCurrentDate().getTime());
+        sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
         List<StockCard> lastTwoMovementAndLotSOHWrong = checkTheLastTwoMovementAndLotSOH(stockCards);
         deletedStockCards.addAll(lastTwoMovementAndLotSOHWrong);
         saveFullyDeletedInfo(deletedStockCards);
@@ -216,7 +216,7 @@ public class DirtyDataManager {
         Period period = Period.of(today());
         if (recordLastDirtyDataCheck.isBefore(period.getBegin())) {
             isSyncedMonthCheck = true;
-            sharedPreferenceMgr.setCheckDataDate(DateUtil.getCurrentDate().getTime());
+            sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
             Set<String> filterStockCardIds = new HashSet<>();
             final String facilityId = sharedPreferenceMgr.getUserFacilityId();
 

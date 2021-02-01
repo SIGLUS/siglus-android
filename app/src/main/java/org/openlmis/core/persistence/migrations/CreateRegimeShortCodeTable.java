@@ -16,7 +16,7 @@ public class CreateRegimeShortCodeTable extends Migration {
                 + "`createdAt` VARCHAR NOT NULL, "
                 + "`updatedAt` VARCHAR NOT NULL)");
 
-        String formatDate = DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT);
+        String formatDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
         execSQL("INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt` ) VALUES ('08S13', '3TC 150mg', '" + formatDate + "' , '" + formatDate + "')");
         execSQL("INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt` ) VALUES ('08S15', 'AZT 300mg', '" + formatDate + "' , '" + formatDate + "')");
         execSQL("INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt` ) VALUES ('08S22', 'NVP 200mg', '" + formatDate + "' , '" + formatDate + "')");

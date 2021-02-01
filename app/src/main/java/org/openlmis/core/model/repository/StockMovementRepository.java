@@ -91,7 +91,7 @@ public class StockMovementRepository {
     }
 
     public void batchCreateStockMovementItemAndLotItems(final StockMovementItem stockMovementItem) throws LMISException {
-        stockMovementItem.setCreatedTime(DateUtil.getCurrentDate());
+        stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         // Create Stock Movement history list
         create(stockMovementItem);
         if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())

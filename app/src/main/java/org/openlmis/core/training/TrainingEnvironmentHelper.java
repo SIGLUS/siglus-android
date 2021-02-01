@@ -31,7 +31,7 @@ public class TrainingEnvironmentHelper {
 
 
     private void setSyncedForTrainingEnvironment() {
-        SharedPreferenceMgr.getInstance().setLastSyncProductTime(String.valueOf(DateUtil.getCurrentDate().getTime()));
+        SharedPreferenceMgr.getInstance().setLastSyncProductTime(String.valueOf(LMISApp.getInstance().getCurrentTimeMillis()));
         SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
         SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
         SharedPreferenceMgr.getInstance().setRapidTestsDataSynced(true);
