@@ -16,7 +16,6 @@ import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.model.repository.PTVProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Optional;
 
 import java.lang.reflect.InvocationTargetException;

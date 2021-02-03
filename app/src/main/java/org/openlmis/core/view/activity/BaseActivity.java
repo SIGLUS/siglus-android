@@ -45,7 +45,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;

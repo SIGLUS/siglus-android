@@ -64,7 +64,6 @@ import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;

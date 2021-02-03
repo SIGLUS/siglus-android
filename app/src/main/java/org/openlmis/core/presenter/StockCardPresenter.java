@@ -184,8 +184,8 @@ public class StockCardPresenter extends Presenter {
                     @Override
                     public void onCompleted() {
                         view.loaded();
-                        Log.d(TAG, "refreshStockCardsObservable onCompleted: " + (new DateTime
-                                (DateUtil.getCurrentDate()).getMillis() - dateTime.getMillis()));
+                        Log.d(TAG, "refreshStockCardsObservable onCompleted: " + (new DateTime(
+                                DateUtil.getCurrentDate()).getMillis() - dateTime.getMillis()));
                     }
 
                     @Override
@@ -197,8 +197,8 @@ public class StockCardPresenter extends Presenter {
                     @Override
                     public void onNext(List<StockCard> stockCards) {
                         view.loaded();
-                        Log.d(TAG, "refreshStockCardsObservable onNext: " + (new DateTime
-                                (DateUtil.getCurrentDate()).getMillis() - dateTime.getMillis()));
+                        Log.d(TAG, "refreshStockCardsObservable onNext: " + (new DateTime(
+                                DateUtil.getCurrentDate()).getMillis() - dateTime.getMillis()));
                         refreshViewModels(stockCards);
                         view.refreshBannerText();
                         view.refresh(inventoryViewModels);

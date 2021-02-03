@@ -25,7 +25,6 @@ import com.j256.ormlite.field.DatabaseField;
 import org.openlmis.core.utils.DateUtil;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import lombok.Data;
 

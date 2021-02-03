@@ -6,7 +6,6 @@ import android.os.Environment;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
