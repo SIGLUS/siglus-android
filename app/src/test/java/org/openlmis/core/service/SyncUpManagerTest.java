@@ -26,8 +26,11 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -453,11 +456,36 @@ public class SyncUpManagerTest {
         syncUpManager.syncDeleteMovement();
 
         for (int i = 0; i < dirtyDataItems.size(); i++) {
-            if (unSyncedProductCode.equals(dirtyDataItems.get(i).getProductCode())) {
-                assertThat(dirtyDataItems.get(i).isSynced(), is(false));
-            } else {
                 assertThat(dirtyDataItems.get(i).isSynced(), is(true));
-            }
+        }
+
+        assertEquals(response, response1);
+    }
+
+    @Test
+    public void shouldKeepNotSyncedWhenSyncDeletedProductToWebError() throws Exception {
+        String unSyncedProductCode = "08N04Z";
+        SyncUpDeletedMovementResponse response = new SyncUpDeletedMovementResponse();
+        response.setErrorCodes(newArrayList(unSyncedProductCode));
+
+
+        String unSyncedProductCode1 = "08N04Z";
+        SyncUpDeletedMovementResponse response1 = new SyncUpDeletedMovementResponse();
+        response1.setErrorCodes(newArrayList(unSyncedProductCode1));
+
+
+        List<DirtyDataItemInfo> dirtyDataItems = createDirtyDateItem();
+        DirtyDataItemInfo item = dirtyDataItems.get(0);
+        when(mockedDirtyDataRepository.listunSyced()).thenReturn(dirtyDataItems);
+        doThrow(new SyncServerException(LMISApp.getContext().getString(R.string.sync_server_error)))
+                .when(mockedLmisRestApi).syncUpDeletedData(any(Long.class), anyList());
+
+        assertThat(item.isSynced(), is(false));
+
+        syncUpManager.syncDeleteMovement();
+
+        for (int i = 0; i < dirtyDataItems.size(); i++) {
+            assertThat(dirtyDataItems.get(i).isSynced(), is(false));
         }
 
         assertEquals(response, response1);

@@ -43,11 +43,13 @@ public class RegimenRepositoryTest {
         Regimen customRegime = new Regimen();
         customRegime.setName("customName");
         customRegime.setCustom(true);
+        customRegime.setActive(true);
         repository.create(customRegime);
 
         Regimen customRegime2 = new Regimen();
         customRegime2.setName("default");
         customRegime.setCustom(false);
+        customRegime2.setActive(true);
         repository.create(customRegime2);
 
         List<Regimen> regimens = repository.listDefaultRegime();

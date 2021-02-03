@@ -19,6 +19,7 @@ import roboguice.RoboGuice;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,13 +44,15 @@ public class SyncAdapterTest {
         sharedPreferenceMgr.getPreference().edit().clear();
         UserInfoMgr.getInstance().setUser(new User());
         LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime());
-        when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
+//        when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
     }
 
     @Test
     public void shouldRecordCorrespondingLastSyncTime() throws Exception {
         when(mockSyncUpManager.syncRnr()).thenReturn(true);
         when(mockSyncUpManager.syncStockCards()).thenReturn(true);
+        when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
+        doCallRealMethod().when(mockSyncUpManager).syncUpData(syncAdapter.context);
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -85,6 +88,8 @@ public class SyncAdapterTest {
     public void shouldOnlyRecordRnrFormLastSyncTime() throws Exception {
         when(mockSyncUpManager.syncRnr()).thenReturn(true);
         when(mockSyncUpManager.syncStockCards()).thenReturn(false);
+        when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
+        doCallRealMethod().when(mockSyncUpManager).syncUpData(syncAdapter.context);
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -112,6 +117,8 @@ public class SyncAdapterTest {
     public void shouldOnlyRecordStockCardLastSyncTime() throws Exception {
         when(mockSyncUpManager.syncRnr()).thenReturn(false);
         when(mockSyncUpManager.syncStockCards()).thenReturn(true);
+        when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
+        doCallRealMethod().when(mockSyncUpManager).syncUpData(syncAdapter.context);
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -134,6 +141,9 @@ public class SyncAdapterTest {
 
     @Test
     public void shouldSyncCmmsWhenToggleOn() throws Exception {
+        when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
+        doCallRealMethod().when(mockSyncUpManager).syncUpData(syncAdapter.context);
+
         syncAdapter.onPerformSync(null, null, null, null, null);
         verify(mockSyncUpManager).syncUpCmms();
     }
