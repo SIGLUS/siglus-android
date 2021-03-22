@@ -117,6 +117,12 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         return inflater.inflate(R.layout.fragment_rapid_test_report_form, container, false);
     }
 
+    @Override
+    public void onDestroyView() {
+        rnrBasicItemListView.removeListenerOnDestroyView();
+        super.onDestroyView();
+    }
+
     private void updateHeaderSize() {
         calculateRowHeaderAndGridSize();
         emptyHeaderView.getLayoutParams().width = ROW_HEADER_WIDTH;

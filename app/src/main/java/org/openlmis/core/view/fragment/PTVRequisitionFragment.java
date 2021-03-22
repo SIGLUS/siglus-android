@@ -141,6 +141,12 @@ public class PTVRequisitionFragment extends BaseReportFragment implements PTVReq
         addRegimenListeners();
     }
 
+    @Override
+    public void onDestroyView() {
+        ptvTable.removeListenerOnDestroyView();
+        super.onDestroyView();
+    }
+
     private void addRegimenListeners() {
         PTVRequisitionFragment.EditTextWatcher parentTextWatcher = new PTVRequisitionFragment.EditTextWatcher(totalParent);
         totalParent.addTextChangedListener(parentTextWatcher);

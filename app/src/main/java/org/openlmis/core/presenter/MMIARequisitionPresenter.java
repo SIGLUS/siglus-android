@@ -135,6 +135,16 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         rnRForm.setComments(comments);
     }
 
+    public boolean viewModelHasNull() {
+        for(RnrFormItem rnrFormItem : rnRForm.getRnrFormItemListWrapper()) {
+            if (rnrFormItem.getIssued()== null || rnrFormItem.getAdjustment() == null
+                    || rnrFormItem.getInventory() == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void setComments(String comments) {
         rnRForm.setComments(comments);

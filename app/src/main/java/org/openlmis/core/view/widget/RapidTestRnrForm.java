@@ -68,10 +68,6 @@ public class RapidTestRnrForm extends LinearLayout {
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        for (Pair<EditText, SimpleTextWatcher> editTextConfigure : editTextConfigures) {
-            editTextConfigure.first.removeTextChangedListener(editTextConfigure.second);
-        }
-
     }
 
     private void init(Context context) {
@@ -198,6 +194,17 @@ public class RapidTestRnrForm extends LinearLayout {
         etStock.setEnabled(false);
         etInventory.setEnabled(false);
 
+    }
+
+    public void removeListenerOnDestroyView() {
+        for (Pair<EditText, SimpleTextWatcher> editTextConfigure : editTextConfigures) {
+            if (editTextConfigure.first != null) {
+                editTextConfigure.first.clearFocus();
+                if (editTextConfigure.second != null) {
+                    editTextConfigure.first.removeTextChangedListener(editTextConfigure.second);
+                }
+            }
+        }
     }
 
     class EditTextWatcher extends SimpleTextWatcher {

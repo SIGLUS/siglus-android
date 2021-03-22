@@ -80,9 +80,6 @@ public class MMIARnrFormProductList extends LinearLayout {
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        for (Pair<EditText, EditTextWatcher> editText : editTexts) {
-            editText.first.removeTextChangedListener(editText.second);
-        }
     }
 
     private void init(Context context) {
@@ -359,6 +356,18 @@ public class MMIARnrFormProductList extends LinearLayout {
 
     private int getDividerWidth() {
         return (int) getResources().getDimension(R.dimen.divider);
+    }
+
+
+    public void removeListenerOnDestroyView() {
+        for (Pair<EditText, EditTextWatcher> editText : editTexts) {
+            if (editText.first != null) {
+                editText.first.clearFocus();
+                if (editText.second != null) {
+                    editText.first.removeTextChangedListener(editText.second);
+                }
+            }
+        }
     }
 
     class EditTextWatcher extends SimpleTextWatcher {
