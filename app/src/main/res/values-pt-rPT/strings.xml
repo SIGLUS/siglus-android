@@ -25,6 +25,7 @@
     <string name="msg_sync_requisition_failed">Descarregamento de dados de requisição a partir do servidor falhou, por favor entre novamente.</string>
     <string name="msg_sync_stock_movement_failed">Falha no descarregamento de movimentos de stock, faça o login novamente.</string>
     <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
+    <string name="msg_requisition_field_exist_null">Não é possível enviar requisição com campo nulo!</string>
     <string name="version_number"><![CDATA[Versão <b>%1$s</b>]]></string>
     <!--Init Inventory-->
     <string name="label_dummy_product">Paracetamol</string>
