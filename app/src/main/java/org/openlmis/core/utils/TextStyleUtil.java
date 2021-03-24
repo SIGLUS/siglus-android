@@ -74,7 +74,7 @@ public final class TextStyleUtil {
             Pattern pattern = Pattern.compile("[a-zA-Z]");
             Matcher matcher = pattern.matcher(source.toString());
             if (matcher.find()) {
-                return source.toString();
+                return null;
             } else {
                 return "";
             }
