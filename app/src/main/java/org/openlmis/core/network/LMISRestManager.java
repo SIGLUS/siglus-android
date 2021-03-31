@@ -166,9 +166,9 @@ public class LMISRestManager {
     private void addDeviceInfoToRequestHeader(RequestFacade request) {
         String versionCode = String.valueOf(BuildConfig.VERSION_CODE);
         String deviceInfo = "OS: " + Build.VERSION.RELEASE
-                + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL;
+                + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL + "versionCode:87.1";
         request.addHeader("DeviceInfo", deviceInfo);
-        request.addHeader("VersionCode", versionCode + ".1");
+        request.addHeader("VersionCode", versionCode);
         request.addHeader("AndroidSDKVersion", Build.VERSION.SDK_INT + "");
     }
 
