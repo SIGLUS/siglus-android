@@ -168,7 +168,7 @@ public class LMISRestManager {
         String deviceInfo = "OS: " + Build.VERSION.RELEASE
                 + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL;
         request.addHeader("DeviceInfo", deviceInfo);
-        request.addHeader("VersionCode", versionCode);
+        request.addHeader("VersionCode", versionCode + ".1");
         request.addHeader("AndroidSDKVersion", Build.VERSION.SDK_INT + "");
     }
 
