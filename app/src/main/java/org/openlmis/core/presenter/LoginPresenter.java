@@ -36,6 +36,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
+import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -52,6 +53,7 @@ import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.training.TrainingEnvironmentHelper;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.widget.RapidTestRnrForm;
 
 import java.util.List;
 
@@ -72,6 +74,9 @@ public class LoginPresenter extends Presenter {
 
     @Inject
     LotRepository lotRepository;
+
+    @Inject
+    ProgramDataFormRepository programDataFormRepository;
 
     @Inject
     StockRepository stockRepository;
@@ -256,6 +261,9 @@ public class LoginPresenter extends Presenter {
             }
             if (dirtyDataRepository.hasOldDate()) {
                 dirtyDataRepository.deleteOldData();
+            }
+            if (programDataFormRepository.hasOldDate()){
+                programDataFormRepository.deleteOldData();
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

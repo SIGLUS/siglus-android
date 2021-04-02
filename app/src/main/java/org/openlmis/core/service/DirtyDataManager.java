@@ -18,11 +18,13 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
+import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
@@ -76,7 +78,7 @@ public class DirtyDataManager {
     @Inject
     RnrFormRepository rnrFormRepository;
     @Inject
-    ProgramRepository programRepository;
+    ProgramDataFormRepository programDataFormRepository;
     @Inject
     CmmRepository cmmRepository;
     @Inject
@@ -298,7 +300,7 @@ public class DirtyDataManager {
                 stockRepository.resetLotsOnHand(productCodes);
                 cmmRepository.resetCmm(productCodes);
                 rnrFormRepository.deleteRnrFormDirtyData(productCodes);
-                programRepository.deleteProgramDirtyData(productCodes);
+                programDataFormRepository.deleteProgramDirtyData(productCodes);
                 sharedPreferenceMgr.setDeletedProduct(new HashSet<>());
             }
         }

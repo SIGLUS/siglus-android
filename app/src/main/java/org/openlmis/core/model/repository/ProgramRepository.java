@@ -143,32 +143,4 @@ public class ProgramRepository {
                 .where().eq("parentCode", programCode)
                 .or().eq("programCode", programCode).query());
     }
-
-    public void deleteProgramDirtyData(List<String> productCodeList) {
-        String deleteProgramDataItems = "DELETE FROM program_data_items "
-                + "WHERE form_id=(SELECT id FROM program_data_forms WHERE synced=0);";
-        String deleteProgramDataFromSignatures = "DELETE FROM program_data_form_signatures "
-                + "WHERE form_id=(SELECT id FROM program_data_forms WHERE synced=0);";
-        String deleteProgramDataBasicItems = "DELETE FROM program_data_Basic_items";
-        String deleteProgramDataForms = "DELETE FROM program_data_forms WHERE synced=0;";
-        Cursor getProgramByProductCodeCursor = null;
-        String getProgramByProductCode = null;
-        for (String productCode : productCodeList) {
-            getProgramByProductCode = "SELECT * FROM programs "
-                    + "WHERE programCode IN (SELECT programCode FROM product_programs WHERE productCode='" + productCode + "');";
-            getProgramByProductCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(getProgramByProductCode, null);
-            while (getProgramByProductCodeCursor.moveToNext()) {
-                if (getProgramByProductCodeCursor.getString(getProgramByProductCodeCursor.getColumnIndexOrThrow("programCode")).equals(Constants.RAPID_TEST_OLD_CODE)) {
-                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataItems);
-                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataFromSignatures);
-                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataBasicItems);
-                    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteProgramDataForms);
-                }
-            }
-        }
-        if (getProgramByProductCodeCursor != null && !getProgramByProductCodeCursor.isClosed()) {
-            getProgramByProductCodeCursor.close();
-        }
-    }
-
 }
