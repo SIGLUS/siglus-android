@@ -53,7 +53,7 @@ import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.training.TrainingEnvironmentHelper;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.widget.RapidTestRnrForm;
+
 
 import java.util.List;
 

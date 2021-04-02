@@ -20,19 +20,19 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
-import android.database.Cursor;
+
 
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 
-import org.openlmis.core.LMISApp;
+
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.openlmis.core.utils.Constants;
+
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
