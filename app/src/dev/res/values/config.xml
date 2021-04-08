@@ -1,5 +1,5 @@
 <resources>
-    <string name="server_base_url">http://dev.siglusv2.com</string>
+    <string name="server_base_url">https://qa.siglus.us</string>
     <string name="server_base_url_host">dev.siglusv2.com</string>
     <integer name="server_base_url_port">80</integer>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.dev</string>

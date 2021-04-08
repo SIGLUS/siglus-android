@@ -145,10 +145,10 @@ public class LMISRestManager {
     @NonNull
     private RequestInterceptor getRequestInterceptor() {
         return request -> {
+            String basic = "Basic dXNlci1jbGllbnQ6Y2hhbmdlbWU=";
+            request.addHeader("authorization", basic);
             User user = UserInfoMgr.getInstance().getUser();
             if (user != null) {
-                String basic = Credentials.basic(user.getUsername(), user.getPassword());
-                request.addHeader("Authorization", basic);
                 request.addHeader("UserName", user.getUsername());
                 request.addHeader("FacilityName", user.getFacilityName());
                 request.addHeader("FacilityId", user.getFacilityId());

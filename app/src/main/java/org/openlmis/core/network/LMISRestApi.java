@@ -19,11 +19,11 @@
 
 package org.openlmis.core.network;
 
+
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.User;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
@@ -45,6 +45,8 @@ import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
@@ -53,8 +55,10 @@ import retrofit.http.Query;
 
 public interface LMISRestApi {
 
-    @POST("/rest-api/login")
-    void authorizeUser(@Body User user, Callback<UserResponse> callback);
+    @FormUrlEncoded
+    @POST("/api/oauth/token")
+    void authorizeUser(@Query("grant_type") String grant_type, @Field("username") String username,
+                       @Field("password") String password, Callback<UserResponse> callback);
 
 
     //sync up

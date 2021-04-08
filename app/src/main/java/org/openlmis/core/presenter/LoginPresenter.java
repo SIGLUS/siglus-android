@@ -57,6 +57,7 @@ import org.openlmis.core.view.BaseView;
 
 import java.util.List;
 
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -186,10 +187,11 @@ public class LoginPresenter extends Presenter {
     }
 
     private void authorizeAndLoginUserRemote(final User user, final boolean fromReSync) {
-        LMISApp.getInstance().getRestApi().authorizeUser(user, new Callback<UserResponse>() {
+        String grant_type = "password";
+        LMISApp.getInstance().getRestApi().authorizeUser(grant_type, user.getUsername(),user.getPassword(), new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                if (userResponse == null || userResponse.getUserInformation() == null) {
+                if (userResponse == null || userResponse == null) {
                     onLoginFailed();
                 } else {
                     userResponse.getUserInformation().setUsername(user.getUsername());
