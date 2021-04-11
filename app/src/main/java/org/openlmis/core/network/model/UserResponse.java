@@ -1,14 +1,14 @@
 package org.openlmis.core.network.model;
 
-import org.openlmis.core.model.Program;
-import org.openlmis.core.model.User;
-
-import java.util.List;
 
 import lombok.Data;
 
 @Data
 public class UserResponse {
-    private User userInformation;
-    private List<Program> facilitySupportedPrograms;
+    private String access_token;
+    private String token_type;
+    private int expires_in;
+    private String scope;
+    private String referenceDataUserId;
+    private String username;
 }

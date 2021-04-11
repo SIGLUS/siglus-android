@@ -20,12 +20,26 @@
 package org.openlmis.core.exceptions;
 
 
+
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+
+import org.openlmis.core.LMISApp;
+
 import retrofit.RetrofitError;
 
 public class UnauthorizedException extends LMISException {
 
     public UnauthorizedException(RetrofitError cause){
         super(cause.getMessage());
+        startLogin();
+    }
+
+    public void startLogin() {
+        Context context = LMISApp.getContext();
+        Intent intent = new Intent("android.intent.action.MAIN");
+        context.startActivity(intent);
     }
 
 }
