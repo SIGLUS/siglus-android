@@ -74,11 +74,8 @@ android {
         prd {
             applicationId 'org.openlmis.core'
         }
-        ci {
-            applicationId 'org.openlmis.core.ci'
-        }
-        showcase {
-            applicationId 'org.openlmis.core.showcase'
+        integ {
+            applicationId 'org.openlmis.core.integ'
         }
     }
 
