@@ -1,5 +1,5 @@
 <resources>
-    <string name="upgrade_server_url">http://52.74.143.249:8090</string>
+    <string name="upgrade_server_url">https://apk-updater.siglus.us</string>
 
     <!-- default is uat.. -->
     <string name="appcenter_app_key" translatable="false">6344c759-adee-478f-98b5-c5ccbf948189</string>
