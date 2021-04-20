@@ -1,5 +1,5 @@
-# lmis-moz-mobile
-Mozambique OpenLMIS Mobile
+# siglus-android
+SIGLUS android app
 
 Unit Tests
 --------------
