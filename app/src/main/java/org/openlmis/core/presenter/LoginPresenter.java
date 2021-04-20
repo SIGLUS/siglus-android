@@ -57,6 +57,7 @@ import org.openlmis.core.view.BaseView;
 
 import java.util.List;
 
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -186,16 +187,17 @@ public class LoginPresenter extends Presenter {
     }
 
     private void authorizeAndLoginUserRemote(final User user, final boolean fromReSync) {
-        LMISApp.getInstance().getRestApi().authorizeUser(user, new Callback<UserResponse>() {
+        String grant_type = "password";
+        LMISApp.getInstance().getRestApi().authorizeUser(grant_type, user.getUsername(),user.getPassword(), new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                if (userResponse == null || userResponse.getUserInformation() == null) {
+                if (userResponse == null || userResponse.getAccess_token() == null) {
                     onLoginFailed();
                 } else {
-                    userResponse.getUserInformation().setUsername(user.getUsername());
-                    userResponse.getUserInformation().setPassword(user.getPassword());
+                    user.setAccess_token(userResponse.getAccess_token());
+                    user.setToken_type(userResponse.getToken_type());
 
-                    onLoginSuccess(userResponse, fromReSync);
+                    onLoginSuccess(user, fromReSync);
                 }
             }
 
@@ -210,15 +212,15 @@ public class LoginPresenter extends Presenter {
         });
     }
 
-    protected void saveUserDataToLocalDatabase(UserResponse response) throws LMISException {
-        userRepository.createOrUpdate(response.getUserInformation());
+    protected void saveUserDataToLocalDatabase(final User user) throws LMISException {
+        userRepository.createOrUpdate(user);
     }
 
-    private void onLoginSuccess(UserResponse userResponse, final boolean fromReSync) {
+    private void onLoginSuccess(final User user, final boolean fromReSync) {
         Log.d(TAG, "Log in successful, setting up sync account");
-        syncService.createSyncAccount(userResponse.getUserInformation());
+        syncService.createSyncAccount(user);
 
-        UserInfoMgr.getInstance().setUser(userResponse.getUserInformation());
+        UserInfoMgr.getInstance().setUser(user);
         view.clearErrorAlerts();
 
         syncDownManager.syncDownServerData(getSyncSubscriber());
@@ -227,7 +229,7 @@ public class LoginPresenter extends Presenter {
         archiveOldData();
 
         try {
-            saveUserDataToLocalDatabase(userResponse);
+            saveUserDataToLocalDatabase(user);
         } catch (LMISException e) {
             e.printStackTrace();
         }

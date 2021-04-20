@@ -25,7 +25,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.openlmis.core.BuildConfig;
@@ -54,7 +53,6 @@ import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 
 import java.security.cert.X509Certificate;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -145,15 +143,19 @@ public class LMISRestManager {
     @NonNull
     private RequestInterceptor getRequestInterceptor() {
         return request -> {
+
             User user = UserInfoMgr.getInstance().getUser();
             if (user != null) {
-                String basic = Credentials.basic(user.getUsername(), user.getPassword());
-                request.addHeader("Authorization", basic);
-                request.addHeader("UserName", user.getUsername());
-                request.addHeader("FacilityName", user.getFacilityName());
-                request.addHeader("FacilityId", user.getFacilityId());
-                request.addHeader("language", Locale.getDefault().getLanguage());
+                request.addHeader("authorization",user.getToken_type()+" "+user.getAccess_token());
+//                request.addHeader("UserName", user.getUsername());
+//                request.addHeader("FacilityName", user.getFacilityName());
+//                request.addHeader("FacilityId", user.getFacilityId());
+//                request.addHeader("language", Locale.getDefault().getLanguage());
+            }else {
+                String basic = "Basic dXNlci1jbGllbnQ6Y2hhbmdlbWU=";
+                request.addHeader("authorization", basic);
             }
+
 
             if (BuildConfig.MONITOR_DEVICE_ID) {
                 request.addHeader("UniqueId", getAndroidId());
