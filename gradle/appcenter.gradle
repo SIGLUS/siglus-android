@@ -7,16 +7,22 @@ appcenter {
     releaseNotes = getGitCommit()
     notifyTesters = false
     apps {
-        uatRelease {
-            appName = "SIGLUS-UAT"
-        }
         devRelease {
             appName = "Siglus-Dev"
         }
-        trainingRelease {
-            appName = "Training"
+        qaRelease {
+            appName = "Siglus-QA"
         }
-        prdRelease {
+        integRelease {
+            appName = "Siglus-Integ"
+        }
+        uatRelease {
+            appName = "SIGLUS-UAT"
+        }
+        trainingRelease {
+            appName = "SIGLUS-Training"
+        }
+        prodRelease {
             appName = "Siglus-Prod"
             distributionGroups = ["release"]
         }

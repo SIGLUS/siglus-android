@@ -63,7 +63,9 @@ android {
         }
         qa {
             applicationId 'org.openlmis.core.qa'
-            buildConfigField "boolean", "MONITOR_DEVICE_ID", "false"
+        }
+        integ {
+            applicationId 'org.openlmis.core.integ'
         }
         uat {
             applicationId 'org.openlmis.core.uat'
@@ -71,11 +73,8 @@ android {
         training {
             applicationId 'org.openlmis.core.training'
         }
-        prd {
+        prod {
             applicationId 'org.openlmis.core'
-        }
-        integ {
-            applicationId 'org.openlmis.core.integ'
         }
     }
 
