@@ -226,7 +226,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void showDatePickerDialog(final StockMovementViewModel model, final Date previousMovementDate) {
-        final Calendar today = GregorianCalendar.getInstance();
+        final Calendar today = DateUtil.getCurrentCalendar();
 
         DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL,
                 new MovementDateListener(model, previousMovementDate),
@@ -320,7 +320,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
         private void setMovementDate() {
             if (StringUtils.EMPTY.equals(txMovementDate.getText().toString())) {
-                String movementDate = DateUtil.formatDate(new Date());
+                String movementDate = DateUtil.formatDate(DateUtil.getCurrentDate());
                 txMovementDate.setText(movementDate);
                 model.setMovementDate(movementDate);
             }
@@ -359,7 +359,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         }
 
         private boolean validateStockMovementDate(Date previousMovementDate, Date chosenDate) {
-            Calendar today = GregorianCalendar.getInstance();
+            Calendar today = DateUtil.getCurrentCalendar();
 
             return previousMovementDate == null || !previousMovementDate.after(chosenDate) && !chosenDate.after(today.getTime());
         }

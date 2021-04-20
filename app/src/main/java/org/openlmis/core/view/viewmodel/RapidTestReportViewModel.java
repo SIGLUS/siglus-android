@@ -12,6 +12,7 @@ import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.Signature;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -257,7 +258,7 @@ public class RapidTestReportViewModel implements Serializable {
         } else {
             rapidTestForm.getSignaturesWrapper().add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.APPROVER));
             rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
-            rapidTestForm.setSubmittedTime(new Date());
+            rapidTestForm.setSubmittedTime(DateUtil.getCurrentDate());
             status = Status.COMPLETED;
         }
     }

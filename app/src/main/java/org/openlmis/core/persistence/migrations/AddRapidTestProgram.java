@@ -9,7 +9,7 @@ import java.util.Date;
 public class AddRapidTestProgram extends Migration {
     @Override
     public void up() {
-        String formatDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
+        String formatDate = DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT);
 
         execSQL("INSERT INTO programs (programCode, programName, createdAt, updatedAt) "
                 + "SELECT 'RAPID_TEST', 'Rapid Test', '" + formatDate + "' , '" + formatDate + "' "

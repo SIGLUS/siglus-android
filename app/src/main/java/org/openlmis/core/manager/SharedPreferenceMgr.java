@@ -32,6 +32,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -73,6 +74,7 @@ public class SharedPreferenceMgr {
     public static final String LATEST_SYNCED_DOWN_REPORT_TYPE = "syncedReport";
     public static final String MONTH_OFFSET_DEFINED_OLD_DATA = "month_offset_that_defined_old_data";
     public static final String KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR = "stock_card_last_year_sync_error";
+    public static final String KEY_HAS_COPIED_TRAINING_DB = "has_copied_training_db";
     final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
 
@@ -148,10 +150,11 @@ public class SharedPreferenceMgr {
     }
 
     public List<ReportTypeForm> getReportTypesData() {
-        String json = sharedPreferences.getString(SharedPreferenceMgr.LATEST_SYNCED_DOWN_REPORT_TYPE,null);
+        String json = sharedPreferences.getString(SharedPreferenceMgr.LATEST_SYNCED_DOWN_REPORT_TYPE, null);
         if (json != null) {
             Gson gson = new Gson();
-            Type type = new TypeToken<List<ReportTypeForm>>(){}.getType();
+            Type type = new TypeToken<List<ReportTypeForm>>() {
+            }.getType();
             return gson.fromJson(json, type);
         }
         return null;
@@ -242,7 +245,7 @@ public class SharedPreferenceMgr {
     }
 
     public void setRnrLastSyncTime() {
-        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_RNR_FORM, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_RNR_FORM, DateUtil.getCurrentDate().getTime()).apply();
     }
 
     public long getStockLastSyncTime() {
@@ -254,17 +257,25 @@ public class SharedPreferenceMgr {
     }
 
     public void setStockLastSyncTime() {
-        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_STOCKCARD, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_STOCKCARD, DateUtil.getCurrentDate().getTime()).apply();
+    }
+
+    public void setKeyHasCopiedTrainingDb(boolean hasCopiedTrainingDb) {
+        sharedPreferences.edit().putBoolean(KEY_HAS_COPIED_TRAINING_DB, hasCopiedTrainingDb);
+    }
+
+    public boolean hasCopiedTrainingDb() {
+        return sharedPreferences.getBoolean(KEY_HAS_COPIED_TRAINING_DB, false);
     }
 
     public boolean hasSyncedUpLatestMovementLastDay() {
         DateTime lastSyncTriggerDate = new DateTime(sharedPreferences.getLong(LAST_MOVEMENT_HANDSHAKE_DATE, 0));
-        DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime currentDate = new DateTime(DateUtil.getCurrentDate().getTime());
         return currentDate.minusDays(1).isBefore(lastSyncTriggerDate);
     }
 
     public void setLastMovementHandShakeDateToToday() {
-        sharedPreferences.edit().putLong(LAST_MOVEMENT_HANDSHAKE_DATE, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+        sharedPreferences.edit().putLong(LAST_MOVEMENT_HANDSHAKE_DATE, DateUtil.getCurrentDate().getTime()).apply();
     }
 
     public void setEnableQaDebug(boolean enabled) {
@@ -280,7 +291,7 @@ public class SharedPreferenceMgr {
     }
 
     public void updateLatestLowStockAvgTime() {
-        sharedPreferences.edit().putLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+        sharedPreferences.edit().putLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME, DateUtil.getCurrentDate().getTime()).apply();
     }
 
     public void setHasDeletedOldStockMovement(boolean hasDeletedOldStockMovement) {

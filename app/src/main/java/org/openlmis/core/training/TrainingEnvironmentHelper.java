@@ -6,6 +6,7 @@ import android.os.Environment;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
@@ -30,12 +31,13 @@ public class TrainingEnvironmentHelper {
 
 
     private void setSyncedForTrainingEnvironment() {
-        SharedPreferenceMgr.getInstance().setLastSyncProductTime(String.valueOf(LMISApp.getInstance().getCurrentTimeMillis()));
+        SharedPreferenceMgr.getInstance().setLastSyncProductTime(String.valueOf(DateUtil.getCurrentDate().getTime()));
         SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
         SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
         SharedPreferenceMgr.getInstance().setRapidTestsDataSynced(true);
         SharedPreferenceMgr.getInstance().setRnrLastSyncTime();
         SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
+        SharedPreferenceMgr.getInstance().setKeyHasCopiedTrainingDb(true);
     }
 
     private void setUpDataForTrainingEnvironment() {
@@ -45,6 +47,7 @@ public class TrainingEnvironmentHelper {
             InputStream inputStream = assetManager.open("lmis_training.db");
             FileUtil.copyInputStreamToFile(inputStream, currentDB);
             TrainingSqliteOpenHelper.getInstance(LMISApp.getContext()).updateTimeInDB();
+            SharedPreferenceMgr.getInstance().setKeyHasCopiedTrainingDb(true);
         } catch (IOException | SQLException e) {
             new LMISException(e).reportToFabric();
         }

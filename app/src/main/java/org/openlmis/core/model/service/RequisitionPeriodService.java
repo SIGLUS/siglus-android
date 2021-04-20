@@ -70,7 +70,7 @@ public class RequisitionPeriodService {
 
     private Period generatePeriodBasedOnDefaultDates(Date physicalInventoryDate, String programCode) throws LMISException {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            return Period.generateForTraining(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+            return Period.generateForTraining(DateUtil.getCurrentDate());
         }
         DateTime periodBeginDate = calculatePeriodBeginDate(programCode);
         DateTime periodEndDate;
@@ -141,11 +141,11 @@ public class RequisitionPeriodService {
                     .withDate(nextPeriodInScheduleEnd.getYear(),
                             nextPeriodInScheduleEnd.getMonthOfYear(),
                             Period.INVENTORY_END_DAY_NEXT);
-            return lastInventoryDateForNextPeriodInSchedule.isBefore(LMISApp.getInstance().getCurrentTimeMillis());
+            return lastInventoryDateForNextPeriodInSchedule.isBefore(DateUtil.getCurrentDate().getTime());
         }
 
         Date lastRnrPeriodEndDate = rnRForms.get(rnRForms.size() - 1).getPeriodEnd();
-        return new DateTime(lastRnrPeriodEndDate).isBefore(LMISApp.getInstance().getCurrentTimeMillis());
+        return new DateTime(lastRnrPeriodEndDate).isBefore(DateUtil.getCurrentDate().getTime());
     }
 
     public int getMissedPeriodOffsetMonth(String programCode) throws LMISException {
@@ -171,7 +171,7 @@ public class RequisitionPeriodService {
     }
 
     public DateTime getCurrentMonthInventoryBeginDate() {
-        DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime currentDate = new DateTime(DateUtil.getCurrentDate().getTime());
         DateTime currentMonthInventoryBeginDate;
         if (currentDate.getDayOfMonth() >= Period.INVENTORY_BEGIN_DAY) {
             currentMonthInventoryBeginDate = currentDate

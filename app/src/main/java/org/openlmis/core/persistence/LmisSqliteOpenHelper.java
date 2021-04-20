@@ -20,6 +20,7 @@ package org.openlmis.core.persistence;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -94,7 +95,6 @@ import org.openlmis.core.persistence.migrations.UpdateRapidTestColumnsTemplate;
 import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -226,6 +226,15 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         super.close();
         getWritableDatabase().close();
         closeHelper();
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)
+        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            db.disableWriteAheadLogging();
+        }
     }
 
     public static int getDBVersion() {

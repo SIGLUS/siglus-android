@@ -34,7 +34,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -131,50 +131,16 @@
                         android:onClick="onClickKitStockCard"
                         android:text="@string/label_kits_stock_cards" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/btn_rapid_test"
+                        style="@style/Homepage.Button"
+                        android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:orientation="horizontal"
-                        android:layout_weight="1">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <Button
-                                android:id="@+id/btn_rapid_test"
-                                style="@style/Homepage.Button"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginTop="10dp"
-                                android:background="@color/color_material_blue_gray"
-                                android:onClick="onClickRapidTestHistory"
-                                android:text="@string/title_rapid_test"
-                                android:layout_marginRight="@dimen/margin_small"/>
-
-                        </RelativeLayout>
-
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <Button
-                                android:id="@+id/btn_patient_data"
-                                style="@style/Homepage.Button"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginTop="10dp"
-                                android:layout_weight="1"
-                                android:background="@color/color_pink"
-                                android:onClick="onClickPatientDataReport"
-                                android:text="@string/title_patient_data_report" />
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_material_blue_gray"
+                        android:onClick="onClickRapidTestHistory"
+                        android:text="@string/title_rapid_test"/>
 
                 </LinearLayout>
 

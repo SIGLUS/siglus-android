@@ -35,6 +35,8 @@ public class ArchivedDrugsViewHolder extends BaseViewHolder {
 
         if (!inventoryViewModel.getProduct().isActive()) {
             tvArchiveBack.setVisibility(View.GONE);
+        } else {
+            tvArchiveBack.setVisibility(View.VISIBLE);
         }
 
         setActionListeners(inventoryViewModel, listener);

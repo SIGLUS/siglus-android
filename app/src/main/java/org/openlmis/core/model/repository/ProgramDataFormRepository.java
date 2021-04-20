@@ -48,16 +48,14 @@ public class ProgramDataFormRepository {
     }
 
     public void batchCreateOrUpdate(final ProgramDataForm form) throws SQLException {
-        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                genericDao.createOrUpdate(form);
-                Log.d("---|show items size|---", "" + form.getProgramDataFormItemListWrapper().size());
-                saveFormItems(form);
-                saveFormBasicItems(form);
-                saveSignatures(form.getSignaturesWrapper());
-                return null;
-            }
+        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), (Callable<Void>) () -> {
+            genericDao.createOrUpdate(form);
+            Log.d("---|show items size|---", "" + form.getProgramDataFormItemListWrapper().size());
+            Log.d("get basic items wrapper", "" + form.getFormBasicItemListWrapper().size());
+            saveFormItems(form);
+            saveFormBasicItems(form);
+            saveSignatures(form.getSignaturesWrapper());
+            return null;
         });
     }
 

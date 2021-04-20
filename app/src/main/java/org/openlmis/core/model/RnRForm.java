@@ -156,7 +156,7 @@ public class RnRForm extends BaseModel {
     }
 
     private static boolean isMissed(Period period) {
-        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime today = new DateTime(DateUtil.getCurrentDate().getTime());
         DateTime periodEnd = period.getEnd();
         int monthOffset = DateUtil.calculateMonthOffset(today, periodEnd);
         return monthOffset > 0 || (monthOffset == 0 && today.getDayOfMonth() >= Period.INVENTORY_END_DAY_NEXT);

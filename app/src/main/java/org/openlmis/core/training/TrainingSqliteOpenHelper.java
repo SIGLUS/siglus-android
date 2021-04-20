@@ -2,6 +2,7 @@ package org.openlmis.core.training;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
@@ -15,6 +16,7 @@ import org.openlmis.core.utils.DateUtil;
 import java.sql.SQLException;
 import java.util.Date;
 
+
 public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2017-02-14", DateUtil.DB_DATE_FORMAT);
     public static final String DATE_TIME_SUFFIX = ".000000";
@@ -25,11 +27,20 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     private TrainingSqliteOpenHelper(Context context) {
         super(context, "lmis_db", null, LmisSqliteOpenHelper.getDBVersion());
-        monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(TRAINING_ANCHOR_DATE, new Date());
-        if (LMISApp.getInstance().getString(R.string.sync_account_type).equals(APP_ENVIRONMENT_TRAINING)) {
-            if (monthOffsetFromAnchor >= 1) {
-                monthOffsetFromAnchor -= 1;
-            }
+        monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(TRAINING_ANCHOR_DATE, DateUtil.getCurrentDate());
+    }
+
+    private synchronized void getConnection() throws SQLException {
+        if (null == dbConnection) {
+            dbConnection = new TrainingSqliteOpenHelper(LMISApp.getContext()).getConnectionSource().getReadWriteConnection();
+        }
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            db.disableWriteAheadLogging();
         }
     }
 
@@ -43,8 +54,14 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     }
 
+    @Override
+    public void close() {
+        super.close();
+        getWritableDatabase().close();
+    }
+
     public void updateTimeInDB() throws SQLException {
-        dbConnection = new TrainingSqliteOpenHelper(LMISApp.getContext()).getConnectionSource().getReadWriteConnection();
+        getConnection();
         updateLotExpirationDate();
         updateProgramDataFromPeriodsAndSubmitTime();
         updateRnRFormPeriods();
@@ -65,8 +82,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     private void updateProgramDataFromPeriodsAndSubmitTime() throws SQLException {
         String sql = "UPDATE program_data_forms "
-                + "SET submittedTime = datetime(submittedTime, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX + ","
-                + "periodBegin = datetime(periodBegin, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX + ","
+                + "SET periodBegin = datetime(periodBegin, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX + ","
                 + "periodEnd = datetime(periodEnd, '+" + monthOffsetFromAnchor + " months') ||" + DATE_TIME_SUFFIX;
         dbConnection.update(sql, null, null);
     }

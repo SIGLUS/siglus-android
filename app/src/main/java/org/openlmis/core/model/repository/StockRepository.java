@@ -189,7 +189,7 @@ public class StockRepository {
     }
 
     public boolean hasOldDate() {
-        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
+        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
         List<StockCard> list = list();
         if (hasStockCardData(list)) {
@@ -251,7 +251,7 @@ public class StockRepository {
     }
 
     protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) throws LMISException {
-        return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(),rnRForm.getPeriodEnd());
+        return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(), rnRForm.getPeriodEnd());
     }
 
     protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd) throws LMISException {
@@ -315,7 +315,7 @@ public class StockRepository {
     }
 
     public void deleteOldData() {
-        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()), DateUtil.DB_DATE_FORMAT);
+        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(DateUtil.getCurrentDate(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()), DateUtil.DB_DATE_FORMAT);
 
         String rawSqlDeleteLotItems = "DELETE FROM lot_movement_items "
                 + "WHERE StockMovementItem_id IN (SELECT id FROM stock_items WHERE movementDate < '" + dueDateShouldDataLivedInDB + "' );";
@@ -326,23 +326,23 @@ public class StockRepository {
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockMovementItems);
     }
 
-    public void deletedData(Product product, boolean isFromKitToNormal) throws  LMISException {
-        Log.d(TAG,"deletedData, product = " + product);
-        Log.d(TAG,"deletedData, isFromKitToNormal = " + isFromKitToNormal);
+    public void deletedData(Product product, boolean isFromKitToNormal) throws LMISException {
+        Log.d(TAG, "deletedData, product = " + product);
+        Log.d(TAG, "deletedData, isFromKitToNormal = " + isFromKitToNormal);
         StockCard stockCard = queryStockCardByProductCode(product.getCode());
-        Log.d(TAG,"deletedData, stockCard = " + stockCard);
+        Log.d(TAG, "deletedData, stockCard = " + stockCard);
 
         String rawSqlDeleteLotMovmentItem = "DELETE FROM lot_movement_items "
-                + "where lot_id IN ( select id from lots where product_id="+product.getId()+");";
+                + "where lot_id IN ( select id from lots where product_id=" + product.getId() + ");";
         String rawSqlDeleteLotOnHand = "delete from lots_on_hand "
-                + "where lot_id IN ( select id from lots where product_id="+product.getId()+");";
+                + "where lot_id IN ( select id from lots where product_id=" + product.getId() + ");";
         String rawSqlDeleteLots = "delete from lots "
-                + "where product_id="+product.getId() +";";
+                + "where product_id=" + product.getId() + ";";
 
         String rawSqlDeleteStockCard = "delete from stock_cards "
-                + "where product_id="+product.getId() +";";
+                + "where product_id=" + product.getId() + ";";
         String rawSqlDeleteKitProducts = "delete from kit_products "
-                + "where kitCode=\""+product.getCode() +"\";";
+                + "where kitCode=\"" + product.getCode() + "\";";
 
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotMovmentItem);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotOnHand);

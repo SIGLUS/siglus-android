@@ -98,7 +98,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         boolean isTraining = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
         if (isTraining) {
             configHolder(model.getTitle(),
-                    Html.fromHtml(context.getString(R.string.label_training_can_not_create_report_rnr)),
+                    Html.fromHtml(context.getString(R.string.label_training_can_not_create_report_rnr, model.getName())),
                     R.drawable.ic_description, R.color.color_draft_title,  color_white);
         } else {
             configHolder(model.getTitle(),

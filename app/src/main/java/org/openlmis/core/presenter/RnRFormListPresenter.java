@@ -43,6 +43,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -172,7 +173,7 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     private boolean isCanNotCreateRnr(Period currentPeriod) {
-        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
         return dateTime.isBefore(currentPeriod.getInventoryBegin());
     }
 

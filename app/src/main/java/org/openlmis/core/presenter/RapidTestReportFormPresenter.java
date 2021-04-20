@@ -2,6 +2,9 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Period;
@@ -14,6 +17,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 
+import java.util.Calendar;
 import java.util.List;
 
 import lombok.Getter;
@@ -48,9 +52,19 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
             public void call(Subscriber<? super RapidTestReportViewModel> subscriber) {
                 try {
                     if (formId == 0) {
-                        generateNewRapidTestForm(period);
+                        Period reportPeriod = period;
+                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(period.getEnd().toDate());
+                            int year = calendar.get(Calendar.YEAR);
+                            int month = calendar.get(Calendar.MONTH);
+                            int date = calendar.get(Calendar.DATE);
+                            calendar.set(year, month, date, 23, 59, 59);
+                            reportPeriod = new Period(period.getBegin(), new DateTime(calendar.getTime()));
+                        }
+                        generateNewRapidTestForm(reportPeriod);
                         saveForm();
-                        List<ProgramDataFormBasicItem> basicItems = programBasicItemsRepository.createInitProgramForm(viewModel.getRapidTestForm(), period.getEnd().toDate());
+                        List<ProgramDataFormBasicItem> basicItems = programBasicItemsRepository.createInitProgramForm(viewModel.getRapidTestForm(), reportPeriod.getEnd().toDate());
                         viewModel.setBasicItems(basicItems);
                         saveForm();
                     } else {

@@ -18,6 +18,7 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ProgramUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
@@ -80,7 +81,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private void init() {
         invalidateNextBtn();
 
-        DateTime date = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime date = new DateTime(DateUtil.getCurrentDate().getTime());
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_training_select_close_of_period, date.monthOfYear().getAsShortText(), date.toString("dd MMM"))));
         } else {

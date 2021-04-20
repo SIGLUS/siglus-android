@@ -95,7 +95,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         long stockOnHand = model.getStockOnHand();
         StockMovementItem item = new StockMovementItem();
         item.setSignature(model.getSignature());
-        item.setMovementDate(new Date());
+        item.setMovementDate(DateUtil.getCurrentDate());
         item.setMovementQuantity(Math.abs(inventory - stockOnHand));
         item.setStockOnHand(inventory);
         item.setStockCard(stockCard);
@@ -152,7 +152,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                         stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard));
                     }
                     inventoryRepository.clearDraft();
-                    sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
+                    sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT));
                     saveInventoryDate();
 
                     subscriber.onNext(null);
