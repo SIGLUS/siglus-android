@@ -7,11 +7,11 @@ appcenter {
     releaseNotes = getGitCommit()
     notifyTesters = false
     apps {
-        uatRelease {
-            appName = "SIGLUS-V2-UAT"
-        }
         devRelease {
             appName = "SIGLUS-V2-DEV"
+        }
+        uatRelease {
+            appName = "SIGLUS-V2-UAT"
         }
         trainingRelease {
             appName = "SIGLUS-V2-TRAINING"
