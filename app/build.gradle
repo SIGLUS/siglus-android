@@ -63,7 +63,9 @@ android {
         }
         qa {
             applicationId 'org.openlmis.core.qa'
-            buildConfigField "boolean", "MONITOR_DEVICE_ID", "false"
+        }
+        integ {
+            applicationId 'org.openlmis.core.integ'
         }
         uat {
             applicationId 'org.openlmis.core.uat'
@@ -73,9 +75,6 @@ android {
         }
         prd {
             applicationId 'org.openlmis.core'
-        }
-        integ {
-            applicationId 'org.openlmis.core.integ'
         }
     }
 
@@ -126,8 +125,6 @@ task checkstyle(type: Checkstyle) {
 
     classpath = files()
 }
-
-task checkci(dependsOn: ['checkstyle', 'testLocalDebugUnitTest'])
 
 task findbugs(type: FindBugs) {
     ignoreFailures = true

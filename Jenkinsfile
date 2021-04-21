@@ -10,7 +10,7 @@ pipeline {
                 println "gradle: build"
                 sh '''
                     pwd && ls -l
-                    ./gradlew testLocalDebug
+                    ./gradlew clean build
                 '''
                 println "sonarqube: analysis"
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONARQUBE_TOKEN')]) {
