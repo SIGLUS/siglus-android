@@ -187,8 +187,8 @@ public class LoginPresenter extends Presenter {
     }
 
     private void authorizeAndLoginUserRemote(final User user, final boolean fromReSync) {
-        String grant_type = "password";
-        LMISApp.getInstance().getRestApi().authorizeUser(grant_type, user.getUsername(),user.getPassword(), new Callback<UserResponse>() {
+        String grantType = "password";
+        LMISApp.getInstance().getRestApi().authorizeUser(grantType, user.getUsername(),user.getPassword(), new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
                 if (userResponse == null || userResponse.getAccess_token() == null) {
