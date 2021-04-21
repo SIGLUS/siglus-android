@@ -2,7 +2,7 @@ apply plugin: "com.betomorrow.appcenter"
 
 appcenter {
     apiToken = "4c68e07cc9a17354572c4522d7ed3c4f14708d83"
-    ownerName = "toc.siglus"
+    ownerName = "jingzhao-1"
     distributionGroups = ["beta"]
     releaseNotes = getGitCommit()
     notifyTesters = false
@@ -17,7 +17,7 @@ appcenter {
             appName = "Siglus-Integ"
         }
         trainingRelease {
-            appName = "Training"
+            appName = "Siglus-Training"
         }
         prdRelease {
             appName = "Siglus-Prod"
