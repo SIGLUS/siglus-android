@@ -86,7 +86,7 @@ public class StockMovementHistoryPresenter extends Presenter {
                         if (stockMovementViewModels.size() == 0) {
                             view.refreshStockMovement(false);
                         } else {
-                            stockMovementModelList.addAll(0, stockMovementViewModels);
+                            stockMovementModelList.addAll(stockMovementModelList.size(), stockMovementViewModels);
 
                             view.refreshStockMovement(true);
                         }
