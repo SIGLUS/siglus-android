@@ -288,6 +288,7 @@ public class SyncDownManager {
             public void onCompleted() {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(false);
+                sharedPreferenceMgr.setStockLastSyncTime();
                 sendSyncFinishedBroadcast();
             }
 
@@ -355,8 +356,6 @@ public class SyncDownManager {
                 if (sharedPreferenceMgr.isNeedsInventory()) {
                     fetchKitChangeProduct();
                 }
-                subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
-
             } catch (LMISException e) {
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
                 e.printStackTrace();
@@ -367,6 +366,7 @@ public class SyncDownManager {
         } else {
             dirtyDataManager.initialDirtyDataCheck();
         }
+        subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
     }
 
     private void syncDownProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {

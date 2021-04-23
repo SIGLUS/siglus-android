@@ -122,6 +122,14 @@ public class SyncTimeViewTest {
         assertThat(syncTimeView.ivSyncTimeIcon.getVisibility(), is(VISIBLE));
     }
 
+    @Test
+    public void shouldShowProgressBarWhenSyncStockCardLastYear(){
+        syncTimeView.setSyncStockCardLastYearText();
+        assertThat(syncTimeView.progressBar.getVisibility(),is(VISIBLE));
+        assertThat(syncTimeView.ivSyncTimeIcon.getVisibility(),is(GONE));
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is(LMISTestApp.getContext().getResources().getString(R.string.last_year_stock_cards_sync)));
+    }
+
     private class MyMode implements Module {
         @Override
         public void configure(Binder binder) {
