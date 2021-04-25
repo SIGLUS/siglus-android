@@ -59,6 +59,7 @@ import rx.Subscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -67,7 +68,7 @@ import static org.mockito.Mockito.when;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.ShouldGoToInitialInventory;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-@Ignore
+
 @RunWith(LMISTestRunner.class)
 public class LoginPresenterTest {
 
@@ -109,7 +110,11 @@ public class LoginPresenterTest {
 
         retrofitResponse = LMISRestManagerMock.createDummyJsonResponse("http://unknown.com", 200, "", "");
         userResponse = new UserResponse();
-//        userResponse.setUserInformation(new User("username", "password"));
+        userResponse.setAccess_token("e771dc4c-3df0-40be-a963-f5d4d1a201a6");
+        userResponse.setExpires_in(43199);
+        userResponse.setToken_type("bearer");
+        userResponse.setReferenceDataUserId("eaed4b29-0ece-457f-b64f-5d49a929d13d");
+        userResponse.setUsername("CS_Role1");
 
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -123,25 +128,25 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSaveUserToLocalDBWhenSuccess() {
-        presenter.startLogin("user", "password", false);
+        presenter.startLogin("username", "password", false);
         verify(internetCheck1).execute(internetCheckCallBack.capture());
         internetCheckCallBack.getValue().launchResponse(true);
         verify(mockActivity).loading();
-//        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
+        verify(mockedApi).authorizeUser(eq("password"),eq("username"),eq("password"), loginCB.capture());
 
         loginCB.getValue().success(userResponse, retrofitResponse);
 
         verify(userRepository).createOrUpdate(any(User.class));
     }
 
-    @Test
+    @Ignore
     public void shouldSaveUserSupportedProgramsToLocalDBWhenSuccess() {
         presenter.startLogin("user", "password", false);
         verify(internetCheck1).execute(internetCheckCallBack.capture());
         internetCheckCallBack.getValue().launchResponse(true);
         verify(mockActivity).loading();
 
-//        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
+        verify(mockedApi).authorizeUser(eq("password"),eq("username"),eq("password"), loginCB.capture());
 
         List<Program> supportedPrograms = newArrayList(new ProgramBuilder().build(), new ProgramBuilder().build());
 
@@ -153,36 +158,42 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldCreateSyncAccountWhenLoginSuccess() {
-        presenter.startLogin("user", "password", false);
+        presenter.startLogin("username", "password", false);
         verify(internetCheck1).execute(internetCheckCallBack.capture());
         internetCheckCallBack.getValue().launchResponse(true);
-//        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
+        verify(mockedApi).authorizeUser(eq("password"),eq("username"),eq("password"), loginCB.capture());
         loginCB.getValue().success(userResponse, retrofitResponse);
-
-//        verify(syncService).createSyncAccount(userResponse.getUserInformation());
+        User user = new User();
+        user.setUsername(userResponse.getUsername());
+        user.setPassword("password");
+        verify(syncService).createSyncAccount(user);
     }
 
     @Test
     public void shouldSaveUserInfoWhenLoginSuccess() {
-        presenter.startLogin("user", "password", false);
+        presenter.startLogin("username", "password", false);
         verify(internetCheck1).execute(internetCheckCallBack.capture());
         internetCheckCallBack.getValue().launchResponse(true);
-//        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
+        verify(mockedApi).authorizeUser(eq("password"),eq("username"),eq("password"), loginCB.capture());
 
         loginCB.getValue().success(userResponse, retrofitResponse);
 
-//        verify(userRepository).createOrUpdate(userResponse.getUserInformation());
-//        assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(userResponse.getUserInformation());
+        User user = new User();
+        user.setToken_type(userResponse.getToken_type());
+        user.setAccess_token(userResponse.getAccess_token());
+
+        verify(userRepository).createOrUpdate(user);
+        assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(user);
         verify(mockActivity).clearErrorAlerts();
     }
 
     @Test
     public void shouldSyncServerDataWhenLoginSuccessFromNet() {
-        presenter.startLogin("user", "password", false);
+        presenter.startLogin("username", "password", false);
         verify(internetCheck1).execute(internetCheckCallBack.capture());
         internetCheckCallBack.getValue().launchResponse(true);
-//        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
+        verify(mockedApi).authorizeUser(eq("password"),eq("username"),eq("password"), loginCB.capture());
         loginCB.getValue().success(userResponse, retrofitResponse);
 
         verify(syncDownManager).syncDownServerData(any(Subscriber.class));
@@ -287,7 +298,7 @@ public class LoginPresenterTest {
         verify(mockActivity, times(0)).goToHomePage();
     }
 
-    @Test
+    @Ignore
     public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleON() throws Exception {
         User user = UserBuilder.defaultUser();
         UserResponse userResponse = new UserResponse();
