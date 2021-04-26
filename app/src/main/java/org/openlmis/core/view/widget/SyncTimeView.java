@@ -143,7 +143,6 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
         syncDateBottomSheet.setArguments(SyncDateBottomSheet.getArgumentsToMe(rnrLastSyncTime, stockLastSyncTime));
         syncDateBottomSheet.show(((BaseActivity) context).getFragmentManager());
-
     }
 
     public void showSyncProgressBarAndHideIcon() {
@@ -154,10 +153,10 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     private void hideSyncProgressBarAndShowIcon() {
         progressBar.setVisibility(GONE);
         ivSyncTimeIcon.setVisibility(VISIBLE);
-
     }
 
     public void setSyncStockCardLastYearText() {
+        showSyncProgressBarAndHideIcon();
         txSyncTime.setText(R.string.last_year_stock_cards_sync);
     }
 
