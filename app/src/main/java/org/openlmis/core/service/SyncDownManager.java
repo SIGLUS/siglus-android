@@ -76,7 +76,7 @@ public class SyncDownManager {
     private static final int MONTHS_OF_YEAR = 12;
     private static final String TAG = SyncDownManager.class.getSimpleName();
 
-    private boolean isSyncing = false;
+    public static volatile boolean isSyncing = false;
 
     protected LMISRestApi lmisRestApi;
 
