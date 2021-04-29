@@ -3,7 +3,7 @@ apply plugin: 'jacoco'
 def buildDir = "$project.buildDir"
 
 jacoco {
-    toolVersion "0.8.4"
+    toolVersion "0.8.6"
 }
 
 tasks.withType(Test) {
@@ -17,6 +17,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testLocalDebugUnitTest") {
         html.enabled = true
         html.destination file("$buildDir/jacoco")
         csv.enabled false
+        xml.destination file("../build/reports/jacocoTestReport.xml")
     }
 
     def coverageSourceDirs = ["./src/main/java"]

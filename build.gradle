@@ -1,6 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 apply plugin: 'idea'
+apply plugin: "org.sonarqube"
 
 buildscript {
     repositories {
@@ -12,6 +13,7 @@ buildscript {
     dependencies {
         classpath "gradle.plugin.com.betomorrow.gradle:appcenter-plugin:1.1.13"
         classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1"
     }
     ext {
         appCenterSdkVersion = '2.5.1'
@@ -26,5 +28,11 @@ allprojects {
     repositories {
         jcenter()
         google()
+    }
+}
+
+sonarqube {
+    properties {
+        property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacocoTestReport.xml")
     }
 }
