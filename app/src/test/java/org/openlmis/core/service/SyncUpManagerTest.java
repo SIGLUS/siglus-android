@@ -48,7 +48,6 @@ import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
-import org.openlmis.core.model.repository.MalariaProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -108,7 +107,6 @@ public class SyncUpManagerTest {
     private StockRepository stockRepository;
     private SyncUpManager syncUpManager;
     private ProgramDataFormRepository mockedProgramDataFormRepository;
-    private MalariaProgramRepository mockedMalariaprogramRepository;
     private ProductRepository productRepository;
     private StockMovementRepository stockMovementRepository;
     private DirtyDataRepository mockedDirtyDataRepository;
@@ -122,7 +120,6 @@ public class SyncUpManagerTest {
         mockedProgramDataFormRepository = mock(ProgramDataFormRepository.class);
         mockedSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         mockedLmisRestApi = mock(LMISRestApi.class);
-        mockedMalariaprogramRepository = mock(MalariaProgramRepository.class);
         stockMovementRepository = mock(StockMovementRepository.class);
         mockedDirtyDataRepository = mock(DirtyDataRepository.class);
 

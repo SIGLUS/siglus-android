@@ -279,11 +279,6 @@ public class HomeActivity extends BaseActivity {
 
     }
 
-    public void onClickPatientDataReport(View view) {
-        if (!isHaveDirtyData()) {
-            startActivity(new Intent(this, ViaPatientDataReportActivity.class));
-        }
-    }
 
     public void onClickRapidTestHistory(View view) {
         if (!isHaveDirtyData()) {

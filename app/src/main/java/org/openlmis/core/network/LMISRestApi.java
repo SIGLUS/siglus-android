@@ -21,7 +21,6 @@ package org.openlmis.core.network;
 
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.network.model.AppInfoRequest;
@@ -118,8 +117,6 @@ public interface LMISRestApi {
 
     @POST("/rest-api/programData")
     Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
-
-    Void syncUpMalariaPrograms(List<MalariaProgram> malariaPrograms) throws LMISException;
 
     @GET("/rest-api/re-sync")
     Void recordReSyncAction() throws LMISException;

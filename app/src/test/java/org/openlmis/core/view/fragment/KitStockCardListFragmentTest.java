@@ -8,14 +8,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.builders.PTVProgramStockInformationBuilderTest;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.view.adapter.KitStockCardListAdapter;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.android.controller.FragmentController;
-import org.robolectric.util.FragmentTestUtil;
 
 import roboguice.RoboGuice;
 

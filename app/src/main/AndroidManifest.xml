@@ -43,10 +43,6 @@
             android:label="@string/title_init_inventory"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.ViaPatientDataReportActivity"
-            android:label="@string/title_patient_data_report"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".view.activity.AddNonBasicProductsActivity"
             android:label="@string/title_add_non_basic_products"
             android:screenOrientation="portrait" />
@@ -65,16 +61,8 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".view.activity.MalariaDataReportFormActivity"
-            android:label="@string/title_patient_data_report_form"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".view.activity.PTVRequisitionActivity"
             android:label="@string/label_ptv_name"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".view.activity.PTVDataReportFormActivity"
-            android:label="@string/title_patient_ptv_report_form"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.UnpackKitActivity"
