@@ -128,7 +128,7 @@ public class Period implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (getClass() != object.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
         Period period = (Period) object;

@@ -61,8 +61,8 @@ import org.roboguice.shaded.goole.common.collect.Sets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-
 
 import javax.annotation.Nullable;
 
@@ -377,6 +377,7 @@ public class SyncUpManager {
                 @Nullable
                 @Override
                 public DirtyDataItemEntry apply(@Nullable DirtyDataItemInfo dirtyDataItemInfo) {
+                    Objects.requireNonNull(dirtyDataItemInfo);
                     return new DirtyDataItemEntry(dirtyDataItemInfo.getProductCode(), dirtyDataItemInfo.getJsonData(), dirtyDataItemInfo.isFullyDelete());
                 }
             }).toList();

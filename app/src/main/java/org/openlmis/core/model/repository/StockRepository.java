@@ -419,7 +419,7 @@ public class StockRepository {
                 LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(reSetQuantityOnHandValue);
             }
         }
-        if (!getLotsOnHandItemsCursor.isClosed()) {
+        if (getLotsOnHandItemsCursor != null && !getLotsOnHandItemsCursor.isClosed()) {
             getLotsOnHandItemsCursor.close();
         }
     }

@@ -43,15 +43,13 @@ public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, Inter
     @Override
     public InternetListener doInBackground(Callback... callbacks) {
         Callback callback = null;
-        try {
+        try (Socket sock = new Socket()) {
             if (callbacks.length > 0) {
                 callback = callbacks[0];
             } else {
                 throw new Exception("No callback supplied");
             }
-            Socket sock = new Socket();
             sock.connect(new InetSocketAddress(getAddress(), getPORT()), TIMEOUT);
-            sock.close();
             return new InternetListener(true, callback, null);
         } catch (Exception e) {
             e.printStackTrace();

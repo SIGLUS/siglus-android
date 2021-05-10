@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -171,7 +172,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
             ListIterator<InventoryViewModel> iterator = inventoryViewModelList.listIterator();
             while (iterator.hasNext()) {
                 InventoryViewModel viewModel = iterator.next();
-                if (viewModel.getProduct().getCode() == inventoryViewModel.getProduct().getCode()) {
+                if (Objects.equals(viewModel.getProduct().getCode(), inventoryViewModel.getProduct().getCode())) {
                     iterator.remove();
                 }
             }

@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -233,7 +234,7 @@ public class DirtyDataManager {
             @Nullable
             @Override
             public String apply(@Nullable StockCard stockCard) {
-                return stockCard.getProduct().getCode();
+                return Objects.requireNonNull(stockCard).getProduct().getCode();
             }
         }).toSet();
     }

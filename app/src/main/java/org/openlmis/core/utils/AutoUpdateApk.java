@@ -1,18 +1,5 @@
 package org.openlmis.core.utils;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.CRC32;
-import java.util.zip.Checksum;
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -40,6 +27,19 @@ import org.json.JSONObject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 public class AutoUpdateApk {
 
@@ -83,7 +83,7 @@ public class AutoUpdateApk {
     private static int device_id;
     private String mDownloadApkDirectory;
 
-    private static final long MINUTES = 60 * 1000;
+    private static final long MINUTES = 60 * 1000L;
     private static final long HOURS = 60 * MINUTES;
 
     // 3-4 hours in dev.mode, 1-2 days for stable releases
@@ -199,16 +199,8 @@ public class AutoUpdateApk {
             return info.length > 1 && info[0].equalsIgnoreCase("have update") && !retrieved.contains(info[1]);
         }
 
-        private FileOutputStream getOutputStream(String fileName) {
-            FileOutputStream outputStream =  null;
-            try {
-                outputStream = context.openFileOutput(fileName,
-                        isNOrHigher() ? Context.MODE_PRIVATE : Context.MODE_WORLD_READABLE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }finally {
-                return outputStream;
-            }
+        private FileOutputStream getOutputStream(String fileName) throws IOException {
+            return context.openFileOutput(fileName, isNOrHigher() ? Context.MODE_PRIVATE : Context.MODE_WORLD_READABLE);
         }
 
         private String[] writeToStorage(Response response, String[] resultGetApkInfo) throws IOException {
@@ -443,19 +435,15 @@ public class AutoUpdateApk {
         final int size = 8192;
         byte[] buf = new byte[size];
         int length;
-        try {
-            FileInputStream fis = new FileInputStream(filename);
-            BufferedInputStream bis = new BufferedInputStream(fis);
+        try ( FileInputStream fis = new FileInputStream(filename);BufferedInputStream bis = new BufferedInputStream(fis)){
             MessageDigest md = MessageDigest.getInstance("MD5");
             while ((length = bis.read(buf)) != -1) {
                 md.update(buf, 0, length);
             }
-            bis.close();
-
             byte[] array = md.digest();
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < array.length; ++i) {
-                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100)
+            StringBuilder sb = new StringBuilder();
+            for (byte b : array) {
+                sb.append(Integer.toHexString((b & 0xFF) | 0x100)
                         .substring(1, 3));
             }
             Log.v(TAG, "md5sum: " + sb.toString());

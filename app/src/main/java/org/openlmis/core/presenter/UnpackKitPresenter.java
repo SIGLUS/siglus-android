@@ -61,7 +61,7 @@ public class UnpackKitPresenter extends Presenter {
                     final Product product = productRepository.getByCode(kitProduct.getProductCode());
                     InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
                     setExistingLotViewModels(inventoryViewModel);
-                    inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity() * kitNum);
+                    inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity() * (long) kitNum);
                     inventoryViewModel.setChecked(true);
                     inventoryViewModels.add(inventoryViewModel);
                 }
