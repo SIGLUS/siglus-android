@@ -183,7 +183,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
 
     @Override
     public boolean equals(Object object) {
-        if (getClass() != object.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
         return this.productId == ((InventoryViewModel) object).productId && this.productName.equals(((InventoryViewModel) object).productName);

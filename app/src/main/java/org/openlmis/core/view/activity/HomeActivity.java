@@ -472,10 +472,10 @@ public class HomeActivity extends BaseActivity {
             ToastUtil.show(e.getMessage());
         } finally {
             if (tempBackup.canRead()) {
-                tempBackup.delete();
+                FileUtil.deleteDir(tempBackup);
             }
             if (currentXMLBackup.canRead()) {
-                currentXMLBackup.delete();
+                FileUtil.deleteDir(currentXMLBackup);
             }
         }
     }

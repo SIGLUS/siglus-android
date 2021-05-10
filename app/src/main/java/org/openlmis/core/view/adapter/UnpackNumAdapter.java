@@ -31,7 +31,7 @@ public class UnpackNumAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position + 1;
+        return position + 1L;
     }
 
     @Override

@@ -56,20 +56,9 @@ public final class DateUtil {
     public static final int DAY_PERIOD_END = 20;
     public static final String MOZ_TIME_ZONE = "Africa/Maputo";
 
-    private static Locale locale = Locale.getDefault();
-
-    public static final SimpleDateFormat DATE_SIMPLE_FORMAT = new SimpleDateFormat(SIMPLE_DATE_FORMAT);
-    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT, locale);
-    public static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat(DATE_TIME_FORMAT, locale);
-    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR = new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH, locale);
-    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR, locale);
-    public static final SimpleDateFormat DATE_FORMAT_MONTH_AND_YEAR_SHORT = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR_SHORT, locale);
-    public static final SimpleDateFormat DATE_FORMAT_MONTH_AND_YEAR_LONG = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR_LONG, locale);
-
     public static final long MILLISECONDS_MINUTE = 60000;
     public static final long MILLISECONDS_HOUR = 3600000;
     public static final long MILLISECONDS_DAY = 86400000;
-    public static final Calendar CALENDAR_NOW = Calendar.getInstance();
 
     private DateUtil() {
     }
@@ -118,36 +107,36 @@ public final class DateUtil {
     }
 
     public static String formatDate(Date date) {
-        return DATE_FORMATTER.format(date);
+        return new SimpleDateFormat(DEFAULT_DATE_FORMAT, Locale.getDefault()).format(date);
     }
 
     public static String formatDateTime(Date date) {
-        return DATE_TIME_FORMATTER.format(date);
+        return new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).format(date);
     }
 
     public static String formatDateWithoutYear(Date date) {
-        return DATE_FORMAT_NOT_DISPLAY_YEAR.format(date);
+        return new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH, Locale.getDefault()).format(date);
     }
 
     public static String formatDateWithoutDay(Date date) {
-        return DATE_FORMAT_NOT_DISPLAY_DAY.format(date);
+        return new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR, Locale.getDefault()).format(date);
     }
 
     public static String formatDateWithShortMonthAndYear(Date date) {
-        return DATE_FORMAT_MONTH_AND_YEAR_SHORT.format(date);
+        return new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR_SHORT, Locale.getDefault()).format(date);
     }
 
     public static String formatDateWithLongMonthAndYear(Date date) {
-        return DATE_FORMAT_MONTH_AND_YEAR_LONG.format(date);
+        return new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR_LONG, Locale.getDefault()).format(date);
     }
 
     public static String formatDate(Date date, String format) {
-        return new SimpleDateFormat(format, locale).format(date);
+        return new SimpleDateFormat(format, Locale.getDefault()).format(date);
     }
 
     public static Date parseString(String string, String format) {
         try {
-            return new SimpleDateFormat(format, locale).parse(string);
+            return new SimpleDateFormat(format, Locale.getDefault()).parse(string);
         } catch (ParseException e) {
             new LMISException(e, "DateUtil,parseString").reportToFabric();
             return null;
@@ -208,8 +197,9 @@ public final class DateUtil {
     }
 
     private static Calendar calendarDate(Date date) {
-        CALENDAR_NOW.setTime(date);
-        return CALENDAR_NOW;
+        final Calendar instance = Calendar.getInstance();
+        instance.setTime(date);
+        return instance;
     }
 
     public static DateTime cutTimeStamp(DateTime dateTime) {
@@ -259,8 +249,9 @@ public final class DateUtil {
     }
 
     public static String getMonthAbbrByDate(Date date) {
-        CALENDAR_NOW.setTime(date);
-        return new SimpleDateFormat("MMM", locale).format(CALENDAR_NOW.getTime());
+        final Calendar instance = Calendar.getInstance();
+        instance.setTime(date);
+        return new SimpleDateFormat("MMM", Locale.getDefault()).format(instance.getTime());
     }
 
     public static int calculateMonthOffset(DateTime biggerTime, DateTime smallerTime) {
@@ -268,8 +259,9 @@ public final class DateUtil {
     }
 
     public static Date getActualMaximumDate(Date date) {
-        CALENDAR_NOW.setTime(date);
-        CALENDAR_NOW.set(Calendar.DAY_OF_MONTH, CALENDAR_NOW.getActualMaximum(Calendar.DAY_OF_MONTH));
-        return CALENDAR_NOW.getTime();
+        final Calendar instance = Calendar.getInstance();
+        instance.setTime(date);
+        instance.set(Calendar.DAY_OF_MONTH, instance.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return instance.getTime();
     }
 }

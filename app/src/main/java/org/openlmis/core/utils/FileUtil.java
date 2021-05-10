@@ -34,25 +34,19 @@ public final class FileUtil {
     }
 
     public static void copy(File srcFile, File dstFile) throws IOException {
-        FileChannel src = new FileInputStream(srcFile).getChannel();
-        FileChannel dst = new FileOutputStream(dstFile).getChannel();
-        dst.transferFrom(src, 0, src.size());
-        src.close();
-        dst.close();
+        try (FileChannel src = new FileInputStream(srcFile).getChannel(); FileChannel dst = new FileOutputStream(dstFile).getChannel()){
+            dst.transferFrom(src, 0, src.size());
+        }
     }
 
     public static void copyInputStreamToFile(InputStream in, File file) {
-        try {
-            PrintWriter writer = new PrintWriter(file);
+        try (PrintWriter writer = new PrintWriter(file);OutputStream out = new FileOutputStream(file)){
             writer.print("");
-            writer.close();
-            OutputStream out = new FileOutputStream(file);
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
-            out.close();
             in.close();
         } catch (Exception e) {
             new LMISException(e,"FileUtil.copyInputStreamToFile").reportToFabric();

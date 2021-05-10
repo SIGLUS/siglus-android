@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.TextView;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,12 +21,12 @@ import org.openlmis.core.model.builder.StockMovementViewModelBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.listener.MovementDateListener;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowDatePickerDialog;
 import org.robolectric.shadows.ShadowToast;
-import org.openlmis.core.view.listener.MovementDateListener;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -60,7 +59,7 @@ public class StockMovementViewHolderTest {
     public void setUp() throws LMISException, ParseException {
         itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stock_movement, null, false);
         viewHolder = new StockMovementViewHolder(itemView);
-        NEWEST_TIME_STRING = (DateUtil.CALENDAR_NOW.get(Calendar.YEAR) + 2) + "-" + 11 + "-" + 11;
+        NEWEST_TIME_STRING = (Calendar.getInstance().get(Calendar.YEAR) + 2) + "-" + 11 + "-" + 11;
 
         viewModel = new StockMovementViewModelBuilder()
                 .withMovementDate("2015-11-11")
@@ -204,7 +203,7 @@ public class StockMovementViewHolderTest {
         viewHolder.populate(newestViewModel, stockCard);
         MovementDateListener movementDateListener = new MovementDateListener(newestViewModel, new Date(), viewHolder.txMovementDate);
         movementDateListener.onDateSet(mock(DatePicker.class),
-                DateUtil.CALENDAR_NOW.get(Calendar.YEAR) + 3,
+                Calendar.getInstance().get(Calendar.YEAR) + 3,
                 11, 10);
         assertEquals(NEWEST_TIME_STRING, viewHolder.txMovementDate.getText().toString());
     }
