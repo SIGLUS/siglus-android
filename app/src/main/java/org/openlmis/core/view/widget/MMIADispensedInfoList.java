@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS5;
 import static org.openlmis.core.utils.Constants.ATTR_TABLE_DISPENSED_DS4;
@@ -201,6 +202,7 @@ public class MMIADispensedInfoList extends LinearLayout {
 
         EditText dsWithin = getEditText(R.id.type_dispensed_ds_within);
         BaseInfoItem item = getBaseInfoItemFromListByKey(list, ATTR_TABLE_DISPENSED_DS);
+        Objects.requireNonNull(item);
         dsWithin.setText(item.getValue());
         dsWithin.addTextChangedListener(new EditTextWatcher(item));
         dsLists.add(dsWithin);
@@ -215,6 +217,7 @@ public class MMIADispensedInfoList extends LinearLayout {
         initEditTextCell(getEditText(R.id.type_dispensed_dt_from_within), list, ATTR_TABLE_DISPENSED_DT1);
         EditText dtWithin = getEditText(R.id.type_dispensed_dt_within);
         BaseInfoItem dtItem = getBaseInfoItemFromListByKey(list, ATTR_TABLE_DISPENSED_DT);
+        Objects.requireNonNull(dtItem);
         dtWithin.setText(dtItem.getValue());
         dtWithin.addTextChangedListener(new EditTextWatcher(dtItem));
         dtLists.add(dtWithin);
@@ -224,6 +227,7 @@ public class MMIADispensedInfoList extends LinearLayout {
 
         EditText dmWithin = getEditText(R.id.type_dispensed_dm_within);
         BaseInfoItem dmItem = getBaseInfoItemFromListByKey(list, ATTR_TABLE_DISPENSED_DM);
+        Objects.requireNonNull(dmItem);
         dmWithin.setText(dmItem.getValue());
         dmWithin.addTextChangedListener(new EditTextWatcher(dmItem));
         dmLists.add(dmWithin);

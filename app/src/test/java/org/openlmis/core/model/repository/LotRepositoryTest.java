@@ -29,7 +29,6 @@ import roboguice.RoboGuice;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -196,7 +195,7 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
                 .build();
 
         lotRepository.createLotMovementItem(lotMovementItem);
-        assertNotNull(lotMovementItem.getId());
+        assertEquals(1L,lotMovementItem.getId());
 
         StockCard stockCardQueried = stockRepository.queryStockCardById(stockCard.getId());
         StockMovementItem queriedStockMovementItem = stockCardQueried.getStockMovementItemsWrapper().get(stockCardQueried.getStockMovementItemsWrapper().size() - 1);

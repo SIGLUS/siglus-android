@@ -111,8 +111,7 @@ public class MalariaDataReportFormPresenterTest {
     public void shouldSaveMalariaProgramWithCorrectStatusAndSignWhenStatusIsSubmitted() throws InvocationTargetException, NoSuchMethodException, LMISException, IllegalAccessException {
         initializeImplementationReportViewModels();
         when(patientDataService.save(malariaProgram)).thenReturn(Optional.of(malariaProgram));
-        MalariaDataReportViewModel malariaDataReportViewModel = anyObject();
-        when(malariaProgramMapper.map(malariaDataReportViewModel, eq(malariaProgram))).thenReturn(malariaProgram);
+        when(malariaProgramMapper.map(anyObject(), eq(malariaProgram))).thenReturn(malariaProgram);
 
         Observable<MalariaProgram> observable = malariaDataReportFormPresenter.onSaveForm(ViaReportStatus.SUBMITTED, sign);
         observable.subscribe(malariaProgramTestSubscriber);
@@ -128,8 +127,7 @@ public class MalariaDataReportFormPresenterTest {
     public void shouldSaveMalariaProgramWithCorrectStatusAndSignWhenStatusIsNotSubmitted() throws InvocationTargetException, NoSuchMethodException, LMISException, IllegalAccessException {
         initializeImplementationReportViewModels();
         when(patientDataService.save(malariaProgram)).thenReturn(Optional.of(malariaProgram));
-        MalariaDataReportViewModel malariaDataReportViewModel = anyObject();
-        when(malariaProgramMapper.map(malariaDataReportViewModel, eq(malariaProgram))).thenReturn(malariaProgram);
+        when(malariaProgramMapper.map(anyObject(), eq(malariaProgram))).thenReturn(malariaProgram);
 
         Observable<MalariaProgram> observable = malariaDataReportFormPresenter.onSaveForm(ViaReportStatus.MISSING, sign);
         observable.subscribe(malariaProgramTestSubscriber);
@@ -152,8 +150,7 @@ public class MalariaDataReportFormPresenterTest {
     @Test
     public void shouldThrowAnExceptionWhenOnSaveForm() throws LMISException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         initializeImplementationReportViewModels();
-        MalariaDataReportViewModel malariaDataReportViewModel = anyObject();
-        when(malariaProgramMapper.map(malariaDataReportViewModel, eq(malariaProgram))).thenReturn(malariaProgram);
+        when(malariaProgramMapper.map(anyObject(), eq(malariaProgram))).thenReturn(malariaProgram);
         doThrow(LMISException.class).when(patientDataService).save(malariaProgram);
 
         Observable<MalariaProgram> observable = malariaDataReportFormPresenter.onSaveForm(ViaReportStatus.MISSING, sign);

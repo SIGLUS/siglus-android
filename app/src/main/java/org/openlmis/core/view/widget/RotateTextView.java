@@ -43,10 +43,10 @@ public class RotateTextView extends AppCompatTextView {
         canvas.save();
 
         if (topDown) {
-            canvas.translate(getWidth(), getHeight() / 4);
+            canvas.translate(getWidth(), getHeight() / 4f);
             canvas.rotate(90);
         } else {
-            canvas.translate(getWidth() / 4, getHeight());
+            canvas.translate(getWidth() / 4f, getHeight());
             canvas.rotate(-90);
         }
         canvas.translate(getCompoundPaddingLeft(), getExtendedPaddingTop());
