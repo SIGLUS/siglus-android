@@ -30,7 +30,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
@@ -40,9 +39,9 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.activity.mocks.InternetCheckMockForHomeActivity;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
+import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.fakes.RoboMenuItem;
@@ -152,7 +151,7 @@ public class HomeActivityTest {
     public void shouldNotLogOutOrResetTimeIfFirstTimeOperation() throws Exception {
         testApp.setCurrentTimeMillis(1234L);
         homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
-        Assert.assertThat(LMISApp.lastOperateTime, Is.is(not(0L)));
+        Assert.assertThat(BaseActivity.lastOperateTime, Is.is(not(0L)));
     }
 
     @Test
@@ -164,7 +163,7 @@ public class HomeActivityTest {
         testApp.setCurrentTimeMillis(9000L + Long.parseLong(homeActivity.getString(R.string.app_time_out)));
         homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
-        Assert.assertThat(LMISApp.lastOperateTime, Is.is(not(0L)));
+        Assert.assertThat(BaseActivity.lastOperateTime, Is.is(not(0L)));
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
         assertNull(startedIntent);
     }
@@ -177,7 +176,7 @@ public class HomeActivityTest {
         testApp.setCurrentTimeMillis(11000L + Long.parseLong(homeActivity.getString(R.string.app_time_out)));
         homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
-        Assert.assertThat(LMISApp.lastOperateTime, is(0L));
+        Assert.assertThat(BaseActivity.lastOperateTime, is(0L));
 
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
         assertThat(startedIntent.getComponent().getClassName(), equalTo(LoginActivity.class.getName()));

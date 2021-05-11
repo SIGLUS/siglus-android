@@ -61,13 +61,12 @@ import java.util.Map;
 
 import roboguice.RoboGuice;
 
+@SuppressWarnings({"squid:S2696","squid:S5803"})
 public class LMISApp extends Application {
-    private static final String TAG = LMISApp.class.getSimpleName();
 
     private static LMISApp instance;
 
-    public static long lastOperateTime = 0L;
-    private final int facilityCustomDimensionKey = 1;
+    private static final int FACILITY_CUSTOM_DIMENSION_KEY = 1;
 
     private static final int JOB_ID_NETWORK_CHANGE = 123;
 
@@ -155,7 +154,7 @@ public class LMISApp extends Application {
     public void logErrorToFirebase(LMISException exception) {
         Analytics.isEnabled().thenAccept(enable -> {
             final StackTraceElement[] traceElements = exception.getStackTrace();
-            if (enable && (traceElements.length > 0)) {
+            if (enable != null && enable && (traceElements.length > 0)) {
                 Map<String, String> properties = new HashMap<>(traceElements.length);
 
                 for (int i = traceElements.length - 1; i >= 0; i--) {
@@ -175,14 +174,14 @@ public class LMISApp extends Application {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.setScreenName(screenName.getScreenName());
         mTracker.send(new HitBuilders.ScreenViewBuilder()
-                .setCustomDimension(facilityCustomDimensionKey, getFacilityNameForGA())
+                .setCustomDimension(FACILITY_CUSTOM_DIMENSION_KEY, getFacilityNameForGA())
                 .build());
     }
 
     public void trackEvent(TrackerCategories category, TrackerActions action) {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.send(new HitBuilders.EventBuilder(category.getString(), action.getString())
-                .setCustomDimension(facilityCustomDimensionKey, getFacilityNameForGA())
+                .setCustomDimension(FACILITY_CUSTOM_DIMENSION_KEY, getFacilityNameForGA())
                 .build());
     }
 

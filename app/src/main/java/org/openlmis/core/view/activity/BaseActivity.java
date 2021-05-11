@@ -71,6 +71,8 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public abstract class BaseActivity extends RoboActionBarActivity implements BaseView {
 
+    protected static long lastOperateTime = 0L;
+
     @Inject
     SharedPreferenceMgr preferencesMgr;
     @Inject
@@ -134,18 +136,18 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted() && !isLoginActivityActive()) {
+        if (lastOperateTime > 0L && alreadyTimeOuted() && !isLoginActivityActive()) {
             logout();
             return true;
         } else {
-            LMISApp.lastOperateTime = LMISApp.getInstance().getCurrentTimeMillis();
+            lastOperateTime = LMISApp.getInstance().getCurrentTimeMillis();
             return super.dispatchTouchEvent(ev);
         }
     }
 
     protected void logout() {
         startActivity(new Intent(this, LoginActivity.class));
-        LMISApp.lastOperateTime = 0L;
+        lastOperateTime = 0L;
     }
 
     private boolean isLoginActivityActive() {
@@ -154,7 +156,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     private boolean alreadyTimeOuted() {
         Long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
-        return currentTimeMillis - LMISApp.lastOperateTime > APP_TIMEOUT;
+        return currentTimeMillis - lastOperateTime > APP_TIMEOUT;
     }
 
     @Override
