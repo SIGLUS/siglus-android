@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.InitialInventoryPresenter;
@@ -21,8 +20,8 @@ import rx.Subscription;
 @ContentView(R.layout.activity_initial_inventory)
 public class InitialInventoryActivity extends InventoryActivity {
 
-    @InjectView(R.id.layout_action_buttons)
-    private LinearLayout llSave;
+    @InjectView(R.id.btn_save)
+    private View btnSave;
 
     @InjectPresenter(InitialInventoryPresenter.class)
     InitialInventoryPresenter presenter;
@@ -55,7 +54,7 @@ public class InitialInventoryActivity extends InventoryActivity {
     }
 
     private void initButtonPanel() {
-        llSave.setVisibility(View.GONE);
+        btnSave.setVisibility(View.GONE);
         btnDone.setOnClickListener((v) -> {
             btnDone.setEnabled(false);
             if (validateInventory()) {

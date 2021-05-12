@@ -11,7 +11,7 @@
         android:layout_height="@dimen/button_bar_height_default">
 
         <LinearLayout
-            android:id="@+id/layout_action_buttons"
+            android:id="@+id/btn_save"
             style="@style/FormAction.SaveContainer"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height_default"
@@ -20,7 +20,6 @@
 
             <Button
                 style="@style/FormAction.SaveBtn"
-                android:id="@+id/btn_save"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height_default"
                 android:text="@string/btn_save" />
