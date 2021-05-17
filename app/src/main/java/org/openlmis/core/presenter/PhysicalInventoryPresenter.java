@@ -1,5 +1,7 @@
 package org.openlmis.core.presenter;
 
+import android.util.Log;
+
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
@@ -78,14 +80,8 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }
     }
 
-    private void populateLotMovementModelWithExistingSoh(InventoryViewModel viewModel) {
-        for (LotMovementViewModel lotMovementViewModel : viewModel.getExistingLotMovementViewModelList()) {
-            lotMovementViewModel.setQuantity(lotMovementViewModel.getLotSoh());
-        }
-    }
-
     protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
-        Long inventory = model.getLotListQuantityTotalAmount();
+        long inventory = stockCard.getStockOnHand();
         long stockOnHand = model.getStockOnHand();
         StockMovementItem item = new StockMovementItem();
         item.setSignature(model.getSignature());
@@ -130,22 +126,18 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     public Observable<Object> doInventory(final String sign) {
         return Observable.create(subscriber -> {
             try {
-                List<StockMovementItem> newestEachMovementItems = movementRepository.queryEachStockCardNewestMovement();
-                Date now = DateUtil.getCurrentDate();
+                final Date latestStockMovementCreatedTime = movementRepository.getLatestStockMovementCreatedTime();
+                if ( DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
+                    throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
+                }
                 for (InventoryViewModel viewModel : inventoryViewModelList) {
                     viewModel.setSignature(sign);
                     StockCard stockCard = viewModel.getStockCard();
-
                     stockCard.setStockOnHand(viewModel.getLotListQuantityTotalAmount());
-
                     if (stockCard.getStockOnHand() == 0) {
                         stockCard.setExpireDates("");
                     }
-                    if (!hasInversionDateBetweenMovementAndDB(newestEachMovementItems, now)) {
-                        stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard));
-                    } else {
-                        throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
-                    }
+                    stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard));
                 }
                 inventoryRepository.clearDraft();
                 sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT));
@@ -158,15 +150,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                 new LMISException(e, "doInventory").reportToFabric();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
-
-    private boolean hasInversionDateBetweenMovementAndDB(List<StockMovementItem> newestEachMovementItems, Date now) {
-        for (StockMovementItem item : newestEachMovementItems) {
-            if (now.before(item.getCreatedTime())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void saveInventoryDate() {
@@ -190,10 +173,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             }
         });
         inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
-    }
-
-    public void updateAvgMonthlyConsumption() {
-        stockService.immediatelyUpdateAvgMonthlyConsumption();
     }
 
     public int getCompleteCount() {
