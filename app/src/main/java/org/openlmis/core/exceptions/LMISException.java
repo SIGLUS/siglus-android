@@ -25,9 +25,9 @@ import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 
 public class LMISException extends Exception {
-    private static String openLMISError = "OpenLMISError";
+    private static final String OPEN_LMIS_ERROR = "OpenLMISError";
 
-    private String msg;
+    private final String msg;
 
     public LMISException(String msg) {
         super(msg);
@@ -36,6 +36,7 @@ public class LMISException extends Exception {
 
     public LMISException(Exception e) {
         super(e);
+        this.msg = "";
     }
 
     public LMISException(Exception e, String msg) {
@@ -45,15 +46,13 @@ public class LMISException extends Exception {
 
     public LMISException(Throwable throwable) {
         super(throwable);
+        this.msg = "";
     }
     public LMISException(Throwable throwable, String msg) {
         super(throwable);
         this.msg = msg;
     }
 
-    public void setLMISExcetption(LMISException e) {
-        this.msg = e.getMsg();
-    }
     public void reportToFabric() {
         //this will save exception messages locally
         //it only uploads to fabric server when network is available
@@ -61,7 +60,7 @@ public class LMISException extends Exception {
         if (!BuildConfig.DEBUG) {
             LMISApp.getInstance().logErrorToFirebase(this);
         }
-        Log.e(openLMISError, this.getMessage(), this);
+        Log.e(OPEN_LMIS_ERROR, this.getMessage(), this);
     }
 
     public String getMsg() {

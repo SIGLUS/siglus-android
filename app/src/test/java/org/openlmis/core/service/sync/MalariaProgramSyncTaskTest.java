@@ -59,8 +59,6 @@ public class MalariaProgramSyncTaskTest {
     @Test
     public void shouldReportToFabricWhenRestError() throws Exception {
         LMISException lmisException = mock(LMISException.class);
-        LMISException lmisException1 = new LMISException("aaa");
-        lmisException.setLMISExcetption(lmisException1);
         doThrow(lmisException).when(restApi).syncUpMalariaPrograms(pendingForSync);
         syncTask.sync();
         verify(lmisException).reportToFabric();
