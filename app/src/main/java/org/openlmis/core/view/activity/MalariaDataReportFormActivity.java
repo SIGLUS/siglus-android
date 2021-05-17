@@ -16,7 +16,7 @@ public class MalariaDataReportFormActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.MalariaDataReportFormScreen;
+        return ScreenName.MALARIA_DATA_REPORT_FORM_SCREEN;
     }
 
     @Override

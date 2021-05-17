@@ -110,7 +110,7 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.InventoryScreen;
+        return ScreenName.INVENTORY_SCREEN;
     }
 
     @Override

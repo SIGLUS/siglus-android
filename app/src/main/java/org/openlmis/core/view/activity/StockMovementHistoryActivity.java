@@ -35,7 +35,7 @@ public class StockMovementHistoryActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.StockCardMovementHistoryScreen;
+        return ScreenName.STOCK_CARD_MOVEMENT_HISTORY_SCREEN;
     }
 
     @Override

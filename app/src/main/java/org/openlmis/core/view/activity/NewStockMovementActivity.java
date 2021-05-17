@@ -46,7 +46,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.StockCardNewMovementScreen;
+        return ScreenName.STOCK_CARD_NEW_MOVEMENT_SCREEN;
     }
 
     @Override

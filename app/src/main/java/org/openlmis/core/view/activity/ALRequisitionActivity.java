@@ -35,7 +35,7 @@ public class ALRequisitionActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.ALRequisitionScreen;
+        return ScreenName.AL_REQUISITION_SCREEN;
     }
 
     @Override

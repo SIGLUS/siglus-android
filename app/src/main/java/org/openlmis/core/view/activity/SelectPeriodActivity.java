@@ -83,7 +83,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.SelectPeriodScreen;
+        return ScreenName.SELECT_PERIOD_SCREEN;
     }
 
     @Override

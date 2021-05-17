@@ -17,7 +17,7 @@ public class RapidTestReportFormActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.RapidTestReportFormScreen;
+        return ScreenName.RAPID_TEST_REPORT_FORM_SCREEN;
     }
 
     @Override

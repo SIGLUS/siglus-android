@@ -43,7 +43,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.AddDrugsToVIAScreen;
+        return ScreenName.ADD_DRUGS_TO_VIA_SCREEN;
     }
 
     @Override

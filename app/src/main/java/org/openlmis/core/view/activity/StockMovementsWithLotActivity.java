@@ -102,7 +102,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.StockCardMovementScreen;
+        return ScreenName.STOCK_CARD_MOVEMENT_SCREEN;
     }
 
     @Override

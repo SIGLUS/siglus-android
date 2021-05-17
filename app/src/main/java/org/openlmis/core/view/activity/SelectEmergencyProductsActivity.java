@@ -45,7 +45,7 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.SelectEmergencyProductsScreen;
+        return ScreenName.SELECT_EMERGENCY_PRODUCTS_SCREEN;
     }
 
     @Override

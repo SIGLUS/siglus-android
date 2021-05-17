@@ -42,7 +42,7 @@ public class StockCardListActivity extends SearchBarActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.StockCardOverviewScreen;
+        return ScreenName.STOCK_CARD_OVERVIEW_SCREEN;
     }
 
     @Override

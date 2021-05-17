@@ -36,7 +36,7 @@ public class MMIARequisitionActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.MMIARequisitionScreen;
+        return ScreenName.MMIA_REQUISITION_SCREEN;
     }
 
     @Override

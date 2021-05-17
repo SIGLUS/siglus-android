@@ -16,7 +16,7 @@ public class KitStockCardListActivity extends StockCardListActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.KitStockCardOverviewScreen;
+        return ScreenName.KIT_STOCK_CARD_OVERVIEW_SCREEN;
     }
 
     @Override

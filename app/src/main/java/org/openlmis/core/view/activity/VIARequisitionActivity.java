@@ -38,7 +38,7 @@ public class VIARequisitionActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.VIARequisitionScreen;
+        return ScreenName.VIA_REQUISITION_SCREEN;
     }
 
     @Override

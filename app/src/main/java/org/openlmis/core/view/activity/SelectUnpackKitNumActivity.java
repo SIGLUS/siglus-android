@@ -37,7 +37,7 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.SelectUnpackKitNumberScreen;
+        return ScreenName.SELECT_UNPACK_KIT_NUMBER_SCREEN;
     }
 
     @Override

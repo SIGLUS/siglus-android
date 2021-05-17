@@ -121,7 +121,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     public void sendScreenToGoogleAnalyticsAfterLogin() {
-        LMISApp.getInstance().trackScreen(ScreenName.LoginScreen);
+        LMISApp.getInstance().trackScreen(ScreenName.LOGIN_SCREEN);
     }
 
     @Override

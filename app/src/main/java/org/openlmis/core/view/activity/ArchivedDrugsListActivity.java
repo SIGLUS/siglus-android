@@ -40,7 +40,7 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.ArchivedDrugsListScreen;
+        return ScreenName.ARCHIVED_DRUGS_LIST_SCREEN;
     }
 
     @Override

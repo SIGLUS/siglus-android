@@ -91,7 +91,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.RnRFormHistoryScreen;
+        return ScreenName.RN_R_FORM_HISTORY_SCREEN;
     }
 
     @Override

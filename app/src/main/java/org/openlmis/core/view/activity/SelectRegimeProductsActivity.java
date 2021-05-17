@@ -47,7 +47,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.SelectRegimeProductScreen;
+        return ScreenName.SELECT_REGIME_PRODUCT_SCREEN;
     }
 
     @Override

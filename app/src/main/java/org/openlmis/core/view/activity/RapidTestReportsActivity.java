@@ -34,7 +34,7 @@ public class RapidTestReportsActivity extends BaseReportListActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.RapidTestScreen;
+        return ScreenName.RAPID_TEST_SCREEN;
     }
 
     @Override

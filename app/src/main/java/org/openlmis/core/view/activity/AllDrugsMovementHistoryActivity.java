@@ -12,7 +12,7 @@ import roboguice.inject.ContentView;
 public class AllDrugsMovementHistoryActivity extends BaseActivity {
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.AllDrugsMovementHistoryScreen;
+        return ScreenName.ALL_DRUGS_MOVEMENT_HISTORY_SCREEN;
     }
 
     public static Intent getIntentToMe(Context context) {

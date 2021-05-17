@@ -137,7 +137,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.HomeScreen;
+        return ScreenName.HOME_SCREEN;
     }
 
     @Override

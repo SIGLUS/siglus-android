@@ -35,7 +35,7 @@ public class PTVRequisitionActivity extends BaseActivity {
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.PTVRequisitionScreen;
+        return ScreenName.PTV_REQUISITION_SCREEN;
     }
 
     @Override

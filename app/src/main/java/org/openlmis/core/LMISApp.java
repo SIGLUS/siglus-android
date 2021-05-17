@@ -172,7 +172,7 @@ public class LMISApp extends Application {
 
     public void trackScreen(ScreenName screenName) {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
-        mTracker.setScreenName(screenName.getScreenName());
+        mTracker.setScreenName(screenName.getName());
         mTracker.send(new HitBuilders.ScreenViewBuilder()
                 .setCustomDimension(FACILITY_CUSTOM_DIMENSION_KEY, getFacilityNameForGA())
                 .build());
