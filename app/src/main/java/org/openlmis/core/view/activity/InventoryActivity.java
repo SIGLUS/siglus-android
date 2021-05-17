@@ -120,7 +120,7 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         initUI();
 
-        trackInventoryEvent(TrackerActions.SelectInventory);
+        trackInventoryEvent(TrackerActions.SELECT_INVENTORY);
     }
 
     protected abstract void initRecyclerView();

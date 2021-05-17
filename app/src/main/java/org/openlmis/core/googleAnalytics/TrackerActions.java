@@ -1,26 +1,26 @@
 package org.openlmis.core.googleAnalytics;
 
 public enum TrackerActions {
-    SelectStockCard("Select Stock Card"),
-    SelectReason("Select Reason"),
-    SelectMovementDate("Select Movement Date"),
-    SelectComplete("Select Complete"),
-    SelectApprove("Select Approve"),
-    SelectMMIA("Select MMIA"),
-    SelectVIA("Select VIA"),
-    SelectPTV("Select PTV"),
-    SelectAL("Select AL"),
-    CreateRnR("Create RnR Form"),
-    SelectPeriod("Select Period"),
-    SubmitRnR("First Time Approve"),
-    AuthoriseRnR("Second Time Approve"),
-    SelectInventory("Select Inventory"),
-    CompleteInventory("Complete Inventory"),
-    ApproveInventory("Approve Inventory"),
-    NetworkConnected("Network Connected"),
-    NetworkDisconnected("Network Disconnected"),
-    SwitchPowerOn("Tablet Power On"),
-    SwitchPowerOff("Tablet Power Off");
+    SELECT_STOCK_CARD("Select Stock Card"),
+    SELECT_REASON("Select Reason"),
+    SELECT_MOVEMENT_DATE("Select Movement Date"),
+    SELECT_COMPLETE("Select Complete"),
+    SELECT_APPROVE("Select Approve"),
+    SELECT_MMIA("Select MMIA"),
+    SELECT_VIA("Select VIA"),
+    SELECT_PTV("Select PTV"),
+    SELECT_AL("Select AL"),
+    CREATE_RNR("Create RnR Form"),
+    SELECT_PERIOD("Select Period"),
+    SUBMIT_RNR("First Time Approve"),
+    AUTHORISE_RNR("Second Time Approve"),
+    SELECT_INVENTORY("Select Inventory"),
+    COMPLETE_INVENTORY("Complete Inventory"),
+    APPROVE_INVENTORY("Approve Inventory"),
+    NETWORK_CONNECTED("Network Connected"),
+    NETWORK_DISCONNECTED("Network Disconnected"),
+    SWITCH_POWER_ON("Tablet Power On"),
+    SWITCH_POWER_OFF("Tablet Power Off");
 
     private final String trackerAction;
 

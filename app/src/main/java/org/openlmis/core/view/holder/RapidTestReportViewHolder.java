@@ -175,7 +175,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
             public void onSingleClick(View v) {
                 ((BaseActivity) context).loading();
                 ((Activity) context).startActivityForResult(SelectPeriodActivity.getIntentToMe((Activity) context, Constants.RAPID_TEST_CODE, viewModel.getPeriod()), Constants.REQUEST_SELECT_PERIOD_END);
-                TrackRnREventUtil.trackRnRListEvent(TrackerActions.CreateRnR, Constants.RAPID_TEST_CODE);
+                TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, Constants.RAPID_TEST_CODE);
                 ((BaseActivity) context).loaded();
             }
         };
@@ -188,7 +188,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
             public void onSingleClick(View v) {
                 ((BaseActivity) context).loading();
                 ((Activity) context).startActivityForResult(PhysicalInventoryActivity.getIntentToMe(context), Constants.REQUEST_FROM_RNR_LIST_PAGE);
-                TrackRnREventUtil.trackRnRListEvent(TrackerActions.CreateRnR, Constants.RAPID_TEST_CODE);
+                TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, Constants.RAPID_TEST_CODE);
                 ((BaseActivity) context).loaded();
             }
         };

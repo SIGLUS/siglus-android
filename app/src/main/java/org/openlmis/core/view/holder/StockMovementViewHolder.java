@@ -202,14 +202,14 @@ public class StockMovementViewHolder extends BaseViewHolder {
         txReason.setOnClickListener(v -> {
             if (model.isDraft()) {
                 new MovementTypeDialog(context, new MovementSelectListener(model)).show();
-                trackStockMovementEvent(TrackerActions.SelectReason);
+                trackStockMovementEvent(TrackerActions.SELECT_REASON);
             }
         });
 
         txMovementDate.setOnClickListener(v -> {
             if (model.isDraft()) {
                 showDatePickerDialog(model, previousMovementDate);
-                trackStockMovementEvent(TrackerActions.SelectMovementDate);
+                trackStockMovementEvent(TrackerActions.SELECT_MOVEMENT_DATE);
             }
         });
     }

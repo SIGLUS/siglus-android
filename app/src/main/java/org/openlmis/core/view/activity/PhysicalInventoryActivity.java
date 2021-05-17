@@ -72,7 +72,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         @Override
         public void onSingleClick(View v) {
             signPhysicalInventory();
-            trackInventoryEvent(TrackerActions.CompleteInventory);
+            trackInventoryEvent(TrackerActions.COMPLETE_INVENTORY);
         }
     };
 
@@ -147,7 +147,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
             loading();
             Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
             subscriptions.add(subscription);
-            trackInventoryEvent(TrackerActions.ApproveInventory);
+            trackInventoryEvent(TrackerActions.APPROVE_INVENTORY);
         }
     };
 

@@ -14,7 +14,7 @@ public class ShutDownReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
             Log.d("ShutDownReceiver: ", "shut down");
-            LMISApp.getInstance().trackEvent(TrackerCategories.SWITCH, TrackerActions.SwitchPowerOff);
+            LMISApp.getInstance().trackEvent(TrackerCategories.SWITCH, TrackerActions.SWITCH_POWER_OFF);
         }
     }
 }

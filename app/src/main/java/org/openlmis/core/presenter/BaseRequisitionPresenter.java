@@ -148,7 +148,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
                 view.loaded();
                 updateUIAfterSubmit();
 
-                TrackRnREventUtil.trackRnRListEvent(TrackerActions.SubmitRnR, rnRForm.getProgram().getProgramCode());
+                TrackRnREventUtil.trackRnRListEvent(TrackerActions.SUBMIT_RNR, rnRForm.getProgram().getProgramCode());
             }
         };
     }
@@ -177,7 +177,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
                 view.loaded();
                 view.completeSuccess();
                 Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
-                TrackRnREventUtil.trackRnRListEvent(TrackerActions.AuthoriseRnR, rnRForm.getProgram().getProgramCode());
+                TrackRnREventUtil.trackRnRListEvent(TrackerActions.AUTHORISE_RNR, rnRForm.getProgram().getProgramCode());
                 internetCheck.execute(checkInternetListener());
             }
         };

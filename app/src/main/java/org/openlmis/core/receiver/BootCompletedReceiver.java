@@ -15,7 +15,7 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Log.d("BootCompletedReceiver: ", "boot completed");
-            LMISApp.getInstance().trackEvent(TrackerCategories.SWITCH, TrackerActions.SwitchPowerOn);
+            LMISApp.getInstance().trackEvent(TrackerCategories.SWITCH, TrackerActions.SWITCH_POWER_ON);
         }
     }
 }

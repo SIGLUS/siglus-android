@@ -58,7 +58,7 @@ public class NetworkSchedulerService extends JobService {
     }
 
     private void syncImmediately() {
-        LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkConnected);
+        LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
         syncService.requestSyncImmediatelyByTask();
         syncService.kickOff();
     }
@@ -66,7 +66,7 @@ public class NetworkSchedulerService extends JobService {
     private void shutDownImmediately() {
         Log.d(TAG, "there is no internet connection in network receiver");
         Log.d(TAG, "network disconnect, stop sync service...");
-        LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkDisconnected);
+        LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
         syncService.shutDown();
     }
 

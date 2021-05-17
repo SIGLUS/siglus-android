@@ -159,7 +159,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         }
         intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
 
-        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectPeriod, programCode);
+        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_PERIOD, programCode);
 
         setResult(RESULT_OK, intent);
         finish();

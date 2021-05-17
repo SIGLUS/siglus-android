@@ -295,7 +295,7 @@ public class HomeActivity extends BaseActivity {
     public void onClickAL(View view) {
         if (!isHaveDirtyData()) {
             startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.AL_PROGRAM));
-            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectAL, Constants.AL_PROGRAM_CODE);
+            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_AL, Constants.AL_PROGRAM_CODE);
         }
     }
 
@@ -307,21 +307,21 @@ public class HomeActivity extends BaseActivity {
     public void onClickMMIAHistory(View view) {
         if (!isHaveDirtyData()) {
             startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.MMIA_PROGRAM));
-            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectMMIA, Constants.MMIA_PROGRAM_CODE);
+            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_MMIA, Constants.MMIA_PROGRAM_CODE);
         }
     }
 
     public void onClickVIAHistory(View view) {
         if (!isHaveDirtyData()) {
             startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.VIA_PROGRAM));
-            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, Constants.VIA_PROGRAM_CODE);
+            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_VIA, Constants.VIA_PROGRAM_CODE);
         }
     }
 
     public void onClickPtvStockCard(View view) {
         if (!isHaveDirtyData()) {
             startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.PTV_PROGRAM));
-            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectPTV, Constants.PTV_PROGRAM_CODE);
+            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_PTV, Constants.PTV_PROGRAM_CODE);
         }
     }
 

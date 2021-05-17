@@ -174,7 +174,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
                     break;
                 case RnRFormViewModel.TYPE_INVENTORY_DONE:
                     startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, model.getProgramCode()), Constants.REQUEST_SELECT_PERIOD_END);
-                    TrackRnREventUtil.trackRnRListEvent(TrackerActions.CreateRnR, program.getCode());
+                    TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, program.getCode());
                     break;
                 case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
                     rnrFormId = model.getId();
