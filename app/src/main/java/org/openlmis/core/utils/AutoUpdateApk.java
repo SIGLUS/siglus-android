@@ -435,7 +435,7 @@ public class AutoUpdateApk {
         final int size = 8192;
         byte[] buf = new byte[size];
         int length;
-        try ( FileInputStream fis = new FileInputStream(filename);BufferedInputStream bis = new BufferedInputStream(fis)){
+        try (FileInputStream fis = new FileInputStream(filename);BufferedInputStream bis = new BufferedInputStream(fis)){
             MessageDigest md = MessageDigest.getInstance("MD5");
             while ((length = bis.read(buf)) != -1) {
                 md.update(buf, 0, length);
