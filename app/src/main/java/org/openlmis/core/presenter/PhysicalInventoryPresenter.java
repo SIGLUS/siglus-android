@@ -1,7 +1,5 @@
 package org.openlmis.core.presenter;
 
-import android.util.Log;
-
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
@@ -127,7 +125,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         return Observable.create(subscriber -> {
             try {
                 final Date latestStockMovementCreatedTime = movementRepository.getLatestStockMovementCreatedTime();
-                if ( DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
+                if (DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
                     throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
                 }
                 for (InventoryViewModel viewModel : inventoryViewModelList) {
