@@ -8,6 +8,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Inventory;
+import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -20,8 +21,10 @@ import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -51,12 +54,34 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
+
     private List<InventoryViewModel> convertStockCardsToStockCardViewModels(List<StockCard> validStockCardsForPhysicalInventory) {
+        Map<String,List<Map<String,String>>> lotInfoMap = stockRepository.getLotsAndLotOnHandInfo();
+        Map<String,String> lotOnHands = stockRepository.lotOnHands();
         return FluentIterable.from(validStockCardsForPhysicalInventory).transform(stockCard -> {
-            InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard);
+            addLotInfoToStockCard(stockCard,lotInfoMap);
+            InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard,lotOnHands);
             setExistingLotViewModels(inventoryViewModel);
             return inventoryViewModel;
         }).toList();
+    }
+
+    private void addLotInfoToStockCard(StockCard stockCard, Map<String,List<Map<String,String>>> lotInfoMap){
+        List<LotOnHand> lotOnHands = new ArrayList<>();
+        List<Map<String,String>> lotInfoList = lotInfoMap.get(String.valueOf(stockCard.getId()));
+        if (lotInfoList != null) {
+            for (Map<String,String> lotInfo : lotInfoList){
+                Lot lot = new Lot();
+                LotOnHand lotOnHand = new LotOnHand();
+                lotOnHand.setQuantityOnHand(Long.valueOf(lotInfo.get("quantityOnHand")));
+                lot.setLotNumber(lotInfo.get("lotNumber"));
+                lot.setExpirationDate(DateUtil.parseString(lotInfo.get("expirationDate"),DateUtil.DB_DATE_FORMAT));
+                lotOnHand.setLot(lot);
+                lotOnHands.add(lotOnHand);
+            }
+        }
+
+        stockCard.setLotOnHandListWrapper(lotOnHands);
     }
 
     protected List<StockCard> getValidStockCardsForPhysicalInventory() throws LMISException {
