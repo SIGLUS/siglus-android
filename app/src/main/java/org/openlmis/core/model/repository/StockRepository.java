@@ -44,6 +44,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -446,6 +447,49 @@ public class StockRepository {
             new LMISException(e, "StockRepository.getLotOnHands").reportToFabric();
         }
         return lotsOnHands;
+    }
+
+
+    public Map<String,List<List<String>>> getLotsAndLotOnHandInfo() {
+        Map<String,List<List<String>>> lotInfoMap = new HashMap<>();
+        List<List<String>> lotList = new ArrayList<>();
+        String rawSql = "select loh.stockCard_id, loh.quantityOnHand, lots.lotNumber, lots.expirationDate "
+                + "from lots_on_hand loh join lots on loh.lot_id = lots.id order by loh.stockCard_id ";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        if (cursor.moveToFirst()) {
+            do {
+                getLotInfo(lotList,cursor);
+            } while (cursor.moveToNext());
+        }
+        combineStockCardAndLot(lotInfoMap,lotList);
+        return lotInfoMap;
+    }
+
+    private void combineStockCardAndLot(Map<String,List<List<String>>> lotInfoMap,List<List<String>> lotList) {
+        List<List<String>> singleProductLotList = new ArrayList<>();
+        String stockCardId = lotList.get(0).get(0);
+        for (int i=0; i< lotList.size();i++) {
+            if (lotList.get(i).get(0).equals(stockCardId)){
+                singleProductLotList.add(lotList.get(i));
+            }else {
+                List<List<String>> newSingleProductLotList = new ArrayList<>();
+                newSingleProductLotList.addAll(singleProductLotList);
+                lotInfoMap.put(stockCardId,newSingleProductLotList);
+                singleProductLotList.clear();
+                singleProductLotList.add(lotList.get(i));
+                stockCardId = lotList.get(i).get(0);
+            }
+        }
+    }
+
+    private void getLotInfo(List<List<String>> lotList, Cursor cursor) {
+        String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow("stockCard_id"));
+        String lotNumber = cursor.getString(cursor.getColumnIndexOrThrow("lotNumber"));
+        String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow("expirationDate"));
+        String lotsOnHand = cursor.getString(cursor.getColumnIndexOrThrow("quantityOnHand"));
+        List<String> infoList = new ArrayList<>();
+        infoList.addAll(Arrays.asList(stockCardId,lotNumber,expirationDate,lotsOnHand));
+        lotList.add(infoList);
     }
 
     public GenericRawResults<String[]> refreshedLotOnHands(Long stockCardId) throws LMISException {
