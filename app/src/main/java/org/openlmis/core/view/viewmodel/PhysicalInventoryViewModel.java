@@ -13,6 +13,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -24,6 +25,10 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
 
     public PhysicalInventoryViewModel(StockCard stockCard) {
         super(stockCard);
+    }
+
+    public PhysicalInventoryViewModel(StockCard stockCard, Map<String, String> lotsOnHands) {
+        super(stockCard,lotsOnHands);
     }
 
     @Override
