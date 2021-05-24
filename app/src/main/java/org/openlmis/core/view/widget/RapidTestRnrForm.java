@@ -77,7 +77,6 @@ public class RapidTestRnrForm extends LinearLayout {
         viewGroup = (ViewGroup) container.findViewById(R.id.program_from_list);
         leftHeaderLinearlayout = (ViewGroup) container.findViewById(R.id.rapid_test_top_left_layout);
         leftHeaderScrollView = (ViewGroup) container.findViewById(R.id.rapid_test_top_left_scrollview);
-        topRightScrollView = (ViewGroup) container.findViewById(R.id.rapid_test_top_scrollview);
     }
 
     public void initView(List<ProgramDataFormBasicItem> itemFormList) {

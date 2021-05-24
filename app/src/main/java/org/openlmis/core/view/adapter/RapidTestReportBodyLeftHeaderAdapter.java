@@ -27,13 +27,17 @@ public class RapidTestReportBodyLeftHeaderAdapter extends RecyclerView.Adapter<R
 
     @Override
     public void onBindViewHolder(RapidTestReportBodyLeftHeaderViewHolder holder, int position) {
+        if (position == viewModels.size()) {
+            holder.setUpObservationLeftHeaderViewHolder();
+            return;
+        }
         final RapidTestFormItemViewModel viewModel = viewModels.get(position);
-        holder.setUpHeader(viewModel, position);
+        holder.setUpHeader(viewModel);
     }
 
     @Override
     public int getItemCount() {
-        return viewModels.size();
+        return viewModels.size() + 1;
     }
 
     public void refresh(List<RapidTestFormItemViewModel> itemViewModelList) {

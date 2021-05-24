@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/ItemRnr.Container"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/repid_view_top_item_line_heigh"
+    android:layout_height="@dimen/repid_view_top_item_line_height"
     android:background="@drawable/border_bottom_black">
 
     <TextView

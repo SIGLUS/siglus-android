@@ -19,13 +19,18 @@ public class RapidTestReportBodyLeftHeaderViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void setUpHeader(RapidTestFormItemViewModel viewModel, int pos) {
+    public void setUpHeader(RapidTestFormItemViewModel viewModel) {
         mTitle.setText(viewModel.getIssueReason().getDescription());
         if (isTotal(viewModel) || isAPEs(viewModel)) {
             mTitle.setBackgroundResource(R.drawable.border_top_rapid_test_body_left_ape);
         } else {
             mTitle.setBackgroundResource(R.drawable.border_top_rapid_test_body_left);
         }
+    }
+
+    public void setUpObservationLeftHeaderViewHolder() {
+        mTitle.setBackgroundResource(R.drawable.border_top_rapid_test_body_left_ape);
+        mTitle.setText(LMISApp.getContext().getResources().getString(R.string.hint_mmia_comment));
     }
 
     private boolean isTotal(RapidTestFormItemViewModel viewModel) {

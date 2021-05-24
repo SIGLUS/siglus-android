@@ -5,15 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 
 import org.openlmis.core.model.Period;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -40,17 +37,15 @@ import rx.functions.Action1;
 
 public class RapidTestReportFormFragment extends BaseReportFragment {
     private static final String TAG = RapidTestReportFormFragment.class.getSimpleName();
-    @InjectView(R.id.rv_rapid_report_row_item_list)
-    RecyclerView rvReportRowItemListView;
+
+    @InjectView(R.id.rapid_test_top_scrollview)
+    RnrFormHorizontalScrollView rapidTestTopScrollView;
 
     @InjectView(R.id.rapid_view_basic_item_header)
     LinearLayout rnrBasicItemHeader;
 
     @InjectView(R.id.rapid_view_basic_item_header_left)
     TextView rnrBasicItemHeaderLeft;
-
-    @InjectView(R.id.rapid_test_top_scrollview)
-    RnrFormHorizontalScrollView rapidTestTopScrollView;
 
     @InjectView(R.id.rapid_test_rnr_form)
     protected RapidTestRnrForm rnrBasicItemListView;
@@ -61,19 +56,17 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.vg_rapid_test_report_body_left_header)
     ViewGroup rapidTestBodyLeftHeader;
 
-    @InjectView(R.id.rv_observation_header)
-    LinearLayout observationHeader;
+    @InjectView(R.id.rapid_test_body_left_list)
+    RecyclerView rapidTestBodyLeftListView;
 
-    @InjectView(R.id.rv_observation_content)
-    EditText observationContent;
+    @InjectView(R.id.rv_rapid_report_row_item_list)
+    RecyclerView rvReportRowItemListView;
 
     RapidTestReportFormPresenter presenter;
 
-    RapidTestReportRowAdapter adapter;
+    RapidTestReportRowAdapter rapidBodyRightAdapter;
 
     RapidTestReportBodyLeftHeaderAdapter rapidBodyLeftAdapter;
-    @InjectView(R.id.rapid_test_body_left_list)
-    RecyclerView rapidTestBodyLeftListView;
 
     public static int ROW_HEADER_WIDTH = -1;
 
@@ -102,7 +95,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         updateHeaderSize();
         setUpRowItems();
         setUpBodyLeftItems();
-        addObservationChange();
         rvReportRowItemListView.setNestedScrollingEnabled(false);
         if (isSavedInstanceState && presenter.getViewModel() != null) {
             updateUI();
@@ -127,7 +119,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         calculateRowHeaderAndGridSize();
         emptyHeaderView.getLayoutParams().width = ROW_HEADER_WIDTH;
         rapidTestBodyLeftHeader.getLayoutParams().width = ROW_HEADER_WIDTH;
-        observationHeader.getLayoutParams().width = (int) (ROW_HEADER_WIDTH + getResources().getDimension(R.dimen.rapid_view_border_width));
     }
 
     private void calculateRowHeaderAndGridSize() {
@@ -143,9 +134,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     private void setUpRowItems() {
-        adapter = new RapidTestReportRowAdapter(getQuantityChangeListener());
+        rapidBodyRightAdapter = new RapidTestReportRowAdapter(getQuantityChangeListener());
         rvReportRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvReportRowItemListView.setAdapter(adapter);
+        rvReportRowItemListView.setAdapter(rapidBodyRightAdapter);
     }
 
     private void setUpBodyLeftItems() {
@@ -159,8 +150,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         return (columnCode, gridColumnCode) -> {
             presenter.getViewModel().updateTotal(columnCode, gridColumnCode);
             presenter.getViewModel().updateAPEWaring();
-            adapter.updateTotal();
-            adapter.updateAPE();
+            rapidBodyRightAdapter.updateTotal();
+            rapidBodyRightAdapter.updateAPE();
         };
     }
 
@@ -254,7 +245,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     }
 
     public void updateUIAfterSubmit() {
-        adapter.notifyDataSetChanged();
+        rapidBodyRightAdapter.notifyDataSetChanged();
         rapidBodyLeftAdapter.notifyDataSetChanged();
         updateButtonName();
     }
@@ -296,7 +287,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         }
         initListener();
         populateFormData(viewModel);
-        updateObservation(viewModel);
         updateActionPanel();
         loaded();
     }
@@ -336,30 +326,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         });
     }
 
-    private void updateObservation(RapidTestReportViewModel viewModel) {
-        observationContent.setFocusableInTouchMode(viewModel.isEditable());
-        observationContent.setText(viewModel.getObservation());
-    }
-
     private void populateFormData(RapidTestReportViewModel viewModel) {
-        adapter.refresh(viewModel.getItemViewModelList(), viewModel.isEditable());
+        rapidBodyRightAdapter.refresh(viewModel);
         rapidBodyLeftAdapter.refresh(viewModel.getItemViewModelList());
     }
 
-    private void addObservationChange() {
-        observationContent.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                presenter.getViewModel().setObservation(editable.toString());
-            }
-        });
-    }
 }
