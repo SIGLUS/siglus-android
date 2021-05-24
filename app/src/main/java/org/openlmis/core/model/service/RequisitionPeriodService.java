@@ -3,6 +3,9 @@ package org.openlmis.core.model.service;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -83,8 +86,16 @@ public class RequisitionPeriodService {
         return new Period(periodBeginDate, periodEndDate);
     }
 
-    private DateTime calculatePeriodBeginDate(String programCode) throws LMISException {
-        DateTime initializeDateTime = new DateTime(stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode));
+    private DateTime calculatePeriodBeginDate(String programCode) throws LMISException{
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        ReportTypeForm reportTypeForm = reportTypeFormRepository.queryByCode(programCode);
+        DateTime lastReportEndTime = dateTimeFormatter.parseDateTime(reportTypeForm.lastReportEndTime);
+        DateTime initializeDateTime;
+        if (Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12){
+            initializeDateTime = new DateTime().plusMonths(-12).toDateTime();
+        }else {
+            initializeDateTime = lastReportEndTime.toDateTime();
+        }
 
         int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 
