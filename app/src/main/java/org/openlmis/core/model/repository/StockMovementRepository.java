@@ -199,6 +199,29 @@ public class StockMovementRepository {
                 .query());
     }
 
+    //仅查找stockOnHand, movementQuantity, movementType用于填充RnrItem
+    public List<StockMovementItem> queryNotFullFillStockItemsByCreatedData(final long stockCardId, final Date periodBeginDate, final Date periodEndDate){
+        String rawSql = "SELECT stockOnHand, movementQuantity, movementType FROM stock_items WHERE stockCard_id='" + stockCardId + "'"
+                + " AND createdTime > '" + DateUtil.formatDateTime(periodBeginDate) + "'"
+                + " AND createdTime <= '" + DateUtil.formatDateTime(periodEndDate) + "'"
+                + " ORDER BY movementDate, createdTime";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        List<StockMovementItem> stockItems = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                StockMovementItem stockMovementItem = new StockMovementItem();
+                stockMovementItem.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+                stockMovementItem.setMovementQuantity(cursor.getLong(cursor.getColumnIndexOrThrow("movementQuantity")));
+                stockMovementItem.setMovementType(MovementReasonManager.MovementType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("movementType"))));
+                stockItems.add(stockMovementItem);
+            } while (cursor.moveToNext());
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return stockItems;
+    }
+
     public List<StockMovementItem> queryStockMovementsByMovementDate(final long stockCardId, final Date startDate, final Date endDate) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
                 .orderBy("movementDate", true)
