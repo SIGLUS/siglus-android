@@ -394,7 +394,7 @@
     <!--Add products to requisition form-->
     <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
     <string name="title_add_drugs_to_form">Adicione produtos para requisição</string>
-    <string name="label_hint_amount_requisition">Quantidade recebida</string>
+    <string name="label_hint_amount_requisition">Quantidade Pedida</string>
     <string name="label_to_comfirm_delete_product">Tem certeza de que deseja remover este produto?</string>
     <!--Stock movement adding page-->
     <string name="hint_movement_date">Data do movimento</string>
