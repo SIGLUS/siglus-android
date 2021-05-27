@@ -65,19 +65,19 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/border_left_black_bold">
+
+            <include layout="@layout/fragment_rapid_test_test_report_form_body_top_header" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_rapid_report_row_item_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/vg_rapid_test_report_header"
                 android:background="@drawable/border_top_black_right_black_bold"
                 android:contentDescription="rv_rapid_report_row_item_list"
                 android:overScrollMode="never" />
-
-            <include layout="@layout/fragment_rapid_test_test_report_form_body_top_header" />
         </RelativeLayout>
     </org.openlmis.core.view.widget.RapidTestBodyHorizontalScrollView>
 </RelativeLayout>

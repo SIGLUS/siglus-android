@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.fragment.RapidTestReportFormFragment;
 import org.openlmis.core.view.holder.RapidTestReportGridViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 
@@ -18,8 +17,10 @@ public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestRe
     private Boolean editable;
     List<RapidTestFormGridViewModel> viewModels;
     private RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener;
+    private int itemWidth;
 
     public RapidTestReportGridAdapter(List<RapidTestFormGridViewModel> viewModels, Context context, Boolean editable, RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
+        itemWidth = (int) (context.getResources().getDimension(R.dimen.rapid_view_width)) / 4;
         this.viewModels = viewModels;
         this.context = context;
         this.editable = editable;
@@ -29,13 +30,13 @@ public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestRe
     @Override
     public RapidTestReportGridViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-        if (editable){
+        if (editable) {
             itemView = LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report_grid, parent, false);
-        }else {
+        } else {
             itemView = LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report_grid_total, parent, false);
         }
 
-        itemView.getLayoutParams().width = RapidTestReportFormFragment.GRID_SIZE;
+        itemView.getLayoutParams().width = itemWidth;
         return new RapidTestReportGridViewHolder(itemView);
     }
 

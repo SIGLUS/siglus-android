@@ -11,7 +11,7 @@
         android:layout_width="@dimen/rapid_view_basic_form_item_width"
         android:layout_height="wrap_content" />
 
-    <EditText
+    <org.openlmis.core.view.widget.CleanableEditText
         android:id="@+id/et_stock"
         style="@style/RapidTestForm.productList"
         android:layout_width="97dp"
@@ -40,7 +40,7 @@
         android:layout_width="156dp"
         android:layout_height="wrap_content" />
 
-    <EditText
+    <org.openlmis.core.view.widget.CleanableEditText
         android:id="@+id/et_inventory"
         style="@style/RapidTestForm.productList"
         android:layout_width="97dp"
