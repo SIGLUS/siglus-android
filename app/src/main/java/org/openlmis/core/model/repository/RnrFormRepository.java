@@ -57,8 +57,6 @@ import java.util.List;
 import java.util.Map;
 
 public class RnrFormRepository {
-    private static final String TAG = RnrFormRepository.class.getSimpleName();
-
     @Inject
     DbUtil dbUtil;
 
@@ -303,15 +301,13 @@ public class RnrFormRepository {
 
     protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
         RnrFormItem rnrFormItem = new RnrFormItem();
-        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsByCreatedDate(stockCard.getId(), startDate, endDate);
-
-        if (stockMovementItems.isEmpty()) {
+        final List<StockMovementItem> notFullStockItemsByCreatedData = stockMovementRepository.queryNotFullFillStockItemsByCreatedData(stockCard.getId(), startDate, endDate);
+        if (notFullStockItemsByCreatedData.isEmpty()) {
             rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
         } else {
-            rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
-            rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
+            rnrFormItem.setInitialAmount(notFullStockItemsByCreatedData.get(0).calculatePreviousSOH());
+            rnrFormHelper.assignTotalValues(rnrFormItem, notFullStockItemsByCreatedData);
         }
-
         rnrFormItem.setProduct(stockCard.getProduct());
         return rnrFormItem;
     }
@@ -344,16 +340,13 @@ public class RnrFormRepository {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
                 create(rnrForm);
-                List<StockCard> stockCards = new ArrayList<>();
-                List<StockCard> stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
+                List<StockCard> stockCardWithMovement;
                 if (Constants.VIA_PROGRAM_CODE.equals(rnrForm.getProgram().getProgramCode())) {
-                    List<StockCard> stockCardsBelongToProgram = stockRepository.getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
-                    stockCards.clear();
-                    stockCards.addAll(combineStockCard(stockCardWithMovement, stockCardsBelongToProgram));
+                    stockCardWithMovement = stockRepository.getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
                 } else {
-                    stockCards.addAll(stockCardWithMovement);
+                    stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
                 }
-                rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCards));
+                rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCardWithMovement));
                 regimenItemRepository.batchCreateOrUpdate(generateRegimeItems(rnrForm));
                 regimenItemThreeLineRepository.batchCreateOrUpdate(generateRegimeThreeLineItems(rnrForm));
                 baseInfoItemRepository.batchCreateOrUpdate(generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW));
@@ -363,22 +356,8 @@ public class RnrFormRepository {
         } catch (SQLException e) {
             throw new LMISException(e);
         }
-
         assignCategoryForRnrItems(rnrForm);
-
         return rnrForm;
-    }
-
-
-    private List<StockCard> combineStockCard(List<StockCard> stockCardsWithMovement, List<StockCard> belongToProgram) {
-        List<StockCard> stockCards = new ArrayList<>();
-        for (StockCard stockCard : belongToProgram) {
-            if (!stockCardsWithMovement.contains(stockCard)) {
-                stockCards.add(stockCard);
-            }
-        }
-        stockCards.addAll(stockCardsWithMovement);
-        return stockCards;
     }
 
     private void assignCategoryForRnrItems(RnRForm rnrForm) throws LMISException {
@@ -469,7 +448,7 @@ public class RnrFormRepository {
 
         return dbUtil.withDao(RnRForm.class, dao -> {
             Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
-            where.in("program_id", programId).and().between("periodBegin", typeForm.getStartTime(),  DateUtil.getCurrentDate());
+            where.in("program_id", programId).and().between("periodBegin", typeForm.getStartTime(), DateUtil.getCurrentDate());
 
             if (!isWithEmergency) {
                 where.and().eq("emergency", false);

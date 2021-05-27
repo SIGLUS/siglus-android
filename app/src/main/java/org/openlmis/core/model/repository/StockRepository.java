@@ -239,7 +239,6 @@ public class StockRepository {
                 + " OR programCode='" + programCode + "')))";
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
         List<StockCard> stockCardList = new ArrayList<>();
-
         if (cursor.moveToFirst()) {
             do {
                 StockCard stockCard = new StockCard();
@@ -247,7 +246,6 @@ public class StockRepository {
                 stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
                 stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
                 stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
-                stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
                 stockCardList.add(stockCard);
             } while (cursor.moveToNext());
         }
@@ -271,7 +269,6 @@ public class StockRepository {
 
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
         List<StockCard> stockCardList = new ArrayList<>();
-
         if (cursor.moveToFirst()) {
             do {
                 StockCard stockCard = new StockCard();
@@ -397,8 +394,6 @@ public class StockRepository {
                     return null;
                 });
             }
-
-
         }
     }
 
