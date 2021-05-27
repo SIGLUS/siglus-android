@@ -117,17 +117,7 @@ public class RapidTestRnrForm extends LinearLayout {
         int formTitleHeightPX = (int) (HEIGHT_FORM_TITLE_DP * displayMetrics.density + 0.5f);
         int actionPanelHeightPX = (int) (HEIGHT_ACTION_PANEL_DP * displayMetrics.density + 0.5f);
         int actionBarHeight = getActionBarHeight();
-        int statusBarHeight = getStatusBarHeight();
-        maxHeight = (screenHeight - formTitleHeightPX - actionPanelHeightPX - statusBarHeight - actionBarHeight) / 2;
-    }
-
-    private int getStatusBarHeight() {
-        try {
-            int resourceId = getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
-            return getContext().getResources().getDimensionPixelSize(resourceId);
-        } catch (Exception e) {
-            return 0;
-        }
+        maxHeight = (screenHeight - formTitleHeightPX - actionPanelHeightPX - actionBarHeight) / 2;
     }
 
     private int getActionBarHeight() {

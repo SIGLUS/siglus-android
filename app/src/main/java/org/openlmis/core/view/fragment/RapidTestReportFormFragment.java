@@ -1,6 +1,8 @@
 package org.openlmis.core.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.graphics.Point;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +35,9 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 public class RapidTestReportFormFragment extends BaseReportFragment {
+
+    @InjectView(R.id.v_bottom_root)
+    ViewGroup vBottomRoot;
 
     @InjectView(R.id.rapid_view_basic_item_header)
     LinearLayout rnrBasicItemHeader;
@@ -301,4 +306,24 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         rapidBodyLeftAdapter.refresh(viewModel.getItemViewModelList());
     }
 
+    public void keyboardChanged(int keyboardHeight, Point currentTouchPoint) {
+        final View rootView = getView();
+        if (rootView == null) return;
+        if (keyboardHeight <= 0) {
+            //keyboard hide
+            rootView.scrollTo(0, 0);
+            return;
+        }
+        //keyboard show
+        final RectF bottomRootRect = calcViewScreenLocation(vBottomRoot);
+        if (bottomRootRect.contains(currentTouchPoint.x, currentTouchPoint.y)) {
+            rootView.scrollTo(0, keyboardHeight);
+        }
+    }
+
+    private RectF calcViewScreenLocation(View view) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        return new RectF(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
+    }
 }
