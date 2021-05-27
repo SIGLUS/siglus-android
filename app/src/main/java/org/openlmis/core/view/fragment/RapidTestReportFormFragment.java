@@ -60,6 +60,9 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     @InjectView(R.id.rv_rapid_report_row_item_list)
     RecyclerView rvReportRowItemListView;
 
+    @InjectView(R.id.action_panel)
+    View vActionPanel;
+
     RapidTestReportFormPresenter rapidTestReportFormPresenter;
 
     RapidTestReportRowAdapter rapidBodyRightAdapter;
@@ -317,7 +320,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         //keyboard show
         final RectF bottomRootRect = calcViewScreenLocation(vBottomRoot);
         if (bottomRootRect.contains(currentTouchPoint.x, currentTouchPoint.y)) {
-            rootView.scrollTo(0, keyboardHeight);
+            int needScrollHeight = vActionPanel == null ? keyboardHeight : (keyboardHeight - vActionPanel.getMeasuredHeight());
+            rootView.scrollTo(0, needScrollHeight);
         }
     }
 
