@@ -136,7 +136,7 @@ public class ProgramDataFormRepository {
             return Collections.emptyList();
         }
 
-        return dbUtil.withDao(ProgramDataForm.class, dao -> dao.queryBuilder().where().eq("program_id", program.getId()).query());
+        return dbUtil.withDao(ProgramDataForm.class, dao -> dao.queryBuilder().orderBy("periodBegin",true).where().eq("program_id", program.getId()).query());
     }
 
     public ProgramDataForm queryById(long formId) throws LMISException {

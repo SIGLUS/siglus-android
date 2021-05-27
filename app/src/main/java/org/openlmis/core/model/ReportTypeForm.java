@@ -39,4 +39,9 @@ public class ReportTypeForm extends BaseModel {
     @DatabaseField
     public Date startTime;
 
+    @Expose
+    @SerializedName("lastReportEndTime")
+    @DatabaseField
+    public String lastReportEndTime;
+
 }
