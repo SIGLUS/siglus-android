@@ -75,7 +75,14 @@ public class RnRFormViewHolder extends BaseViewHolder {
             case RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED:
                 populateRnrFormNotBeCreatedView(model);
                 break;
-            case RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED:
+            case RnRFormViewModel.TYPE_DRAFT:
+                configHolder(model.getTitle(),
+                        Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())),
+                        R.drawable.ic_description, R.color.color_draft_title, color_white);
+                setupButton(model, context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
+                showDeleteMenu(model.getForm());
+                break;
+            case RnRFormViewModel.TYPE_SUBMIT:
                 configHolder(model.getTitle(),
                         Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())),
                         R.drawable.ic_description, R.color.color_draft_title, color_white);
@@ -141,7 +148,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
         configHolder(model.getTitle(),
                 Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())),
                 R.drawable.ic_done_green, color_white, R.color.color_text_primary);
-        showDeleteMenu(form);
         setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
 
         if (form.isEmergency()) {

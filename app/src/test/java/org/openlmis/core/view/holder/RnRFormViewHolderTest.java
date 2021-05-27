@@ -59,7 +59,7 @@ public class RnRFormViewHolderTest {
         form.setStatus(RnRForm.STATUS.DRAFT);
         RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
 
-        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
+        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_DRAFT);
 
         viewHolder.populate(viewModel);
 
@@ -67,7 +67,7 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName())));
         assertThat(((ColorDrawable) viewHolder.tvPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_incomplete_requisition, viewModel.getName())));
-        assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
+        assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
     }
 
     @Test
@@ -128,7 +128,7 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
         assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_mmia_submitted_message, viewModel.getSyncedTime())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, viewModel.getName())));
-        assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
+        assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
         assertNull(viewHolder.tvDrugCount);
     }
 
@@ -152,7 +152,7 @@ public class RnRFormViewHolderTest {
         assertTrue(viewHolder.tvPeriod.getText().toString().equals("Emergency Requisition – 22 Jan 2016 11:33"));
         assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, "Emergency requisition balancete", viewModel.getSyncedTime())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, "Emergency requisition balancete")));
-        assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
+        assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
 
         form.getRnrFormItemList().add(new RnrFormItem());
         viewHolder.populate(viewModel);
