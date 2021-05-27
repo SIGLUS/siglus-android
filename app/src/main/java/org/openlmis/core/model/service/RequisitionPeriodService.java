@@ -3,9 +3,13 @@ package org.openlmis.core.model.service;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
@@ -32,6 +36,9 @@ public class RequisitionPeriodService {
 
     @Inject
     private ReportTypeFormRepository reportTypeFormRepository;
+
+    @Inject
+    private SharedPreferenceMgr sharedPreferenceMgr;
 
     public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
         return generateNextPeriod(programCode, physicalInventoryDate, reportTypeFormRepository.getReportType(programCode));
@@ -83,8 +90,17 @@ public class RequisitionPeriodService {
         return new Period(periodBeginDate, periodEndDate);
     }
 
-    private DateTime calculatePeriodBeginDate(String programCode) throws LMISException {
-        DateTime initializeDateTime = new DateTime(stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode));
+    private DateTime calculatePeriodBeginDate(String programCode) throws LMISException{
+        DateTime initializeDateTime = null;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        ReportTypeForm reportTypeForm = reportTypeFormRepository.queryByCode(programCode);
+        if (reportTypeForm.lastReportEndTime != null) {
+            DateTime lastReportEndTime = dateTimeFormatter.parseDateTime(reportTypeForm.lastReportEndTime);
+            if (Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12){
+                initializeDateTime = new DateTime().plusMonths(-sharedPreferenceMgr.getMonthOffsetThatDefinedOldData()).toDateTime();
+            }
+        }
+        initializeDateTime = initializeDateTime == null? new DateTime(stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode)):initializeDateTime;
 
         int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 

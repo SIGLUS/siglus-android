@@ -45,6 +45,7 @@ import org.openlmis.core.persistence.migrations.AddIsCustomColumnToRegime;
 import org.openlmis.core.persistence.migrations.AddIsEmergencyColumnToProgram;
 import org.openlmis.core.persistence.migrations.AddIsHIVColumnToProductsTable;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
+import org.openlmis.core.persistence.migrations.AddLastReportEndTimeToReportType;
 import org.openlmis.core.persistence.migrations.AddLotMovementItemsTable;
 import org.openlmis.core.persistence.migrations.AddLotOnHandTable;
 import org.openlmis.core.persistence.migrations.AddLotsTable;
@@ -191,6 +192,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateInitialInventoryDraftTables());
             add(new CreateDirtyDataProductTable());
             add(new AddVersionCodeToProgramProductTable());
+            add(new AddLastReportEndTimeToReportType());
         }
     };
     private static int instanceCount = 0;
