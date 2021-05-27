@@ -32,6 +32,11 @@ public class ReportTypeFormBuilder {
         return this;
     }
 
+    public ReportTypeFormBuilder setLastReportEndTime(String time){
+        reportTypeForm.setLastReportEndTime(time);
+        return this;
+    }
+
     public ReportTypeForm build() {
         return reportTypeForm;
     }
