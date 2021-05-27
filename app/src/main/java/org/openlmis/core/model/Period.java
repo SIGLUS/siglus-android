@@ -35,6 +35,12 @@ public class Period implements Serializable {
         }
     }
 
+    public Period(Date reportBeginDate) {
+        DateTime reportBeginTime = new DateTime(reportBeginDate);
+        periodBegin = DateUtil.cutTimeStamp(reportBeginTime.withDayOfMonth(BEGIN_DAY));
+        periodEnd = DateUtil.cutTimeStamp(nextMonth(reportBeginTime).withDayOfMonth(END_DAY));
+    }
+
     public static Period of(Date date) {
         return new Period(new DateTime(date));
     }

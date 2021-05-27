@@ -120,7 +120,6 @@ public class RapidTestReportsPresenter extends Presenter {
 
         RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
         addCompletedColumn(typeForm, period, lastViewModel);
-        viewModelList = removeGreaterThanData(viewModelList);
         Collections.sort(viewModelList, new Comparator<RapidTestReportViewModel>() {
             @Override
             public int compare(RapidTestReportViewModel lhs, RapidTestReportViewModel rhs) {

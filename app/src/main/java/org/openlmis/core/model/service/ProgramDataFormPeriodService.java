@@ -43,7 +43,7 @@ public class ProgramDataFormPeriodService {
             } else {
                 List<ProgramDataForm> forms = programDataFormRepository.listByProgramCode(Constants.TEST_KIT_PROGRAM_CODE);
                 if (forms != null && !forms.isEmpty()) {
-                    period = new Period(new DateTime(forms.get(0).getPeriodBegin()));
+                    period = new Period(forms.get(0).getPeriodBegin());
                 } else {
                     StockMovementItem firstStockMovement = stockMovementRepository.getFirstStockMovement();
                     if (firstStockMovement != null) {
