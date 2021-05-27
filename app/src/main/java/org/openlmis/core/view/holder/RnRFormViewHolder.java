@@ -76,17 +76,11 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 populateRnrFormNotBeCreatedView(model);
                 break;
             case RnRFormViewModel.TYPE_DRAFT:
-                configHolder(model.getTitle(),
-                        Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())),
-                        R.drawable.ic_description, R.color.color_draft_title, color_white);
-                setupButton(model, context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
+                configHolderForUnComplete(model, R.string.label_incomplete_requisition, R.string.btn_view_incomplete_requisition);
                 showDeleteMenu(model.getForm());
                 break;
             case RnRFormViewModel.TYPE_SUBMIT:
-                configHolder(model.getTitle(),
-                        Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())),
-                        R.drawable.ic_description, R.color.color_draft_title, color_white);
-                setupButton(model, context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
+                configHolderForUnComplete(model, R.string.label_incomplete_requisition, R.string.btn_view_incomplete_requisition);
                 break;
             case RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL:
                 populateRnrFormUnsyncedMessage(model);
@@ -98,6 +92,13 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 populateRnrFormInActiveCreatedView(model);
                 break;
         }
+    }
+
+    private void configHolderForUnComplete(RnRFormViewModel model, int p, int p2) {
+        configHolder(model.getTitle(),
+                Html.fromHtml(context.getString(p, model.getName())),
+                R.drawable.ic_description, R.color.color_draft_title, color_white);
+        setupButton(model, context.getString(p2, model.getName()));
     }
 
     private void showCannotDoMonthlyInventory(RnRFormViewModel model) {
@@ -114,10 +115,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     }
 
     private void populateRnrFormNotBeCreatedView(RnRFormViewModel model) {
-        configHolder(model.getTitle(),
-                Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())),
-                R.drawable.ic_description, R.color.color_draft_title, color_white);
-        setupButton(model, context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
+        configHolderForUnComplete(model, R.string.label_completed_physical_inventory_message, R.string.btn_view_completed_physical_inventory);
         setupButtonColor();
     }
 
