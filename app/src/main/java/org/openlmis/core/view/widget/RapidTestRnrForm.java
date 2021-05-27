@@ -37,6 +37,7 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -47,7 +48,7 @@ public class RapidTestRnrForm extends LinearLayout {
     private static final int HEIGHT_ACTION_PANEL_DP = 60;
 
     private RecyclerView rvLeftProductCode;
-    private RecyclerView rvRightProductInfo;
+    private RapidTestProductInfoView rvRightProductInfo;
     private RapidTestTopProductInfoAdapter infoAdapter;
 
     private int maxHeight = 0;
@@ -70,8 +71,18 @@ public class RapidTestRnrForm extends LinearLayout {
     }
 
     public void initView(List<ProgramDataFormBasicItem> itemFormList) {
-        initProductCode(itemFormList);
-        initProductInfo(itemFormList);
+        initProductCode(fakeData(itemFormList));
+        initProductInfo(fakeData(itemFormList));
+    }
+
+    private List<ProgramDataFormBasicItem> fakeData(List<ProgramDataFormBasicItem> items) {
+        final ArrayList<ProgramDataFormBasicItem> programDataFormBasicItems = new ArrayList<>();
+        for (ProgramDataFormBasicItem item : items) {
+            programDataFormBasicItems.add(item);
+            programDataFormBasicItems.add(item);
+            programDataFormBasicItems.add(item);
+        }
+        return programDataFormBasicItems;
     }
 
     @Override
@@ -99,16 +110,10 @@ public class RapidTestRnrForm extends LinearLayout {
     }
 
     private void initProductInfo(List<ProgramDataFormBasicItem> itemFormList) {
-        rvRightProductInfo.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         infoAdapter = new RapidTestTopProductInfoAdapter(itemFormList);
         rvRightProductInfo.setAdapter(infoAdapter);
-        rvRightProductInfo.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                rvLeftProductCode.scrollBy(dx, dy);
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+        rvRightProductInfo.setOnScrollChangedListener((l, t, oldl, oldt) -> rvLeftProductCode.scrollBy(0, t - oldt));
+        rvRightProductInfo.setOnViewExceedBoundsListener(position -> infoAdapter.clearFocusByPosition(position));
     }
 
     private void calculateMaxHeight() {
@@ -133,6 +138,13 @@ public class RapidTestRnrForm extends LinearLayout {
 
     public boolean isCompleted() {
         if (infoAdapter == null) return false;
-        return infoAdapter.isComplete();
+        final int notCompletePosition = infoAdapter.getNotCompletePosition();
+        if (notCompletePosition != RapidTestTopProductInfoAdapter.ALL_COMPLETE) {
+            rvRightProductInfo.scrollToPosition(notCompletePosition);
+            rvRightProductInfo.setCantExceedPosition(notCompletePosition);
+            infoAdapter.showError(notCompletePosition);
+            return false;
+        }
+        return true;
     }
 }
