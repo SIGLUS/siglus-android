@@ -1,6 +1,5 @@
 package org.openlmis.core.view.holder;
 
-import android.support.annotation.IntegerRes;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
@@ -37,14 +36,14 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     LinearLayout warningLinerLayout;
 
     RapidTestFormGridViewModel viewModel;
-    private Boolean editable;
+    private boolean editable;
     private QuantityChangeListener quantityChangeListener;
 
     public RapidTestReportGridViewHolder(View itemView) {
         super(itemView);
     }
 
-    public void populate(RapidTestFormGridViewModel viewModel, Boolean editable, QuantityChangeListener quantityChangeListener) {
+    public void populate(RapidTestFormGridViewModel viewModel, boolean editable, QuantityChangeListener quantityChangeListener) {
         this.viewModel = viewModel;
         this.editable = editable;
         this.quantityChangeListener = quantityChangeListener;
@@ -59,12 +58,6 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
         if (viewModel.isNeedAddGridViewWarning()) {
             warningLinerLayout.setBackground(context.getResources().getDrawable(R.drawable.border_bg_red));
         }
-    }
-
-
-
-    private int getInteger(@IntegerRes int id) {
-        return context.getResources().getInteger(id);
     }
 
     public void setEditable(Boolean editable) {
@@ -146,7 +139,6 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     public boolean isInTotalRow() {
-
         return quantityChangeListener == null;
     }
 

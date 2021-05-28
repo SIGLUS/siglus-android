@@ -131,8 +131,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         return (columnCode, gridColumnCode) -> {
             rapidTestReportFormPresenter.getViewModel().updateTotal(columnCode, gridColumnCode);
             rapidTestReportFormPresenter.getViewModel().updateAPEWaring();
-            rapidBodyRightAdapter.updateTotal();
-            rapidBodyRightAdapter.updateAPE();
+            rapidBodyRightAdapter.updateRowValue();
         };
     }
 

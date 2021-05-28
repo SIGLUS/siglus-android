@@ -37,7 +37,6 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -71,18 +70,8 @@ public class RapidTestRnrForm extends LinearLayout {
     }
 
     public void initView(List<ProgramDataFormBasicItem> itemFormList) {
-        initProductCode(fakeData(itemFormList));
-        initProductInfo(fakeData(itemFormList));
-    }
-
-    private List<ProgramDataFormBasicItem> fakeData(List<ProgramDataFormBasicItem> items) {
-        final ArrayList<ProgramDataFormBasicItem> programDataFormBasicItems = new ArrayList<>();
-        for (ProgramDataFormBasicItem item : items) {
-            programDataFormBasicItems.add(item);
-            programDataFormBasicItems.add(item);
-            programDataFormBasicItems.add(item);
-        }
-        return programDataFormBasicItems;
+        initProductCode(itemFormList);
+        initProductInfo(itemFormList);
     }
 
     @Override
