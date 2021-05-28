@@ -5,7 +5,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.view.ViewStub;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
