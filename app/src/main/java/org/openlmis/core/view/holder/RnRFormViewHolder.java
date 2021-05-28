@@ -77,7 +77,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 break;
             case RnRFormViewModel.TYPE_DRAFT:
                 configHolderForUnComplete(model, R.string.label_incomplete_requisition, R.string.btn_view_incomplete_requisition);
-                showDeleteMenu(model.getForm());
                 break;
             case RnRFormViewModel.TYPE_SUBMIT:
                 configHolderForUnComplete(model, R.string.label_incomplete_requisition, R.string.btn_view_incomplete_requisition);
@@ -191,22 +190,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
         if (ivDelete != null) {
             ivDelete.setVisibility(View.GONE);
-        }
-    }
-
-    private void showDeleteMenu(final RnRForm form) {
-        ivDelete.setVisibility(View.VISIBLE);
-
-        if (itemClickListener != null) {
-            ivDelete.setOnClickListener((v) -> {
-                PopupMenu popup = new PopupMenu(v.getContext(), v);
-                popup.inflate(R.menu.menu_rnr_list_item);
-                popup.show();
-                popup.setOnMenuItemClickListener(item -> {
-                    itemClickListener.deleteForm(form);
-                    return false;
-                });
-            });
         }
     }
 

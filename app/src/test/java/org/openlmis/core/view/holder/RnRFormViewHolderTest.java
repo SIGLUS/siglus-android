@@ -67,7 +67,6 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.tvMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName())));
         assertThat(((ColorDrawable) viewHolder.tvPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_incomplete_requisition, viewModel.getName())));
-        assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
     }
 
     @Test
