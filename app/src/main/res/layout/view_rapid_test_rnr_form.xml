@@ -95,7 +95,7 @@
                         android:text="@string/label_validate" />
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <org.openlmis.core.view.widget.RapidTestProductInfoView
                     android:id="@+id/rv_top_right_product_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

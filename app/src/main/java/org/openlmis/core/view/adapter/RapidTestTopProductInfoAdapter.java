@@ -1,12 +1,10 @@
 package org.openlmis.core.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
@@ -17,68 +15,92 @@ import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.view.widget.CleanableEditText;
+import org.openlmis.core.view.widget.RapidTestProductInfoView;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RapidTestTopProductInfoAdapter extends RecyclerView.Adapter<RapidTestTopProductInfoAdapter.RapidTestTopProductInfoViewHolder> {
+public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Adapter {
+
+    /**
+     * all EditText pass validate flag
+     */
+    public static final int ALL_COMPLETE = -1;
+
+    private static final int CHECK_TYPE_INVENTORY = 1;
+
+    private static final int CHECK_TYPE_STOCK = 1;
+
+    /**
+     * inventory EditText Cache
+     */
+    private final List<CleanableEditText> inventoryEditTexts;
+
+    /**
+     * stock EditText Cache
+     */
+    private final List<CleanableEditText> stockEditTexts;
 
     private final List<ProgramDataFormBasicItem> productInfos;
 
-    private final List<CleanableEditText> editTexts;
-
+    private int lastNotCompleteType = -1;
 
     public RapidTestTopProductInfoAdapter(List<ProgramDataFormBasicItem> productInfos) {
         this.productInfos = productInfos;
-        this.editTexts = new ArrayList<>();
+        this.inventoryEditTexts = new ArrayList<>();
+        this.stockEditTexts = new ArrayList<>();
     }
 
     @Override
-    public RapidTestTopProductInfoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rapid_test_from, parent, false);
-        final RapidTestTopProductInfoViewHolder rapidTestTopProductInfoViewHolder = new RapidTestTopProductInfoViewHolder(inflate);
-        rapidTestTopProductInfoViewHolder.setIsRecyclable(false);
-        return rapidTestTopProductInfoViewHolder;
+    public View onCreateView(ViewGroup parent, int position) {
+        return LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rapid_test_from, parent, false);
     }
 
     @Override
-    public void onBindViewHolder(RapidTestTopProductInfoViewHolder holder, int position) {
+    public void onUpdateView(View itemView, int position) {
+        TextView tvProductName = itemView.findViewById(R.id.tv_name);
+        CleanableEditText etStock = itemView.findViewById(R.id.et_stock);
+        CleanableEditText etInventory = itemView.findViewById(R.id.et_inventory);
+        TextView tvReceived = itemView.findViewById(R.id.tv_received);
+        TextView tvIssue = itemView.findViewById(R.id.tv_issue);
+        TextView tvAdjustment = itemView.findViewById(R.id.tv_adjustment);
+        TextView tvValidate = itemView.findViewById(R.id.tv_expire);
         final ProgramDataFormBasicItem formBasicItem = productInfos.get(position);
-        holder.tvProductName.setText(formBasicItem.getProduct().getPrimaryName());
-        holder.tvReceived.setText(String.valueOf(formBasicItem.getReceived()));
-        holder.tvIssue.setText(String.valueOf(formBasicItem.getIssued()));
-        holder.tvAdjustment.setText(String.valueOf(formBasicItem.getAdjustment()));
+        tvProductName.setText(formBasicItem.getProduct().getPrimaryName());
+        tvReceived.setText(String.valueOf(formBasicItem.getReceived()));
+        tvIssue.setText(String.valueOf(formBasicItem.getIssued()));
+        tvAdjustment.setText(String.valueOf(formBasicItem.getAdjustment()));
 
         //config etStock
-        holder.etStock.setText(getValue(formBasicItem.getInitialAmount()));
-        holder.etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && (formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT));
+        etStock.setText(getValue(formBasicItem.getInitialAmount()));
+        etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && (formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT));
         if (Boolean.TRUE.equals(formBasicItem.getIsCustomAmount())) {
-            holder.etStock.addTextChangedListener(new SimpleTextWatcher() {
+            etStock.addTextChangedListener(new SimpleTextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
                     formBasicItem.setInitialAmount(getEditValue(s));
                     super.afterTextChanged(s);
                 }
             });
-            editTexts.add(holder.etStock);
+            stockEditTexts.add(etStock);
         }
 
         //config etInventory
-        holder.etInventory.setText(getValue(formBasicItem.getInventory()));
-        holder.etInventory.setEnabled(formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT);
-        holder.etInventory.addTextChangedListener(new SimpleTextWatcher() {
+        etInventory.setText(getValue(formBasicItem.getInventory()));
+        etInventory.setEnabled(formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT);
+        etInventory.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 formBasicItem.setInventory(getEditValue(s));
                 super.afterTextChanged(s);
             }
         });
-        editTexts.add(holder.etInventory);
+        inventoryEditTexts.add(etInventory);
 
         try {
             if (!(TextUtils.isEmpty(formBasicItem.getValidate()))) {
-                holder.tvValidate.setText(DateUtil.convertDate(formBasicItem.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
+                tvValidate.setText(DateUtil.convertDate(formBasicItem.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
             }
         } catch (ParseException e) {
             new LMISException(e, "RapidTestRnrForm.addView").reportToFabric();
@@ -86,23 +108,49 @@ public class RapidTestTopProductInfoAdapter extends RecyclerView.Adapter<RapidTe
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        for (CleanableEditText editText : editTexts) {
-            editText.clearTextChangedListeners();
-        }
-        editTexts.clear();
-        super.onDetachedFromRecyclerView(recyclerView);
+    protected void onNotifyDataChangeCalled() {
+        clearEditText();
     }
 
-    public boolean isComplete() {
-        for (EditText item : editTexts) {
+    @Override
+    protected void onDetachFromWindow() {
+        clearEditText();
+    }
+
+    private void clearEditText() {
+        for (CleanableEditText editText : inventoryEditTexts) {
+            editText.clearTextChangedListeners();
+        }
+        for (CleanableEditText editText : stockEditTexts) {
+            editText.clearTextChangedListeners();
+        }
+        inventoryEditTexts.clear();
+        stockEditTexts.clear();
+    }
+
+    public int getNotCompletePosition() {
+        for (int i = 0; i < inventoryEditTexts.size(); i++) {
+            final CleanableEditText item = inventoryEditTexts.get(i);
             if (TextUtils.isEmpty(item.getText().toString())) {
-                item.setError(LMISApp.getContext().getString(R.string.hint_error_input));
-                item.requestFocus();
-                return false;
+                lastNotCompleteType = CHECK_TYPE_INVENTORY;
+                return i;
             }
         }
-        return true;
+        for (int i = 0; i < stockEditTexts.size(); i++) {
+            final CleanableEditText item = stockEditTexts.get(i);
+            if (TextUtils.isEmpty(item.getText().toString())) {
+                lastNotCompleteType = CHECK_TYPE_STOCK;
+                return i;
+            }
+        }
+        return ALL_COMPLETE;
+    }
+
+    public void showError(int position) {
+        if (position < 0) return;
+        final CleanableEditText editText = lastNotCompleteType == CHECK_TYPE_INVENTORY ? inventoryEditTexts.get(position) : stockEditTexts.get(position);
+        editText.setError(LMISApp.getContext().getString(R.string.hint_error_input));
+        editText.requestFocus();
     }
 
     private String getValue(Long value) {
@@ -119,30 +167,17 @@ public class RapidTestTopProductInfoAdapter extends RecyclerView.Adapter<RapidTe
         return editText;
     }
 
+    public void clearFocusByPosition(int position) {
+        if (position >= 0 && position < inventoryEditTexts.size()) {
+            inventoryEditTexts.get(position).clearFocus();
+        }
+        if (position >= 0 && position < stockEditTexts.size()) {
+            stockEditTexts.get(position).clearFocus();
+        }
+    }
+
     @Override
     public int getItemCount() {
         return productInfos == null ? 0 : productInfos.size();
-    }
-
-    protected static class RapidTestTopProductInfoViewHolder extends RecyclerView.ViewHolder {
-
-        private final TextView tvProductName;
-        private final CleanableEditText etStock;
-        private final CleanableEditText etInventory;
-        private final TextView tvReceived;
-        private final TextView tvIssue;
-        private final TextView tvAdjustment;
-        private final TextView tvValidate;
-
-        public RapidTestTopProductInfoViewHolder(View itemView) {
-            super(itemView);
-            tvProductName = itemView.findViewById(R.id.tv_name);
-            etStock = itemView.findViewById(R.id.et_stock);
-            tvReceived = itemView.findViewById(R.id.tv_received);
-            tvIssue = itemView.findViewById(R.id.tv_issue);
-            tvAdjustment = itemView.findViewById(R.id.tv_adjustment);
-            tvValidate = itemView.findViewById(R.id.tv_expire);
-            etInventory = itemView.findViewById(R.id.et_inventory);
-        }
     }
 }
