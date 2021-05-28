@@ -117,7 +117,16 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     private void setUpRowItems() {
         rapidBodyRightAdapter = new RapidTestReportRowAdapter(getQuantityChangeListener());
-        rvReportRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvReportRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()){
+            @Override
+            public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+                //avoid editText focus changed cause recyclerView scroll
+                if (rvReportRowItemListView.getScrollState() != RecyclerView.SCROLL_STATE_SETTLING){
+                    return super.scrollVerticallyBy(dy, recycler, state);
+                }
+                return 0;
+            }
+        });
         rvReportRowItemListView.setAdapter(rapidBodyRightAdapter);
     }
 
@@ -282,17 +291,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int rvRightFistVisibleIndex = ((LinearLayoutManager) rvReportRowItemListView.getLayoutManager()).findFirstVisibleItemPosition();
-                int rvRightLastVisibleIndex = ((LinearLayoutManager) rvReportRowItemListView.getLayoutManager()).findLastVisibleItemPosition();
-                int rvRightRowSize = rvReportRowItemListView.getAdapter().getItemCount();
-                int rvReportLeftFistVisibleIndex = ((LinearLayoutManager) rapidTestBodyLeftListView.getLayoutManager()).findFirstVisibleItemPosition();
                 rapidTestBodyLeftListView.scrollBy(dx, dy);
-                if (rvRightFistVisibleIndex != rvReportLeftFistVisibleIndex
-                        && (rvRightLastVisibleIndex == rvRightRowSize - 1) //right scroll to the end
-                        && moveState == RecyclerView.SCROLL_STATE_IDLE) {// moving stopped
-                    rapidTestBodyLeftListView.smoothScrollToPosition(rvRightLastVisibleIndex);
-                    rvReportRowItemListView.smoothScrollToPosition(rvRightLastVisibleIndex);
-                }
             }
 
             @Override
