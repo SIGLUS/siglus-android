@@ -71,7 +71,6 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
         tvReceived.setText(String.valueOf(formBasicItem.getReceived()));
         tvIssue.setText(String.valueOf(formBasicItem.getIssued()));
         tvAdjustment.setText(String.valueOf(formBasicItem.getAdjustment()));
-
         //config etStock
         etStock.setText(getValue(formBasicItem.getInitialAmount()));
         etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && (formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT));
@@ -85,7 +84,6 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
             });
             stockEditTexts.add(etStock);
         }
-
         //config etInventory
         etInventory.setText(getValue(formBasicItem.getInventory()));
         etInventory.setEnabled(formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT);
@@ -97,7 +95,6 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
             }
         });
         inventoryEditTexts.add(etInventory);
-
         try {
             if (!(TextUtils.isEmpty(formBasicItem.getValidate()))) {
                 tvValidate.setText(DateUtil.convertDate(formBasicItem.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
