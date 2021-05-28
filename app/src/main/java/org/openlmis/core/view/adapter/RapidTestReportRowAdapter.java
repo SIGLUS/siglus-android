@@ -23,6 +23,8 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RecyclerView
     private final int OBSERVATION_VIEW = 2;
     private List<RapidTestFormItemViewModel> serviceLists;
     private RapidTestReportViewModel rapidTestReportViewModel;
+    private RapidTestReportRowViewHolder totalViewHolder;
+    private RapidTestReportRowViewHolder apeViewHolder;
 
     @Setter
     private Boolean editable = true;
@@ -58,6 +60,12 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RecyclerView
             case ITEM_VIEW:
                 RapidTestReportRowViewHolder viewHolder = (RapidTestReportRowViewHolder) holder;
                 final RapidTestFormItemViewModel viewModel = serviceLists.get(position);
+                if (viewHolder.isTotal(viewModel)) {
+                    totalViewHolder = viewHolder;
+                }
+                if (viewHolder.isAPEs(viewModel)) {
+                    apeViewHolder = viewHolder;
+                }
                 viewHolder.setIsRecyclable(false);
                 viewHolder.populate(viewModel, editable, quantityChangeListener);
                 break;
@@ -84,11 +92,12 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RecyclerView
         notifyDataSetChanged();
     }
 
-    public void updateTotal() {
-        notifyItemChanged(getItemCount() - 3);
-    }
-
-    public void updateAPE() {
-        notifyItemChanged(getItemCount() - 2);
+    public void updateRowValue() {
+        if (totalViewHolder != null) {
+            totalViewHolder.updateRowValue();
+        }
+        if (apeViewHolder != null) {
+            apeViewHolder.updateRowValue();
+        }
     }
 }

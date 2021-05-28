@@ -14,12 +14,12 @@ import java.util.List;
 
 public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestReportGridViewHolder> {
     Context context;
-    private Boolean editable;
+    private boolean editable;
     List<RapidTestFormGridViewModel> viewModels;
     private RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener;
     private int itemWidth;
 
-    public RapidTestReportGridAdapter(List<RapidTestFormGridViewModel> viewModels, Context context, Boolean editable, RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
+    public RapidTestReportGridAdapter(List<RapidTestFormGridViewModel> viewModels, Context context, boolean editable, RapidTestReportGridViewHolder.QuantityChangeListener quantityChangeListener) {
         itemWidth = (int) (context.getResources().getDimension(R.dimen.rapid_view_width)) / 4;
         this.viewModels = viewModels;
         this.context = context;
@@ -35,7 +35,6 @@ public class RapidTestReportGridAdapter extends RecyclerView.Adapter<RapidTestRe
         } else {
             itemView = LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report_grid_total, parent, false);
         }
-
         itemView.getLayoutParams().width = itemWidth;
         return new RapidTestReportGridViewHolder(itemView);
     }
