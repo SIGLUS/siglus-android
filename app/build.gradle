@@ -1,10 +1,6 @@
+apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
+apply from: "${rootProject.projectDir}/gradle/appcenter.gradle"
 apply plugin: 'com.android.application'
-
-
-repositories {
-    jcenter()
-    google()
-}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -148,59 +144,54 @@ task findbugs(type: FindBugs) {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    annotationProcessor "org.projectlombok:lombok:1.12.6"
+    //modified version or package
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp:1.5.0'
-    implementation 'com.android.support:multidex:1.0.3'
     implementation "com.microsoft.appcenter:appcenter-analytics:${rootProject.ext.appCenterSdkVersion}"
     implementation "com.microsoft.appcenter:appcenter-crashes:${rootProject.ext.appCenterSdkVersion}"
-    implementation 'com.android.support:support-annotations:22.2.1',
-            'com.android.support:appcompat-v7:22.2.1',
-            'com.android.support:design:22.2.1',
-            'com.android.support:support-v4:27.1.0',
-            //https://issuetracker.google.com/issues/37070144
-            'com.android.support:recyclerview-v7:26.1.0',
-            'com.android.support:cardview-v7:22.2.1',
-            'com.google.android.gms:play-services-analytics:16.0.8',
-            'com.github.viethoa:fastscroller:1.2.0',
-            'io.reactivex:rxjava:1.0.14',
-            'io.reactivex:rxandroid:1.0.1',
-            'com.squareup.retrofit:retrofit:1.9.0',
-            'com.squareup.okhttp:okhttp-urlconnection:2.2.0',
-            'com.squareup.okhttp:okhttp:2.2.0',
-            'com.j256.ormlite:ormlite-android:4.45',
-            'org.apmem.tools:layouts:1.10@aar',
-            'org.roboguice:roboguice:3.0.1',
-            'org.apache.commons:commons-lang3:3.3.2',
-            'net.danlew:android.joda:2.9.1'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.8'
+    implementation 'com.github.viethoa:fastscroller:1.2.0'
+    implementation 'io.reactivex:rxjava:1.0.14'
+    implementation 'io.reactivex:rxandroid:1.0.1'
+    implementation 'com.squareup.retrofit:retrofit:1.9.0'
+    implementation 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
+    implementation 'com.squareup.okhttp:okhttp:2.2.0'
+    implementation 'com.j256.ormlite:ormlite-android:4.45'
+    implementation 'org.apmem.tools:layouts:1.10@aar'
+    implementation 'org.roboguice:roboguice:3.0.1'
+    implementation 'org.apache.commons:commons-lang3:3.3.2'
+    implementation 'net.danlew:android.joda:2.9.1'
+    implementation 'com.google.android.gms:play-services-analytics:7.8.0'
+    implementation 'org.roboguice:roboblender:3.0.1'
+    implementation 'org.roboguice:roboguice:3.0.1'
+    implementation 'com.google.android.material:material:1.0.0'
+    annotationProcessor "org.projectlombok:lombok:1.12.6"
     implementation 'org.projectlombok:lombok:1.12.6'
-    testImplementation 'junit:junit:4.12',
-            'org.hamcrest:hamcrest-all:1.3',
-            'org.mockito:mockito-all:1.10.19',
-            'org.robolectric:robolectric:3.8',
-            'org.robolectric:shadows-multidex:3.8',
-            'org.robolectric:shadows-support-v4:3.3.2',
-            'org.assertj:assertj-core:1.7.1',
-            'com.natpryce:make-it-easy:4.0.1'
 
-    implementation('com.google.android.gms:play-services-analytics:7.8.0') {
-        exclude module: "com.android.support:support-v4:23.2.1"
-    }
-    implementation('org.roboguice:roboblender:3.0.1') {
-        exclude module: "com.android.support:support-v4:23.2.1"
-    }
-    implementation('org.roboguice:roboguice:3.0.1') {
-        exclude module: "com.android.support:support-v4:23.2.1"
-    }
-    implementation('com.android.support:design:22.2.1') {
-        exclude module: "com.android.support:support-v4:23.2.1"
-    }
-    implementation('com.android.support:appcompat-v7:22.2.1') {
-        exclude module: "com.android.support:support-v4:23.2.1"
-    }
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.hamcrest:hamcrest-all:1.3'
+    testImplementation 'org.mockito:mockito-all:1.10.19'
+    testImplementation 'org.robolectric:robolectric:3.8'
+    testImplementation 'org.robolectric:shadows-multidex:3.8'
+    testImplementation 'org.robolectric:shadows-support-v4:3.3.2'
+    testImplementation 'org.assertj:assertj-core:1.7.1'
+    testImplementation 'com.natpryce:make-it-easy:4.0.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
-
 }
+
+repositories {
+    jcenter()
+    google()
+}
+
 
 configurations.all {
     resolutionStrategy.force 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
@@ -323,6 +314,3 @@ task monkeyTests(type: Exec, dependsOn: ['bundleInstall', 'assembleProdsimDebug'
     executable 'calabash-android'
     args "run", "$targetPath", "--tags @monkey --format html --out monkey_test_report.html"
 }
-
-apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
-apply from: "${rootProject.projectDir}/gradle/appcenter.gradle"

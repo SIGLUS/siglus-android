@@ -19,7 +19,7 @@
 package org.openlmis.core.service;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.inject.AbstractModule;
 

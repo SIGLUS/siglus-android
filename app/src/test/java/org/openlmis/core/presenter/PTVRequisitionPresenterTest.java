@@ -1,8 +1,5 @@
 package org.openlmis.core.presenter;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
-
 import com.google.inject.AbstractModule;
 
 import org.junit.Before;
@@ -16,7 +13,7 @@ import org.openlmis.core.model.repository.PTVRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.robolectric.RuntimeEnvironment;
 
-
+import androidx.annotation.NonNull;
 import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;

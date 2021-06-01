@@ -1,6 +1,6 @@
 package org.openlmis.core.service.sync;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.inject.Inject;
 

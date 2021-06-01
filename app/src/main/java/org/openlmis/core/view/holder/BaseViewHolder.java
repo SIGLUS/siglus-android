@@ -1,7 +1,7 @@
 package org.openlmis.core.view.holder;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import org.apache.commons.lang3.reflect.FieldUtils;

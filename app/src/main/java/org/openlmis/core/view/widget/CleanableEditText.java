@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 
 import java.util.ArrayList;
 
-public class CleanableEditText extends android.support.v7.widget.AppCompatEditText {
+public class CleanableEditText extends androidx.appcompat.widget.AppCompatEditText {
     private ArrayList<TextWatcher> mListeners = null;
 
     public CleanableEditText(Context ctx) {

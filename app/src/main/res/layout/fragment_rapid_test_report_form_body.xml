@@ -45,7 +45,7 @@
                 android:background="@drawable/border_top_black"
                 android:orientation="horizontal" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rapid_test_body_left_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
 
             <include layout="@layout/fragment_rapid_test_test_report_form_body_top_header" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_rapid_report_row_item_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

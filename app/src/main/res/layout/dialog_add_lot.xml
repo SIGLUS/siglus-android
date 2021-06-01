@@ -43,7 +43,7 @@
                 android:textSize="@dimen/font_size_medium"
                 android:text="@string/label_lot_number" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/ly_lot_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/font_size_medium"
                     android:hint="@string/hint_lot_number" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:layout_width="match_parent"

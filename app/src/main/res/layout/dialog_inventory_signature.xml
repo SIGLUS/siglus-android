@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/dialog_request_signature" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ly_signature"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             android:inputType="textPersonName"
             android:maxLength="@integer/signature_length"
             android:hint="@string/hint_signature" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         style="@style/Dialog.ActionPanel"

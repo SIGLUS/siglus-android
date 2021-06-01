@@ -1,9 +1,7 @@
 package org.openlmis.core.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.BaseViewHolder;
@@ -12,6 +10,8 @@ import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHolder> {

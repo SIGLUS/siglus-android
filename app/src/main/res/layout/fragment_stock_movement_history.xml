@@ -21,7 +21,7 @@
 
         <include layout="@layout/item_stock_movement_header" />
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/stock_movement_history_swipe_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -33,7 +33,7 @@
                 android:background="@drawable/border_bg"
                 android:divider="@drawable/divider_horizontal" />
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 </org.openlmis.core.view.widget.CustomHorizontalScrollView>

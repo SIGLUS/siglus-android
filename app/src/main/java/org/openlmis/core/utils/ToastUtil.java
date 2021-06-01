@@ -17,7 +17,7 @@
  */
 package org.openlmis.core.utils;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.Toast;

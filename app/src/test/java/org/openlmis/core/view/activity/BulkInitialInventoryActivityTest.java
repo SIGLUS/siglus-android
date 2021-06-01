@@ -1,7 +1,7 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.LongSparseArray;
 
 import com.google.inject.AbstractModule;
@@ -15,25 +15,18 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.StockMovementRepository;
-import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.presenter.BulkInitialInventoryPresenterTest;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Scheduler;
-import rx.Single;
-import rx.Subscriber;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
@@ -44,7 +37,6 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;

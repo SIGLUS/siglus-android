@@ -1,17 +1,15 @@
 package org.openlmis.core.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.view.holder.BaseViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.hamcrest.core.Is.is;

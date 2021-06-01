@@ -18,7 +18,7 @@
 
 package org.openlmis.core.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.inject.AbstractModule;
 

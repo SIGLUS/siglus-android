@@ -1,7 +1,7 @@
 package org.openlmis.core.network;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.squareup.okhttp.OkHttpClient;
 

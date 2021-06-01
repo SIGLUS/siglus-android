@@ -17,7 +17,7 @@
  */
 package org.openlmis.core.view.fragment;
 
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.Dialog;
 
 import org.junit.Ignore;

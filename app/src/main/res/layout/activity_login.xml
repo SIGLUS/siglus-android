@@ -37,7 +37,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/app_name" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/ly_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -49,13 +49,13 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_username"
                             android:inputType="textPersonName" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/ly_password"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                                 android:layout_marginTop="-32dp"
                                 android:padding="0dp"
                                 android:src="@drawable/ic_visibility_off" />
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </FrameLayout>
 
                     <Button

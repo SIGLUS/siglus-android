@@ -1,6 +1,6 @@
 package org.openlmis.core.utils;
 
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.reflect.FieldUtils;

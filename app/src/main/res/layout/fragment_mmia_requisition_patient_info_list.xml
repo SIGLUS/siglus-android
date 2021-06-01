@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         tools:layout_height="120dp" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         style="@style/MMIA.CommentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,5 +37,5 @@
             android:layout_height="wrap_content"
             android:text="@string/msg_reason_for_total_not_match"
             android:visibility="invisible" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

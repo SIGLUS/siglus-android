@@ -1,7 +1,7 @@
 package org.openlmis.core.presenter;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.LongSparseArray;
 
 import com.google.inject.AbstractModule;
@@ -39,7 +39,6 @@ import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
-import rx.subjects.TestSubject;
 
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;

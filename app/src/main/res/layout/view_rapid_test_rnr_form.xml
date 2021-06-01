@@ -24,7 +24,7 @@
                 android:textSize="@dimen/font_size_regular" />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_top_left_product_code"
             android:layout_width="120dp"
             android:layout_height="wrap_content"

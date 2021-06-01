@@ -24,7 +24,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.StyleRes;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -62,14 +61,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
+import androidx.annotation.StyleRes;
 import roboguice.RoboGuice;
-import roboguice.activity.RoboActionBarActivity;
+import roboguice.activity.RoboMigrationAndroidXActionBarActivity;
 import rx.Subscription;
 
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-public abstract class BaseActivity extends RoboActionBarActivity implements BaseView {
+public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivity implements BaseView {
 
     protected static long lastOperateTime = 0L;
 

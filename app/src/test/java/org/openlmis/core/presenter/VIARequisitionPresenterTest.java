@@ -19,7 +19,7 @@
 
 package org.openlmis.core.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.inject.AbstractModule;
 
@@ -27,7 +27,6 @@ import junit.framework.Assert;
 
 import org.hamcrest.core.Is;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;

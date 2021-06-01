@@ -1,6 +1,6 @@
 package org.openlmis.core.model.repository;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hamcrest.core.Is;
 import org.joda.time.DateTime;

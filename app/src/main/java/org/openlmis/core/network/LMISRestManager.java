@@ -22,7 +22,7 @@ package org.openlmis.core.network;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;

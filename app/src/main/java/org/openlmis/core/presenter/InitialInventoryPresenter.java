@@ -1,6 +1,6 @@
 package org.openlmis.core.presenter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import org.openlmis.core.exceptions.LMISException;

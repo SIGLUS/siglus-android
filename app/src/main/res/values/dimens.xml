@@ -72,4 +72,6 @@
     <dimen name="ptv_view_item_height">44dp</dimen>
     <dimen name="border_width">1dp</dimen>
 
+    <!--migration androidx -->
+    <dimen name="tab_max_width">264dp</dimen>
 </resources>

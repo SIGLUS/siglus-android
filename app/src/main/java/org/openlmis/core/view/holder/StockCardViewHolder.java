@@ -1,7 +1,7 @@
 package org.openlmis.core.view.holder;
 
 import android.graphics.Typeface;
-import android.support.annotation.ColorRes;
+import androidx.annotation.ColorRes;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;

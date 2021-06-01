@@ -3,7 +3,7 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.view.Gravity;
 
 public class RotateTextView extends AppCompatTextView {

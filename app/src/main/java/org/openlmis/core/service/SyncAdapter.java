@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.common.util.CollectionUtils;
@@ -42,6 +41,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.util.List;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import roboguice.RoboGuice;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
