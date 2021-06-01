@@ -78,11 +78,14 @@ public class LMISApp extends Application {
         }
         JodaTimeAndroid.init(this);
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
-        RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
+        final SharedPreferenceMgr sharedPreferenceMgr = RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
+        //fix: Reset the syncing flag on illegal exit during initialization
+        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+
         setupAppCenter();
         setupGoogleAnalytics();
 
-        instance = this;
+        LMISApp.instance = this;
         registerNetWorkChangeListener();
     }
 

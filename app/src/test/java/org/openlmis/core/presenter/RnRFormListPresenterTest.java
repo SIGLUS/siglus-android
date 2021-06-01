@@ -228,7 +228,7 @@ public class RnRFormListPresenterTest {
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
         assertThat(rnRFormViewModels.size()).isEqualTo(3);
-        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_DRAFT);
         assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
         assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
         assertThat(rnRFormViewModels.get(1).getPeriodEndMonth()).isEqualTo(periodMarToApl.getEnd());
@@ -306,7 +306,7 @@ public class RnRFormListPresenterTest {
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
-        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_DRAFT);
         assertThat(rnRFormViewModels.get(0).getPeriodEndMonth()).isEqualTo(periodAplToMay.getEnd());
     }
 
@@ -411,7 +411,7 @@ public class RnRFormListPresenterTest {
         assertThat(rnRFormViewModels.get(1).getPeriodEndMonth()).isEqualTo(new DateTime(DateUtil.parseString("2016-06-18", DateUtil.DB_DATE_FORMAT)));
         assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
         assertThat(rnRFormViewModels.get(2).getPeriodEndMonth()).isEqualTo(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)));
-        assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
+        assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_DRAFT);
         assertThat(rnRFormViewModels.get(3).getPeriodEndMonth()).isEqualTo(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)));
         assertThat(rnRFormViewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
     }

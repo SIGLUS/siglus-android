@@ -59,7 +59,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_rapid_test_form"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustNothing|stateHidden" />
         <activity
             android:name=".view.activity.PTVRequisitionActivity"
             android:label="@string/label_ptv_name"

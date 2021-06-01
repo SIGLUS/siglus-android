@@ -12,7 +12,7 @@
         <LinearLayout
             android:id="@+id/rapid_view_basic_item_header"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/repid_view_top_item_line_heigh"
+            android:layout_height="@dimen/repid_view_top_item_line_height"
             android:background="@drawable/border_black"
             android:orientation="horizontal">
 

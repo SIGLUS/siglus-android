@@ -28,11 +28,6 @@ appcenter {
     }
 }
 
-//task doSth {
-//    println("=============")
-//    println(getGitCommit())
-//}
-
 def getGitCommit() {
     def gitDir = new File("${new File("${rootDir}")}/.git")
     if (!gitDir.isDirectory()) {

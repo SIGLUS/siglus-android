@@ -3,7 +3,7 @@
     android:layout_gravity="center"
     android:layout_width="wrap_content"
     style="@style/ItemRnr.Container.TopLeft"
-    android:layout_height="@dimen/repid_view_top_item_line_heigh">
+    android:layout_height="@dimen/repid_view_top_item_line_height">
 
     <TextView
         android:id="@+id/left_tv_code"

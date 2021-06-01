@@ -5,7 +5,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.view.ViewStub;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
@@ -75,11 +74,11 @@ public class RnRFormViewHolder extends BaseViewHolder {
             case RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED:
                 populateRnrFormNotBeCreatedView(model);
                 break;
-            case RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED:
-                configHolder(model.getTitle(),
-                        Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())),
-                        R.drawable.ic_description, R.color.color_draft_title, color_white);
-                setupButton(model, context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
+            case RnRFormViewModel.TYPE_DRAFT:
+                configHolderForUnComplete(model, R.string.label_incomplete_requisition, R.string.btn_view_incomplete_requisition);
+                break;
+            case RnRFormViewModel.TYPE_SUBMIT:
+                configHolderForUnComplete(model, R.string.label_incomplete_requisition, R.string.btn_view_incomplete_requisition);
                 break;
             case RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL:
                 populateRnrFormUnsyncedMessage(model);
@@ -91,6 +90,13 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 populateRnrFormInActiveCreatedView(model);
                 break;
         }
+    }
+
+    private void configHolderForUnComplete(RnRFormViewModel model, int p, int p2) {
+        configHolder(model.getTitle(),
+                Html.fromHtml(context.getString(p, model.getName())),
+                R.drawable.ic_description, R.color.color_draft_title, color_white);
+        setupButton(model, context.getString(p2, model.getName()));
     }
 
     private void showCannotDoMonthlyInventory(RnRFormViewModel model) {
@@ -107,10 +113,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     }
 
     private void populateRnrFormNotBeCreatedView(RnRFormViewModel model) {
-        configHolder(model.getTitle(),
-                Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())),
-                R.drawable.ic_description, R.color.color_draft_title, color_white);
-        setupButton(model, context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
+        configHolderForUnComplete(model, R.string.label_completed_physical_inventory_message, R.string.btn_view_completed_physical_inventory);
         setupButtonColor();
     }
 
@@ -141,7 +144,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
         configHolder(model.getTitle(),
                 Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())),
                 R.drawable.ic_done_green, color_white, R.color.color_text_primary);
-        showDeleteMenu(form);
         setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
 
         if (form.isEmergency()) {
@@ -187,22 +189,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
         if (ivDelete != null) {
             ivDelete.setVisibility(View.GONE);
-        }
-    }
-
-    private void showDeleteMenu(final RnRForm form) {
-        ivDelete.setVisibility(View.VISIBLE);
-
-        if (itemClickListener != null) {
-            ivDelete.setOnClickListener((v) -> {
-                PopupMenu popup = new PopupMenu(v.getContext(), v);
-                popup.inflate(R.menu.menu_rnr_list_item);
-                popup.show();
-                popup.setOnMenuItemClickListener(item -> {
-                    itemClickListener.deleteForm(form);
-                    return false;
-                });
-            });
         }
     }
 

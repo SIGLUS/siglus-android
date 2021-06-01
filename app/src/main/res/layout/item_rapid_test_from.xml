@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/ItemRnr.Container"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/repid_view_top_item_line_heigh"
+    android:layout_height="@dimen/repid_view_top_item_line_height"
     android:background="@drawable/border_bottom_black">
 
     <TextView
@@ -11,7 +11,7 @@
         android:layout_width="@dimen/rapid_view_basic_form_item_width"
         android:layout_height="wrap_content" />
 
-    <EditText
+    <org.openlmis.core.view.widget.CleanableEditText
         android:id="@+id/et_stock"
         style="@style/RapidTestForm.productList"
         android:layout_width="97dp"
@@ -40,7 +40,7 @@
         android:layout_width="156dp"
         android:layout_height="wrap_content" />
 
-    <EditText
+    <org.openlmis.core.view.widget.CleanableEditText
         android:id="@+id/et_inventory"
         style="@style/RapidTestForm.productList"
         android:layout_width="97dp"

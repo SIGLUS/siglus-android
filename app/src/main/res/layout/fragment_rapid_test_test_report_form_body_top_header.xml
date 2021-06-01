@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/vg_rapid_test_report_header"
     android:layout_width="@dimen/rapid_view_width"
-    android:layout_height="@dimen/repid_view_item_two_line_heigh"
+    android:layout_height="@dimen/repid_view_item_two_line_height"
     android:layout_below="@+id/vg_rapid_test_report_header_title"
     android:background="@drawable/border_right_black_bold"
     android:orientation="horizontal">

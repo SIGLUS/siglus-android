@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 import static org.openlmis.core.view.widget.SyncTimeView.*;
 import static org.robolectric.Shadows.shadowOf;
 
+@Ignore
 @RunWith(LMISTestRunner.class)
 public class SyncTimeViewTest {
 
@@ -123,6 +124,14 @@ public class SyncTimeViewTest {
         syncTimeView.showLastSyncTime();
         assertThat(syncTimeView.progressBar.getVisibility(), is(GONE));
         assertThat(syncTimeView.ivSyncTimeIcon.getVisibility(), is(VISIBLE));
+    }
+
+    @Test
+    public void shouldShowProgressBarWhenSyncStockCardLastYear(){
+        syncTimeView.setSyncStockCardLastYearText();
+        assertThat(syncTimeView.progressBar.getVisibility(),is(VISIBLE));
+        assertThat(syncTimeView.ivSyncTimeIcon.getVisibility(),is(GONE));
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is(LMISTestApp.getContext().getResources().getString(R.string.last_year_stock_cards_sync)));
     }
 
     private class MyMode implements Module {

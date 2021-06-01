@@ -104,7 +104,7 @@ public class SyncUpManager {
 
     protected LMISRestApi lmisRestApi;
 
-    private boolean isSyncing = false;
+    public static volatile boolean isSyncing = false;
 
     public SyncUpManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -115,7 +115,6 @@ public class SyncUpManager {
         if (isSyncing) {
             return;
         }
-
         isSyncing = true;
         boolean isSyncDeleted = syncDeleteMovement();
         if (isSyncDeleted) {
@@ -134,16 +133,14 @@ public class SyncUpManager {
             syncUpUnSyncedStockCardCodes();
             syncAppVersion();
             syncUpCmms();
-
-            if (!sharedPreferenceMgr.shouldSyncLastYearStockData()
-                    && TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-                Intent intent = new Intent();
-                intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-            }
         }
         Log.d(TAG, "sync Up Data end");
         isSyncing = false;
+        if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
     }
 
     public boolean syncRnr() {

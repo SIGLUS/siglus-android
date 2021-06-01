@@ -14,7 +14,7 @@ import roboguice.inject.InjectView;
 
 @Getter
 public class ActionPanelView extends FrameLayout {
-    @InjectView(R.id.layout_action_buttons)
+    @InjectView(R.id.btn_save)
     View btnSave;
 
     @InjectView(R.id.btn_complete)

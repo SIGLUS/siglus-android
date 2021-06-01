@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.google.inject.AbstractModule;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,12 +166,11 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldMakePositiveAdjustment() throws LMISException {
-
         InventoryViewModel model = new InventoryViewModel(stockCardWithIdNine);
         model.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2015").setQuantity("120").build());
+        stockCardWithIdNine.setStockOnHand(model.getLotListQuantityTotalAmount());
 
         StockMovementItem item = presenter.calculateAdjustment(model, stockCardWithIdNine);
-
         assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.POSITIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
         assertThat(item.getStockOnHand(), is(120L));
@@ -178,21 +178,20 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldMakeNegativeAdjustment() throws LMISException {
+    public void shouldMakeNegativeAdjustment() {
         InventoryViewModel model = new InventoryViewModel(stockCardWithIdNine);
         model.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2015").setQuantity("80").build());
+        stockCardWithIdNine.setStockOnHand(model.getLotListQuantityTotalAmount());
 
         StockMovementItem item = presenter.calculateAdjustment(model, stockCardWithIdNine);
-
         assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.NEGATIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
         assertThat(item.getStockOnHand(), is(80L));
         assertThat(item.getStockCard(), is(stockCardWithIdNine));
     }
 
-
     @Test
-    public void shouldCalculateStockAdjustment() throws LMISException {
+    public void shouldCalculateStockAdjustment() {
         InventoryViewModel model = new InventoryViewModel(stockCardWithIdNine);
         model.getNewLotMovementViewModelList().add(new LotMovementViewModelBuilder().setExpiryDate("Jan 2015").setQuantity("100").build());
 
@@ -251,21 +250,6 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         return stockMovementItems;
     }
 
-    private ArrayList<StockMovementItem> getNormalDateOrTimeStockMovementItem() {
-        ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
-        StockMovementItem item = new StockMovementItem();
-        item.setStockCard(stockCardWithIdThree);
-        item.setCreatedTime(new Date());
-
-        StockMovementItem item1 = new StockMovementItem();
-        item1.setStockCard(stockCardWithIdNine);
-        item1.setCreatedTime(new Date());
-        stockMovementItems.add(item);
-        stockMovementItems.add(item1);
-
-        return stockMovementItems;
-    }
-
     @NonNull
     private InventoryViewModel buildInventoryViewModelWithOutDraft(int stockCardId, String quantity, String expireDate) {
         InventoryViewModel inventoryViewModelWithOutDraft = new PhysicalInventoryViewModel(buildDefaultStockCard(6));
@@ -277,7 +261,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     public void shouldSetSignatureToViewModel() throws Exception {
         String signature = "signature";
         presenter.getInventoryViewModelList().addAll(getStockCardViewModels());
-        when(stockMovementRepositoryMock.queryEachStockCardNewestMovement()).thenReturn(getNormalDateOrTimeStockMovementItem());
+        when(stockMovementRepositoryMock.getLatestStockMovementCreatedTime()).thenReturn(DateTime.now().minusMinutes(1).toDate());
         TestSubscriber<Object> subscriber = new TestSubscriber<>();
         Subscription subscription = presenter.doInventory(signature).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
@@ -289,10 +273,10 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldPreventInversionDateOrTimeInsert() {
+    public void shouldPreventInversionDateOrTimeInsert() throws Exception{
         String signature = "signature";
         presenter.getInventoryViewModelList().addAll(getStockCardViewModels());
-        when(stockMovementRepositoryMock.queryEachStockCardNewestMovement()).thenReturn(getInversionDateOrTimeStockMovementItem());
+        when(stockMovementRepositoryMock.getLatestStockMovementCreatedTime()).thenReturn(DateTime.now().plusMinutes(1).toDate());
         TestSubscriber<Object> subscriber = new TestSubscriber<>();
         Subscription subscription = presenter.doInventory(signature).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
@@ -304,33 +288,29 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldUpdateLatestDoPhysicalInventoryTime() throws Exception {
+        when(stockMovementRepositoryMock.getLatestStockMovementCreatedTime()).thenReturn(DateTime.now().minusMinutes(1).toDate());
         ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
-
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         String sign = "test";
         presenter.getInventoryViewModelList().clear();
         presenter.getInventoryViewModelList().addAll(inventoryViewModels);
         Observable observable = presenter.doInventory(sign);
         observable.subscribe(subscriber);
-
         subscriber.awaitTerminalEvent();
-
         subscriber.assertNoErrors();
         verify(sharedPreferenceMgr).setLatestPhysicInventoryTime(anyString());
     }
 
     @Test
     public void shouldSaveInventoryWhenCompletePhysicalInventory() throws Exception {
-
+        when(stockMovementRepositoryMock.getLatestStockMovementCreatedTime()).thenReturn(DateTime.now().minusMinutes(1).toDate());
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         presenter.getInventoryViewModelList().clear();
         presenter.getInventoryViewModelList().addAll(getStockCardViewModels());
         String sign = "signature";
         Observable observable = presenter.doInventory(sign);
         observable.subscribe(subscriber);
-
         subscriber.awaitTerminalEvent();
-
         verify(mockInventoryRepository).save(any(Inventory.class));
     }
 

@@ -430,6 +430,7 @@ public class LoginPresenter extends Presenter {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(false);
                 sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+                sharedPreferenceMgr.setStockLastSyncTime();
                 dirtyDataManager.initialDirtyDataCheck();
                 view.sendSyncFinishedBroadcast();
             }

@@ -1,35 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/rl_rapid_test_form_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <ScrollView
-            android:id="@+id/rapid_test_top_left_scrollview"
+        <LinearLayout
+            android:id="@+id/arrow_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/rapid_test_top_left_layout"
+            <TextView
                 android:layout_width="@dimen/rapid_view_basic_form_item_width"
-                android:layout_height="match_parent"
-                android:background="#0ff"
-                android:orientation="vertical" />
-        </ScrollView>
+                android:layout_height="@dimen/repid_view_top_item_line_height"
+                android:background="@drawable/border_right_bottom_rapid_test_header"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="@string/label_product_codes"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/font_size_regular" />
+        </LinearLayout>
 
-        <org.openlmis.core.view.widget.RnrFormHorizontalScrollView
-            android:id="@+id/rapid_test_top_scrollview"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_top_left_product_code"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/arrow_title"
+            android:layout_alignParentLeft="true"
+            android:focusable="false" />
+
+        <org.openlmis.core.view.widget.RapidTestBodyHorizontalScrollView
+            android:id="@+id/sv_product_info"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/rv_top_left_product_code">
 
             <LinearLayout
-                android:id="@+id/program_from_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:background="@drawable/border_right_bottom_rapid_test_header"
-                android:orientation="vertical" />
-        </org.openlmis.core.view.widget.RnrFormHorizontalScrollView>
-    </LinearLayout>
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/repid_view_top_item_line_height"
+                    android:background="@drawable/border_bottom_black"
+                    android:divider="@drawable/divider_vertical"
+                    android:orientation="horizontal"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/RapidTestForm.productList"
+                        android:layout_width="@dimen/rapid_view_basic_form_item_width"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_product_name" />
+
+                    <TextView
+                        style="@style/RapidTestForm.productList"
+                        android:layout_width="97dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/initial_stock" />
+
+                    <TextView
+                        style="@style/RapidTestForm.productList"
+                        android:layout_width="70dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/entries" />
+
+                    <TextView
+                        style="@style/RapidTestForm.productList"
+                        android:layout_width="70dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/ISSUE" />
+
+
+                    <TextView
+                        style="@style/RapidTestForm.productList"
+                        android:layout_width="156dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/loss_and_adjustment" />
+
+                    <TextView
+                        style="@style/RapidTestForm.productList"
+                        android:layout_width="97dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/label_inventory" />
+
+                    <TextView
+                        style="@style/RapidTestForm.productList"
+                        android:layout_width="97dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/label_validate" />
+                </LinearLayout>
+
+                <org.openlmis.core.view.widget.RapidTestProductInfoView
+                    android:id="@+id/rv_top_right_product_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never" />
+            </LinearLayout>
+        </org.openlmis.core.view.widget.RapidTestBodyHorizontalScrollView>
+    </RelativeLayout>
 </merge>
