@@ -2,7 +2,6 @@ package org.openlmis.core.training;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
@@ -29,6 +28,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         monthOffsetFromAnchor = DateUtil.calculateDateMonthOffset(TRAINING_ANCHOR_DATE, DateUtil.getCurrentDate());
     }
 
+    @SuppressWarnings({"squid:S2095"})
     private synchronized void getConnection() throws SQLException {
         if (null == dbConnection) {
             dbConnection = new TrainingSqliteOpenHelper(LMISApp.getContext()).getConnectionSource().getReadWriteConnection();
@@ -38,9 +38,7 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            db.disableWriteAheadLogging();
-        }
+        db.disableWriteAheadLogging();
     }
 
     @Override

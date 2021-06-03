@@ -4,10 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +25,10 @@ import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.RapidTestRnrForm;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 import rx.Subscription;
@@ -117,11 +117,11 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
     private void setUpRowItems() {
         rapidBodyRightAdapter = new RapidTestReportRowAdapter(getQuantityChangeListener());
-        rvReportRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()){
+        rvReportRowItemListView.setLayoutManager(new LinearLayoutManager(getActivity()) {
             @Override
             public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
                 //avoid editText focus changed cause recyclerView scroll
-                if (rvReportRowItemListView.getScrollState() != RecyclerView.SCROLL_STATE_SETTLING){
+                if (rvReportRowItemListView.getScrollState() != RecyclerView.SCROLL_STATE_SETTLING) {
                     return super.scrollVerticallyBy(dy, recycler, state);
                 }
                 return 0;
@@ -326,6 +326,6 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     private RectF calcViewScreenLocation(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        return new RectF(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
+        return new RectF(location[0], location[1], (float) location[0] + view.getWidth(), (float) location[1] + view.getHeight());
     }
 }

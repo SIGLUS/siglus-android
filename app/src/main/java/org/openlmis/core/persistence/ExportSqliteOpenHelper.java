@@ -12,23 +12,24 @@ public final class ExportSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private ExportSqliteOpenHelper(Context context) {
         super(context, "lmis_copy", null, LmisSqliteOpenHelper.getDBVersion());
     }
+
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-
+        //do nothing
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-
+        //do nothing
     }
 
     public static void removePrivateUserInfo(Context context) throws SQLException {
-        ExportSqliteOpenHelper exportSqliteOpenHelper = new ExportSqliteOpenHelper(context);
+        try (ExportSqliteOpenHelper exportSqliteOpenHelper = new ExportSqliteOpenHelper(context)) {
+            String updateSQL = "UPDATE users "
+                    + "SET username = id , "
+                    + "password = '123456' ";
 
-        String updateSQL = "UPDATE users "
-                + "SET username = id , "
-                + "password = '123456' ";
-
-        exportSqliteOpenHelper.getConnectionSource().getReadWriteConnection().update(updateSQL, null, null);
+            exportSqliteOpenHelper.getConnectionSource().getReadWriteConnection().update(updateSQL, null, null);
+        }
     }
 }
