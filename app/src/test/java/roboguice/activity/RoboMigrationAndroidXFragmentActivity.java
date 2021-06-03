@@ -14,7 +14,7 @@ import com.google.inject.Key;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import roboguice.RoboGuice;
 import roboguice.activity.event.OnActivityResultEvent;
 import roboguice.activity.event.OnContentChangedEvent;
@@ -34,15 +34,15 @@ import roboguice.inject.RoboInjector;
 import roboguice.util.RoboContext;
 
 /**
- * migration AndroidX, ActionBarAction only in support-v7.jar
- * see {@link roboguice.activity.RoboActionBarActivity}
+ * migration AndroidX
+ * see {@link RoboFragmentActivity}
  */
-public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity implements RoboContext {
+public class RoboMigrationAndroidXFragmentActivity extends FragmentActivity implements RoboContext {
     protected EventManager eventManager;
-    protected HashMap<Key<?>, Object> scopedObjects = new HashMap<Key<?>, Object>();
+    protected HashMap<Key<?>,Object> scopedObjects = new HashMap<Key<?>, Object>();
 
-    @Inject
-    ContentViewListener ignored; // BUG find a better place to put this
+
+    @Inject ContentViewListener ignored; // BUG find a better place to put this
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity im
         eventManager = injector.getInstance(EventManager.class);
         injector.injectMembersWithoutViews(this);
         super.onCreate(savedInstanceState);
-        eventManager.fire(new OnCreateEvent<Activity>(this, savedInstanceState));
+        eventManager.fire(new OnCreateEvent<Activity>(this,savedInstanceState));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity im
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent( Intent intent ) {
         super.onNewIntent(intent);
         eventManager.fire(new OnNewIntentEvent(this));
     }
@@ -115,12 +115,12 @@ public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity im
     public void onConfigurationChanged(Configuration newConfig) {
         final Configuration currentConfig = getResources().getConfiguration();
         super.onConfigurationChanged(newConfig);
-        eventManager.fire(new OnConfigurationChangedEvent<Activity>(this, currentConfig, newConfig));
+        eventManager.fire(new OnConfigurationChangedEvent<Activity>(this,currentConfig, newConfig));
     }
 
     @Override
-    public void onSupportContentChanged() {
-        super.onSupportContentChanged();
+    public void onContentChanged() {
+        super.onContentChanged();
         RoboGuice.getInjector(this).injectViewMembers(this);
         eventManager.fire(new OnContentChangedEvent(this));
     }

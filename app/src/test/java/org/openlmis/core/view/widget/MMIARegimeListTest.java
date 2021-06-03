@@ -23,6 +23,7 @@ import java.util.List;
 
 import rx.Observable;
 
+import static android.os.Looper.getMainLooper;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class MMIARegimeListTest {
@@ -65,6 +67,7 @@ public class MMIARegimeListTest {
         when(presenter.deleteRegimeItem(item)).thenReturn(value);
 
         mmiaRegimeList.showDelConfirmDialog(item);
+        shadowOf(getMainLooper()).idle();
 
         SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) dummyActivity.getFragmentManager().findFragmentByTag("del_confirm_dialog");
         SimpleDialogFragment.MsgDialogCallBack mListener = del_confirm_dialog.getMListener();

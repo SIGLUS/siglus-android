@@ -79,7 +79,7 @@ public class ChangeMovementReasonToCodeTest extends LMISRepositoryUnitTest{
                 "Drugs in quarantine have expired, returned to Supplier",
                 "Damaged on arrival",
                 "Loans made from a health facility deposit",
-                "Inventory correction in case of over stock on Stock  card (Stock on  hand is less than stock in stock card)",
+                "Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)",
                 "Product defective, moved to quarantine",
                 "Returns from Customers(HF and dependent wards)",
                 "Returns of expired drugs (HF and dependent wards)",

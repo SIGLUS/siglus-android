@@ -30,11 +30,13 @@ import java.sql.Date;
 
 import roboguice.RoboGuice;
 
+import static android.os.Looper.getMainLooper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class RequisitionProductViewHolderTest {
@@ -109,6 +111,8 @@ public class RequisitionProductViewHolderTest {
         viewHolder.populate(new RequisitionFormItemViewModel(formItem), presenter, viaRequisitionActivity);
 
         viewHolder.showDelConfirmDialog(formItem);
+
+        shadowOf(getMainLooper()).idle();
 
         SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) viaRequisitionActivity.getFragmentManager().findFragmentByTag("del_confirm_dialog");
         assertNotNull(del_confirm_dialog);

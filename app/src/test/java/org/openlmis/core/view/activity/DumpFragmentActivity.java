@@ -3,9 +3,9 @@ package org.openlmis.core.view.activity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
-import roboguice.activity.RoboFragmentActivity;
+import roboguice.activity.RoboMigrationAndroidXFragmentActivity;
 
-public class DumpFragmentActivity extends RoboFragmentActivity {
+public class DumpFragmentActivity extends RoboMigrationAndroidXFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

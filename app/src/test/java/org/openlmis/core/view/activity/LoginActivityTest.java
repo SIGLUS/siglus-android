@@ -19,7 +19,6 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Intent;
-import android.widget.TextView;
 
 import com.google.inject.AbstractModule;
 
@@ -31,7 +30,6 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -122,14 +120,15 @@ public class LoginActivityTest {
     public void shouldShowInvalidAlertAfterMethodInvoked() {
         loginActivity.showInvalidAlert();
 
+
         String invalidUserMessage = loginActivity.getResources().getString(R.string.msg_invalid_user);
 
-        TextView usernameErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyUserName);
-        TextView passwordErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyPassword);
+        String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
+        String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-        assertThat(usernameErrorView).isNotNull();
-        assertThat(usernameErrorView.getText().toString()).isEqualTo(invalidUserMessage);
-        assertThat(passwordErrorView).isNull();
+        assertThat(usernameErrorText).isNotNull();
+        assertThat(usernameErrorText).isEqualTo(invalidUserMessage);
+        assertThat(passwordErrorText).isNull();
     }
 
     @Test
@@ -138,12 +137,12 @@ public class LoginActivityTest {
 
         String emptyErrorMessage = loginActivity.getResources().getString(R.string.msg_empty_user);
 
-        TextView usernameErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyUserName);
-        TextView passwordErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyPassword);
+        String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
+        String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-        assertThat(usernameErrorView).isNotNull();
-        assertThat(usernameErrorView.getText().toString()).isEqualTo(emptyErrorMessage);
-        assertThat(passwordErrorView).isNull();
+        assertThat(usernameErrorText).isNotNull();
+        assertThat(usernameErrorText).isEqualTo(emptyErrorMessage);
+        assertThat(passwordErrorText).isNull();
     }
 
     @Test
@@ -152,12 +151,12 @@ public class LoginActivityTest {
 
         String emptyErrorMessage = loginActivity.getResources().getString(R.string.msg_empty_user);
 
-        TextView usernameErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyUserName);
-        TextView passwordErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyPassword);
+        String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
+        String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-        assertThat(usernameErrorView).isNull();
-        assertThat(passwordErrorView).isNotNull();
-        assertThat(passwordErrorView.getText().toString()).isEqualTo(emptyErrorMessage);
+        assertThat(usernameErrorText).isNull();
+        assertThat(passwordErrorText).isNotNull();
+        assertThat(passwordErrorText).isEqualTo(emptyErrorMessage);
     }
 
     @Test
@@ -165,14 +164,14 @@ public class LoginActivityTest {
         loginActivity.showInvalidAlert();
         loginActivity.clearErrorAlerts();
 
-        assertThat(RobolectricUtils.getErrorTextView(loginActivity.lyUserName)).isNull();
-        assertThat(RobolectricUtils.getErrorTextView(loginActivity.lyPassword)).isNull();
+        assertThat(RobolectricUtils.getErrorText(loginActivity.lyUserName)).isNull();
+        assertThat(RobolectricUtils.getErrorText(loginActivity.lyPassword)).isNull();
 
         loginActivity.showPasswordEmpty();
         loginActivity.clearErrorAlerts();
 
-        assertThat(RobolectricUtils.getErrorTextView(loginActivity.lyUserName)).isNull();
-        assertThat(RobolectricUtils.getErrorTextView(loginActivity.lyPassword)).isNull();
+        assertThat(RobolectricUtils.getErrorText(loginActivity.lyUserName)).isNull();
+        assertThat(RobolectricUtils.getErrorText(loginActivity.lyPassword)).isNull();
     }
 
 //    @Test

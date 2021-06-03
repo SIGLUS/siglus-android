@@ -9,6 +9,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.robolectric.Robolectric;
 
+import static android.os.Looper.getMainLooper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -29,6 +30,7 @@ public class KitStockCardListActivityTest {
 
     @Test
     public void shouldNotHaveAnyMenuItems() {
+        shadowOf(getMainLooper()).idle();
         Menu optionsMenu = shadowOf(kitStockCardListActivity).getOptionsMenu();
 
         assertThat(optionsMenu.size()).isEqualTo(0);

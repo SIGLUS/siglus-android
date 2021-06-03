@@ -26,6 +26,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 import rx.Observable;
 
+import static android.os.Looper.getMainLooper;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyByte;
@@ -33,6 +34,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class UnpackKitActivityTest {
@@ -92,6 +94,7 @@ public class UnpackKitActivityTest {
         unpackKitActivity.mAdapter.getData().add(viewModel);
 
         unpackKitActivity.mAdapter.onCreateViewHolder(unpackKitActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
+        shadowOf(getMainLooper()).idle();
         assertNotNull(unpackKitActivity.getFragmentManager().findFragmentByTag("signature_dialog_for_unpack_kit"));
     }
 }

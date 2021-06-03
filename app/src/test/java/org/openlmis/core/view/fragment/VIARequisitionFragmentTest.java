@@ -20,7 +20,6 @@ package org.openlmis.core.view.fragment;/*
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
-import androidx.appcompat.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 
@@ -56,10 +55,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
+import androidx.appcompat.app.AlertDialog;
 import roboguice.RoboGuice;
 
+import static android.os.Looper.getMainLooper;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -68,6 +68,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class VIARequisitionFragmentTest {
@@ -168,6 +169,8 @@ public class VIARequisitionFragmentTest {
         when(presenter.isDraft()).thenReturn(true);
         viaRequisitionFragment.onBackPressed();
 
+        shadowOf(getMainLooper()).idle();
+
         DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("back_confirm_dialog"));
 
         assertThat(fragment).isNotNull();
@@ -189,6 +192,8 @@ public class VIARequisitionFragmentTest {
 
         viaRequisitionFragment.showSignDialog();
 
+        shadowOf(getMainLooper()).idle();
+
         DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
@@ -207,6 +212,8 @@ public class VIARequisitionFragmentTest {
 
         viaRequisitionFragment.showSignDialog();
 
+        shadowOf(getMainLooper()).idle();
+
         DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
@@ -222,6 +229,8 @@ public class VIARequisitionFragmentTest {
     @Test
     public void shouldMessageNotifyDialog() {
         viaRequisitionFragment.showMessageNotifyDialog();
+
+        shadowOf(getMainLooper()).idle();
 
         DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
 

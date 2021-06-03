@@ -52,7 +52,7 @@ public class LMISTestRunner extends RobolectricTestRunner {
     protected Config buildGlobalConfig() {
         return new Config.Builder()
                 .setApplication(LMISTestApp.class)
-                .setSdk(18)
+                .setSdk(19)
                 .build();
     }
 

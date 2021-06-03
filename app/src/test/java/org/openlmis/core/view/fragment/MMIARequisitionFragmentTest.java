@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
-import androidx.appcompat.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -56,10 +55,12 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Observer;
 
+import static android.os.Looper.getMainLooper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -74,6 +75,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class MMIARequisitionFragmentTest {
@@ -186,6 +188,8 @@ public class MMIARequisitionFragmentTest {
     @Test
     public void shouldShowValidationAlertWhenMethodCalled() {
         mmiaRequisitionFragment.showValidationAlert();
+
+        shadowOf(getMainLooper()).idle();
 
         SimpleDialogFragment fragment = (SimpleDialogFragment) mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("not_match_dialog");
 
@@ -330,6 +334,8 @@ public class MMIARequisitionFragmentTest {
         when(mmiaFormPresenter.isDraftOrDraftMissed()).thenReturn(true);
         mmiaRequisitionFragment.showSignDialog();
 
+        shadowOf(getMainLooper()).idle();
+
         DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
@@ -348,6 +354,8 @@ public class MMIARequisitionFragmentTest {
 
         mmiaRequisitionFragment.showSignDialog();
 
+        shadowOf(getMainLooper()).idle();
+
         DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
@@ -363,6 +371,8 @@ public class MMIARequisitionFragmentTest {
     @Test
     public void shouldMessageNotifyDialog() {
         mmiaRequisitionFragment.showMessageNotifyDialog();
+
+        shadowOf(getMainLooper()).idle();
 
         DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
 

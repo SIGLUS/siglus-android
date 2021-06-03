@@ -634,7 +634,7 @@
     <style name="ItemRnr.PeriodTextType1" parent="Text.White.Normal">
         <item name="android:background">@color/color_text_secondary</item>
         <item name="android:drawablePadding">@dimen/padding_small</item>
-        <item name="android:drawableStart">@drawable/abc_ic_menu_copy_mtrl_am_alpha</item>
+        <item name="android:drawableStart">@drawable/ic_period_type_text_start</item>
         <item name="android:padding">@dimen/padding_normal</item>
     </style>
 

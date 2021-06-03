@@ -1,7 +1,6 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Intent;
-import android.view.View;
 
 import com.google.inject.AbstractModule;
 
@@ -31,12 +30,12 @@ import roboguice.RoboGuice;
 import rx.Observable;
 import rx.functions.Action1;
 
+import static android.os.Looper.getMainLooper;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -101,6 +100,8 @@ public class InitialInventoryActivityTest {
 
     @Test
     public void shouldShowMessageAndNeverBackWhenPressBackInInitInventory() {
+        shadowOf(getMainLooper()).idle();
+
         initialInventoryActivity.onBackPressed();
 
         assertEquals(ShadowToast.getTextOfLatestToast(), initialInventoryActivity.getString(R.string.msg_save_before_exit));
