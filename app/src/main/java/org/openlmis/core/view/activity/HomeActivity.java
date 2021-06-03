@@ -32,10 +32,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -67,8 +63,8 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
-import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
+import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
@@ -76,6 +72,10 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
@@ -85,8 +85,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 @ContentView(R.layout.activity_home_page)
 public class HomeActivity extends BaseActivity {
-    private static final String TAG = HomeActivity.class.getSimpleName();
-
     @InjectView(R.id.btn_stock_card)
     Button btnStockCard;
 
