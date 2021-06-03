@@ -64,7 +64,6 @@ import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
-import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
@@ -85,6 +84,9 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 @ContentView(R.layout.activity_home_page)
 public class HomeActivity extends BaseActivity {
+
+    private static final String EXPORT_DATA_PARENT_DIR = "//data//";
+
     @InjectView(R.id.btn_stock_card)
     Button btnStockCard;
 
@@ -117,7 +119,7 @@ public class HomeActivity extends BaseActivity {
     RelativeLayout viewAl;
 
     @InjectResource(R.integer.back_twice_interval)
-    int BACK_TWICE_INTERVAL;
+    private int backTwiceInterval;
 
     @Inject
     SyncService syncService;
@@ -125,9 +127,6 @@ public class HomeActivity extends BaseActivity {
     SharedPreferenceMgr sharedPreferenceMgr;
     @Inject
     DirtyDataManager dirtyDataManager;
-
-    @Inject
-    WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
     private boolean exitPressedOnce = false;
 
@@ -223,7 +222,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void updateButtonConfigView() {
-        List reportTypes = sharedPreferenceMgr.getReportTypesData();
+        List<ReportTypeForm> reportTypes = sharedPreferenceMgr.getReportTypesData();
         List<Pair<String, Button>> buttonConfigs = Arrays.asList(new Pair<>(Constants.VIA_REPORT, btnVIAList),
                 new Pair<>(Constants.MMIA_REPORT, btnMMIAList),
                 new Pair<>(Constants.AL_REPORT, btnALReport),
@@ -335,7 +334,6 @@ public class HomeActivity extends BaseActivity {
             setSyncedTime();
         }
 
-
         dirtyDataManager.dirtyDataMonthlyCheck();
         isHaveDirtyData();
     }
@@ -357,7 +355,7 @@ public class HomeActivity extends BaseActivity {
             moveTaskToBack(true);
         } else {
             ToastUtil.show(R.string.msg_back_twice_to_exit);
-            new Handler().postDelayed(() -> exitPressedOnce = false, BACK_TWICE_INTERVAL);
+            new Handler().postDelayed(() -> exitPressedOnce = false, backTwiceInterval);
         }
         exitPressedOnce = !exitPressedOnce;
     }
@@ -368,11 +366,6 @@ public class HomeActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_home, menu);
         return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -423,34 +416,33 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (permissions.length > 0 && grantResults.length > 0) {
-
-                boolean flag = true;
-                for (int i = 0; i < grantResults.length; i++) {
-                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                        flag = false;
-                    }
-                }
-                if (flag) {
-                    exportDBHavePermission();
-                } else {
-                    finish();
-                }
-
-            } else {
-                finish();
-            }
-        } else {
+        if (requestCode != PERMISSION_REQUEST_CODE) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
+        }
+        if (permissions.length <= 0 || grantResults.length <= 0) {
+            finish();
+            return;
+        }
+        boolean flag = true;
+        for (int grantResult : grantResults) {
+            if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) {
+            exportDBHavePermission();
+        } else {
+            finish();
         }
     }
 
     private void exportDBHavePermission() {
-        File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
-        File currentXML = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//shared_prefs//LMISPreference.xml");
-        File tempBackup = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_copy");
-        File currentXMLBackup = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//shared_prefs//LMISPreferenceBackup.xml");
+        File currentDB = new File(Environment.getDataDirectory(), EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
+        File currentXML = new File(Environment.getDataDirectory(), EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName() + "//shared_prefs//LMISPreference.xml");
+        File tempBackup = new File(Environment.getDataDirectory(), EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_copy");
+        File currentXMLBackup = new File(Environment.getDataDirectory(), EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName() + "//shared_prefs//LMISPreferenceBackup.xml");
         File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
         File xmlExternalBackup = new File(Environment.getExternalStorageDirectory(), "LMISPreferenceBackup.xml");
         try {
@@ -490,7 +482,7 @@ public class HomeActivity extends BaseActivity {
                 ToastUtil.show(R.string.message_wipe_no_connection);
             } else {
                 WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(), R.string.message_warning_wipe_data, R.string.btn_positive, R.string.btn_negative);
-                wipeDataDialog.show(getFragmentManager(), "WipeDataWarning");
+                getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
             }
         };
     }
@@ -521,9 +513,7 @@ public class HomeActivity extends BaseActivity {
     private boolean isHaveDirtyData() {
         if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
                 || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
-            showDeletedWarningDialog(() -> {
-                dirtyDataManager.deleteAndReset();
-            });
+            showDeletedWarningDialog(() -> dirtyDataManager.deleteAndReset());
             return true;
         }
         return false;

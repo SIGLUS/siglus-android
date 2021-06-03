@@ -1,10 +1,7 @@
 package org.openlmis.core.view.fragment;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +15,9 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import lombok.Setter;
 
 public class WarningDialogFragment extends DialogFragment {

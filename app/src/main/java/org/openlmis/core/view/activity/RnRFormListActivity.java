@@ -162,8 +162,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
         public void deleteForm(final RnRForm form) {
 
             WarningDialogFragment warningDialogFragment = warningDialogFragmentBuilder.build(buildWarningDialogFragmentDelegate(form), R.string.msg_del_requisition, R.string.btn_del, R.string.dialog_cancel);
-
-            warningDialogFragment.show(getFragmentManager(), "WarningDialogFragment");
+            getSupportFragmentManager().beginTransaction().add(warningDialogFragment, "WarningDialogFragment").commitNow();
         }
 
         @Override

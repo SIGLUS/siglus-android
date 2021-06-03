@@ -70,7 +70,7 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivity implements BaseView {
 
-    protected static long lastOperateTime = 0L;
+    private long lastOperateTime = 0L;
 
     @Inject
     SharedPreferenceMgr preferencesMgr;
@@ -87,7 +87,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
     protected ProgressDialog loadingDialog;
     protected boolean isLoading = false;
 
-    private long APP_TIMEOUT;
+    private long appTimeout;
 
     private long onCreateStartMili;
     private boolean isPageLoadTimerInProgress;
@@ -154,8 +154,8 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
     }
 
     private boolean alreadyTimeOuted() {
-        Long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
-        return currentTimeMillis - lastOperateTime > APP_TIMEOUT;
+        long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
+        return currentTimeMillis - lastOperateTime > appTimeout;
     }
 
     @Override
@@ -181,7 +181,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        APP_TIMEOUT = Long.parseLong(getResources().getString(R.string.app_time_out));
+        appTimeout = Long.parseLong(getResources().getString(R.string.app_time_out));
 
     }
 
@@ -310,12 +310,12 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
         List<String> deleteProductCodes = preferencesMgr.getDeletedProduct();
         Set<String> deleteStockCardIds = new HashSet<>();
         Set<String> productCodes = new HashSet<>();
-        if (!deleteStockMovementItems.isEmpty()){
+        if (!deleteStockMovementItems.isEmpty()) {
             for (StockMovementItem item : deleteStockMovementItems) {
                 deleteStockCardIds.add(String.valueOf(item.getStockCard().getId()));
             }
         }
-        Map<String,String> productCodeMap =stockMovementRepository.queryStockCardIdAndProductCode(deleteStockCardIds);
+        Map<String, String> productCodeMap = stockMovementRepository.queryStockCardIdAndProductCode(deleteStockCardIds);
         productCodes.addAll(productCodeMap.values());
         productCodes.addAll(deleteProductCodes);
         ImmutableList<String> deletedList = FluentIterable.from(productCodes)
@@ -332,7 +332,11 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
                                 getDeletedProductCodeList()),
                         getString(R.string.btn_del),
                         getString(R.string.dialog_cancel));
-        warningDialogFragment.show(getFragmentManager(), "deleteProductWarningDialogFragment");
+        getSupportFragmentManager().beginTransaction().add(warningDialogFragment, "deleteProductWarningDialogFragment").commitNow();
+    }
+
+    public long getLastOperateTime() {
+        return lastOperateTime;
     }
 }
 
