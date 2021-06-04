@@ -15,12 +15,12 @@ public final class ExportSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-        //do nothing
+        // do nothing
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        //do nothing
+        // do nothing
     }
 
     public static void removePrivateUserInfo(Context context) throws SQLException {

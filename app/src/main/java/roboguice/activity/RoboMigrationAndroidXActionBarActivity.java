@@ -42,7 +42,7 @@ public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity im
     protected HashMap<Key<?>, Object> scopedObjects = new HashMap<Key<?>, Object>();
 
     @Inject
-    ContentViewListener ignored; // BUG find a better place to put this
+    ContentViewListener ignored;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
