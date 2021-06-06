@@ -64,6 +64,7 @@
     <string name="initial_rnr_sync_failed">Sincronização inicial da requisição falhou, por favor tente novamente.</string>
     <string name="initial_stock_movement_sync_failed">Sincronização Inicial  das fichas de stock falhou, por favor tente novamente.</string>
     <string name="initial_sync_failed">Sincronização inicial falhou</string>
+
     <!-- Bulk Movements -->
     <string name="label_soh_amount">Stock existente</string>
     <string name="hint_soh_amount">Quantidade</string>
@@ -523,4 +524,11 @@
         <item>Últimos 365 dias</item>
     </string-array>
     <string name="dirty_data_correct_warning">Erro de cálculo de stock do produto %s. O sistema irá apagar os dados da ficha de stock. Actualize os dados do stock usando os ajustes/entradas ou inventário.</string>
+
+    <!-- Siglus TO 12 -->
+    <string name="dashboard_product_types">Product types</string>
+    <string name="dashboard_regular_stock">Regular</string>
+    <string name="dashboard_stock_out">Out</string>
+    <string name="dashboard_low_stock">Low</string>
+    <string name="dashboard_over_stock">Over</string>
 </resources>

@@ -1,0 +1,116 @@
+/*
+ *
+ *  * This program is part of the OpenLMIS logistics management information
+ *  * system platform software.
+ *  *
+ *  * Copyright © 2015 ThoughtWorks, Inc.
+ *  *
+ *  * This program is free software: you can redistribute it and/or modify
+ *  * it under the terms of the GNU Affero General Public License as published
+ *  * by the Free Software Foundation, either version 3 of the License, or
+ *  * (at your option) any later version. This program is distributed in the
+ *  * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ *  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *  * See the GNU Affero General Public License for more details. You should
+ *  * have received a copy of the GNU Affero General Public License along with
+ *  * this program. If not, see http://www.gnu.org/licenses. For additional
+ *  * information contact info@OpenLMIS.org
+ *
+ */
+package org.openlmis.core.view.widget;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.openlmis.core.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+
+public class DashboardView extends ConstraintLayout {
+
+    DashboardCircleView circleView;
+
+    LinearLayoutCompat llTotalProducts;
+
+    ImageView ivLoading;
+
+    TextView tvTotalProduct;
+
+    public DashboardView(@NonNull Context context) {
+        this(context, null);
+    }
+
+    public DashboardView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public DashboardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initView(context);
+    }
+
+    private void initView(Context context) {
+        final View rootView = LayoutInflater.from(context).inflate(R.layout.view_dashboard, this);
+        circleView = rootView.findViewById(R.id.dc_product_total);
+        ivLoading = rootView.findViewById(R.id.iv_dashboard_loading);
+        llTotalProducts = rootView.findViewById(R.id.ll_dashboard_total_product);
+        tvTotalProduct = rootView.findViewById(R.id.tv_total_product);
+        resetState(true);
+        startLoading();
+    }
+
+    public void setData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+        resetState(false);
+        circleView.setData(createNewData(regularAmount, outAmount, lowAmount, overAmount));
+        tvTotalProduct.setText(String.valueOf(regularAmount + outAmount + lowAmount + overAmount));
+    }
+
+    List<DashboardCircleView.Item> createNewData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+        final ArrayList<DashboardCircleView.Item> result = new ArrayList<>();
+        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_regular_stock), regularAmount));
+        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_stock_out), outAmount));
+        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_low_stock), lowAmount));
+        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_over_stock), overAmount));
+        return result;
+    }
+
+    public void resetState(boolean isLoading) {
+        if (isLoading) {
+            startLoading();
+        } else {
+            ivLoading.clearAnimation();
+        }
+        ivLoading.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
+        llTotalProducts.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
+        circleView.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    private void startLoading() {
+        Animation anim = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        anim.setFillAfter(false);
+        anim.setDuration(1500);
+        anim.setRepeatCount(Animation.INFINITE);
+        anim.setInterpolator(new LinearInterpolator());
+        ivLoading.startAnimation(anim);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        ivLoading.clearAnimation();
+        super.onDetachedFromWindow();
+    }
+}

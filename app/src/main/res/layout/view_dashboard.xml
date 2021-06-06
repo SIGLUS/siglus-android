@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <org.openlmis.core.view.widget.DashboardCircleView
+        android:id="@+id/dc_product_total"
+        android:layout_width="@dimen/px_258"
+        android:layout_height="@dimen/px_258"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_dashboard_loading"
+        android:layout_width="@dimen/px_258"
+        android:layout_height="@dimen/px_258"
+        android:src="@drawable/ic_dashboard_loading"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_dashboard_total_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/dc_product_total"
+        app:layout_constraintLeft_toLeftOf="@id/dc_product_total"
+        app:layout_constraintRight_toRightOf="@id/dc_product_total"
+        app:layout_constraintTop_toTopOf="@id/dc_product_total">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_product_types"
+            android:textColor="#73000000"
+            android:textSize="@dimen/px_18" />
+
+        <TextView
+            android:id="@+id/tv_total_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:textColor="#d9000000"
+            android:textSize="@dimen/px_36"
+            tools:text="--" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/px_10"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dc_product_total">
+        <!-- regular stock -->
+        <View
+            android:id="@+id/v_regular_stock_anchor"
+            android:layout_width="@dimen/px_8"
+            android:layout_height="@dimen/px_32"
+            android:background="@color/color_regular_stock"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <org.openlmis.core.view.widget.CutBaseLineTextView
+            android:id="@+id/tv_regular_stock_amount"
+            android:layout_width="@dimen/px_64"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/px_8"
+            android:layout_marginTop="@dimen/px_10"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="--"
+            android:textColor="#1a1a1a"
+            android:textSize="@dimen/px_21"
+            app:layout_constraintBottom_toBottomOf="@id/v_regular_stock_anchor"
+            app:layout_constraintLeft_toRightOf="@id/v_regular_stock_anchor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_regular_stock"
+            android:textColor="#991a1a1a"
+            android:textSize="@dimen/px_17"
+            app:layout_constraintLeft_toLeftOf="@id/tv_regular_stock_amount"
+            app:layout_constraintTop_toBottomOf="@id/tv_regular_stock_amount" />
+
+        <!-- stock out -->
+        <View
+            android:id="@+id/v_stock_out_anchor"
+            android:layout_width="@dimen/px_8"
+            android:layout_height="@dimen/px_32"
+            android:layout_marginLeft="@dimen/px_320"
+            android:layout_marginRight="@dimen/px_80"
+            android:background="@color/color_stock_out"
+            app:layout_constraintLeft_toRightOf="@id/v_regular_stock_anchor"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <org.openlmis.core.view.widget.CutBaseLineTextView
+            android:id="@+id/tv_stock_out_amount"
+            android:layout_width="@dimen/px_64"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/px_8"
+            android:layout_marginTop="@dimen/px_10"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="--"
+            android:textColor="#1a1a1a"
+            android:textSize="@dimen/px_21"
+            app:layout_constraintBottom_toBottomOf="@id/v_stock_out_anchor"
+            app:layout_constraintLeft_toRightOf="@id/v_stock_out_anchor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_stock_out"
+            android:textColor="#991a1a1a"
+            android:textSize="@dimen/px_17"
+            app:layout_constraintLeft_toLeftOf="@id/tv_stock_out_amount"
+            app:layout_constraintTop_toBottomOf="@id/tv_stock_out_amount" />
+
+        <!-- low stock -->
+        <View
+            android:id="@+id/v_low_stock_anchor"
+            android:layout_width="@dimen/px_8"
+            android:layout_height="@dimen/px_32"
+            android:layout_marginTop="@dimen/px_80"
+            android:background="@color/color_low_stock"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <org.openlmis.core.view.widget.CutBaseLineTextView
+            android:id="@+id/tv_low_stock_amount"
+            android:layout_width="@dimen/px_64"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/px_8"
+            android:layout_marginTop="@dimen/px_10"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="--"
+            android:textColor="#1a1a1a"
+            android:textSize="@dimen/px_21"
+            app:layout_constraintBottom_toBottomOf="@id/v_low_stock_anchor"
+            app:layout_constraintLeft_toRightOf="@id/v_low_stock_anchor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_low_stock"
+            android:textColor="#991a1a1a"
+            android:textSize="@dimen/px_17"
+            app:layout_constraintLeft_toLeftOf="@id/tv_low_stock_amount"
+            app:layout_constraintTop_toBottomOf="@id/tv_low_stock_amount" />
+
+        <!-- over stock -->
+        <View
+            android:id="@+id/v_over_stock_anchor"
+            android:layout_width="@dimen/px_8"
+            android:layout_height="@dimen/px_32"
+            android:layout_marginTop="@dimen/px_80"
+            android:background="@color/color_over_stock"
+            app:layout_constraintRight_toRightOf="@id/v_stock_out_anchor"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <org.openlmis.core.view.widget.CutBaseLineTextView
+            android:id="@+id/tv_over_stock_amount"
+            android:layout_width="@dimen/px_64"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/px_8"
+            android:layout_marginTop="@dimen/px_10"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="--"
+            android:textColor="#1a1a1a"
+            android:textSize="@dimen/px_21"
+            app:layout_constraintBottom_toBottomOf="@id/v_over_stock_anchor"
+            app:layout_constraintLeft_toRightOf="@id/v_over_stock_anchor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_over_stock"
+            android:textColor="#991a1a1a"
+            android:textSize="@dimen/px_17"
+            app:layout_constraintLeft_toLeftOf="@id/tv_over_stock_amount"
+            app:layout_constraintTop_toBottomOf="@id/tv_over_stock_amount" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -64,6 +64,7 @@ import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
+import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
@@ -117,6 +118,9 @@ public class HomeActivity extends BaseActivity {
 
     @InjectView(R.id.rl_al)
     RelativeLayout viewAl;
+
+    @InjectView(R.id.dv_product_dashboard)
+    DashboardView dvProductDashboard;
 
     @InjectResource(R.integer.back_twice_interval)
     private int backTwiceInterval;
@@ -273,9 +277,7 @@ public class HomeActivity extends BaseActivity {
             Intent intent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
             startActivity(intent);
         }
-
     }
-
 
     public void onClickRapidTestHistory(View view) {
         if (!isHaveDirtyData()) {
@@ -336,6 +338,8 @@ public class HomeActivity extends BaseActivity {
 
         dirtyDataManager.dirtyDataMonthlyCheck();
         isHaveDirtyData();
+
+        refreshDashboard();
     }
 
     protected void setSyncedTime() {
@@ -513,10 +517,17 @@ public class HomeActivity extends BaseActivity {
     private boolean isHaveDirtyData() {
         if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
                 || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
-            showDeletedWarningDialog(() -> dirtyDataManager.deleteAndReset());
+            showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
             return true;
         }
         return false;
     }
 
+    private void refreshDashboard() {
+        if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+            dvProductDashboard.resetState(true);
+        } else {
+            // TODO set dashboard data
+        }
+    }
 }
