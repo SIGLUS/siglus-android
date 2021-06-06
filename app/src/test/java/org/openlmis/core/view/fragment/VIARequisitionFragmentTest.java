@@ -43,6 +43,7 @@ import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
@@ -58,7 +59,6 @@ import java.util.TimeZone;
 import androidx.appcompat.app.AlertDialog;
 import roboguice.RoboGuice;
 
-import static android.os.Looper.getMainLooper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
@@ -68,7 +68,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class VIARequisitionFragmentTest {
@@ -169,7 +168,7 @@ public class VIARequisitionFragmentTest {
         when(presenter.isDraft()).thenReturn(true);
         viaRequisitionFragment.onBackPressed();
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("back_confirm_dialog"));
 
@@ -192,7 +191,7 @@ public class VIARequisitionFragmentTest {
 
         viaRequisitionFragment.showSignDialog();
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
@@ -212,7 +211,7 @@ public class VIARequisitionFragmentTest {
 
         viaRequisitionFragment.showSignDialog();
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
@@ -230,7 +229,7 @@ public class VIARequisitionFragmentTest {
     public void shouldMessageNotifyDialog() {
         viaRequisitionFragment.showMessageNotifyDialog();
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
 

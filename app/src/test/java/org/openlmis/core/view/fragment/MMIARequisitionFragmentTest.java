@@ -41,6 +41,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.widget.MMIAPatientInfoList;
 import org.openlmis.core.view.widget.MMIARegimeListWrap;
@@ -60,7 +61,6 @@ import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Observer;
 
-import static android.os.Looper.getMainLooper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -75,7 +75,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class MMIARequisitionFragmentTest {
@@ -189,7 +188,7 @@ public class MMIARequisitionFragmentTest {
     public void shouldShowValidationAlertWhenMethodCalled() {
         mmiaRequisitionFragment.showValidationAlert();
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         SimpleDialogFragment fragment = (SimpleDialogFragment) mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("not_match_dialog");
 
@@ -334,7 +333,7 @@ public class MMIARequisitionFragmentTest {
         when(mmiaFormPresenter.isDraftOrDraftMissed()).thenReturn(true);
         mmiaRequisitionFragment.showSignDialog();
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
 
@@ -354,7 +353,7 @@ public class MMIARequisitionFragmentTest {
 
         mmiaRequisitionFragment.showSignDialog();
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
 
@@ -372,7 +371,7 @@ public class MMIARequisitionFragmentTest {
     public void shouldMessageNotifyDialog() {
         mmiaRequisitionFragment.showMessageNotifyDialog();
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
 

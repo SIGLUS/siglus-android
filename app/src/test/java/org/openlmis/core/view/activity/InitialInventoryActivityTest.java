@@ -17,6 +17,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.InitialInventoryPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -30,7 +31,6 @@ import roboguice.RoboGuice;
 import rx.Observable;
 import rx.functions.Action1;
 
-import static android.os.Looper.getMainLooper;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -100,7 +100,7 @@ public class InitialInventoryActivityTest {
 
     @Test
     public void shouldShowMessageAndNeverBackWhenPressBackInInitInventory() {
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         initialInventoryActivity.onBackPressed();
 

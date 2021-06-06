@@ -12,6 +12,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
@@ -20,11 +21,9 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
 
-import static android.os.Looper.getMainLooper;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class RequisitionFormViewHolderTest {
@@ -109,7 +108,7 @@ public class RequisitionFormViewHolderTest {
 
         viewHolder.adjustTheoreticalIcon.performClick();
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         Fragment dialogFragment = dummyActivity.getFragmentManager().findFragmentByTag("adjustmentTheoreticalDialog");
 

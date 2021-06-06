@@ -20,6 +20,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -30,13 +31,11 @@ import java.sql.Date;
 
 import roboguice.RoboGuice;
 
-import static android.os.Looper.getMainLooper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class RequisitionProductViewHolderTest {
@@ -112,7 +111,7 @@ public class RequisitionProductViewHolderTest {
 
         viewHolder.showDelConfirmDialog(formItem);
 
-        shadowOf(getMainLooper()).idle();
+        RobolectricUtils.waitLooperIdle();
 
         SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) viaRequisitionActivity.getFragmentManager().findFragmentByTag("del_confirm_dialog");
         assertNotNull(del_confirm_dialog);
