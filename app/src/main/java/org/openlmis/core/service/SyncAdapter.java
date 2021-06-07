@@ -106,7 +106,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void triggerSync() {
         sendSyncStartBroadcast();
         syncDownManager.syncDownServerData();
-//        syncUpManager.syncUpData(context);
+        syncUpManager.syncUpData(context);
     }
 
 

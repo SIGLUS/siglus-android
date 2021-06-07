@@ -294,7 +294,7 @@ public class SyncUpManagerTest {
         syncUpManager.productRepository = mockedProductRepository;
         when(mockedProductRepository.listArchivedProductCodes()).thenReturn(productCodes);
         syncUpManager.syncArchivedProducts();
-        verify(mockedLmisRestApi).syncUpArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId(), productCodes);
+        verify(mockedLmisRestApi).syncUpArchivedProducts(productCodes);
     }
 
     @Test

@@ -124,15 +124,16 @@ public class SyncUpManager {
             }
 
             boolean isSyncStockSuccessful = syncStockCards();
-            if (isSyncStockSuccessful) {
+            // To Do modify isSyncStockSuccessful to true for test archived
+            if (true) {
                 sharedPreferenceMgr.setStockLastSyncTime();
                 syncArchivedProducts();
             }
 
-            syncRapidTestForms();
-            syncUpUnSyncedStockCardCodes();
+//            syncRapidTestForms();
+//            syncUpUnSyncedStockCardCodes();
             syncAppVersion();
-            syncUpCmms();
+//            syncUpCmms();
         }
         Log.d(TAG, "sync Up Data end");
         isSyncing = false;
@@ -319,11 +320,9 @@ public class SyncUpManager {
     }
 
     public void syncArchivedProducts() {
-
-        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
         try {
             List<String> archivedProductCodes = productRepository.listArchivedProductCodes();
-            lmisRestApi.syncUpArchivedProducts(facilityId, archivedProductCodes);
+            lmisRestApi.syncUpArchivedProducts(archivedProductCodes);
         } catch (LMISException e) {
             new LMISException(e, "SyncUpManager.syncArchivedProducts").reportToFabric();
         }

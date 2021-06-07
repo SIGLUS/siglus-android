@@ -71,8 +71,8 @@ public interface LMISRestApi {
     @POST("/rest-api/facilities/{facilityId}/unSyncedStockCards")
     Void syncUpUnSyncedStockCards(@Path("facilityId") String facilityId, @Body List<String> unSyncedStockCardCodes) throws LMISException;
 
-    @POST("/rest-api/facilities/{facilityId}/archivedProducts")
-    Void syncUpArchivedProducts(@Path("facilityId") String facilityId, @Body List<String> archivedProductsCodes) throws LMISException;
+    @POST("/api/siglusapi/android/me/facility/archivedProducts")
+    Void syncUpArchivedProducts(@Body List<String> archivedProductsCodes) throws LMISException;
 
     @PUT("/rest-api/facilities/{facilityId}/Cmms")
     Void syncUpCmms(@Path("facilityId") String facilityId, @Body List<CmmEntry> cmms) throws LMISException;
