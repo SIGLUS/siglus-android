@@ -92,6 +92,8 @@ import org.openlmis.core.persistence.migrations.CreateReportTypeTable;
 import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
 import org.openlmis.core.persistence.migrations.CreateServiceTable;
 import org.openlmis.core.persistence.migrations.CreateDirtyDataProductTable;
+import org.openlmis.core.persistence.migrations.DeletePrograms;
+import org.openlmis.core.persistence.migrations.DeleteReportTypes;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
 import org.openlmis.core.persistence.migrations.UpdateAvgColumn;
 import org.openlmis.core.persistence.migrations.UpdateCategoryColumnForMMIAProducts;
@@ -197,6 +199,9 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         MIGRATIONS.add(new CreateDirtyDataProductTable());
         MIGRATIONS.add(new AddVersionCodeToProgramProductTable());
         MIGRATIONS.add(new AddLastReportEndTimeToReportType());
+        MIGRATIONS.add(new DeletePrograms());
+        MIGRATIONS.add(new DeleteReportTypes());
+
     }
 
     private LmisSqliteOpenHelper(Context context) {

@@ -9,7 +9,6 @@ import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.utils.Constants;
-
 import java.util.List;
 
 public class ReportTypeFormRepository {
@@ -24,9 +23,9 @@ public class ReportTypeFormRepository {
         genericDao = new GenericDao<>(ReportTypeForm.class, context);
     }
 
-    public void batchCreateOrUpdateReportTypes(final List<ReportTypeForm> reportTypeFormList) throws LMISException {
-        dbUtil.withDaoAsBatch(ReportTypeForm.class, (DbUtil.Operation<ReportTypeForm, Void>) dao -> {
-            for (ReportTypeForm reportTypeForm : reportTypeFormList) {
+    public void batchCreateOrUpdateReportTypes(final List<ReportTypeForm> reportTypeForms) throws LMISException {
+        dbUtil.withDaoAsBatch(ReportTypeForm.class, dao -> {
+            for (ReportTypeForm reportTypeForm : reportTypeForms) {
                 createOrUpdate(reportTypeForm);
             }
             return null;

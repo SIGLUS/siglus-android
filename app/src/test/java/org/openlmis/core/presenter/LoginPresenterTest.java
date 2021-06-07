@@ -45,7 +45,9 @@ import org.openlmis.core.network.LMISRestManagerMock;
 import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
+import org.openlmis.core.service.SyncDownManagerIT;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.utils.JsonFileReader;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 
@@ -158,31 +160,59 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldCreateSyncAccountWhenLoginSuccess() {
-        presenter.startLogin("username", "password", false);
-        verify(internetCheck1).execute(internetCheckCallBack.capture());
-        internetCheckCallBack.getValue().launchResponse(true);
+        // Given
+        User user = User
+                .builder()
+                .username(userResponse.getUsername())
+                .password("password1")
+                .accessToken(userResponse.getAccess_token())
+                .tokenType(userResponse.getToken_type())
+                .referenceDataUserId(userResponse.getReferenceDataUserId())
+                .isTokenExpired(false)
+                .build();
 
-        verify(mockedApi).authorizeUser(eq("password"),eq("username"),eq("password"), loginCB.capture());
+        // When
+        presenter.startLogin("CS_Role1", "password1", false);
+        // Then
+        verify(internetCheck1).execute(internetCheckCallBack.capture());
+
+        // When
+        internetCheckCallBack.getValue().launchResponse(true);
+        // Then
+        verify(mockedApi).authorizeUser(eq("password"),eq("CS_Role1"),eq("password1"), loginCB.capture());
+
+        // When
         loginCB.getValue().success(userResponse, retrofitResponse);
-        User user = new User();
-        user.setUsername(userResponse.getUsername());
-        user.setPassword("password");
+        // Then
         verify(syncService).createSyncAccount(user);
     }
 
     @Test
     public void shouldSaveUserInfoWhenLoginSuccess() {
-        presenter.startLogin("username", "password", false);
+        // Given
+        User user = User
+                .builder()
+                .username(userResponse.getUsername())
+                .password("password1")
+                .accessToken(userResponse.getAccess_token())
+                .tokenType(userResponse.getToken_type())
+                .referenceDataUserId(userResponse.getReferenceDataUserId())
+                .isTokenExpired(false)
+                .build();
+
+        // When
+        presenter.startLogin("CS_Role1", "password1", false);
+        // Then
         verify(internetCheck1).execute(internetCheckCallBack.capture());
+
+        // When
         internetCheckCallBack.getValue().launchResponse(true);
-        verify(mockedApi).authorizeUser(eq("password"),eq("username"),eq("password"), loginCB.capture());
+        // Then
+        verify(mockedApi).authorizeUser(eq("password"),eq("CS_Role1"),eq("password1"), loginCB.capture());
 
+        // When
         loginCB.getValue().success(userResponse, retrofitResponse);
-
-        User user = new User();
-        user.setToken_type(userResponse.getToken_type());
-        user.setAccess_token(userResponse.getAccess_token());
-
+        // Then
         verify(userRepository).createOrUpdate(user);
         assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(user);
         verify(mockActivity).clearErrorAlerts();

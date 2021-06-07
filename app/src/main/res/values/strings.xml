@@ -18,12 +18,9 @@
     <string name="msg_empty_user">User name and password cannot be blank</string>
     <string name="msg_invalid_user">Username or Password is incorrect.</string>
     <string name="msg_sync_products_list_failed">Download of products from the server failed, please login again.</string>
-    <string name="msg_sync_report_type_failed">Download of report types from the server failed, please login again.</string>
     <string name="msg_sync_stock_movements_data">Synchronizing stock movement data</string>
     <string name="msg_fetching_products">Downloading product list…</string>
-    <string name="msg_fetching_programs">Downloading programs…</string>
-    <string name="msg_sync_program_failed">Download of program the server failed, please login again.</string>
-    <string name="msg_service_lists">Downloading list of services...</string>
+    <string name="msg_service_lists">Downloading list of services…</string>
     <string name="msg_sync_requisition_data">Synchronizing requisition data</string>
     <string name="msg_sync_requisition_failed">Download of requisition data failed, please login again.</string>
     <string name="msg_sync_stock_movement_failed">Download of stock movement data failed, please login again.</string>
@@ -585,8 +582,8 @@
     <string name="upgrade_download_Failed">Download Failed</string>
     <string name="upgrade_download_try">Please try later</string>
     <string name="upgrade_download_click_install">Click to install</string>
-
     <string name="dirty_data_correct_warning">There is a stock calculation error on product %s, the system just delete the dirty data. please using receive/physical inventory/adjustments to re-record the product stock.</string>
+
 
     <!-- Siglus TO 12 -->
     <string name="dashboard_product_types">Product types</string>
@@ -594,4 +591,6 @@
     <string name="dashboard_stock_out">Out</string>
     <string name="dashboard_low_stock">Low</string>
     <string name="dashboard_over_stock">Over</string>
+    <string name="msg_fetching_facility_info">Downloading facility info…</string>
+    <string name="msg_fetching_facility_info_failed">Download of facility info from the server failed, please login again.</string>
 </resources>

@@ -166,12 +166,13 @@ dependencies {
     implementation 'org.apmem.tools:layouts:1.10@aar'
     implementation 'org.apache.commons:commons-lang3:3.3.2'
     implementation 'net.danlew:android.joda:2.9.1'
+    implementation 'com.google.android.gms:play-services-analytics:7.8.0'
     annotationProcessor 'org.roboguice:roboblender:3.0.1'
     implementation 'org.roboguice:roboblender:3.0.1'
     implementation 'org.roboguice:roboguice:3.0.1'
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'org.projectlombok:lombok:1.12.6'
-    annotationProcessor "org.projectlombok:lombok:1.12.6"
+    annotationProcessor "org.projectlombok:lombok:1.18.20"
+    implementation 'org.projectlombok:lombok:1.18.20'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'

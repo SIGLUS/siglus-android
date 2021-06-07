@@ -23,10 +23,8 @@ import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
-
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
-
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -51,6 +49,8 @@ import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.ServiceAdapter;
 import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
+import org.openlmis.core.network.model.UserResponse;
+import org.openlmis.core.service.SyncService;
 
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +58,8 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
+import lombok.SneakyThrows;
+import retrofit.Callback;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RequestInterceptor.RequestFacade;
@@ -67,13 +69,17 @@ import retrofit.client.Client;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
+import roboguice.RoboGuice;
 
 import static javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier;
+import static org.openlmis.core.utils.Constants.BASIC_AUTH;
+import static org.openlmis.core.utils.Constants.GRANT_TYPE;
 
 public class LMISRestManager {
 
     private static LMISRestManager instance;
     private LMISRestApi lmisRestApi;
+    private SyncService syncService;
 
     protected LMISRestManager(Context context) {
         String baseUrl = context.getString(R.string.server_base_url);
@@ -87,6 +93,7 @@ public class LMISRestManager {
                 .setConverter(registerTypeAdapter());
 
         lmisRestApi = restBuilder.build().create(LMISRestApi.class);
+        syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
         instance = this;
     }
 
@@ -143,19 +150,15 @@ public class LMISRestManager {
     @NonNull
     private RequestInterceptor getRequestInterceptor() {
         return request -> {
-
             User user = UserInfoMgr.getInstance().getUser();
-            if (user != null) {
-                request.addHeader("authorization",user.getToken_type()+" "+user.getAccess_token());
-//                request.addHeader("UserName", user.getUsername());
-//                request.addHeader("FacilityName", user.getFacilityName());
-//                request.addHeader("FacilityId", user.getFacilityId());
-//                request.addHeader("language", Locale.getDefault().getLanguage());
+            if (user != null && !user.getIsTokenExpired()) {
+                request.addHeader("Authorization",user.getTokenType()+" "+user.getAccessToken());
+                request.addHeader("UserName", user.getUsername());
+                request.addHeader("FacilityCode", user.getFacilityCode());
+                request.addHeader("FacilityName", user.getFacilityName());
             }else {
-                String basic = "Basic dXNlci1jbGllbnQ6Y2hhbmdlbWU=";
-                request.addHeader("authorization", basic);
+                request.addHeader("Authorization", BASIC_AUTH);
             }
-
 
             if (BuildConfig.MONITOR_DEVICE_ID) {
                 request.addHeader("UniqueId", getAndroidId());
@@ -168,7 +171,7 @@ public class LMISRestManager {
     private void addDeviceInfoToRequestHeader(RequestFacade request) {
         String versionCode = String.valueOf(BuildConfig.VERSION_CODE);
         String deviceInfo = "OS: " + Build.VERSION.RELEASE
-                + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL + "versionCode:87.1";
+                + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL;
         request.addHeader("DeviceInfo", deviceInfo);
         request.addHeader("VersionCode", versionCode);
         request.addHeader("AndroidSDKVersion", Build.VERSION.SDK_INT + "");
@@ -195,7 +198,8 @@ public class LMISRestManager {
         public Throwable handleError(RetrofitError cause) {
             Response r = cause.getResponse();
             if (r != null && r.getStatus() == 401) {
-                return new UnauthorizedException(cause);
+                UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
+                refreshUserAuthorize(UserInfoMgr.getInstance().getUser(),cause);
             }
             if (r != null && r.getStatus() == 400) {
                 return new SyncServerException(((DataErrorResponse) cause.getBodyAs(DataErrorResponse.class)).getError());
@@ -208,6 +212,34 @@ public class LMISRestManager {
             }
             return new LMISException(cause);
         }
+    }
+
+    public void refreshUserAuthorize(User user,RetrofitError cause){
+        LMISApp.getInstance().getRestApi().authorizeUser(GRANT_TYPE, user.getUsername(),user.getPassword(), new Callback<UserResponse>() {
+            @SneakyThrows
+            @Override
+            public void success(UserResponse userResponse, Response response) {
+                if (userResponse == null || userResponse.getAccess_token() == null) {
+                    throw new UnauthorizedException(cause);
+                } else {
+                    user.setAccessToken(userResponse.getAccess_token());
+                    user.setTokenType(userResponse.getToken_type());
+                    user.setIsTokenExpired(false);
+                    UserInfoMgr.getInstance().setUser(user);
+                    syncService.requestSyncImmediatelyByTask();
+                }
+            }
+
+            @SneakyThrows
+            @Override
+            public void failure(RetrofitError error) {
+                if (error.getCause() instanceof NetWorkException) {
+                    throw new NetWorkException(cause);
+                } else {
+                    throw new UnauthorizedException(cause);
+                }
+            }
+        });
     }
 
 }

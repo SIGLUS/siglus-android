@@ -66,6 +66,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static org.openlmis.core.utils.Constants.GRANT_TYPE;
+
 public class LoginPresenter extends Presenter {
 
     private static final String TAG = LoginPresenter.class.getSimpleName();
@@ -187,15 +189,19 @@ public class LoginPresenter extends Presenter {
     }
 
     private void authorizeAndLoginUserRemote(final User user, final boolean fromReSync) {
-        String grantType = "password";
-        LMISApp.getInstance().getRestApi().authorizeUser(grantType, user.getUsername(),user.getPassword(), new Callback<UserResponse>() {
+        if (UserInfoMgr.getInstance().getUser() != null) {
+            UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
+        }
+        LMISApp.getInstance().getRestApi().authorizeUser(GRANT_TYPE, user.getUsername(),user.getPassword(), new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
                 if (userResponse == null || userResponse.getAccess_token() == null) {
                     onLoginFailed();
                 } else {
-                    user.setAccess_token(userResponse.getAccess_token());
-                    user.setToken_type(userResponse.getToken_type());
+                    user.setAccessToken(userResponse.getAccess_token());
+                    user.setTokenType(userResponse.getToken_type());
+                    user.setReferenceDataUserId(userResponse.getReferenceDataUserId());
+                    user.setIsTokenExpired(false);
 
                     onLoginSuccess(user, fromReSync);
                 }
@@ -296,9 +302,8 @@ public class LoginPresenter extends Presenter {
             @Override
             public void onNext(SyncProgress progress) {
                 switch (progress) {
-                    case SyncingPrograms:
+                    case SyncingFacilityInfo:
                     case SyncingServiceList:
-                    case SyncingReportType:
                     case SyncingProduct:
                     case SyncingStockCardsLastMonth:
                     case SyncingRequisition:

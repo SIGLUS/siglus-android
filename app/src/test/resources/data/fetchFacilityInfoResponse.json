@@ -1,0 +1,30 @@
+{
+  "code": "01100122",
+  "name": "Centro de Saúde Bedene",
+  "supportedPrograms": [
+    {
+      "code": "ML",
+      "name": "Malaria",
+      "supportActive": true,
+      "supportStartDate": "2019-09-24"
+    },
+    {
+      "code": "TR",
+      "name": "Testes Rápidos Diag.",
+      "supportActive": true,
+      "supportStartDate": "2019-09-24"
+    },
+    {
+      "code": "T",
+      "name": "TARV",
+      "supportActive": true,
+      "supportStartDate": "2019-09-24"
+    },
+    {
+      "code": "VC",
+      "name": "Via Clássica",
+      "supportActive": true,
+      "supportStartDate": "2019-09-24"
+    }
+  ]
+}

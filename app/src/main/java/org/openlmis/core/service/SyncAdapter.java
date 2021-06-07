@@ -106,7 +106,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void triggerSync() {
         sendSyncStartBroadcast();
         syncDownManager.syncDownServerData();
-        syncUpManager.syncUpData(context);
+//        syncUpManager.syncUpData(context);
     }
 
 
@@ -116,11 +116,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
-    private void sendSyncFinishedBroadcast() {
-        Intent intent = new Intent();
-        intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
 
     private void sendDeletedProductBroadcast() {
         Intent intent = new Intent(Constants.INTENT_FILTER_DELETED_PRODUCT);

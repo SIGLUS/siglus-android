@@ -26,6 +26,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
+import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownKitChangeDraftProductsResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -44,8 +45,6 @@ import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.Body;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
@@ -54,11 +53,9 @@ import retrofit.http.Query;
 
 public interface LMISRestApi {
 
-    @FormUrlEncoded
     @POST("/api/oauth/token")
-    void authorizeUser(@Query("grant_type") String grant_type, @Field("username") String username,
-                       @Field("password") String password, Callback<UserResponse> callback);
-
+    void authorizeUser(@Query("grant_type") String grant_type, @Query("username") String username,
+                       @Query("password") String password, Callback<UserResponse> callback);
 
     //sync up
 
@@ -87,6 +84,9 @@ public interface LMISRestApi {
     SyncUpDeletedMovementResponse syncUpDeletedData(@Path("facilityId") Long facilityId, @Body List<DirtyDataItemEntry> entryList) throws LMISException;
 
     //sync down
+    @GET("/api/siglusapi/android/me/facility")
+    FacilityInfoResponse fetchFacilityInfo() throws LMISException;
+
     @GET("/rest-api/requisitions")
     SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode,
                                                    @Query("startDate") String startDate) throws LMISException;

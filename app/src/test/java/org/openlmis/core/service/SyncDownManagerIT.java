@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -12,7 +13,9 @@ import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
@@ -20,9 +23,12 @@ import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
+import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManagerMock;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
@@ -39,11 +45,17 @@ import rx.observers.TestSubscriber;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
-@Ignore
+
 public class SyncDownManagerIT {
     private SyncDownManager syncDownManager;
+    private ProgramRepository programRepository;
+    private ReportTypeFormRepository reportTypeFormRepository;
     private ProductRepository productRepository;
     private ProductProgramRepository productProgramRepository;
     private UserRepository userRepository;
@@ -54,10 +66,15 @@ public class SyncDownManagerIT {
     private ProgramDataFormRepository programDataFormRepository;
     private StockMovementRepository stockMovementRepository;
     private static final int DAYS_OF_MONTH = 30;
+    private LMISTestApp appInject;
+    private LMISRestApi mockedApi;
+
 
     @Before
     public void setup() {
         userRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(UserRepository.class);
+        programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
+        reportTypeFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ReportTypeFormRepository.class);
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
         productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductProgramRepository.class);
         stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
@@ -66,6 +83,9 @@ public class SyncDownManagerIT {
         stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementRepository.class);
         syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncDownManager.class);
         sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
+        appInject = (LMISTestApp) RuntimeEnvironment.application;
+        mockedApi = mock(LMISRestApi.class);
+        appInject.setRestApi(mockedApi);
 
         defaultUser1 = new User();
         defaultUser1.setUsername("cs_gelo");
@@ -73,6 +93,7 @@ public class SyncDownManagerIT {
         defaultUser1.setFacilityId("808");
         defaultUser1.setFacilityName("CS Gelo");
         defaultUser1.setFacilityCode("HF615");
+        defaultUser1.setIsTokenExpired(true);
         userRepository.createOrUpdate(defaultUser1);
         UserInfoMgr.getInstance().setUser(defaultUser1);
     }
@@ -89,7 +110,7 @@ public class SyncDownManagerIT {
         }
     }
 
-    private void mockReponse(LMISRestManagerMock lmisRestManager) {
+    private void mockResponse(LMISRestManagerMock lmisRestManager) {
         Date now = new Date();
         Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
         String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
@@ -106,8 +127,9 @@ public class SyncDownManagerIT {
         String rapidTestsResponseJson = JsonFileReader.readJson(getClass(), "SyncDownRapidTestsResponse.json");
         String syncDownKitChagneResponseJson = JsonFileReader.readJson(getClass(), "fetchKitChangeReponse.json");
         String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
+        String authSuccessResponse = JsonFileReader.readJson(getClass(),"AuthSuccessResponse.json");
 
-
+        lmisRestManager.addNewMockedResponse("/api/oauth/token?grant_type=password&username=cs_gelo&password=password",200,"OK",authSuccessResponse);
         lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + getDefaultUser().getFacilityId(), 200, "OK", rapidTestsResponseJson);
         lmisRestManager.addNewMockedResponse("/rest-api/programs/" + getDefaultUser().getFacilityId(), 200, "OK", fetchProgramsJson);
         lmisRestManager.addNewMockedResponse("/rest-api/services?" + "programCode=PTV", 200, "OK", fetchPTVServiceJson);
@@ -117,23 +139,69 @@ public class SyncDownManagerIT {
         lmisRestManager.addNewMockedResponse("/rest-api/facilities/" + getDefaultUser().getFacilityId() + "/stockCards?" + "startTime=" + startDateStr + "&endTime=" + endDateStr, 200, "OK", fetchMovementDate);
         lmisRestManager.addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=" + sharedPreferenceMgr.getLastSyncProductTime(), 200, "OK", syncDownKitChagneResponseJson);
         lmisRestManager.addNewMockedResponse("/rest-api/latest-products", 200, "OK", json);
+        lmisRestManager.addNewMockedResponse("/rest-api/latest-products", 200, "OK", json);
     }
 
+    @Ignore
     @Test
-    public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
-        //given
-        String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
-        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", json, RuntimeEnvironment.application);
-        mockReponse(lmisRestManager);
-
+    public void shouldRefreshTokenWhenTokenExpired() {
+        // Given
+        String tokenExpiredResponse = JsonFileReader.readJson(getClass(),"TokenExpiredResponse.json");
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 401, "Unauthorized", tokenExpiredResponse, RuntimeEnvironment.application);
+        mockResponse(lmisRestManager);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+        UserInfoMgr.getInstance().getUser().setIsTokenExpired(false);
 
-        //When
+        // When
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
         syncDownManager.syncDownServerData(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
-        //Then
+
+        // Then
+        verify(lmisRestManager.getLmisRestApi(),times(1)).authorizeUser(any(),any(),any(),any());
+
+    }
+
+    @Test
+    public void shouldSyncDownFacilityInfo() throws LMISException {
+        // Given
+        String facilityInfoJson = JsonFileReader.readJson(getClass(),"fetchFacilityInfoResponse.json");
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 200, "OK", facilityInfoJson, RuntimeEnvironment.application);
+        mockResponse(lmisRestManager);
+        syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+
+        // When
+        SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+        syncDownManager.syncDownServerData(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        List<Program> programs = programRepository.list();
+        List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
+
+        // Then
+        assertEquals(4,programs.size());
+        assertEquals(4,reportTypeForms.size());
+    }
+
+
+    @Ignore
+    @Test
+    public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
+        // given
+        String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", json, RuntimeEnvironment.application);
+        mockResponse(lmisRestManager);
+
+        syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+
+        // When
+        SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+        syncDownManager.syncDownServerData(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        // Then
         checkShouldSyncDownLatestProductWithArchivedStatus();
     }
 
@@ -161,6 +229,7 @@ public class SyncDownManagerIT {
     }
 
 
+    @Ignore
     @Test
     public void shouldSyncDownStockCardsWithMovements() throws Exception {
         //set shared preferences to have synced all historical data already
@@ -173,7 +242,7 @@ public class SyncDownManagerIT {
         //given
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
-        mockReponse(lmisRestManager);
+        mockResponse(lmisRestManager);
 
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
@@ -196,6 +265,7 @@ public class SyncDownManagerIT {
         assertEquals(0, lotOnHand.getQuantityOnHand(), 0L);
     }
 
+    @Ignore
     @Test
     public void shouldSyncDownRapidTests() throws Exception {
         //given
@@ -204,7 +274,7 @@ public class SyncDownManagerIT {
 
         sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
         sharedPreferenceMgr.setRequisitionDataSynced(true);
-        mockReponse(lmisRestManager);
+        mockResponse(lmisRestManager);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
         //when
@@ -226,13 +296,14 @@ public class SyncDownManagerIT {
         assertEquals(16, programDataForms.size());
     }
 
+    @Ignore
     @Test
     public void shouldSyncDownLastYearSilently() throws LMISException {
         //given
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
 
-        mockReponse(lmisRestManager);
+        mockResponse(lmisRestManager);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
@@ -254,7 +325,7 @@ public class SyncDownManagerIT {
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
 
-        mockReponse(lmisRestManager);
+        mockResponse(lmisRestManager);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
         //when
@@ -271,8 +342,8 @@ public class SyncDownManagerIT {
         syncDownManager.syncDownServerData();
 
 //        /rest-api/latest-products
-        String syncDownKitChagneResponseJson = JsonFileReader.readJson(getClass(), "fetchKitChangeReponse.json");
-        lmisRestManager.addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=1578289583857", 200, "OK", syncDownKitChagneResponseJson);
+        String syncDownKitChangeResponseJson = JsonFileReader.readJson(getClass(), "fetchKitChangeReponse.json");
+        lmisRestManager.addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=1578289583857", 200, "OK", syncDownKitChangeResponseJson);
 
         List<ProgramDataForm> programDataForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
         assertEquals(16, programDataForms.size());

@@ -33,7 +33,10 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
@@ -42,17 +45,18 @@ import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.ServiceFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
+import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
+import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownKitChangeDraftProductsResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
-import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
-import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.utils.Constants;
@@ -104,6 +108,8 @@ public class SyncDownManager {
     SyncStockCardsLastYearSilently syncStockCardsLastYearSilently;
     @Inject
     DirtyDataManager dirtyDataManager;
+    @Inject
+    UserRepository userRepository;
 
     public SyncDownManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -117,13 +123,12 @@ public class SyncDownManager {
         isSyncing = true;
         Observable.create((Observable.OnSubscribe<SyncProgress>) subscriber1 -> {
             try {
-                SyncDownPrograms(subscriber1);
-                syncDownService(subscriber1);
-                syncDownReportType(subscriber1);
-                syncDownProducts(subscriber1);
-                syncDownLastMonthStockCards(subscriber1);
-                syncDownRequisition(subscriber1);
-                syncDownRapidTests(subscriber1);
+                syncDownFacilityInfo(subscriber1);
+//                syncDownService(subscriber1);
+//                syncDownProducts(subscriber1);
+//                syncDownLastMonthStockCards(subscriber1);
+//                syncDownRequisition(subscriber1);
+//                syncDownRapidTests(subscriber1);
                 isSyncing = false;
                 subscriber1.onCompleted();
             } catch (LMISException e) {
@@ -133,41 +138,18 @@ public class SyncDownManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
-
-    private void syncDownReportType(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+    private void syncDownFacilityInfo(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         try {
-            subscriber.onNext(SyncProgress.SyncingReportType);
-            fetchAndSaveReportType();
-            subscriber.onNext(SyncProgress.ReportTypeSynced);
+            subscriber.onNext(SyncProgress.SyncingFacilityInfo);
+            fetchAndSaveFacilityInfo();
+            subscriber.onNext(SyncProgress.FacilityInfoSynced);
         } catch (LMISException e) {
-            LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_report_type_failed));
+            LMISException e1 = new LMISException(errorMessage(R.string.msg_fetching_facility_info_failed));
             e1.reportToFabric();
-            throw e1;
-        }
-    }
-
-    private void SyncDownPrograms(Subscriber<? super SyncProgress> subscriber) throws LMISException {
-        try {
-            subscriber.onNext(SyncProgress.SyncingPrograms);
-            fetchAndSaveprogram();
-            subscriber.onNext(SyncProgress.ProgramSynced);
-        } catch (LMISException e) {
-//            LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_program_failed));
-//            e1.reportToFabric();
             throw e;
         }
     }
 
-    private void fetchAndSaveprogram() throws LMISException {
-        SyncUpProgramResponse response = lmisRestApi.fetchPrograms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
-        programRepository.updateProgramWithRegimen(response.getPrograms());
-    }
-
-    private void fetchAndSaveReportType() throws LMISException {
-        SyncDownReportTypeResponse response = lmisRestApi.fetchReportTypeForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
-        sharedPreferenceMgr.setReportTypesData(response.getReportTypes());
-        reportTypeFormRepository.batchCreateOrUpdateReportTypes(response.getReportTypes());
-    }
 
     private void syncDownService(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         try {
@@ -222,7 +204,7 @@ public class SyncDownManager {
                 if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     sendSyncStartBroadcast();
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
-                    syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
+//                    syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     syncChangeKit();
                     if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
@@ -508,6 +490,55 @@ public class SyncDownManager {
         return DateUtil.formatDate(startTime, DateUtil.DB_DATE_FORMAT);
     }
 
+    private void fetchAndSaveFacilityInfo() throws LMISException {
+        FacilityInfoResponse facilityInfoResponse = lmisRestApi.fetchFacilityInfo();
+        if (facilityInfoResponse == null) {
+            LMISException e = new LMISException("fetch facility info exception");
+            e.reportToFabric();
+            throw e;
+        }
+        List<Program> programs = covertFacilityInfoToProgram(facilityInfoResponse);
+        List<ReportTypeForm> reportTypeForms = covertFacilityInfoToReportTypeForm(facilityInfoResponse);
+        User user = UserInfoMgr.getInstance().getUser();
+        user.setFacilityCode(facilityInfoResponse.getCode());
+        user.setFacilityName(facilityInfoResponse.getName());
+        userRepository.createOrUpdate(user);
+        UserInfoMgr.getInstance().setUser(user);
+        programRepository.batchCreateOrUpdatePrograms(programs);
+        sharedPreferenceMgr.setReportTypesData(reportTypeForms);
+        reportTypeFormRepository.batchCreateOrUpdateReportTypes(reportTypeForms);
+    }
+
+    private List<ReportTypeForm> covertFacilityInfoToReportTypeForm(FacilityInfoResponse facilityInfoResponse) {
+        List<ReportTypeForm> reportTypeForms = new ArrayList<>();
+        for (SupportedProgram supportedProgram : facilityInfoResponse.getSupportedPrograms()) {
+            ReportTypeForm reportTypeForm = ReportTypeForm
+                    .builder()
+                    .code(supportedProgram.getCode())
+                    .name(supportedProgram.getName())
+                    .active(supportedProgram.isSupportActive())
+                    .startTime(DateUtil.parseString(supportedProgram.getSupportStartDate(),DateUtil.DB_DATE_FORMAT))
+                    .build();
+            reportTypeForms.add(reportTypeForm);
+        }
+        return reportTypeForms;
+    }
+
+    private List<Program> covertFacilityInfoToProgram(FacilityInfoResponse facilityInfoResponse) {
+        List<Program> programs = new ArrayList<>();
+        for (SupportedProgram supportedProgram : facilityInfoResponse.getSupportedPrograms()) {
+            Program program = Program
+                    .builder()
+                    .programCode(supportedProgram.getCode())
+                    .programName(supportedProgram.getName())
+                    .isSupportEmergency(supportedProgram.getCode().equals("VC"))
+                    .build();
+            programs.add(program);
+        }
+        return programs;
+    }
+
+
     private void fetchAndSaveRequisition() throws LMISException {
         final String facilityCode = UserInfoMgr.getInstance().getUser().getFacilityCode();
         SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(facilityCode, getStartDate());
@@ -547,9 +578,8 @@ public class SyncDownManager {
     }
 
     public enum SyncProgress {
+        SyncingFacilityInfo(R.string.msg_fetching_facility_info),
         SyncingServiceList(R.string.msg_service_lists),
-        SyncingReportType(R.string.msg_fetching_products),
-        SyncingPrograms(R.string.msg_fetching_programs),
         SyncingProduct(R.string.msg_fetching_products),
         SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
         SyncingRequisition(R.string.msg_sync_requisition_data),
@@ -557,8 +587,7 @@ public class SyncDownManager {
 
         ProductSynced,
         ServiceSynced,
-        ProgramSynced,
-        ReportTypeSynced,
+        FacilityInfoSynced,
         StockCardsLastMonthSynced,
         RequisitionSynced,
         StockCardsLastYearSynced,

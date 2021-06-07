@@ -5,8 +5,11 @@ import androidx.annotation.NonNull;
 
 import com.squareup.okhttp.OkHttpClient;
 
+import org.openlmis.core.model.User;
+
 import java.util.Collections;
 
+import retrofit.RetrofitError;
 import retrofit.client.Client;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
@@ -49,5 +52,10 @@ public class LMISRestManagerMock extends LMISRestManager {
 
     protected Client superGetSSLClient() {
         return super.getSSLClient();
+    }
+
+    @Override
+    public void refreshUserAuthorize(User user, RetrofitError cause) {
+        super.refreshUserAuthorize(user, cause);
     }
 }

@@ -1,5 +1,8 @@
 package org.openlmis.core.network;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,8 +23,7 @@ public class MockClient implements Client {
         String requestUrl = request.getUrl();
         System.out.println("1 +++++++++++ request = [" + requestUrl + "]");
         // The following port number should be same with the ENV which you running
-//        requestUrl = requestUrl.split("8081")[1];
-        requestUrl = requestUrl.split("8081")[1];
+        requestUrl = requestUrl.split(LMISApp.getInstance().getResources().getString(R.integer.server_base_url_port))[1];
         System.out.println("+++++++++++ request = [" + requestUrl + "]");
         if (urlToResponseMap.keySet().contains(requestUrl)) {
             return urlToResponseMap.get(requestUrl);

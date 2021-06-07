@@ -24,14 +24,15 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.utils.HashUtil;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
+@Builder
+@Data
 @DatabaseTable(tableName = "users")
 @NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseModel {
 
     @DatabaseField
@@ -57,11 +58,13 @@ public class User extends BaseModel {
     @DatabaseField
     String facilityId;
 
-    @DatabaseField
-    String access_token;
+    String accessToken;
 
-    @DatabaseField
-    String token_type;
+    String tokenType;
+
+    String referenceDataUserId;
+
+    Boolean isTokenExpired;
 
     public User(String username, String password) {
         this.username = username;
@@ -83,21 +86,5 @@ public class User extends BaseModel {
     public void setPassword(String password) {
         this.password = password;
         calculatePasswordMD5();
-    }
-
-    public String getAccess_token() {
-        return access_token;
-    }
-
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
-    }
-
-    public String getToken_type() {
-        return token_type;
-    }
-
-    public void setToken_type(String token_type) {
-        this.token_type = token_type;
     }
 }

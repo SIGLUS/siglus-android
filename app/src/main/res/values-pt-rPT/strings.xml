@@ -15,11 +15,8 @@
     <string name="msg_empty_user">Usuário ou Senha não pode estar em branco.</string>
     <string name="msg_invalid_user">Usuário ou Senha incorrecto.</string>
     <string name="msg_sync_products_list_failed">Descarregamento de produtos a partir do servidor falhou, por favor entre novamente.</string>
-    <string name="msg_sync_report_type_failed">Falha no descarregamento de tipos de relatórios do servidor, por favor, faça o login novamente.</string>
     <string name="msg_sync_stock_movements_data">Sincronizando dados de movimentos de stock</string>
     <string name="msg_fetching_products">Descarregando lista de produtos…</string>
-    <string name="msg_fetching_programs">Descarregando lista programas…</string>
-    <string name="msg_sync_program_failed">Descarregamento de programas do servidor falhou, por favor, faça o login novamente.</string>
     <string name="msg_service_lists">Descarregando lista de serviços…</string>
     <string name="msg_sync_requisition_data">Sincronizando dados de requisição</string>
     <string name="msg_sync_requisition_failed">Descarregamento de dados de requisição a partir do servidor falhou, por favor entre novamente.</string>

@@ -137,7 +137,7 @@ public final class Constants {
     // error define
     public static final String SYNC_MOVEMENT_ERROR = "sync_movement_error";
 
-    //PTV
+    // PTV
     public static final String PTV_PRODUCT_FIRST_CODE = "08S40";
     public static final String PTV_PRODUCT_SECOND_CODE = "08S15";
     public static final String PTV_PRODUCT_THIRD_CODE = "08S22";
@@ -164,6 +164,12 @@ public final class Constants {
      public static final String ATTR_TABLE_DISPENSED_DT1 = "dispensed_dt1";
      public static final String ATTR_TABLE_DISPENSED_DT = "dispensed_dt";
      public static final String ATTR_TABLE_DISPENSED_DM = "dispensed_dm";
+
+     // auth parameter
+    public static final String GRANT_TYPE = "password";
+
+    // basic auth
+    public static final String BASIC_AUTH = "Basic dXNlci1jbGllbnQ6Y2hhbmdlbWU=";
 
     private Constants() {
 

@@ -36,7 +36,6 @@ import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProgramRepository {
@@ -77,16 +76,11 @@ public class ProgramRepository {
         }
     }
 
-    public void updateProgramWithRegimen(final List<Program> programs) throws LMISException {
-        createOrUpdateProgramWithRegimen(programs);
-    }
-
-    private void createOrUpdateProgramWithRegimen(final List<Program> programs) throws LMISException {
+    public void batchCreateOrUpdatePrograms(final List<Program> programs) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
                 for (Program program : programs) {
                     createOrUpdate(program);
-                    regimenRepository.batchSave(new ArrayList(program.getRegimens()));
                 }
                 return null;
             });

@@ -1,0 +1,8 @@
+{
+  "access_token": "273d83f1-6034-41aa-b297-d5bda40ab427",
+  "token_type": "bearer",
+  "expires_in": 43200,
+  "scope": "read write",
+  "referenceDataUserId": "f49be78a-bdd4-44f0-8471-b67e493c5484",
+  "username": "CS_role1"
+}
