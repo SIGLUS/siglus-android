@@ -23,21 +23,20 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 
-import org.jetbrains.annotations.NotNull;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class CutBaseLineTextView extends androidx.appcompat.widget.AppCompatTextView {
 
-    public CutBaseLineTextView(@NotNull Context context) {
+    public CutBaseLineTextView(@NonNull Context context) {
         this(context, null);
     }
 
-    public CutBaseLineTextView(@NotNull Context context, @Nullable AttributeSet attrs) {
+    public CutBaseLineTextView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CutBaseLineTextView(@NotNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CutBaseLineTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
