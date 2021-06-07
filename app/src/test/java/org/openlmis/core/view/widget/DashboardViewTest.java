@@ -27,7 +27,6 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 
@@ -45,10 +44,10 @@ public class DashboardViewTest {
     @Test
     public void shouldSetCorrectData() {
         // given
-        int regularAmount = Mockito.anyInt();
-        int outAmount = Mockito.anyInt();
-        int lowAmount = Mockito.anyInt();
-        int overAmount = Mockito.anyInt();
+        int regularAmount = 100;
+        int outAmount = 200;
+        int lowAmount = 300;
+        int overAmount = 400;
 
         // when
         dashboardView.setData(regularAmount, outAmount, lowAmount, overAmount);
@@ -64,10 +63,10 @@ public class DashboardViewTest {
     @Test
     public void shouldCreateCorrectNewData() {
         // given
-        int regularAmount = Mockito.anyInt();
-        int outAmount = Mockito.anyInt();
-        int lowAmount = Mockito.anyInt();
-        int overAmount = Mockito.anyInt();
+        int regularAmount = 100;
+        int outAmount = 200;
+        int lowAmount = 300;
+        int overAmount = 400;
 
         // when
         final List<DashboardCircleView.Item> newData = dashboardView.createNewData(regularAmount, outAmount, lowAmount, overAmount);
@@ -81,7 +80,7 @@ public class DashboardViewTest {
     }
 
     @Test
-    public void shouldClearAnimationAfterDetachedFromWindow(){
+    public void shouldClearAnimationAfterDetachedFromWindow() {
         // given
         // when
         dashboardView.onDetachedFromWindow();
