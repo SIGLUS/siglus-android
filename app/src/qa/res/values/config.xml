@@ -1,6 +1,6 @@
 <resources>
-    <string name="server_base_url">http://52.198.153.150:8000</string>
-    <string name="server_base_url_host">52.198.153.150</string>
+    <string name="server_base_url">https://qa.siglus.us</string>
+    <string name="server_base_url_host">qa.siglus.us</string>
     <integer name="server_base_url_port">8000</integer>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.qa</string>
     <integer name="sync_interval">3600</integer>
