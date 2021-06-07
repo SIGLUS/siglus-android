@@ -1,7 +1,7 @@
 <resources>
     <string name="server_base_url">https://uat.siglus.us</string>
     <string name="server_base_url_host">uat.siglus.com</string>
-    <integer name="server_base_url_port">80</integer>
+    <integer name="server_base_url_port">443</integer>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.uat</string>
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.uat</string>

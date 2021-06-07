@@ -1,7 +1,7 @@
 <resources>
     <string name="server_base_url">https://integ.siglus.us</string>
     <string name="server_base_url_host">integ.siglus.us</string>
-    <integer name="server_base_url_port">8000</integer>
+    <integer name="server_base_url_port">443</integer>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.integ</string>
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.integ</string>
