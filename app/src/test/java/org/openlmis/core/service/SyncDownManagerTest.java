@@ -42,8 +42,8 @@ import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
-import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
+import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
@@ -57,7 +57,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import roboguice.RoboGuice;
 import rx.Scheduler;
@@ -81,18 +80,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.FacilityInfoSynced;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.ProductSynced;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.RapidTestsSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.ServiceSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastMonthSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastYearSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingFacilityInfo;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingProduct;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRapidTests;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRequisition;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingServiceList;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastMonth;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -205,7 +196,7 @@ public class SyncDownManagerTest {
         laterEnterSubscriber.assertNoTerminalEvent();
 
         // then
-        assertThat(firstEnterSubscriber.syncProgresses.size(), is(2));
+        assertThat(firstEnterSubscriber.syncProgresses.size(), is(4));
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }
 
@@ -339,8 +330,8 @@ public class SyncDownManagerTest {
 
         SyncDownLatestProductsResponse response = new SyncDownLatestProductsResponse();
         SyncDownLatestProductsResponse response1 = new SyncDownLatestProductsResponse();
-        response.setLatestUpdatedTime("today");
-        response1.setLatestUpdatedTime("today");
+        response.setLastSyncTime("today");
+        response1.setLastSyncTime("today");
         response.setLatestProducts(productsAndSupportedPrograms);
         response1.setLatestProducts(productsAndSupportedPrograms);
         assertEquals(response1, response);
@@ -379,7 +370,7 @@ public class SyncDownManagerTest {
         productsAndSupportedPrograms.add(productAndSupportedPrograms);
 
         SyncDownLatestProductsResponse response = new SyncDownLatestProductsResponse();
-        response.setLatestUpdatedTime("today");
+        response.setLastSyncTime("today");
         response.setLatestProducts(productsAndSupportedPrograms);
         when(lmisRestApi.fetchLatestProducts(any(String.class))).thenReturn(response);
     }

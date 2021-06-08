@@ -1,0 +1,60 @@
+{
+  "lastSyncTime": 1623115749445,
+  "products": [
+    {
+      "productCode": "22A07",
+      "archived": false,
+      "fullProductName": "TDR de Unigold; kit de 20; Tests",
+      "description": "TDR de Unigold; teste (kit de 20)",
+      "netContent": 1,
+      "packRoundingThreshold": 1,
+      "roundToZero": false,
+      "category": "Default",
+      "programCode": "TR",
+      "isKit": false,
+      "children": [],
+      "isBasic": true,
+      "isNos": false,
+      "isHiv": false,
+      "lastUpdated": "2020-12-31T09:18:34.086Z"
+    },
+    {
+      "productCode": "26B01",
+      "archived": false,
+      "fullProductName": "KIT AL/US (Artemeter+Lumefantrina); 170 Tratamentos+ 400 Testes; KIT",
+      "description": "KIT AL/US (Artemeter+Lumefantrina)TDRm;KIT",
+      "netContent": 1,
+      "packRoundingThreshold": 1,
+      "roundToZero": false,
+      "category": "Default",
+      "programCode": "VC",
+      "isKit": true,
+      "children": [
+        {
+          "productCode": "08O05",
+          "quantity": 30
+        },
+        {
+          "productCode": "08O05Z",
+          "quantity": 15
+        },
+        {
+          "productCode": "08O05X",
+          "quantity": 30
+        },
+        {
+          "productCode": "22A08",
+          "quantity": 7
+        },
+        {
+          "productCode": "08O05Y",
+          "quantity": 10
+        }
+      ],
+      "isBasic": false,
+      "isNos": false,
+      "isHiv": false,
+      "lastUpdated": "2020-12-31T09:18:34.086Z"
+    }
+  ]
+}

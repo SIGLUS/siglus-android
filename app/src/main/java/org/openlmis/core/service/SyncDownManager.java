@@ -19,10 +19,7 @@
 package org.openlmis.core.service;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -48,10 +45,10 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
+import org.openlmis.core.network.adapter.V3ProductsResponseAdapter;
 import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SupportedProgram;
-import org.openlmis.core.network.model.SyncDownKitChangeDraftProductsResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
@@ -68,6 +65,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
@@ -125,7 +124,7 @@ public class SyncDownManager {
             try {
                 syncDownFacilityInfo(subscriber1);
 //                syncDownService(subscriber1);
-//                syncDownProducts(subscriber1);
+                syncDownProducts(subscriber1);
 //                syncDownLastMonthStockCards(subscriber1);
 //                syncDownRequisition(subscriber1);
 //                syncDownRapidTests(subscriber1);
@@ -206,7 +205,6 @@ public class SyncDownManager {
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
 //                    syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
-                    syncChangeKit();
                     if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
                         sendSyncFinishedBroadcast();
                     }
@@ -224,18 +222,6 @@ public class SyncDownManager {
             public void onNext(SyncProgress syncProgress) {
             }
         });
-    }
-
-    private void syncChangeKit() {
-        Observable.create((Observable.OnSubscribe<SyncProgress>) subscriber -> {
-            try {
-                Log.d(TAG, " sync the kit change.");
-                fetchKitChangeProduct();
-                subscriber.onNext(SyncProgress.ShouldGoToInitialInventory);
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
-        }).subscribeOn(Schedulers.newThread()).subscribeOn(Schedulers.io()).subscribe();
     }
 
     @NonNull
@@ -334,10 +320,6 @@ public class SyncDownManager {
                 fetchLatestOneMonthMovements();
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
-                // in fetchLatestOneMonthMovements() will set isNeedsInventory to false, default is true
-                if (sharedPreferenceMgr.isNeedsInventory()) {
-                    fetchKitChangeProduct();
-                }
             } catch (LMISException e) {
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
                 e.printStackTrace();
@@ -375,7 +357,7 @@ public class SyncDownManager {
         }
         productRepository.batchCreateOrUpdateProducts(productList);
         sharedPreferenceMgr.setKeyIsFirstLoginVersion87();
-        sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
+        sharedPreferenceMgr.setLastSyncProductTime(response.getLastSyncTime());
     }
 
     protected void updateDeactivateProductNotifyList(Product product) throws LMISException {
@@ -410,22 +392,6 @@ public class SyncDownManager {
     private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws LMISException {
         boolean isFirstLoginVersion87 = sharedPreferenceMgr.getKeyIsFirstLoginVersion87();
         return lmisRestApi.fetchLatestProducts(isFirstLoginVersion87 ? null : sharedPreferenceMgr.getLastSyncProductTime());
-    }
-
-    public void fetchKitChangeProduct() throws LMISException {
-        SyncDownKitChangeDraftProductsResponse responseAgain = getSyncDownKitChangeProductResponse();
-        List<Product> productList = new ArrayList<>();
-        for (ProductAndSupportedPrograms productAndSupportedPrograms : responseAgain.getKitChangeProducts()) {
-            Product product = productAndSupportedPrograms.getProduct();
-            productProgramRepository.batchSave(product, productAndSupportedPrograms.getProductPrograms());
-            updateDeactivateProductNotifyList(product);
-            productList.add(product);
-        }
-        productRepository.batchCreateOrUpdateProducts(productList);
-    }
-
-    private SyncDownKitChangeDraftProductsResponse getSyncDownKitChangeProductResponse() throws LMISException {
-        return lmisRestApi.fetchKitChangeDraftProductsAgain(sharedPreferenceMgr.getLastSyncProductTime());
     }
 
     private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {
@@ -504,6 +470,7 @@ public class SyncDownManager {
         user.setFacilityName(facilityInfoResponse.getName());
         userRepository.createOrUpdate(user);
         UserInfoMgr.getInstance().setUser(user);
+        V3ProductsResponseAdapter.addPrograms(programs);
         programRepository.batchCreateOrUpdatePrograms(programs);
         sharedPreferenceMgr.setReportTypesData(reportTypeForms);
         reportTypeFormRepository.batchCreateOrUpdateReportTypes(reportTypeForms);
@@ -517,7 +484,7 @@ public class SyncDownManager {
                     .code(supportedProgram.getCode())
                     .name(supportedProgram.getName())
                     .active(supportedProgram.isSupportActive())
-                    .startTime(DateUtil.parseString(supportedProgram.getSupportStartDate(),DateUtil.DB_DATE_FORMAT))
+                    .startTime(DateUtil.parseString(supportedProgram.getSupportStartDate(), DateUtil.DB_DATE_FORMAT))
                     .build();
             reportTypeForms.add(reportTypeForm);
         }

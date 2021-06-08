@@ -28,10 +28,9 @@ import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SyncDownKitChangeDraftProductsResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
-import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
+import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
@@ -96,11 +95,8 @@ public interface LMISRestApi {
                                                      @Query("startTime") String startDate,
                                                      @Query("endTime") String endDate) throws LMISException;
 
-    @GET("/rest-api/latest-products")
-    SyncDownLatestProductsResponse fetchLatestProducts(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
-
-    @GET("/rest-api/temp86-notice-kit-change")
-    SyncDownKitChangeDraftProductsResponse fetchKitChangeDraftProductsAgain(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
+    @GET("/api/siglusapi/android/me/facility/products")
+    SyncDownLatestProductsResponse fetchLatestProducts(@Query("lastSyncTime") String afterUpdatedTime) throws LMISException;
 
     @GET("/rest-api/programData/facilities/{facilityId}")
     SyncDownProgramDataResponse fetchProgramDataForms(@Path("facilityId") Long facilityId) throws LMISException;

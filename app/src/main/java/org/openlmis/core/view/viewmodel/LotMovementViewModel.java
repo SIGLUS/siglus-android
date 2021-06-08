@@ -44,13 +44,6 @@ public class LotMovementViewModel implements Serializable {
         this.movementType = movementType;
     }
 
-    public LotMovementViewModel(String lotNumber, String expiryDate, MovementReasonManager.MovementType movementType, String quantity) {
-        this.lotNumber = lotNumber;
-        this.expiryDate = expiryDate;
-        this.movementType = movementType;
-        this.quantity = quantity;
-    }
-
     public boolean validateQuantityNotGreaterThanSOH() {
         if (movementType.isNegative()) {
             quantityLessThanSoh = StringUtils.isBlank(quantity) || Long.parseLong(quantity) <= Long.parseLong(lotSoh);
@@ -144,7 +137,7 @@ public class LotMovementViewModel implements Serializable {
         long returnLong = 0;
         try {
             if (StringUtils.isBlank(lotSoh)) {
-                returnLong = Long.parseLong(quantity);
+                return Long.parseLong(quantity);
             }
             returnLong = (Long.parseLong(this.getQuantity()) - Long.parseLong(this.getLotSoh()));
         } catch (NumberFormatException e) {

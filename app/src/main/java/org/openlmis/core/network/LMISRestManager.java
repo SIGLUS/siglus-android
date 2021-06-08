@@ -22,9 +22,10 @@ package org.openlmis.core.network;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
+
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
+
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -48,7 +49,9 @@ import org.openlmis.core.network.adapter.ReportTypeAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.ServiceAdapter;
 import org.openlmis.core.network.adapter.StockCardAdapter;
+import org.openlmis.core.network.adapter.V3ProductsResponseAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
+import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncService;
 
@@ -58,6 +61,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
+import androidx.annotation.NonNull;
 import lombok.SneakyThrows;
 import retrofit.Callback;
 import retrofit.ErrorHandler;
@@ -186,6 +190,7 @@ public class LMISRestManager {
                 .registerTypeAdapter(ReportTypeForm.class, new ReportTypeAdapter())
                 .registerTypeAdapter(Service.class, new ServiceAdapter())
                 .registerTypeAdapter(Program.class, new ProgramAdapter())
+                .registerTypeAdapter(SyncDownLatestProductsResponse.class, new V3ProductsResponseAdapter())
                 .create());
     }
 

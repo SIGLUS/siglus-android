@@ -128,6 +128,7 @@ public class SyncDownManagerIT {
         String syncDownKitChagneResponseJson = JsonFileReader.readJson(getClass(), "fetchKitChangeReponse.json");
         String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         String authSuccessResponse = JsonFileReader.readJson(getClass(),"AuthSuccessResponse.json");
+        String V3ProductsResponseAdapterResponse = JsonFileReader.readJson(getClass(),"V3ProductsResponseAdapterTest.json");
 
         lmisRestManager.addNewMockedResponse("/api/oauth/token?grant_type=password&username=cs_gelo&password=password",200,"OK",authSuccessResponse);
         lmisRestManager.addNewMockedResponse("/rest-api/programData/facilities/" + getDefaultUser().getFacilityId(), 200, "OK", rapidTestsResponseJson);
@@ -140,6 +141,7 @@ public class SyncDownManagerIT {
         lmisRestManager.addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=" + sharedPreferenceMgr.getLastSyncProductTime(), 200, "OK", syncDownKitChagneResponseJson);
         lmisRestManager.addNewMockedResponse("/rest-api/latest-products", 200, "OK", json);
         lmisRestManager.addNewMockedResponse("/rest-api/latest-products", 200, "OK", json);
+        lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/products", 200, "OK", V3ProductsResponseAdapterResponse);
     }
 
     @Ignore
@@ -286,14 +288,6 @@ public class SyncDownManagerIT {
         Product product26A02 = productRepository.getByCode("26A02");
 
         assertFalse(product26A02.isKit());
-
-        String syncDownKitChagneResponseJson = JsonFileReader.readJson(getClass(), "fetchKitChangeReponse.json");
-        lmisRestManager.addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=" + sharedPreferenceMgr.getLastSyncProductTime(), 200, "OK", syncDownKitChagneResponseJson);
-
-
-        syncDownManager.fetchKitChangeProduct();
-        List<ProgramDataForm> programDataForms = programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE);
-        assertEquals(16, programDataForms.size());
     }
 
     @Ignore

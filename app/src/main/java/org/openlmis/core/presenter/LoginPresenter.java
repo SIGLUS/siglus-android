@@ -19,7 +19,6 @@
 package org.openlmis.core.presenter;
 
 import android.os.Build;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -46,18 +45,17 @@ import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.service.SyncDownManager;
-import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncDownManager.SyncLocalUserProgress;
+import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.training.TrainingEnvironmentHelper;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
-
 import java.util.List;
 
-
+import androidx.annotation.NonNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -344,12 +342,6 @@ public class LoginPresenter extends Presenter {
             @Override
             public void onCompleted() {
                 Log.d(TAG, "getSyncLastYearStockCardSubscriber onCompleted");
-                try {
-                    syncDownManager.fetchKitChangeProduct();
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                }
-
             }
 
             @Override
