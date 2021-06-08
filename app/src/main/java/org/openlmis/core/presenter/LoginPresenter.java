@@ -235,7 +235,7 @@ public class LoginPresenter extends Presenter {
         try {
             saveUserDataToLocalDatabase(user);
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
         }
 
         if (fromReSync) {
@@ -243,7 +243,7 @@ public class LoginPresenter extends Presenter {
                 try {
                     LMISApp.getInstance().getRestApi().recordReSyncAction();
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    Log.w(TAG,e);
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -346,7 +346,7 @@ public class LoginPresenter extends Presenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(true);
                 view.sendSyncErrorBroadcast();
@@ -392,7 +392,7 @@ public class LoginPresenter extends Presenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
             }
 
             @Override

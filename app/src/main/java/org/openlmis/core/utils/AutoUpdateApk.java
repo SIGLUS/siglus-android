@@ -11,8 +11,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings.Secure;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.FileProvider;
 import android.util.Log;
 
 import com.squareup.okhttp.Call;
@@ -40,6 +38,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
 
 public class AutoUpdateApk {
 
@@ -141,7 +142,7 @@ public class AutoUpdateApk {
                 postdata.put("md5", preferences.getMd5Key());
                 postdata.put("id", String.format("%08x", device_id));
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
             }
             RequestBody getApkLinkBody = RequestBody.create(MEDIA_TYPE, postdata.toString());
             Request getApkLinkRequest = new Request.Builder()
@@ -160,7 +161,7 @@ public class AutoUpdateApk {
                 }
                 Log.d(TAG, "first response:" + str);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
             }
             if (resultGetApkInfo == null) {
                 return null;
@@ -183,7 +184,7 @@ public class AutoUpdateApk {
                             Response response = call.execute();
                             return writeToStorage(response, resultGetApkInfo);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            Log.w(TAG,e);
                             Log.e(TAG, "response download Apk Filed = " + e.getMessage());
                         } finally {
                             Log.d(TAG, "finally server + result[1]=" + (server + resultGetApkInfo[1]));
@@ -366,7 +367,7 @@ public class AutoUpdateApk {
                 PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
                 versionCode = packageInfo.versionCode;
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
             }
             new CheckUpdateTask().execute();
             last_update = LMISApp.getInstance().getCurrentTimeMillis();

@@ -1,6 +1,7 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -65,7 +66,7 @@ public class DirtyDataRepository {
             });
 
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
         }
     }
 
@@ -86,7 +87,7 @@ public class DirtyDataRepository {
             }
 
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
         }
     }
 
@@ -98,7 +99,7 @@ public class DirtyDataRepository {
         try {
             return deleteItemInfoGenericDao.queryForAll();
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
         }
         return null;
     }
@@ -108,7 +109,7 @@ public class DirtyDataRepository {
             return FluentIterable.from(deleteItemInfoGenericDao.queryForAll())
                     .filter(dirtyDataItemInfo -> !dirtyDataItemInfo.isSynced()).toList();
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
         }
         return null;
     }
@@ -140,7 +141,7 @@ public class DirtyDataRepository {
                 return null;
             });
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
         }
     }
 

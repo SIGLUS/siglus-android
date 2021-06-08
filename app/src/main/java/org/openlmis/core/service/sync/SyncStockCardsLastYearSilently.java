@@ -1,6 +1,6 @@
 package org.openlmis.core.service.sync;
 
-import androidx.annotation.NonNull;
+import android.util.Log;
 
 import com.google.inject.Inject;
 
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.Scheduler;
 
@@ -76,7 +77,7 @@ public class SyncStockCardsLastYearSilently {
                 subscriber.onNext(syncDownStockCardResponse);
                 subscriber.onCompleted();
             } catch (LMISException e) {
-                e.printStackTrace();
+                Log.w("SyncStockCardLastYear",e);
                 subscriber.onError(e);
             }
         }).subscribeOn(scheduler);

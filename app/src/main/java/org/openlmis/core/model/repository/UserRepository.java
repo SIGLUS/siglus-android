@@ -20,6 +20,7 @@ package org.openlmis.core.model.repository;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.inject.Inject;
 
@@ -78,7 +79,7 @@ public class UserRepository {
         try {
             user = dbUtil.withDao(User.class, dao -> dao.queryBuilder().queryForFirst());
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w("UserRepository",e);
             new LMISException(e, "UserRepository.getLocalUser").reportToFabric();
         }
         return user;

@@ -19,6 +19,7 @@
 package org.openlmis.core.network;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.inject.Inject;
 
@@ -52,7 +53,7 @@ public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, Inter
             sock.connect(new InetSocketAddress(getAddress(), getPORT()), TIMEOUT);
             return new InternetListener(true, callback, null);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
             return new InternetListener(false, callback, e);
         }
     }
@@ -70,7 +71,7 @@ public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, Inter
         if (internetListener.getCallback() != null) {
             internetListener.launchCallback();
         } else {
-            internetListener.getException().printStackTrace();
+            Log.w(TAG,internetListener.getException());
         }
     }
 }

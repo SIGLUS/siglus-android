@@ -1,6 +1,6 @@
 package org.openlmis.core.presenter;
 
-import androidx.annotation.Nullable;
+import android.util.Log;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -193,7 +194,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
                 subscriber.onNext(null);
                 subscriber.onCompleted();
             } catch (LMISException e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

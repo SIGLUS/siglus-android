@@ -21,12 +21,13 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
-import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.Where;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
@@ -182,7 +183,7 @@ public class ProductRepository {
         try {
             createKitProductsIfNotExist(product);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
 
         }
     }

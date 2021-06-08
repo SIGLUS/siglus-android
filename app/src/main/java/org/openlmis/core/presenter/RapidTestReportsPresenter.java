@@ -1,5 +1,7 @@
 package org.openlmis.core.presenter;
 
+import android.util.Log;
+
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -82,7 +84,7 @@ public class RapidTestReportsPresenter extends Presenter {
         try {
             generateViewModelsForAllPeriods();
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w("RapidTestPresenter",e);
         }
         return viewModelList;
     }

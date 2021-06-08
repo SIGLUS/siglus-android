@@ -19,9 +19,7 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,9 +42,11 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 import java.util.Date;
 
-import roboguice.inject.InjectView;
-
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import roboguice.RoboGuice;
+import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -189,7 +189,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements ALRequi
                     try {
                         presenter.setViewModels();
                     } catch (LMISException e) {
-                        e.printStackTrace();
+                        Log.w(TAG,e);
                         return;
                     }
                     if (!presenter.validateFormPeriod()) {

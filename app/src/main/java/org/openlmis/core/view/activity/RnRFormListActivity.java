@@ -25,6 +25,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -250,7 +252,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
             subscriptions.add(subscription);
         } catch (LMISException e) {
             ToastUtil.show(getString(R.string.requisition_delete_failed));
-            e.printStackTrace();
+            Log.w("RnRFormListActivity",e);
         }
     }
 

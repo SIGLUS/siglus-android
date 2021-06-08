@@ -20,6 +20,7 @@ package org.openlmis.core.service;
 
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -215,7 +216,7 @@ public class SyncDownManager {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
             }
 
             @Override
@@ -234,7 +235,7 @@ public class SyncDownManager {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(true);
                 sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
@@ -322,7 +323,7 @@ public class SyncDownManager {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
-                e.printStackTrace();
+                Log.w(TAG,e);
                 LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_stock_movement_failed));
                 e1.reportToFabric();
                 throw e1;

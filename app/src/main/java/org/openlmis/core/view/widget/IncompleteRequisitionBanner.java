@@ -1,8 +1,8 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -20,6 +20,7 @@ import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.utils.Constants;
 
+import androidx.annotation.NonNull;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
@@ -82,7 +83,7 @@ public class IncompleteRequisitionBanner extends LinearLayout {
             txMissedRequisition.setText(tipMessage);
             this.setVisibility(VISIBLE);
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w("IncompleteBanner",e);
         }
     }
 

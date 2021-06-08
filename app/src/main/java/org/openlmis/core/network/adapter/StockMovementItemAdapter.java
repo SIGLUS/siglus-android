@@ -1,5 +1,7 @@
 package org.openlmis.core.network.adapter;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -24,6 +26,8 @@ import java.util.Map;
 
 public class StockMovementItemAdapter implements JsonDeserializer<StockMovementItem> {
 
+    private static final String TAG = "MovementItemAdapter";
+
     private final Gson gson;
 
     public StockMovementItemAdapter() {
@@ -45,7 +49,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
             stockMovementItem.setReason(movementReason.getCode());
         } catch (MovementReasonNotFoundException e) {
             new LMISException(e, "StockMovementItemAdapter,deserialize").reportToFabric();
-            e.printStackTrace();
+            Log.w(TAG,e);
         }
 
         Date createdDate = new Date(json.getAsJsonObject().get("createdDate").getAsLong());
@@ -69,7 +73,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
                     this.setStockOnHand(Long.parseLong(extensions.get("soh")));
                 } catch (NumberFormatException e) {
                     new LMISException(e, "convertToStockMovementItem").reportToFabric();
-                    e.printStackTrace();
+                    Log.w(TAG,e);
                 }
             }
             if (occurred != null) {
@@ -100,7 +104,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
                     this.setStockOnHand(Long.parseLong(extensions.get("soh")));
                 } catch (NumberFormatException e) {
                     new LMISException(e).reportToFabric();
-                    e.printStackTrace();
+                    Log.w(TAG,e);
                 }
             }
             Lot lot = new Lot();

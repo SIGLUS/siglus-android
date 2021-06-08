@@ -427,7 +427,7 @@ public class StockRepository {
                 cardIds.add(resultArray[0]);
             }
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
         }
 
         return cardIds;
@@ -541,7 +541,7 @@ public class StockRepository {
                 return null;
             });
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w(TAG,e);
         }
 
     }

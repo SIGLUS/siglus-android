@@ -226,7 +226,7 @@ public class StockCardPresenter extends Presenter {
                         lotsOnHands.put(resultArray[0], resultArray[1]);
                     }
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    Log.w(TAG,e);
                 }
                 inventoryViewModel.setStockOnHand(stockCard.calculateSOHFromLots(lotsOnHands));
                 break;
@@ -287,7 +287,7 @@ public class StockCardPresenter extends Presenter {
                     Log.d("dirty", "showWarning");
                     view.showWarning();
                 } else {
-                    e.printStackTrace();
+                    Log.w(TAG,e);
                     ToastUtil.show(e.getMessage());
                 }
                 view.loaded();

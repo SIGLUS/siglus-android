@@ -24,18 +24,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.BuildConfig;
@@ -48,6 +49,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -95,7 +97,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         try {
             initUI();
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.w("LoginActivity",e);
         }
 
         restoreFromResync();

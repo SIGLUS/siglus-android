@@ -18,6 +18,8 @@
 
 package org.openlmis.core.presenter;
 
+import android.util.Log;
+
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
@@ -118,7 +120,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             Collections.sort(rnRForms, (lhs, rhs) -> rhs.getPeriodBegin().compareTo(lhs.getPeriodBegin()));
             return rnRForms.get(1);
         } catch (LMISException e) {
-            e.printStackTrace();
+            Log.w("MMIAPresenter",e);
         }
         return null;
     }

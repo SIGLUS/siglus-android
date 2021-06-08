@@ -246,7 +246,7 @@ public class DirtyDataManager {
             try {
                 stockMovementItems = stockMovementRepository.queryMovementByStockCardId(stockCard.getId());
             } catch (LMISException e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
             }
             codeToStockItems.put(stockCard.getProduct().getCode(), stockMovementItems);
         }
@@ -293,7 +293,7 @@ public class DirtyDataManager {
                 try {
                     stockRepository.insertNewInventory(productCodes);
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    Log.w(TAG,e);
                 }
                 stockRepository.resetStockCard(productCodes);
                 stockRepository.resetLotsOnHand(productCodes);
@@ -450,7 +450,7 @@ public class DirtyDataManager {
                     }
                 }
             } catch (LMISException e) {
-                e.printStackTrace();
+                Log.w(TAG,e);
             }
         }
         return covertMapFromStockIdToProductCode(filterStockCardIds, idToStockItemForDelete);
