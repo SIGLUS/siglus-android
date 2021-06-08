@@ -2,6 +2,7 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -356,7 +357,7 @@ public class StockMovementRepository {
             }
             rawResults.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.w("StockMovementRepository",e);
         }
         return stockCardIds;
     }
