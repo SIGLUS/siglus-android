@@ -50,6 +50,11 @@ public class DashboardView extends ConstraintLayout {
 
     TextView tvTotalProduct;
 
+    TextView tvRegularAmount;
+    TextView tvOutAmount;
+    TextView tvLowAmount;
+    TextView tvOverAmount;
+
     public DashboardView(@NonNull Context context) {
         this(context, null);
     }
@@ -69,6 +74,10 @@ public class DashboardView extends ConstraintLayout {
         ivLoading = rootView.findViewById(R.id.iv_dashboard_loading);
         llTotalProducts = rootView.findViewById(R.id.ll_dashboard_total_product);
         tvTotalProduct = rootView.findViewById(R.id.tv_total_product);
+        tvRegularAmount = rootView.findViewById(R.id.tv_regular_stock_amount);
+        tvOutAmount = rootView.findViewById(R.id.tv_stock_out_amount);
+        tvLowAmount = rootView.findViewById(R.id.tv_low_stock_amount);
+        tvOverAmount = rootView.findViewById(R.id.tv_over_stock_amount);
         resetState(true);
         startLoading();
     }
@@ -77,6 +86,10 @@ public class DashboardView extends ConstraintLayout {
         resetState(false);
         circleView.setData(createNewData(regularAmount, outAmount, lowAmount, overAmount));
         tvTotalProduct.setText(String.valueOf(regularAmount + outAmount + lowAmount + overAmount));
+        tvRegularAmount.setText(String.valueOf(regularAmount));
+        tvOutAmount.setText(String.valueOf(outAmount));
+        tvLowAmount.setText(String.valueOf(lowAmount));
+        tvOverAmount.setText(String.valueOf(overAmount));
     }
 
     List<DashboardCircleView.Item> createNewData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
@@ -100,6 +113,13 @@ public class DashboardView extends ConstraintLayout {
     }
 
     private void startLoading() {
+        // set amount
+        tvRegularAmount.setText("--");
+        tvOutAmount.setText("--");
+        tvLowAmount.setText("--");
+        tvOverAmount.setText("--");
+
+        // start rotate
         Animation anim = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         anim.setFillAfter(false);
         anim.setDuration(1500);

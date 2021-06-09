@@ -57,10 +57,12 @@ import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.persistence.ExportSqliteOpenHelper;
+import org.openlmis.core.presenter.HomePresenter;
 import org.openlmis.core.service.DirtyDataManager;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.FileUtil;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
@@ -84,7 +86,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
 @ContentView(R.layout.activity_home_page)
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity implements HomePresenter.HomeView {
 
     private static final String EXPORT_DATA_PARENT_DIR = "//data//";
 
@@ -131,6 +133,9 @@ public class HomeActivity extends BaseActivity {
     SharedPreferenceMgr sharedPreferenceMgr;
     @Inject
     DirtyDataManager dirtyDataManager;
+
+    @InjectPresenter(HomePresenter.class)
+    private HomePresenter homePresenter;
 
     private boolean exitPressedOnce = false;
 
@@ -202,6 +207,7 @@ public class HomeActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             setSyncedTime();
+            refreshDashboard();
         }
     };
 
@@ -527,7 +533,12 @@ public class HomeActivity extends BaseActivity {
         if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
             dvProductDashboard.resetState(true);
         } else {
-            // TODO set dashboard data
+            homePresenter.getDashboardData();
         }
+    }
+
+    @Override
+    public void updateDashboard(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+        dvProductDashboard.setData(regularAmount, outAmount, lowAmount, overAmount);
     }
 }

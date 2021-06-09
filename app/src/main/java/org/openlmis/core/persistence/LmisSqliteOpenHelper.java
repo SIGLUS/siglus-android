@@ -71,6 +71,7 @@ import org.openlmis.core.persistence.migrations.ChangeMalariaTreatments;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
 import org.openlmis.core.persistence.migrations.ConvertEssMedsToVIAProgram;
+import org.openlmis.core.persistence.migrations.CreateDirtyDataProductTable;
 import org.openlmis.core.persistence.migrations.CreateDraftInventoryTable;
 import org.openlmis.core.persistence.migrations.CreateDraftLotMovementTable;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
@@ -91,7 +92,6 @@ import org.openlmis.core.persistence.migrations.CreateRegimeThreeLineTable;
 import org.openlmis.core.persistence.migrations.CreateReportTypeTable;
 import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
 import org.openlmis.core.persistence.migrations.CreateServiceTable;
-import org.openlmis.core.persistence.migrations.CreateDirtyDataProductTable;
 import org.openlmis.core.persistence.migrations.DeletePrograms;
 import org.openlmis.core.persistence.migrations.DeleteReportTypes;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
@@ -105,9 +105,10 @@ import org.openlmis.core.persistence.migrations.UpdateProgramDataFormTable;
 import org.openlmis.core.persistence.migrations.UpdateRapidTestCode;
 import org.openlmis.core.persistence.migrations.UpdateRapidTestColumnsTemplate;
 import org.openlmis.core.persistence.migrations.UpdateRegimeShortCodeTable;
-import org.openlmis.core.persistence.migrations.UpdateReportType;
-import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
+import org.openlmis.core.persistence.migrations.UpdateReportType;
+import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
+import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,7 +202,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         MIGRATIONS.add(new AddLastReportEndTimeToReportType());
         MIGRATIONS.add(new DeletePrograms());
         MIGRATIONS.add(new DeleteReportTypes());
-
+        MIGRATIONS.add(new UpdateStockCardSOHStatus());
     }
 
     private LmisSqliteOpenHelper(Context context) {
@@ -232,7 +233,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
                 migration.up();
             }
         }
-
     }
 
     @Override

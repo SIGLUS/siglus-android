@@ -82,7 +82,7 @@ public class DashboardCircleViewTest {
 
     private void assertResult(ArrayList<DashboardCircleView.Item> items) {
         int totalAmount = 0;
-        final float spaceTotalAngle = DashboardCircleView.ONE_PIECE_ANGLE * items.size();
+        final float spaceTotalAngle = DashboardCircleView.ONE_PIECE_ANGLE * dashboardCircleView.getSpaceCount(items);
         float totalAngle = spaceTotalAngle;
         for (DashboardCircleView.Item item : items) {
             totalAngle += item.sweepAngle;

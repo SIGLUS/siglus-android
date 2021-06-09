@@ -85,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dashboard_regular_stock"
+            android:text="@string/Regular_stock"
             android:textColor="#991a1a1a"
             android:textSize="@dimen/px_17"
             app:layout_constraintLeft_toLeftOf="@id/tv_regular_stock_amount"
@@ -119,7 +119,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dashboard_stock_out"
+            android:text="@string/Stock_out"
             android:textColor="#991a1a1a"
             android:textSize="@dimen/px_17"
             app:layout_constraintLeft_toLeftOf="@id/tv_stock_out_amount"
@@ -152,7 +152,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dashboard_low_stock"
+            android:text="@string/Low_stock"
             android:textColor="#991a1a1a"
             android:textSize="@dimen/px_17"
             app:layout_constraintLeft_toLeftOf="@id/tv_low_stock_amount"
@@ -185,7 +185,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dashboard_over_stock"
+            android:text="@string/Overstock"
             android:textColor="#991a1a1a"
             android:textSize="@dimen/px_17"
             app:layout_constraintLeft_toLeftOf="@id/tv_over_stock_amount"

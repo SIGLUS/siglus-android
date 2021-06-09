@@ -58,6 +58,10 @@ public class DashboardViewTest {
         MatcherAssert.assertThat(dashboardView.llTotalProducts.getVisibility(), Matchers.equalTo(View.VISIBLE));
         MatcherAssert.assertThat(dashboardView.circleView.getVisibility(), Matchers.equalTo(View.VISIBLE));
         MatcherAssert.assertThat(dashboardView.tvTotalProduct.getText(), Matchers.equalTo(String.valueOf(regularAmount + outAmount + lowAmount + overAmount)));
+        MatcherAssert.assertThat(dashboardView.tvRegularAmount.getText(), Matchers.equalTo(String.valueOf(regularAmount)));
+        MatcherAssert.assertThat(dashboardView.tvOutAmount.getText(), Matchers.equalTo(String.valueOf(outAmount)));
+        MatcherAssert.assertThat(dashboardView.tvLowAmount.getText(), Matchers.equalTo(String.valueOf(lowAmount)));
+        MatcherAssert.assertThat(dashboardView.tvOverAmount.getText(), Matchers.equalTo(String.valueOf(overAmount)));
     }
 
     @Test
@@ -70,7 +74,6 @@ public class DashboardViewTest {
 
         // when
         final List<DashboardCircleView.Item> newData = dashboardView.createNewData(regularAmount, outAmount, lowAmount, overAmount);
-
 
         // then
         MatcherAssert.assertThat(newData.get(0).amount, Matchers.equalTo(regularAmount));

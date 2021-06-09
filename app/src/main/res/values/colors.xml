@@ -76,10 +76,10 @@
     <color name="color_patient_data_form_row_header">#ce93d8</color>
     <color name="patient_data_not_editable">#CFD8DC</color>
 
-    <color name="color_over_stock">#bb95e3</color>
-    <color name="color_regular_stock">#8cd368</color>
-    <color name="color_low_stock">#fad74d</color>
-    <color name="color_stock_out">#f6898e</color>
+    <color name="color_over_stock">#6943d6</color>
+    <color name="color_regular_stock">#00832c</color>
+    <color name="color_low_stock">#fbc300</color>
+    <color name="color_stock_out">#d25555</color>
 
     <color name="color_stock_status">#ffffff</color>
 

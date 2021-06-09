@@ -523,9 +523,5 @@
     <string name="dirty_data_correct_warning">Erro de cálculo de stock do produto %s. O sistema irá apagar os dados da ficha de stock. Actualize os dados do stock usando os ajustes/entradas ou inventário.</string>
 
     <!-- Siglus TO 12 -->
-    <string name="dashboard_product_types">Product types</string>
-    <string name="dashboard_regular_stock">Regular</string>
-    <string name="dashboard_stock_out">Out</string>
-    <string name="dashboard_low_stock">Low</string>
-    <string name="dashboard_over_stock">Over</string>
+    <string name="dashboard_product_types">Total Products</string>
 </resources>

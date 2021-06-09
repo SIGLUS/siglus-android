@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
-import org.openlmis.core.view.holder.StockCardViewHolder.StockOnHandStatus;
 
 import java.util.Map;
 
@@ -139,23 +138,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         InventoryViewModel viewModel = new InventoryViewModel(stockCard.getProduct());
         viewModel.stockCard = stockCard;
         return viewModel;
-    }
-
-    public StockOnHandStatus getStockOnHandLevel() {
-        if (stockOnHand == 0) {
-            return StockOnHandStatus.STOCK_OUT;
-        }
-
-        if (stockCard.getCMM() < 0) {
-            return StockOnHandStatus.REGULAR_STOCK;
-        }
-
-        if (stockCard.isLowStock()) {
-            return StockOnHandStatus.LOW_STOCK;
-        } else if (stockCard.isOverStock()) {
-            return StockOnHandStatus.OVER_STOCK;
-        }
-        return StockOnHandStatus.REGULAR_STOCK;
     }
 
     public Long getLotListQuantityTotalAmount() {

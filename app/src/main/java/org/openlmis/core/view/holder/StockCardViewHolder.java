@@ -1,13 +1,13 @@
 package org.openlmis.core.view.holder;
 
 import android.graphics.Typeface;
-import androidx.annotation.ColorRes;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.enums.StockOnHandStatus;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.model.service.StockService;
@@ -43,46 +43,6 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     protected StockService stockService;
     private OnItemViewClickListener listener;
-
-    public enum StockOnHandStatus {
-
-        REGULAR_STOCK("regularStock", R.string.Regular_stock, R.color.color_regular_stock, R.color.color_stock_status),
-        LOW_STOCK("lowStock", R.string.Low_stock, R.color.color_low_stock, R.color.color_stock_status),
-        STOCK_OUT("stockOut", R.string.Stock_out, R.color.color_stock_out, R.color.color_stock_status),
-        OVER_STOCK("overStock", R.string.Overstock, R.color.color_over_stock, R.color.color_stock_status);
-
-        private String messageKey;
-        private int description;
-        private @ColorRes
-        int bgColor;
-        private @ColorRes
-        int color;
-
-        StockOnHandStatus(String key, int desc, @ColorRes int bgColor, @ColorRes int color) {
-            this.messageKey = key;
-            this.description = desc;
-            this.bgColor = bgColor;
-            this.color = color;
-        }
-
-        public String getMessageKey() {
-            return messageKey;
-        }
-
-        public int getDescription() {
-            return description;
-        }
-
-        public @ColorRes
-        int getColor() {
-            return color;
-        }
-
-        public @ColorRes
-        int getBgColor() {
-            return bgColor;
-        }
-    }
 
     public StockCardViewHolder(View itemView, OnItemViewClickListener listener) {
         super(itemView);
@@ -151,8 +111,8 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     private void initStockOnHandWarning(final InventoryViewModel viewModel) {
 
-        StockOnHandStatus stockOnHandStatus = viewModel.getStockOnHandLevel();
-        tvStockStatus.setText(context.getResources().getString(stockOnHandStatus.description));
+        StockOnHandStatus stockOnHandStatus = StockOnHandStatus.calculateStockOnHandLevel(viewModel.getStockCard());
+        tvStockStatus.setText(context.getResources().getString(stockOnHandStatus.getDescription()));
         tvStockStatus.setTextColor(context.getResources().getColor(stockOnHandStatus.getColor()));
         tvStockStatus.setBackgroundColor(context.getResources().getColor(stockOnHandStatus.getBgColor()));
 

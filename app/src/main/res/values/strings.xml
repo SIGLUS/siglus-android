@@ -586,11 +586,7 @@
 
 
     <!-- Siglus TO 12 -->
-    <string name="dashboard_product_types">Product types</string>
-    <string name="dashboard_regular_stock">Regular</string>
-    <string name="dashboard_stock_out">Out</string>
-    <string name="dashboard_low_stock">Low</string>
-    <string name="dashboard_over_stock">Over</string>
+    <string name="dashboard_product_types">Total Products</string>
     <string name="msg_fetching_facility_info">Downloading facility info…</string>
     <string name="msg_fetching_facility_info_failed">Download of facility info from the server failed, please login again.</string>
 </resources>

@@ -19,8 +19,6 @@
 package org.openlmis.core.model;
 
 
-import androidx.annotation.NonNull;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -30,6 +28,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
+import org.openlmis.core.enums.StockOnHandStatus;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
@@ -41,6 +40,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -81,6 +81,9 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
     @DatabaseField
     private float avgMonthlyConsumption = -1;
+
+    @DatabaseField
+    private StockOnHandStatus stockOnHandStatus;
 
     @Override
     public int compareTo(@NonNull StockCard another) {
