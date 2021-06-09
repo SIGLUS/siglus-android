@@ -76,7 +76,7 @@ public interface LMISRestApi {
     @PUT("/rest-api/facilities/{facilityId}/Cmms")
     Void syncUpCmms(@Path("facilityId") String facilityId, @Body List<CmmEntry> cmms) throws LMISException;
 
-    @POST("/rest-api/update-app-info")
+    @POST("/api/siglusapi/android/me/app-info")
     Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
 
     @POST("/rest-api/facilities/{facilityId}/deleteStockCards")
