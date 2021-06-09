@@ -123,6 +123,7 @@ public class SyncDownManager {
         isSyncing = true;
         Observable.create((Observable.OnSubscribe<SyncProgress>) subscriber1 -> {
             try {
+                // TODO: Remove the comment when developing to the corresponding api
                 syncDownFacilityInfo(subscriber1);
 //                syncDownService(subscriber1);
                 syncDownProducts(subscriber1);
@@ -204,6 +205,7 @@ public class SyncDownManager {
                 if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     sendSyncStartBroadcast();
                     sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
+                    // TODO: Remove the comment when developing to the corresponding api
 //                    syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
                 } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
                     if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {

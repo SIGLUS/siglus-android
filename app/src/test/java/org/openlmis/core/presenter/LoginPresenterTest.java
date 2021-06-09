@@ -160,7 +160,7 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldCreateSyncAccountWhenLoginSuccess() {
-        // Given
+        // given
         User user = User
                 .builder()
                 .username(userResponse.getUsername())
@@ -171,25 +171,25 @@ public class LoginPresenterTest {
                 .isTokenExpired(false)
                 .build();
 
-        // When
+        // when
         presenter.startLogin("CS_Role1", "password1", false);
-        // Then
+        // then
         verify(internetCheck1).execute(internetCheckCallBack.capture());
 
-        // When
+        // when
         internetCheckCallBack.getValue().launchResponse(true);
-        // Then
+        // then
         verify(mockedApi).authorizeUser(eq("password"),eq("CS_Role1"),eq("password1"), loginCB.capture());
 
-        // When
+        // when
         loginCB.getValue().success(userResponse, retrofitResponse);
-        // Then
+        // then
         verify(syncService).createSyncAccount(user);
     }
 
     @Test
     public void shouldSaveUserInfoWhenLoginSuccess() {
-        // Given
+        // given
         User user = User
                 .builder()
                 .username(userResponse.getUsername())
@@ -200,19 +200,19 @@ public class LoginPresenterTest {
                 .isTokenExpired(false)
                 .build();
 
-        // When
+        // when
         presenter.startLogin("CS_Role1", "password1", false);
-        // Then
+        // then
         verify(internetCheck1).execute(internetCheckCallBack.capture());
 
-        // When
+        // when
         internetCheckCallBack.getValue().launchResponse(true);
-        // Then
+        // then
         verify(mockedApi).authorizeUser(eq("password"),eq("CS_Role1"),eq("password1"), loginCB.capture());
 
-        // When
+        // when
         loginCB.getValue().success(userResponse, retrofitResponse);
-        // Then
+        // then
         verify(userRepository).createOrUpdate(user);
         assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(user);
         verify(mockActivity).clearErrorAlerts();
@@ -231,13 +231,13 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldGoToInventoryPageAndKickOffPeriodicSyncIfSyncServerDataSuccess() {
-        //given
+        // given
         when(mockActivity.needInitInventory()).thenReturn(true);
 
-        //when
+        // when
         syncSubscriber.onCompleted();
 
-        //then
+        // then
         verify(mockActivity).loaded();
         verify(mockActivity).goToInitInventory();
         verify(syncService).kickOff();

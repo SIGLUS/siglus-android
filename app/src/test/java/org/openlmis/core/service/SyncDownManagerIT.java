@@ -144,36 +144,37 @@ public class SyncDownManagerIT {
         lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/products", 200, "OK", V3ProductsResponseAdapterResponse);
     }
 
+    // TODO
     @Ignore
     @Test
     public void shouldRefreshTokenWhenTokenExpired() {
-        // Given
+        // given
         String tokenExpiredResponse = JsonFileReader.readJson(getClass(),"TokenExpiredResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 401, "Unauthorized", tokenExpiredResponse, RuntimeEnvironment.application);
         mockResponse(lmisRestManager);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
         UserInfoMgr.getInstance().getUser().setIsTokenExpired(false);
 
-        // When
+        // when
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
         syncDownManager.syncDownServerData(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        // Then
+        // then
         verify(lmisRestManager.getLmisRestApi(),times(1)).authorizeUser(any(),any(),any(),any());
 
     }
 
     @Test
     public void shouldSyncDownFacilityInfo() throws LMISException {
-        // Given
+        // given
         String facilityInfoJson = JsonFileReader.readJson(getClass(),"fetchFacilityInfoResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 200, "OK", facilityInfoJson, RuntimeEnvironment.application);
         mockResponse(lmisRestManager);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
-        // When
+        // when
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
         syncDownManager.syncDownServerData(subscriber);
         subscriber.awaitTerminalEvent();
@@ -181,7 +182,7 @@ public class SyncDownManagerIT {
         List<Program> programs = programRepository.list();
         List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
 
-        // Then
+        // then
         assertEquals(4,programs.size());
         assertEquals(4,reportTypeForms.size());
     }
@@ -197,13 +198,13 @@ public class SyncDownManagerIT {
 
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
-        // When
+        // when
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
         syncDownManager.syncDownServerData(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        // Then
+        // then
         checkShouldSyncDownLatestProductWithArchivedStatus();
     }
 
@@ -234,21 +235,21 @@ public class SyncDownManagerIT {
     @Ignore
     @Test
     public void shouldSyncDownStockCardsWithMovements() throws Exception {
-        //set shared preferences to have synced all historical data already
+        // set shared preferences to have synced all historical data already
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.YEAR, -1);
         sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, cal.getTimeInMillis()).apply();
         sharedPreferenceMgr.setRapidTestsDataSynced(true);
 
-        //given
+        // given
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
         mockResponse(lmisRestManager);
 
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
-        //when
+        // when
         TestSubscriber<SyncDownManager.SyncProgress> subscriber = new TestSubscriber<>();
         syncDownManager.syncDownServerData(subscriber);
 
@@ -270,7 +271,7 @@ public class SyncDownManagerIT {
     @Ignore
     @Test
     public void shouldSyncDownRapidTests() throws Exception {
-        //given
+        // given
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
 
@@ -279,7 +280,7 @@ public class SyncDownManagerIT {
         mockResponse(lmisRestManager);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
-        //when
+        // when
         TestSubscriber<SyncDownManager.SyncProgress> subscriber = new TestSubscriber<>();
         syncDownManager.syncDownServerData(subscriber);
 
@@ -293,7 +294,7 @@ public class SyncDownManagerIT {
     @Ignore
     @Test
     public void shouldSyncDownLastYearSilently() throws LMISException {
-        //given
+        // given
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
 
@@ -315,14 +316,14 @@ public class SyncDownManagerIT {
     @Test
     @Ignore
     public void shouldSyncDownKitChange() throws LMISException {
-        //given
+        // given
         String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products?afterUpdatedTime=1578289583857", 200, "OK", productJson, RuntimeEnvironment.application);
 
         mockResponse(lmisRestManager);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
-        //when
+        // when
         TestSubscriber<SyncDownManager.SyncProgress> subscriber = new TestSubscriber<>();
         syncDownManager.syncDownServerData(subscriber);
         subscriber.awaitTerminalEvent();

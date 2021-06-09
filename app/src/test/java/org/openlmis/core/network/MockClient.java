@@ -29,7 +29,6 @@ public class MockClient implements Client {
             return urlToResponseMap.get(requestUrl);
         }
         throw new IOException(requestUrl);
-//        return null;
     }
 
     public static MockClient MockClientBuilder() {

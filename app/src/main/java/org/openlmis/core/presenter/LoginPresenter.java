@@ -372,10 +372,11 @@ public class LoginPresenter extends Presenter {
                 subscriber1.onNext(SyncLocalUserProgress.SyncLastMonthStockDataFail);
                 return;
             }
-            if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
-                subscriber1.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
-                return;
-            }
+            // TODO: change back to the original check after end the development of sync down requisitions
+//            if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
+//                subscriber1.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
+//                return;
+//            }
             subscriber1.onNext(SyncLocalUserProgress.SyncLastDataSuccess);
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

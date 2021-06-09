@@ -49,12 +49,12 @@ public class SyncTimeViewTest {
     @Ignore
     @Test
     public void shouldDisplayGreenIconAndTimeUnitIsMinute() throws Exception {
-        // Given
+        // given
         when(sharedPreferenceMgr.getRnrLastSyncTime()).thenReturn(nowDateTime.minusMinutes(1).getMillis());
         when(sharedPreferenceMgr.getStockLastSyncTime()).thenReturn(nowDateTime.minusMinutes(2).getMillis());
-        // When
+        // when
         syncTimeView.showLastSyncTime();
-        // Then
+        // then
         assertThat(sharedPreferenceMgr.getStockLastSyncTime(), is(nowDateTime.minusMinutes(2).getMillis()));
         assertThat(sharedPreferenceMgr.getRnrLastSyncTime(), is(nowDateTime.minusMinutes(1).getMillis()));
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 minute since last sync"));
@@ -64,12 +64,12 @@ public class SyncTimeViewTest {
     @Ignore
     @Test
     public void shouldDisplayGreenIconAndTimeUnitIsHour() throws Exception {
-        // Given
+        // given
         when(sharedPreferenceMgr.getRnrLastSyncTime()).thenReturn(nowDateTime.minusHours(2).getMillis());
         when(sharedPreferenceMgr.getStockLastSyncTime()).thenReturn(nowDateTime.minusHours(1).getMillis());
-        // When
+        // when
         syncTimeView.showLastSyncTime();
-        // Then
+        // then
 
         assertThat(sharedPreferenceMgr.getStockLastSyncTime(), is(nowDateTime.minusHours(1).getMillis()));
         assertThat(sharedPreferenceMgr.getRnrLastSyncTime(), is(nowDateTime.minusHours(2).getMillis()));
@@ -80,12 +80,12 @@ public class SyncTimeViewTest {
     @Ignore
     @Test
     public void shouldDisplayYellowIconAndTimeUnitIsDay() throws Exception {
-        // Given
+        // given
         when(sharedPreferenceMgr.getRnrLastSyncTime()).thenReturn(nowDateTime.minusDays(1).getMillis());
         when(sharedPreferenceMgr.getStockLastSyncTime()).thenReturn(nowDateTime.minusDays(2).getMillis());
-        // When
+        // when
         syncTimeView.showLastSyncTime();
-        // Then
+        // then
         assertThat(sharedPreferenceMgr.getStockLastSyncTime(), is(nowDateTime.minusDays(2).getMillis()));
         assertThat(sharedPreferenceMgr.getRnrLastSyncTime(), is(nowDateTime.minusDays(1).getMillis()));
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 day since last sync"));
@@ -95,26 +95,26 @@ public class SyncTimeViewTest {
     @Ignore
     @Test
     public void shouldDisplayRedIconAndTimeUnitIsDay() throws Exception {
-        // Given
+        // given
         when(sharedPreferenceMgr.getRnrLastSyncTime()).thenReturn(nowDateTime.minusDays(4).getMillis());
         when(sharedPreferenceMgr.getStockLastSyncTime()).thenReturn(nowDateTime.minusDays(3).getMillis());
-        // When
+        // when
         syncTimeView.showLastSyncTime();
-        // Then
+        // then
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("3 days since last sync"));
         assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_red));
     }
 
     @Test
     public void shouldShowErrorMsgWhenNeverSyncSuccessful() throws Exception {
-        //Given
+        // given
         when(sharedPreferenceMgr.getRnrLastSyncTime()).thenReturn(0l);
         when(sharedPreferenceMgr.getStockLastSyncTime()).thenReturn(0l);
         when(syncErrorsRepository.hasSyncErrorOf(anyObject())).thenReturn(true);
 
-        //When
+        // when
         syncTimeView.showLastSyncTime();
-        //Then
+        // then
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("Initial sync failed"));
         assertNull(syncTimeView.ivSyncTimeIcon.getDrawable());
     }
