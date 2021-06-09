@@ -442,7 +442,7 @@
     <string name="Overstock">Overstock</string>
     <string name="Regular_stock">Regular stock</string>
     <string name="Low_stock">Low stock</string>
-    <string name="Stock_out">Stock out</string>
+    <string name="Stock_out">Stockout</string>
     <string name="hint_movement_date">Date of movement</string>
     <string name="hint_document_number">Document number</string>
     <string name="hint_movement_reason_receive">Origin of movement</string>
