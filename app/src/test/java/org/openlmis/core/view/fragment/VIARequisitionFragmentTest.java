@@ -52,6 +52,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
@@ -98,7 +99,7 @@ public class VIARequisitionFragmentTest {
     when(presenter.getRequisitionFormItemViewModels()).thenReturn(formItemList);
     when(presenter.getViaKitsViewModel()).thenReturn(new ViaKitsViewModel());
     when(presenter.getRnRForm()).thenReturn(form);
-    when(presenter.getRnrFormStatus()).thenReturn(RnRForm.STATUS.DRAFT);
+    when(presenter.getRnrFormStatus()).thenReturn(Status.DRAFT);
 
     SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
     viaRequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
@@ -148,7 +149,7 @@ public class VIARequisitionFragmentTest {
   @Test
   public void shouldSetHistoryViewWhenRnrIsAuthorized() {
     RnRForm rnRForm = viaRequisitionFragment.presenter.getRnRForm();
-    rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+    rnRForm.setStatus(Status.AUTHORIZED);
 
     viaRequisitionFragment.refreshRequisitionForm(rnRForm);
     assertThat(View.GONE).isEqualTo(viaRequisitionFragment.actionPanelView.getVisibility());
@@ -257,7 +258,7 @@ public class VIARequisitionFragmentTest {
   @Test
   public void shouldShowTheCannotInitFormToastWhenTheAllStockMovementsAreNotSyncDown() {
     reset(presenter);
-    when(presenter.getRnrFormStatus()).thenReturn(RnRForm.STATUS.DRAFT);
+    when(presenter.getRnrFormStatus()).thenReturn(Status.DRAFT);
     SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
     viaRequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
 

@@ -23,7 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.view.holder.ALReportViewHolder;
 import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
 import org.openlmis.core.view.viewmodel.ALReportViewModel;
@@ -59,8 +59,8 @@ public class ALReportAdapter extends RecyclerView.Adapter<ALReportViewHolder> {
   private boolean getFormStatus(ALReportViewModel alReportViewModel) {
     return alReportViewModel != null
         && alReportViewModel.getForm() != null
-        && (alReportViewModel.getForm().getStatus() == RnRForm.STATUS.AUTHORIZED
-        || alReportViewModel.getForm().getStatus() == RnRForm.STATUS.SUBMITTED);
+        && (alReportViewModel.getForm().getStatus() == Status.AUTHORIZED
+        || alReportViewModel.getForm().getStatus() == Status.SUBMITTED);
   }
 
   public void updateTotal() {

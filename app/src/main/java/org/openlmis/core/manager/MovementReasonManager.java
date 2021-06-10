@@ -93,8 +93,6 @@ public final class MovementReasonManager {
     if (typeCache.containsKey(locale.getLanguage())) {
       return typeCache.get(locale.getLanguage());
     }
-
-    ArrayList<MovementType> typeArrayList = new ArrayList<>();
     MovementType.ISSUE.description = getResourceByLocal(locale).getString(R.string.ISSUE);
     MovementType.RECEIVE.description = getResourceByLocal(locale).getString(R.string.RECEIVE);
     MovementType.POSITIVE_ADJUST.description = getResourceByLocal(locale)
@@ -102,6 +100,7 @@ public final class MovementReasonManager {
     MovementType.NEGATIVE_ADJUST.description = getResourceByLocal(locale)
         .getString(R.string.NEGATIVE_ADJUST);
 
+    ArrayList<MovementType> typeArrayList = new ArrayList<>();
     typeArrayList.add(MovementType.ISSUE);
     typeArrayList.add(MovementType.RECEIVE);
     typeArrayList.add(MovementType.NEGATIVE_ADJUST);

@@ -59,7 +59,8 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   public Observable<List<InventoryViewModel>> loadInventory() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
       try {
-        List<StockCard> validStockCardsForPhysicalInventory = getValidStockCardsForPhysicalInventory();
+        List<StockCard> validStockCardsForPhysicalInventory =
+            getValidStockCardsForPhysicalInventory();
         inventoryViewModelList
             .addAll(convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory));
         restoreDraftInventory();
@@ -115,7 +116,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   protected void restoreDraftInventory() throws LMISException {
     List<DraftInventory> draftList = inventoryRepository.queryAllDraft();
 
-    for (DraftInventory draftInventory : draftList) {//total : N
+    for (DraftInventory draftInventory : draftList) { // total : N
       for (InventoryViewModel viewModel : inventoryViewModelList) { // total: N+1
         if (viewModel.getStockCardId() == draftInventory.getStockCard().getId()) {
           ((PhysicalInventoryViewModel) viewModel).setDraftInventory(draftInventory);

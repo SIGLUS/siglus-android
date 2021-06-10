@@ -21,7 +21,7 @@
 package org.openlmis.core.view.widget;
 
 import android.view.View;
-
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -30,64 +30,72 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 
-import java.util.List;
-
 @RunWith(LMISTestRunner.class)
 public class DashboardViewTest {
-    private DashboardView dashboardView;
 
-    @Before
-    public void setUp() throws Exception {
-        dashboardView = new DashboardView(LMISTestApp.getContext());
-    }
+  private DashboardView dashboardView;
 
-    @Test
-    public void shouldSetCorrectData() {
-        // given
-        int regularAmount = 100;
-        int outAmount = 200;
-        int lowAmount = 300;
-        int overAmount = 400;
+  @Before
+  public void setUp() throws Exception {
+    dashboardView = new DashboardView(LMISTestApp.getContext());
+  }
 
-        // when
-        dashboardView.setData(regularAmount, outAmount, lowAmount, overAmount);
+  @Test
+  public void shouldSetCorrectData() {
+    // given
+    int regularAmount = 100;
+    int outAmount = 200;
+    int lowAmount = 300;
+    int overAmount = 400;
 
-        // then
-        MatcherAssert.assertThat(dashboardView.ivLoading.getAnimation(), Matchers.equalTo(null));
-        MatcherAssert.assertThat(dashboardView.ivLoading.getVisibility(), Matchers.equalTo(View.INVISIBLE));
-        MatcherAssert.assertThat(dashboardView.llTotalProducts.getVisibility(), Matchers.equalTo(View.VISIBLE));
-        MatcherAssert.assertThat(dashboardView.circleView.getVisibility(), Matchers.equalTo(View.VISIBLE));
-        MatcherAssert.assertThat(dashboardView.tvTotalProduct.getText(), Matchers.equalTo(String.valueOf(regularAmount + outAmount + lowAmount + overAmount)));
-        MatcherAssert.assertThat(dashboardView.tvRegularAmount.getText(), Matchers.equalTo(String.valueOf(regularAmount)));
-        MatcherAssert.assertThat(dashboardView.tvOutAmount.getText(), Matchers.equalTo(String.valueOf(outAmount)));
-        MatcherAssert.assertThat(dashboardView.tvLowAmount.getText(), Matchers.equalTo(String.valueOf(lowAmount)));
-        MatcherAssert.assertThat(dashboardView.tvOverAmount.getText(), Matchers.equalTo(String.valueOf(overAmount)));
-    }
+    // when
+    dashboardView.setData(regularAmount, outAmount, lowAmount, overAmount);
 
-    @Test
-    public void shouldCreateCorrectNewData() {
-        // given
-        int regularAmount = 100;
-        int outAmount = 200;
-        int lowAmount = 300;
-        int overAmount = 400;
+    // then
+    MatcherAssert.assertThat(dashboardView.ivLoading.getAnimation(), Matchers.equalTo(null));
+    MatcherAssert
+        .assertThat(dashboardView.ivLoading.getVisibility(), Matchers.equalTo(View.INVISIBLE));
+    MatcherAssert
+        .assertThat(dashboardView.llTotalProducts.getVisibility(), Matchers.equalTo(View.VISIBLE));
+    MatcherAssert
+        .assertThat(dashboardView.circleView.getVisibility(), Matchers.equalTo(View.VISIBLE));
+    MatcherAssert.assertThat(dashboardView.tvTotalProduct.getText(),
+        Matchers.equalTo(String.valueOf(regularAmount + outAmount + lowAmount + overAmount)));
+    MatcherAssert.assertThat(dashboardView.tvRegularAmount.getText(),
+        Matchers.equalTo(String.valueOf(regularAmount)));
+    MatcherAssert.assertThat(dashboardView.tvOutAmount.getText(),
+        Matchers.equalTo(String.valueOf(outAmount)));
+    MatcherAssert.assertThat(dashboardView.tvLowAmount.getText(),
+        Matchers.equalTo(String.valueOf(lowAmount)));
+    MatcherAssert.assertThat(dashboardView.tvOverAmount.getText(),
+        Matchers.equalTo(String.valueOf(overAmount)));
+  }
 
-        // when
-        final List<DashboardCircleView.Item> newData = dashboardView.createNewData(regularAmount, outAmount, lowAmount, overAmount);
+  @Test
+  public void shouldCreateCorrectNewData() {
+    // given
+    int regularAmount = 100;
+    int outAmount = 200;
+    int lowAmount = 300;
+    int overAmount = 400;
 
-        // then
-        MatcherAssert.assertThat(newData.get(0).amount, Matchers.equalTo(regularAmount));
-        MatcherAssert.assertThat(newData.get(1).amount, Matchers.equalTo(outAmount));
-        MatcherAssert.assertThat(newData.get(2).amount, Matchers.equalTo(lowAmount));
-        MatcherAssert.assertThat(newData.get(3).amount, Matchers.equalTo(overAmount));
-    }
+    // when
+    final List<DashboardCircleView.Item> newData = dashboardView
+        .createNewData(regularAmount, outAmount, lowAmount, overAmount);
 
-    @Test
-    public void shouldClearAnimationAfterDetachedFromWindow() {
-        // when
-        dashboardView.onDetachedFromWindow();
+    // then
+    MatcherAssert.assertThat(newData.get(0).amount, Matchers.equalTo(regularAmount));
+    MatcherAssert.assertThat(newData.get(1).amount, Matchers.equalTo(outAmount));
+    MatcherAssert.assertThat(newData.get(2).amount, Matchers.equalTo(lowAmount));
+    MatcherAssert.assertThat(newData.get(3).amount, Matchers.equalTo(overAmount));
+  }
 
-        // then
-        MatcherAssert.assertThat(dashboardView.ivLoading.getAnimation(), Matchers.equalTo(null));
-    }
+  @Test
+  public void shouldClearAnimationAfterDetachedFromWindow() {
+    // when
+    dashboardView.onDetachedFromWindow();
+
+    // then
+    MatcherAssert.assertThat(dashboardView.ivLoading.getAnimation(), Matchers.equalTo(null));
+  }
 }

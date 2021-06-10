@@ -155,7 +155,8 @@ public class StockMovementRepository {
     return dbUtil.withDao(StockMovementItem.class, dao -> {
       try {
         final GenericRawResults<String[]> rawResults = dao.queryRaw(
-            "SELECT MAX(createdTime) FROM stock_items where movementDate=(SELECT MAX(movementDate) FROM stock_items)");
+            "SELECT MAX(createdTime) FROM stock_items where movementDate="
+                + "(SELECT MAX(movementDate) FROM stock_items)");
         final String[] firstResult = rawResults.getFirstResult();
         if (firstResult == null || firstResult.length <= 0) {
           return null;
@@ -402,22 +403,6 @@ public class StockMovementRepository {
     }
   }
 
-  public List<String> signatureIsNull() throws LMISException {
-    List<String> stockCardIds = new ArrayList<>();
-    String querySql = "select stockCard_id,count(stockCard_id) as res from stock_items where signature IS NULL group by stockCard_id having res > 1";
-    GenericRawResults<String[]> rawResults = dbUtil
-        .withDao(StockMovementItem.class, dao -> dao.queryRaw(querySql));
-    try {
-      for (String[] resultArray : rawResults) {
-        stockCardIds.add(resultArray[0]);
-      }
-      rawResults.close();
-    } catch (SQLException e) {
-      Log.w("StockMovementRepository", e);
-    }
-    return stockCardIds;
-  }
-
   public void deleteStockMovementItems(List<StockMovementItem> deletedStockMovementItems) {
     if (deletedStockMovementItems == null) {
       return;
@@ -433,11 +418,29 @@ public class StockMovementRepository {
         .execSQL(deleteRowSql);
   }
 
+  public List<String> signatureIsNull() throws LMISException {
+    List<String> stockCardIds = new ArrayList<>();
+    String querySql = "select stockCard_id,count(stockCard_id) as res from stock_items "
+        + "where signature IS NULL group by stockCard_id having res > 1";
+    GenericRawResults<String[]> rawResults = dbUtil
+        .withDao(StockMovementItem.class, dao -> dao.queryRaw(querySql));
+    try {
+      for (String[] resultArray : rawResults) {
+        stockCardIds.add(resultArray[0]);
+      }
+      rawResults.close();
+    } catch (SQLException e) {
+      Log.w("StockMovementRepository", e);
+    }
+    return stockCardIds;
+  }
+
   public Map<String, List<StockMovementItem>> queryNoSignatureStockCardsMovements() {
     String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
         + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
         + "|| createdTime || ',' || reason ,  ';') as movementItems ,count(*) as count ";
-    String stockCardHavingSignatureNotNull = "( select stockCard_id from stock_items where signature not null group by stockCard_id ) ";
+    String stockCardHavingSignatureNotNull = "( select stockCard_id from stock_items "
+        + "where signature not null group by stockCard_id ) ";
     String querySql = selectResult
         + "from stock_items "
         + "where stockCard_id not in "
@@ -482,7 +485,7 @@ public class StockMovementRepository {
     return cardMapProductCode;
   }
 
-  public Map<String, List<StockMovementItem>> queryHavingSignatureAndDuplicatedDirtyDataNoAffectCalculatedStockCardsMovements(
+  public Map<String, List<StockMovementItem>> queryDirtyDataNoAffectCalculatedStockCardsMovements(
       Set<String> filterStockCards) {
     String filterIds = StringUtils
         .join(filterStockCards != null ? filterStockCards : new HashSet<>(), ',');

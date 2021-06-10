@@ -21,6 +21,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.utils.Constants;
@@ -57,7 +58,7 @@ public class RnRFormViewHolderTest {
   @Test
   public void shouldShowDraftStyle() {
     RnRForm form = RnRForm.init(program, DateUtil.today());
-    form.setStatus(RnRForm.STATUS.DRAFT);
+    form.setStatus(Status.DRAFT);
     RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
 
     viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_DRAFT);
@@ -76,7 +77,7 @@ public class RnRFormViewHolderTest {
   @Test
   public void shouldShowUnSyncedStyle() {
     RnRForm form = RnRForm.init(program, DateUtil.today());
-    form.setStatus(RnRForm.STATUS.AUTHORIZED);
+    form.setStatus(Status.AUTHORIZED);
     form.setSynced(false);
     RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
 
@@ -134,7 +135,7 @@ public class RnRFormViewHolderTest {
   @Test
   public void shouldShowCompleteStyle() {
     RnRForm form = RnRForm.init(program, DateUtil.today());
-    form.setStatus(RnRForm.STATUS.AUTHORIZED);
+    form.setStatus(Status.AUTHORIZED);
     form.setSynced(true);
     RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
     viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
@@ -154,7 +155,7 @@ public class RnRFormViewHolderTest {
   public void shouldShowTvDrugCountWhenIsHistoricalEmergency() throws SQLException {
     program.setProgramCode(Constants.ESS_PROGRAM_CODE);
     RnRForm form = RnRForm.init(program, DateUtil.today());
-    form.setStatus(RnRForm.STATUS.AUTHORIZED);
+    form.setStatus(Status.AUTHORIZED);
     form.setSynced(true);
     form.setSubmittedTime(DateUtil.parseString("2016-01-22 11:33:44", DateUtil.DATE_TIME_FORMAT));
     form.setEmergency(true);

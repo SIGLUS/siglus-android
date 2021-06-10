@@ -18,13 +18,13 @@
 
 package org.openlmis.core.model;
 
+import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import java.io.Serializable;
 import lombok.Data;
 import org.openlmis.core.utils.DateUtil;
-
 
 @Data
 public abstract class BaseModel implements Serializable {
@@ -34,14 +34,14 @@ public abstract class BaseModel implements Serializable {
 
   public BaseModel() {
     createdAt = DateUtil
-        .parseString(DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT),
-            DateUtil.DATE_TIME_FORMAT);
+        .parseString(DateUtil.formatDate(DateUtil.getCurrentDate(), DATE_TIME_FORMAT),
+            DATE_TIME_FORMAT);
     updatedAt = createdAt;
   }
 
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
   private java.util.Date createdAt;
 
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
   private java.util.Date updatedAt;
 }

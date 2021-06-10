@@ -39,7 +39,7 @@ public class PTVRequisitionPresenterTest {
 
   @Test
   public void shouldUpdateFormUISuccess() {
-    ptvRequisitionPresenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
+    ptvRequisitionPresenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
     ptvRequisitionPresenter.updateFormUI();
 
     assertThat(ptvRequisitionPresenter.ptvReportViewModel.services.size(), is(0));
@@ -50,7 +50,7 @@ public class PTVRequisitionPresenterTest {
   @NonNull
   private RnRForm createRnrForm(RnRForm.Emergency emergency) {
     RnRForm rnRForm = new RnRForm();
-    rnRForm.setEmergency(emergency.Emergency());
+    rnRForm.setEmergency(emergency.emergency());
     return rnRForm;
   }
 

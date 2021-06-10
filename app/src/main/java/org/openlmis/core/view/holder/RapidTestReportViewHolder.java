@@ -25,7 +25,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;

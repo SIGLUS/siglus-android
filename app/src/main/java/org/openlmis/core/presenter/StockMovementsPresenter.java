@@ -18,7 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import com.google.inject.Inject;

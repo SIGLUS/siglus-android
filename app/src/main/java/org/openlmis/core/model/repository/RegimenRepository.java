@@ -18,7 +18,6 @@
 
 package org.openlmis.core.model.repository;
 
-
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
@@ -101,10 +100,12 @@ public class RegimenRepository {
 
   public void deleteRegimeDirtyData(String programCode) {
     String deleteRegimeThreeLines = "DELETE FROM regime_three_lines "
-        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM programs "
+        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
+        + "programs "
         + "WHERE programCode='" + programCode + "'));";
     String deleteRegimeItems = "DELETE FROM regime_items "
-        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM programs "
+        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
+        + "programs "
         + "WHERE programCode='" + programCode + "'));";
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
         .execSQL(deleteRegimeThreeLines);

@@ -20,6 +20,8 @@
 
 package org.openlmis.core.network;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -28,46 +30,43 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Program;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RunWith(LMISTestRunner.class)
 public class ProgramCacheManagerTest {
 
-    @Before
-    public void setup(){
-        ProgramCacheManager.PROGRAMS_CACHE.clear();
-    }
+  @Before
+  public void setup() {
+    ProgramCacheManager.PROGRAMS_CACHE.clear();
+  }
 
-    @Test
-    public void addProgramsTest(){
-        // when
-        ProgramCacheManager.addPrograms(createPrograms());
+  @Test
+  public void addProgramsTest() {
+    // when
+    ProgramCacheManager.addPrograms(createPrograms());
 
-        // then
-        MatcherAssert.assertThat(ProgramCacheManager.PROGRAMS_CACHE.size(), Matchers.is(1));
-    }
+    // then
+    MatcherAssert.assertThat(ProgramCacheManager.PROGRAMS_CACHE.size(), Matchers.is(1));
+  }
 
-    @Test
-    public void getProgramTest(){
-        // given
-        ProgramCacheManager.addPrograms(createPrograms());
+  @Test
+  public void getProgramTest() {
+    // given
+    ProgramCacheManager.addPrograms(createPrograms());
 
-        // when
-        final Program exitingProgram = ProgramCacheManager.getPrograms("123");
-        final Program notExitingProgram = ProgramCacheManager.getPrograms("321");
+    // when
+    final Program exitingProgram = ProgramCacheManager.getPrograms("123");
+    final Program notExitingProgram = ProgramCacheManager.getPrograms("321");
 
-        // then
-        MatcherAssert.assertThat(exitingProgram,Matchers.notNullValue());
-        MatcherAssert.assertThat(notExitingProgram,Matchers.nullValue());
-    }
+    // then
+    MatcherAssert.assertThat(exitingProgram, Matchers.notNullValue());
+    MatcherAssert.assertThat(notExitingProgram, Matchers.nullValue());
+  }
 
-    private List<Program> createPrograms(){
-        final ArrayList<Program> programs = new ArrayList<>();
-        final Program program = new Program();
-        program.setProgramCode("123");
-        program.setParentCode("123");
-        programs.add(program);
-        return programs;
-    }
+  private List<Program> createPrograms() {
+    final ArrayList<Program> programs = new ArrayList<>();
+    final Program program = new Program();
+    program.setProgramCode("123");
+    program.setParentCode("123");
+    programs.add(program);
+    return programs;
+  }
 }

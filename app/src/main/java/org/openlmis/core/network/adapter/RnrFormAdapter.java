@@ -39,6 +39,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -90,7 +91,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       new LMISException(e, "RnrFormAdapter.deserialize").reportToFabric();
       throw new JsonParseException("can not find Program by programCode");
     }
-    rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+    rnRForm.setStatus(Status.AUTHORIZED);
     rnRForm.setSynced(true);
 
     return rnRForm;

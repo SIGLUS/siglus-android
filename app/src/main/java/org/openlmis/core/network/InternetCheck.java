@@ -29,7 +29,7 @@ import org.openlmis.core.R;
 public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, InternetListener> {
 
   private static final String TAG = InternetCheck.class.getSimpleName();
-  private final int TIMEOUT = 5 * 1000;
+  private static final int TIMEOUT = 5 * 1000;
 
   @Inject
   public InternetCheck() {

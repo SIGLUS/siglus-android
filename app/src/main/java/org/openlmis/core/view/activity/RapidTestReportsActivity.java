@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.presenter.RapidTestReportsPresenter;
 import org.openlmis.core.utils.Constants;

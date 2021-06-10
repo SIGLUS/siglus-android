@@ -35,7 +35,7 @@ import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.StockMovementsPresenter;

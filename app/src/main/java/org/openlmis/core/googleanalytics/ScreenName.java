@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.googleAnalytics;
+package org.openlmis.core.googleanalytics;
 
 public enum ScreenName {
   HOME_SCREEN("Home Screen"),

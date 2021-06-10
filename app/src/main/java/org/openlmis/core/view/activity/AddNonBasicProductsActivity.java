@@ -29,7 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.AddNonBasicProductsPresenter;
 import org.openlmis.core.utils.InjectPresenter;

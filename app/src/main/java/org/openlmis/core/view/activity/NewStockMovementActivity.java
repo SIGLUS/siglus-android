@@ -26,7 +26,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;

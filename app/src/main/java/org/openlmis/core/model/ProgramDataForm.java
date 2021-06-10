@@ -34,7 +34,7 @@ import org.openlmis.core.utils.ListUtil;
 @DatabaseTable(tableName = "program_data_forms")
 public class ProgramDataForm extends BaseModel {
 
-  public enum STATUS {
+  public enum Status {
     DRAFT,
     SUBMITTED,
     AUTHORIZED
@@ -42,7 +42,7 @@ public class ProgramDataForm extends BaseModel {
 
   @Getter
   @DatabaseField(defaultValue = "DRAFT")
-  private STATUS status;
+  private Status status;
 
   @Getter
   @DatabaseField(foreign = true, foreignAutoRefresh = true)

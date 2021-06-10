@@ -50,7 +50,7 @@ public class ProgramDataFormRepository {
 
   private final GenericDao<ProgramDataForm> genericDao;
   private final GenericDao<ProgramDataFormItem> programDataFormItemGenericDao;
-  private final GenericDao<ProgramDataFormBasicItem> ProgramDataFormBasicItemGenericDao;
+  private final GenericDao<ProgramDataFormBasicItem> programDataFormBasicItemGenericDao;
   private final GenericDao<ProgramDataColumn> programDataColumnGenericDao;
   private final Context context;
 
@@ -66,7 +66,7 @@ public class ProgramDataFormRepository {
     genericDao = new GenericDao<>(ProgramDataForm.class, context);
     programDataFormItemGenericDao = new GenericDao<>(ProgramDataFormItem.class, context);
     programDataColumnGenericDao = new GenericDao<>(ProgramDataColumn.class, context);
-    ProgramDataFormBasicItemGenericDao = new GenericDao<>(ProgramDataFormBasicItem.class, context);
+    programDataFormBasicItemGenericDao = new GenericDao<>(ProgramDataFormBasicItem.class, context);
   }
 
   public void batchCreateOrUpdate(final ProgramDataForm form) throws SQLException {
@@ -127,7 +127,7 @@ public class ProgramDataFormRepository {
   private void saveFormBasicItems(final ProgramDataForm form) throws LMISException {
     deleteFormBasicItems(form.getId());
     for (ProgramDataFormBasicItem item : form.getFormBasicItemListWrapper()) {
-      ProgramDataFormBasicItemGenericDao.create(item);
+      programDataFormBasicItemGenericDao.create(item);
     }
   }
 

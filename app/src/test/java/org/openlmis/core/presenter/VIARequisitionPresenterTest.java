@@ -60,6 +60,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -128,7 +129,7 @@ public class VIARequisitionPresenterTest {
 
   @Test
   public void shouldValidateFormReturnFalseWhenConsultationNumbersInvalid() throws Exception {
-    presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
+    presenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
     when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(false);
 
     boolean result = presenter.validateForm();
@@ -138,7 +139,7 @@ public class VIARequisitionPresenterTest {
 
   @Test
   public void shouldNotValidateKitAndConsultaionNumberWhenFormIsEmergency() throws Exception {
-    presenter.rnRForm = createRnrForm(RnRForm.Emergency.Yes);
+    presenter.rnRForm = createRnrForm(RnRForm.Emergency.YES);
 
     verify(VIARequisitionFragment, never()).validateConsultationNumber();
   }
@@ -158,7 +159,7 @@ public class VIARequisitionPresenterTest {
   @Test
   public void shouldReturnTrueWhenValidateFormSuccess() throws Exception {
     when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-    presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
+    presenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
 
     List<RequisitionFormItemViewModel> list = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
@@ -199,7 +200,7 @@ public class VIARequisitionPresenterTest {
   @Test
   public void shouldSubmitAfterSignedAndStatusIsDraft() throws LMISException {
     //given
-    RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.DRAFT);
+    RnRForm form = getRnRFormWithStatus(Status.DRAFT);
     presenter.rnRForm = form;
 
     //when
@@ -207,14 +208,14 @@ public class VIARequisitionPresenterTest {
     waitObservableToExecute();
 
     //then
-    assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
+    assertThat(Status.SUBMITTED, is(form.getStatus()));
     verify(mockRnrFormRepository).createOrUpdateWithItems(form);
   }
 
   @Test
   public void shouldCompleteAfterSignedAndStatusIsSubmit() throws LMISException {
     //given
-    RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.SUBMITTED);
+    RnRForm form = getRnRFormWithStatus(Status.SUBMITTED);
     presenter.rnRForm = form;
     //when
 
@@ -223,10 +224,10 @@ public class VIARequisitionPresenterTest {
 
     //then
     verify(mockRnrFormRepository).createOrUpdateWithItems(form);
-    assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
+    assertThat(Status.AUTHORIZED, is(form.getStatus()));
   }
 
-  private RnRForm getRnRFormWithStatus(RnRForm.STATUS status) {
+  private RnRForm getRnRFormWithStatus(Status status) {
     final RnRForm form = new RnRForm();
     form.setStatus(status);
     form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
@@ -247,42 +248,42 @@ public class VIARequisitionPresenterTest {
   @NonNull
   private RnRForm createRnrForm(RnRForm.Emergency emergency) {
     RnRForm rnRForm = new RnRForm();
-    rnRForm.setEmergency(emergency.Emergency());
+    rnRForm.setEmergency(emergency.emergency());
     return rnRForm;
   }
 
 
   @Test
   public void shouldHighLightRequestAmountWhenFormStatusIsDraft() {
-    updateFormUIWithStatus(RnRForm.STATUS.DRAFT);
+    updateFormUIWithStatus(Status.DRAFT);
     verify(VIARequisitionFragment).highLightRequestAmount();
     verify(VIARequisitionFragment, never()).highLightApprovedAmount();
   }
 
   @Test
   public void shouldHighLightApproveAmountWhenFormStatusIsSubmitted() {
-    updateFormUIWithStatus(RnRForm.STATUS.SUBMITTED);
+    updateFormUIWithStatus(Status.SUBMITTED);
     verify(VIARequisitionFragment).highLightApprovedAmount();
     verify(VIARequisitionFragment, never()).highLightRequestAmount();
   }
 
   @Test
   public void shouldNotHighLightAnyColumnWhenFormStatusIsAuthorized() {
-    updateFormUIWithStatus(RnRForm.STATUS.AUTHORIZED);
+    updateFormUIWithStatus(Status.AUTHORIZED);
     verify(VIARequisitionFragment, never()).highLightApprovedAmount();
     verify(VIARequisitionFragment, never()).highLightRequestAmount();
   }
 
   @Test
   public void shouldCallSetProcessButtonNameWithSubmitWhenFormStatusIsSubmitted() {
-    updateFormUIWithStatus(RnRForm.STATUS.DRAFT);
+    updateFormUIWithStatus(Status.DRAFT);
     verify(VIARequisitionFragment)
         .setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_submit));
   }
 
   @Test
   public void shouldCallSetProcessButtonNameWithCompleteWhenFormStatusIsAuthorized() {
-    updateFormUIWithStatus(RnRForm.STATUS.SUBMITTED);
+    updateFormUIWithStatus(Status.SUBMITTED);
     verify(VIARequisitionFragment)
         .setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
   }
@@ -316,7 +317,7 @@ public class VIARequisitionPresenterTest {
   public void shouldShowErrorMSGWhenThereWasARequisitionInTheSamePeriod() throws Exception {
     when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
     when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-    presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
+    presenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
 
     presenter.processRequisition("123");
 
@@ -567,7 +568,7 @@ public class VIARequisitionPresenterTest {
   public void shouldOnlyUpdateUIWhenProcessEmergencyAndDraftSignature() throws Exception {
     presenter = spy(presenter);
     RnRForm rnRForm = new RnRForm();
-    rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+    rnRForm.setStatus(Status.DRAFT);
     rnRForm.setEmergency(true);
     presenter.rnRForm = rnRForm;
 
@@ -709,7 +710,7 @@ public class VIARequisitionPresenterTest {
     return viaKitsViewModel;
   }
 
-  private void updateFormUIWithStatus(RnRForm.STATUS status) {
+  private void updateFormUIWithStatus(Status status) {
     RnRForm form = new RnRForm();
     form.setStatus(status);
     presenter.rnRForm = form;

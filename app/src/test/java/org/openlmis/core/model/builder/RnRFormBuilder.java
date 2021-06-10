@@ -2,6 +2,7 @@ package org.openlmis.core.model.builder;
 
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 
 public class RnRFormBuilder {
 
@@ -16,7 +17,7 @@ public class RnRFormBuilder {
     return this;
   }
 
-  public RnRFormBuilder setStatus(RnRForm.STATUS status) {
+  public RnRFormBuilder setStatus(Status status) {
     rnRForm.setStatus(status);
     return this;
   }

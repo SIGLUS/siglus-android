@@ -41,6 +41,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
@@ -477,7 +478,7 @@ public class SyncUpManager {
       forms = FluentIterable
           .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
           .filter(programDataForm -> !programDataForm.isSynced()
-              && programDataForm.getStatus().equals(ProgramDataForm.STATUS.AUTHORIZED))
+              && programDataForm.getStatus().equals(Status.AUTHORIZED))
           .toList();
 
       Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");
@@ -501,7 +502,7 @@ public class SyncUpManager {
       forms = FluentIterable
           .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
           .filter(programDataForm -> !programDataForm.isSynced()
-              && programDataForm.getStatus().equals(ProgramDataForm.STATUS.AUTHORIZED))
+              && programDataForm.getStatus().equals(Status.AUTHORIZED))
           .toList();
 
       Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");

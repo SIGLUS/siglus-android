@@ -15,6 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.model.repository;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
@@ -254,33 +255,6 @@ public class StockRepository {
         rnRForm.getPeriodEnd());
   }
 
-  public List<StockCard> getStockCardsBelongToProgram(String programCode) throws LMISException {
-    String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
-        + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("
-        + " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode IN ("
-        + " SELECT programCode FROM programs WHERE parentCode= '" + programCode + "'"
-        + " OR programCode='" + programCode + "')))";
-    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
-        .getWritableDatabase().rawQuery(rawSql, null);
-    List<StockCard> stockCardList = new ArrayList<>();
-    if (cursor.moveToFirst()) {
-      do {
-        StockCard stockCard = new StockCard();
-        stockCard.setProduct(productRepository
-            .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
-        stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
-        stockCard.setAvgMonthlyConsumption(
-            cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
-        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
-        stockCardList.add(stockCard);
-      } while (cursor.moveToNext());
-    }
-    if (!cursor.isClosed()) {
-      cursor.close();
-    }
-    return stockCardList;
-  }
-
   protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd)
       throws LMISException {
     String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
@@ -307,6 +281,33 @@ public class StockRepository {
             cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
         stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
         stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
+        stockCardList.add(stockCard);
+      } while (cursor.moveToNext());
+    }
+    if (!cursor.isClosed()) {
+      cursor.close();
+    }
+    return stockCardList;
+  }
+
+  public List<StockCard> getStockCardsBelongToProgram(String programCode) throws LMISException {
+    String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
+        + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("
+        + " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode IN ("
+        + " SELECT programCode FROM programs WHERE parentCode= '" + programCode + "'"
+        + " OR programCode='" + programCode + "')))";
+    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+        .getWritableDatabase().rawQuery(rawSql, null);
+    List<StockCard> stockCardList = new ArrayList<>();
+    if (cursor.moveToFirst()) {
+      do {
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(productRepository
+            .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
+        stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+        stockCard.setAvgMonthlyConsumption(
+            cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
+        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
         stockCardList.add(stockCard);
       } while (cursor.moveToNext());
     }
@@ -391,10 +392,12 @@ public class StockRepository {
 
     for (String productCode : productCodeList) {
       String deleteLotMovementItems = "DELETE FROM lot_movement_items "
-          + "WHERE lot_id=(SELECT id FROM lots WHERE product_id=(SELECT id FROM products WHERE code='"
+          + "WHERE lot_id=(SELECT id FROM lots WHERE product_id=(SELECT id FROM products "
+          + "WHERE code='"
           + productCode + "' ));";
       String deleteStockItems = "DELETE FROM stock_items "
-          + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='"
+          + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT id FROM "
+          + "products WHERE code='"
           + productCode + "' ));";
       LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
           .execSQL(deleteLotMovementItems);
@@ -459,7 +462,8 @@ public class StockRepository {
     Cursor getLotsOnHandItemsCursor = null;
     for (String productCode : productCodeList) {
       String getLotsOnHandItemsByStockCardId = "SELECT * FROM lots_on_hand "
-          + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='"
+          + "WHERE stockCard_id=(SELECT id FROM stock_cards WHERE product_id=(SELECT id FROM "
+          + "products WHERE code='"
           + productCode + "'));";
       getLotsOnHandItemsCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
           .getWritableDatabase().rawQuery(getLotsOnHandItemsByStockCardId, null);
@@ -624,7 +628,8 @@ public class StockRepository {
 
   public Map<String, Integer> queryStockCountGroupByStockOnHandStatus() {
     String rawSql = "SELECT COUNT(stockOnHandStatus), stockOnHandStatus FROM stock_cards "
-        + "WHERE product_id IN ( SELECT id FROM products WHERE isActive =1 AND isArchived = 0 ) GROUP BY stockOnHandStatus;";
+        + "WHERE product_id IN ( SELECT id FROM products WHERE isActive =1 AND isArchived = 0 ) "
+        + "GROUP BY stockOnHandStatus;";
     final HashMap<String, Integer> result = new HashMap<>();
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);

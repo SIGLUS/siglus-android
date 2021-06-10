@@ -11,6 +11,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.builder.RnRFormBuilder;
 import org.robolectric.RuntimeEnvironment;
@@ -35,7 +36,7 @@ public class RnrFormSignatureRepositoryTest {
     Program program = new Program();
 
     RnRForm form = new RnRFormBuilder().setComments("Submitted Form")
-        .setStatus(RnRForm.STATUS.SUBMITTED)
+        .setStatus(Status.SUBMITTED)
         .setProgram(program).build();
     form.getSignaturesWrapper()
         .add(new RnRFormSignature(form, "Submitter Signature", RnRFormSignature.TYPE.SUBMITTER));

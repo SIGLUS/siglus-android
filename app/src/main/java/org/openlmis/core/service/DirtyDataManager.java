@@ -390,9 +390,8 @@ public class DirtyDataManager {
 
   private List<StockMovementItem> checkDuplicateDataNotAffectCalculate(String facilityId,
       Set<String> filterStockCardIds) {
-    Map<String, List<StockMovementItem>> stockMovementItems = stockMovementRepository.
-        queryHavingSignatureAndDuplicatedDirtyDataNoAffectCalculatedStockCardsMovements(
-            filterStockCardIds);
+    Map<String, List<StockMovementItem>> stockMovementItems = stockMovementRepository
+        .queryDirtyDataNoAffectCalculatedStockCardsMovements(filterStockCardIds);
     if (stockMovementItems.keySet().size() == 0) {
       return new ArrayList<>();
     }
@@ -450,7 +449,7 @@ public class DirtyDataManager {
   private HashMap<Integer, List<StockMovementItem>> getLastStockMovementMap() {
     Log.d("TwoStockMovements", "1");
     List<StockMovementItem> stockMovements = stockMovementRepository.listLastTwoStockMovements();
-    HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = new HashMap<Integer, List<StockMovementItem>>();
+    HashMap<Integer, List<StockMovementItem>> stockMovementItemsMap = new HashMap<>();
     for (StockMovementItem item : stockMovements) {
       long id = item.getStockCard().getId();
       if (!stockMovementItemsMap.containsKey((int) id)) {

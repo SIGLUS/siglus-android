@@ -58,6 +58,7 @@ import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -313,10 +314,10 @@ public class SyncUpManagerTest {
   public void shouldSyncUpRapidTestsData() throws Exception {
     ProgramDataForm rapidTest1 = new ProgramDataFormBuilder().build();
     rapidTest1.setSynced(false);
-    rapidTest1.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+    rapidTest1.setStatus(Status.AUTHORIZED);
     ProgramDataForm rapidTest2 = new ProgramDataFormBuilder().build();
     rapidTest2.setSynced(true);
-    rapidTest2.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+    rapidTest2.setStatus(Status.AUTHORIZED);
 
     syncUpManager.programDataFormRepository = mockedProgramDataFormRepository;
     when(mockedProgramDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))

@@ -12,6 +12,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
@@ -35,7 +36,7 @@ public class VIARepositoryTest {
     RnRForm form = new RnRForm();
     form.setProgram(viaProgram);
     form.setComments("Submitted Form");
-    form.setStatus(RnRForm.STATUS.AUTHORIZED);
+    form.setStatus(Status.AUTHORIZED);
     form.setSynced(false);
 
     List<BaseInfoItem> baseInfoItems = viaRepository

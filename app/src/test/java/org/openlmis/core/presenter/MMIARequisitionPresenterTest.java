@@ -46,6 +46,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenItemRepository;
@@ -80,7 +81,7 @@ public class MMIARequisitionPresenterTest {
         .getInstance(MMIARequisitionPresenter.class);
     presenter.attachView(mockMMIAformView);
     rnRForm = new RnRForm();
-    rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+    rnRForm.setStatus(Status.DRAFT);
 
     when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
     when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
@@ -154,14 +155,14 @@ public class MMIARequisitionPresenterTest {
   @Test
   public void shouldSubmitFormWhenTheStatusIsDraft() throws LMISException {
     RnRForm form = new RnRForm();
-    form.setStatus(RnRForm.STATUS.DRAFT);
+    form.setStatus(Status.DRAFT);
 
     String signature = "signature";
     presenter.rnRForm = form;
     presenter.processSign(signature);
     waitObservableToExecute();
 
-    assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
+    assertThat(Status.SUBMITTED, is(form.getStatus()));
     verify(mmiaRepository).createOrUpdateWithItems(form);
     verify(mockMMIAformView).setProcessButtonName(
         LMISTestApp.getContext().getResources().getString(R.string.btn_complete));
@@ -171,7 +172,7 @@ public class MMIARequisitionPresenterTest {
   @Test
   public void shouldAuthorizeFormWhenStatusIsSubmitted() throws LMISException {
     RnRForm form = new RnRForm();
-    form.setStatus(RnRForm.STATUS.SUBMITTED);
+    form.setStatus(Status.SUBMITTED);
 
     String signature = "signature";
     presenter.rnRForm = form;
@@ -179,7 +180,7 @@ public class MMIARequisitionPresenterTest {
 
     waitObservableToExecute();
 
-    assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
+    assertThat(Status.AUTHORIZED, is(form.getStatus()));
     verify(mmiaRepository).createOrUpdateWithItems(form);
   }
 

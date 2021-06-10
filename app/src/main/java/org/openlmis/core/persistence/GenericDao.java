@@ -24,66 +24,66 @@ import javax.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import roboguice.RoboGuice;
 
-public class GenericDao<Model> {
+public class GenericDao<T> {
 
   @Inject
   DbUtil dbUtil;
 
-  private final Class<Model> type;
+  private final Class<T> type;
 
   private final Context context;
 
   @Inject
-  public GenericDao(Class<Model> type, Context context) {
+  public GenericDao(Class<T> type, Context context) {
     this.type = type;
     this.context = context;
     RoboGuice.getInjector(context).injectMembers(this);
   }
 
-  public Model create(final Model object) throws LMISException {
+  public T create(final T object) throws LMISException {
     return dbUtil.withDao(context, type, dao -> {
       dao.create(object);
       return object;
     });
   }
 
-  public Model createOrUpdate(final Model object) throws LMISException {
+  public boolean create(final List<T> models) throws LMISException {
+    return dbUtil.withDaoAsBatch(context, type, dao -> {
+      for (T model : models) {
+        dao.createOrUpdate(model);
+      }
+      return true;
+    });
+  }
+
+  public T createOrUpdate(final T object) throws LMISException {
     return dbUtil.withDao(context, type, dao -> {
       dao.createOrUpdate(object);
       return object;
     });
   }
 
-  public List<Model> queryForAll() throws LMISException {
+  public List<T> queryForAll() throws LMISException {
     return dbUtil.withDao(context, type, dao -> dao.queryForAll());
   }
 
-  public Integer update(final Model object) throws LMISException {
+  public Integer update(final T object) throws LMISException {
     return dbUtil.withDao(context, type, dao -> dao.update(object));
   }
 
-  public Model getById(final String id) throws LMISException {
+  public T getById(final String id) throws LMISException {
     return dbUtil.withDao(context, type, dao -> dao.queryForId(id));
   }
 
-  public void refresh(final Model model) throws LMISException {
-    dbUtil.withDao(context, type, (DbUtil.Operation<Model, Void>) dao -> {
+  public void refresh(final T model) throws LMISException {
+    dbUtil.withDao(context, type, (DbUtil.Operation<T, Void>) dao -> {
       dao.refresh(model);
       return null;
     });
   }
 
-  public Integer delete(final Model object) throws LMISException {
+  public Integer delete(final T object) throws LMISException {
     return dbUtil.withDao(context, type, dao -> dao.delete(object));
-  }
-
-  public boolean create(final List<Model> models) throws LMISException {
-    return dbUtil.withDaoAsBatch(context, type, dao -> {
-      for (Model model : models) {
-        dao.createOrUpdate(model);
-      }
-      return true;
-    });
   }
 
 }

@@ -19,6 +19,16 @@
 package org.openlmis.core.model.repository;
 
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
+
+import androidx.annotation.NonNull;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -50,350 +60,379 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import androidx.annotation.NonNull;
 import roboguice.RoboGuice;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
 
 @RunWith(LMISTestRunner.class)
 public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
-    StockRepository stockRepository;
-    ProductRepository productRepository;
-    LotRepository lotRepository;
-    Product product;
-    private ProgramRepository programRepository;
-    private ProductProgramRepository productProgramRepository;
-    private StockCard stockCard;
-    private StockMovementRepository stockMovementRepository;
+  StockRepository stockRepository;
+  ProductRepository productRepository;
+  LotRepository lotRepository;
+  Product product;
+  private ProgramRepository programRepository;
+  private ProductProgramRepository productProgramRepository;
+  private StockCard stockCard;
+  private StockMovementRepository stockMovementRepository;
 
-    @Before
-    public void setup() throws LMISException {
-        stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
-        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
-        programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
-        productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductProgramRepository.class);
-        lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LotRepository.class);
-        stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementRepository.class);
+  @Before
+  public void setup() throws LMISException {
+    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(StockRepository.class);
+    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(ProductRepository.class);
+    programRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(ProgramRepository.class);
+    productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(ProductProgramRepository.class);
+    lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(LotRepository.class);
+    stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(StockMovementRepository.class);
 
-        saveTestProduct();
+    saveTestProduct();
 
-        stockCard = new StockCard();
+    stockCard = new StockCard();
+  }
+
+  // TODO fix sqlite exception
+  @Ignore
+  @Test
+  public void shouldCreateOrUpdateStockCard() throws LMISException {
+    StockCard stockCard = new StockCard();
+    stockCard.setStockOnHand(1);
+    stockCard.setProduct(product);
+
+    stockRepository.createOrUpdate(stockCard);
+    assertEquals(stockCard, stockRepository.list().get(0));
+
+    stockCard.setStockOnHand(10000);
+    stockRepository.createOrUpdate(stockCard);
+    assertEquals(stockCard, stockRepository.list().get(0));
+  }
+
+  @Test
+  public void shouldGetStockCardsBeforePeriodEndDate() throws Exception {
+    Program program1 = new ProgramBuilder().setProgramCode("code1").build();
+    Program program2 = new ProgramBuilder().setProgramCode("code2").setParentCode("code1").build();
+    Program program3 = new ProgramBuilder().setProgramCode("code3").build();
+    generateTestDataForGetStockCards("P1", true, false, program1, "1969-11-11");
+    generateTestDataForGetStockCards("P2", true, false, program1, "1970-11-11");
+    generateTestDataForGetStockCards("P3", true, false, program2, "1969-11-11");
+    generateTestDataForGetStockCards("P4", true, false, program3, "1969-11-11");
+
+    DateTime periodBegin = new DateTime(
+        DateUtil.parseString("1970-01-01 10:10:10", DateUtil.DATE_TIME_FORMAT));
+    DateTime periodEnd = new DateTime(
+        DateUtil.parseString("1970-02-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
+    RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
+    List<StockCard> stockCardsBeforeTimeLine = stockRepository
+        .getStockCardsBeforePeriodEnd(rnRForm);
+    assertThat(stockCardsBeforeTimeLine.size(), is(2));
+    assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(), is("P1"));
+    assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(), is("P3"));
+  }
+
+  @Test
+  public void shouldGetActiveAndNotArchivedStockCardsBeforePeriodEndDate() throws Exception {
+    Program program1 = new ProgramBuilder().setProgramCode("code1").build();
+    Program program2 = new ProgramBuilder().setProgramCode("code2").setParentCode("code1").build();
+    generateTestDataForGetStockCards("P1", true, false, program1, "1969-11-11");
+    generateTestDataForGetStockCards("P2", false, false, program1, "1969-11-11");
+    generateTestDataForGetStockCards("P3", true, false, program2, "1969-11-11");
+    generateTestDataForGetStockCards("P4", true, true, program2, "1969-11-11");
+
+    DateTime periodBegin = new DateTime(
+        DateUtil.parseString("1970-01-01 10:10:10", DateUtil.DATE_TIME_FORMAT));
+    DateTime periodEnd = new DateTime(
+        DateUtil.parseString("1970-02-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
+    RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
+    List<StockCard> stockCardsBeforeTimeLine = stockRepository
+        .getStockCardsBeforePeriodEnd(rnRForm);
+    assertThat(stockCardsBeforeTimeLine.size(), is(2));
+    assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(), is("P1"));
+    assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(), is("P3"));
+  }
+
+  private void generateTestDataForGetStockCards(String productCode, boolean isActive,
+      boolean isArchived, Program program, String movementDate) throws LMISException {
+    Product product = ProductBuilder.create().setCode(productCode).setIsActive(isActive)
+        .setIsArchived(isArchived).build();
+
+    productRepository.createOrUpdate(product);
+    programRepository.createOrUpdate(program);
+    createNewProductProgram(program.getProgramCode(), product.getCode());
+
+    StockCard stockCard = new StockCard();
+    stockCard.setProduct(product);
+    stockRepository.createOrUpdate(stockCard);
+
+    StockMovementItem stockMovementItem = new StockMovementItem();
+    stockMovementItem.setStockCard(stockCard);
+    stockMovementItem.setMovementDate(DateUtil.parseString(movementDate, "yyyy-MM-dd"));
+
+    stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+    stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+    stockRepository.refresh(stockCard);
+  }
+
+  private StockCard createNewStockCard(String code, String parentCode, Product product,
+      boolean isEmergency) throws LMISException {
+    StockCard stockCard = new StockCard();
+    Program program = createNewProgram(code, parentCode, isEmergency);
+    programRepository.createOrUpdate(program);
+    productRepository.createOrUpdate(product);
+
+    ProductProgram productProgram = new ProductProgramBuilder()
+        .setProductCode(product.getCode())
+        .setProgramCode(program.getProgramCode())
+        .setActive(true).build();
+
+    productProgramRepository.createOrUpdate(productProgram);
+
+    stockCard.setProduct(product);
+    stockCard.setCreatedAt(new Date());
+    stockRepository.createOrUpdate(stockCard);
+
+    return stockCard;
+  }
+
+  private void createNewProductProgram(String code, String productCode) throws LMISException {
+    ProductProgram productProgram = new ProductProgramBuilder().setProgramCode(code)
+        .setProductCode(productCode).setActive(true).build();
+    productProgramRepository.createOrUpdate(productProgram);
+  }
+
+  @NonNull
+  private Program createNewProgram(String code, String parentCode, boolean isSupportEmergency)
+      throws LMISException {
+    Program program = new ProgramBuilder().setProgramCode(code).setParentCode(parentCode)
+        .setSupportEmergency(isSupportEmergency).build();
+    programRepository.createOrUpdate(program);
+    return program;
+  }
+
+  @Test
+  public void shouldUpdateStockCardAndProduct() throws Exception {
+    StockCard stockCard = new StockCard();
+    product.setArchived(true);
+    stockCard.setProduct(product);
+    stockCard.setExpireDates("01/01/2016");
+
+    stockRepository.createOrUpdate(stockCard);
+
+    stockCard.setExpireDates("");
+    product.setArchived(false);
+    stockRepository.updateStockCardWithProduct(stockCard);
+
+    assertThat(stockCard.getExpireDates(), is(""));
+
+  }
+
+  @Test
+  public void shouldUpdateProductOfStockCard() throws Exception {
+    StockCard stockCard = new StockCard();
+    product.setArchived(true);
+    stockCard.setProduct(product);
+    stockCard.setExpireDates("01/01/2016");
+
+    stockRepository.createOrUpdate(stockCard);
+
+    stockCard.setExpireDates("");
+    product.setArchived(false);
+    stockRepository.updateProductOfStockCard(stockCard.getProduct());
+
+    assertThat(stockCard.getProduct().isArchived(), is(false));
+  }
+
+  @Test
+  public void shouldLoadEmergencyProducts() throws Exception {
+    //when
+    createNewStockCard("code", null,
+        ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build(), true);
+    createNewStockCard("otherCode", "parentCode",
+        ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build(), false);
+
+    Product product = ProductBuilder.buildAdultProduct();
+    product.setKit(true);
+    productRepository.createOrUpdate(product);
+
+    //then
+    List<StockCard> stockCardsBeforeTimeLine = stockRepository.listEmergencyStockCards();
+    assertThat(stockCardsBeforeTimeLine.size(), is(1));
+  }
+
+  private void saveTestProduct() throws LMISException {
+    product = new Product();
+    product.setPrimaryName("Test Product");
+    product.setStrength("200");
+    product.setCode("test code");
+
+    productRepository.createOrUpdate(product);
+  }
+
+  private StockMovementItem createMovementItem(MovementReasonManager.MovementType type,
+      long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced)
+      throws LMISException {
+    StockMovementItem stockMovementItem = new StockMovementItem();
+    stockMovementItem.setMovementQuantity(quantity);
+    stockMovementItem.setMovementType(type);
+    stockMovementItem.setMovementDate(movementDate);
+    stockMovementItem.setStockCard(stockCard);
+    stockMovementItem.setSynced(synced);
+    LMISTestApp.getInstance().setCurrentTimeMillis(createdTime.getTime());
+
+    if (stockMovementItem.isPositiveMovement()) {
+      stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + quantity);
+    } else {
+      stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - quantity);
     }
 
-    // TODO fix sqlite exception
-    @Ignore
-    @Test
-    public void shouldCreateOrUpdateStockCard() throws LMISException {
-        StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(1);
-        stockCard.setProduct(product);
+    stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+    stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+    stockRepository.refresh(stockCard);
 
-        stockRepository.createOrUpdate(stockCard);
-        assertEquals(stockCard, stockRepository.list().get(0));
+    return stockMovementItem;
+  }
 
-        stockCard.setStockOnHand(10000);
-        stockRepository.createOrUpdate(stockCard);
-        assertEquals(stockCard, stockRepository.list().get(0));
-    }
+  @Test
+  public void shouldSaveStockCardAndBatchUpdateMovements() throws Exception {
+    Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true)
+        .setIsKit(false).build();
+    productRepository.createOrUpdate(product);
 
-    @Test
-    public void shouldGetStockCardsBeforePeriodEndDate() throws Exception {
-        Program program1 = new ProgramBuilder().setProgramCode("code1").build();
-        Program program2 = new ProgramBuilder().setProgramCode("code2").setParentCode("code1").build();
-        Program program3 = new ProgramBuilder().setProgramCode("code3").build();
-        generateTestDataForGetStockCards("P1", true, false, program1, "1969-11-11");
-        generateTestDataForGetStockCards("P2", true, false, program1, "1970-11-11");
-        generateTestDataForGetStockCards("P3", true, false, program2, "1969-11-11");
-        generateTestDataForGetStockCards("P4", true, false, program3, "1969-11-11");
+    StockCard stockCard = StockCardBuilder.buildStockCard();
+    stockCard.setProduct(product);
 
-        DateTime periodBegin = new DateTime(DateUtil.parseString("1970-01-01 10:10:10", DateUtil.DATE_TIME_FORMAT));
-        DateTime periodEnd = new DateTime(DateUtil.parseString("1970-02-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
-        RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.getStockCardsBeforePeriodEnd(rnRForm);
-        assertThat(stockCardsBeforeTimeLine.size(), is(2));
-        assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(), is("P1"));
-        assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(), is("P3"));
-    }
+    Lot lot1 = new Lot();
+    lot1.setProduct(product);
+    lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
+    lot1.setLotNumber("AAA");
 
-    @Test
-    public void shouldGetActiveAndNotArchivedStockCardsBeforePeriodEndDate() throws Exception {
-        Program program1 = new ProgramBuilder().setProgramCode("code1").build();
-        Program program2 = new ProgramBuilder().setProgramCode("code2").setParentCode("code1").build();
-        generateTestDataForGetStockCards("P1", true, false, program1, "1969-11-11");
-        generateTestDataForGetStockCards("P2", false, false, program1, "1969-11-11");
-        generateTestDataForGetStockCards("P3", true, false, program2, "1969-11-11");
-        generateTestDataForGetStockCards("P4", true, true, program2, "1969-11-11");
+    LotOnHand lotOnHand1 = new LotOnHand();
+    lotOnHand1.setLot(lot1);
+    lotOnHand1.setStockCard(stockCard);
+    lotOnHand1.setQuantityOnHand(10L);
 
-        DateTime periodBegin = new DateTime(DateUtil.parseString("1970-01-01 10:10:10", DateUtil.DATE_TIME_FORMAT));
-        DateTime periodEnd = new DateTime(DateUtil.parseString("1970-02-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
-        RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.getStockCardsBeforePeriodEnd(rnRForm);
-        assertThat(stockCardsBeforeTimeLine.size(), is(2));
-        assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(), is("P1"));
-        assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(), is("P3"));
-    }
+    stockCard.setLotOnHandListWrapper(Arrays.asList(lotOnHand1));
 
-    private void generateTestDataForGetStockCards(String productCode, boolean isActive, boolean isArchived, Program program, String movementDate) throws LMISException {
-        Product product = ProductBuilder.create().setCode(productCode).setIsActive(isActive).setIsArchived(isArchived).build();
+    StockMovementItem stockMovementItem = new StockMovementItemBuilder()
+        .withStockOnHand(200)
+        .withMovementType(MovementReasonManager.MovementType.RECEIVE)
+        .withMovementDate("2015-12-31")
+        .withQuantity(10)
+        .build();
+    stockMovementItem.setStockCard(stockCard);
+    LotMovementItem lotMovementItem = new LotMovementItemBuilder()
+        .setStockMovementItem(stockMovementItem)
+        .setLot(lot1)
+        .setMovementQuantity(2L)
+        .setStockOnHand(12L).build();
 
-        productRepository.createOrUpdate(product);
-        programRepository.createOrUpdate(program);
-        createNewProductProgram(program.getProgramCode(), product.getCode());
+    stockMovementItem.setLotMovementItemListWrapper(Arrays.asList(lotMovementItem));
 
-        StockCard stockCard = new StockCard();
-        stockCard.setProduct(product);
-        stockRepository.createOrUpdate(stockCard);
+    stockCard.setStockMovementItemsWrapper(Arrays.asList(stockMovementItem));
 
-        StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem.setStockCard(stockCard);
-        stockMovementItem.setMovementDate(DateUtil.parseString(movementDate, "yyyy-MM-dd"));
+    stockRepository.saveStockCardAndBatchUpdateMovements(stockCard);
 
-        stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
-        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-        stockRepository.refresh(stockCard);
-    }
+    StockCard queriedStockCard = stockRepository.queryStockCardById(stockCard.getId());
+    assertThat(queriedStockCard.getProduct().getCode(), is(product.getCode()));
+    assertThat(queriedStockCard.getLotOnHandListWrapper().get(0).getQuantityOnHand(), is(10L));
 
-    private StockCard createNewStockCard(String code, String parentCode, Product product, boolean isEmergency) throws LMISException {
-        StockCard stockCard = new StockCard();
-        Program program = createNewProgram(code, parentCode, isEmergency);
-        programRepository.createOrUpdate(program);
-        productRepository.createOrUpdate(product);
+    StockMovementItem queriedStockMovementItem = queriedStockCard.getStockMovementItemsWrapper()
+        .get(0);
+    assertThat(queriedStockMovementItem.getMovementQuantity(), is(10L));
+    assertThat(
+        queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(),
+        is(2L));
+    assertThat(
+        queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(),
+        is("AAA"));
+  }
 
-        ProductProgram productProgram = new ProductProgramBuilder()
-                .setProductCode(product.getCode())
-                .setProgramCode(program.getProgramCode())
-                .setActive(true).build();
+  @Test
+  public void shouldDeleteDataOver13Months() throws Exception {
+    LMISTestApp.getInstance().setCurrentTimeMillis(
+        DateUtil.parseString("2016-08-11", DateUtil.DB_DATE_FORMAT).getTime());
+    StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
 
-        productProgramRepository.createOrUpdate(productProgram);
+    StockMovementItem stockMovementItem = createMovementItem(
+        MovementReasonManager.MovementType.POSITIVE_ADJUST, 100L, stockCard, new Date(), new Date(),
+        true);
 
-        stockCard.setProduct(product);
-        stockCard.setCreatedAt(new Date());
-        stockRepository.createOrUpdate(stockCard);
+    Lot lot1 = new Lot();
+    lot1.setProduct(product);
+    lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
+    lot1.setLotNumber("AAA");
 
-        return stockCard;
-    }
+    LotMovementItem lotMovementItem = new LotMovementItemBuilder()
+        .setStockMovementItem(stockMovementItem)
+        .setLot(lot1)
+        .setMovementQuantity(2L).build();
 
-    private void createNewProductProgram(String code, String productCode) throws LMISException {
-        ProductProgram productProgram = new ProductProgramBuilder().setProgramCode(code).setProductCode(productCode).setActive(true).build();
-        productProgramRepository.createOrUpdate(productProgram);
-    }
+    lotRepository.batchCreateLotsAndLotMovements(Arrays.asList(lotMovementItem));
 
-    @NonNull
-    private Program createNewProgram(String code, String parentCode, boolean isSupportEmergency) throws LMISException {
-        Program program = new ProgramBuilder().setProgramCode(code).setParentCode(parentCode).setSupportEmergency(isSupportEmergency).build();
-        programRepository.createOrUpdate(program);
-        return program;
-    }
+    stockRepository.deleteOldData();
 
-    @Test
-    public void shouldUpdateStockCardAndProduct() throws Exception {
-        StockCard stockCard = new StockCard();
-        product.setArchived(true);
-        stockCard.setProduct(product);
-        stockCard.setExpireDates("01/01/2016");
+    StockCard stockCardQueried = stockRepository.queryStockCardById(stockCard.getId());
 
-        stockRepository.createOrUpdate(stockCard);
+    assertEquals(1, stockCardQueried.getStockMovementItemsWrapper().size());
+    assertEquals(MovementReasonManager.MovementType.POSITIVE_ADJUST,
+        stockCardQueried.getStockMovementItemsWrapper().get(0).getMovementType());
+    assertEquals(1,
+        stockCardQueried.getStockMovementItemsWrapper().get(0).getLotMovementItemListWrapper()
+            .size());
+  }
 
-        stockCard.setExpireDates("");
-        product.setArchived(false);
-        stockRepository.updateStockCardWithProduct(stockCard);
+  @Test
+  public void shouldReturnStockCardProductByCode() throws LMISException {
+    StockCard expectedStockCard = new StockCard();
+    expectedStockCard.setProduct(product);
+    expectedStockCard.setStockOnHand(100);
 
-        assertThat(stockCard.getExpireDates(), is(""));
+    stockRepository.saveStockCardAndBatchUpdateMovements(expectedStockCard);
+    StockCard actualStockCard = stockRepository.queryStockCardByProductCode(product.getCode());
 
-    }
+    assertThat(actualStockCard.getProduct().getCode(),
+        is(expectedStockCard.getProduct().getCode()));
+  }
 
-    @Test
-    public void shouldUpdateProductOfStockCard() throws Exception {
-        StockCard stockCard = new StockCard();
-        product.setArchived(true);
-        stockCard.setProduct(product);
-        stockCard.setExpireDates("01/01/2016");
+  @Test
+  public void queryStockCountGroupByStockOnHandStatusTest() throws LMISException {
+    // given
+    createStockAndProduct(1, 100, -1);
+    createStockAndProduct(2, 0, -1);
+    createStockAndProduct(3, 100, 101);
+    createStockAndProduct(4, 201, 100);
 
-        stockRepository.createOrUpdate(stockCard);
+    // when
+    final Map<String, Integer> stockOnHandStatusMap = stockRepository
+        .queryStockCountGroupByStockOnHandStatus();
 
-        stockCard.setExpireDates("");
-        product.setArchived(false);
-        stockRepository.updateProductOfStockCard(stockCard.getProduct());
+    // then
+    MatcherAssert.assertThat(stockOnHandStatusMap.get(StockOnHandStatus.REGULAR_STOCK.name()),
+        Matchers.is(1));
+    MatcherAssert
+        .assertThat(stockOnHandStatusMap.get(StockOnHandStatus.LOW_STOCK.name()), Matchers.is(1));
+    MatcherAssert
+        .assertThat(stockOnHandStatusMap.get(StockOnHandStatus.STOCK_OUT.name()), Matchers.is(1));
+    MatcherAssert
+        .assertThat(stockOnHandStatusMap.get(StockOnHandStatus.OVER_STOCK.name()), Matchers.is(1));
+  }
 
-        assertThat(stockCard.getProduct().isArchived(), is(false));
-    }
+  private StockCard createStockAndProduct(int productId, int stockOnHand, int avg)
+      throws LMISException {
+    Product product = new Product();
+    product.setCode(String.valueOf(productId));
+    product.setId(productId);
+    product.setActive(true);
+    product.setArchived(false);
+    productRepository.createOrUpdate(product);
 
-    @Test
-    public void shouldLoadEmergencyProducts() throws Exception {
-        //when
-        createNewStockCard("code", null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build(), true);
-        createNewStockCard("otherCode", "parentCode", ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build(), false);
-
-        Product product = ProductBuilder.buildAdultProduct();
-        product.setKit(true);
-        productRepository.createOrUpdate(product);
-
-        //then
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listEmergencyStockCards();
-        assertThat(stockCardsBeforeTimeLine.size(), is(1));
-    }
-
-    private void saveTestProduct() throws LMISException {
-        product = new Product();
-        product.setPrimaryName("Test Product");
-        product.setStrength("200");
-        product.setCode("test code");
-
-        productRepository.createOrUpdate(product);
-    }
-
-    private StockMovementItem createMovementItem(MovementReasonManager.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced) throws LMISException {
-        StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem.setMovementQuantity(quantity);
-        stockMovementItem.setMovementType(type);
-        stockMovementItem.setMovementDate(movementDate);
-        stockMovementItem.setStockCard(stockCard);
-        stockMovementItem.setSynced(synced);
-        LMISTestApp.getInstance().setCurrentTimeMillis(createdTime.getTime());
-
-        if (stockMovementItem.isPositiveMovement()) {
-            stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + quantity);
-        } else {
-            stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - quantity);
-        }
-
-        stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
-        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-        stockRepository.refresh(stockCard);
-
-        return stockMovementItem;
-    }
-
-    @Test
-    public void shouldSaveStockCardAndBatchUpdateMovements() throws Exception {
-        Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true).setIsKit(false).build();
-        productRepository.createOrUpdate(product);
-
-        StockCard stockCard = StockCardBuilder.buildStockCard();
-        stockCard.setProduct(product);
-
-        Lot lot1 = new Lot();
-        lot1.setProduct(product);
-        lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
-        lot1.setLotNumber("AAA");
-
-        LotOnHand lotOnHand1 = new LotOnHand();
-        lotOnHand1.setLot(lot1);
-        lotOnHand1.setStockCard(stockCard);
-        lotOnHand1.setQuantityOnHand(10L);
-
-        stockCard.setLotOnHandListWrapper(Arrays.asList(lotOnHand1));
-
-        StockMovementItem stockMovementItem = new StockMovementItemBuilder()
-                .withStockOnHand(200)
-                .withMovementType(MovementReasonManager.MovementType.RECEIVE)
-                .withMovementDate("2015-12-31")
-                .withQuantity(10)
-                .build();
-        stockMovementItem.setStockCard(stockCard);
-        LotMovementItem lotMovementItem = new LotMovementItemBuilder()
-                .setStockMovementItem(stockMovementItem)
-                .setLot(lot1)
-                .setMovementQuantity(2L)
-                .setStockOnHand(12L).build();
-
-        stockMovementItem.setLotMovementItemListWrapper(Arrays.asList(lotMovementItem));
-
-        stockCard.setStockMovementItemsWrapper(Arrays.asList(stockMovementItem));
-
-        stockRepository.saveStockCardAndBatchUpdateMovements(stockCard);
-
-        StockCard queriedStockCard = stockRepository.queryStockCardById(stockCard.getId());
-        assertThat(queriedStockCard.getProduct().getCode(), is(product.getCode()));
-        assertThat(queriedStockCard.getLotOnHandListWrapper().get(0).getQuantityOnHand(), is(10L));
-
-        StockMovementItem queriedStockMovementItem = queriedStockCard.getStockMovementItemsWrapper().get(0);
-        assertThat(queriedStockMovementItem.getMovementQuantity(), is(10L));
-        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(), is(2L));
-        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(), is("AAA"));
-    }
-
-    @Test
-    public void shouldDeleteDataOver13Months() throws Exception {
-        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2016-08-11", DateUtil.DB_DATE_FORMAT).getTime());
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository, productRepository);
-
-        StockMovementItem stockMovementItem = createMovementItem(MovementReasonManager.MovementType.POSITIVE_ADJUST, 100L, stockCard, new Date(), new Date(), true);
-
-        Lot lot1 = new Lot();
-        lot1.setProduct(product);
-        lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
-        lot1.setLotNumber("AAA");
-
-        LotMovementItem lotMovementItem = new LotMovementItemBuilder()
-                .setStockMovementItem(stockMovementItem)
-                .setLot(lot1)
-                .setMovementQuantity(2L).build();
-
-        lotRepository.batchCreateLotsAndLotMovements(Arrays.asList(lotMovementItem));
-
-        stockRepository.deleteOldData();
-
-        StockCard stockCardQueried = stockRepository.queryStockCardById(stockCard.getId());
-
-        assertEquals(1, stockCardQueried.getStockMovementItemsWrapper().size());
-        assertEquals(MovementReasonManager.MovementType.POSITIVE_ADJUST, stockCardQueried.getStockMovementItemsWrapper().get(0).getMovementType());
-        assertEquals(1, stockCardQueried.getStockMovementItemsWrapper().get(0).getLotMovementItemListWrapper().size());
-    }
-
-    @Test
-    public void shouldReturnStockCardProductByCode() throws LMISException {
-        StockCard expectedStockCard = new StockCard();
-        expectedStockCard.setProduct(product);
-        expectedStockCard.setStockOnHand(100);
-
-        stockRepository.saveStockCardAndBatchUpdateMovements(expectedStockCard);
-        StockCard actualStockCard = stockRepository.queryStockCardByProductCode(product.getCode());
-
-        assertThat(actualStockCard.getProduct().getCode(), is(expectedStockCard.getProduct().getCode()));
-    }
-
-    @Test
-    public void queryStockCountGroupByStockOnHandStatusTest() throws LMISException {
-        // given
-        createStockAndProduct(1, 100, -1);
-        createStockAndProduct(2, 0, -1);
-        createStockAndProduct(3, 100, 101);
-        createStockAndProduct(4, 201, 100);
-
-        // when
-        final Map<String, Integer> stockOnHandStatusMap = stockRepository.queryStockCountGroupByStockOnHandStatus();
-
-        // then
-        MatcherAssert.assertThat(stockOnHandStatusMap.get(StockOnHandStatus.REGULAR_STOCK.name()), Matchers.is(1));
-        MatcherAssert.assertThat(stockOnHandStatusMap.get(StockOnHandStatus.LOW_STOCK.name()), Matchers.is(1));
-        MatcherAssert.assertThat(stockOnHandStatusMap.get(StockOnHandStatus.STOCK_OUT.name()), Matchers.is(1));
-        MatcherAssert.assertThat(stockOnHandStatusMap.get(StockOnHandStatus.OVER_STOCK.name()), Matchers.is(1));
-    }
-
-    private StockCard createStockAndProduct(int productId, int stockOnHand, int avg) throws LMISException {
-        Product product = new Product();
-        product.setCode(String.valueOf(productId));
-        product.setId(productId);
-        product.setActive(true);
-        product.setArchived(false);
-        productRepository.createOrUpdate(product);
-
-        final StockCard stockCard = new StockCard();
-        stockCard.setProduct(product);
-        stockCard.setStockOnHand(stockOnHand);
-        stockCard.setAvgMonthlyConsumption(avg);
-        stockRepository.createOrUpdate(stockCard);
-        return stockCard;
-    }
+    final StockCard stockCard = new StockCard();
+    stockCard.setProduct(product);
+    stockCard.setStockOnHand(stockOnHand);
+    stockCard.setAvgMonthlyConsumption(avg);
+    stockRepository.createOrUpdate(stockCard);
+    return stockCard;
+  }
 }

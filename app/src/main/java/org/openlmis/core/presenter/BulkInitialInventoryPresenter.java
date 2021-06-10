@@ -47,7 +47,7 @@ import rx.schedulers.Schedulers;
 public class BulkInitialInventoryPresenter extends InventoryPresenter {
 
   private static final String TAG = BulkInitialInventoryPresenter.class.getSimpleName();
-  private final int FIRST_ELEMENT_POSITION_OF_THE_LIST = 0;
+  private static final int FIRST_ELEMENT_POSITION_OF_THE_LIST = 0;
 
   private final List<InventoryViewModel> defaultViewModelList = new ArrayList<>();
 
@@ -86,8 +86,8 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
       }
     }
     for (DraftInitialInventory draftInventory : noBasicDraftInventoryList) {
-      BulkInitialInventoryViewModel bulkInitialInventoryViewModel = new BulkInitialInventoryViewModel(
-          draftInventory.getProduct());
+      BulkInitialInventoryViewModel bulkInitialInventoryViewModel =
+          new BulkInitialInventoryViewModel(draftInventory.getProduct());
       bulkInitialInventoryViewModel.setInitialDraftInventory(draftInventory);
       bulkInitialInventoryViewModel.setViewType(BulkInitialInventoryAdapter.ITEM_NO_BASIC);
       nonBasicLists.add(bulkInitialInventoryViewModel);
@@ -174,8 +174,8 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
       }
     }
     if (!hasNonBasicProductHeader) {
-      BulkInitialInventoryViewModel nonBasicHeaderInventoryModel = new BulkInitialInventoryViewModel(
-          Product.dummyProduct());
+      BulkInitialInventoryViewModel nonBasicHeaderInventoryModel =
+          new BulkInitialInventoryViewModel(Product.dummyProduct());
       nonBasicHeaderInventoryModel.setDummyModel(true);
       nonBasicHeaderInventoryModel.setViewType(BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER);
       inventoryViewModelList.add(nonBasicHeaderInventoryModel);

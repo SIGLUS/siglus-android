@@ -28,107 +28,113 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.openlmis.core.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import java.util.ArrayList;
+import java.util.List;
+import org.openlmis.core.R;
 
 public class DashboardView extends ConstraintLayout {
 
-    private static final String DEFAULT_TEXT = "--";
+  private static final String DEFAULT_TEXT = "--";
 
-    DashboardCircleView circleView;
-    LinearLayoutCompat llTotalProducts;
-    ImageView ivLoading;
-    TextView tvTotalProduct;
-    TextView tvRegularAmount;
-    TextView tvOutAmount;
-    TextView tvLowAmount;
-    TextView tvOverAmount;
+  DashboardCircleView circleView;
+  LinearLayoutCompat llTotalProducts;
+  ImageView ivLoading;
+  TextView tvTotalProduct;
+  TextView tvRegularAmount;
+  TextView tvOutAmount;
+  TextView tvLowAmount;
+  TextView tvOverAmount;
 
-    public DashboardView(@NonNull Context context) {
-        this(context, null);
+  public DashboardView(@NonNull Context context) {
+    this(context, null);
+  }
+
+  public DashboardView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public DashboardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    initView(context);
+  }
+
+  public void setData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+    resetState(false);
+    circleView.setData(createNewData(regularAmount, outAmount, lowAmount, overAmount));
+    tvTotalProduct.setText(String.valueOf(regularAmount + outAmount + lowAmount + overAmount));
+    tvRegularAmount.setText(String.valueOf(regularAmount));
+    tvOutAmount.setText(String.valueOf(outAmount));
+    tvLowAmount.setText(String.valueOf(lowAmount));
+    tvOverAmount.setText(String.valueOf(overAmount));
+  }
+
+  public void resetState(boolean isLoading) {
+    if (isLoading) {
+      startLoading();
+    } else {
+      ivLoading.clearAnimation();
     }
+    ivLoading.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
+    llTotalProducts.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
+    circleView.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
+  }
 
-    public DashboardView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+  protected List<DashboardCircleView.Item> createNewData(int regularAmount, int outAmount,
+      int lowAmount, int overAmount) {
+    final ArrayList<DashboardCircleView.Item> result = new ArrayList<>();
+    result.add(new DashboardCircleView.Item(
+        ContextCompat.getColor(getContext(), R.color.color_regular_stock), regularAmount));
+    result.add(
+        new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_stock_out),
+            outAmount));
+    result.add(
+        new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_low_stock),
+            lowAmount));
+    result.add(
+        new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_over_stock),
+            overAmount));
+    return result;
+  }
 
-    public DashboardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initView(context);
-    }
+  @Override
+  protected void onDetachedFromWindow() {
+    ivLoading.clearAnimation();
+    super.onDetachedFromWindow();
+  }
 
-    public void setData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-        resetState(false);
-        circleView.setData(createNewData(regularAmount, outAmount, lowAmount, overAmount));
-        tvTotalProduct.setText(String.valueOf(regularAmount + outAmount + lowAmount + overAmount));
-        tvRegularAmount.setText(String.valueOf(regularAmount));
-        tvOutAmount.setText(String.valueOf(outAmount));
-        tvLowAmount.setText(String.valueOf(lowAmount));
-        tvOverAmount.setText(String.valueOf(overAmount));
-    }
+  private void initView(Context context) {
+    final View rootView = LayoutInflater.from(context).inflate(R.layout.view_dashboard, this);
+    circleView = rootView.findViewById(R.id.dc_product_total);
+    ivLoading = rootView.findViewById(R.id.iv_dashboard_loading);
+    llTotalProducts = rootView.findViewById(R.id.ll_dashboard_total_product);
+    tvTotalProduct = rootView.findViewById(R.id.tv_total_product);
+    tvRegularAmount = rootView.findViewById(R.id.tv_regular_stock_amount);
+    tvOutAmount = rootView.findViewById(R.id.tv_stock_out_amount);
+    tvLowAmount = rootView.findViewById(R.id.tv_low_stock_amount);
+    tvOverAmount = rootView.findViewById(R.id.tv_over_stock_amount);
+    resetState(true);
+    startLoading();
+  }
 
-    public void resetState(boolean isLoading) {
-        if (isLoading) {
-            startLoading();
-        } else {
-            ivLoading.clearAnimation();
-        }
-        ivLoading.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
-        llTotalProducts.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
-        circleView.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
-    }
+  private void startLoading() {
+    // set amount
+    tvRegularAmount.setText(DEFAULT_TEXT);
+    tvOutAmount.setText(DEFAULT_TEXT);
+    tvLowAmount.setText(DEFAULT_TEXT);
+    tvOverAmount.setText(DEFAULT_TEXT);
 
-    protected List<DashboardCircleView.Item> createNewData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-        final ArrayList<DashboardCircleView.Item> result = new ArrayList<>();
-        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_regular_stock), regularAmount));
-        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_stock_out), outAmount));
-        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_low_stock), lowAmount));
-        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_over_stock), overAmount));
-        return result;
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        ivLoading.clearAnimation();
-        super.onDetachedFromWindow();
-    }
-
-    private void initView(Context context) {
-        final View rootView = LayoutInflater.from(context).inflate(R.layout.view_dashboard, this);
-        circleView = rootView.findViewById(R.id.dc_product_total);
-        ivLoading = rootView.findViewById(R.id.iv_dashboard_loading);
-        llTotalProducts = rootView.findViewById(R.id.ll_dashboard_total_product);
-        tvTotalProduct = rootView.findViewById(R.id.tv_total_product);
-        tvRegularAmount = rootView.findViewById(R.id.tv_regular_stock_amount);
-        tvOutAmount = rootView.findViewById(R.id.tv_stock_out_amount);
-        tvLowAmount = rootView.findViewById(R.id.tv_low_stock_amount);
-        tvOverAmount = rootView.findViewById(R.id.tv_over_stock_amount);
-        resetState(true);
-        startLoading();
-    }
-
-    private void startLoading() {
-        // set amount
-        tvRegularAmount.setText(DEFAULT_TEXT);
-        tvOutAmount.setText(DEFAULT_TEXT);
-        tvLowAmount.setText(DEFAULT_TEXT);
-        tvOverAmount.setText(DEFAULT_TEXT);
-
-        // start rotate
-        Animation anim = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        anim.setFillAfter(false);
-        anim.setDuration(1500);
-        anim.setRepeatCount(Animation.INFINITE);
-        anim.setInterpolator(new LinearInterpolator());
-        ivLoading.startAnimation(anim);
-    }
+    // start rotate
+    Animation anim = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f,
+        Animation.RELATIVE_TO_SELF, 0.5f);
+    anim.setFillAfter(false);
+    anim.setDuration(1500);
+    anim.setRepeatCount(Animation.INFINITE);
+    anim.setInterpolator(new LinearInterpolator());
+    ivLoading.startAnimation(anim);
+  }
 }

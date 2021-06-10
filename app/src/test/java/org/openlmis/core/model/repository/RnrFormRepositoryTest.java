@@ -59,6 +59,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
@@ -125,7 +126,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
   public void shouldGetAllUnsyncedMMIAForms() throws LMISException {
     for (int i = 0; i < 10; i++) {
       RnRForm form = new RnRFormBuilder().setComments("Rnr Form" + i)
-          .setStatus(RnRForm.STATUS.AUTHORIZED)
+          .setStatus(Status.AUTHORIZED)
           .setProgram(createProgram("MMIA" + i))
           .setSynced(i % 2 == 0)
           .build();
@@ -152,7 +153,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     for (int i = 0; i < 11; i++) {
       RnRForm form = new RnRFormBuilder().setComments("Rnr Form" + i)
-          .setStatus(RnRForm.STATUS.AUTHORIZED)
+          .setStatus(Status.AUTHORIZED)
           .setProgram(i % 2 == 0 ? programMMIA : programVIA)
           .build();
       form.setPeriodBegin(new Date());
@@ -160,7 +161,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     List<RnRForm> list = rnrFormRepository
-        .listInclude(RnRForm.Emergency.No, Constants.MMIA_PROGRAM_CODE);
+        .listInclude(RnRForm.Emergency.NO, Constants.MMIA_PROGRAM_CODE);
     assertThat(list.size(), is(6));
   }
 
@@ -178,7 +179,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
 
     RnRForm form = new RnRFormBuilder().setComments("DRAFT Form")
-        .setStatus(RnRForm.STATUS.DRAFT).setProgram(program).build();
+        .setStatus(Status.DRAFT).setProgram(program).build();
     form.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
     mockProgramRepository.createOrUpdate(program);
@@ -194,7 +195,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     Program program = new Program();
 
     RnRForm form = new RnRFormBuilder().setComments("Submitted Form")
-        .setStatus(RnRForm.STATUS.SUBMITTED)
+        .setStatus(Status.SUBMITTED)
         .setProgram(program).build();
     form.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
@@ -214,7 +215,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
 
     RnRForm form = RnRForm.init(program, generateDate);
-    form.setStatus(RnRForm.STATUS.AUTHORIZED);
+    form.setStatus(Status.AUTHORIZED);
     rnrFormRepository.create(form);
 
     generateDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
@@ -232,7 +233,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
 
     RnRForm form = RnRForm.init(program, generateDate);
-    form.setStatus(RnRForm.STATUS.DRAFT);
+    form.setStatus(Status.DRAFT);
     rnrFormRepository.create(form);
 
     generateDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
@@ -514,7 +515,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
   @Test
   public void shouldDeleteDeactivatedItemsFromRnrForms() throws Exception {
     RnRForm form = new RnRFormBuilder().setComments("Submitted Form")
-        .setStatus(RnRForm.STATUS.AUTHORIZED)
+        .setStatus(Status.AUTHORIZED)
         .setSynced(false).setProgram(createProgram("MMIA")).build();
 
     RnrFormItem deactivatedProductItem = new RnrFormItemBuilder()
@@ -561,21 +562,21 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     RnRForm formEss = new RnRForm();
     formEss.setProgram(programEss);
-    formEss.setStatus(RnRForm.STATUS.AUTHORIZED);
+    formEss.setStatus(Status.AUTHORIZED);
     formEss.setEmergency(false);
     formEss.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
     formEss.setPeriodEnd(new Date());
 
     RnRForm formVIA = new RnRForm();
     formVIA.setProgram(programVIA);
-    formVIA.setStatus(RnRForm.STATUS.AUTHORIZED);
+    formVIA.setStatus(Status.AUTHORIZED);
     formVIA.setEmergency(false);
     formVIA.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
     formVIA.setPeriodEnd(new Date());
 
     RnRForm formVIAEmergency = new RnRForm();
     formVIAEmergency.setProgram(programVIA);
-    formVIAEmergency.setStatus(RnRForm.STATUS.AUTHORIZED);
+    formVIAEmergency.setStatus(Status.AUTHORIZED);
     formVIAEmergency.setEmergency(true);
     formVIAEmergency.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
     formVIAEmergency.setPeriodEnd(new Date());
@@ -585,12 +586,12 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     rnrFormRepository.create(formVIAEmergency);
 
     List<RnRForm> list = rnrFormRepository
-        .listInclude(RnRForm.Emergency.No, Constants.VIA_PROGRAM_CODE);
+        .listInclude(RnRForm.Emergency.NO, Constants.VIA_PROGRAM_CODE);
     assertThat(list.size(), is(1));
 
     //I'm not sure why programCode is higher priority than Emergency...
     List<RnRForm> listWithEmergency = rnrFormRepository
-        .listInclude(RnRForm.Emergency.Yes, Constants.VIA_PROGRAM_CODE);
+        .listInclude(RnRForm.Emergency.YES, Constants.VIA_PROGRAM_CODE);
     assertThat(listWithEmergency.size(), is(2));
   }
 
@@ -614,19 +615,19 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     when(mockProgramRepository.queryByCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(programMMIA);
     RnRForm formEss = new RnRForm();
     formEss.setProgram(programEss);
-    formEss.setStatus(RnRForm.STATUS.AUTHORIZED);
+    formEss.setStatus(Status.AUTHORIZED);
     formEss.setEmergency(false);
     formEss.setPeriodEnd(DateUtil.parseString("2015-09-01", DateUtil.DB_DATE_FORMAT));
 
     RnRForm formVIA = new RnRForm();
     formVIA.setProgram(programVIA);
-    formVIA.setStatus(RnRForm.STATUS.AUTHORIZED);
+    formVIA.setStatus(Status.AUTHORIZED);
     formVIA.setEmergency(false);
     formVIA.setPeriodEnd(DateUtil.parseString("2015-09-01", DateUtil.DB_DATE_FORMAT));
 
     RnRForm formMMIA = new RnRForm();
     formMMIA.setProgram(programMMIA);
-    formMMIA.setStatus(RnRForm.STATUS.AUTHORIZED);
+    formMMIA.setStatus(Status.AUTHORIZED);
     formMMIA.setEmergency(true);
     formMMIA.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
     formMMIA.setPeriodEnd(new Period(new DateTime()).getEnd().toDate());

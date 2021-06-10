@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model;
 
+import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
+import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -76,13 +78,13 @@ public class StockMovementItem extends BaseModel {
   @Expose
   String expireDates;
 
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DB_DATE_FORMAT)
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
   private java.util.Date movementDate;
 
   @DatabaseField
   private boolean synced = false;
 
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
   private java.util.Date createdTime;
 
   @ForeignCollectionField()

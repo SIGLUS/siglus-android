@@ -15,6 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
@@ -40,6 +41,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -113,13 +115,13 @@ public class RnrFormRepository {
   }
 
   public RnRForm initNormalRnrForm(Date periodEndDate) throws LMISException {
-    RnRForm rnrForm = initRnRForm(periodEndDate, RnRForm.Emergency.No);
+    RnRForm rnrForm = initRnRForm(periodEndDate, RnRForm.Emergency.NO);
     return createInitRnrForm(rnrForm);
   }
 
   public RnRForm initEmergencyRnrForm(Date periodEndDate, List<StockCard> stockCards)
       throws LMISException {
-    RnRForm rnRForm = initRnRForm(periodEndDate, RnRForm.Emergency.Yes);
+    RnRForm rnRForm = initRnRForm(periodEndDate, RnRForm.Emergency.YES);
     rnRForm.setRnrFormItemListWrapper(generateRnrFormItems(rnRForm, stockCards));
     return rnRForm;
   }
@@ -162,7 +164,7 @@ public class RnrFormRepository {
     try {
       return null == dbUtil.withDao(RnRForm.class,
           dao -> dao.queryBuilder().where().eq("program_id", form.getProgram().getId())
-              .and().eq("status", RnRForm.STATUS.AUTHORIZED)
+              .and().eq("status", Status.AUTHORIZED)
               .and().eq("periodBegin", form.getPeriodBegin())
               .and().eq("periodEnd", form.getPeriodEnd())
               .queryForFirst());
@@ -185,7 +187,7 @@ public class RnrFormRepository {
 
   public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode,
       ReportTypeForm reportTypeForm) throws LMISException {
-    return list(programCode, includeEmergency.Emergency(), reportTypeForm);
+    return listForm(programCode, includeEmergency.emergency(), reportTypeForm);
   }
 
   public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
@@ -205,7 +207,7 @@ public class RnrFormRepository {
     RnRForm rnRForm = dbUtil
         .withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("program_id", program.getId())
             .and().between("periodBegin", reportTypeForm.getStartTime(), DateUtil.getCurrentDate())
-            .and().ne("status", RnRForm.STATUS.AUTHORIZED)
+            .and().ne("status", Status.AUTHORIZED)
             .queryForFirst());
     assignCategoryForRnrItems(rnRForm);
     return rnRForm;
@@ -245,7 +247,7 @@ public class RnrFormRepository {
     List<String> programCodes = programRepository
         .queryProgramCodesByProgramCodeOrParentCode(form.getProgram().getProgramCode());
     //为避免超时，在进入循环之前对以下两个变量赋值
-    rnRForms = listInclude(RnRForm.Emergency.No, programCode);
+    rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
     //避免出现越界异常，需要条件判断
     if (rnRForms.size() > 1) {
       rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
@@ -309,7 +311,7 @@ public class RnrFormRepository {
 
   protected List<RnRForm> listUnsynced() throws LMISException {
     return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("synced", false).and()
-        .eq("status", RnRForm.STATUS.AUTHORIZED).query());
+        .eq("status", Status.AUTHORIZED).query());
   }
 
   protected List<RnRForm> listNotSynchronizedFromStarTime() throws LMISException {
@@ -358,7 +360,7 @@ public class RnrFormRepository {
     }
 
     Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);
-    return RnRForm.init(program, period, emergency.Emergency());
+    return RnRForm.init(program, period, emergency.emergency());
   }
 
   private RnRForm createInitRnrForm(final RnRForm rnrForm) throws LMISException {
@@ -474,7 +476,7 @@ public class RnrFormRepository {
     return null;
   }
 
-  private List<RnRForm> list(String programCode, final boolean isWithEmergency,
+  private List<RnRForm> listForm(String programCode, final boolean isWithEmergency,
       ReportTypeForm typeForm) throws LMISException {
 
     final long programId = programRepository.queryByCode(programCode).getId();
@@ -507,28 +509,11 @@ public class RnrFormRepository {
     }
 
     return dbUtil.withDao(RnRForm.class, dao -> {
-      Where<RnRForm, String> where = dao.queryBuilder().where().
-          eq("program_id", programId).and().
-          eq("synced", false).and().
-          eq("status", RnRForm.STATUS.AUTHORIZED).and().
-          between("periodBegin", reportTypeForm.getStartTime(), DateUtil.getCurrentDate());
-
-      return where.query();
-    });
-  }
-
-  private List<RnRForm> list(String programCode, final boolean isWithEmergency)
-      throws LMISException {
-
-    final long programId = programRepository.queryByCode(programCode).getId();
-
-    return dbUtil.withDao(RnRForm.class, dao -> {
-      Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
-      where.in("program_id", programId);
-
-      if (!isWithEmergency) {
-        where.and().eq("emergency", false);
-      }
+      Where<RnRForm, String> where = dao.queryBuilder().where()
+          .eq("program_id", programId).and()
+          .eq("synced", false).and()
+          .eq("status", Status.AUTHORIZED).and()
+          .between("periodBegin", reportTypeForm.getStartTime(), DateUtil.getCurrentDate());
       return where.query();
     });
   }
@@ -647,13 +632,15 @@ public class RnrFormRepository {
 
   private void deleteRnrData(String programCode) {
     String deleteRnrFormItem = "DELETE FROM rnr_form_items "
-        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM programs "
+        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
+        + "programs "
         + "WHERE programCode='" + programCode + "'));";
     String deleteRnrFormSignature = "DELETE FROM rnr_form_signature "
         + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
         + "programs WHERE programCode='" + programCode + "'));";
     String deleteRnrBaseInfoItems = "DELETE FROM rnr_baseInfo_items "
-        + "WHERE rnRForm_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id IN (SELECT id FROM programs "
+        + "WHERE rnRForm_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id IN (SELECT id "
+        + "FROM programs "
         + "WHERE programCode='" + programCode + "'));";
     String deleteRnrForm =
         "DELETE FROM rnr_forms WHERE synced=0 AND program_id = (SELECT id FROM programs "

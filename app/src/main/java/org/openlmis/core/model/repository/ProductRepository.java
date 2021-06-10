@@ -191,7 +191,7 @@ public class ProductRepository {
 
   private void deleteWrongKitInfo(Product existingProduct, Product product) {
     try {
-      if (existingProduct.isKit() != product.isKit()) {//isKit changed
+      if (existingProduct.isKit() != product.isKit()) { //isKit changed
         StockCard stockCard = stockRepository.queryStockCardByProductCode(product.getCode());
         if (stockCard != null) {
           lotRepository.deleteLotInfo(stockCard);

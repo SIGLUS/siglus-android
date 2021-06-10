@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product.IsKit;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.utils.Constants;
@@ -181,7 +182,7 @@ public class RnRFormTest {
     rnrFormItems.add(generateRnrFormItem("03A02", false));
     rnrFormItems.add(generateRnrFormItem("01A02", false));
     rnrFormItems.add(generateRnrFormItem("10B02", false));
-    rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+    rnRForm.setStatus(Status.AUTHORIZED);
     rnRForm.setRnrFormItemListWrapper(rnrFormItems);
 
     List<RnrFormItem> sortedRnrFormItems = rnRForm.getRnrFormItemListWrapper();
@@ -199,7 +200,7 @@ public class RnRFormTest {
     rnrFormItems.add(generateRnrFormItem("A2", true));
     rnrFormItems.add(generateRnrFormItem("B2", false));
     rnrFormItems.add(generateRnrFormItem("A1", false));
-    rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+    rnRForm.setStatus(Status.DRAFT);
     rnRForm.setRnrFormItemListWrapper(rnrFormItems);
 
     List<RnrFormItem> sortedRnrFormItems = rnRForm.getRnrFormItemListWrapper();
@@ -218,23 +219,23 @@ public class RnRFormTest {
 
   @Test
   public void shouldAddSignature() throws Exception {
-    rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+    rnRForm.setStatus(Status.DRAFT);
     rnRForm.addSignature("signature1");
-    assertEquals(RnRForm.STATUS.SUBMITTED, rnRForm.getStatus());
+    assertEquals(Status.SUBMITTED, rnRForm.getStatus());
     assertEquals(rnRForm.getSignaturesWrapper().get(0).getSignature(), "signature1");
 
     rnRForm.addSignature("signature2");
-    assertEquals(RnRForm.STATUS.AUTHORIZED, rnRForm.getStatus());
+    assertEquals(Status.AUTHORIZED, rnRForm.getStatus());
     assertEquals(rnRForm.getSignaturesWrapper().get(1).getSignature(), "signature2");
 
     rnRForm = new RnRForm();
-    rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
+    rnRForm.setStatus(Status.DRAFT_MISSED);
     rnRForm.addSignature("signature1");
-    assertEquals(RnRForm.STATUS.SUBMITTED_MISSED, rnRForm.getStatus());
+    assertEquals(Status.SUBMITTED_MISSED, rnRForm.getStatus());
     assertEquals(rnRForm.getSignaturesWrapper().get(0).getSignature(), "signature1");
 
     rnRForm.addSignature("signature2");
-    assertEquals(RnRForm.STATUS.AUTHORIZED, rnRForm.getStatus());
+    assertEquals(Status.AUTHORIZED, rnRForm.getStatus());
     assertEquals(rnRForm.getSignaturesWrapper().get(1).getSignature(), "signature2");
   }
 }

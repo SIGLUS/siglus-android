@@ -4,6 +4,7 @@ import java.util.Date;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.Signature;
 
@@ -15,7 +16,7 @@ public class ProgramDataFormBuilder {
     programDataForm = new ProgramDataForm();
   }
 
-  public ProgramDataFormBuilder setStatus(ProgramDataForm.STATUS status) {
+  public ProgramDataFormBuilder setStatus(Status status) {
     programDataForm.setStatus(status);
     return this;
   }

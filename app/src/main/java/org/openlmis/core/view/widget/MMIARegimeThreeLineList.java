@@ -47,14 +47,14 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   private TextView mmiaThreeLinePatientsTotal;
   private TextView mmiaThreeLinePharmacyTotal;
 
-  private String ATTR_FIRST_LINE;
-  private String ATTR_FIRST_LINE_KEY;
-  private String ATTR_SECOND_LINE;
-  private String ATTR_SECOND_LINE_KEY;
-  private String ATTR_THIRD_LINE;
-  private String ATTR_THIRD_LINE_KEY;
+  private String attrFirstLine;
+  private String attrFirstLineKey;
+  private String attrSecondLine;
+  private String attrSecondLineKey;
+  private String attrThirdLine;
+  private String attrThirdLineKey;
 
-  public enum COUNTTYPE {
+  public enum CountType {
     PATIENTSAMOUNT,
     PHARMACYAMOUNT,
   }
@@ -77,12 +77,12 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   private void init() {
     setOrientation(LinearLayout.VERTICAL);
     layoutInflater = LayoutInflater.from(getContext());
-    ATTR_FIRST_LINE = getString(R.string.mmia_1stline);
-    ATTR_FIRST_LINE_KEY = getString(R.string.key_regime_3lines_1);
-    ATTR_SECOND_LINE = getString(R.string.mmia_2ndline);
-    ATTR_SECOND_LINE_KEY = getString(R.string.key_regime_3lines_2);
-    ATTR_THIRD_LINE = getString(R.string.mmia_3rdline);
-    ATTR_THIRD_LINE_KEY = getString(R.string.key_regime_3lines_3);
+    attrFirstLine = getString(R.string.mmia_1stline);
+    attrFirstLineKey = getString(R.string.key_regime_3lines_1);
+    attrSecondLine = getString(R.string.mmia_2ndline);
+    attrSecondLineKey = getString(R.string.key_regime_3lines_2);
+    attrThirdLine = getString(R.string.mmia_3rdline);
+    attrThirdLineKey = getString(R.string.key_regime_3lines_3);
 
   }
 
@@ -97,11 +97,11 @@ public class MMIARegimeThreeLineList extends LinearLayout {
     dataMap = new HashMap<>();
     this.dataList = dataList;
     initCategoryList();
-    addViewItem(dataMap.get(ATTR_FIRST_LINE_KEY));
-    addViewItem(dataMap.get(ATTR_SECOND_LINE_KEY));
-    addViewItem(dataMap.get(ATTR_THIRD_LINE_KEY));
-    mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(COUNTTYPE.PATIENTSAMOUNT)));
-    mmiaThreeLinePharmacyTotal.setText(String.valueOf(getTotal(COUNTTYPE.PHARMACYAMOUNT)));
+    addViewItem(dataMap.get(attrFirstLineKey));
+    addViewItem(dataMap.get(attrSecondLineKey));
+    addViewItem(dataMap.get(attrThirdLineKey));
+    mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(CountType.PATIENTSAMOUNT)));
+    mmiaThreeLinePharmacyTotal.setText(String.valueOf(getTotal(CountType.PHARMACYAMOUNT)));
   }
 
   private void initCategoryList() {
@@ -112,9 +112,9 @@ public class MMIARegimeThreeLineList extends LinearLayout {
 
   private Map<String, String> linesMap() {
     Map<String, String> linesMap = new HashMap<>();
-    linesMap.put(ATTR_FIRST_LINE_KEY, ATTR_FIRST_LINE);
-    linesMap.put(ATTR_SECOND_LINE_KEY, ATTR_SECOND_LINE);
-    linesMap.put(ATTR_THIRD_LINE_KEY, ATTR_THIRD_LINE);
+    linesMap.put(attrFirstLineKey, attrFirstLine);
+    linesMap.put(attrSecondLineKey, attrSecondLine);
+    linesMap.put(attrThirdLineKey, attrThirdLine);
     return linesMap;
   }
 
@@ -133,14 +133,14 @@ public class MMIARegimeThreeLineList extends LinearLayout {
       patientsTotalEdit.setText(String.valueOf(patientsAmount));
     }
     patientsTotalEdit
-        .addTextChangedListener(new EditTextWatcher(itemThreeLines, COUNTTYPE.PATIENTSAMOUNT));
+        .addTextChangedListener(new EditTextWatcher(itemThreeLines, CountType.PATIENTSAMOUNT));
     patientsTotalEdits.add(patientsTotalEdit);
 
     if (pharmacyAmount != null) {
       patientsPharmacyEdit.setText(String.valueOf(pharmacyAmount));
     }
     patientsPharmacyEdit
-        .addTextChangedListener(new EditTextWatcher(itemThreeLines, COUNTTYPE.PHARMACYAMOUNT));
+        .addTextChangedListener(new EditTextWatcher(itemThreeLines, CountType.PHARMACYAMOUNT));
     patientsPharmacyEdits.add(patientsPharmacyEdit);
 
     addView(viewItem);
@@ -187,9 +187,9 @@ public class MMIARegimeThreeLineList extends LinearLayout {
   class EditTextWatcher implements TextWatcher {
 
     private final RegimenItemThreeLines item;
-    private final COUNTTYPE type;
+    private final CountType type;
 
-    public EditTextWatcher(RegimenItemThreeLines item, COUNTTYPE counttype) {
+    public EditTextWatcher(RegimenItemThreeLines item, CountType counttype) {
       this.item = item;
       this.type = counttype;
     }
@@ -211,17 +211,17 @@ public class MMIARegimeThreeLineList extends LinearLayout {
 
       }
 
-      if (COUNTTYPE.PATIENTSAMOUNT == type) {
+      if (CountType.PATIENTSAMOUNT == type) {
         item.setPatientsAmount(count);
         mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(type)));
-      } else if (COUNTTYPE.PHARMACYAMOUNT == type) {
+      } else if (CountType.PHARMACYAMOUNT == type) {
         item.setPharmacyAmount(count);
         mmiaThreeLinePharmacyTotal.setText(String.valueOf(getTotal(type)));
       }
     }
   }
 
-  public long getTotal(COUNTTYPE counttype) {
+  public long getTotal(CountType counttype) {
     return RnRForm.caculateTotalRegimenTypeAmount(dataList, counttype);
   }
 }

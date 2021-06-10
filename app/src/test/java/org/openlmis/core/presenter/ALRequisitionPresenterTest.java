@@ -56,13 +56,13 @@ public class ALRequisitionPresenterTest {
   @NonNull
   private RnRForm createRnrForm(RnRForm.Emergency emergency) {
     RnRForm rnRForm = new RnRForm();
-    rnRForm.setEmergency(emergency.Emergency());
+    rnRForm.setEmergency(emergency.emergency());
     return rnRForm;
   }
 
   @Test
   public void shouldALViewArchFullDisplayed() {
-    alRequisitionPresenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
+    alRequisitionPresenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
     alRequisitionPresenter.updateFormUI();
     ALReportItemViewModel itemHF = alRequisitionPresenter.alReportViewModel.getItemHF();
     ALReportItemViewModel itemCHW = alRequisitionPresenter.alReportViewModel.getItemCHW();
@@ -96,7 +96,7 @@ public class ALRequisitionPresenterTest {
 
   @Test
   public void shouldSetViewModles() throws LMISException {
-    RnRForm rnRForm = createRnrForm(RnRForm.Emergency.No);
+    RnRForm rnRForm = createRnrForm(RnRForm.Emergency.NO);
     alRequisitionPresenter.rnRForm = rnRForm;
     alRequisitionPresenter.updateFormUI();
     alRequisitionPresenter.setViewModels();

@@ -16,9 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-
 package org.openlmis.core.exceptions;
-
 
 import retrofit.RetrofitError;
 

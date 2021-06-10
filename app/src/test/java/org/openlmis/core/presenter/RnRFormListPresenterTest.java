@@ -28,6 +28,7 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.builder.ProgramBuilder;
@@ -103,11 +104,11 @@ public class RnRFormListPresenterTest {
         new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)),
         new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)));
 
-    rnRForm1 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, periodFebToMar.getBegin().toDate(),
+    rnRForm1 = createRnrFormByPeriod(Status.AUTHORIZED, periodFebToMar.getBegin().toDate(),
         periodFebToMar.getEnd().toDate(), program);
-    rnRForm2 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, periodMarToApl.getBegin().toDate(),
+    rnRForm2 = createRnrFormByPeriod(Status.AUTHORIZED, periodMarToApl.getBegin().toDate(),
         periodMarToApl.getEnd().toDate(), program);
-    rnRForm3 = createRnrFormByPeriod(RnRForm.STATUS.DRAFT, periodAplToMay.getBegin().toDate(),
+    rnRForm3 = createRnrFormByPeriod(Status.DRAFT, periodAplToMay.getBegin().toDate(),
         periodAplToMay.getEnd().toDate(), program);
 
     ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
@@ -145,7 +146,7 @@ public class RnRFormListPresenterTest {
     assertThat(resultViewModels.get(0).getSyncServerErrorMessage()).isEqualTo("Error2");
   }
 
-  protected RnRForm createRnrFormByPeriod(RnRForm.STATUS status, Date periodBegin, Date periodEnd,
+  protected RnRForm createRnrFormByPeriod(Status status, Date periodBegin, Date periodEnd,
       Program program) {
     RnRForm rnRForm1 = new RnRForm();
     rnRForm1.setPeriodBegin(periodBegin);
@@ -165,7 +166,7 @@ public class RnRFormListPresenterTest {
         new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
     when(rnrFormRepository
-        .listInclude(RnRForm.Emergency.Yes, program.getProgramCode(), getTypeForm(presenter)))
+        .listInclude(RnRForm.Emergency.YES, program.getProgramCode(), getTypeForm(presenter)))
         .thenReturn(newArrayList(rnRForm1, rnRForm2));
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
@@ -194,7 +195,7 @@ public class RnRFormListPresenterTest {
         new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
 
     when(rnrFormRepository
-        .listInclude(RnRForm.Emergency.Yes, program.getProgramCode(), getTypeForm(presenter)))
+        .listInclude(RnRForm.Emergency.YES, program.getProgramCode(), getTypeForm(presenter)))
         .thenReturn(newArrayList(rnRForm1, rnRForm2));
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
@@ -226,7 +227,7 @@ public class RnRFormListPresenterTest {
         new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
 
     when(rnrFormRepository
-        .listInclude(RnRForm.Emergency.Yes, program.getProgramCode(), getTypeForm(presenter)))
+        .listInclude(RnRForm.Emergency.YES, program.getProgramCode(), getTypeForm(presenter)))
         .thenReturn(newArrayList(rnRForm1, rnRForm2));
     when(requisitionPeriodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
@@ -256,7 +257,7 @@ public class RnRFormListPresenterTest {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-    RnRForm rnRForm3 = createRnrFormByPeriod(RnRForm.STATUS.DRAFT,
+    RnRForm rnRForm3 = createRnrFormByPeriod(Status.DRAFT,
         periodAplToMay.getBegin().toDate(), periodAplToMay.getEnd().toDate(), program);
     ReportTypeForm typeForm = getTypeForm(presenter);
 
@@ -416,7 +417,7 @@ public class RnRFormListPresenterTest {
         new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
     ReportTypeForm typeForm = getTypeForm(presenter);
 
-    when(rnrFormRepository.listInclude(RnRForm.Emergency.Yes, program.getProgramCode(), typeForm))
+    when(rnrFormRepository.listInclude(RnRForm.Emergency.YES, program.getProgramCode(), typeForm))
         .thenReturn(newArrayList(rnRForm1));
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodMarToApl);
@@ -454,7 +455,7 @@ public class RnRFormListPresenterTest {
         new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
     ReportTypeForm typeForm = getTypeForm(presenter);
 
-    when(rnrFormRepository.listInclude(RnRForm.Emergency.Yes, program.getProgramCode(), typeForm))
+    when(rnrFormRepository.listInclude(RnRForm.Emergency.YES, program.getProgramCode(), typeForm))
         .thenReturn(newArrayList(rnRForm1));
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodMarToApl);
@@ -541,7 +542,7 @@ public class RnRFormListPresenterTest {
         new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
     ReportTypeForm typeForm = getTypeForm(presenter);
 
-    when(rnrFormRepository.listInclude(RnRForm.Emergency.No, program.getProgramCode(), typeForm))
+    when(rnrFormRepository.listInclude(RnRForm.Emergency.NO, program.getProgramCode(), typeForm))
         .thenReturn(new ArrayList<RnRForm>());
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodFebToMar);
@@ -579,7 +580,7 @@ public class RnRFormListPresenterTest {
         new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
     ReportTypeForm typeForm = getTypeForm(presenter);
 
-    when(rnrFormRepository.listInclude(RnRForm.Emergency.No, program.getProgramCode(), typeForm))
+    when(rnrFormRepository.listInclude(RnRForm.Emergency.NO, program.getProgramCode(), typeForm))
         .thenReturn(new ArrayList<RnRForm>());
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodFebToMar);
@@ -616,7 +617,7 @@ public class RnRFormListPresenterTest {
         new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
     ReportTypeForm typeForm = getTypeForm(presenter);
 
-    when(rnrFormRepository.listInclude(RnRForm.Emergency.No, program.getProgramCode(), typeForm))
+    when(rnrFormRepository.listInclude(RnRForm.Emergency.NO, program.getProgramCode(), typeForm))
         .thenReturn(new ArrayList<RnRForm>());
     when(requisitionPeriodService.generateNextPeriod(program.getProgramCode(), null))
         .thenReturn(periodFebToMar);
@@ -648,15 +649,15 @@ public class RnRFormListPresenterTest {
   }
 
   private List<RnRForm> createRnRForms() {
-    return newArrayList(createRnRForm(RnRForm.STATUS.DRAFT),
-        createRnRForm(RnRForm.STATUS.AUTHORIZED), createRnRForm(RnRForm.STATUS.AUTHORIZED));
+    return newArrayList(createRnRForm(Status.DRAFT),
+        createRnRForm(Status.AUTHORIZED), createRnRForm(Status.AUTHORIZED));
   }
 
   private ReportTypeForm getTypeForm(RnRFormListPresenter presenter) throws LMISException {
     return reportTypeFormRepository.queryByCode(presenter.viewProgram.getReportType());
   }
 
-  private RnRForm createRnRForm(RnRForm.STATUS status) {
+  private RnRForm createRnRForm(Status status) {
     Program program = new Program();
     program.setProgramCode("MMIA");
     program.setProgramName("MMIA");

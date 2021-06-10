@@ -15,6 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.presenter;
 
 import android.content.Context;
@@ -25,8 +26,9 @@ import lombok.Getter;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.InternetCheck;
@@ -235,11 +237,11 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     rnRForm.addSignature(signature);
   }
 
-  public RnRForm.STATUS getRnrFormStatus() {
+  public Status getRnrFormStatus() {
     if (rnRForm != null) {
       return rnRForm.getStatus();
     } else {
-      return RnRForm.STATUS.DRAFT;
+      return Status.DRAFT;
     }
   }
 
@@ -257,13 +259,13 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
   public boolean isFormProductEditable() {
     return !isHistoryForm()
-        && getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
+        && getRnrFormStatus().equals(Status.DRAFT)
         && !(getRnRForm() != null && getRnRForm().isEmergency());
   }
 
   public boolean isDraft() {
-    return getRnrFormStatus() == RnRForm.STATUS.DRAFT
-        || getRnrFormStatus() == RnRForm.STATUS.DRAFT_MISSED;
+    return getRnrFormStatus() == Status.DRAFT
+        || getRnrFormStatus() == Status.DRAFT_MISSED;
   }
 
   public boolean isDraftOrDraftMissed() {

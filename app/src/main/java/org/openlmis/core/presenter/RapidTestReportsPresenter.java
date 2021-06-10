@@ -21,7 +21,7 @@ package org.openlmis.core.presenter;
 import static org.openlmis.core.model.Period.BEGIN_DAY;
 import static org.openlmis.core.model.Period.END_DAY;
 import static org.openlmis.core.model.Period.INVENTORY_BEGIN_DAY;
-import static org.openlmis.core.model.ProgramDataForm.STATUS.DRAFT;
+import static org.openlmis.core.model.ProgramDataForm.Status.DRAFT;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
 import static org.openlmis.core.view.viewmodel.RapidTestReportViewModel.Status;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;

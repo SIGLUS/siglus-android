@@ -39,7 +39,7 @@ import rx.schedulers.Schedulers;
 public class InitialInventoryPresenter extends InventoryPresenter {
 
   public static final String EMPTY_STRING = "";
-  private final int FIRST_ELEMENT_POSITION_OF_THE_LIST = 0;
+  private static final int FIRST_ELEMENT_POSITION_OF_THE_LIST = 0;
   private static final int DEFAULT_PRODUCT_ID = 0;
   @Getter
   private List<InventoryViewModel> defaultViewModelList = new ArrayList<>();
@@ -90,7 +90,6 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
       } else {
         viewModel = new InventoryViewModel(product);
-//                viewModel.setViewType(BulkInventoryLotMovementAdapter.ITEM_LIST);
         viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
       }
       viewModel.setChecked(false);
@@ -186,14 +185,12 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     basicProductHeader.setBasic(true);
     InventoryViewModel inventoryModelBasicHeader = new InventoryViewModel(basicProductHeader);
     inventoryModelBasicHeader.setDummyModel(true);
-//        inventoryModelBasicHeader.setViewType(BulkInventoryLotMovementAdapter.ITEM_BASIC_HEADER);
     inventoryViewModelList.add(FIRST_ELEMENT_POSITION_OF_THE_LIST, inventoryModelBasicHeader);
   }
 
   private void addHeaderForNonBasicProducts(int position) {
     InventoryViewModel headerInventoryModel = new InventoryViewModel(Product.dummyProduct());
     headerInventoryModel.setDummyModel(true);
-//        headerInventoryModel.setViewType(BulkInventoryLotMovementAdapter.ITEM_NON_BASIC_HEADER);
     inventoryViewModelList.add(position, headerInventoryModel);
   }
 

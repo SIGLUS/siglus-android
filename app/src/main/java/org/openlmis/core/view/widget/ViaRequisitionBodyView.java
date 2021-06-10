@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -140,7 +141,7 @@ public class ViaRequisitionBodyView extends FrameLayout {
     requisitionProductAdapter.notifyDataSetChanged();
   }
 
-  public void refreshFormList(RnRForm.STATUS status) {
+  public void refreshFormList(Status status) {
     requisitionFormAdapter.updateStatus(status);
   }
 
@@ -150,7 +151,7 @@ public class ViaRequisitionBodyView extends FrameLayout {
     headerApproveAmount.setBackgroundResource(R.color.color_accent);
     headerApproveAmount.setTextColor(getResources().getColor(R.color.color_white));
 
-    refreshFormList(RnRForm.STATUS.SUBMITTED);
+    refreshFormList(Status.SUBMITTED);
   }
 
   public void highLightRequestAmount() {
@@ -159,7 +160,7 @@ public class ViaRequisitionBodyView extends FrameLayout {
     headerApproveAmount.setBackgroundResource(android.R.color.transparent);
     headerApproveAmount.setTextColor(getResources().getColor(R.color.color_text_primary));
 
-    refreshFormList(RnRForm.STATUS.DRAFT);
+    refreshFormList(Status.DRAFT);
   }
 
   public void setHideImmOnTouchListener() {

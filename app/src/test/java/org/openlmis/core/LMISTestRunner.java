@@ -18,6 +18,7 @@
 
 package org.openlmis.core;
 
+import java.lang.reflect.Method;
 import org.junit.runners.model.InitializationError;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.training.TrainingSqliteOpenHelper;
@@ -26,9 +27,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.TestLifecycle;
 import org.robolectric.annotation.Config;
-
-import java.lang.reflect.Method;
-
 import roboguice.RoboGuice;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
@@ -37,50 +35,51 @@ import rx.schedulers.Schedulers;
 
 public class LMISTestRunner extends RobolectricTestRunner {
 
-    /**
-     * Creates a runner to run {@code testClass}. Looks in your working directory for your AndroidManifest.xml file
-     * and res directory by default. Use the {@link Config} annotation to configure.
-     *
-     * @param testClass the test class to be run
-     * @throws InitializationError if junit says so
-     */
-    public LMISTestRunner(Class<?> testClass) throws InitializationError {
-        super(testClass);
+  /**
+   * Creates a runner to run {@code testClass}. Looks in your working directory for your
+   * AndroidManifest.xml file and res directory by default. Use the {@link Config} annotation to
+   * configure.
+   *
+   * @param testClass the test class to be run
+   * @throws InitializationError if junit says so
+   */
+  public LMISTestRunner(Class<?> testClass) throws InitializationError {
+    super(testClass);
+  }
+
+  @Override
+  protected Config buildGlobalConfig() {
+    return new Config.Builder()
+        .setApplication(LMISTestApp.class)
+        .setSdk(19)
+        .build();
+  }
+
+  @Override
+  protected Class<? extends TestLifecycle> getTestLifecycleClass() {
+    return MyTestLifeCycle.class;
+  }
+
+  public static class MyTestLifeCycle extends DefaultTestLifecycle {
+
+    @Override
+    public void beforeTest(Method method) {
+      super.beforeTest(method);
+      RxAndroidPlugins.getInstance().reset();
+      RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+        @Override
+        public Scheduler getMainThreadScheduler() {
+          return Schedulers.immediate();
+        }
+      });
     }
 
     @Override
-    protected Config buildGlobalConfig() {
-        return new Config.Builder()
-                .setApplication(LMISTestApp.class)
-                .setSdk(19)
-                .build();
+    public void afterTest(Method method) {
+      super.afterTest(method);
+      LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
+      TrainingSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
+      RoboGuice.Util.reset();
     }
-
-    @Override
-    protected Class<? extends TestLifecycle> getTestLifecycleClass() {
-        return MyTestLifeCycle.class;
-    }
-
-    public static class MyTestLifeCycle extends DefaultTestLifecycle {
-
-        @Override
-        public void beforeTest(Method method) {
-            super.beforeTest(method);
-            RxAndroidPlugins.getInstance().reset();
-            RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-                @Override
-                public Scheduler getMainThreadScheduler() {
-                    return Schedulers.immediate();
-                }
-            });
-        }
-
-        @Override
-        public void afterTest(Method method) {
-            super.afterTest(method);
-            LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
-            TrainingSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
-            RoboGuice.Util.reset();
-        }
-    }
+  }
 }

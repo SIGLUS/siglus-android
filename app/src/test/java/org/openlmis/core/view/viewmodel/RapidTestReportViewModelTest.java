@@ -23,6 +23,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.Signature;
 import org.openlmis.core.model.builder.ProgramDataColumnBuilder;
@@ -92,22 +93,22 @@ public class RapidTestReportViewModelTest {
     viewModel = new RapidTestReportViewModel(
         Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
     ProgramDataForm rapidTestForm = new ProgramDataForm();
-    rapidTestForm.setStatus(ProgramDataForm.STATUS.DRAFT);
+    rapidTestForm.setStatus(Status.DRAFT);
     viewModel.setRapidTestForm(rapidTestForm);
     assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel.getStatus());
     assertTrue(viewModel.isEditable());
 
-    rapidTestForm.setStatus(ProgramDataForm.STATUS.SUBMITTED);
+    rapidTestForm.setStatus(Status.SUBMITTED);
     viewModel.setRapidTestForm(rapidTestForm);
     assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel.getStatus());
     assertTrue(viewModel.isEditable());
 
-    rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+    rapidTestForm.setStatus(Status.AUTHORIZED);
     viewModel.setRapidTestForm(rapidTestForm);
     assertEquals(RapidTestReportViewModel.Status.COMPLETED, viewModel.getStatus());
     assertFalse(viewModel.isEditable());
 
-    rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+    rapidTestForm.setStatus(Status.AUTHORIZED);
     rapidTestForm.setSynced(true);
     viewModel.setRapidTestForm(rapidTestForm);
     assertEquals(RapidTestReportViewModel.Status.SYNCED, viewModel.getStatus());
@@ -132,7 +133,7 @@ public class RapidTestReportViewModelTest {
     this.viewModel.setItemViewModelList(itemViewModelList);
 
     ProgramDataForm rapidTestForm = new ProgramDataForm();
-    rapidTestForm.setStatus(ProgramDataForm.STATUS.DRAFT);
+    rapidTestForm.setStatus(Status.DRAFT);
     rapidTestForm.setPeriodBegin(this.viewModel.getPeriod().getBegin().toDate());
     rapidTestForm.setPeriodEnd(this.viewModel.getPeriod().getEnd().toDate());
     this.viewModel.setRapidTestForm(rapidTestForm);

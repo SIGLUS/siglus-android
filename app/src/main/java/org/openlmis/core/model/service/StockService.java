@@ -45,8 +45,7 @@ import org.roboguice.shaded.goole.common.collect.Ordering;
 
 public class StockService {
 
-  private final int HIGH_STOCK_CALCULATE_MONTH_QUANTITY = 3;
-  private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 2;
+  private final int highStockCalculateMonthQuantity = 3;
 
   @Inject
   StockRepository stockRepository;
@@ -118,7 +117,7 @@ public class StockService {
       }
 
       issuePerMonths.add(totalIssuesEachMonth);
-      if (issuePerMonths.size() == HIGH_STOCK_CALCULATE_MONTH_QUANTITY) {
+      if (issuePerMonths.size() == highStockCalculateMonthQuantity) {
         break;
       }
     }
@@ -147,8 +146,8 @@ public class StockService {
       List<StockMovementItem> stockMovementItems = stockMovementRepository
           .queryStockMovementsByMovementDate(stockCard.getId(), period.getBegin().toDate(),
               period.getEnd().toDate());
-      //the query above is actually wasteful, the movement items have already been queried and associated to the stock card
-
+      // the query above is actually wasteful, the movement items have already been queried
+      // and associated to the stock card
       if (periodHasStockOut(stockCard, stockMovementItems, period)) {
         return null;
       }

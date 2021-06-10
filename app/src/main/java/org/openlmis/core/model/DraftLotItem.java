@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model;
 
+import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -43,7 +45,7 @@ public class DraftLotItem extends BaseModel {
   @DatabaseField
   String lotNumber;
 
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DB_DATE_FORMAT)
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
   Date expirationDate;
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true)

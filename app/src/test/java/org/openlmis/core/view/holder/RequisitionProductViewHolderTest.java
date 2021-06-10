@@ -20,6 +20,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
@@ -70,7 +71,7 @@ public class RequisitionProductViewHolderTest {
       }
     });
     when(presenter.getRnRForm()).thenReturn(form);
-    when(presenter.getRnrFormStatus()).thenReturn(RnRForm.STATUS.DRAFT);
+    when(presenter.getRnrFormStatus()).thenReturn(Status.DRAFT);
   }
 
   @Test

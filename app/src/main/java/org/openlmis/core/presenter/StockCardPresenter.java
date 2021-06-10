@@ -77,8 +77,8 @@ public class StockCardPresenter extends Presenter {
 
   final Map<String, String> lotsOnHands = new HashMap<>();
 
-  private final static String KEY_DELETED_STOCKCARDS = "deleted_stockcard";
-  private final static String KEY_ALL_STOCKCARDS = "all_stockcard";
+  private static final String KEY_DELETED_STOCKCARDS = "deleted_stockcard";
+  private static final String KEY_ALL_STOCKCARDS = "all_stockcard";
 
   public StockCardPresenter() {
     inventoryViewModels = new ArrayList<>();

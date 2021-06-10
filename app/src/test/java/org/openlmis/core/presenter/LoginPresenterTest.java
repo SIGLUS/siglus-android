@@ -106,9 +106,9 @@ public class LoginPresenterTest {
     retrofitResponse = LMISRestManagerMock
         .createDummyJsonResponse("http://unknown.com", 200, "", "");
     userResponse = new UserResponse();
-    userResponse.setAccess_token("e771dc4c-3df0-40be-a963-f5d4d1a201a6");
-    userResponse.setExpires_in(43199);
-    userResponse.setToken_type("bearer");
+    userResponse.setAccessToken("e771dc4c-3df0-40be-a963-f5d4d1a201a6");
+    userResponse.setExpiresIn(43199);
+    userResponse.setTokenType("bearer");
     userResponse.setReferenceDataUserId("eaed4b29-0ece-457f-b64f-5d49a929d13d");
     userResponse.setUsername("CS_Role1");
 
@@ -162,8 +162,8 @@ public class LoginPresenterTest {
         .builder()
         .username(userResponse.getUsername())
         .password("password1")
-        .accessToken(userResponse.getAccess_token())
-        .tokenType(userResponse.getToken_type())
+        .accessToken(userResponse.getAccessToken())
+        .tokenType(userResponse.getTokenType())
         .referenceDataUserId(userResponse.getReferenceDataUserId())
         .isTokenExpired(false)
         .build();
@@ -192,8 +192,8 @@ public class LoginPresenterTest {
         .builder()
         .username(userResponse.getUsername())
         .password("password1")
-        .accessToken(userResponse.getAccess_token())
-        .tokenType(userResponse.getToken_type())
+        .accessToken(userResponse.getAccessToken())
+        .tokenType(userResponse.getTokenType())
         .referenceDataUserId(userResponse.getReferenceDataUserId())
         .isTokenExpired(false)
         .build();

@@ -20,6 +20,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.Signature;
 import org.openlmis.core.model.User;
@@ -66,7 +67,7 @@ public class ProgramDataFormAdapterTest {
         is(DateUtil.parseString("2016-02-21", DateUtil.DB_DATE_FORMAT)));
     assertThat(programDataForm.getPeriodEnd(),
         is(DateUtil.parseString("2016-03-20", DateUtil.DB_DATE_FORMAT)));
-    assertThat(programDataForm.getStatus(), is(ProgramDataForm.STATUS.AUTHORIZED));
+    assertThat(programDataForm.getStatus(), is(Status.AUTHORIZED));
     assertThat(programDataForm.isSynced(), is(true));
     assertThat(programDataForm.getSubmittedTime(),
         is(DateUtil.parseString("2016-11-25 12:03:00", DateUtil.DATE_TIME_FORMAT)));
@@ -92,7 +93,7 @@ public class ProgramDataFormAdapterTest {
     UserInfoMgr.getInstance().setUser(user);
     ProgramDataForm programDataForm = new ProgramDataFormBuilder().setProgram(program)
         .setPeriod(DateUtil.parseString("2016-03-21", DateUtil.DB_DATE_FORMAT))
-        .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+        .setStatus(Status.AUTHORIZED)
         .setSubmittedTime(DateUtil.parseString("2016-11-25 12:03:00", DateUtil.DATE_TIME_FORMAT))
         .setSignatures("mystique", Signature.TYPE.SUBMITTER)
         .setSignatures("magneto", Signature.TYPE.APPROVER)

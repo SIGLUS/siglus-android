@@ -19,6 +19,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.builder.ProgramDataFormBuilder;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
@@ -100,25 +101,25 @@ public class RapidTestReportsPresenterTest {
         null);
     ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2016-10-21", DateUtil.DB_DATE_FORMAT))
-        .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+        .setStatus(Status.SUBMITTED)
         .setProgram(programRapidTest)
         .build();
     ProgramDataForm programDataForm2 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2016-12-21", DateUtil.DB_DATE_FORMAT))
         .setProgram(programRapidTest)
-        .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+        .setStatus(Status.AUTHORIZED)
         .build();
     ProgramDataForm programDataForm3 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2017-01-21", DateUtil.DB_DATE_FORMAT))
         .setProgram(programRapidTest)
-        .setStatus(ProgramDataForm.STATUS.DRAFT)
+        .setStatus(Status.DRAFT)
         .build();
 
     ProgramDataForm programDataForm4 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2016-11-21", DateUtil.DB_DATE_FORMAT))
         .setProgram(programRapidTest)
         .setSynced(true)
-        .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+        .setStatus(Status.AUTHORIZED)
         .build();
     when(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
         .thenReturn(
@@ -170,7 +171,7 @@ public class RapidTestReportsPresenterTest {
 //                null);
 //        ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
 //                .setPeriod(DateUtil.parseString("2019-10-21", DateUtil.DB_DATE_FORMAT))
-//                .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+//                .setStatus(ProgramDataForm.Status.SUBMITTED)
 //                .setProgram(programRapidTest)
 //                .build();
 //
@@ -178,18 +179,18 @@ public class RapidTestReportsPresenterTest {
 //                .setPeriod(DateUtil.parseString("2019-11-21", DateUtil.DB_DATE_FORMAT))
 //                .setProgram(programRapidTest)
 //                .setSynced(true)
-//                .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+//                .setStatus(ProgramDataForm.Status.AUTHORIZED)
 //                .build();
 //
 //        ProgramDataForm programDataForm2 = new ProgramDataFormBuilder()
 //                .setPeriod(DateUtil.parseString("2019-12-21", DateUtil.DB_DATE_FORMAT))
 //                .setProgram(programRapidTest)
-//                .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+//                .setStatus(ProgramDataForm.Status.AUTHORIZED)
 //                .build();
 //        ProgramDataForm programDataForm3 = new ProgramDataFormBuilder()
 //                .setPeriod(DateUtil.parseString("2020-01-21", DateUtil.DB_DATE_FORMAT))
 //                .setProgram(programRapidTest)
-//                .setStatus(ProgramDataForm.STATUS.DRAFT)
+//                .setStatus(ProgramDataForm.Status.DRAFT)
 //                .build();
 //
 //        when(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
@@ -206,7 +207,7 @@ public class RapidTestReportsPresenterTest {
 //        presenter.loadViewModels();
 //        assertThat(presenter.getViewModelList().size(), is(1));
 //        for (RapidTestReportViewModel rapidTestReportViewModel : presenter.getViewModelList()) {
-//            assertThat(rapidTestReportViewModel.getRapidTestForm().getStatus(), is(ProgramDataForm.STATUS.SUBMITTED));
+//            assertThat(rapidTestReportViewModel.getRapidTestForm().getStatus(), is(ProgramDataForm.Status.SUBMITTED));
 //            assertThat(rapidTestReportViewModel.getStatus(), is(RapidTestReportViewModel.Status.INCOMPLETE));
 //        }
 //    }

@@ -45,7 +45,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;

@@ -1,11 +1,10 @@
 package org.openlmis.core;
 
-
 import java.util.HashMap;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.googleAnalytics.ScreenName;
-import org.openlmis.core.googleAnalytics.TrackerActions;
-import org.openlmis.core.googleAnalytics.TrackerCategories;
+import org.openlmis.core.googleanalytics.ScreenName;
+import org.openlmis.core.googleanalytics.TrackerActions;
+import org.openlmis.core.googleanalytics.TrackerCategories;
 import org.openlmis.core.network.LMISRestApi;
 
 public class LMISTestApp extends LMISApp {
@@ -68,11 +67,6 @@ public class LMISTestApp extends LMISApp {
 
   @Override
   public void trackScreen(ScreenName screenName) {
-  }
-
-  @Override
-  public boolean isQaEnabled() {
-    return false;
   }
 
 }

@@ -55,7 +55,8 @@ public class SharedPreferenceMgr {
   public static final String KEY_USER_FACILITY = "user_facility";
   public static final String KEY_USER_FACILITY_ID = "user_facility_id";
   private static final String KEY_NEEDS_INVENTORY = "init_inventory";
-  private static final String KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS = "has_get_month_stock_cards_synced";
+  private static final String KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS =
+      "has_get_month_stock_cards_synced";
   private static final String KEY_SHOULD_SYNC_LAST_YEAR = "should_sync_last_year";
   private static final String KEY_SHOULD_INITIAL_DATA_CHECK = "key_should_initial_data_check";
   private static final String KEY_IS_SYNCING_LAST_YEAR = "is_syncing_last_year";
@@ -71,15 +72,16 @@ public class SharedPreferenceMgr {
   public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
   public static final String KEY_ENABLE_QA_DEBUG = "enable_qa_debug";
   public static final String LATEST_UPDATE_LOW_STOCK_AVG_TIME = "latest_update_low_stock_avg_time";
-  public static final String LATEST_MONTHLY_CHECK_DIRTY_DATA_TIME = "last_monthly_check_dirty_data_time";
-  public static final String KEY_HAS_LOT_INFO = "has_lot_info";
+  public static final String LATEST_MONTHLY_CHECK_DIRTY_DATA_TIME =
+      "last_monthly_check_dirty_data_time";
   public static final String KEY_HAS_DELETED_OLD_STOCK_MOVEMENT = "has_deleted_old_stock_movement";
   public static final String KEY_HAS_DELETED_OLD_RNR = "has_deleted_old_rnr";
   public static final String KEY_HAS_SYNCED_DOWN_RAPID_TESTS = "syncedRapidTests";
   public static final String LATEST_SYNCED_DOWN_REPORT_TYPE = "syncedReport";
   public static final String MONTH_OFFSET_DEFINED_OLD_DATA = "month_offset_that_defined_old_data";
-  public static final String KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR = "stock_card_last_year_sync_error";
-  public static final String KEY_STOCK_MOVENENT_SYNC_ERROR = "stock_movement_sync_error";
+  public static final String KEY_STOCK_CARD_LAST_YEAR_SYNC_ERROR =
+      "stock_card_last_year_sync_error";
+  public static final String KEY_STOCK_MOVEMENT_SYNC_ERROR = "stock_movement_sync_error";
   public static final String KEY_HAS_COPIED_TRAINING_DB = "has_copied_training_db";
   public static final String KEY_LAST_UPDATE = "last_update";
   public static final String KEY_MD5_TIME = "md5_time";
@@ -92,7 +94,7 @@ public class SharedPreferenceMgr {
   public static final String KEY_DELETED_PRODUCT_TIME = "deleted_product_time";
   public static final String KEY_KEEP_MOVEMENT_LINE = "keep_movement_line";
 
-  final int MONTH_OFFSET = 13;
+  final int monthOffset = 13;
   protected StockRepository stockRepository;
 
   @Inject
@@ -318,7 +320,7 @@ public class SharedPreferenceMgr {
   }
 
   public int getMonthOffsetThatDefinedOldData() {
-    return sharedPreferences.getInt(MONTH_OFFSET_DEFINED_OLD_DATA, MONTH_OFFSET);
+    return sharedPreferences.getInt(MONTH_OFFSET_DEFINED_OLD_DATA, monthOffset);
   }
 
   public void setStockLastSyncTime() {
@@ -407,11 +409,11 @@ public class SharedPreferenceMgr {
   }
 
   public String getStockMovementSyncError() {
-    return sharedPreferences.getString(SharedPreferenceMgr.KEY_STOCK_MOVENENT_SYNC_ERROR, "");
+    return sharedPreferences.getString(SharedPreferenceMgr.KEY_STOCK_MOVEMENT_SYNC_ERROR, "");
   }
 
   public void setStockMovementSyncError(String msg) {
-    sharedPreferences.edit().putString(SharedPreferenceMgr.KEY_STOCK_MOVENENT_SYNC_ERROR, msg)
+    sharedPreferences.edit().putString(SharedPreferenceMgr.KEY_STOCK_MOVEMENT_SYNC_ERROR, msg)
         .apply();
   }
 

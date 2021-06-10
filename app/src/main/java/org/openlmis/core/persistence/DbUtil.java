@@ -56,36 +56,32 @@ public class DbUtil {
     return connectionSource;
   }
 
-  public <DomainType, ReturnType> ReturnType withDao(
-      Class<DomainType> domainClass, Operation<DomainType, ReturnType> operation)
-      throws LMISException {
+  public <T, K> K withDao(Class<T> domainClass, Operation<T, K> operation) throws LMISException {
     SQLiteOpenHelper openHelper = LmisSqliteOpenHelper.getInstance(context);
     try {
-      Dao<DomainType, String> dao = initialiseDao(openHelper, domainClass);
+      Dao<T, String> dao = initialiseDao(openHelper, domainClass);
       return operation.operate(dao);
     } catch (SQLException e) {
       throw new LMISException(e);
     }
   }
 
-  public <DomainType, ReturnType> ReturnType withDao(
-      Context context, Class<DomainType> domainClass, Operation<DomainType, ReturnType> operation)
+  public <T, K> K withDao(Context context, Class<T> domainClass, Operation<T, K> operation)
       throws LMISException {
     SQLiteOpenHelper openHelper = LmisSqliteOpenHelper.getInstance(context);
     try {
-      Dao<DomainType, String> dao = initialiseDao(openHelper, domainClass);
+      Dao<T, String> dao = initialiseDao(openHelper, domainClass);
       return operation.operate(dao);
     } catch (SQLException e) {
       throw new LMISException(e);
     }
   }
 
-  public <DomainType, ReturnType> ReturnType withDaoAsBatch(
-      Context context, Class<DomainType> domainClass,
-      final Operation<DomainType, ReturnType> operation) throws LMISException {
+  public <T, K> K withDaoAsBatch(Context context, Class<T> domainClass,
+      final Operation<T, K> operation) throws LMISException {
     SQLiteOpenHelper openHelper = LmisSqliteOpenHelper.getInstance(context);
     try {
-      final Dao<DomainType, String> dao = initialiseDao(openHelper, domainClass);
+      final Dao<T, String> dao = initialiseDao(openHelper, domainClass);
       return dao.callBatchTasks(() -> operation.operate(dao));
     } catch (SQLException e) {
       throw new LMISException(e);
@@ -94,12 +90,11 @@ public class DbUtil {
     }
   }
 
-  public <DomainType, ReturnType> ReturnType withDaoAsBatch(
-      Class<DomainType> domainClass, final Operation<DomainType, ReturnType> operation)
+  public <T, K> K withDaoAsBatch(Class<T> domainClass, final Operation<T, K> operation)
       throws LMISException {
     SQLiteOpenHelper openHelper = LmisSqliteOpenHelper.getInstance(context);
     try {
-      final Dao<DomainType, String> dao = initialiseDao(openHelper, domainClass);
+      final Dao<T, String> dao = initialiseDao(openHelper, domainClass);
       return dao.callBatchTasks(() -> operation.operate(dao));
     } catch (SQLException e) {
       throw new LMISException(e);
@@ -108,8 +103,8 @@ public class DbUtil {
     }
   }
 
-  public interface Operation<DomainType, ReturnType> {
+  public interface Operation<T, K> {
 
-    ReturnType operate(Dao<DomainType, String> dao) throws SQLException, LMISException;
+    K operate(Dao<T, String> dao) throws SQLException, LMISException;
   }
 }

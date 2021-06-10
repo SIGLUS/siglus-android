@@ -56,9 +56,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
         inventoryViewModelList.addAll(FluentIterable
             .from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm())
             .filter(product -> !existingProducts.contains(product.getCode()))
-            .transform(
-                (Function<Product, InventoryViewModel>) product -> new AddDrugsToViaInventoryViewModel(
-                    product))
+            .transform((Function<Product, InventoryViewModel>) AddDrugsToViaInventoryViewModel::new)
             .toList());
         subscriber.onNext(null);
         subscriber.onCompleted();
@@ -72,20 +70,21 @@ public class AddDrugsToVIAPresenter extends Presenter {
 
   public Observable<ArrayList<RnrFormItem>> convertViewModelsToRnrFormItems() {
     return Observable.just(new ArrayList<>(
-        FluentIterable.from(inventoryViewModelList)
-            .filter(viewModel -> viewModel.isChecked()).transform(inventoryViewModel -> {
-          RnrFormItem rnrFormItem = new RnrFormItem();
-          try {
-            Product product = productRepository.getByCode(inventoryViewModel.getFnm());
-            rnrFormItem.setProduct(product);
-            rnrFormItem.setRequestAmount(
-                Long.valueOf(((AddDrugsToViaInventoryViewModel) inventoryViewModel).getQuantity()));
-          } catch (LMISException e) {
-            new LMISException(e, "AddDrugsToVIAPresenter,convertViewModelsToRnrFormItems")
-                .reportToFabric();
-          }
-          return rnrFormItem;
-        }).toList()))
+        FluentIterable.from(inventoryViewModelList).filter(InventoryViewModel::isChecked)
+            .transform(inventoryViewModel -> {
+              RnrFormItem rnrFormItem = new RnrFormItem();
+              try {
+                Product product = productRepository.getByCode(inventoryViewModel.getFnm());
+                rnrFormItem.setProduct(product);
+                rnrFormItem.setRequestAmount(
+                    Long.valueOf(
+                        ((AddDrugsToViaInventoryViewModel) inventoryViewModel).getQuantity()));
+              } catch (LMISException e) {
+                new LMISException(e, "AddDrugsToVIAPresenter,convertViewModelsToRnrFormItems")
+                    .reportToFabric();
+              }
+              return rnrFormItem;
+            }).toList()))
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread());
   }

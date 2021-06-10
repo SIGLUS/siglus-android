@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.DumpFragmentActivity;
@@ -41,7 +41,7 @@ public class RequisitionFormViewHolderTest {
 
   @Test
   public void shouldHighLightRequestAmount() {
-    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+    viewHolder.populate(viewModel, Status.DRAFT);
 
     int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
     int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
@@ -57,7 +57,7 @@ public class RequisitionFormViewHolderTest {
 
   @Test
   public void shouldHighLightApprovedAmount() {
-    viewHolder.populate(viewModel, RnRForm.STATUS.SUBMITTED);
+    viewHolder.populate(viewModel, Status.SUBMITTED);
 
     int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
     int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
@@ -73,7 +73,7 @@ public class RequisitionFormViewHolderTest {
   @Test
   public void shouldUpdateApprovedAmountWhenRequestAmountChanged() {
 
-    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+    viewHolder.populate(viewModel, Status.DRAFT);
     viewHolder.requestAmount.setText("123");
 
     assertThat(viewModel.getRequestAmount(), is("123"));
@@ -83,7 +83,7 @@ public class RequisitionFormViewHolderTest {
 
   @Test
   public void shouldUpdateApprovedAmountModelWhenTextChanged() {
-    viewHolder.populate(viewModel, RnRForm.STATUS.SUBMITTED);
+    viewHolder.populate(viewModel, Status.SUBMITTED);
 
     viewHolder.approvedAmount.setText("123");
 
@@ -93,12 +93,12 @@ public class RequisitionFormViewHolderTest {
 
   @Test
   public void shouldOnlyShowAdjustIconWhenAdjustmentQuantityIsNotZero() throws Exception {
-    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+    viewHolder.populate(viewModel, Status.DRAFT);
 
     assertThat(viewHolder.adjustTheoreticalIcon.getVisibility(), is(View.GONE));
 
     viewModel.setAdjustmentViewModels(Arrays.asList(generateAdjustmentViewModel()));
-    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+    viewHolder.populate(viewModel, Status.DRAFT);
 
     assertThat(viewHolder.adjustTheoreticalIcon.getVisibility(), is(View.VISIBLE));
   }
@@ -107,7 +107,7 @@ public class RequisitionFormViewHolderTest {
   @Test
   public void shouldShowPopTipsTotalReminderIconClicked() {
     viewModel.setAdjustmentViewModels(Arrays.asList(generateAdjustmentViewModel()));
-    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+    viewHolder.populate(viewModel, Status.DRAFT);
 
     viewHolder.adjustTheoreticalIcon.performClick();
 

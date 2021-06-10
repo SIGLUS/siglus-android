@@ -25,7 +25,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.keyboard.KeyboardHeightObserver;

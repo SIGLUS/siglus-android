@@ -18,7 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.InventoryRepository;
@@ -98,7 +98,7 @@ public class RnRFormListPresenter extends Presenter {
   protected List<RnRFormViewModel> buildFormListViewModels() throws LMISException {
     List<RnRFormViewModel> rnRFormViewModels = new ArrayList<>();
     ReportTypeForm typeForm = reportTypeFormRepository.queryByCode(viewProgram.getReportType());
-    List<RnRForm> rnRForms = repository.listInclude(RnRForm.Emergency.Yes, programCode, typeForm);
+    List<RnRForm> rnRForms = repository.listInclude(RnRForm.Emergency.YES, programCode, typeForm);
 
     generateRnrViewModelByRnrFormsInDB(rnRFormViewModels, rnRForms);
 
@@ -234,9 +234,9 @@ public class RnRFormListPresenter extends Presenter {
   private boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB(ReportTypeForm reportTypeForm)
       throws LMISException {
     List<RnRForm> rnRForms = repository
-        .listInclude(RnRForm.Emergency.No, programCode, reportTypeForm);
+        .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
     return rnRForms.isEmpty()
-        || rnRForms.get(rnRForms.size() - 1).getStatus() == RnRForm.STATUS.AUTHORIZED;
+        || rnRForms.get(rnRForms.size() - 1).getStatus() == Status.AUTHORIZED;
   }
 
   public Observable<Boolean> hasMissedPeriod() {

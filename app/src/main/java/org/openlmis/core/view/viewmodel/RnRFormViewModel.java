@@ -26,6 +26,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
@@ -71,7 +72,7 @@ public class RnRFormViewModel {
   }
 
   public void setType(RnRForm form) {
-    if (form.getStatus() == RnRForm.STATUS.AUTHORIZED) {
+    if (form.getStatus() == Status.AUTHORIZED) {
       this.type = form.isSynced() ? TYPE_SYNCED_HISTORICAL : TYPE_UNSYNCED_HISTORICAL;
     } else if (form.isDraft()) {
       this.type = TYPE_DRAFT;

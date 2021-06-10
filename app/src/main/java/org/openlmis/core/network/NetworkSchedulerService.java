@@ -29,8 +29,8 @@ import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.util.Log;
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.googleAnalytics.TrackerActions;
-import org.openlmis.core.googleAnalytics.TrackerCategories;
+import org.openlmis.core.googleanalytics.TrackerActions;
+import org.openlmis.core.googleanalytics.TrackerCategories;
 import org.openlmis.core.service.SyncService;
 import roboguice.RoboGuice;
 

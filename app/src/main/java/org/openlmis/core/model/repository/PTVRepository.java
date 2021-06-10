@@ -141,7 +141,7 @@ public class PTVRepository extends RnrFormRepository {
 
 
   private Long getLastRnrInventory(Product product) throws LMISException {
-    List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.No, programCode);
+    List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
     if (rnRForms.isEmpty() || rnRForms.size() == 1) {
       return null;
     }

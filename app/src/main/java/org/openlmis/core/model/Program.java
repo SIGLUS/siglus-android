@@ -18,7 +18,6 @@
 
 package org.openlmis.core.model;
 
-
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;

@@ -18,13 +18,11 @@
 
 package org.openlmis.core.presenter;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.view.BaseView;
 import rx.Subscription;
-
 
 public abstract class Presenter {
 

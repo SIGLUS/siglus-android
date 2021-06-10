@@ -18,7 +18,6 @@
 
 package org.openlmis.core.model.repository;
 
-
 import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
 import static org.openlmis.core.utils.Constants.TEST_KIT_PROGRAM_CODE;
 

@@ -23,7 +23,7 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.Date;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.VIARequisitionFragment;

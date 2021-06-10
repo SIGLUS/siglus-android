@@ -15,8 +15,8 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
-package org.openlmis.core.manager;
 
+package org.openlmis.core.manager;
 
 import com.microsoft.appcenter.AppCenter;
 import org.openlmis.core.BuildConfig;

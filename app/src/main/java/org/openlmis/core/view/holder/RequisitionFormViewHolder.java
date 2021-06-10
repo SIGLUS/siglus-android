@@ -30,7 +30,7 @@ import android.widget.TextView;
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -76,7 +76,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     approvedAmount.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
   }
 
-  public void populate(RequisitionFormItemViewModel entry, RnRForm.STATUS status) {
+  public void populate(RequisitionFormItemViewModel entry, Status status) {
     productCode.setText(entry.getFmn());
     productName.setText(entry.getProductName());
 
@@ -116,7 +116,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
   }
 
   private void populateRequestApprovedAmount(RequisitionFormItemViewModel entry,
-      RnRForm.STATUS status) {
+      Status status) {
     MyTextWatcher mySimpleTextWatcher = new MyTextWatcher(entry, status);
     requestAmount.removeTextChangedListener(mySimpleTextWatcher);
     approvedAmount.removeTextChangedListener(mySimpleTextWatcher);
@@ -125,11 +125,11 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     requestAmount.setError(null);
     approvedAmount.setText(entry.getApprovedAmount());
 
-    if (status == RnRForm.STATUS.SUBMITTED) {
+    if (status == Status.SUBMITTED) {
       showDisabledAmount(requestAmount);
       showEnabledAmount(approvedAmount);
       approvedAmount.addTextChangedListener(mySimpleTextWatcher);
-    } else if (status == RnRForm.STATUS.DRAFT) {
+    } else if (status == Status.DRAFT) {
       showEnabledAmount(requestAmount);
       showDisabledAmount(approvedAmount);
       requestAmount.addTextChangedListener(mySimpleTextWatcher);
@@ -137,11 +137,11 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
   }
 
   private void fakePopulateRequestApprovedAmount(RequisitionFormItemViewModel entry,
-      RnRForm.STATUS status) {
-    if (status == RnRForm.STATUS.SUBMITTED_MISSED) {
-      status = RnRForm.STATUS.SUBMITTED;
-    } else if (status == RnRForm.STATUS.DRAFT_MISSED) {
-      status = RnRForm.STATUS.DRAFT;
+      Status status) {
+    if (status == Status.SUBMITTED_MISSED) {
+      status = Status.SUBMITTED;
+    } else if (status == Status.DRAFT_MISSED) {
+      status = Status.DRAFT;
     }
 
     MyTextWatcher mySimpleTextWatcher = new MyTextWatcher(entry, status);
@@ -152,12 +152,12 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     requestAmount.setError(null);
     approvedAmount.setText(entry.getApprovedAmount());
 
-    if (status == RnRForm.STATUS.SUBMITTED) {
+    if (status == Status.SUBMITTED) {
       showDisabledAmount(requestAmount);
       showEnabledAmount(approvedAmount);
       approvedAmount.addTextChangedListener(mySimpleTextWatcher);
 
-    } else if (status == RnRForm.STATUS.DRAFT) {
+    } else if (status == Status.DRAFT) {
       requestAmount.setEnabled(true);
       showEnabledAmount(requestAmount);
       showDisabledAmount(approvedAmount);
@@ -178,9 +178,9 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
   class MyTextWatcher extends SingleTextWatcher {
 
     private final RequisitionFormItemViewModel entry;
-    private final RnRForm.STATUS status;
+    private final Status status;
 
-    public MyTextWatcher(RequisitionFormItemViewModel entry, RnRForm.STATUS status) {
+    public MyTextWatcher(RequisitionFormItemViewModel entry, Status status) {
       this.entry = entry;
       this.status = status;
     }
@@ -189,9 +189,9 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     public void afterTextChanged(Editable editable) {
       hasDataChanged = true;
       String value = editable.toString();
-      if (status == RnRForm.STATUS.SUBMITTED) {
+      if (status == Status.SUBMITTED) {
         entry.setApprovedAmount(value);
-      } else if (status == RnRForm.STATUS.DRAFT) {
+      } else if (status == Status.DRAFT) {
         approvedAmount.setText(value);
         entry.setApprovedAmount(value);
         entry.setRequestAmount(value);

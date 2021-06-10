@@ -25,7 +25,7 @@ import android.content.Intent;
 import android.view.View;
 import com.viethoa.RecyclerViewFastScroller;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;

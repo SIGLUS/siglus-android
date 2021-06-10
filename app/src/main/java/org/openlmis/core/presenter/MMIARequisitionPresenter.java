@@ -114,7 +114,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
   public RnRForm getLastRnrForm() {
     try {
-      List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, "MMIA");
+      List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, "MMIA");
       if (rnRForms == null || rnRForms.size() == 1) {
         return null;
       }

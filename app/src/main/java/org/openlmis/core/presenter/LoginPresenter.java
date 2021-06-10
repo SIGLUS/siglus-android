@@ -155,9 +155,7 @@ public class LoginPresenter extends Presenter {
 
   private void authorizeAndLoginUserLocal(User user) {
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-//            if (userRepository.getLocalUser() == null) {
       TrainingEnvironmentHelper.getInstance().setUpData();
-//            }
     }
     setDefaultReportType();
     User localUser = userRepository.mapUserFromLocal(user);
@@ -191,11 +189,11 @@ public class LoginPresenter extends Presenter {
             new Callback<UserResponse>() {
               @Override
               public void success(UserResponse userResponse, Response response) {
-                if (userResponse == null || userResponse.getAccess_token() == null) {
+                if (userResponse == null || userResponse.getAccessToken() == null) {
                   onLoginFailed();
                 } else {
-                  user.setAccessToken(userResponse.getAccess_token());
-                  user.setTokenType(userResponse.getToken_type());
+                  user.setAccessToken(userResponse.getAccessToken());
+                  user.setTokenType(userResponse.getTokenType());
                   user.setReferenceDataUserId(userResponse.getReferenceDataUserId());
                   user.setIsTokenExpired(false);
 
@@ -318,6 +316,9 @@ public class LoginPresenter extends Presenter {
             }
             goToNextPage();
             break;
+
+          default:
+            // do nothing
         }
       }
     };

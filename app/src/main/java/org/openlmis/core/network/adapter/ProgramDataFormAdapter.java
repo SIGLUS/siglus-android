@@ -37,6 +37,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
@@ -86,7 +87,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>,
       new LMISException(e, "ProgramDataFormAdapter.deserialize").reportToFabric();
       throw new JsonParseException("can not find Program by programCode");
     }
-    programDataForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+    programDataForm.setStatus(Status.AUTHORIZED);
     programDataForm.setSynced(true);
     for (ProgramDataFormItem item : programDataForm.getProgramDataFormItemListWrapper()) {
       item.setForm(programDataForm);
@@ -121,16 +122,16 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>,
     JsonObject root = gson.toJsonTree(programDataForm).getAsJsonObject();
     String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
     String programCode = programDataForm.getProgram().getProgramCode();
-    String periodBegin = DateUtil
-        .formatDate(programDataForm.getPeriodBegin(), DateUtil.DB_DATE_FORMAT);
-    String periodEnd = DateUtil.formatDate(programDataForm.getPeriodEnd(), DateUtil.DB_DATE_FORMAT);
-    String submittedTime = DateUtil
-        .formatDate(programDataForm.getSubmittedTime(), DateUtil.ISO_BASIC_DATE_TIME_FORMAT);
 
     root.addProperty("facilityId", facilityId);
     if (programCode.equals(Constants.RAPID_TEST_CODE)) {
       programCode = Constants.RAPID_TEST_OLD_CODE;
     }
+    String periodBegin = DateUtil
+        .formatDate(programDataForm.getPeriodBegin(), DateUtil.DB_DATE_FORMAT);
+    String periodEnd = DateUtil.formatDate(programDataForm.getPeriodEnd(), DateUtil.DB_DATE_FORMAT);
+    String submittedTime = DateUtil
+        .formatDate(programDataForm.getSubmittedTime(), DateUtil.ISO_BASIC_DATE_TIME_FORMAT);
     root.addProperty("programCode", programCode);
     root.addProperty("periodBegin", periodBegin);
     root.addProperty("periodEnd", periodEnd);

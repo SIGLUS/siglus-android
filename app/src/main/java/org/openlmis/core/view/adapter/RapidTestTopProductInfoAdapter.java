@@ -30,7 +30,7 @@ import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
@@ -92,7 +92,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     etStock.setText(getValue(formBasicItem.getInitialAmount()));
     etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && (
         formBasicItem.getForm().getStatus() == null
-            || formBasicItem.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT));
+            || formBasicItem.getForm().getStatus() == Status.DRAFT));
     if (Boolean.TRUE.equals(formBasicItem.getIsCustomAmount())) {
       etStock.addTextChangedListener(new SimpleTextWatcher() {
         @Override
@@ -106,7 +106,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     //config etInventory
     etInventory.setText(getValue(formBasicItem.getInventory()));
     etInventory.setEnabled(formBasicItem.getForm().getStatus() == null
-        || formBasicItem.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT);
+        || formBasicItem.getForm().getStatus() == Status.DRAFT);
     etInventory.addTextChangedListener(new SimpleTextWatcher() {
       @Override
       public void afterTextChanged(Editable s) {

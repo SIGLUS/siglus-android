@@ -23,6 +23,7 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.DumpFragmentActivity;
@@ -77,7 +78,7 @@ public class MMIARegimeListTest {
   @Test
   public void shouldNotShowTheDelIconWhenTheFormIsAuthorised() {
     RnRForm rnRForm = new RnRForm();
-    rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+    rnRForm.setStatus(Status.AUTHORIZED);
 
     rnRForm.setRegimenItemListWrapper(getRegimeTypeList());
     rnRForm.setRegimenThreeLinesWrapper(getRegimeItemThreeLines());
@@ -92,7 +93,7 @@ public class MMIARegimeListTest {
   @Test
   public void shouldShowTheCustomRegimenWhenTheFormIsMissedAndNotAuthorised() {
     RnRForm rnRForm = new RnRForm();
-    rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
+    rnRForm.setStatus(Status.DRAFT_MISSED);
 
     rnRForm.setRegimenItemListWrapper(getRegimeTypeList());
     rnRForm.setRegimenThreeLinesWrapper(getRegimeItemThreeLines());
@@ -194,7 +195,7 @@ public class MMIARegimeListTest {
   @Test
   public void shouldShowTheDelIconWhenTheFormIsNotAuthorised() {
     RnRForm rnRForm = new RnRForm();
-    rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+    rnRForm.setStatus(Status.DRAFT);
     rnRForm.setRegimenItemListWrapper(newArrayList(generateRegimenItem()));
     rnRForm.setRegimenThreeLinesWrapper(getRegimeItemThreeLines());
 

@@ -20,35 +20,37 @@
 
 package org.openlmis.core.network;
 
-import org.openlmis.core.model.Program;
-
+import androidx.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import androidx.annotation.Nullable;
+import org.openlmis.core.model.Program;
 
 /**
- * cache program from facility info api response
- * note: only for network response adapter,
- *      if you want get program in other place, please use {@link org.openlmis.core.model.repository.ProgramRepository}
+ * cache program from facility info api response note: only for network response adapter, if you
+ * want get program in other place, please use {@link org.openlmis.core.model.repository.ProgramRepository}
  */
 public final class ProgramCacheManager {
 
-    static final Map<String, Program> PROGRAMS_CACHE = new ConcurrentHashMap<>();
+  static final Map<String, Program> PROGRAMS_CACHE = new ConcurrentHashMap<>();
 
-    private ProgramCacheManager() {
-    }
+  private ProgramCacheManager() {
+  }
 
-    public static void addPrograms(List<Program> programs) {
-        if (programs == null) return;
-        for (Program program : programs) {
-            PROGRAMS_CACHE.put(program.getProgramCode(), program);
-        }
+  public static void addPrograms(List<Program> programs) {
+    if (programs == null) {
+      return;
     }
+    for (Program program : programs) {
+      PROGRAMS_CACHE.put(program.getProgramCode(), program);
+    }
+  }
 
-    @Nullable
-    public static Program getPrograms(@Nullable String programCode) {
-        if (PROGRAMS_CACHE.containsKey(programCode)) return PROGRAMS_CACHE.get(programCode);
-        return null;
+  @Nullable
+  public static Program getPrograms(@Nullable String programCode) {
+    if (PROGRAMS_CACHE.containsKey(programCode)) {
+      return PROGRAMS_CACHE.get(programCode);
     }
+    return null;
+  }
 }

@@ -38,14 +38,14 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.widget.MMIARegimeList;
-import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
+import org.openlmis.core.view.widget.MMIARegimeThreeLineList.CountType;
 
 @Getter
 @Setter
 @DatabaseTable(tableName = "rnr_forms")
 public class RnRForm extends BaseModel {
 
-  public enum STATUS {
+  public enum Status {
     DRAFT,
     SUBMITTED,
     AUTHORIZED,
@@ -91,7 +91,7 @@ public class RnRForm extends BaseModel {
   private String comments;
 
   @DatabaseField(defaultValue = "DRAFT")
-  private STATUS status;
+  private Status status;
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private Program program;
@@ -119,15 +119,15 @@ public class RnRForm extends BaseModel {
   private boolean emergency;
 
   public boolean isDraft() {
-    return getStatus() == STATUS.DRAFT || getStatus() == STATUS.DRAFT_MISSED;
+    return getStatus() == Status.DRAFT || getStatus() == Status.DRAFT_MISSED;
   }
 
   public boolean isMissed() {
-    return getStatus() == STATUS.DRAFT_MISSED || getStatus() == STATUS.SUBMITTED_MISSED;
+    return getStatus() == Status.DRAFT_MISSED || getStatus() == Status.SUBMITTED_MISSED;
   }
 
   public boolean isSubmitted() {
-    return getStatus() == STATUS.SUBMITTED || getStatus() == STATUS.SUBMITTED_MISSED;
+    return getStatus() == Status.SUBMITTED || getStatus() == Status.SUBMITTED_MISSED;
   }
 
   public boolean canRemoveAddedProducts() {
@@ -135,7 +135,7 @@ public class RnRForm extends BaseModel {
   }
 
   public boolean isAuthorized() {
-    return getStatus() == STATUS.AUTHORIZED;
+    return getStatus() == Status.AUTHORIZED;
   }
 
   public static RnRForm init(Program program, Date generateDate) {
@@ -154,21 +154,13 @@ public class RnRForm extends BaseModel {
     rnRForm.periodEnd = period.getEnd().toDate();
     rnRForm.setEmergency(isEmergency);
 
-    if (isMissed(period) && !isEmergency) {
-      rnRForm.status = RnRForm.STATUS.DRAFT_MISSED;
+    if (isMissedPeriod(period) && !isEmergency) {
+      rnRForm.status = Status.DRAFT_MISSED;
     } else {
-      rnRForm.status = RnRForm.STATUS.DRAFT;
+      rnRForm.status = Status.DRAFT;
     }
 
     return rnRForm;
-  }
-
-  private static boolean isMissed(Period period) {
-    DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
-    DateTime periodEnd = period.getEnd();
-    int monthOffset = DateUtil.calculateMonthOffset(today, periodEnd);
-    return monthOffset > 0 || (monthOffset == 0
-        && today.getDayOfMonth() >= Period.INVENTORY_END_DAY_NEXT);
   }
 
   public static long calculateTotalRegimenAmount(Collection<RegimenItem> list,
@@ -191,15 +183,15 @@ public class RnRForm extends BaseModel {
   }
 
   public static long caculateTotalRegimenTypeAmount(Collection<RegimenItemThreeLines> list,
-      MMIARegimeThreeLineList.COUNTTYPE counttype) {
+      CountType counttype) {
     long totalNumber = 0;
-    if (MMIARegimeThreeLineList.COUNTTYPE.PATIENTSAMOUNT == counttype) {
+    if (CountType.PATIENTSAMOUNT == counttype) {
       for (RegimenItemThreeLines item : list) {
         if (item.getPatientsAmount() != null) {
           totalNumber += item.getPatientsAmount();
         }
       }
-    } else if (MMIARegimeThreeLineList.COUNTTYPE.PHARMACYAMOUNT == counttype) {
+    } else if (CountType.PHARMACYAMOUNT == counttype) {
       for (RegimenItemThreeLines item : list) {
         if (item.getPharmacyAmount() != null) {
           totalNumber += item.getPharmacyAmount();
@@ -218,31 +210,6 @@ public class RnRForm extends BaseModel {
     } else {
       return sortProductList(rnrFormItemListWrapper);
     }
-  }
-
-  private List<RnrFormItem> sortProductList(List<RnrFormItem> rnrFormItems) {
-    List<RnrFormItem> existingList = newArrayList(
-        from(rnrFormItems).filter(rnrFormItem -> !rnrFormItem.isManualAdd()).toList());
-
-    List<RnrFormItem> newlyAddedList = newArrayList(
-        from(rnrFormItems).filter(rnrFormItem -> rnrFormItem.isManualAdd()).toList());
-    sortRnrItemsListBasedOnProductCode(existingList);
-    sortRnrItemsListBasedOnProductCode(newlyAddedList);
-    rnrFormItems = existingList;
-    rnrFormItems.addAll(newlyAddedList);
-    return rnrFormItems;
-  }
-
-  private void sortRnrItemsListBasedOnProductCode(List<RnrFormItem> rnrFormItems) {
-    Collections.sort(rnrFormItems, (r1, r2) -> {
-      if (r1.getProduct() != null && r2.getProduct() != null) {
-        String code1 = r1.getProduct().getCode();
-        String code2 = r2.getProduct().getCode();
-        return code1.compareTo(code2);
-      } else {
-        return 0;
-      }
-    });
   }
 
   public List<BaseInfoItem> getBaseInfoItemListWrapper() {
@@ -297,11 +264,11 @@ public class RnRForm extends BaseModel {
     if (isDraft()) {
       getSignaturesWrapper()
           .add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.SUBMITTER));
-      status = isMissed() ? RnRForm.STATUS.SUBMITTED_MISSED : RnRForm.STATUS.SUBMITTED;
+      status = isMissed() ? Status.SUBMITTED_MISSED : Status.SUBMITTED;
     } else {
       getSignaturesWrapper()
           .add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.APPROVER));
-      status = RnRForm.STATUS.AUTHORIZED;
+      status = Status.AUTHORIZED;
       submittedTime = DateUtil.today();
     }
   }
@@ -311,17 +278,51 @@ public class RnRForm extends BaseModel {
   }
 
   public enum Emergency {
-    Yes(true),
-    No(false);
+    YES(true),
+    NO(false);
 
-    public boolean Emergency() {
-      return Emergency;
+    public boolean emergency() {
+      return emergency;
     }
 
-    private final boolean Emergency;
+    private final boolean emergency;
 
-    Emergency(boolean Emergency) {
-      this.Emergency = Emergency;
+    Emergency(boolean emergency) {
+      this.emergency = emergency;
     }
+  }
+
+
+  private static boolean isMissedPeriod(Period period) {
+    DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+    DateTime periodEnd = period.getEnd();
+    int monthOffset = DateUtil.calculateMonthOffset(today, periodEnd);
+    return monthOffset > 0 || (monthOffset == 0
+        && today.getDayOfMonth() >= Period.INVENTORY_END_DAY_NEXT);
+  }
+
+  private List<RnrFormItem> sortProductList(List<RnrFormItem> rnrFormItems) {
+    List<RnrFormItem> existingList = newArrayList(
+        from(rnrFormItems).filter(rnrFormItem -> !rnrFormItem.isManualAdd()).toList());
+
+    List<RnrFormItem> newlyAddedList = newArrayList(
+        from(rnrFormItems).filter(rnrFormItem -> rnrFormItem.isManualAdd()).toList());
+    sortRnrItemsListBasedOnProductCode(existingList);
+    sortRnrItemsListBasedOnProductCode(newlyAddedList);
+    rnrFormItems = existingList;
+    rnrFormItems.addAll(newlyAddedList);
+    return rnrFormItems;
+  }
+
+  private void sortRnrItemsListBasedOnProductCode(List<RnrFormItem> rnrFormItems) {
+    Collections.sort(rnrFormItems, (r1, r2) -> {
+      if (r1.getProduct() != null && r2.getProduct() != null) {
+        String code1 = r1.getProduct().getCode();
+        String code2 = r2.getProduct().getCode();
+        return code1.compareTo(code2);
+      } else {
+        return 0;
+      }
+    });
   }
 }

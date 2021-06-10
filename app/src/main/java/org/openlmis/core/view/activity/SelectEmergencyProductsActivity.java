@@ -30,7 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.Constants;

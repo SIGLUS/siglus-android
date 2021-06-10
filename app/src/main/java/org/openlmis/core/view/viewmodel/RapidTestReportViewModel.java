@@ -72,7 +72,7 @@ public class RapidTestReportViewModel implements Serializable {
 
   public RapidTestReportViewModel(Period period) {
     this.period = period;
-    status = Status.MISSING;
+    status = RapidTestReportViewModel.Status.MISSING;
     observation = "";
     setupCategories();
     setItemViewModelMap();
@@ -184,16 +184,16 @@ public class RapidTestReportViewModel implements Serializable {
     switch (rapidTestForm.getStatus()) {
       case DRAFT:
       case SUBMITTED:
-        this.status = Status.INCOMPLETE;
+        this.status = RapidTestReportViewModel.Status.INCOMPLETE;
         break;
       case AUTHORIZED:
-        this.status = Status.COMPLETED;
+        this.status = RapidTestReportViewModel.Status.COMPLETED;
         break;
       default:
-        this.status = Status.MISSING;
+        this.status = RapidTestReportViewModel.Status.MISSING;
     }
     if (rapidTestForm.isSynced()) {
-      this.status = Status.SYNCED;
+      this.status = RapidTestReportViewModel.Status.SYNCED;
     }
   }
 
@@ -221,7 +221,7 @@ public class RapidTestReportViewModel implements Serializable {
   }
 
   public boolean isSynced() {
-    return status == Status.SYNCED;
+    return status == RapidTestReportViewModel.Status.SYNCED;
   }
 
   public boolean isEditable() {
@@ -231,12 +231,12 @@ public class RapidTestReportViewModel implements Serializable {
 
   public boolean isDraft() {
     return rapidTestForm.getStatus() == null
-        || rapidTestForm.getStatus() == ProgramDataForm.STATUS.DRAFT;
+        || rapidTestForm.getStatus() == ProgramDataForm.Status.DRAFT;
   }
 
   private boolean isReadyForCompleted() {
     return rapidTestForm.getStatus() == null
-        || rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
+        || rapidTestForm.getStatus() == ProgramDataForm.Status.SUBMITTED;
   }
 
   public boolean validatePositive() {
@@ -274,18 +274,18 @@ public class RapidTestReportViewModel implements Serializable {
     if (rapidTestForm.getSignaturesWrapper().size() == 0) {
       rapidTestForm.getSignaturesWrapper()
           .add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
-      rapidTestForm.setStatus(ProgramDataForm.STATUS.SUBMITTED);
+      rapidTestForm.setStatus(ProgramDataForm.Status.SUBMITTED);
     } else {
       rapidTestForm.getSignaturesWrapper()
           .add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.APPROVER));
-      rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+      rapidTestForm.setStatus(ProgramDataForm.Status.AUTHORIZED);
       rapidTestForm.setSubmittedTime(DateUtil.getCurrentDate());
-      status = Status.COMPLETED;
+      status = RapidTestReportViewModel.Status.COMPLETED;
     }
   }
 
   public boolean isAuthorized() {
-    return rapidTestForm.getStatus() == ProgramDataForm.STATUS.AUTHORIZED;
+    return rapidTestForm.getStatus() == ProgramDataForm.Status.AUTHORIZED;
   }
 
   public boolean isFormEmpty() {
@@ -301,7 +301,7 @@ public class RapidTestReportViewModel implements Serializable {
   }
 
   public boolean isSubmitted() {
-    return rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
+    return rapidTestForm.getStatus() == ProgramDataForm.Status.SUBMITTED;
   }
 
   public void updateTotal(ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {

@@ -91,8 +91,8 @@ public class SelectPeriodPresenter extends Presenter {
               isDefaultInventoryDate = true;
               generateDefaultInventoryDates(periodInSchedule, inventories);
             }
-            List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(
-                inventories, isDefaultInventoryDate);
+            List<SelectInventoryViewModel> selectInventoryViewModels =
+                generateSelectInventoryViewModels(inventories, isDefaultInventoryDate);
             subscriber.onNext(selectInventoryViewModels);
             subscriber.onCompleted();
           } catch (LMISException e) {

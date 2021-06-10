@@ -17,6 +17,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.builder.ProgramDataColumnBuilder;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
@@ -84,7 +85,7 @@ public class RapidTestReportFormPresenterTest {
     programDataFormItem2.setValue(300);
     form.getProgramDataFormItemListWrapper().add(programDataFormItem1);
     form.getProgramDataFormItemListWrapper().add(programDataFormItem2);
-    form.setStatus(ProgramDataForm.STATUS.DRAFT);
+    form.setStatus(Status.DRAFT);
     form.setPeriodBegin(period.getBegin().toDate());
     form.setPeriodEnd(period.getEnd().toDate());
     when(programDataFormRepositoryMock.queryById(anyInt())).thenReturn(form);
@@ -127,7 +128,7 @@ public class RapidTestReportFormPresenterTest {
     verify(programDataFormRepositoryMock, never()).delete(any(ProgramDataForm.class));
 
     ProgramDataForm rapidTestForm = new ProgramDataForm();
-    rapidTestForm.setStatus(ProgramDataForm.STATUS.DRAFT);
+    rapidTestForm.setStatus(Status.DRAFT);
     rapidTestForm.setId(1L);
     rapidTestReportFormPresenter.viewModel.setRapidTestForm(rapidTestForm);
     rapidTestReportFormPresenter.deleteDraft();

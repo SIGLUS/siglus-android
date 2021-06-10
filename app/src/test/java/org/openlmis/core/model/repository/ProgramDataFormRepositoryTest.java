@@ -17,6 +17,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.Signature;
@@ -59,7 +60,7 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
   public void shouldSaveProgramDataFormsAndListAllProgramDataForms() throws Exception {
     ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2016-09-23", DateUtil.DB_DATE_FORMAT))
-        .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+        .setStatus(Status.SUBMITTED)
         .setProgram(programRapidTest)
         .setSignatures("signature", ProgramDataFormSignature.TYPE.SUBMITTER)
         .build();
@@ -76,7 +77,7 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
     ProgramDataForm programDataForm2 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2016-10-23", DateUtil.DB_DATE_FORMAT))
         .setProgram(programRapidTest)
-        .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+        .setStatus(Status.SUBMITTED)
         .build();
     programDataFormRepository.batchCreateOrUpdate(programDataForm1);
     programDataFormRepository.batchCreateOrUpdate(programDataForm2);
@@ -117,7 +118,7 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
     assertThat(programDataNonExist.size(), is(0));
 
     //update
-    programDataForm1.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+    programDataForm1.setStatus(Status.AUTHORIZED);
     programDataForm1.setPeriodBegin(DateUtil.parseString("2015-09-30", DateUtil.DB_DATE_FORMAT));
     programDataForm1.getProgramDataFormItemListWrapper().clear();
 
@@ -137,7 +138,7 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
     assertThat(programDataFormRetrievedAfterRevision.get(0).getPeriodBegin(),
         is(programDataForm1.getPeriodBegin()));
     assertThat(programDataFormRetrievedAfterRevision.get(0).getStatus(),
-        is(ProgramDataForm.STATUS.AUTHORIZED));
+        is(Status.AUTHORIZED));
     assertThat(
         programDataFormRetrievedAfterRevision.get(0).getProgramDataFormItemListWrapper().size(),
         is(2));
@@ -165,13 +166,13 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
   public void shouldQueryFormById() throws Exception {
     ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2016-09-23", DateUtil.DB_DATE_FORMAT))
-        .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+        .setStatus(Status.SUBMITTED)
         .setProgram(programRapidTest)
         .build();
     ProgramDataForm programDataForm2 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2016-10-23", DateUtil.DB_DATE_FORMAT))
         .setProgram(programRapidTest)
-        .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+        .setStatus(Status.SUBMITTED)
         .build();
     programDataFormRepository.batchCreateOrUpdate(programDataForm1);
     programDataFormRepository.batchCreateOrUpdate(programDataForm2);
@@ -191,7 +192,7 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
   public void shouldListProgramDataItemsByFormId() throws Exception {
     ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2016-09-23", DateUtil.DB_DATE_FORMAT))
-        .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+        .setStatus(Status.SUBMITTED)
         .setProgram(programRapidTest)
         .build();
 
@@ -224,7 +225,7 @@ public class ProgramDataFormRepositoryTest extends LMISRepositoryUnitTest {
   public void shouldDelete() throws Exception {
     ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
         .setPeriod(DateUtil.parseString("2016-09-23", DateUtil.DB_DATE_FORMAT))
-        .setStatus(ProgramDataForm.STATUS.SUBMITTED)
+        .setStatus(Status.SUBMITTED)
         .setProgram(programRapidTest)
         .build();
 

@@ -19,8 +19,8 @@
 package org.openlmis.core.utils;
 
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.googleAnalytics.TrackerActions;
-import org.openlmis.core.googleAnalytics.TrackerCategories;
+import org.openlmis.core.googleanalytics.TrackerActions;
+import org.openlmis.core.googleanalytics.TrackerCategories;
 
 public final class TrackRnREventUtil {
 

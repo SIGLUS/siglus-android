@@ -65,7 +65,7 @@ public class RequisitionPeriodService {
   public Period generateNextPeriod(String programCode, Date physicalInventoryDate,
       ReportTypeForm typeForm) throws LMISException {
     List<RnRForm> rnRForms = rnrFormRepository
-        .listInclude(RnRForm.Emergency.No, programCode, typeForm);
+        .listInclude(RnRForm.Emergency.NO, programCode, typeForm);
     return generateNextPeriod(rnRForms, programCode, physicalInventoryDate);
   }
 
@@ -80,7 +80,8 @@ public class RequisitionPeriodService {
 
   private Period generatePeriodBasedOnPreviousRnr(RnRForm lastRnR, Date physicalInventoryDate)
       throws LMISException {
-    DateTime periodBeginDate, periodEndDate;
+    DateTime periodBeginDate;
+    DateTime periodEndDate;
     periodBeginDate = new DateTime(lastRnR.getPeriodEnd());
 
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
@@ -182,7 +183,7 @@ public class RequisitionPeriodService {
   public boolean hasMissedPeriod(String programCode, ReportTypeForm reportTypeForm)
       throws LMISException {
     List<RnRForm> rnRForms = rnrFormRepository
-        .listInclude(RnRForm.Emergency.No, programCode, reportTypeForm);
+        .listInclude(RnRForm.Emergency.NO, programCode, reportTypeForm);
 
     if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
       DateTime nextPeriodInScheduleEnd = generateNextPeriod(rnRForms, programCode, null).getEnd();
@@ -219,7 +220,7 @@ public class RequisitionPeriodService {
   }
 
   public int getIncompletePeriodOffsetMonth(String programCode) throws LMISException {
-    List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode);
+    List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, programCode);
     if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
       return getMissedPeriodOffsetMonth(programCode);
     } else {

@@ -62,7 +62,7 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.widget.MMIAPatientInfoList;
 import org.openlmis.core.view.widget.MMIARegimeListWrap;
-import org.openlmis.core.view.widget.MMIARegimeThreeLineList;
+import org.openlmis.core.view.widget.MMIARegimeThreeLineList.CountType;
 import org.openlmis.core.view.widget.MMIARnrFormProductList;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.robolectric.Robolectric;
@@ -266,7 +266,7 @@ public class MMIARequisitionFragmentTest {
     assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.getDataList().size())
         .isEqualTo(3);
     assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView
-        .getTotal(MMIARegimeThreeLineList.COUNTTYPE.PATIENTSAMOUNT)).isEqualTo(0);
+        .getTotal(CountType.PATIENTSAMOUNT)).isEqualTo(0);
   }
 
   private String getString(int id) {

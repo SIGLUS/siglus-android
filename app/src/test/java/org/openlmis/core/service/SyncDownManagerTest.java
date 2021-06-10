@@ -42,6 +42,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.Service;
@@ -456,12 +457,12 @@ public class SyncDownManagerTest {
     ProgramDataForm programDataForm1 = new ProgramDataFormBuilder()
         .setProgram(new Program())
         .setPeriod(DateUtil.parseString("2016-03-21", DateUtil.DB_DATE_FORMAT))
-        .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+        .setStatus(Status.AUTHORIZED)
         .setSynced(false).build();
     ProgramDataForm programDataForm2 = new ProgramDataFormBuilder()
         .setProgram(new Program())
         .setPeriod(DateUtil.parseString("2016-04-21", DateUtil.DB_DATE_FORMAT))
-        .setStatus(ProgramDataForm.STATUS.AUTHORIZED)
+        .setStatus(Status.AUTHORIZED)
         .setSynced(false).build();
 
     SyncDownProgramDataResponse syncDownProgramDataResponse = new SyncDownProgramDataResponse();

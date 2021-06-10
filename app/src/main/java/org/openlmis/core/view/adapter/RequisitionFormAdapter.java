@@ -26,7 +26,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import java.util.List;
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -37,7 +37,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
 
   private final VIARequisitionPresenter presenter;
 
-  private RnRForm.STATUS status = RnRForm.STATUS.AUTHORIZED;
+  private Status status = Status.AUTHORIZED;
 
   public RequisitionFormAdapter(Context context, VIARequisitionPresenter presenter) {
     this.context = context;
@@ -83,7 +83,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
     return convertView;
   }
 
-  public void updateStatus(RnRForm.STATUS status) {
+  public void updateStatus(Status status) {
     this.status = status;
     this.notifyDataSetChanged();
   }

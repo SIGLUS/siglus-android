@@ -41,7 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.Constants;

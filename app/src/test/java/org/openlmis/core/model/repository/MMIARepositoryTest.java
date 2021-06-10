@@ -222,10 +222,10 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     List<BaseInfoItem> baseInfoItems = mmiaRepository
         .generateBaseInfoItems(rnRForm, MMIARepository.ReportType.OLD);
     assertThat(baseInfoItems.size(), is(7));
-    assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_NEW_PATIENTS));
-    assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_PTV));
+    assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.attrNewPatients));
+    assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.attrPtv));
     assertThat(baseInfoItems.get(baseInfoItems.size() - 1).getName(),
-        is(mmiaRepository.ATTR_TOTAL_PATIENTS));
+        is(mmiaRepository.attrTotalPatients));
   }
 
   @Test
@@ -234,21 +234,21 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     List<BaseInfoItem> baseInfoItems = mmiaRepository
         .generateBaseInfoItems(rnRForm, MMIARepository.ReportType.NEW);
     assertThat(baseInfoItems.size(), is(23));
-    assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_NEW_KEY));
-    assertThat(baseInfoItems.get(1).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_MAINTENANCE_KEY));
-    assertThat(baseInfoItems.get(2).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_ALTERATION_KEY));
-    assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSIT_KEY));
-    assertThat(baseInfoItems.get(4).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSFER_KEY));
-    assertThat(baseInfoItems.get(5).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_ADULTS_KEY));
-    assertThat(baseInfoItems.get(6).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_0TO4_KEY));
-    assertThat(baseInfoItems.get(7).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_5TO9_KEY));
-    assertThat(baseInfoItems.get(8).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_10TO14_KEY));
-    assertThat(baseInfoItems.get(9).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PPE_KEY));
-    assertThat(baseInfoItems.get(10).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PREP_KEY));
+    assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.attrTableTravNewKey));
+    assertThat(baseInfoItems.get(1).getName(), is(mmiaRepository.attrTableTravMaintenanceKey));
+    assertThat(baseInfoItems.get(2).getName(), is(mmiaRepository.attrTableTravAlterationKey));
+    assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.attrTableTravTransitKey));
+    assertThat(baseInfoItems.get(4).getName(), is(mmiaRepository.attrTableTravTransferKey));
+    assertThat(baseInfoItems.get(5).getName(), is(mmiaRepository.attrTablePatientsAdultsKey));
+    assertThat(baseInfoItems.get(6).getName(), is(mmiaRepository.attrTablePatients0To4Key));
+    assertThat(baseInfoItems.get(7).getName(), is(mmiaRepository.attrTablePatients5To9Key));
+    assertThat(baseInfoItems.get(8).getName(), is(mmiaRepository.attrTablePatients10To14Key));
+    assertThat(baseInfoItems.get(9).getName(), is(mmiaRepository.attrTableProphylaxisPpeKey));
+    assertThat(baseInfoItems.get(10).getName(), is(mmiaRepository.attrTableProphylaxisPrepKey));
     assertThat(baseInfoItems.get(11).getName(),
-        is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_CHILD_KEY));
+        is(mmiaRepository.attrTableProphylaxisChildKey));
     assertThat(baseInfoItems.get(12).getName(),
-        is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY));
+        is(mmiaRepository.attrTableProphylaxisTotalKey));
   }
 
   @Test

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.openlmis.core.R;
-import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.AddDrugsToVIAPresenter;
 import org.openlmis.core.utils.Constants;

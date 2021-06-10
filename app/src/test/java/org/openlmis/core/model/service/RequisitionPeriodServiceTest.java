@@ -26,6 +26,7 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -287,10 +288,10 @@ public class RequisitionPeriodServiceTest {
 
     doReturn(nextPeriodInSchedule).when(requisitionPeriodService).generateNextPeriod("P1", null);
     RnRForm rnRForm = new RnRForm();
-    rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
+    rnRForm.setStatus(Status.DRAFT_MISSED);
     rnRForm.setPeriodBegin(DateUtil.parseString("2015-04-18", DateUtil.DB_DATE_FORMAT));
     rnRForm.setPeriodEnd(DateUtil.parseString("2015-05-18", DateUtil.DB_DATE_FORMAT));
-    when(mockRnrFormRepository.listInclude(RnRForm.Emergency.No, "P1"))
+    when(mockRnrFormRepository.listInclude(RnRForm.Emergency.NO, "P1"))
         .thenReturn(newArrayList(rnRForm));
 
     assertTrue(requisitionPeriodService.hasMissedPeriod("P1"));

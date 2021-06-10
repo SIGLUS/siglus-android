@@ -25,121 +25,126 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
-
-import org.openlmis.core.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import org.openlmis.core.R;
 
 public class DashboardCircleView extends View {
 
-    static final float ONE_PIECE_ANGLE = 3F;
+  static final float ONE_PIECE_ANGLE = 3F;
 
-    private static final float DEFAULT_START_ANGLE = -90F;
+  private static final float DEFAULT_START_ANGLE = -90F;
 
-    final Paint circlePaint = new Paint();
+  final Paint circlePaint = new Paint();
 
-    final RectF arcRectF = new RectF();
+  final RectF arcRectF = new RectF();
 
-    int ringWidth = 0;
+  int ringWidth = 0;
 
-    @NonNull
-    private List<Item> data = new ArrayList<>();
+  @NonNull
+  private List<Item> data = new ArrayList<>();
 
-    public DashboardCircleView(Context context) {
-        this(context, null);
+  public DashboardCircleView(Context context) {
+    this(context, null);
+  }
+
+  public DashboardCircleView(Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public DashboardCircleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    initView(context);
+  }
+
+  public void setData(List<Item> data) {
+      if (data == null) {
+          return;
+      }
+    this.data = data;
+    calculateAngle(data);
+    postInvalidate();
+  }
+
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    final int width = MeasureSpec.getSize(widthMeasureSpec);
+    final int height = MeasureSpec.getSize(heightMeasureSpec);
+    // make sure it`s a square
+    final int minLength = Math.min(width, height);
+    arcRectF.left = (ringWidth / 2F);
+    arcRectF.top = (ringWidth / 2F);
+    arcRectF.right = minLength - (ringWidth / 2F);
+    arcRectF.bottom = minLength - (ringWidth / 2F);
+    setMeasuredDimension(minLength, minLength);
+  }
+
+  @Override
+  protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    for (Item item : data) {
+      drawOnePiece(canvas, item);
     }
+  }
 
-    public DashboardCircleView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public DashboardCircleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initView(context);
-    }
-
-    public void setData(List<Item> data) {
-        if (data == null) return;
-        this.data = data;
-        calculateAngle(data);
-        postInvalidate();
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        final int width = MeasureSpec.getSize(widthMeasureSpec);
-        final int height = MeasureSpec.getSize(heightMeasureSpec);
-        // make sure it`s a square
-        final int minLength = Math.min(width, height);
-        arcRectF.left = (ringWidth / 2F);
-        arcRectF.top = (ringWidth / 2F);
-        arcRectF.right = minLength - (ringWidth / 2F);
-        arcRectF.bottom = minLength - (ringWidth / 2F);
-        setMeasuredDimension(minLength, minLength);
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        for (Item item : data) {
-            drawOnePiece(canvas, item);
+  protected int getSpaceCount(@NonNull List<Item> data) {
+    int count = 0;
+    for (Item item : data) {
+        if (item.amount > 0) {
+            count++;
         }
     }
+    return count <= 1 ? 0 : count;
+  }
 
-    protected int getSpaceCount(@NonNull List<Item> data) {
-        int count = 0;
-        for (Item item : data) {
-            if (item.amount > 0) count++;
-        }
-        return count <= 1 ? 0 : count;
+  private void initView(Context context) {
+    circlePaint.setAntiAlias(true);
+    ringWidth = context.getResources()
+        .getDimensionPixelOffset(R.dimen.dash_board_circle_ring_width);
+    circlePaint.setStrokeWidth(ringWidth);
+    circlePaint.setStyle(Paint.Style.STROKE);
+  }
+
+  private void calculateAngle(@NonNull List<Item> data) {
+    int totalAmount = 0;
+    for (Item item : data) {
+      totalAmount += Math.max(item.amount, 0);
     }
-
-    private void initView(Context context) {
-        circlePaint.setAntiAlias(true);
-        ringWidth = context.getResources().getDimensionPixelOffset(R.dimen.dash_board_circle_ring_width);
-        circlePaint.setStrokeWidth(ringWidth);
-        circlePaint.setStyle(Paint.Style.STROKE);
+      if (totalAmount == 0) {
+          return;
+      }
+    float startAngle = DEFAULT_START_ANGLE;
+    for (Item item : data) {
+      item.startAngle = startAngle;
+      item.sweepAngle = (360 - (ONE_PIECE_ANGLE * getSpaceCount(data))) * (Math.max(item.amount, 0))
+          / totalAmount;
+      startAngle += item.sweepAngle + ONE_PIECE_ANGLE;
     }
+  }
 
-    private void calculateAngle(@NonNull List<Item> data) {
-        int totalAmount = 0;
-        for (Item item : data) {
-            totalAmount += Math.max(item.amount, 0);
-        }
-        if (totalAmount == 0) return;
-        float startAngle = DEFAULT_START_ANGLE;
-        for (Item item : data) {
-            item.startAngle = startAngle;
-            item.sweepAngle = (360 - (ONE_PIECE_ANGLE * getSpaceCount(data))) * (Math.max(item.amount, 0)) / totalAmount;
-            startAngle += item.sweepAngle + ONE_PIECE_ANGLE;
-        }
+  private void drawOnePiece(Canvas canvas, Item item) {
+    circlePaint.setColor(item.color);
+    canvas.drawArc(arcRectF, item.startAngle, item.sweepAngle, false, circlePaint);
+  }
+
+  static class Item {
+
+    @ColorInt
+    int color;
+
+    int amount;
+
+    float startAngle;
+
+    float sweepAngle;
+
+    public Item(@ColorInt int color, int amount) {
+      this.color = color;
+      this.amount = amount;
     }
-
-    private void drawOnePiece(Canvas canvas, Item item) {
-        circlePaint.setColor(item.color);
-        canvas.drawArc(arcRectF, item.startAngle, item.sweepAngle, false, circlePaint);
-    }
-
-    static class Item {
-
-        @ColorInt
-        int color;
-
-        int amount;
-
-        float startAngle;
-
-        float sweepAngle;
-
-        public Item(@ColorInt int color, int amount) {
-            this.color = color;
-            this.amount = amount;
-        }
-    }
+  }
 }

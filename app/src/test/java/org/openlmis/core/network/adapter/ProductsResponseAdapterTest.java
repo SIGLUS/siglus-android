@@ -20,8 +20,10 @@
 
 package org.openlmis.core.network.adapter;
 
-import com.google.gson.JsonParser;
+import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.google.gson.JsonParser;
+import java.util.ArrayList;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,31 +33,30 @@ import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.utils.JsonFileReader;
 
-import java.util.ArrayList;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
 @RunWith(LMISTestRunner.class)
 public class ProductsResponseAdapterTest {
 
-    @Test
-    public void addPrograms() {
-        final Program program = new Program();
-        program.setProgramCode("VC");
-        final ArrayList<Program> programs = new ArrayList<>();
-        programs.add(program);
-        ProgramCacheManager.addPrograms(programs);
-        assertThat(ProgramCacheManager.getPrograms("VC"), Matchers.is(program));
-    }
+  @Test
+  public void addPrograms() {
+    final Program program = new Program();
+    program.setProgramCode("VC");
+    final ArrayList<Program> programs = new ArrayList<>();
+    programs.add(program);
+    ProgramCacheManager.addPrograms(programs);
+    assertThat(ProgramCacheManager.getPrograms("VC"), Matchers.is(program));
+  }
 
-    @Test
-    public void deserialize() {
-        ProductsResponseAdapter stockMovementItemAdapter = new ProductsResponseAdapter();
-        String json = JsonFileReader.readJson(getClass(), "V3ProductsResponseAdapterTest.json");
-        SyncDownLatestProductsResponse syncDownLatestProductsResponse = stockMovementItemAdapter.deserialize(new JsonParser().parse(json), null, null);
+  @Test
+  public void deserialize() {
+    ProductsResponseAdapter stockMovementItemAdapter = new ProductsResponseAdapter();
+    String json = JsonFileReader.readJson(getClass(), "V3ProductsResponseAdapterTest.json");
+    SyncDownLatestProductsResponse syncDownLatestProductsResponse = stockMovementItemAdapter
+        .deserialize(new JsonParser().parse(json), null, null);
 
-        assertThat(syncDownLatestProductsResponse.getLastSyncTime(),Matchers.is("1623115749445"));
-        assertThat(syncDownLatestProductsResponse.getLatestProducts().get(0).getProduct().getCode(),Matchers.is("22A07"));
-        assertThat(syncDownLatestProductsResponse.getLatestProducts().get(1).getProduct().getCode(),Matchers.is("26B01"));
-    }
+    assertThat(syncDownLatestProductsResponse.getLastSyncTime(), Matchers.is("1623115749445"));
+    assertThat(syncDownLatestProductsResponse.getLatestProducts().get(0).getProduct().getCode(),
+        Matchers.is("22A07"));
+    assertThat(syncDownLatestProductsResponse.getLatestProducts().get(1).getProduct().getCode(),
+        Matchers.is("26B01"));
+  }
 }
