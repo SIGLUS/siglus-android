@@ -146,6 +146,8 @@ public class RnRFormListActivity extends BaseReportListActivity {
         boolean isMissedPeriod = data.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
         createRequisition(periodEndDate, isMissedPeriod);
         break;
+      default:
+        // do nothing
     }
   }
 
@@ -221,7 +223,9 @@ public class RnRFormListActivity extends BaseReportListActivity {
         break;
       case PTV_PROGRAM:
         intent = PTVRequisitionActivity.getIntentToMe(this, rnrFormId);
-
+        break;
+      default:
+        // do nothing
     }
     startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
   }
@@ -240,6 +244,9 @@ public class RnRFormListActivity extends BaseReportListActivity {
         break;
       case PTV_PROGRAM:
         intent = PTVRequisitionActivity.getIntentToMe(this, periodEndDate);
+        break;
+      default:
+        // do nothing
     }
     startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
   }

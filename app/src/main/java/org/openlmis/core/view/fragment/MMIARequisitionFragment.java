@@ -15,6 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
@@ -231,7 +232,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     }
     regimeWrap.initView(tvRegimeTotal, tvRegimeTotalPharmacy, tvTotalPharmacyTitle, presenter);
     mmiaPatientInfoListView.initView(form.getBaseInfoItemListWrapper());
-    InflateFreezeHeaderView();
+    inflateFreezeHeaderView();
     getActivity().setTitle(
         getString(R.string.label_mmia_title, DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
             DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
@@ -240,7 +241,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     bindListeners();
   }
 
-  private void InflateFreezeHeaderView() {
+  private void inflateFreezeHeaderView() {
     final View leftHeaderView = rnrFormList.getLeftHeaderView();
     rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
 
@@ -404,7 +405,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     if (mmiaThreaPeuticLayout.getVisibility() != View.GONE) {
       mmiaRegimeThreeLineListView.deHighLightTotal();
     }
-//        mmiaPatientInfoListView.deHighLightTotal();
     tvMismatch.setVisibility(View.INVISIBLE);
   }
 

@@ -247,6 +247,9 @@ public class SelectPeriodActivity extends BaseActivity implements
         break;
       case RAPID_TEST_CODE:
         program = Constants.Program.RAPID_TEST_PROGRAM;
+        break;
+      default:
+        // do nothing
     }
     return program;
   }

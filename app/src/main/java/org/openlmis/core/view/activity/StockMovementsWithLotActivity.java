@@ -281,6 +281,8 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
                 selections);
             newMovementDialog.show(getFragmentManager(), "");
             break;
+          default:
+            // do nothing
         }
       }
     };

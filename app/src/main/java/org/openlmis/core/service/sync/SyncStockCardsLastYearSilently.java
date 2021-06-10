@@ -38,7 +38,7 @@ import rx.Scheduler;
 public class SyncStockCardsLastYearSilently {
 
 
-  private final int DAYS_OF_REGULAR_MONTH = 30;
+  private static final int DAYS_OF_REGULAR_MONTH = 30;
 
   @Inject
   private SharedPreferenceMgr sharedPreferenceMgr;
@@ -62,8 +62,8 @@ public class SyncStockCardsLastYearSilently {
     Date now = getActualDate();
 
     for (int month = startMonth; month <= monthsInAYear; month++) {
-      Observable<SyncDownStockCardResponse> objectObservable = createObservableToFetchStockMovements(
-          month, now);
+      Observable<SyncDownStockCardResponse> objectObservable =
+          createObservableToFetchStockMovements(month, now);
       tasks.add(objectObservable);
     }
 

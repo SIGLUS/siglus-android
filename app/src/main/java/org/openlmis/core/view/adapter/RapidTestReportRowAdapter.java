@@ -34,8 +34,8 @@ import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 
 public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-  private final int ITEM_VIEW = 1;
-  private final int OBSERVATION_VIEW = 2;
+  private static final int ITEM_VIEW = 1;
+  private static final int OBSERVATION_VIEW = 2;
   private List<RapidTestFormItemViewModel> serviceLists;
   private RapidTestReportViewModel rapidTestReportViewModel;
   private RapidTestReportRowViewHolder totalViewHolder;
@@ -88,7 +88,8 @@ public class RapidTestReportRowAdapter extends RecyclerView.Adapter<RecyclerView
         viewHolder.populate(viewModel, editable, quantityChangeListener);
         break;
       case OBSERVATION_VIEW:
-        RapidTestReportObservationRowViewHolder observationRowViewHolder = (RapidTestReportObservationRowViewHolder) holder;
+        RapidTestReportObservationRowViewHolder observationRowViewHolder =
+            (RapidTestReportObservationRowViewHolder) holder;
         observationRowViewHolder.setIsRecyclable(false);
         observationRowViewHolder.populate(rapidTestReportViewModel);
         break;

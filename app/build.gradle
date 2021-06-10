@@ -119,7 +119,7 @@ task checkstyle(type: Checkstyle) {
     exclude '**/migrations/**'
 
     classpath = files()
-    ignoreFailures true
+    ignoreFailures false
 }
 
 spotbugs {

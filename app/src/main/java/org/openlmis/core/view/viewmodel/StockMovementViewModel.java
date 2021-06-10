@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.viewmodel;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

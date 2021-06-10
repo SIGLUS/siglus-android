@@ -77,18 +77,17 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
   @Override
   public void onUpdateView(View itemView, int position) {
     TextView tvProductName = itemView.findViewById(R.id.tv_name);
-    CleanableEditText etStock = itemView.findViewById(R.id.et_stock);
-    CleanableEditText etInventory = itemView.findViewById(R.id.et_inventory);
     TextView tvReceived = itemView.findViewById(R.id.tv_received);
     TextView tvIssue = itemView.findViewById(R.id.tv_issue);
-    TextView tvAdjustment = itemView.findViewById(R.id.tv_adjustment);
     TextView tvValidate = itemView.findViewById(R.id.tv_expire);
     final ProgramDataFormBasicItem formBasicItem = productInfos.get(position);
     tvProductName.setText(formBasicItem.getProduct().getPrimaryName());
     tvReceived.setText(String.valueOf(formBasicItem.getReceived()));
     tvIssue.setText(String.valueOf(formBasicItem.getIssued()));
+    TextView tvAdjustment = itemView.findViewById(R.id.tv_adjustment);
     tvAdjustment.setText(String.valueOf(formBasicItem.getAdjustment()));
     //config etStock
+    CleanableEditText etStock = itemView.findViewById(R.id.et_stock);
     etStock.setText(getValue(formBasicItem.getInitialAmount()));
     etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && (
         formBasicItem.getForm().getStatus() == null
@@ -104,6 +103,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
       stockEditTexts.add(etStock);
     }
     //config etInventory
+    CleanableEditText etInventory = itemView.findViewById(R.id.et_inventory);
     etInventory.setText(getValue(formBasicItem.getInventory()));
     etInventory.setEnabled(formBasicItem.getForm().getStatus() == null
         || formBasicItem.getForm().getStatus() == Status.DRAFT);

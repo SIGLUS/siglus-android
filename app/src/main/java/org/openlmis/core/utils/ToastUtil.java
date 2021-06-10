@@ -15,6 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.utils;
 
 import android.text.TextUtils;
@@ -36,12 +37,12 @@ public final class ToastUtil {
     Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT).show();
   }
 
-  public static void showForLongTime(@StringRes int resId) {
-    Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_LONG).show();
-  }
-
   public static void show(int resId) {
     show(LMISApp.getContext().getString(resId));
+  }
+
+  public static void showForLongTime(@StringRes int resId) {
+    Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_LONG).show();
   }
 
   public static void showInCenter(int text) {

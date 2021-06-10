@@ -31,7 +31,6 @@ import org.openlmis.core.view.activity.BaseActivity;
 import roboguice.fragment.provided.RoboFragment;
 import rx.Subscription;
 
-
 public abstract class BaseFragment extends RoboFragment implements BaseView {
 
   protected boolean isSavedInstanceState;
@@ -39,7 +38,8 @@ public abstract class BaseFragment extends RoboFragment implements BaseView {
   protected List<Subscription> subscriptions = new ArrayList<>();
 
   /*
-   * Life cycle of Fragment: onAttach -> onCreate -> onCreateView -> onViewCreated -> onActivityCreated -> onPause -> onStop
+   * Life cycle of Fragment: onAttach -> onCreate -> onCreateView -> onViewCreated
+   * -> onActivityCreated -> onPause -> onStop
    * */
   @Override
   public void onCreate(Bundle savedInstanceState) {

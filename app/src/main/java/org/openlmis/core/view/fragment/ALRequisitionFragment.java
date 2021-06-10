@@ -15,6 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
@@ -65,19 +66,25 @@ public class ALRequisitionFragment extends BaseReportFragment implements
   TextView monthTitle;
 
   @InjectView(R.id.al_header)
-  LinearLayout al_header;
+  LinearLayout alHeader;
+
   @InjectView(R.id.al_left_header_top)
-  TextView al_header_top;
+  TextView alHeaderTop;
+
   @InjectView(R.id.al_left_header_chw)
-  TextView al_header_chw;
+  TextView alHeaderChw;
+
   @InjectView(R.id.al_left_header_hf)
-  TextView al_header_hf;
+  TextView alHeaderHf;
+
   @InjectView(R.id.al_left_header_total)
-  TextView al_header_total;
+  TextView alHeaderTotal;
+
   @InjectView(R.id.rv_al_row_item_list_container)
-  RelativeLayout al_item_container;
+  RelativeLayout alItemContainer;
+
   @InjectView(R.id.al_left_header)
-  LinearLayout al_left_header;
+  LinearLayout alLeftHeader;
 
   public static int LIST_ITEM_HEIGHT = -1;
 
@@ -88,7 +95,6 @@ public class ALRequisitionFragment extends BaseReportFragment implements
     periodEndDate = ((Date) getActivity().getIntent()
         .getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
   }
-
 
   @Override
   protected BaseReportPresenter injectPresenter() {
@@ -124,11 +130,11 @@ public class ALRequisitionFragment extends BaseReportFragment implements
   }
 
   private void updateHeaderSize() {
-    al_header_top.setHeight(al_header.getLayoutParams().height);
-    LIST_ITEM_HEIGHT = al_item_container.getHeight() / 3;
-    al_header_chw.setHeight(LIST_ITEM_HEIGHT);
-    al_header_hf.setHeight(LIST_ITEM_HEIGHT);
-    al_header_total.setHeight(LIST_ITEM_HEIGHT);
+    alHeaderTop.setHeight(alHeader.getLayoutParams().height);
+    LIST_ITEM_HEIGHT = alItemContainer.getHeight() / 3;
+    alHeaderChw.setHeight(LIST_ITEM_HEIGHT);
+    alHeaderHf.setHeight(LIST_ITEM_HEIGHT);
+    alHeaderTotal.setHeight(LIST_ITEM_HEIGHT);
   }
 
   protected void initUI() {

@@ -184,9 +184,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   }
 
-  protected
-  @StyleRes
-  int getThemeRes() {
+  protected @StyleRes int getThemeRes() {
     return R.style.AppTheme;
   }
 

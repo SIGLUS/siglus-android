@@ -122,11 +122,11 @@ public class SyncDownManager {
       try {
         // TODO: Remove the comment when developing to the corresponding api
         syncDownFacilityInfo(subscriber1);
-//                syncDownService(subscriber1);
+        // syncDownService(subscriber1);
         syncDownProducts(subscriber1);
-//                syncDownLastMonthStockCards(subscriber1);
-//                syncDownRequisition(subscriber1);
-//                syncDownRapidTests(subscriber1);
+        // syncDownLastMonthStockCards(subscriber1);
+        // syncDownRequisition(subscriber1);
+        // syncDownRapidTests(subscriber1);
         isSyncing = false;
         subscriber1.onCompleted();
       } catch (LMISException e) {
@@ -134,6 +134,39 @@ public class SyncDownManager {
         subscriber1.onError(e);
       }
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+  }
+
+  public void syncDownServerData() {
+    syncDownServerData(new Subscriber<SyncProgress>() {
+      @Override
+      public void onCompleted() {
+        if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
+            .isSyncingLastYearStockCards()) {
+          sendSyncStartBroadcast();
+          sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
+          // TODO: Remove the comment when developing to the corresponding api
+          // syncStockCardsLastYearSilently.performSync()
+          // .subscribe(getSyncLastYearStockCardSubscriber());
+        } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
+            .isSyncingLastYearStockCards()) {
+          if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+            sendSyncFinishedBroadcast();
+          }
+        } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr
+            .isSyncingLastYearStockCards()) {
+          sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+        }
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        Log.w(TAG, e);
+      }
+
+      @Override
+      public void onNext(SyncProgress syncProgress) {
+      }
+    });
   }
 
   private void syncDownFacilityInfo(Subscriber<? super SyncProgress> subscriber)
@@ -198,38 +231,6 @@ public class SyncDownManager {
     }
 
     programDataFormRepository.batchSaveForms(syncDownProgramDataResponse.getProgramDataForms());
-  }
-
-  public void syncDownServerData() {
-    syncDownServerData(new Subscriber<SyncProgress>() {
-      @Override
-      public void onCompleted() {
-        if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
-            .isSyncingLastYearStockCards()) {
-          sendSyncStartBroadcast();
-          sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
-          // TODO: Remove the comment when developing to the corresponding api
-//                    syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
-        } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
-            .isSyncingLastYearStockCards()) {
-          if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-            sendSyncFinishedBroadcast();
-          }
-        } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr
-            .isSyncingLastYearStockCards()) {
-          sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        }
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        Log.w(TAG, e);
-      }
-
-      @Override
-      public void onNext(SyncProgress syncProgress) {
-      }
-    });
   }
 
   @NonNull
@@ -477,15 +478,15 @@ public class SyncDownManager {
       e.reportToFabric();
       throw e;
     }
-    List<Program> programs = covertFacilityInfoToProgram(facilityInfoResponse);
-    List<ReportTypeForm> reportTypeForms = covertFacilityInfoToReportTypeForm(facilityInfoResponse);
     User user = UserInfoMgr.getInstance().getUser();
     user.setFacilityCode(facilityInfoResponse.getCode());
     user.setFacilityName(facilityInfoResponse.getName());
     userRepository.createOrUpdate(user);
     UserInfoMgr.getInstance().setUser(user);
+    List<Program> programs = covertFacilityInfoToProgram(facilityInfoResponse);
     ProgramCacheManager.addPrograms(programs);
     programRepository.batchCreateOrUpdatePrograms(programs);
+    List<ReportTypeForm> reportTypeForms = covertFacilityInfoToReportTypeForm(facilityInfoResponse);
     sharedPreferenceMgr.setReportTypesData(reportTypeForms);
     reportTypeFormRepository.batchCreateOrUpdateReportTypes(reportTypeForms);
   }

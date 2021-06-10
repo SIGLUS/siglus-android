@@ -15,6 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
@@ -32,7 +33,6 @@ import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import roboguice.fragment.provided.RoboDialogFragment;
-
 
 public class SimpleDialogFragment extends RoboDialogFragment {
 

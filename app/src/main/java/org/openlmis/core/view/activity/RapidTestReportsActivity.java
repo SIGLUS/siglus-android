@@ -94,7 +94,8 @@ public class RapidTestReportsActivity extends BaseReportListActivity {
         && resultCode == Activity.RESULT_OK) {
       Period period = (Period) data.getSerializableExtra(Constants.PARAM_PERIOD);
       startActivityForResult(RapidTestReportFormActivity
-              .getIntentToMe(this, RapidTestReportViewModel.DEFAULT_FORM_ID, period, period.getBegin()),
+              .getIntentToMe(this, RapidTestReportViewModel.DEFAULT_FORM_ID,
+                  period, period.getBegin()),
           Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
     }
   }

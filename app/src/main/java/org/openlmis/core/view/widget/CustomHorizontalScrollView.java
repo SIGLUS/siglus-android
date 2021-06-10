@@ -15,6 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
@@ -44,14 +45,15 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
         mPrevY = down.getY();
         down.recycle();
         break;
-
       case MotionEvent.ACTION_MOVE:
         final float eventY = event.getY();
         float yDiff = Math.abs(eventY - mPrevY);
-
         if (yDiff > mTouchSlop) {
           return false;
         }
+        break;
+      default:
+        // do nothing
     }
 
     return super.onInterceptTouchEvent(event);

@@ -112,6 +112,10 @@ public final class DateUtil {
     return new SimpleDateFormat(DEFAULT_DATE_FORMAT, Locale.getDefault()).format(date);
   }
 
+  public static String formatDate(Date date, String format) {
+    return new SimpleDateFormat(format, Locale.getDefault()).format(date);
+  }
+
   public static String formatDateTime(Date date) {
     return new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).format(date);
   }
@@ -132,10 +136,6 @@ public final class DateUtil {
   public static String formatDateWithLongMonthAndYear(Date date) {
     return new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR_LONG, Locale.getDefault())
         .format(date);
-  }
-
-  public static String formatDate(Date date, String format) {
-    return new SimpleDateFormat(format, Locale.getDefault()).format(date);
   }
 
   public static Date parseString(String string, String format) {
@@ -220,7 +220,6 @@ public final class DateUtil {
 
   public static long calculateTimeIntervalFromNow(long lastSyncedTimestamp) {
     return DateUtil.getCurrentDate().getTime() - lastSyncedTimestamp;
-//        return new Date().getTime() - lastSyncedTimestamp;
   }
 
   public static String formatExpiryDateString(List<String> expiryDates) {

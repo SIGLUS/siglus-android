@@ -351,6 +351,8 @@ public class RapidTestReportViewModel implements Serializable {
           total.stringTotal = String.valueOf(total.longTotal);
         }
         break;
+      default:
+        // do nothing
     }
 
     return total;
@@ -368,6 +370,8 @@ public class RapidTestReportViewModel implements Serializable {
       case unjustified:
         totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setUnjustifiedValue(total);
         break;
+      default:
+        // do nothing
     }
   }
 
@@ -393,16 +397,16 @@ public class RapidTestReportViewModel implements Serializable {
       this.viewType = viewType;
     }
   }
-}
 
-class Total {
+  private static class Total {
+    long longTotal;
+    String stringTotal;
 
-  long longTotal;
-  String stringTotal;
-
-  // 构造函数
-  public Total() {
-    super();
+    public Total() {
+      super();
+    }
   }
 
 }
+
+

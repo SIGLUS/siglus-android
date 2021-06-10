@@ -1,22 +1,21 @@
 /*
+ * This program is part of the OpenLMIS logistics management information
+ * system platform software.
  *
- *  * This program is part of the OpenLMIS logistics management information
- *  * system platform software.
- *  *
- *  * Copyright © 2015 ThoughtWorks, Inc.
- *  *
- *  * This program is free software: you can redistribute it and/or modify
- *  * it under the terms of the GNU Affero General Public License as published
- *  * by the Free Software Foundation, either version 3 of the License, or
- *  * (at your option) any later version. This program is distributed in the
- *  * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- *  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *  * See the GNU Affero General Public License for more details. You should
- *  * have received a copy of the GNU Affero General Public License along with
- *  * this program. If not, see http://www.gnu.org/licenses. For additional
- *  * information contact info@OpenLMIS.org
+ * Copyright © 2015 ThoughtWorks, Inc.
  *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details. You should
+ * have received a copy of the GNU Affero General Public License along with
+ * this program. If not, see http://www.gnu.org/licenses. For additional
+ * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
@@ -61,9 +60,9 @@ public class DashboardCircleView extends View {
   }
 
   public void setData(List<Item> data) {
-      if (data == null) {
-          return;
-      }
+    if (data == null) {
+      return;
+    }
     this.data = data;
     calculateAngle(data);
     postInvalidate();
@@ -94,9 +93,9 @@ public class DashboardCircleView extends View {
   protected int getSpaceCount(@NonNull List<Item> data) {
     int count = 0;
     for (Item item : data) {
-        if (item.amount > 0) {
-            count++;
-        }
+      if (item.amount > 0) {
+        count++;
+      }
     }
     return count <= 1 ? 0 : count;
   }
@@ -114,9 +113,9 @@ public class DashboardCircleView extends View {
     for (Item item : data) {
       totalAmount += Math.max(item.amount, 0);
     }
-      if (totalAmount == 0) {
-          return;
-      }
+    if (totalAmount == 0) {
+      return;
+    }
     float startAngle = DEFAULT_START_ANGLE;
     for (Item item : data) {
       item.startAngle = startAngle;

@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.adapter;
 
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -26,7 +26,7 @@ import org.openlmis.core.model.RnrFormItem;
 @Data
 public class ViaKitsViewModel {
 
-  private final String DEFAULT_VALUE = "0";
+  private static final String DEFAULT_VALUE = "0";
 
   private String kitsReceivedHF = DEFAULT_VALUE;
 

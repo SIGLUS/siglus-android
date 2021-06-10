@@ -193,6 +193,8 @@ public class BaseLotListView extends FrameLayout {
           case R.id.btn_cancel:
             addLotDialogFragment.dismiss();
             break;
+          default:
+            // do nothing
         }
       }
     };

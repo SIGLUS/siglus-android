@@ -27,6 +27,7 @@ import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
+import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -36,11 +37,11 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
 
   private final SingleClickButtonListener saveClickListener;
   private final SingleClickButtonListener completeClickListener;
-  private final PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener;
+  private final InventoryItemStatusChangeListener refreshCompleteCountListener;
 
   public PhysicalInventoryAdapter(List<InventoryViewModel> data,
       SingleClickButtonListener saveClickListener, SingleClickButtonListener completeClickListener,
-      PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener) {
+      InventoryItemStatusChangeListener refreshCompleteCountListener) {
     super(data);
     this.saveClickListener = saveClickListener;
     this.completeClickListener = completeClickListener;

@@ -34,11 +34,12 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
     FilterableAdapter {
 
   private final SingleClickButtonListener onClickListener;
-  private final Action1 setConfirmNoStockReceivedAction = (Action1<UnpackKitInventoryViewModel>) unpackKitInventoryViewModel -> {
-    unpackKitInventoryViewModel.setConfirmedNoStockReceived(true);
-    unpackKitInventoryViewModel.getNewLotMovementViewModelList().clear();
-    UnpackKitAdapter.this.notifyDataSetChanged();
-  };
+  private final Action1 setConfirmNoStockReceivedAction =
+      (Action1<UnpackKitInventoryViewModel>) unpackKitInventoryViewModel -> {
+        unpackKitInventoryViewModel.setConfirmedNoStockReceived(true);
+        unpackKitInventoryViewModel.getNewLotMovementViewModelList().clear();
+        UnpackKitAdapter.this.notifyDataSetChanged();
+      };
 
   public UnpackKitAdapter(List<InventoryViewModel> data,
       SingleClickButtonListener onClickListener) {

@@ -48,7 +48,7 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
   TextView tvConfirmHasStock;
 
   @InjectView(R.id.vg_soh_pop)
-  ViewGroup vg_soh_pop;
+  ViewGroup vgSohPop;
 
   @InjectView(R.id.tv_product_name)
   TextView tvProductName;
@@ -89,8 +89,8 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
 
   private void validateIfShouldShowUpEmptyLotWarning(InventoryViewModel inventoryViewModel) {
     if (((UnpackKitInventoryViewModel) inventoryViewModel).shouldShowEmptyLotWarning()) {
-      vg_soh_pop.setVisibility(View.VISIBLE);
-      vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
+      vgSohPop.setVisibility(View.VISIBLE);
+      vgSohPop.setBackgroundResource(R.drawable.inventory_pop);
 
       tvConfirmHasStock.setVisibility(View.GONE);
       tvConfirmNoStock.setVisibility(View.VISIBLE);
@@ -102,8 +102,8 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
     }
 
     if (((UnpackKitInventoryViewModel) inventoryViewModel).isConfirmedNoStockReceived()) {
-      vg_soh_pop.setVisibility(View.VISIBLE);
-      vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
+      vgSohPop.setVisibility(View.VISIBLE);
+      vgSohPop.setBackgroundResource(R.drawable.inventory_pop);
 
       tvConfirmHasStock.setVisibility(View.VISIBLE);
       tvConfirmNoStock.setVisibility(View.GONE);
@@ -125,8 +125,8 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
       if (totalQuantity == kitExpectQuantity) {
         initViewHolderStyle(viewModel);
       } else {
-        vg_soh_pop.setVisibility(View.VISIBLE);
-        vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
+        vgSohPop.setVisibility(View.VISIBLE);
+        vgSohPop.setBackgroundResource(R.drawable.inventory_pop_warning);
         tvConfirmHasStock.setVisibility(View.GONE);
         tvConfirmNoStock.setVisibility(View.GONE);
         tvKitExpectedQuantity
@@ -149,7 +149,7 @@ public class UnpackKitWithLotViewHolder extends BaseViewHolder {
 
   private void initViewHolderStyle(InventoryViewModel inventoryViewModel) {
     lotListView.setVisibility(View.VISIBLE);
-    vg_soh_pop.setVisibility(View.GONE);
+    vgSohPop.setVisibility(View.GONE);
     tvKitExpectedQuantity
         .setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
     tvProductName.setText(TextStyleUtil

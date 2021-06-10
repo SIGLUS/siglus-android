@@ -40,58 +40,40 @@ import org.openlmis.core.model.BaseInfoItem;
 
 public class MMIAPatientInfoList extends LinearLayout {
 
-  public String ATTR_TABLE_TRAV;
-  public String ATTR_TABLE_TRAV_KEY;
+  private static String ATTR_TABLE_TRAV;
+  private static String ATTR_TABLE_TRAV_KEY;
+  private static String ATTR_TABLE_TRAV_NEW;
+  private static String ATTR_TABLE_TRAV_NEW_KEY;
+  private static String ATTR_TABLE_TRAV_MAINTENANCE;
+  private static String ATTR_TABLE_TRAV_MAINTENANCE_KEY;
+  private static String ATTR_TABLE_TRAV_ALTERATION;
+  private static String ATTR_TABLE_TRAV_ALTERATION_KEY;
+  private static String ATTR_TABLE_TRAV_TRANSIT;
+  private static String ATTR_TABLE_TRAV_TRANSIT_KEY;
+  private static String ATTR_TABLE_TRAV_TRANSFER;
+  private static String ATTR_TABLE_TRAV_TRANSFER_KEY;
+  private static String ATTR_TABLE_PATIENTS;
+  private static String ATTR_TABLE_PATIENTS_KEY;
+  private static String ATTR_TABLE_PATIENTS_ADULTS;
+  private static String ATTR_TABLE_PATIENTS_ADULTS_KEY;
+  private static String ATTR_TABLE_PATIENTS_0TO4;
+  private static String ATTR_TABLE_PATIENTS_0TO4_KEY;
+  private static String ATTR_TABLE_PATIENTS_5TO9;
+  private static String ATTR_TABLE_PATIENTS_5TO9_KEY;
+  private static String ATTR_TABLE_PATIENTS_10TO14;
+  private static String ATTR_TABLE_PATIENTS_10TO14_KEY;
+  private static String ATTR_TABLE_PROPHYLAXIS;
+  private static String ATTR_TABLE_PROPHYLAXIS_KEY;
+  private static String ATTR_TABLE_PROPHYLAXIS_PPE;
+  private static String ATTR_TABLE_PROPHYLAXIS_PPE_KEY;
+  private static String ATTR_TABLE_PROPHYLAXIS_PREP;
+  private static String ATTR_TABLE_PROPHYLAXIS_PREP_KEY;
+  private static String ATTR_TABLE_PROPHYLAXIS_CHILD;
+  private static String ATTR_TABLE_PROPHYLAXIS_CHILD_KEY;
+  private static String ATTR_TABLE_PROPHYLAXIS_TOTAL;
+  private static String ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY;
+  private static String ATTR_TABLE_ORIGIN;
 
-  public String ATTR_TABLE_TRAV_NEW;
-  public String ATTR_TABLE_TRAV_NEW_KEY;
-
-  public String ATTR_TABLE_TRAV_MAINTENANCE;
-  public String ATTR_TABLE_TRAV_MAINTENANCE_KEY;
-
-  public String ATTR_TABLE_TRAV_ALTERATION;
-  public String ATTR_TABLE_TRAV_ALTERATION_KEY;
-
-  public String ATTR_TABLE_TRAV_TRANSIT;
-  public String ATTR_TABLE_TRAV_TRANSIT_KEY;
-
-  public String ATTR_TABLE_TRAV_TRANSFER;
-  public String ATTR_TABLE_TRAV_TRANSFER_KEY;
-
-  public String ATTR_TABLE_PATIENTS;
-  public String ATTR_TABLE_PATIENTS_KEY;
-
-
-  public String ATTR_TABLE_PATIENTS_ADULTS;
-  public String ATTR_TABLE_PATIENTS_ADULTS_KEY;
-
-  public String ATTR_TABLE_PATIENTS_0TO4;
-  public String ATTR_TABLE_PATIENTS_0TO4_KEY;
-
-  public String ATTR_TABLE_PATIENTS_5TO9;
-  public String ATTR_TABLE_PATIENTS_5TO9_KEY;
-
-  public String ATTR_TABLE_PATIENTS_10TO14;
-  public String ATTR_TABLE_PATIENTS_10TO14_KEY;
-
-
-  public String ATTR_TABLE_PROPHYLAXIS;
-  public String ATTR_TABLE_PROPHYLAXIS_KEY;
-
-
-  public String ATTR_TABLE_PROPHYLAXIS_PPE;
-  public String ATTR_TABLE_PROPHYLAXIS_PPE_KEY;
-
-  public String ATTR_TABLE_PROPHYLAXIS_PREP;
-  public String ATTR_TABLE_PROPHYLAXIS_PREP_KEY;
-
-  public String ATTR_TABLE_PROPHYLAXIS_CHILD;
-  public String ATTR_TABLE_PROPHYLAXIS_CHILD_KEY;
-
-  public String ATTR_TABLE_PROPHYLAXIS_TOTAL;
-  public String ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY;
-
-  private String ATTR_TABLE_ORIGIN;
   private Context context;
   private final List<EditText> editTexts = new ArrayList<>();
   private LayoutInflater layoutInflater;

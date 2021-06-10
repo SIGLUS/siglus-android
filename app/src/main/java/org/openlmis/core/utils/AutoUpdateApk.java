@@ -76,10 +76,9 @@ public class AutoUpdateApk {
   // ---------- everything below this line is private and does not belong to
   // the public API ----------
   //
-  private final static String TAG = "AutoUpdateApk1";
-
-  private final static String ANDROID_PACKAGE = "application/vnd.android.package-archive";
-  MediaType MEDIA_TYPE = MediaType.parse("application/json");
+  private static final String TAG = "AutoUpdateApk1";
+  private static final String ANDROID_PACKAGE = "application/vnd.android.package-archive";
+  MediaType mediaType = MediaType.parse("application/json");
 
 
   private final String server;
@@ -91,7 +90,7 @@ public class AutoUpdateApk {
   private NotificationManager notificationManager;
   private NotificationCompat.Builder mNotificationOAndHigherBuilder;
   private NotificationCompat.Builder mNotificationBetweenLOLLIPOPAndroidOBuilder;
-  private NotificationCompat.Builder mNotificationBetweenLOLLIPOPAndroidJELLY_BEANBuilder;
+  private NotificationCompat.Builder mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder;
 
   private static int versionCode = 0; // as low as it gets
   private static String packageName;
@@ -125,7 +124,7 @@ public class AutoUpdateApk {
 
   private void removeOldPackage(ApplicationInfo appInfo) {
     if (new File(appInfo.sourceDir).lastModified() > preferences.getMd5Time()) {
-      preferences.setMd5Key(MD5Hex(appInfo.sourceDir));
+      preferences.setMd5Key(md5Hex(appInfo.sourceDir));
       preferences.setMd5Time(LMISApp.getInstance().getCurrentTimeMillis());
 
       String updateFile = preferences.getUpdateFile();
@@ -160,7 +159,7 @@ public class AutoUpdateApk {
       } catch (JSONException e) {
         Log.w(TAG, e);
       }
-      RequestBody getApkLinkBody = RequestBody.create(MEDIA_TYPE, postdata.toString());
+      RequestBody getApkLinkBody = RequestBody.create(mediaType, postdata.toString());
       Request getApkLinkRequest = new Request.Builder()
           .url(server != null ? server + apiPath : apiPath)
           .header("Content-Type", "application/x-www-form-urlencoded")
@@ -286,12 +285,12 @@ public class AutoUpdateApk {
         notificationManager
             .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
       } else if (isBetweenJellyBeanAndLollipop()) {
-        mNotificationBetweenLOLLIPOPAndroidJELLY_BEANBuilder
+        mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder
             .setProgress(maxAmount, progressAmount, false);
-        mNotificationBetweenLOLLIPOPAndroidJELLY_BEANBuilder
+        mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder
             .setContentText(getString(R.string.upgrade_download_msg, progressAmount));
         notificationManager
-            .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidJELLY_BEANBuilder.build());
+            .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.build());
       } else if (isOAndHigher()) {
         mNotificationOAndHigherBuilder.setProgress(maxAmount, progressAmount, false);
         mNotificationOAndHigherBuilder
@@ -319,7 +318,7 @@ public class AutoUpdateApk {
           String updateFilePath = mDownloadApkDirectory + File.separator + result[1];
 
           Log.e(TAG, "updateFilePath  ==  " + updateFilePath);
-          preferences.setMd5Key(MD5Hex(updateFilePath));
+          preferences.setMd5Key(md5Hex(updateFilePath));
           preferences.setMd5Time(LMISApp.getInstance().getCurrentTimeMillis());
         }
         String updateFile = preferences.getUpdateFile();
@@ -335,7 +334,6 @@ public class AutoUpdateApk {
         } else {
           intentUri = Uri.parse("file://" + mDownloadApkDirectory + File.separator + updateFile);
         }
-//                grantUriPermission(intentUri);
         notificationIntent.setDataAndType(intentUri, ANDROID_PACKAGE)
             .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -352,7 +350,7 @@ public class AutoUpdateApk {
     if (isBetweenLollipopAndO()) {
       return mNotificationBetweenLOLLIPOPAndroidOBuilder == null;
     } else if (isBetweenJellyBeanAndLollipop()) {
-      return mNotificationBetweenLOLLIPOPAndroidJELLY_BEANBuilder == null;
+      return mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder == null;
     } else if (isOAndHigher()) {
       return mNotificationOAndHigherBuilder == null;
     }
@@ -367,11 +365,11 @@ public class AutoUpdateApk {
       notificationManager
           .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
     } else if (isBetweenJellyBeanAndLollipop()) {
-      mNotificationBetweenLOLLIPOPAndroidJELLY_BEANBuilder.setContentIntent(mPendingIntent)
+      mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.setContentIntent(mPendingIntent)
           .setContentText(getString(R.string.upgrade_download_click_install))
           .setContentTitle(getString(R.string.upgrade_download_complete));
       notificationManager
-          .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidJELLY_BEANBuilder.build());
+          .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.build());
     } else if (isOAndHigher()) {
       mNotificationOAndHigherBuilder.setContentIntent(mPendingIntent)
           .setContentText(getString(R.string.upgrade_download_click_install))
@@ -435,7 +433,7 @@ public class AutoUpdateApk {
           .setOngoing(false)
           .setAutoCancel(true);
     } else if (isBetweenJellyBeanAndLollipop()) {
-      mNotificationBetweenLOLLIPOPAndroidJELLY_BEANBuilder = new NotificationCompat.Builder(context)
+      mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder = new NotificationCompat.Builder(context)
           .setContentTitle(getString(R.string.upgrade_download_title))
           .setSmallIcon(R.mipmap.ic_launcher)
           .setPriority(NotificationCompat.DEFAULT_ALL)
@@ -465,7 +463,7 @@ public class AutoUpdateApk {
 
   }
 
-  private String MD5Hex(String filename) {
+  private String md5Hex(String filename) {
     final int size = 8192;
     byte[] buf = new byte[size];
     int length;

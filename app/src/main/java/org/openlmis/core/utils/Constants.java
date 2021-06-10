@@ -111,7 +111,8 @@ public final class Constants {
   public static final String PARAM_ADDED_DRUG_CODES_IN_VIA = "addedDrugsInVIA";
   public static final String PARAM_MOVEMENT_TYPE = "movementType";
   public static final String PARAM_LOT_DETAILS = "lotDetails";
-  public static final String PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER = "confirmGenerateLotNumberMessage";
+  public static final String PARAM_MSG_CONFIRM_GENERATE_LOT_NUMBER
+      = "confirmGenerateLotNumberMessage";
   public static final String PARAM_STOCK_ITEM = "stockCardItem";
 
   // Request Params

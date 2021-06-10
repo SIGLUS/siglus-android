@@ -59,9 +59,6 @@ public class RequisitionFormItemViewModel {
     long initialAmount = ignoreNullValue(item.getInitialAmount());
     long inventory = ignoreNullValue(item.getInventory());
     long calculatedOrderQuantity = ignoreNullValue(item.getCalculatedOrderQuantity());
-    long received = item.getReceived();
-    long theoretical = initialAmount + received - issued;
-    long different = inventory - theoretical;
 
     this.item.setInitialAmount(initialAmount);
     this.item.setIssued(issued);
@@ -69,12 +66,14 @@ public class RequisitionFormItemViewModel {
     this.item.setCalculatedOrderQuantity(calculatedOrderQuantity);
 
     this.initAmount = String.valueOf(initialAmount);
+    long received = item.getReceived();
     this.received = String.valueOf(received);
     this.issued = String.valueOf(issued);
+    long theoretical = initialAmount + received - issued;
     this.theoretical = String.valueOf(theoretical);
     this.total = "-";
     this.inventory = String.valueOf(inventory);
-    this.different = String.valueOf(different);
+    this.different = String.valueOf(inventory - theoretical);
     this.totalRequest = String.valueOf(calculatedOrderQuantity);
     this.adjustedTotalRequest = totalRequest;
     inflateTotalAmount();

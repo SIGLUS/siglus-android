@@ -15,12 +15,11 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
-package org.openlmis.core.utils;
 
+package org.openlmis.core.utils;
 
 import android.util.Log;
 import org.openlmis.core.BuildConfig;
-
 
 public final class LogUtil {
 
@@ -30,7 +29,7 @@ public final class LogUtil {
 
   }
 
-  public static void i(String tag, String msg) {
+  public static void message(String tag, String msg) {
     if (DEBUG) {
       if (msg == null) {
         return;
@@ -39,8 +38,8 @@ public final class LogUtil {
     }
   }
 
-  public static void s(String msg) {
-    i("sunzhuo", msg);
+  public static void message(String msg) {
+    message("sunzhuo", msg);
   }
 
 }

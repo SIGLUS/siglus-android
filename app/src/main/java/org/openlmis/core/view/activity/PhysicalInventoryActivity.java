@@ -29,7 +29,7 @@ import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
-import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
+import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.RoboGuice;
@@ -71,7 +71,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     productListRecycleView.setAdapter(mAdapter);
   }
 
-  private PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener getRefreshCompleteCountListener() {
+  private InventoryItemStatusChangeListener getRefreshCompleteCountListener() {
     return done -> setTotal(presenter.getInventoryViewModelList().size());
   }
 
@@ -166,8 +166,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
   protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
     public void onSign(String sign) {
       loading();
-      Subscription subscription = presenter.doInventory(sign)
-          .subscribe(onNextMainPageAction, errorAction);
+      Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
       subscriptions.add(subscription);
       trackInventoryEvent(TrackerActions.APPROVE_INVENTORY);
     }
@@ -175,7 +174,6 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
   @Override
   protected void setTotal(int total) {
-    tvTotal.setText(
-        getString(R.string.label_total_complete_counts, presenter.getCompleteCount(), total));
+    tvTotal.setText(getString(R.string.label_total_complete_counts, presenter.getCompleteCount(), total));
   }
 }

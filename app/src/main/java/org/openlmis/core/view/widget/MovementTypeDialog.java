@@ -106,6 +106,8 @@ public class MovementTypeDialog {
       case STATUS_SELECT_ISSUE:
         type = MovementReasonManager.MovementType.ISSUE;
         break;
+      default:
+        // do nothing
     }
 
     if (type != null) {

@@ -169,7 +169,7 @@ public class SignatureDialog extends BaseDialogFragment {
     return delegate != null;
   }
 
-  public static abstract class DialogDelegate {
+  public abstract static class DialogDelegate {
 
     public void onCancel() {
     }

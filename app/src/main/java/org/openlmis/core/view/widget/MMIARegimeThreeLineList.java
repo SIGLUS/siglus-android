@@ -124,11 +124,10 @@ public class MMIARegimeThreeLineList extends LinearLayout {
     TextView tvNameText = viewItem.findViewById(R.id.tv_title);
     EditText patientsTotalEdit = viewItem.findViewById(R.id.therapeutic_total);
     EditText patientsPharmacyEdit = viewItem.findViewById(R.id.therapeutic_pharmacy);
-    Long patientsAmount = itemThreeLines.getPatientsAmount();
-    Long pharmacyAmount = itemThreeLines.getPharmacyAmount();
 
     Map<String, String> linesMap = linesMap();
     tvNameText.setText(linesMap.get(itemThreeLines.getRegimeTypes()));
+    Long patientsAmount = itemThreeLines.getPatientsAmount();
     if (patientsAmount != null) {
       patientsTotalEdit.setText(String.valueOf(patientsAmount));
     }
@@ -136,6 +135,7 @@ public class MMIARegimeThreeLineList extends LinearLayout {
         .addTextChangedListener(new EditTextWatcher(itemThreeLines, CountType.PATIENTSAMOUNT));
     patientsTotalEdits.add(patientsTotalEdit);
 
+    Long pharmacyAmount = itemThreeLines.getPharmacyAmount();
     if (pharmacyAmount != null) {
       patientsPharmacyEdit.setText(String.valueOf(pharmacyAmount));
     }
@@ -204,13 +204,7 @@ public class MMIARegimeThreeLineList extends LinearLayout {
 
     @Override
     public void afterTextChanged(Editable editable) {
-      Long count = 0L;
-      try {
-        count = Long.parseLong(editable.toString());
-      } catch (NumberFormatException e) {
-
-      }
-
+      long count = Long.parseLong(editable.toString());
       if (CountType.PATIENTSAMOUNT == type) {
         item.setPatientsAmount(count);
         mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(type)));

@@ -70,8 +70,8 @@ public class NewStockMovementActivity extends BaseActivity implements
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     String stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
-    MovementReasonManager.MovementType movementType = (MovementReasonManager.MovementType) getIntent()
-        .getSerializableExtra(Constants.PARAM_MOVEMENT_TYPE);
+    MovementReasonManager.MovementType movementType = (MovementReasonManager.MovementType)
+        getIntent().getSerializableExtra(Constants.PARAM_MOVEMENT_TYPE);
     Long stockCardId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0L);
     boolean isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
 
@@ -165,6 +165,8 @@ public class NewStockMovementActivity extends BaseActivity implements
           case R.id.btn_cancel:
             finish();
             break;
+          default:
+            // do nothing
         }
       }
     };

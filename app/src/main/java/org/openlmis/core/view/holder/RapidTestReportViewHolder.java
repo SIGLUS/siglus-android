@@ -108,12 +108,12 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
     btnReportEntry.setOnClickListener(goToSelectPeriod());
   }
 
-  private void configFirstMissingOrUncomleteHolder(int rapid_test_missed_period,
-      int btn_select_close_period, SingleClickButtonListener singleClickButtonListener) {
-    tvReportStatus.setText(Html.fromHtml(context.getString(rapid_test_missed_period)));
+  private void configFirstMissingOrUncomleteHolder(int rapidTestMissedPeriod,
+      int btnSelectClosePeriod, SingleClickButtonListener singleClickButtonListener) {
+    tvReportStatus.setText(Html.fromHtml(context.getString(rapidTestMissedPeriod)));
     setGrayHeader();
     setBlueButton();
-    btnReportEntry.setText(context.getString(btn_select_close_period));
+    btnReportEntry.setText(context.getString(btnSelectClosePeriod));
     btnReportEntry.setOnClickListener(singleClickButtonListener);
   }
 

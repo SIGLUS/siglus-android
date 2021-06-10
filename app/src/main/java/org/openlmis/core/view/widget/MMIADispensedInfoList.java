@@ -64,7 +64,7 @@ public class MMIADispensedInfoList extends LinearLayout {
   private final List<EditText> dmLists = new ArrayList<>();
   private final List<EditText> withinLists = new ArrayList<>();
   private final List<EditText> editTexts = new ArrayList<>();
-  private String ATTR_TABLE_DISPENSED_KEY;
+  private String attrTableDispensedKey;
   private List<BaseInfoItem> dataList;
   private final Map<String, List<BaseInfoItem>> tableMap = new HashMap<>();
   private final Map<String, String> currentInfos = new HashMap<>();
@@ -93,18 +93,18 @@ public class MMIADispensedInfoList extends LinearLayout {
       tableList.add(item);
       tableMap.put(item.getTableName(), tableList);
     }
-    if (tableMap.get(ATTR_TABLE_DISPENSED_KEY) == null
-        || tableMap.get(ATTR_TABLE_DISPENSED_KEY).size() == 0) {
+    if (tableMap.get(attrTableDispensedKey) == null
+        || tableMap.get(attrTableDispensedKey).size() == 0) {
       return;
     }
     init();
     getCurrentBaseInfoItems();
     getLastBaseInfoItems();
-    addDispensedView(tableMap.get(ATTR_TABLE_DISPENSED_KEY));
+    addDispensedView(tableMap.get(attrTableDispensedKey));
   }
 
   private void init() {
-    ATTR_TABLE_DISPENSED_KEY = getString(R.string.table_dispensed_key);
+    attrTableDispensedKey = getString(R.string.table_dispensed_key);
 
     currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DS5, ATTR_TABLE_DISPENSED_DS4);
     currentAndPreviousMap.put(ATTR_TABLE_DISPENSED_DS4, ATTR_TABLE_DISPENSED_DS3);
@@ -121,10 +121,10 @@ public class MMIADispensedInfoList extends LinearLayout {
 
 
   private void getCurrentBaseInfoItems() {
-    if (tableMap.get(ATTR_TABLE_DISPENSED_KEY) == null) {
+    if (tableMap.get(attrTableDispensedKey) == null) {
       return;
     }
-    List<BaseInfoItem> items = getDispensedBaseInfoItems(tableMap.get(ATTR_TABLE_DISPENSED_KEY));
+    List<BaseInfoItem> items = getDispensedBaseInfoItems(tableMap.get(attrTableDispensedKey));
     for (BaseInfoItem item : items) {
       currentInfos.put(item.getName(), item.getValue());
     }
@@ -163,7 +163,7 @@ public class MMIADispensedInfoList extends LinearLayout {
 
   private List<BaseInfoItem> getDispensedBaseInfoItems(List<BaseInfoItem> items) {
     return FluentIterable.from(items)
-        .filter(baseInfoItem -> ATTR_TABLE_DISPENSED_KEY.equals(baseInfoItem.getTableName()))
+        .filter(baseInfoItem -> attrTableDispensedKey.equals(baseInfoItem.getTableName()))
         .toList();
   }
 
@@ -292,13 +292,9 @@ public class MMIADispensedInfoList extends LinearLayout {
     if (list == null || list.size() == 0) {
       return "0";
     }
-    try {
-      for (EditText item : list) {
-        sum += Integer.parseInt(item.getText().toString());
-      }
-    } catch (NumberFormatException e) {
+    for (EditText item : list) {
+      sum += Integer.parseInt(item.getText().toString());
     }
-
     return String.valueOf(sum);
   }
 
@@ -340,7 +336,7 @@ public class MMIADispensedInfoList extends LinearLayout {
     @Override
     public void afterTextChanged(Editable editable) {
       item.setValue(editable.toString());
-      if (ATTR_TABLE_DISPENSED_KEY.equals(item.getTableName())) {
+      if (attrTableDispensedKey.equals(item.getTableName())) {
         updateTotalInfo();
       }
     }

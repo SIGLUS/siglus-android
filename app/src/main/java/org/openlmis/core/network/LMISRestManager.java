@@ -18,7 +18,6 @@
 
 package org.openlmis.core.network;
 
-
 import static javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier;
 import static org.openlmis.core.utils.Constants.BASIC_AUTH;
 import static org.openlmis.core.utils.Constants.GRANT_TYPE;
@@ -102,7 +101,8 @@ public class LMISRestManager {
       SSLContext sslContext = SSLContext.getDefault();
 
       client.setSslSocketFactory(sslContext.getSocketFactory());
-      //OVERRIDE HOSTNAME VERIFIER BECAUSE WE CONNECT TO ELB DIRECTLY DUE TO OCCASIONAL DNS ISSUES IN MOZAMBIQUE
+      //OVERRIDE HOSTNAME VERIFIER BECAUSE WE CONNECT TO ELB DIRECTLY DUE TO OCCASIONAL DNS
+      // ISSUES IN MOZAMBIQUE
       client.setHostnameVerifier((hostname, session) -> {
 
         X509Certificate cert;

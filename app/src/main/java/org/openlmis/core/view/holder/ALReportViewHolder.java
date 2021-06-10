@@ -169,6 +169,8 @@ public class ALReportViewHolder extends BaseViewHolder {
           gridViewModel = viewModel.getGridFour();
           gridColumnCode = ALGridViewModel.ALGridColumnCode.existentStock;
           break;
+        default:
+          // do nothing
       }
       if (gridColumnCode == ALGridViewModel.ALGridColumnCode.treatment) {
         gridViewModel.setTreatmentsValue(getEditValue(etText));

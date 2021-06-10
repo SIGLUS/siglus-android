@@ -51,24 +51,24 @@ public class WarningDialogFragment extends DialogFragment {
 
   public static WarningDialogFragment newInstance(int messageResId, int positiveTextResId,
       int negativeTextResId) {
-    WarningDialogFragment dialog = new WarningDialogFragment();
     Bundle bundle = new Bundle();
     bundle.putInt(PARAM_MESSAGE_RES, messageResId);
     bundle.putInt(PARAM_POSITIVE_TEXT_RES, positiveTextResId);
     bundle.putInt(PARAM_NEGATIVE_TEXT_RES, negativeTextResId);
     bundle.putString(PARAM_STRING_TYPE, PARAM_INT_STRING);
+    WarningDialogFragment dialog = new WarningDialogFragment();
     dialog.setArguments(bundle);
     return dialog;
   }
 
   public static WarningDialogFragment newInstanceForDeleteProduct(String messageResId,
       String positiveTextResId, String negativeTextResId) {
-    WarningDialogFragment dialog = new WarningDialogFragment();
     Bundle bundle = new Bundle();
     bundle.putString(PARAM_MESSAGE_RES, messageResId);
     bundle.putString(PARAM_POSITIVE_TEXT_RES, positiveTextResId);
     bundle.putString(PARAM_NEGATIVE_TEXT_RES, negativeTextResId);
     bundle.putString(PARAM_STRING_TYPE, PARAM_FORMAT_STRING);
+    WarningDialogFragment dialog = new WarningDialogFragment();
     dialog.setArguments(bundle);
     dialog.setCancelable(false);
     return dialog;

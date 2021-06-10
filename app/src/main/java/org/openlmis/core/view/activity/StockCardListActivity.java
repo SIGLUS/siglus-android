@@ -72,6 +72,7 @@ public class StockCardListActivity extends SearchBarActivity {
         return true;
       case MENU_ID_MOVEMENT_HISTORY:
         startActivity(AllDrugsMovementHistoryActivity.getIntentToMe(this));
+        return true;
       default:
         return super.onOptionsItemSelected(item);
     }

@@ -29,8 +29,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> extends
-    RecyclerView.Adapter<VH> implements FilterableAdapter,
+public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> extends
+    RecyclerView.Adapter<T> implements FilterableAdapter,
     RecyclerViewFastScroller.BubbleTextGetter {
 
   @Getter

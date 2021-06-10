@@ -42,13 +42,11 @@ public class KitStockCardListFragment extends StockCardListFragment {
     return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
   }
 
-  protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
-    @Override
-    public void onItemViewClick(InventoryViewModel inventoryViewModel) {
-      Intent intent = getStockMovementIntent(inventoryViewModel);
-      startActivityForResult(intent, Constants.REQUEST_UNPACK_KIT);
-    }
-  };
+  protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener =
+      inventoryViewModel -> {
+        Intent intent = getStockMovementIntent(inventoryViewModel);
+        startActivityForResult(intent, Constants.REQUEST_UNPACK_KIT);
+      };
 
   @InjectView(R.id.product_update_banner)
   ProductsUpdateBanner productsUpdateBanner;

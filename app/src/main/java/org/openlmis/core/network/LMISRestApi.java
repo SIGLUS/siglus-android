@@ -16,9 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-
 package org.openlmis.core.network;
-
 
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
@@ -51,7 +49,7 @@ import retrofit.http.Query;
 public interface LMISRestApi {
 
   @POST("/api/oauth/token")
-  void authorizeUser(@Query("grant_type") String grant_type, @Query("username") String username,
+  void authorizeUser(@Query("grant_type") String grantType, @Query("username") String username,
       @Query("password") String password, Callback<UserResponse> callback);
 
   //sync up

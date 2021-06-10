@@ -126,10 +126,10 @@ public class SyncUpManager {
         syncArchivedProducts();
       }
 
-//            syncRapidTestForms();
-//            syncUpUnSyncedStockCardCodes();
+      // syncRapidTestForms();
+      // syncUpUnSyncedStockCardCodes();
       syncAppVersion();
-//            syncUpCmms();
+      // syncUpCmms();
     }
     Log.d(TAG, "sync Up Data end");
     isSyncing = false;
@@ -200,8 +200,8 @@ public class SyncUpManager {
       }
 
       final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-      List<StockMovementEntry> movementEntriesToSync = convertStockMovementItemsToStockMovementEntriesForSync(
-          facilityId, stockMovementItems);
+      List<StockMovementEntry> movementEntriesToSync =
+          convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
 
       if (movementEntriesToSync == null || movementEntriesToSync.isEmpty()) {
         new LMISException("SyncUpManager.movementEntriesToSync").reportToFabric();

@@ -93,9 +93,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
         populateRnrFormNotBeCreatedView(model);
         break;
       case RnRFormViewModel.TYPE_DRAFT:
-        configHolderForUnComplete(model, R.string.label_incomplete_requisition,
-            R.string.btn_view_incomplete_requisition);
-        break;
       case RnRFormViewModel.TYPE_SUBMIT:
         configHolderForUnComplete(model, R.string.label_incomplete_requisition,
             R.string.btn_view_incomplete_requisition);
@@ -109,6 +106,8 @@ public class RnRFormViewHolder extends BaseViewHolder {
       case RnRFormViewModel.TYPE_INACTIVE:
         populateRnrFormInActiveCreatedView(model);
         break;
+      default:
+        // do nothing
     }
   }
 

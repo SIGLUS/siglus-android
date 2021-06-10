@@ -51,18 +51,15 @@ public class RapidTestFormGridViewModel {
   String consumptionValue = StringUtils.EMPTY;
   String positiveValue = StringUtils.EMPTY;
   String unjustifiedValue = StringUtils.EMPTY;
-
-
   ProgramDataColumn positiveColumn;
   ProgramDataColumn consumeColumn;
   ProgramDataColumn unjustifiedColumn;
-
   Boolean isNeedAllAPEValue = false;
   Boolean isAPE = false;
 
-  final static String COLUMN_CODE_PREFIX_CONSUME = "CONSUME_";
-  final static String COLUMN_CODE_PREFIX_POSITIVE = "POSITIVE_";
-  final static String COLUMN_CODE_PREFIX_UNJUSTIFIED = "UNJUSTIFIED_";
+  private static final String COLUMN_CODE_PREFIX_CONSUME = "CONSUME_";
+  private static final String COLUMN_CODE_PREFIX_POSITIVE = "POSITIVE_";
+  private static final String COLUMN_CODE_PREFIX_UNJUSTIFIED = "UNJUSTIFIED_";
 
   RapidTestFormGridViewModel(ColumnCode columnCode) {
     this.columnCode = columnCode;
@@ -106,6 +103,22 @@ public class RapidTestFormGridViewModel {
     setUnjustifiedValue(column, value);
   }
 
+  public void setValue(RapidTestGridColumnCode column, String value) {
+    switch (column) {
+      case positive:
+        positiveValue = value;
+        break;
+      case consumption:
+        consumptionValue = value;
+        break;
+      case unjustified:
+        unjustifiedValue = value;
+        break;
+      default:
+        // do nothing
+    }
+  }
+
   public List<ProgramDataFormItem> convertFormGridViewModelToDataModel(
       MovementReasonManager.MovementReason issueReason) {
     List<ProgramDataFormItem> programDataFormItems = new ArrayList<>();
@@ -126,20 +139,8 @@ public class RapidTestFormGridViewModel {
       case unjustified:
         unjustifiedValue = StringUtils.EMPTY;
         break;
-    }
-  }
-
-  public void setValue(RapidTestGridColumnCode column, String value) {
-    switch (column) {
-      case positive:
-        positiveValue = value;
-        break;
-      case consumption:
-        consumptionValue = value;
-        break;
-      case unjustified:
-        unjustifiedValue = value;
-        break;
+      default:
+        // do nothing
     }
   }
 

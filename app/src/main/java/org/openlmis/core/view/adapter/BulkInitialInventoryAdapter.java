@@ -25,6 +25,7 @@ import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.BaseViewHolder;
 import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder;
+import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
@@ -32,7 +33,7 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
 
   private static final String TAG = BulkInitialInventoryAdapter.class.getSimpleName();
   private final RemoveNonBasicProduct removeNonBasicProductListener;
-  private final BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener;
+  private final InventoryItemStatusChangeListener refreshCompleteCountListener;
 
   public static final int ITEM_BASIC = 1;
   public static final int ITEM_NO_BASIC = ITEM_BASIC + 1;
@@ -41,7 +42,7 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
 
   public BulkInitialInventoryAdapter(List<InventoryViewModel> data,
       RemoveNonBasicProduct removeNonBasicProductListener,
-      BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener refreshCompleteCountListener) {
+      InventoryItemStatusChangeListener refreshCompleteCountListener) {
     super(data);
     this.removeNonBasicProductListener = removeNonBasicProductListener;
     this.refreshCompleteCountListener = refreshCompleteCountListener;
@@ -49,7 +50,8 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
 
   protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
     final InventoryViewModel viewModel = filteredList.get(position);
-    BulkInitialInventoryWithLotViewHolder holder = (BulkInitialInventoryWithLotViewHolder) viewHolder;
+    BulkInitialInventoryWithLotViewHolder holder =
+        (BulkInitialInventoryWithLotViewHolder) viewHolder;
     holder.populate((BulkInitialInventoryViewModel) viewModel, queryKeyWord,
         refreshCompleteCountListener, removeNonBasicProductListener);
   }

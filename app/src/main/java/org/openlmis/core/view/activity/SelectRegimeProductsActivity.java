@@ -58,7 +58,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
   @InjectPresenter(ProductPresenter.class)
   ProductPresenter presenter;
   protected List<RegimeProductViewModel> viewModels;
-  private final int MAX_CHECKED_LIMIT = 1;
+  private static final int MAX_CHECKED_LIMIT = 1;
 
   @Override
   protected ScreenName getScreenName() {
@@ -116,7 +116,8 @@ public class SelectRegimeProductsActivity extends BaseActivity {
     return from(viewModels).filter(viewModel -> viewModel.isChecked()).toList();
   }
 
-  Subscriber<List<RegimeProductViewModel>> subscriber = new Subscriber<List<RegimeProductViewModel>>() {
+  Subscriber<List<RegimeProductViewModel>> subscriber =
+      new Subscriber<List<RegimeProductViewModel>>() {
     @Override
     public void onCompleted() {
       loaded();

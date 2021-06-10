@@ -16,9 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-
 package org.openlmis.core.view.activity;
-
 
 import android.content.Intent;
 import android.content.pm.PackageManager;

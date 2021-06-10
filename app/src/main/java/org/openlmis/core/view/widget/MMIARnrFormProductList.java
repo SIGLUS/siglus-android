@@ -15,6 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+
 package org.openlmis.core.view.widget;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
@@ -408,6 +409,8 @@ public class MMIARnrFormProductList extends LinearLayout {
         case R.id.et_adjustment:
           item.setAdjustment(getEditValue(etText));
           break;
+        default:
+          // do nothing
       }
 
     }

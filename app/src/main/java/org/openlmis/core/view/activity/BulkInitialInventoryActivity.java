@@ -50,7 +50,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
   public static final String KEY_FROM_INITIAL_COMPLETED = "Initial-Completed";
 
   public static final int REQUEST_CODE = 1050;
-  public final String EMPTY_STRING = "";
 
   @InjectView(R.id.btn_add_products)
   private TextView btnAddProducts;
