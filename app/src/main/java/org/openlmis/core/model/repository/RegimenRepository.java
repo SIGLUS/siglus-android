@@ -20,10 +20,8 @@ package org.openlmis.core.model.repository;
 
 
 import android.content.Context;
-
-
 import com.google.inject.Inject;
-
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RegimeShortCode;
@@ -32,79 +30,85 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
-import java.util.List;
-
 public class RegimenRepository {
 
-    GenericDao<Regimen> regimenGenericDao;
+  GenericDao<Regimen> regimenGenericDao;
 
-    @Inject
-    DbUtil dbUtil;
+  @Inject
+  DbUtil dbUtil;
 
-    @Inject
-    Context context;
+  @Inject
+  Context context;
 
-    @Inject
-    public RegimenRepository(Context context) {
-        this.regimenGenericDao = new GenericDao<>(Regimen.class, context);
-    }
+  @Inject
+  public RegimenRepository(Context context) {
+    this.regimenGenericDao = new GenericDao<>(Regimen.class, context);
+  }
 
-    public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category) throws LMISException {
-        return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder().where().eq("name", name).and().eq("type", category).queryForFirst());
-    }
+  public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category)
+      throws LMISException {
+    return dbUtil.withDao(Regimen.class,
+        dao -> dao.queryBuilder().where().eq("name", name).and().eq("type", category)
+            .queryForFirst());
+  }
 
-    public Regimen getByCode(final String code) throws LMISException {
-        return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder().where().eq("code", code).queryForFirst());
-    }
+  public Regimen getByCode(final String code) throws LMISException {
+    return dbUtil
+        .withDao(Regimen.class, dao -> dao.queryBuilder().where().eq("code", code).queryForFirst());
+  }
 
-    public void batchSave(List<Regimen> regimens) {
-        try {
-            for (Regimen regimen : regimens) {
-                if (!regimen.isActive()) continue;
-                createOrUpdate(regimen);
-            }
-        } catch (LMISException e) {
-            new LMISException(e, "RegimenRepository.batchSave").reportToFabric();
+  public void batchSave(List<Regimen> regimens) {
+    try {
+      for (Regimen regimen : regimens) {
+        if (!regimen.isActive()) {
+          continue;
         }
+        createOrUpdate(regimen);
+      }
+    } catch (LMISException e) {
+      new LMISException(e, "RegimenRepository.batchSave").reportToFabric();
     }
+  }
 
-    private void createOrUpdate(Regimen regimen) throws LMISException {
-        Regimen existingRegimen = getByCode(regimen.getCode());
-        if (existingRegimen == null) {
-            create(regimen);
-        } else {
-            regimen.setId(existingRegimen.getId());
-            regimenGenericDao.update(regimen);
-        }
+  private void createOrUpdate(Regimen regimen) throws LMISException {
+    Regimen existingRegimen = getByCode(regimen.getCode());
+    if (existingRegimen == null) {
+      create(regimen);
+    } else {
+      regimen.setId(existingRegimen.getId());
+      regimenGenericDao.update(regimen);
     }
+  }
 
-    public void create(Regimen regimen) throws LMISException {
-        regimenGenericDao.create(regimen);
-    }
+  public void create(Regimen regimen) throws LMISException {
+    regimenGenericDao.create(regimen);
+  }
 
-    public List<Regimen> listDefaultRegime() throws LMISException {
-        return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
-                .where()
-                .eq("isCustom", false)
-                .and().eq("active", true)
-                .query());
-    }
+  public List<Regimen> listDefaultRegime() throws LMISException {
+    return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
+        .where()
+        .eq("isCustom", false)
+        .and().eq("active", true)
+        .query());
+  }
 
-    public List<RegimeShortCode> listRegimeShortCode(Regimen.RegimeType type) throws LMISException {
-        return dbUtil.withDao(RegimeShortCode.class, dao -> dao.queryBuilder()
-                .where()
-                .eq("type", type)
-                .query());
-    }
+  public List<RegimeShortCode> listRegimeShortCode(Regimen.RegimeType type) throws LMISException {
+    return dbUtil.withDao(RegimeShortCode.class, dao -> dao.queryBuilder()
+        .where()
+        .eq("type", type)
+        .query());
+  }
 
-    public void deleteRegimeDirtyData(String programCode) {
-        String deleteRegimeThreeLines = "DELETE FROM regime_three_lines "
-                + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM programs "
-                + "WHERE programCode='" + programCode + "'));";
-        String deleteRegimeItems = "DELETE FROM regime_items "
-                + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM programs "
-                + "WHERE programCode='" + programCode + "'));";
-        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeThreeLines);
-        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeItems);
-    }
+  public void deleteRegimeDirtyData(String programCode) {
+    String deleteRegimeThreeLines = "DELETE FROM regime_three_lines "
+        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM programs "
+        + "WHERE programCode='" + programCode + "'));";
+    String deleteRegimeItems = "DELETE FROM regime_items "
+        + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM programs "
+        + "WHERE programCode='" + programCode + "'));";
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
+        .execSQL(deleteRegimeThreeLines);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
+        .execSQL(deleteRegimeItems);
+  }
 }

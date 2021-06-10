@@ -22,9 +22,9 @@ import org.openlmis.core.persistence.Migration;
 
 public class AddActiveColumnToProductTable extends Migration {
 
-    @Override
-    public void up() {
-        execSQL("ALTER TABLE 'products' ADD COLUMN isActive BOOLEAN");
-        execSQL("UPDATE 'products' SET 'isActive' = 1");
-    }
+  @Override
+  public void up() {
+    execSQL("ALTER TABLE 'products' ADD COLUMN isActive BOOLEAN");
+    execSQL("UPDATE 'products' SET 'isActive' = 1");
+  }
 }

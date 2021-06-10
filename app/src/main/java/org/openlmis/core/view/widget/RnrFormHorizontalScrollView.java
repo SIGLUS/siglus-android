@@ -6,39 +6,41 @@ import android.util.AttributeSet;
 import android.widget.HorizontalScrollView;
 
 public class RnrFormHorizontalScrollView extends HorizontalScrollView {
-    public RnrFormHorizontalScrollView(Context context) {
-        super(context);
-    }
 
-    public RnrFormHorizontalScrollView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+  public RnrFormHorizontalScrollView(Context context) {
+    super(context);
+  }
 
-    public interface OnScrollChangedListener {
-        void onScrollChanged(int l, int t, int oldl, int oldt);
-    }
+  public RnrFormHorizontalScrollView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+  }
 
-    private OnScrollChangedListener mOnScrollChangedListener;
+  public interface OnScrollChangedListener {
 
-    public void setOnScrollChangedListener(OnScrollChangedListener listener) {
-        mOnScrollChangedListener = listener;
-    }
+    void onScrollChanged(int l, int t, int oldl, int oldt);
+  }
 
-    @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        super.onScrollChanged(l, t, oldl, oldt);
-        if (mOnScrollChangedListener != null) {
-            mOnScrollChangedListener.onScrollChanged(l, t, oldl, oldt);
-        }
-    }
+  private OnScrollChangedListener mOnScrollChangedListener;
 
-    @Override
-    public void fling(int velocityX) {
-        super.fling(0);
-    }
+  public void setOnScrollChangedListener(OnScrollChangedListener listener) {
+    mOnScrollChangedListener = listener;
+  }
 
-    @Override
-    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
-        return 0;
+  @Override
+  protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+    super.onScrollChanged(l, t, oldl, oldt);
+    if (mOnScrollChangedListener != null) {
+      mOnScrollChangedListener.onScrollChanged(l, t, oldl, oldt);
     }
+  }
+
+  @Override
+  public void fling(int velocityX) {
+    super.fling(0);
+  }
+
+  @Override
+  protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+    return 0;
+  }
 }

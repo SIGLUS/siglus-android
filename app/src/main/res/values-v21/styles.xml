@@ -1,63 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Main theme colors -->
-        <!--   your app branding color for the app bar -->
-        <item name="colorPrimary">@color/color_primary</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/color_primary_dark</item>
-        <!--   theme UI controls like checkboxes and text fields -->
-        <item name="colorAccent">@color/color_accent</item>
-        <item name="android:windowBackground">@color/general_background_color</item>
-    </style>
 
-    <style name="AppTheme.AMBER">
-        <item name="colorPrimary">@color/color_amber</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/color_amber_dark</item>
-    </style>
-    <style name="AppTheme.LIGHT_BLUE">
-        <item name="colorPrimary">@color/color_light_blue</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/color_dark_blue</item>
-    </style>
-    <style name="AppTheme.PINK">
-        <item name="colorPrimary">@color/color_pink</item>
-        <item name="colorPrimaryDark">@color/color_pink_dark</item>
-    </style>
+  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- Main theme colors -->
+    <!--   your app branding color for the app bar -->
+    <item name="colorPrimary">@color/color_primary</item>
+    <!--   darker variant for the status bar and contextual app bars -->
+    <item name="colorPrimaryDark">@color/color_primary_dark</item>
+    <!--   theme UI controls like checkboxes and text fields -->
+    <item name="colorAccent">@color/color_accent</item>
+    <item name="android:windowBackground">@color/general_background_color</item>
+  </style>
 
-    <style name="AppTheme.PURPLE">
-        <item name="colorPrimary">@color/color_purple</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/color_purple_dark</item>
-    </style>
+  <style name="AppTheme.AMBER">
+    <item name="colorPrimary">@color/color_amber</item>
+    <!--   darker variant for the status bar and contextual app bars -->
+    <item name="colorPrimaryDark">@color/color_amber_dark</item>
+  </style>
 
-    <style name="AppTheme.TEAL">
-        <item name="colorPrimary">@color/color_teal</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/color_teal_dark</item>
-    </style>
+  <style name="AppTheme.LIGHT_BLUE">
+    <item name="colorPrimary">@color/color_light_blue</item>
+    <!--   darker variant for the status bar and contextual app bars -->
+    <item name="colorPrimaryDark">@color/color_dark_blue</item>
+  </style>
 
-    <style name="AppTheme.BLUE">
-        <item name="colorPrimary">@color/color_blue</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/color_blue_dark</item>
-    </style>
+  <style name="AppTheme.PINK">
+    <item name="colorPrimary">@color/color_pink</item>
+    <item name="colorPrimaryDark">@color/color_pink_dark</item>
+  </style>
 
-    <style name="AppTheme.BlueGray">
-        <item name="colorPrimary">@color/color_material_blue_gray</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/color_material_blue_gray_dark</item>
-    </style>
+  <style name="AppTheme.PURPLE">
+    <item name="colorPrimary">@color/color_purple</item>
+    <!--   darker variant for the status bar and contextual app bars -->
+    <item name="colorPrimaryDark">@color/color_purple_dark</item>
+  </style>
 
-    <style name="AppTheme.Gray">
-        <item name="colorPrimary">@color/color_gray</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/color_black</item>
-    </style>
+  <style name="AppTheme.TEAL">
+    <item name="colorPrimary">@color/color_teal</item>
+    <!--   darker variant for the status bar and contextual app bars -->
+    <item name="colorPrimaryDark">@color/color_teal_dark</item>
+  </style>
 
-    <style name="AppTheme.OrangeRed">
-        <item name="colorPrimary">@color/color_pink</item>
-        <item name="colorPrimaryDark">@color/color_pink_dark</item>
-    </style>
+  <style name="AppTheme.BLUE">
+    <item name="colorPrimary">@color/color_blue</item>
+    <!--   darker variant for the status bar and contextual app bars -->
+    <item name="colorPrimaryDark">@color/color_blue_dark</item>
+  </style>
+
+  <style name="AppTheme.BlueGray">
+    <item name="colorPrimary">@color/color_material_blue_gray</item>
+    <!--   darker variant for the status bar and contextual app bars -->
+    <item name="colorPrimaryDark">@color/color_material_blue_gray_dark</item>
+  </style>
+
+  <style name="AppTheme.Gray">
+    <item name="colorPrimary">@color/color_gray</item>
+    <!--   darker variant for the status bar and contextual app bars -->
+    <item name="colorPrimaryDark">@color/color_black</item>
+  </style>
+
+  <style name="AppTheme.OrangeRed">
+    <item name="colorPrimary">@color/color_pink</item>
+    <item name="colorPrimaryDark">@color/color_pink_dark</item>
+  </style>
 </resources>

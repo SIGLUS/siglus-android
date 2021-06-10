@@ -1,527 +1,527 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="title_home">Página principal</string>
-    <string name="title_init_inventory">Inventário inicial</string>
-    <string name="title_physical_inventory">Inventário</string>
-    <string name="title_stock_cards">Visão geral de stock</string>
-    <string name="title_kit_stock_cards">Visão geral de Kits</string>
-    <string name="title_unpack_kit">Desembalar Kit</string>
-    <string name="title_requisition">Criar Requisição Balancete para Via clássica</string>
-    <string name="hint_network_error">Falha na conexão, verifique sua conexão a rede</string>
-    <!--Login Page-->
-    <string name="hint_username">Usuário</string>
-    <string name="hint_password">Senha</string>
-    <string name="btn_login">Entrar</string>
-    <string name="msg_empty_user">Usuário ou Senha não pode estar em branco.</string>
-    <string name="msg_invalid_user">Usuário ou Senha incorrecto.</string>
-    <string name="msg_sync_products_list_failed">Descarregamento de produtos a partir do servidor falhou, por favor entre novamente.</string>
-    <string name="msg_sync_stock_movements_data">Sincronizando dados de movimentos de stock</string>
-    <string name="msg_fetching_products">Descarregando lista de produtos…</string>
-    <string name="msg_service_lists">Descarregando lista de serviços…</string>
-    <string name="msg_sync_requisition_data">Sincronizando dados de requisição</string>
-    <string name="msg_sync_requisition_failed">Descarregamento de dados de requisição a partir do servidor falhou, por favor entre novamente.</string>
-    <string name="msg_sync_stock_movement_failed">Falha no descarregamento de movimentos de stock, faça o login novamente.</string>
-    <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
-    <string name="msg_requisition_field_exist_null">Não é possível enviar requisição com campo nulo!</string>
-    <string name="version_number"><![CDATA[Versão <b>%1$s</b>]]></string>
-    <!--Init Inventory-->
-    <string name="label_dummy_product">Paracetamol</string>
-    <string name="label_dummy_unit">500mg</string>
-    <string name="msg_inventory_check_failed">Quantidade não pode estar em branco</string>
-    <string name="btn_done">VERIFICADO</string>
-    <string name="msg_save_before_exit">Por favor, grave o inventário inicial, antes de sair da aplicação</string>
-    <string name="btn_no_stock">Sem stock</string>
-    <string name="btn_remove_stock">REMOVER PRODUTO</string>
-    <string name="btn_add_product">Adicionar produtos</string>
-    <string name="title_basic_products">Produtos Básicos</string>
-    <string name="msg_can_not_add_duplicate">Produtos %1$s já existe, por favor, adicione um novo.</string>
+  <string name="title_home">Página principal</string>
+  <string name="title_init_inventory">Inventário inicial</string>
+  <string name="title_physical_inventory">Inventário</string>
+  <string name="title_stock_cards">Visão geral de stock</string>
+  <string name="title_kit_stock_cards">Visão geral de Kits</string>
+  <string name="title_unpack_kit">Desembalar Kit</string>
+  <string name="title_requisition">Criar Requisição Balancete para Via clássica</string>
+  <string name="hint_network_error">Falha na conexão, verifique sua conexão a rede</string>
+  <!--Login Page-->
+  <string name="hint_username">Usuário</string>
+  <string name="hint_password">Senha</string>
+  <string name="btn_login">Entrar</string>
+  <string name="msg_empty_user">Usuário ou Senha não pode estar em branco.</string>
+  <string name="msg_invalid_user">Usuário ou Senha incorrecto.</string>
+  <string name="msg_sync_products_list_failed">Descarregamento de produtos a partir do servidor falhou, por favor entre novamente.</string>
+  <string name="msg_sync_stock_movements_data">Sincronizando dados de movimentos de stock</string>
+  <string name="msg_fetching_products">Descarregando lista de produtos…</string>
+  <string name="msg_service_lists">Descarregando lista de serviços…</string>
+  <string name="msg_sync_requisition_data">Sincronizando dados de requisição</string>
+  <string name="msg_sync_requisition_failed">Descarregamento de dados de requisição a partir do servidor falhou, por favor entre novamente.</string>
+  <string name="msg_sync_stock_movement_failed">Falha no descarregamento de movimentos de stock, faça o login novamente.</string>
+  <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
+  <string name="msg_requisition_field_exist_null">Não é possível enviar requisição com campo nulo!</string>
+  <string name="version_number"><![CDATA[Versão <b>%1$s</b>]]></string>
+  <!--Init Inventory-->
+  <string name="label_dummy_product">Paracetamol</string>
+  <string name="label_dummy_unit">500mg</string>
+  <string name="msg_inventory_check_failed">Quantidade não pode estar em branco</string>
+  <string name="btn_done">VERIFICADO</string>
+  <string name="msg_save_before_exit">Por favor, grave o inventário inicial, antes de sair da aplicação</string>
+  <string name="btn_no_stock">Sem stock</string>
+  <string name="btn_remove_stock">REMOVER PRODUTO</string>
+  <string name="btn_add_product">Adicionar produtos</string>
+  <string name="title_basic_products">Produtos Básicos</string>
+  <string name="msg_can_not_add_duplicate">Produtos %1$s já existe, por favor, adicione um novo.</string>
 
-    <!--Home Page-->
-    <string name="label_stock_cards">Visão geral da ficha de stock</string>
-    <string name="label_kits_stock_cards">KITS</string>
-    <string name="label_sync">Sincronizar dados</string>
-    <string name="action_add_new_drug">Adicionar novo produto</string>
-    <plurals name="minute_unit">
-        <item quantity="one">%s minuto</item>
-        <item quantity="other">%s minutos</item>
-    </plurals>
-    <plurals name="hour_unit">
-        <item quantity="one">%s Hora</item>
-        <item quantity="other">%s Horas</item>
-    </plurals>
-    <plurals name="day_unit">
-        <item quantity="one">%s dia</item>
-        <item quantity="other">%s dias</item>
-    </plurals>
-    <string name="label_last_synced_ago">%s desde a última sincronização</string>
-    <string name="label_rnr_form_last_synced_time_ago">Última sincronização da Requisição %s atrás</string>
-    <string name="label_stock_card_last_synced_time_ago">Última sincronização das Fichas de Stock a %s atrás</string>
-    <string name="msg_back_twice_to_exit">Pressione o botão \"voltar\" duas vezes para sair</string>
-    <string name="action_sign_out">Sair</string>
-    <string name="initial_rnr_sync_failed">Sincronização inicial da requisição falhou, por favor tente novamente.</string>
-    <string name="initial_stock_movement_sync_failed">Sincronização Inicial  das fichas de stock falhou, por favor tente novamente.</string>
-    <string name="initial_sync_failed">Sincronização inicial falhou</string>
+  <!--Home Page-->
+  <string name="label_stock_cards">Visão geral da ficha de stock</string>
+  <string name="label_kits_stock_cards">KITS</string>
+  <string name="label_sync">Sincronizar dados</string>
+  <string name="action_add_new_drug">Adicionar novo produto</string>
+  <plurals name="minute_unit">
+    <item quantity="one">%s minuto</item>
+    <item quantity="other">%s minutos</item>
+  </plurals>
+  <plurals name="hour_unit">
+    <item quantity="one">%s Hora</item>
+    <item quantity="other">%s Horas</item>
+  </plurals>
+  <plurals name="day_unit">
+    <item quantity="one">%s dia</item>
+    <item quantity="other">%s dias</item>
+  </plurals>
+  <string name="label_last_synced_ago">%s desde a última sincronização</string>
+  <string name="label_rnr_form_last_synced_time_ago">Última sincronização da Requisição %s atrás</string>
+  <string name="label_stock_card_last_synced_time_ago">Última sincronização das Fichas de Stock a %s atrás</string>
+  <string name="msg_back_twice_to_exit">Pressione o botão \"voltar\" duas vezes para sair</string>
+  <string name="action_sign_out">Sair</string>
+  <string name="initial_rnr_sync_failed">Sincronização inicial da requisição falhou, por favor tente novamente.</string>
+  <string name="initial_stock_movement_sync_failed">Sincronização Inicial  das fichas de stock falhou, por favor tente novamente.</string>
+  <string name="initial_sync_failed">Sincronização inicial falhou</string>
 
-    <!-- Bulk Movements -->
-    <string name="label_soh_amount">Stock existente</string>
-    <string name="hint_soh_amount">Quantidade</string>
-    <string name="tv_batch">Lote &amp; prazo de validade</string>
-    <string name="msg_error_basic_products">Todos os produtos básicos devem ser adicionados para continuar</string>
-    <!--MMIA-->
-    <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
-    <string name="label_AL_title">AL - %1$s à %2$s</string>
-    <string name="label_rnrfrom_left_header">MEDICAMENTO</string>
-    <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
-    <string name="total">Total</string>
-    <string name="total_title">Total doentes</string>
-    <string name="total_pharmacy">Farmácia Comunitária</string>
-    <string name="ape">APEs</string>
-    <string name="label_mmia_speed_info_header">Número de pacientes em TARV</string>
-    <string name="hint_mmia_comment">Observações</string>
-    <string name="mmia_comment_should_not_empty">Observações do MMIA não devem ficar em branco</string>
-    <string name="btn_complete">Completar</string>
-    <string name="btn_new_movement">NOVO MOVIMENTO</string>
-    <string name="btn_submit">Submeter para aprovação</string>
-    <string name="label_initial_amount">Saldo Inicial</string>
-    <string name="label_received_mmia">Entradas</string>
-    <string name="label_issued_mmia">Saídas</string>
-    <string name="label_adjustment">Perdas e ajustes</string>
-    <string name="button_AL">AL</string>
-    <string name="button_inventory">Inventário</string>
-    <string name="label_inventory">Inventário</string>
-    <string name="label_validate">Validade</string>
-    <string name="label_issued_unit">Unidade</string>
-    <string name="hint_error_input">Entrada inválida</string>
-    <string name="btn_save">Guardar</string>
-    <string name="msg_back_confirm">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar \"SIM\", o rascunho será APAGADO.</string>
-    <string name="msg_regime_del_confirm">Tem a certeza que pretende remover este regime?</string>
-    <string name="btn_positive">Sim</string>
-    <string name="btn_negative">Não</string>
-    <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,e vai ser submetido \n automaticamente quando tiver conexão a internet.</string>
-    <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e total de pacientes</string>
-    <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
-    <string name="btn_ok">OK</string>
-    <string name="label_add_adult_regime">+ Regimes de adultos</string>
-    <string name="label_add_child_regime">+ Regime de criancas</string>
-    <string name="msg_regime_already_exist">selecione regime já existente</string>
-    <string name="mmia_therapeutic">Linhas terapêuticas</string>
-    <string name="mmia_1stline">1ª Linha</string>
-    <string name="mmia_2ndline">2ª Linha</string>
-    <string name="mmia_3rdline">3ª Linha</string>
-    <!--VIA Form-->
-    <string name="label_via_kit_received">No. de Kits recebidos</string>
-    <string name="label_via_kit_opened">No. de Kits abertos</string>
-    <string name="label_via_kit_hf">US</string>
-    <string name="label_via_kit_chw">APE</string>
-    <string name="label_requisition_title">Requisição- %1$s a %2$s</string>
-    <string name="label_rapid_test_title">testes rápidos- %1$s a %2$s</string>
-    <string name="label_requisition_header_consultation_header">Requisição normal </string>
-    <string name="request_provincial_district_level">Requisição do nível provincial ou distrital</string>
-    <string name="title_stock_move_ment">Movimento de stock</string>
-    <string name="title_inventory_info">Informação do Inventário</string>
-    <string name="label_consultation">No. de Consultas Externas Realizadas</string>
-    <string name="label_initial_amount_requisition">Stock no início do período</string>
-    <string name="label_received_requisition">Soma das Entradas</string>
-    <string name="label_theoretical">Stock teórico no fim do período</string>
-    <string name="label_total_requisition">Total dos Pedidos</string>
-    <string name="label_different">Diferença</string>
-    <string name="label_total_requested">Quantidade a Requisitar</string>
-    <string name="label_request_amount">Quantidade Pedida</string>
-    <string name="label_approved_amount">Qtd. Autorizada pelo Responsável Clínico</string>
-    <string name="label_fnm">FNM</string>
-    <string name="label_product_codes">FNM</string>
-    <string name="label_product_name">Produto</string>
-    <string name="msg_requisition_submit_tip">A sua Requisição foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver conexão a internet.</string>
-    <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
-    <string name="btn_approve">Visto</string>
-    <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
-    <string name="msg_rapid_test_submit_signature">Digite suas iniciais e em seguida, aprove as quantidades de testes rápidos.</string>
-    <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
-    <string name="msg_approve_signature_rapid_test">Digite suas iniciais e em seguida, aprove o teste rápido</string>
-    <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
-    <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
-    <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
-    <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
-    <string name="msg_requisition_signature_message_notify_rapid_test">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de testes rápidos.</string>
-    <string name="btn_continue">Continuar</string>
-    <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
-    <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$d</b> Fechados <i>%2$s</i>. São<b>%3$d</b> <i>%4$s</i> em cada kit.<br/>]]></string>
-    <string name="label_adjustment_dialog_adjust_amount"><![CDATA[<br/> Você tem <b>%1$d </b> <i>%2$s</ i> em kits fechados. <br/>]]></string>
-    <string name="label_adjustment_dialog_initial_amount"><![CDATA[<b>%1$s</b> é a quantidade inicial para requisitar <br/>]]></string>
-    <string name="label_adjustment_dialog_adjusted_amount"><![CDATA[<b>%1$s</b> é a quantidade ajustada para requisitar <br/>]]></string>
-    <string name="btn_del">Apagar</string>
-    <string name="msg_del_requisition">Aviso!!! \ n Tem certeza de que deseja apagar? Esta requisição já está sincronizada com o servidor. Se você clicar em APAGAR, em seguida, esta requisição vai desaparecer do seu tablet, mas permanecem guardada no servidor.</string>
-    <string name="msg_stock_movement_is_not_ready">Aplicativo está tentando sincronizar para todos os movimentos de stock, por favor aguarde até que este processo seja concluído antes de continuar</string>
+  <!-- Bulk Movements -->
+  <string name="label_soh_amount">Stock existente</string>
+  <string name="hint_soh_amount">Quantidade</string>
+  <string name="tv_batch">Lote &amp; prazo de validade</string>
+  <string name="msg_error_basic_products">Todos os produtos básicos devem ser adicionados para continuar</string>
+  <!--MMIA-->
+  <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
+  <string name="label_AL_title">AL - %1$s à %2$s</string>
+  <string name="label_rnrfrom_left_header">MEDICAMENTO</string>
+  <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
+  <string name="total">Total</string>
+  <string name="total_title">Total doentes</string>
+  <string name="total_pharmacy">Farmácia Comunitária</string>
+  <string name="ape">APEs</string>
+  <string name="label_mmia_speed_info_header">Número de pacientes em TARV</string>
+  <string name="hint_mmia_comment">Observações</string>
+  <string name="mmia_comment_should_not_empty">Observações do MMIA não devem ficar em branco</string>
+  <string name="btn_complete">Completar</string>
+  <string name="btn_new_movement">NOVO MOVIMENTO</string>
+  <string name="btn_submit">Submeter para aprovação</string>
+  <string name="label_initial_amount">Saldo Inicial</string>
+  <string name="label_received_mmia">Entradas</string>
+  <string name="label_issued_mmia">Saídas</string>
+  <string name="label_adjustment">Perdas e ajustes</string>
+  <string name="button_AL">AL</string>
+  <string name="button_inventory">Inventário</string>
+  <string name="label_inventory">Inventário</string>
+  <string name="label_validate">Validade</string>
+  <string name="label_issued_unit">Unidade</string>
+  <string name="hint_error_input">Entrada inválida</string>
+  <string name="btn_save">Guardar</string>
+  <string name="msg_back_confirm">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar \"SIM\", o rascunho será APAGADO.</string>
+  <string name="msg_regime_del_confirm">Tem a certeza que pretende remover este regime?</string>
+  <string name="btn_positive">Sim</string>
+  <string name="btn_negative">Não</string>
+  <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,e vai ser submetido \n automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e total de pacientes</string>
+  <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
+  <string name="btn_ok">OK</string>
+  <string name="label_add_adult_regime">+ Regimes de adultos</string>
+  <string name="label_add_child_regime">+ Regime de criancas</string>
+  <string name="msg_regime_already_exist">selecione regime já existente</string>
+  <string name="mmia_therapeutic">Linhas terapêuticas</string>
+  <string name="mmia_1stline">1ª Linha</string>
+  <string name="mmia_2ndline">2ª Linha</string>
+  <string name="mmia_3rdline">3ª Linha</string>
+  <!--VIA Form-->
+  <string name="label_via_kit_received">No. de Kits recebidos</string>
+  <string name="label_via_kit_opened">No. de Kits abertos</string>
+  <string name="label_via_kit_hf">US</string>
+  <string name="label_via_kit_chw">APE</string>
+  <string name="label_requisition_title">Requisição- %1$s a %2$s</string>
+  <string name="label_rapid_test_title">testes rápidos- %1$s a %2$s</string>
+  <string name="label_requisition_header_consultation_header">Requisição normal </string>
+  <string name="request_provincial_district_level">Requisição do nível provincial ou distrital</string>
+  <string name="title_stock_move_ment">Movimento de stock</string>
+  <string name="title_inventory_info">Informação do Inventário</string>
+  <string name="label_consultation">No. de Consultas Externas Realizadas</string>
+  <string name="label_initial_amount_requisition">Stock no início do período</string>
+  <string name="label_received_requisition">Soma das Entradas</string>
+  <string name="label_theoretical">Stock teórico no fim do período</string>
+  <string name="label_total_requisition">Total dos Pedidos</string>
+  <string name="label_different">Diferença</string>
+  <string name="label_total_requested">Quantidade a Requisitar</string>
+  <string name="label_request_amount">Quantidade Pedida</string>
+  <string name="label_approved_amount">Qtd. Autorizada pelo Responsável Clínico</string>
+  <string name="label_fnm">FNM</string>
+  <string name="label_product_codes">FNM</string>
+  <string name="label_product_name">Produto</string>
+  <string name="msg_requisition_submit_tip">A sua Requisição foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
+  <string name="btn_approve">Visto</string>
+  <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
+  <string name="msg_rapid_test_submit_signature">Digite suas iniciais e em seguida, aprove as quantidades de testes rápidos.</string>
+  <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
+  <string name="msg_approve_signature_rapid_test">Digite suas iniciais e em seguida, aprove o teste rápido</string>
+  <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
+  <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
+  <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
+  <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
+  <string name="msg_requisition_signature_message_notify_rapid_test">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de testes rápidos.</string>
+  <string name="btn_continue">Continuar</string>
+  <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
+  <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$d</b> Fechados <i>%2$s</i>. São<b>%3$d</b> <i>%4$s</i> em cada kit.<br/>]]></string>
+  <string name="label_adjustment_dialog_adjust_amount"><![CDATA[<br/> Você tem <b>%1$d </b> <i>%2$s</ i> em kits fechados. <br/>]]></string>
+  <string name="label_adjustment_dialog_initial_amount"><![CDATA[<b>%1$s</b> é a quantidade inicial para requisitar <br/>]]></string>
+  <string name="label_adjustment_dialog_adjusted_amount"><![CDATA[<b>%1$s</b> é a quantidade ajustada para requisitar <br/>]]></string>
+  <string name="btn_del">Apagar</string>
+  <string name="msg_del_requisition">Aviso!!! \ n Tem certeza de que deseja apagar? Esta requisição já está sincronizada com o servidor. Se você clicar em APAGAR, em seguida, esta requisição vai desaparecer do seu tablet, mas permanecem guardada no servidor.</string>
+  <string name="msg_stock_movement_is_not_ready">Aplicativo está tentando sincronizar para todos os movimentos de stock, por favor aguarde até que este processo seja concluído antes de continuar</string>
 
-    <!-- AL -->
-    <string name="msg_al_submit_tip">O seu Relatório AL foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
-    <string name="msg_uncomplete_hint"> Por favor, complete as informações do AL.</string>
-    <string name="hint_al_complete_failed">Não foi possível completar o AL, por favor, contacte o administrador.</string>
-    <string name="hint_ptv_complete_failed">Não foi possível completar o PTV, por favor, contacte o administrador.</string>
-    <string name="msg_requisition_signature_message_notify_al">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de consumo de AL.</string>
-    <string name="msg_al_submit_signature">Insira as iniciais do seu nome e aprove as quantidades do AL</string>
-    <string name="msg_approve_signature_al">Insira as iniciais do seu nome e aprove o AL</string>
-    <string name="month_year">Mês/Ano:   </string>
+  <!-- AL -->
+  <string name="msg_al_submit_tip">O seu Relatório AL foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_uncomplete_hint"> Por favor, complete as informações do AL.</string>
+  <string name="hint_al_complete_failed">Não foi possível completar o AL, por favor, contacte o administrador.</string>
+  <string name="hint_ptv_complete_failed">Não foi possível completar o PTV, por favor, contacte o administrador.</string>
+  <string name="msg_requisition_signature_message_notify_al">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de consumo de AL.</string>
+  <string name="msg_al_submit_signature">Insira as iniciais do seu nome e aprove as quantidades do AL</string>
+  <string name="msg_approve_signature_al">Insira as iniciais do seu nome e aprove o AL</string>
+  <string name="month_year">Mês/Ano:   </string>
 
-    <!-- Rapid Test -->
-    <string name="balance_test_report">Balancete dos testes rápidos na Unidade Sanitária</string>
-    <string name="attention_report_in_kit">(Atenção: Reportados em Kits)</string>
-    <string name="unjustified">Injustificados</string>
+  <!-- Rapid Test -->
+  <string name="balance_test_report">Balancete dos testes rápidos na Unidade Sanitária</string>
+  <string name="attention_report_in_kit">(Atenção: Reportados em Kits)</string>
+  <string name="unjustified">Injustificados</string>
 
-    <!-- PTV -->
-    <string name="label_ptv_title">PTV - %1$s a %2$s</string>
-    <string name="msg_uncompleted_ptv_hint"> Por favor, complete as informações do PTV.</string>
-    <string name="msg_ptv_submit_tip">O seu Relatório PTV foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
-    <string name="registration">Cadastro</string>
-    <string name="medicines">Produtos</string>
-    <string name="dispensation">Dispensas</string>
-    <string name="PatientAndService">Nome do paciente/ Serviço da US</string>
-    <string name="initialStockLevel">Nível inicial de stock</string>
-    <string name="totalPtv">TOTAIS / Parciais</string>
-    <string name="typePatient">Tipo de paciente</string>
-    <string name="msg_requisition_signature_message_notify_ptv">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do PTV</string>
+  <!-- PTV -->
+  <string name="label_ptv_title">PTV - %1$s a %2$s</string>
+  <string name="msg_uncompleted_ptv_hint"> Por favor, complete as informações do PTV.</string>
+  <string name="msg_ptv_submit_tip">O seu Relatório PTV foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
+  <string name="registration">Cadastro</string>
+  <string name="medicines">Produtos</string>
+  <string name="dispensation">Dispensas</string>
+  <string name="PatientAndService">Nome do paciente/ Serviço da US</string>
+  <string name="initialStockLevel">Nível inicial de stock</string>
+  <string name="totalPtv">TOTAIS / Parciais</string>
+  <string name="typePatient">Tipo de paciente</string>
+  <string name="msg_requisition_signature_message_notify_ptv">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do PTV</string>
 
-    <!--Stock Movement-->
-    <string name="Overstock">Stock acumulado</string>
-    <string name="Regular_stock">Stock regular</string>
-    <string name="Low_stock"> Eminência de ruptura</string>
-    <string name="Stock_out">Ruptura de stock</string>
-    <string name="title_stock_movement">Ficha de Stock</string>
-    <string name="label_movement_date">Data do Movimento</string>
-    <string name="label_reason">Origem/Destino do Movimento</string>
-    <string name="label_document_no">No. de Documento</string>
-    <string name="label_negative_adjustment">Ajustes Negativos</string>
-    <string name="label_positive_adjustment">Ajustes Positivos</string>
-    <string name="label_stock_existence">Stock Existente</string>
-    <string name="label_requested">Pedidos</string>
-    <string name="label_signature">Rúbrica</string>
-    <string name="btn_cancel">CANCELAR</string>
-    <string name="msg_invalid_stock_movement_date">Dados Inválidos</string>
-    <string name="msg_db_error">Ocorreu um erro inesperado. Por favor contacte o administrador.</string>
-    <string name="msg_entries_error">Deve introduzir um número positivo. 0 não é permitido.</string>
-    <string name="label_cmm">C.M.M.</string>
-    <string name="label_validate_period">Prazos de Validade</string>
-    <string name="label_lot_info">Informações de lote</string>
-    <string name="menu_item_stock_movement_history">Histórico de movimentos</string>
-    <string name="title_add_new_drug">Adicionar novo produto</string>
-    <string name="hint_signature">Insira as iniciais do seu nome</string>
-    <string name="hint_product_deactivated">Este produto está desactivado e não está disponível para reordenar</string>
-    <!--MMIABaseInfo-->
-    <string name="label_new_patients">Novos</string>
-    <string name="label_sustaining">Manutenção</string>
-    <string name="label_alteration">Alteração</string>
-    <string name="label_total_month_dispense">Total de Meses dispensados</string>
-    <string name="label_total_patients">Total de pacientes em TARV na US</string>
-    <string name="label_ptv">PTV</string>
-    <string name="label_ppe">PPE</string>
+  <!--Stock Movement-->
+  <string name="Overstock">Stock acumulado</string>
+  <string name="Regular_stock">Stock regular</string>
+  <string name="Low_stock"> Eminência de ruptura</string>
+  <string name="Stock_out">Ruptura de stock</string>
+  <string name="title_stock_movement">Ficha de Stock</string>
+  <string name="label_movement_date">Data do Movimento</string>
+  <string name="label_reason">Origem/Destino do Movimento</string>
+  <string name="label_document_no">No. de Documento</string>
+  <string name="label_negative_adjustment">Ajustes Negativos</string>
+  <string name="label_positive_adjustment">Ajustes Positivos</string>
+  <string name="label_stock_existence">Stock Existente</string>
+  <string name="label_requested">Pedidos</string>
+  <string name="label_signature">Rúbrica</string>
+  <string name="btn_cancel">CANCELAR</string>
+  <string name="msg_invalid_stock_movement_date">Dados Inválidos</string>
+  <string name="msg_db_error">Ocorreu um erro inesperado. Por favor contacte o administrador.</string>
+  <string name="msg_entries_error">Deve introduzir um número positivo. 0 não é permitido.</string>
+  <string name="label_cmm">C.M.M.</string>
+  <string name="label_validate_period">Prazos de Validade</string>
+  <string name="label_lot_info">Informações de lote</string>
+  <string name="menu_item_stock_movement_history">Histórico de movimentos</string>
+  <string name="title_add_new_drug">Adicionar novo produto</string>
+  <string name="hint_signature">Insira as iniciais do seu nome</string>
+  <string name="hint_product_deactivated">Este produto está desactivado e não está disponível para reordenar</string>
+  <!--MMIABaseInfo-->
+  <string name="label_new_patients">Novos</string>
+  <string name="label_sustaining">Manutenção</string>
+  <string name="label_alteration">Alteração</string>
+  <string name="label_total_month_dispense">Total de Meses dispensados</string>
+  <string name="label_total_patients">Total de pacientes em TARV na US</string>
+  <string name="label_ptv">PTV</string>
+  <string name="label_ppe">PPE</string>
 
-    <string name="table_trav">Tipo de doentes em TARV</string>
-    <string name="table_trav_label_new">Novos</string>
-    <string name="table_trav_label_maintenance">Manutenção</string>
-    <string name="table_trav_label_alteration">Alteração</string>
-    <string name="table_trav_label_transit">Trânsito</string>
-    <string name="table_trav_label_transfers">Transferências</string>
-    <string name="table_dispensed">Tipo de Dispensa</string>
-    <string name="table_dispensed_label_dt">Dispensa para 3 Meses (DT)</string>
-    <string name="table_dispensed_label_ds">Dispensa para 6 Meses (DS)</string>
-    <string name="table_dispensed_label_dm">Dispensa Mensal(DM)</string>
-    <string name="table_dispensed_left_5months">5 meses atrás</string>
-    <string name="table_dispensed_left_4months">4 meses atrás</string>
-    <string name="table_dispensed_left_3months">3 meses atrás</string>
-    <string name="table_dispensed_left_2months">2 meses atrás</string>
-    <string name="table_dispensed_left_last_months">Mês Anterior</string>
-    <string name="table_dispensed_left_within_months">Levantaram no mês</string>
-    <string name="table_dispensed_left_total">Total Pacientes Tratamento</string>
-    <string name="table_dispensed_label_total">Total</string>
-    <string name="table_dispensed_label_adjustment">Ajuste</string>
-    <string name="table_dispensed_label_therapeutic"># de Meses terapêuticos dispensados</string>
-    <string name="table_patients">Faixa Etária dos Pacientes TARV</string>
-    <string name="table_patients_adults">Adultos</string>
-    <string name="table_patients_0to4">Pediátricos 0 aos 4 anos</string>
-    <string name="table_patients_5to9">Pediátricos 5 aos 9 anos</string>
-    <string name="table_patients_10to14">Pediátricos 10 aos 14 anos</string>
-    <string name="table_prophylaxis">Profilaxia</string>
-    <string name="table_prophylaxis_ppe">PPE</string>
-    <string name="table_prophylaxis_prep">PrEP</string>
-    <string name="table_prophylaxis_child">Criança Exposta</string>
-    <string name="table_prophylaxis_total">Total de pacientes em TARV na US</string>
+  <string name="table_trav">Tipo de doentes em TARV</string>
+  <string name="table_trav_label_new">Novos</string>
+  <string name="table_trav_label_maintenance">Manutenção</string>
+  <string name="table_trav_label_alteration">Alteração</string>
+  <string name="table_trav_label_transit">Trânsito</string>
+  <string name="table_trav_label_transfers">Transferências</string>
+  <string name="table_dispensed">Tipo de Dispensa</string>
+  <string name="table_dispensed_label_dt">Dispensa para 3 Meses (DT)</string>
+  <string name="table_dispensed_label_ds">Dispensa para 6 Meses (DS)</string>
+  <string name="table_dispensed_label_dm">Dispensa Mensal(DM)</string>
+  <string name="table_dispensed_left_5months">5 meses atrás</string>
+  <string name="table_dispensed_left_4months">4 meses atrás</string>
+  <string name="table_dispensed_left_3months">3 meses atrás</string>
+  <string name="table_dispensed_left_2months">2 meses atrás</string>
+  <string name="table_dispensed_left_last_months">Mês Anterior</string>
+  <string name="table_dispensed_left_within_months">Levantaram no mês</string>
+  <string name="table_dispensed_left_total">Total Pacientes Tratamento</string>
+  <string name="table_dispensed_label_total">Total</string>
+  <string name="table_dispensed_label_adjustment">Ajuste</string>
+  <string name="table_dispensed_label_therapeutic"># de Meses terapêuticos dispensados</string>
+  <string name="table_patients">Faixa Etária dos Pacientes TARV</string>
+  <string name="table_patients_adults">Adultos</string>
+  <string name="table_patients_0to4">Pediátricos 0 aos 4 anos</string>
+  <string name="table_patients_5to9">Pediátricos 5 aos 9 anos</string>
+  <string name="table_patients_10to14">Pediátricos 10 aos 14 anos</string>
+  <string name="table_prophylaxis">Profilaxia</string>
+  <string name="table_prophylaxis_ppe">PPE</string>
+  <string name="table_prophylaxis_prep">PrEP</string>
+  <string name="table_prophylaxis_child">Criança Exposta</string>
+  <string name="table_prophylaxis_total">Total de pacientes em TARV na US</string>
 
-    <string name="hint_has_not_new_data">Estás no fim da lista</string>
-    <string name="RECEIVE">Entradas</string>
-    <string name="ISSUE">Saídas</string>
-    <string name="NEGATIVE_ADJUST">Ajustes Negativos</string>
-    <string name="POSITIVE_ADJUST">Ajustes Positivos</string>
-    <!--Reason/Origin/Destination select dialog-->
-    <string-array name="movement_type_items_array">
-        <item>Entradas</item>
-        <item>Ajustes Negativos</item>
-        <item>Ajustes Positivos</item>
-        <item>Saídas</item>
-    </string-array>
-    <!--Stock Card List Page-->
-    <string name="search_hint">Procurar…</string>
-    <string name="action_navigate_archive">Produtos Arquivados</string>
-    <string name="hint_save_mmia_failed">Não foi possível gravar o MMIA, por favor, contacte o administrador.</string>
-    <string name="hint_save_requisition_failed">Não foi possível gravar Requisição Balancete, por favor, contacte o administrador.</string>
-    <string name="hint_mmia_complete_failed">Não foi possível completar o MMIA, por favor, contacte o administrador.</string>
-    <string name="hint_requisition_complete_failed">Não foi possível completar Requisição Balancete, por favor, contacte o administrador.</string>
-    <string-array name="sort_items_array">
-        <item>Ordenar por alfabético: de A a Z</item>
-        <item>Ordenar por alfabético: de Z a A</item>
-        <item>Ordenar por quantidade: Alta para Baixa</item>
-        <item>Ordenar por quantidade: Baixa para Alta</item>
-    </string-array>
-    <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a lista de <![CDATA[<b>produtos arquivados</b>]]> lista</string>
-    <string name="msg_expiring_date">Expirando %1$s</string>
-    <string name="msg_expired_date">Expirado %1$s</string>
-    <string name="msg_regular_stock">Stock regular</string>
-    <!--Physical Inventory Page-->
-    <string name="label_physical_inventory_title_stock_on_hand">Stock Existente</string>
-    <!--Unpack Kit-->
-    <string name="kit_number">Desembalando: %1$d %2$s kit</string>
-    <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Menor</ b>]]> quantidade inserida do que a esperada. Por favor verifique</string>
-    <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Maior</ b>]]> quantidade inserida do que a esperada. Por favor verifique</string>
-    <string name="text_quantity_expected">%1$s esperado</string>
-    <string name="message_no_stock_amount_change">Nenhuma quantidade recebida. Por favor, confirme que você não recebeu nenhum stock</string>
-    <string name="confirm_no_stock_receive">Não recebi stock deste producto</string>
-    <string name="message_no_stock_received">Nenhum stock recebido deste producto</string>
-    <string name="confirm_stock_received">Recebi stock deste producto</string>
-    <!--Server Sync Errors-->
-    <string name="sync_server_error">Sincronização falhou devido à problemas técnicos no servidor. Entre em contacto com administrador do sistema.</string>
-    <string name="rnr_previous_not_filled">Sincronização falhou devido à falta da requisição do período anterior. Entre em contacto com administrador do sistema.</string>
-    <string name="period_configuration_missing">Sincronização falhou devido à falta de configuração no servidor para este período. Entre em contacto com administrador do sistema.</string>
-    <string name="product_code_invalid">Sincronização falhou devido à tentativa de submeter um produto inválido no formulário %1$s. Entre em contacto com administrador do sistema.</string>
-    <string name="unauthorized_operation">Sincronização falhou. Não tem permissão para sincronizar esta requisicão para o servidor. Entre em contacto com administrador do sistema.</string>
-    <string name="error_rnr_period_duplicate">Sincronização falhou. Arequisição para este período já foi enviada. Por favor contacte o Administrador do sistema.</string>
-    <string name="error_rnr_period_invalid">Sincronização falhou. O período a submeter não corresponde ao período no calendário. Por favor contacte o Administrador do sistema.</string>
-    <string name="error_rnr_field_mandatory_negative">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
-    <string name="error_rnr_validation_equation_not_equal">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
-    <string name="error_rnr_report_start_date_invalid">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
-    <!--Rnr form historical list-->
-    <string name="label_via_name">Requisição Balancete</string>
-    <string name="label_mmia_name">MMIA</string>
-    <string name="label_al_name">AL</string>
-    <string name="label_ptv_name">PTV</string>
-    <string name="btn_view_completed_Rapid_Test_inventory">Criar testes rápidos</string>
-    <string name="action_delete_rnr_form">Remover do tablet</string>
-    <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criado.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
-    <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b> Nenhum MMIT foi criado.</b>]]> Complete o seu inventario antes de criar um MMIT</string>
-    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhum relatório %1$s foi criado.</b>]]> Complete o seu inventário antes de criar um relatório %2$s </string>
-    <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
-    <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
-    <string name="label_training_select_close_of_period"><![CDATA[Por favor, selecione um inventário da lista abaixo. A data de hoje é <b>%1$s</b>]]></string>
-    <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criado.</b>]]></string>
-    <string name="label_completed_physical_inventory_message"><![CDATA[<b>Nenhum %1$s Foi criado.</b>]]></string>
-    <string name="btn_view_completed_physical_inventory">Criar %1$s</string>
-    <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
-    <string name="btn_view_incomplete_requisition">Continuar trabalhando em %1$s</string>
-    <string name="label_unsynced_mmia_requisition">Este <![CDATA[<b>MMIA</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
-    <string name="label_unsynced_requisition">Esta <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
-    <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia %1$s</string>
-    <string name="label_submitted_message">%1$s enviado com sucesso no dia  %2$s</string>
-    <plurals name="label_drug_count_message">
-        <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
-        <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
-    </plurals>
-    <string name="btn_view_requisition">Ver %s</string>
-    <string name="label_period_date">%1$s à %2$s</string>
-    <string name="label_emergency_date">Requisição de Emergencia – %s</string>
-    <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA a partir do dia 18 de %1$s</b>]]></string>
-    <string name="label_training_can_not_create_rapid_Test_rnr"><![CDATA[<b>Você poderá criar um Relatório de Testes Rápidos no próximo período</b>]]>></string>
-    <string name="label_can_not_create_report_rnr"><![CDATA[<b>Você será capaz de criar um %1$s a partir do dia 18 de %2$s</b>]]></string>
-    <string name="label_training_can_not_create_report_rnr"><![CDATA[<b>Você poderá criar um %1$s no próximo período</b>]]></string>
-    <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
-    <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do stock fisico do fim do período]]></string>
-    <string name="Rapid_Test_missed_period"><![CDATA[<b>Testes Rápidos estão atrasados e nenhum inventário foi escolhido</b> Uma relatório será gerado automaticamente usando as quantidades do stock fisico do fim do período]]></string>
-    <string name="btn_select_close_period">Seleccione o fecho do período</string>
-    <string name="label_create_emergency_rnr">Criar requisição de emergência</string>
-    <string name="mmia_list">MMIA</string>
-    <string name="requisition_list">Requisições</string>
-    <string name="label_total">Total:%1$d</string>
-    <string name="requisition_delete_failed">Falha ao apagar</string>
-    <string name="delete_rnr_form_failed_warning">Falha ao apagar</string>
-    <!--Signature-->
-    <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
-    <string name="dialog_cancel">Cancelar</string>
-    <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
-    <string name="hint_signature_error_message">Digite mais de 2 caracteres como suas iniciais (máximo de 5 caracteres)</string>
-    <string name="dialog_unpack_kit_signature">Por favor, insira suas iniciais para confirmar os montantes inseridos &amp; desembalar o kit</string>
-    <!--Archived Drugs-->
-    <string name="menu_archive_drug">Arquivar produtos</string>
-    <string name="title_archived_drugs">Produtos Arquivados</string>
-    <string name="msg_drug_archived">O produto foi arquivado</string>
-    <string name="label_removed_drug_from_stock">Este produto foi removido da sua lista das fichas de stock.</string>
-    <string name="label_view_movement_history">Ver histórico de movimentos</string>
-    <string name="label_add_drug_to_stock">Adicionar produto para a lista geral de stock</string>
-    <string name="label_empty_archived_drugs">Nenhum produto arquivado</string>
-    <!--Select Period-->
-    <string name="title_select_period">Selecione inventário para fechar período</string>
-    <string name="label_next">Próximo</string>
-    <string name="msg_select_period_warning">Por favor seleccione um inventário para fechar o período</string>
-    <string name="loading_inventory_list_failed">Carregamento do inventário falhou, por favor tente novamente.</string>
-    <!--Select Unpack Kit Numbers-->
-    <string name="label_select_unpack_num">Quantos %1$s gostaria de desembalar?</string>
-    <string name="title_select_unpack_num">Seleccione número de kits por desembalar</string>
-    <string name="msg_select_unpack_num_warning">Por favor, Escolha um número de kits para desembalar</string>
-    <!--Select Drugs-->
-    <string name="title_select_drugs">Criar regime</string>
-    <string name="hint_no_product_has_checked">Por favor, selecione um produto</string>
-    <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 1 produto para regime</string>
-    <!--update notification text-->
-    <string name="action_wipe_data">Limpar e importar dados do servidor</string>
-    <string name="message_warning_wipe_data">Esta operação irá remover todos os dados provenientes do dispositivo &amp; amp; descarregue dados previamente submetidos de volta para o tablet, \ n AVISO todos movimentos ou dados não sincronizados serão perdidos. Você quer continuar?</string>
-    <string name="message_wipe_no_connection">Rede indisponível, por favor, tente novamente quando a rede estiver disponível.</string>
-    <!--Select Emergency Products-->
-    <string name="title_select_emergency_products">Seleccione os produtos para adicionar a sua requisição de emergência</string>
-    <string name="msg_create_emergency_date_invalid">Você não tem permissão para criar uma Requisição de emergencia entre os dias 18 e 25, por favor submeta o pedido usando o formulário de requisição mensal.</string>
-    <string name="msg_create_emergency_has_missed">Você não tem permissão para criar uma Requisição de emergencia até que conclua todas as suas requisições mensais anteriores.</string>
-    <string name="msg_out_limit_of_selected_emergency_products">Você só pode selecionar 10 produtos para uma requisição de emergência</string>
-    <string name="label_emergency_requisition_title">Requisição de emergência -%1$s</string>
-    <string name="label_emergency_requisition_balance">Requisição balancete de emergência</string>
-    <string name="msg_emergency_requisition_cant_edit">Esta informação não é utilizada ao criar uma requisição de emergência</string>
-    <string name="document_number">Número do documento</string>
-    <!--App Name In Different Environment-->
-    <!--Incomplete Requisition Banner-->
-    <string name="missed_requisition_time_range">%1$s para %2$s</string>
-    <string name="via_and_mmia_requisition_alert">Suas Requisições Balancete e seus MMIAs não foram concluídos</string>
-    <string name="via_requisition_alert">Sua Requisição Balancete de não foi concluída</string>
-    <string name="mmia_requisition_alert">Seu MMIA para nãode de não foi concluída</string>
-    <string name="via_and_ptv_requisition_alert">Suas Requisições Balancete e seus PTV não foram concluídos</string>
-    <string name="ptv_requisition_alert">Seu PTV não foi concluído</string>
+  <string name="hint_has_not_new_data">Estás no fim da lista</string>
+  <string name="RECEIVE">Entradas</string>
+  <string name="ISSUE">Saídas</string>
+  <string name="NEGATIVE_ADJUST">Ajustes Negativos</string>
+  <string name="POSITIVE_ADJUST">Ajustes Positivos</string>
+  <!--Reason/Origin/Destination select dialog-->
+  <string-array name="movement_type_items_array">
+    <item>Entradas</item>
+    <item>Ajustes Negativos</item>
+    <item>Ajustes Positivos</item>
+    <item>Saídas</item>
+  </string-array>
+  <!--Stock Card List Page-->
+  <string name="search_hint">Procurar…</string>
+  <string name="action_navigate_archive">Produtos Arquivados</string>
+  <string name="hint_save_mmia_failed">Não foi possível gravar o MMIA, por favor, contacte o administrador.</string>
+  <string name="hint_save_requisition_failed">Não foi possível gravar Requisição Balancete, por favor, contacte o administrador.</string>
+  <string name="hint_mmia_complete_failed">Não foi possível completar o MMIA, por favor, contacte o administrador.</string>
+  <string name="hint_requisition_complete_failed">Não foi possível completar Requisição Balancete, por favor, contacte o administrador.</string>
+  <string-array name="sort_items_array">
+    <item>Ordenar por alfabético: de A a Z</item>
+    <item>Ordenar por alfabético: de Z a A</item>
+    <item>Ordenar por quantidade: Alta para Baixa</item>
+    <item>Ordenar por quantidade: Baixa para Alta</item>
+  </string-array>
+  <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a lista de <![CDATA[<b>produtos arquivados</b>]]> lista</string>
+  <string name="msg_expiring_date">Expirando %1$s</string>
+  <string name="msg_expired_date">Expirado %1$s</string>
+  <string name="msg_regular_stock">Stock regular</string>
+  <!--Physical Inventory Page-->
+  <string name="label_physical_inventory_title_stock_on_hand">Stock Existente</string>
+  <!--Unpack Kit-->
+  <string name="kit_number">Desembalando: %1$d %2$s kit</string>
+  <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Menor</ b>]]> quantidade inserida do que a esperada. Por favor verifique</string>
+  <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Maior</ b>]]> quantidade inserida do que a esperada. Por favor verifique</string>
+  <string name="text_quantity_expected">%1$s esperado</string>
+  <string name="message_no_stock_amount_change">Nenhuma quantidade recebida. Por favor, confirme que você não recebeu nenhum stock</string>
+  <string name="confirm_no_stock_receive">Não recebi stock deste producto</string>
+  <string name="message_no_stock_received">Nenhum stock recebido deste producto</string>
+  <string name="confirm_stock_received">Recebi stock deste producto</string>
+  <!--Server Sync Errors-->
+  <string name="sync_server_error">Sincronização falhou devido à problemas técnicos no servidor. Entre em contacto com administrador do sistema.</string>
+  <string name="rnr_previous_not_filled">Sincronização falhou devido à falta da requisição do período anterior. Entre em contacto com administrador do sistema.</string>
+  <string name="period_configuration_missing">Sincronização falhou devido à falta de configuração no servidor para este período. Entre em contacto com administrador do sistema.</string>
+  <string name="product_code_invalid">Sincronização falhou devido à tentativa de submeter um produto inválido no formulário %1$s. Entre em contacto com administrador do sistema.</string>
+  <string name="unauthorized_operation">Sincronização falhou. Não tem permissão para sincronizar esta requisicão para o servidor. Entre em contacto com administrador do sistema.</string>
+  <string name="error_rnr_period_duplicate">Sincronização falhou. Arequisição para este período já foi enviada. Por favor contacte o Administrador do sistema.</string>
+  <string name="error_rnr_period_invalid">Sincronização falhou. O período a submeter não corresponde ao período no calendário. Por favor contacte o Administrador do sistema.</string>
+  <string name="error_rnr_field_mandatory_negative">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
+  <string name="error_rnr_validation_equation_not_equal">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
+  <string name="error_rnr_report_start_date_invalid">Sincronização falhou devido a um problema técnico no servidor. Por favor contacte o Administrador do sistema.</string>
+  <!--Rnr form historical list-->
+  <string name="label_via_name">Requisição Balancete</string>
+  <string name="label_mmia_name">MMIA</string>
+  <string name="label_al_name">AL</string>
+  <string name="label_ptv_name">PTV</string>
+  <string name="btn_view_completed_Rapid_Test_inventory">Criar testes rápidos</string>
+  <string name="action_delete_rnr_form">Remover do tablet</string>
+  <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criado.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
+  <string name="label_uncompleted_rapid_physical_inventory_message"><![CDATA[<b> Nenhum MMIT foi criado.</b>]]> Complete o seu inventario antes de criar um MMIT</string>
+  <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhum relatório %1$s foi criado.</b>]]> Complete o seu inventário antes de criar um relatório %2$s </string>
+  <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
+  <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
+  <string name="label_training_select_close_of_period"><![CDATA[Por favor, selecione um inventário da lista abaixo. A data de hoje é <b>%1$s</b>]]></string>
+  <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criado.</b>]]></string>
+  <string name="label_completed_physical_inventory_message"><![CDATA[<b>Nenhum %1$s Foi criado.</b>]]></string>
+  <string name="btn_view_completed_physical_inventory">Criar %1$s</string>
+  <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
+  <string name="btn_view_incomplete_requisition">Continuar trabalhando em %1$s</string>
+  <string name="label_unsynced_mmia_requisition">Este <![CDATA[<b>MMIA</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
+  <string name="label_unsynced_requisition">Esta <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
+  <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia %1$s</string>
+  <string name="label_submitted_message">%1$s enviado com sucesso no dia  %2$s</string>
+  <plurals name="label_drug_count_message">
+    <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
+    <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
+  </plurals>
+  <string name="btn_view_requisition">Ver %s</string>
+  <string name="label_period_date">%1$s à %2$s</string>
+  <string name="label_emergency_date">Requisição de Emergencia – %s</string>
+  <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA a partir do dia 18 de %1$s</b>]]></string>
+  <string name="label_training_can_not_create_rapid_Test_rnr"><![CDATA[<b>Você poderá criar um Relatório de Testes Rápidos no próximo período</b>]]>></string>
+  <string name="label_can_not_create_report_rnr"><![CDATA[<b>Você será capaz de criar um %1$s a partir do dia 18 de %2$s</b>]]></string>
+  <string name="label_training_can_not_create_report_rnr"><![CDATA[<b>Você poderá criar um %1$s no próximo período</b>]]></string>
+  <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
+  <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do stock fisico do fim do período]]></string>
+  <string name="Rapid_Test_missed_period"><![CDATA[<b>Testes Rápidos estão atrasados e nenhum inventário foi escolhido</b> Uma relatório será gerado automaticamente usando as quantidades do stock fisico do fim do período]]></string>
+  <string name="btn_select_close_period">Seleccione o fecho do período</string>
+  <string name="label_create_emergency_rnr">Criar requisição de emergência</string>
+  <string name="mmia_list">MMIA</string>
+  <string name="requisition_list">Requisições</string>
+  <string name="label_total">Total:%1$d</string>
+  <string name="requisition_delete_failed">Falha ao apagar</string>
+  <string name="delete_rnr_form_failed_warning">Falha ao apagar</string>
+  <!--Signature-->
+  <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
+  <string name="dialog_cancel">Cancelar</string>
+  <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
+  <string name="hint_signature_error_message">Digite mais de 2 caracteres como suas iniciais (máximo de 5 caracteres)</string>
+  <string name="dialog_unpack_kit_signature">Por favor, insira suas iniciais para confirmar os montantes inseridos &amp; desembalar o kit</string>
+  <!--Archived Drugs-->
+  <string name="menu_archive_drug">Arquivar produtos</string>
+  <string name="title_archived_drugs">Produtos Arquivados</string>
+  <string name="msg_drug_archived">O produto foi arquivado</string>
+  <string name="label_removed_drug_from_stock">Este produto foi removido da sua lista das fichas de stock.</string>
+  <string name="label_view_movement_history">Ver histórico de movimentos</string>
+  <string name="label_add_drug_to_stock">Adicionar produto para a lista geral de stock</string>
+  <string name="label_empty_archived_drugs">Nenhum produto arquivado</string>
+  <!--Select Period-->
+  <string name="title_select_period">Selecione inventário para fechar período</string>
+  <string name="label_next">Próximo</string>
+  <string name="msg_select_period_warning">Por favor seleccione um inventário para fechar o período</string>
+  <string name="loading_inventory_list_failed">Carregamento do inventário falhou, por favor tente novamente.</string>
+  <!--Select Unpack Kit Numbers-->
+  <string name="label_select_unpack_num">Quantos %1$s gostaria de desembalar?</string>
+  <string name="title_select_unpack_num">Seleccione número de kits por desembalar</string>
+  <string name="msg_select_unpack_num_warning">Por favor, Escolha um número de kits para desembalar</string>
+  <!--Select Drugs-->
+  <string name="title_select_drugs">Criar regime</string>
+  <string name="hint_no_product_has_checked">Por favor, selecione um produto</string>
+  <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 1 produto para regime</string>
+  <!--update notification text-->
+  <string name="action_wipe_data">Limpar e importar dados do servidor</string>
+  <string name="message_warning_wipe_data">Esta operação irá remover todos os dados provenientes do dispositivo &amp; amp; descarregue dados previamente submetidos de volta para o tablet, \ n AVISO todos movimentos ou dados não sincronizados serão perdidos. Você quer continuar?</string>
+  <string name="message_wipe_no_connection">Rede indisponível, por favor, tente novamente quando a rede estiver disponível.</string>
+  <!--Select Emergency Products-->
+  <string name="title_select_emergency_products">Seleccione os produtos para adicionar a sua requisição de emergência</string>
+  <string name="msg_create_emergency_date_invalid">Você não tem permissão para criar uma Requisição de emergencia entre os dias 18 e 25, por favor submeta o pedido usando o formulário de requisição mensal.</string>
+  <string name="msg_create_emergency_has_missed">Você não tem permissão para criar uma Requisição de emergencia até que conclua todas as suas requisições mensais anteriores.</string>
+  <string name="msg_out_limit_of_selected_emergency_products">Você só pode selecionar 10 produtos para uma requisição de emergência</string>
+  <string name="label_emergency_requisition_title">Requisição de emergência -%1$s</string>
+  <string name="label_emergency_requisition_balance">Requisição balancete de emergência</string>
+  <string name="msg_emergency_requisition_cant_edit">Esta informação não é utilizada ao criar uma requisição de emergência</string>
+  <string name="document_number">Número do documento</string>
+  <!--App Name In Different Environment-->
+  <!--Incomplete Requisition Banner-->
+  <string name="missed_requisition_time_range">%1$s para %2$s</string>
+  <string name="via_and_mmia_requisition_alert">Suas Requisições Balancete e seus MMIAs não foram concluídos</string>
+  <string name="via_requisition_alert">Sua Requisição Balancete de não foi concluída</string>
+  <string name="mmia_requisition_alert">Seu MMIA para nãode de não foi concluída</string>
+  <string name="via_and_ptv_requisition_alert">Suas Requisições Balancete e seus PTV não foram concluídos</string>
+  <string name="ptv_requisition_alert">Seu PTV não foi concluído</string>
 
-    <!--Add products to requisition form-->
-    <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
-    <string name="title_add_drugs_to_form">Adicione produtos para requisição</string>
-    <string name="label_hint_amount_requisition">Quantidade Pedida</string>
-    <string name="label_to_comfirm_delete_product">Tem certeza de que deseja remover este produto?</string>
-    <!--Stock movement adding page-->
-    <string name="hint_movement_date">Data do movimento</string>
-    <string name="hint_document_number">Número do documento</string>
-    <string name="hint_movement_reason_receive">Origem do Movimento</string>
-    <string name="hint_movement_reason_negative">Destino do Movimento</string>
-    <string name="hint_requested_quantity">Pedidos</string>
-    <string name="hint_movement_quantity">Quantidade</string>
-    <string name="hint_movement_signature">Rúbrica</string>
-    <string name="msg_empty_movement_date">Data do movimento não pode estar em branco</string>
-    <string name="msg_empty_movement_reason">Razão do movimento não pode estar em branco</string>
-    <string name="msg_empty_quantity">Quantidade não pode estar em branco</string>
-    <string name="msg_empty_signature">Rúbrica não pode estar em branco</string>
-    <string name="msg_invalid_quantity">A quantidade não pode ser superior ao stock existente</string>
-    <string name="msg_invalid_stock_movement">A data de movimento deve ser posterior ao último movimento de stock</string>
+  <!--Add products to requisition form-->
+  <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
+  <string name="title_add_drugs_to_form">Adicione produtos para requisição</string>
+  <string name="label_hint_amount_requisition">Quantidade Pedida</string>
+  <string name="label_to_comfirm_delete_product">Tem certeza de que deseja remover este produto?</string>
+  <!--Stock movement adding page-->
+  <string name="hint_movement_date">Data do movimento</string>
+  <string name="hint_document_number">Número do documento</string>
+  <string name="hint_movement_reason_receive">Origem do Movimento</string>
+  <string name="hint_movement_reason_negative">Destino do Movimento</string>
+  <string name="hint_requested_quantity">Pedidos</string>
+  <string name="hint_movement_quantity">Quantidade</string>
+  <string name="hint_movement_signature">Rúbrica</string>
+  <string name="msg_empty_movement_date">Data do movimento não pode estar em branco</string>
+  <string name="msg_empty_movement_reason">Razão do movimento não pode estar em branco</string>
+  <string name="msg_empty_quantity">Quantidade não pode estar em branco</string>
+  <string name="msg_empty_signature">Rúbrica não pode estar em branco</string>
+  <string name="msg_invalid_quantity">A quantidade não pode ser superior ao stock existente</string>
+  <string name="msg_invalid_stock_movement">A data de movimento deve ser posterior ao último movimento de stock</string>
 
-    <!--Lot management-->
-    <string name="lots_has_expire">Lote expirado. Não pode ser aviado</string>
-    <string name="label_lot_number">Qual é o número do lote?</string>
-    <string name="hint_lot_number">Número do lote</string>
-    <string name="label_add_lot_expire">Quando é que o lote expira?</string>
-    <string name="wrong_expire_date_warning">O prazo de validade que você digitou está no passado. Por favor, verifique a data antes de adicionar o lote.</string>
-    <string name="btn_add_new_lot">Adicionar novo lote</string>
-    <string name="title_add_new_lot">Adicionar novo lote para</string>
-    <string name="hint_lot_info"><![CDATA[Número de lote & prazo de validade]]></string>
-    <string name="hint_lot_amount">Quantidade</string>
-    <string name="label_existing_soh_of_lot">Stock existente de um lote</string>
-    <string name="label_new_added_lot">Lote recentemente adicionado, não tem nenhum stock existente</string>
-    <string name="empty_lot_warning">Por favor, adicione um novo lote</string>
-    <string name="alert_add_lot_amount">Digite um valor maior que 0 em pelo menos um lote</string>
-    <string name="btn_remove_lot">REMOVER LOTE</string>
-    <string name="msg_remove_new_lot_title"><![CDATA[<b>Remover lote recém-criado</b>]]></string>
-    <string name="msg_remove_new_lot"><![CDATA[Remover lote recém-criado<b>%1$s</b> que vai expirar em %2$s de <b>%3$s</b>]]></string>
-    <string name="msg_no_lot_for_issue">Nenhum lote existente para que você possa dar saída ou fazer ajuste negativo</string>
-    <string name="error_lot_already_exists">O lote já existe, por favor, adicione um novo.</string>
-    <string name="alert_soonest_expire">Seu movimento inclui um lote que não é o primeiro a expirar</string>
-    <string name="alert_issue_with_expired">Primeiro, Remova o produto expirado</string>
-    <string name="msg_export_data_success">Os dados foram exportados e gravados com sucesso para <![CDATA[<b>%1$s</b>]]></string>
-    <string name="action_export_data">Exportar todos os dados</string>
-    <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
-    <string name="label_movement_detail">Detalhes do movimento</string>
-    <string name="label_available_lots">Lotes disponíveis</string>
-    <string name="msg_unpack_kit_back_confirm">Todas as informações de produtos e lotes inseridas até agora serão descartadas.</string>
-    <string name="btn_discard">Descartar</string>
-    <string name="msg_confirm_empty_lot_number">Você deixou o número do lote em branco. Deseja adicionar um novo lote ao <![CDATA[<b>%1$s</b>]]> utilizando um número de lote gerado automaticamente?</string>
-    <string name="error_lot_without_number_already_exists">Um lote com um nome de lote gerado automaticamente e a mesma data de expiração já foi criado</string>
-    <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
-    <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE UM NÚMERO DE LOTE</string>
-    <string name="title_rapid_test_reports">MMIT</string>
-    <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE TESTES RÁPIDOS</string>
-    <string name="title_rapid_test_form">Relatório de testes rápidos</string>
-    <string name="msg_sync_rapid_tests_failed">Falha na sincronização de testes rápidos.</string>
-    <string name="title_rapid_test">Testes Rápidos</string>
-    <string name="error_positive_larger_than_consumption">O número de testes positivos não pode ser superior ao número de testes consumidos. Introduza os dados correctos</string>
-    <string name="error_rapid_test_unjustified">O número de injustificado não pode estar vazio.</string>
-    <string name="error_rapid_test_ape">O número de APES não pode estar vazio.</string>
-    <string name="error_rapid_test_only_ape">O relatório de testes rápidos não pode ser apenas APE.</string>
-    <string name="error_empty_rapid_test_product">As informações do Relatório Testes Rápidos não podem estar em branco.</string>
-    <string name="error_empty_rapid_test_list">A lista de relatórios de testes rápidos não pode estar vazia.</string>
-    <string name="btn_edit">EDITAR</string>
-    <string name="msg_initial_inventory_lot_review_add">Lote <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Initial</font>]]> de <![CDATA[<font color="#000">%2$d</font>]]> será feito</string>
-    <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
-    <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\"> Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
-    <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
-    <string name="label_total_complete_counts">Completado %1$d / %2$d</string>
-    <string name="title_movement_history">Histórico de movimentos</string>
-    <string name="msg_products_with_movement_count">%1$d Produtos com movimentos</string>
-    <string name="msg_movement_count">%1$d movimentos</string>
-    <string name="label_column_syphillis">Sífilis</string>
-    <string name="label_view_movements">Visualizar movimentos:</string>
-    <string name="amount_field_cannot_be_empty">O campo de quantidade não pode estar vazio</string>
-    <string name="amount_cannot_be_less_or_equal_to_zero">O valor não pode ser inferior ou igual a zero</string>
-    <string name="succesfully_saved">Salvo com sucesso</string>
-    <string name="btn_bulk_add_new_lot">Adicionar Lote</string>
-    <string name="btn_create_malaria_report">Criar relatório de dados do paciente</string>
-    <string name="msg_us_ape">US/APE</string>
-    <string name="msg_patient_data_report_missing">Nenhum relatório de dados do paciente foi criado</string>
-    <string name="msg_arthemeter_lumefantrina">ARTEMÉTER-LUMEFANTRINA (AL)</string>
-    <string name="msg_treatments_month">Nº Tratamentos Aviados no Mês</string>
-    <string name="msg_existing_stock_month">Stock Existente no Fim do período</string>
-    <string name="msg_product_code_6x1">6x1</string>
-    <string name="msg_product_code_6x3">6x3</string>
-    <string name="msg_product_code_6x4">6x4</string>
-    <string name="title_add_non_basic_products">Adicionar produtos</string>
-    <string name="title_non_basic_products">Produtos não básicos</string>
-    <string name="add_products_loading_message">Descarregando Produtos não Básicos</string>
-    <string name="create_ptv_data_report">Gerar dados do relatório PTV</string>
-    <string name="title_patient_ptv_report_form">RELATÓRIO DE DADOS PTV</string>
-    <string name="title_patient_data_report_form">RELATÓRIO DE DADOS DO PACIENTE</string>
-    <string name="total_woman">Total de Mulheres</string>
-    <string name="total_child">Total de Crianças</string>
-    <string name="initial_stock">Stock Inicial</string>
-    <string name="drug_name">Nome do Produto</string>
-    <string name="entries">Entradas</string>
-    <string name="loss_and_adjustment">Perdas e Ajustes</string>
-    <string name="final_stock">Stock Final</string>
-    <string name="loading_report_information">Carregando informações do relatório</string>
-    <string name="report_submitted_synced_pending_message">O seu relatório foi <![CDATA[<b>gravado com sucesso</b>]]>, e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
-    <string name="report_synced_successfully">Seu relatório foi <![CDATA[<b>sincronizado com sucesso</b>]]></string>
-    <string name="btn_view_patient_data_report">Visualizar relatório</string>
-    <string name="malaria_report_incomplete">Relatório de AL está incompleto</string>
-    <string name="ptv_report_incomplete">O Relatório PTV está incompleto</string>
-    <string name="continue_editing_malaria">Continue editando o Relatório AL</string>
-    <string name="continue_editing_ptv">Continue editando o Relatório PTV</string>
-    <string name="header_ptv_name">Nome do Paciente / Serviço da US</string>
-    <string name="ptv_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e submissão do Relatório PTV</string>
-    <string name="msg_ptv_submit_signature">Insira as iniciais do seu nome e, em seguida, aprove as quantidades do Relatório PTV</string>
-    <string name="msg_approve_signature_ptv">Insira as iniciais do seu nome e, em seguida, aprove os dados do PTV</string>
-    <string name="submit_for_approval">Enviar para aprovação</string>
-    <string name="msg_malaria_submit_signature">Insira as iniciais do seu nome e, em seguida, aprove as quantidades do Relatório AL</string>
-    <string name="msg_approve_signature_malaria">Insira as iniciais do seu nome e, em seguida, aprove os dados do mapa de Consumo de AL</string>
-    <string name="malaria_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e submissão do Relatório AL</string>
-    <string name="last_year_stock_cards_sync">As fichas de stock do ano passado estão sincronizando</string>
-    <string name="sync_stock_card_last_year_error">Erro ao baixar fichas de stock do ano passado. Por favor tente novamente</string>
-    <string name="sync_stock_movement_error">Erro na sincronização do produto %s\n %s</string>
-    <string name="inactive_status">seu status está inativo</string>
-    <string name="inactive">inativo</string>
-    <string name="ifLeave">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar "SIM", o rascunho será APAGADO?</string>
+  <!--Lot management-->
+  <string name="lots_has_expire">Lote expirado. Não pode ser aviado</string>
+  <string name="label_lot_number">Qual é o número do lote?</string>
+  <string name="hint_lot_number">Número do lote</string>
+  <string name="label_add_lot_expire">Quando é que o lote expira?</string>
+  <string name="wrong_expire_date_warning">O prazo de validade que você digitou está no passado. Por favor, verifique a data antes de adicionar o lote.</string>
+  <string name="btn_add_new_lot">Adicionar novo lote</string>
+  <string name="title_add_new_lot">Adicionar novo lote para</string>
+  <string name="hint_lot_info"><![CDATA[Número de lote & prazo de validade]]></string>
+  <string name="hint_lot_amount">Quantidade</string>
+  <string name="label_existing_soh_of_lot">Stock existente de um lote</string>
+  <string name="label_new_added_lot">Lote recentemente adicionado, não tem nenhum stock existente</string>
+  <string name="empty_lot_warning">Por favor, adicione um novo lote</string>
+  <string name="alert_add_lot_amount">Digite um valor maior que 0 em pelo menos um lote</string>
+  <string name="btn_remove_lot">REMOVER LOTE</string>
+  <string name="msg_remove_new_lot_title"><![CDATA[<b>Remover lote recém-criado</b>]]></string>
+  <string name="msg_remove_new_lot"><![CDATA[Remover lote recém-criado<b>%1$s</b> que vai expirar em %2$s de <b>%3$s</b>]]></string>
+  <string name="msg_no_lot_for_issue">Nenhum lote existente para que você possa dar saída ou fazer ajuste negativo</string>
+  <string name="error_lot_already_exists">O lote já existe, por favor, adicione um novo.</string>
+  <string name="alert_soonest_expire">Seu movimento inclui um lote que não é o primeiro a expirar</string>
+  <string name="alert_issue_with_expired">Primeiro, Remova o produto expirado</string>
+  <string name="msg_export_data_success">Os dados foram exportados e gravados com sucesso para <![CDATA[<b>%1$s</b>]]></string>
+  <string name="action_export_data">Exportar todos os dados</string>
+  <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
+  <string name="label_movement_detail">Detalhes do movimento</string>
+  <string name="label_available_lots">Lotes disponíveis</string>
+  <string name="msg_unpack_kit_back_confirm">Todas as informações de produtos e lotes inseridas até agora serão descartadas.</string>
+  <string name="btn_discard">Descartar</string>
+  <string name="msg_confirm_empty_lot_number">Você deixou o número do lote em branco. Deseja adicionar um novo lote ao <![CDATA[<b>%1$s</b>]]> utilizando um número de lote gerado automaticamente?</string>
+  <string name="error_lot_without_number_already_exists">Um lote com um nome de lote gerado automaticamente e a mesma data de expiração já foi criado</string>
+  <string name="title_generate_lot_number">Gerar automaticamente o número de lote para o lote novo?</string>
+  <string name="btn_confirm_generate_lot_number">GERAR AUTOMATICAMENTE UM NÚMERO DE LOTE</string>
+  <string name="title_rapid_test_reports">MMIT</string>
+  <string name="btn_create_rapid_test_period">CRIAR RELATÓRIO DE TESTES RÁPIDOS</string>
+  <string name="title_rapid_test_form">Relatório de testes rápidos</string>
+  <string name="msg_sync_rapid_tests_failed">Falha na sincronização de testes rápidos.</string>
+  <string name="title_rapid_test">Testes Rápidos</string>
+  <string name="error_positive_larger_than_consumption">O número de testes positivos não pode ser superior ao número de testes consumidos. Introduza os dados correctos</string>
+  <string name="error_rapid_test_unjustified">O número de injustificado não pode estar vazio.</string>
+  <string name="error_rapid_test_ape">O número de APES não pode estar vazio.</string>
+  <string name="error_rapid_test_only_ape">O relatório de testes rápidos não pode ser apenas APE.</string>
+  <string name="error_empty_rapid_test_product">As informações do Relatório Testes Rápidos não podem estar em branco.</string>
+  <string name="error_empty_rapid_test_list">A lista de relatórios de testes rápidos não pode estar vazia.</string>
+  <string name="btn_edit">EDITAR</string>
+  <string name="msg_initial_inventory_lot_review_add">Lote <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Initial</font>]]> de <![CDATA[<font color="#000">%2$d</font>]]> será feito</string>
+  <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
+  <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\"> Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
+  <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
+  <string name="label_total_complete_counts">Completado %1$d / %2$d</string>
+  <string name="title_movement_history">Histórico de movimentos</string>
+  <string name="msg_products_with_movement_count">%1$d Produtos com movimentos</string>
+  <string name="msg_movement_count">%1$d movimentos</string>
+  <string name="label_column_syphillis">Sífilis</string>
+  <string name="label_view_movements">Visualizar movimentos:</string>
+  <string name="amount_field_cannot_be_empty">O campo de quantidade não pode estar vazio</string>
+  <string name="amount_cannot_be_less_or_equal_to_zero">O valor não pode ser inferior ou igual a zero</string>
+  <string name="succesfully_saved">Salvo com sucesso</string>
+  <string name="btn_bulk_add_new_lot">Adicionar Lote</string>
+  <string name="btn_create_malaria_report">Criar relatório de dados do paciente</string>
+  <string name="msg_us_ape">US/APE</string>
+  <string name="msg_patient_data_report_missing">Nenhum relatório de dados do paciente foi criado</string>
+  <string name="msg_arthemeter_lumefantrina">ARTEMÉTER-LUMEFANTRINA (AL)</string>
+  <string name="msg_treatments_month">Nº Tratamentos Aviados no Mês</string>
+  <string name="msg_existing_stock_month">Stock Existente no Fim do período</string>
+  <string name="msg_product_code_6x1">6x1</string>
+  <string name="msg_product_code_6x3">6x3</string>
+  <string name="msg_product_code_6x4">6x4</string>
+  <string name="title_add_non_basic_products">Adicionar produtos</string>
+  <string name="title_non_basic_products">Produtos não básicos</string>
+  <string name="add_products_loading_message">Descarregando Produtos não Básicos</string>
+  <string name="create_ptv_data_report">Gerar dados do relatório PTV</string>
+  <string name="title_patient_ptv_report_form">RELATÓRIO DE DADOS PTV</string>
+  <string name="title_patient_data_report_form">RELATÓRIO DE DADOS DO PACIENTE</string>
+  <string name="total_woman">Total de Mulheres</string>
+  <string name="total_child">Total de Crianças</string>
+  <string name="initial_stock">Stock Inicial</string>
+  <string name="drug_name">Nome do Produto</string>
+  <string name="entries">Entradas</string>
+  <string name="loss_and_adjustment">Perdas e Ajustes</string>
+  <string name="final_stock">Stock Final</string>
+  <string name="loading_report_information">Carregando informações do relatório</string>
+  <string name="report_submitted_synced_pending_message">O seu relatório foi <![CDATA[<b>gravado com sucesso</b>]]>, e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
+  <string name="report_synced_successfully">Seu relatório foi <![CDATA[<b>sincronizado com sucesso</b>]]></string>
+  <string name="btn_view_patient_data_report">Visualizar relatório</string>
+  <string name="malaria_report_incomplete">Relatório de AL está incompleto</string>
+  <string name="ptv_report_incomplete">O Relatório PTV está incompleto</string>
+  <string name="continue_editing_malaria">Continue editando o Relatório AL</string>
+  <string name="continue_editing_ptv">Continue editando o Relatório PTV</string>
+  <string name="header_ptv_name">Nome do Paciente / Serviço da US</string>
+  <string name="ptv_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e submissão do Relatório PTV</string>
+  <string name="msg_ptv_submit_signature">Insira as iniciais do seu nome e, em seguida, aprove as quantidades do Relatório PTV</string>
+  <string name="msg_approve_signature_ptv">Insira as iniciais do seu nome e, em seguida, aprove os dados do PTV</string>
+  <string name="submit_for_approval">Enviar para aprovação</string>
+  <string name="msg_malaria_submit_signature">Insira as iniciais do seu nome e, em seguida, aprove as quantidades do Relatório AL</string>
+  <string name="msg_approve_signature_malaria">Insira as iniciais do seu nome e, em seguida, aprove os dados do mapa de Consumo de AL</string>
+  <string name="malaria_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e submissão do Relatório AL</string>
+  <string name="last_year_stock_cards_sync">As fichas de stock do ano passado estão sincronizando</string>
+  <string name="sync_stock_card_last_year_error">Erro ao baixar fichas de stock do ano passado. Por favor tente novamente</string>
+  <string name="sync_stock_movement_error">Erro na sincronização do produto %s\n %s</string>
+  <string name="inactive_status">seu status está inativo</string>
+  <string name="inactive">inativo</string>
+  <string name="ifLeave">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar "SIM", o rascunho será APAGADO?</string>
 
-    <string-array name="movement_date_items_array">
-        <item>Últimos 7 dias</item>
-        <item>Últimos 14 dias</item>
-        <item>Últimos 30 dias</item>
-        <item>Últimos 90 dias</item>
-        <item>Últimos 180 dias</item>
-        <item>Últimos 365 dias</item>
-    </string-array>
-    <string name="dirty_data_correct_warning">Erro de cálculo de stock do produto %s. O sistema irá apagar os dados da ficha de stock. Actualize os dados do stock usando os ajustes/entradas ou inventário.</string>
+  <string-array name="movement_date_items_array">
+    <item>Últimos 7 dias</item>
+    <item>Últimos 14 dias</item>
+    <item>Últimos 30 dias</item>
+    <item>Últimos 90 dias</item>
+    <item>Últimos 180 dias</item>
+    <item>Últimos 365 dias</item>
+  </string-array>
+  <string name="dirty_data_correct_warning">Erro de cálculo de stock do produto %s. O sistema irá apagar os dados da ficha de stock. Actualize os dados do stock usando os ajustes/entradas ou inventário.</string>
 
-    <!-- Siglus TO 12 -->
-    <string name="dashboard_product_types">Total Products</string>
+  <!-- Siglus TO 12 -->
+  <string name="dashboard_product_types">Total Products</string>
 </resources>

@@ -21,67 +21,67 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.google.inject.Inject;
-
+import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.User;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
-import java.util.List;
-
 public class UserRepository {
 
-    @Inject
-    DbUtil dbUtil;
+  @Inject
+  DbUtil dbUtil;
 
-    GenericDao<User> genericDao;
+  GenericDao<User> genericDao;
 
-    @Inject
-    public UserRepository(Context context) {
-        genericDao = new GenericDao<>(User.class, context);
+  @Inject
+  public UserRepository(Context context) {
+    genericDao = new GenericDao<>(User.class, context);
+  }
+
+  public User mapUserFromLocal(final User user) {
+    try {
+      User userQueried = dbUtil.withDao(User.class,
+          dao -> dao.queryBuilder().where().eq("username", user.getUsername()).and()
+              .eq("password", user.getPasswordMD5()).queryForFirst());
+      if (userQueried != null) {
+        userQueried.setPassword(user.getPassword());
+      }
+      return userQueried;
+    } catch (LMISException e) {
+      new LMISException(e, "UserRepository.mapUserFromLocal").reportToFabric();
     }
+    return null;
+  }
 
-    public User mapUserFromLocal(final User user) {
-        try {
-            User userQueried = dbUtil.withDao(User.class, dao -> dao.queryBuilder().where().eq("username", user.getUsername()).and().eq("password", user.getPasswordMD5()).queryForFirst());
-            if (userQueried != null) {
-                userQueried.setPassword(user.getPassword());
-            }
-            return userQueried;
-        } catch (LMISException e) {
-            new LMISException(e, "UserRepository.mapUserFromLocal").reportToFabric();
-        }
-        return null;
+  public void createOrUpdate(final User user) {
+    try {
+      List<User> userByUsername = getUserByUsername(user.getUsername());
+      if (userByUsername.isEmpty()) {
+        genericDao.create(user);
+      } else {
+        user.setId(userByUsername.get(userByUsername.size() - 1).getId());
+        genericDao.update(user);
+      }
+    } catch (LMISException e) {
+      new LMISException(e, "UserRepository.createOrUpdate").reportToFabric();
     }
+  }
 
-    public void createOrUpdate(final User user) {
-        try {
-            List<User> userByUsername = getUserByUsername(user.getUsername());
-            if (userByUsername.isEmpty()) {
-                genericDao.create(user);
-            } else {
-                user.setId(userByUsername.get(userByUsername.size() - 1).getId());
-                genericDao.update(user);
-            }
-        } catch (LMISException e) {
-            new LMISException(e, "UserRepository.createOrUpdate").reportToFabric();
-        }
-    }
+  protected List<User> getUserByUsername(final String userName) throws LMISException {
+    return dbUtil
+        .withDao(User.class, dao -> dao.queryBuilder().where().eq("username", userName).query());
+  }
 
-    protected List<User> getUserByUsername(final String userName) throws LMISException {
-        return dbUtil.withDao(User.class, dao -> dao.queryBuilder().where().eq("username", userName).query());
+  public User getLocalUser() {
+    User user = null;
+    try {
+      user = dbUtil.withDao(User.class, dao -> dao.queryBuilder().queryForFirst());
+    } catch (LMISException e) {
+      Log.w("UserRepository", e);
+      new LMISException(e, "UserRepository.getLocalUser").reportToFabric();
     }
-
-    public User getLocalUser() {
-        User user = null;
-        try {
-            user = dbUtil.withDao(User.class, dao -> dao.queryBuilder().queryForFirst());
-        } catch (LMISException e) {
-            Log.w("UserRepository",e);
-            new LMISException(e, "UserRepository.getLocalUser").reportToFabric();
-        }
-        return user;
-    }
+    return user;
+  }
 }

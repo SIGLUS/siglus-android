@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/tv_total"
+    style="@style/Inventory.TextTotal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_bottom_green_bg_gray"
+    tools:text="Total: 136" />
 
-    <TextView
-        android:id="@+id/tv_total"
-        style="@style/Inventory.TextTotal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border_bottom_green_bg_gray"
-        tools:text="Total: 136" />
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/products_list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_toStartOf="@+id/fast_scroller"
+      android:scrollbars="vertical" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/products_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toStartOf="@+id/fast_scroller"
-            android:scrollbars="vertical" />
+    <com.viethoa.RecyclerViewFastScroller
+      android:id="@+id/fast_scroller"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_alignParentEnd="true" />
 
-        <com.viethoa.RecyclerViewFastScroller
-            android:id="@+id/fast_scroller"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true" />
+  </RelativeLayout>
 
-    </RelativeLayout>
-
-    <include
-        android:id="@+id/action_panel"
-        layout="@layout/view_action_panel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+  <include
+    android:id="@+id/action_panel"
+    layout="@layout/view_action_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 
 </LinearLayout>

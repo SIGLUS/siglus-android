@@ -20,6 +20,8 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
@@ -27,35 +29,34 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ALRepository extends RnrFormRepository {
 
-    @Inject
-    ProgramRepository programRepository;
+  @Inject
+  ProgramRepository programRepository;
 
-    @Inject
-    ProductRepository productRepository;
+  @Inject
+  ProductRepository productRepository;
 
-    @Inject
-    RegimenRepository regimenRepository;
+  @Inject
+  RegimenRepository regimenRepository;
 
-    @Inject
-    ProductProgramRepository productProgramRepository;
+  @Inject
+  ProductProgramRepository productProgramRepository;
 
-    @Inject
-    public ALRepository(Context context) {
-        super(context);
-        programCode = Constants.AL_PROGRAM_CODE;
-    }
+  @Inject
+  public ALRepository(Context context) {
+    super(context);
+    programCode = Constants.AL_PROGRAM_CODE;
+  }
 
-    @Override
-    public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) throws LMISException {
-        return new ArrayList<>();
-    }
+  @Override
+  public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
+      throws LMISException {
+    return new ArrayList<>();
+  }
 
-    public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category) throws LMISException {
-        return regimenRepository.getByNameAndCategory(name, category);
-    }
+  public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category)
+      throws LMISException {
+    return regimenRepository.getByNameAndCategory(name, category);
+  }
 }

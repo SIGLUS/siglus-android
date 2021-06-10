@@ -19,11 +19,12 @@
 package org.openlmis.core.exceptions;
 
 public class MovementReasonNotFoundException extends LMISException {
-    public MovementReasonNotFoundException(Exception e) {
-        super(e);
-    }
 
-    public MovementReasonNotFoundException(String msg) {
-        super(msg);
-    }
+  public MovementReasonNotFoundException(Exception e) {
+    super(e);
+  }
+
+  public MovementReasonNotFoundException(String msg) {
+    super(msg);
+  }
 }

@@ -1,78 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Card.Padded"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Card.Padded"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/color_white"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/bottom_border_gray_bg"
+      android:padding="@dimen/padding_normal">
+
+      <ImageView
+        android:id="@+id/ic_done"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingEnd="@dimen/padding_small"
+        android:src="@drawable/ic_done_green" />
+
+      <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/color_white"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="4"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bottom_border_gray_bg"
-            android:padding="@dimen/padding_normal">
+        <TextView
+          android:id="@+id/tv_product_name"
+          style="@style/Text.Black.Regular"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="@string/label_dummy_product" />
 
-            <ImageView
-                android:id="@+id/ic_done"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingEnd="@dimen/padding_small"
-                android:src="@drawable/ic_done_green" />
+        <TextView
+          android:id="@+id/tv_product_unit"
+          style="@style/Text.Gray.Regular"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="@string/label_dummy_unit" />
+      </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="4"
-                android:orientation="vertical">
+      <LinearLayout
+        android:id="@+id/vg_inventory_item_soh"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_product_name"
-                    style="@style/Text.Black.Regular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="@string/label_dummy_product" />
+        <TextView
+          android:id="@+id/tv_inventory_item_soh"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="end"
+          android:textColor="@color/color_black" />
 
-                <TextView
-                    android:id="@+id/tv_product_unit"
-                    style="@style/Text.Gray.Regular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="@string/label_dummy_unit" />
-            </LinearLayout>
+        <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="end"
+          android:text="@string/label_physical_inventory_title_stock_on_hand"
+          android:textSize="@dimen/font_size_tiny" />
 
-            <LinearLayout
-                android:id="@+id/vg_inventory_item_soh"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_inventory_item_soh"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:textColor="@color/color_black" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="@string/label_physical_inventory_title_stock_on_hand"
-                    android:textSize="@dimen/font_size_tiny" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <org.openlmis.core.view.widget.BulkInitialInventoryLotListView
-            android:id="@+id/view_lot_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+      </LinearLayout>
     </LinearLayout>
+
+    <org.openlmis.core.view.widget.BulkInitialInventoryLotListView
+      android:id="@+id/view_lot_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+  </LinearLayout>
 </androidx.cardview.widget.CardView>

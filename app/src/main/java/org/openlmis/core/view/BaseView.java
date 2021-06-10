@@ -20,9 +20,9 @@ package org.openlmis.core.view;
 
 public interface BaseView {
 
-    void loading();
+  void loading();
 
-    void loading(String message);
+  void loading(String message);
 
-    void loaded();
+  void loaded();
 }

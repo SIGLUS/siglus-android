@@ -19,7 +19,8 @@
 package org.openlmis.core.persistence.migrations;
 
 
-
+import java.util.List;
+import java.util.Locale;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
@@ -30,89 +31,89 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.Migration;
 
-import java.util.List;
-import java.util.Locale;
-
 
 public class ChangeMovementReasonToCode extends Migration {
 
-    GenericDao<StockMovementItem> stockItemGenericDao;
+  GenericDao<StockMovementItem> stockItemGenericDao;
 
 
-    MovementReasonManager reasonManager;
-    DbUtil dbUtil;
+  MovementReasonManager reasonManager;
+  DbUtil dbUtil;
 
-    public ChangeMovementReasonToCode() {
-        stockItemGenericDao = new GenericDao<>(StockMovementItem.class, LMISApp.getContext());
-        reasonManager = MovementReasonManager.getInstance();
-        dbUtil = new DbUtil();
-    }
+  public ChangeMovementReasonToCode() {
+    stockItemGenericDao = new GenericDao<>(StockMovementItem.class, LMISApp.getContext());
+    reasonManager = MovementReasonManager.getInstance();
+    dbUtil = new DbUtil();
+  }
 
-    @Override
-    public void up() {
-        try {
-            List<StockMovementItem> itemList = stockItemGenericDao.queryForAll();
-            if (itemList == null || itemList.size() == 0) {
-                return;
-            }
-            for (StockMovementItem item : itemList) {
-                boolean isReasonSet = trySetReason(item, "pt", "pt") || trySetReason(item, "en", "us");
-                if (!isReasonSet) {
-                    setDefaultReasonCode(item);
-                }
-            }
-            updateStockMovementItems(itemList);
-
-        } catch (LMISException e) {
-            new LMISException(e, "ChangeMovementReasonToCode,up").reportToFabric();
-            throw new RuntimeException(e.getMessage());
+  @Override
+  public void up() {
+    try {
+      List<StockMovementItem> itemList = stockItemGenericDao.queryForAll();
+      if (itemList == null || itemList.size() == 0) {
+        return;
+      }
+      for (StockMovementItem item : itemList) {
+        boolean isReasonSet = trySetReason(item, "pt", "pt") || trySetReason(item, "en", "us");
+        if (!isReasonSet) {
+          setDefaultReasonCode(item);
         }
-    }
+      }
+      updateStockMovementItems(itemList);
 
-    protected void setDefaultReasonCode(StockMovementItem item) {
-        if ("physicalInventoryPositive".equalsIgnoreCase(item.getReason())) {
-            item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
-        } else if ("physicalInventoryNegative".equalsIgnoreCase(item.getReason())) {
-            item.setReason(MovementReasonManager.INVENTORY_NEGATIVE);
-        } else {
-            switch (item.getMovementType()) {
-                case ISSUE:
-                    item.setReason(MovementReasonManager.DEFAULT_ISSUE);
-                    break;
-                case POSITIVE_ADJUST:
-                    item.setReason(MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT);
-                    break;
-                case NEGATIVE_ADJUST:
-                    item.setReason(MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT);
-                    break;
-                case RECEIVE:
-                    item.setReason(MovementReasonManager.DEFAULT_RECEIVE);
-                    break;
-                case PHYSICAL_INVENTORY:
-                    item.setReason(MovementReasonManager.INVENTORY);
-                    break;
-                default:
-                    throw new RuntimeException("Invalid MovementType :" + item.getMovementType());
-            }
-        }
+    } catch (LMISException e) {
+      new LMISException(e, "ChangeMovementReasonToCode,up").reportToFabric();
+      throw new RuntimeException(e.getMessage());
     }
+  }
 
-    private void updateStockMovementItems(final List<StockMovementItem> stockMovementItems) throws LMISException {
-        dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class, (DbUtil.Operation<StockMovementItem, Void>) dao -> {
-            for (StockMovementItem stockMovementItem : stockMovementItems) {
-                dao.update(stockMovementItem);
-            }
-            return null;
+  protected void setDefaultReasonCode(StockMovementItem item) {
+    if ("physicalInventoryPositive".equalsIgnoreCase(item.getReason())) {
+      item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
+    } else if ("physicalInventoryNegative".equalsIgnoreCase(item.getReason())) {
+      item.setReason(MovementReasonManager.INVENTORY_NEGATIVE);
+    } else {
+      switch (item.getMovementType()) {
+        case ISSUE:
+          item.setReason(MovementReasonManager.DEFAULT_ISSUE);
+          break;
+        case POSITIVE_ADJUST:
+          item.setReason(MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT);
+          break;
+        case NEGATIVE_ADJUST:
+          item.setReason(MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT);
+          break;
+        case RECEIVE:
+          item.setReason(MovementReasonManager.DEFAULT_RECEIVE);
+          break;
+        case PHYSICAL_INVENTORY:
+          item.setReason(MovementReasonManager.INVENTORY);
+          break;
+        default:
+          throw new RuntimeException("Invalid MovementType :" + item.getMovementType());
+      }
+    }
+  }
+
+  private void updateStockMovementItems(final List<StockMovementItem> stockMovementItems)
+      throws LMISException {
+    dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class,
+        (DbUtil.Operation<StockMovementItem, Void>) dao -> {
+          for (StockMovementItem stockMovementItem : stockMovementItems) {
+            dao.update(stockMovementItem);
+          }
+          return null;
         });
-    }
+  }
 
-    private boolean trySetReason(StockMovementItem item, String lang, String country) {
-        try {
-            MovementReason reason = reasonManager.queryByDesc(item.getReason(), new Locale(lang, country));
-            item.setReason(reason.getCode());
-            return true;
-        } catch (MovementReasonNotFoundException ignored) {
-            return false;
-        }
+  private boolean trySetReason(StockMovementItem item, String lang, String country) {
+    try {
+      MovementReason reason = reasonManager
+          .queryByDesc(item.getReason(), new Locale(lang, country));
+      item.setReason(reason.getCode());
+      return true;
+    } catch (MovementReasonNotFoundException ignored) {
+      return false;
     }
+  }
 }

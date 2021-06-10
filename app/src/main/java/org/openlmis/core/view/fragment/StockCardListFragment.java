@@ -18,13 +18,11 @@
 
 package org.openlmis.core.view.fragment;
 
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +30,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -49,171 +51,168 @@ import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import roboguice.inject.InjectView;
 
-import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
+public class StockCardListFragment extends BaseFragment implements
+    StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
 
-public class StockCardListFragment extends BaseFragment implements StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
-    private static final String TAG = StockCardListFragment.class.getSimpleName();
+  private static final String TAG = StockCardListFragment.class.getSimpleName();
 
-    @InjectView(R.id.sort_spinner)
-    Spinner sortSpinner;
+  @InjectView(R.id.sort_spinner)
+  Spinner sortSpinner;
 
-    @InjectView(R.id.tv_total)
-    TextView tvTotal;
+  @InjectView(R.id.tv_total)
+  TextView tvTotal;
 
-    @InjectView(R.id.products_list)
-    RecyclerView stockCardRecycleView;
+  @InjectView(R.id.products_list)
+  RecyclerView stockCardRecycleView;
 
-    @InjectView(R.id.product_update_banner)
-    ProductsUpdateBanner productsUpdateBanner;
+  @InjectView(R.id.product_update_banner)
+  ProductsUpdateBanner productsUpdateBanner;
 
-    @Inject
-    StockCardPresenter presenter;
+  @Inject
+  StockCardPresenter presenter;
 
-    @Inject
-    SharedPreferenceMgr sharedPreferenceMgr;
+  @Inject
+  SharedPreferenceMgr sharedPreferenceMgr;
 
-    @Inject
-    DirtyDataManager dirtyDataManager;
+  @Inject
+  DirtyDataManager dirtyDataManager;
 
-    StockCardListAdapter mAdapter;
+  StockCardListAdapter mAdapter;
 
-    private int currentPosition;
+  private int currentPosition;
 
-    @Override
-    public Presenter initPresenter() {
-        return presenter;
+  @Override
+  public Presenter initPresenter() {
+    return presenter;
+  }
+
+  @Override
+  public void onAttach(Activity activity) {
+    super.onAttach(activity);
+  }
+
+  @Nullable
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_stockcard_list, container, false);
+  }
+
+  @Override
+  public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+
+    initRecycleView();
+    initSortSpinner();
+
+    loadStockCards();
+  }
+
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    currentPosition = position;
+    switch (position) {
+      case 0:
+        mAdapter.sortByName(true);
+        break;
+      case 1:
+        mAdapter.sortByName(false);
+        break;
+      case 2:
+        mAdapter.sortBySOH(false);
+        break;
+      case 3:
+        mAdapter.sortBySOH(true);
+        break;
+      default:
     }
+  }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
+  @Override
+  public void onNothingSelected(AdapterView<?> parent) {
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_stockcard_list, container, false);
-    }
+  }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        initRecycleView();
-        initSortSpinner();
-
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (resultCode == Activity.RESULT_OK) {
+      if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
+        long stockCardId = data.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
+        presenter.refreshStockCardsObservable(stockCardId);
+      } else if (requestCode == Constants.REQUEST_UNPACK_KIT) {
+        presenter.loadKits();
+      } else if (requestCode == Constants.REQUEST_ARCHIVED_LIST_PAGE) {
         loadStockCards();
+      }
     }
+  }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        currentPosition = position;
-        switch (position) {
-            case 0:
-                mAdapter.sortByName(true);
-                break;
-            case 1:
-                mAdapter.sortByName(false);
-                break;
-            case 2:
-                mAdapter.sortBySOH(false);
-                break;
-            case 3:
-                mAdapter.sortBySOH(true);
-                break;
-            default:
-        }
-    }
+  public void onSearch(String query) {
+    mAdapter.filter(query);
+    tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
+  }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+  protected void createAdapter() {
+    mAdapter = new StockCardListAdapter(new ArrayList<>(), onItemViewClickListener);
+  }
 
-    }
+  protected void loadStockCards() {
+    presenter.loadStockCards(Active);
+  }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
-                long stockCardId = data.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
-                presenter.refreshStockCardsObservable(stockCardId);
-            } else if (requestCode == Constants.REQUEST_UNPACK_KIT) {
-                presenter.loadKits();
-            } else if (requestCode == Constants.REQUEST_ARCHIVED_LIST_PAGE) {
-                loadStockCards();
-            }
-        }
-    }
-
-    public void onSearch(String query) {
-        mAdapter.filter(query);
-        tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
-    }
-
-    protected void createAdapter() {
-        mAdapter = new StockCardListAdapter(new ArrayList<>(), onItemViewClickListener);
-    }
-
-    protected void loadStockCards() {
-        presenter.loadStockCards(Active);
-    }
-
-    @NonNull
-    private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate() {
-        return () -> {
-            dirtyDataManager.deleteAndReset();
-            Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
-            getActivity().startActivity(intent);
-            getActivity().finish();
-        };
-    }
-
-    @Override
-    public void refreshBannerText() {
-        productsUpdateBanner.refreshBannerText();
-    }
-
-    @Override
-    public void showWarning() {
-        ((BaseActivity) getActivity()).showDeletedWarningDialog(buildWarningDialogFragmentDelegate());
-    }
-
-    private void initRecycleView() {
-        createAdapter();
-
-        stockCardRecycleView.setHasFixedSize(true);
-        stockCardRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        stockCardRecycleView.setAdapter(mAdapter);
-    }
-
-    protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = inventoryViewModel -> {
-        Intent intent = getStockMovementIntent(inventoryViewModel);
-        startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
+  @NonNull
+  private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate() {
+    return () -> {
+      dirtyDataManager.deleteAndReset();
+      Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
+      getActivity().startActivity(intent);
+      getActivity().finish();
     };
+  }
 
-    protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
-        return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
-    }
+  @Override
+  public void refreshBannerText() {
+    productsUpdateBanner.refreshBannerText();
+  }
 
-    private void initSortSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.sort_items_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sortSpinner.setAdapter(adapter);
-        sortSpinner.setOnItemSelectedListener(this);
-    }
+  @Override
+  public void showWarning() {
+    ((BaseActivity) getActivity()).showDeletedWarningDialog(buildWarningDialogFragmentDelegate());
+  }
 
-    @Override
-    public void refresh(List<InventoryViewModel> data) {
-        mAdapter.refreshList(data);
+  private void initRecycleView() {
+    createAdapter();
 
-        tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
-        onItemSelected(sortSpinner, null, currentPosition, 0L);
-    }
+    stockCardRecycleView.setHasFixedSize(true);
+    stockCardRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    stockCardRecycleView.setAdapter(mAdapter);
+  }
+
+  protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = inventoryViewModel -> {
+    Intent intent = getStockMovementIntent(inventoryViewModel);
+    startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
+  };
+
+  protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
+    return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
+  }
+
+  private void initSortSpinner() {
+    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+        R.array.sort_items_array, android.R.layout.simple_spinner_item);
+    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    sortSpinner.setAdapter(adapter);
+    sortSpinner.setOnItemSelectedListener(this);
+  }
+
+  @Override
+  public void refresh(List<InventoryViewModel> data) {
+    mAdapter.refreshList(data);
+
+    tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
+    onItemSelected(sortSpinner, null, currentPosition, 0L);
+  }
 
 }

@@ -18,10 +18,17 @@
 
 package org.openlmis.core.view.fragment;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,96 +44,92 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
 import org.robolectric.Robolectric;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(LMISTestRunner.class)
 public class StockCardListFragmentTest {
 
-    private StockCardListFragment fragment;
-    private List<InventoryViewModel> inventoryViewModels;
-    private ProductsUpdateBanner productUpdateBanner;
-    private SharedPreferenceMgr sharedPreferenceMgr;
+  private StockCardListFragment fragment;
+  private List<InventoryViewModel> inventoryViewModels;
+  private ProductsUpdateBanner productUpdateBanner;
+  private SharedPreferenceMgr sharedPreferenceMgr;
 
-    @Before
-    public void setUp() {
-        fragment = buildFragment();
-        productUpdateBanner = mock(ProductsUpdateBanner.class);
-        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
-        fragment.sharedPreferenceMgr = sharedPreferenceMgr;
+  @Before
+  public void setUp() {
+    fragment = buildFragment();
+    productUpdateBanner = mock(ProductsUpdateBanner.class);
+    sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
+    fragment.sharedPreferenceMgr = sharedPreferenceMgr;
 
-        inventoryViewModels = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            StockCard stockCard = new StockCard();
-            stockCard.setStockOnHand(10 - i);
-            Product product = new Product();
-            product.setPrimaryName((char) ('A' + i) + " Product");
+    inventoryViewModels = new ArrayList<>();
+    for (int i = 0; i < 10; i++) {
+      StockCard stockCard = new StockCard();
+      stockCard.setStockOnHand(10 - i);
+      Product product = new Product();
+      product.setPrimaryName((char) ('A' + i) + " Product");
 
-            stockCard.setProduct(product);
-            inventoryViewModels.add(new InventoryViewModel(stockCard));
-        }
+      stockCard.setProduct(product);
+      inventoryViewModels.add(new InventoryViewModel(stockCard));
     }
+  }
 
-    private StockCardListFragment buildFragment() {
-        StockCardListActivity stockCardListActivity = Robolectric.buildActivity(StockCardListActivity.class).create().get();
+  private StockCardListFragment buildFragment() {
+    StockCardListActivity stockCardListActivity = Robolectric
+        .buildActivity(StockCardListActivity.class).create().get();
 
-        fragment = new StockCardListFragment();
+    fragment = new StockCardListFragment();
 
-        stockCardListActivity.getFragmentManager().beginTransaction().add(fragment, null).commit();
+    stockCardListActivity.getFragmentManager().beginTransaction().add(fragment, null).commit();
 
-        fragment.presenter = mock(StockCardPresenter.class);
-        return fragment;
-    }
+    fragment.presenter = mock(StockCardPresenter.class);
+    return fragment;
+  }
 
-    @Test
-    public void shouldSortListByProductName() {
-        when(fragment.presenter.getInventoryViewModels()).thenReturn(this.inventoryViewModels);
-        List<InventoryViewModel> inventoryViewModels = fragment.presenter.getInventoryViewModels();
-        StockCardListAdapter adapter = new StockCardListAdapter(new ArrayList<InventoryViewModel>(), null);
-        adapter.refreshList(inventoryViewModels);
-        adapter.sortByName(true);
+  @Test
+  public void shouldSortListByProductName() {
+    when(fragment.presenter.getInventoryViewModels()).thenReturn(this.inventoryViewModels);
+    List<InventoryViewModel> inventoryViewModels = fragment.presenter.getInventoryViewModels();
+    StockCardListAdapter adapter = new StockCardListAdapter(new ArrayList<InventoryViewModel>(),
+        null);
+    adapter.refreshList(inventoryViewModels);
+    adapter.sortByName(true);
 
-        List<InventoryViewModel> sortedList = adapter.getFilteredList();
-        assertThat(sortedList.get(0).getProduct().getPrimaryName(), is("A Product"));
-        assertThat(sortedList.get(1).getProduct().getPrimaryName(), is("B Product"));
-        assertThat(sortedList.get(2).getProduct().getPrimaryName(), is("C Product"));
-    }
+    List<InventoryViewModel> sortedList = adapter.getFilteredList();
+    assertThat(sortedList.get(0).getProduct().getPrimaryName(), is("A Product"));
+    assertThat(sortedList.get(1).getProduct().getPrimaryName(), is("B Product"));
+    assertThat(sortedList.get(2).getProduct().getPrimaryName(), is("C Product"));
+  }
 
-    @Test
-    public void shouldSortListBySOH() {
-        when(fragment.presenter.getInventoryViewModels()).thenReturn(inventoryViewModels);
-        StockCardListAdapter adapter = new StockCardListAdapter(new ArrayList<InventoryViewModel>(), null);
-        adapter.refreshList(inventoryViewModels);
-        adapter.sortBySOH(true);
+  @Test
+  public void shouldSortListBySOH() {
+    when(fragment.presenter.getInventoryViewModels()).thenReturn(inventoryViewModels);
+    StockCardListAdapter adapter = new StockCardListAdapter(new ArrayList<InventoryViewModel>(),
+        null);
+    adapter.refreshList(inventoryViewModels);
+    adapter.sortBySOH(true);
 
-        List<InventoryViewModel> sortedList = adapter.getFilteredList();
-        assertThat(sortedList.get(0).getStockOnHand(), is(1L));
-        assertThat(sortedList.get(1).getStockOnHand(), is(2L));
-        assertThat(sortedList.get(2).getStockOnHand(), is(3L));
-    }
+    List<InventoryViewModel> sortedList = adapter.getFilteredList();
+    assertThat(sortedList.get(0).getStockOnHand(), is(1L));
+    assertThat(sortedList.get(1).getStockOnHand(), is(2L));
+    assertThat(sortedList.get(2).getStockOnHand(), is(3L));
+  }
 
-    @Test
-    public void shouldRefreshBannerText() {
-        fragment.productsUpdateBanner = productUpdateBanner;
-        when(sharedPreferenceMgr.isNeedShowProductsUpdateBanner()).thenReturn(true);
-        when(productUpdateBanner.getVisibility()).thenReturn(View.VISIBLE);
+  @Test
+  public void shouldRefreshBannerText() {
+    fragment.productsUpdateBanner = productUpdateBanner;
+    when(sharedPreferenceMgr.isNeedShowProductsUpdateBanner()).thenReturn(true);
+    when(productUpdateBanner.getVisibility()).thenReturn(View.VISIBLE);
 
-        fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
+    fragment
+        .onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
-        verify(fragment.presenter).refreshStockCardsObservable(0);
-    }
+    verify(fragment.presenter).refreshStockCardsObservable(0);
+  }
 
-    @Test
-    public void shouldRefreshAndShowBannerWhenNeedShowBanner() {
-        fragment.productsUpdateBanner = productUpdateBanner;
-        fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
+  @Test
+  public void shouldRefreshAndShowBannerWhenNeedShowBanner() {
+    fragment.productsUpdateBanner = productUpdateBanner;
+    fragment
+        .onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
-        verify(fragment.presenter).refreshStockCardsObservable(0);
-    }
+    verify(fragment.presenter).refreshStockCardsObservable(0);
+  }
 }

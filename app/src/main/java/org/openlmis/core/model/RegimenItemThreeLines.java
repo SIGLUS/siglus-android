@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,34 +12,35 @@ import lombok.Setter;
 @Setter
 @DatabaseTable(tableName = "regime_three_lines")
 public class RegimenItemThreeLines extends BaseModel {
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private RnRForm form;
 
-    @Expose
-    @SerializedName("code")
-    @DatabaseField
-    private String regimeTypes;
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private RnRForm form;
 
-    @Expose
-    @SerializedName("patientsOnTreatment")
-    @DatabaseField
-    private Long patientsAmount;
+  @Expose
+  @SerializedName("code")
+  @DatabaseField
+  private String regimeTypes;
 
-    @Expose
-    @SerializedName("comunitaryPharmacy")
-    @DatabaseField
-    private Long pharmacyAmount;
+  @Expose
+  @SerializedName("patientsOnTreatment")
+  @DatabaseField
+  private Long patientsAmount;
 
-    public RegimenItemThreeLines(String type) {
-        this.regimeTypes = type;
-    }
+  @Expose
+  @SerializedName("comunitaryPharmacy")
+  @DatabaseField
+  private Long pharmacyAmount;
 
-    public RegimenItemThreeLines() {
-        super();
-    }
+  public RegimenItemThreeLines(String type) {
+    this.regimeTypes = type;
+  }
 
-    public RegimenItemThreeLines(long id, String regimeTypes) {
-        super.setId(id);
-        this.regimeTypes = regimeTypes;
-    }
+  public RegimenItemThreeLines() {
+    super();
+  }
+
+  public RegimenItemThreeLines(long id, String regimeTypes) {
+    super.setId(id);
+    this.regimeTypes = regimeTypes;
+  }
 }

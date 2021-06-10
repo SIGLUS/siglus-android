@@ -26,45 +26,48 @@ import org.junit.Test;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 
-import static org.junit.Assert.*;
-
 public class StockOnHandStatusTest {
 
-    @Test
-    public void calculateStockOnHandLevel() {
-        // given
-        final Product product = new Product();
-        product.setHiv(false);
-        final StockCard regularStockCard = new StockCard();
-        regularStockCard.setProduct(product);
-        regularStockCard.setStockOnHand(100);
-        regularStockCard.setAvgMonthlyConsumption(-1);
+  @Test
+  public void calculateStockOnHandLevel() {
+    // given
+    final Product product = new Product();
+    product.setHiv(false);
+    final StockCard regularStockCard = new StockCard();
+    regularStockCard.setProduct(product);
+    regularStockCard.setStockOnHand(100);
+    regularStockCard.setAvgMonthlyConsumption(-1);
 
-        final StockCard overStockCard = new StockCard();
-        overStockCard.setProduct(product);
-        overStockCard.setStockOnHand(201);
-        overStockCard.setAvgMonthlyConsumption(100);
+    final StockCard overStockCard = new StockCard();
+    overStockCard.setProduct(product);
+    overStockCard.setStockOnHand(201);
+    overStockCard.setAvgMonthlyConsumption(100);
 
-        final StockCard outStockCard = new StockCard();
-        outStockCard.setProduct(product);
-        outStockCard.setStockOnHand(0);
-        outStockCard.setAvgMonthlyConsumption(-1);
+    final StockCard outStockCard = new StockCard();
+    outStockCard.setProduct(product);
+    outStockCard.setStockOnHand(0);
+    outStockCard.setAvgMonthlyConsumption(-1);
 
-        final StockCard lowStockCard = new StockCard();
-        lowStockCard.setProduct(product);
-        lowStockCard.setStockOnHand(100);
-        lowStockCard.setAvgMonthlyConsumption(101);
+    final StockCard lowStockCard = new StockCard();
+    lowStockCard.setProduct(product);
+    lowStockCard.setStockOnHand(100);
+    lowStockCard.setAvgMonthlyConsumption(101);
 
-        // when
-        regularStockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(regularStockCard));
-        overStockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(overStockCard));
-        outStockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(outStockCard));
-        lowStockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(lowStockCard));
+    // when
+    regularStockCard
+        .setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(regularStockCard));
+    overStockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(overStockCard));
+    outStockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(outStockCard));
+    lowStockCard.setStockOnHandStatus(StockOnHandStatus.calculateStockOnHandLevel(lowStockCard));
 
-        // then
-        MatcherAssert.assertThat(regularStockCard.getStockOnHandStatus(), Matchers.is(StockOnHandStatus.REGULAR_STOCK));
-        MatcherAssert.assertThat(overStockCard.getStockOnHandStatus(), Matchers.is(StockOnHandStatus.OVER_STOCK));
-        MatcherAssert.assertThat(outStockCard.getStockOnHandStatus(), Matchers.is(StockOnHandStatus.STOCK_OUT));
-        MatcherAssert.assertThat(lowStockCard.getStockOnHandStatus(), Matchers.is(StockOnHandStatus.LOW_STOCK));
-    }
+    // then
+    MatcherAssert.assertThat(regularStockCard.getStockOnHandStatus(),
+        Matchers.is(StockOnHandStatus.REGULAR_STOCK));
+    MatcherAssert.assertThat(overStockCard.getStockOnHandStatus(),
+        Matchers.is(StockOnHandStatus.OVER_STOCK));
+    MatcherAssert
+        .assertThat(outStockCard.getStockOnHandStatus(), Matchers.is(StockOnHandStatus.STOCK_OUT));
+    MatcherAssert
+        .assertThat(lowStockCard.getStockOnHandStatus(), Matchers.is(StockOnHandStatus.LOW_STOCK));
+  }
 }

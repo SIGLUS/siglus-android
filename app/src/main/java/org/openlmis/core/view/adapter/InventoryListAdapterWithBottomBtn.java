@@ -18,66 +18,66 @@
 
 package org.openlmis.core.view.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.List;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-import java.util.List;
 
+public abstract class InventoryListAdapterWithBottomBtn extends
+    InventoryListAdapter<RecyclerView.ViewHolder> implements FilterableAdapter {
 
-public abstract class InventoryListAdapterWithBottomBtn extends InventoryListAdapter<RecyclerView.ViewHolder> implements FilterableAdapter {
+  private static final int TYPE_ITEM = 0;
+  private static final int TYPE_FOOTER = 1;
 
-    private static final int TYPE_ITEM = 0;
-    private static final int TYPE_FOOTER = 1;
+  public InventoryListAdapterWithBottomBtn(List<InventoryViewModel> data) {
+    super(data);
+  }
 
-    public InventoryListAdapterWithBottomBtn(List<InventoryViewModel> data) {
-        super(data);
+  @Override
+  public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    if (position >= filteredList.size()) {
+      return;
     }
+    populate(viewHolder, position);
+  }
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        if (position >= filteredList.size()) {
-            return;
-        }
-        populate(viewHolder, position);
+  protected abstract void populate(RecyclerView.ViewHolder viewHolder, int position);
+
+  @Override
+  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    if (viewType == TYPE_ITEM) {
+      return onCreateItemViewHolder(parent);
+    } else {
+      return onCreateFooterView(parent);
     }
+  }
 
-    protected abstract void populate(RecyclerView.ViewHolder viewHolder, int position);
+  protected abstract RecyclerView.ViewHolder onCreateFooterView(ViewGroup parent);
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == TYPE_ITEM) {
-            return onCreateItemViewHolder(parent);
-        } else {
-            return onCreateFooterView(parent);
-        }
+  public abstract RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent);
+
+  public static class VHFooter extends RecyclerView.ViewHolder {
+
+    public VHFooter(View itemView) {
+      super(itemView);
     }
+  }
 
-    protected abstract RecyclerView.ViewHolder onCreateFooterView(ViewGroup parent);
+  @Override
+  public int getItemCount() {
+    int itemCount = super.getItemCount();
+    return itemCount == 0 ? itemCount : itemCount + 1;
+  }
 
-    public abstract RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent);
+  @Override
+  public int getItemViewType(int position) {
+    return isPositionFooter(position) ? TYPE_FOOTER : TYPE_ITEM;
+  }
 
-    public static class VHFooter extends RecyclerView.ViewHolder {
-        public VHFooter(View itemView) {
-            super(itemView);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        int itemCount = super.getItemCount();
-        return itemCount == 0 ? itemCount : itemCount + 1;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return isPositionFooter(position) ? TYPE_FOOTER : TYPE_ITEM;
-    }
-
-    private boolean isPositionFooter(int position) {
-        return position == filteredList.size();
-    }
+  private boolean isPositionFooter(int position) {
+    return position == filteredList.size();
+  }
 
 }

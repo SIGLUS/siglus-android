@@ -19,74 +19,71 @@
 package org.openlmis.core.persistence;
 
 import android.content.Context;
-
-import org.openlmis.core.exceptions.LMISException;
-
 import java.util.List;
-
 import javax.inject.Inject;
-
+import org.openlmis.core.exceptions.LMISException;
 import roboguice.RoboGuice;
 
 public class GenericDao<Model> {
-    @Inject
-    DbUtil dbUtil;
 
-    private Class<Model> type;
+  @Inject
+  DbUtil dbUtil;
 
-    private Context context;
+  private final Class<Model> type;
 
-    @Inject
-    public GenericDao(Class<Model> type, Context context) {
-        this.type = type;
-        this.context = context;
-        RoboGuice.getInjector(context).injectMembers(this);
-    }
+  private final Context context;
 
-    public Model create(final Model object) throws LMISException {
-        return dbUtil.withDao(context, type, dao -> {
-            dao.create(object);
-            return object;
-        });
-    }
+  @Inject
+  public GenericDao(Class<Model> type, Context context) {
+    this.type = type;
+    this.context = context;
+    RoboGuice.getInjector(context).injectMembers(this);
+  }
 
-    public Model createOrUpdate(final Model object) throws LMISException {
-        return dbUtil.withDao(context, type, dao -> {
-            dao.createOrUpdate(object);
-            return object;
-        });
-    }
+  public Model create(final Model object) throws LMISException {
+    return dbUtil.withDao(context, type, dao -> {
+      dao.create(object);
+      return object;
+    });
+  }
 
-    public List<Model> queryForAll() throws LMISException {
-        return dbUtil.withDao(context, type, dao -> dao.queryForAll());
-    }
+  public Model createOrUpdate(final Model object) throws LMISException {
+    return dbUtil.withDao(context, type, dao -> {
+      dao.createOrUpdate(object);
+      return object;
+    });
+  }
 
-    public Integer update(final Model object) throws LMISException {
-        return dbUtil.withDao(context, type, dao -> dao.update(object));
-    }
+  public List<Model> queryForAll() throws LMISException {
+    return dbUtil.withDao(context, type, dao -> dao.queryForAll());
+  }
 
-    public Model getById(final String id) throws LMISException {
-        return dbUtil.withDao(context, type, dao -> dao.queryForId(id));
-    }
+  public Integer update(final Model object) throws LMISException {
+    return dbUtil.withDao(context, type, dao -> dao.update(object));
+  }
 
-    public void refresh(final Model model) throws LMISException {
-        dbUtil.withDao(context, type, (DbUtil.Operation<Model, Void>) dao -> {
-            dao.refresh(model);
-            return null;
-        });
-    }
+  public Model getById(final String id) throws LMISException {
+    return dbUtil.withDao(context, type, dao -> dao.queryForId(id));
+  }
 
-    public Integer delete(final Model object) throws LMISException {
-        return dbUtil.withDao(context, type, dao -> dao.delete(object));
-    }
+  public void refresh(final Model model) throws LMISException {
+    dbUtil.withDao(context, type, (DbUtil.Operation<Model, Void>) dao -> {
+      dao.refresh(model);
+      return null;
+    });
+  }
 
-    public boolean create(final List<Model> models) throws LMISException {
-        return dbUtil.withDaoAsBatch(context, type, dao -> {
-            for (Model model : models) {
-                dao.createOrUpdate(model);
-            }
-            return true;
-        });
-    }
+  public Integer delete(final Model object) throws LMISException {
+    return dbUtil.withDao(context, type, dao -> dao.delete(object));
+  }
+
+  public boolean create(final List<Model> models) throws LMISException {
+    return dbUtil.withDaoAsBatch(context, type, dao -> {
+      for (Model model : models) {
+        dao.createOrUpdate(model);
+      }
+      return true;
+    });
+  }
 
 }

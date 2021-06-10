@@ -1,5 +1,11 @@
 package org.openlmis.core.model.repository;
 
+import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,114 +18,115 @@ import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.builder.ProgramBuilder;
 import org.robolectric.RuntimeEnvironment;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import roboguice.RoboGuice;
-
-import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 @RunWith(LMISTestRunner.class)
 public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
-    ProgramRepository programRepository;
-    ProductRepository productRepository;
-    ArrayList<Product> products = new ArrayList<>();
 
-    @Before
-    public void setup() throws LMISException {
-        programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
-        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
+  ProgramRepository programRepository;
+  ProductRepository productRepository;
+  ArrayList<Product> products = new ArrayList<>();
 
-        Product product = new Product();
-        product.setCode("test code");
-        product.setPrimaryName("Test Product");
-        product.setStrength("200");
-        product.setActive(true);
+  @Before
+  public void setup() throws LMISException {
+    programRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(ProgramRepository.class);
+    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(ProductRepository.class);
 
-        productRepository.createOrUpdate(product);
+    Product product = new Product();
+    product.setCode("test code");
+    product.setPrimaryName("Test Product");
+    product.setStrength("200");
+    product.setActive(true);
 
-        products.add(product);
-    }
+    productRepository.createOrUpdate(product);
 
-    @Test
-    public void shouldSaveProgramWithProductsSuccessful() throws LMISException {
-        int size = programRepository.list().size();
-        //given
-        Program program = new Program();
-        program.setProgramCode("TB_TEST");
-        program.setProgramName("TB_TEST");
-        program.setProducts(products);
+    products.add(product);
+  }
 
-        ArrayList<Program> programs = new ArrayList<Program>();
-        programs.add(program);
+  @Test
+  public void shouldSaveProgramWithProductsSuccessful() throws LMISException {
+    int size = programRepository.list().size();
+    //given
+    Program program = new Program();
+    program.setProgramCode("TB_TEST");
+    program.setProgramName("TB_TEST");
+    program.setProducts(products);
 
-        //when add new program and products
-        programRepository.createOrUpdateProgramWithProduct(programs);
+    ArrayList<Program> programs = new ArrayList<Program>();
+    programs.add(program);
 
-        //then
-        assertThat(programRepository.list().size(), is(size + 1)); // 1 new TB
-        assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(1));
+    //when add new program and products
+    programRepository.createOrUpdateProgramWithProduct(programs);
 
-        //when add product to existing program
-        Product newProduct = new Product();
-        newProduct.setCode("new product code");
-        newProduct.setPrimaryName("Test Product2");
-        newProduct.setActive(true);
-        products.add(newProduct);
-        programRepository.createOrUpdateProgramWithProduct(programs);
+    //then
+    assertThat(programRepository.list().size(), is(size + 1)); // 1 new TB
+    assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(1));
 
-        //then
-        assertThat(programRepository.list().size(), is(size + 1)); //  1 new TB
-        assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
-        assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2"));
+    //when add product to existing program
+    Product newProduct = new Product();
+    newProduct.setCode("new product code");
+    newProduct.setPrimaryName("Test Product2");
+    newProduct.setActive(true);
+    products.add(newProduct);
+    programRepository.createOrUpdateProgramWithProduct(programs);
 
-        //when createOrUpdateWithItems existing product
-        newProduct.setPrimaryName("Test Product2 Updated");
-        programRepository.createOrUpdateProgramWithProduct(programs);
+    //then
+    assertThat(programRepository.list().size(), is(size + 1)); //  1 new TB
+    assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
+    assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(),
+        is("Test Product2"));
 
-        //then
-        assertThat(programRepository.list().size(), is(size + 1)); //  1 new TB
-        assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
-        assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2 Updated"));
-    }
+    //when createOrUpdateWithItems existing product
+    newProduct.setPrimaryName("Test Product2 Updated");
+    programRepository.createOrUpdateProgramWithProduct(programs);
 
-    @Test
-    public void shouldQueryProgramIdsByProgramCodeOrParentCode() throws Exception {
-        insertProgram("MMIA", "MMIA Program", null);
-        insertProgram("PTV", "ptv Program", "MMIA");
-        insertProgram("TARV", "tarv Program", "MMIA");
-        insertProgram("VIA", "VIA Program", null);
-        insertProgram("TB", "Nutrition Program", "VIA");
+    //then
+    assertThat(programRepository.list().size(), is(size + 1)); //  1 new TB
+    assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
+    assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(),
+        is("Test Product2 Updated"));
+  }
 
-        List<Long> viaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("VIA");
-        List<Long> mmiaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("MMIA");
-        Assertions.assertThat(viaProgramIds.size()).isGreaterThanOrEqualTo(2);//initialized VIA programs + TB
-        Assertions.assertThat(mmiaProgramIds.size()).isGreaterThanOrEqualTo(3); // TARV + PTV + MMIA
-    }
+  @Test
+  public void shouldQueryProgramIdsByProgramCodeOrParentCode() throws Exception {
+    insertProgram("MMIA", "MMIA Program", null);
+    insertProgram("PTV", "ptv Program", "MMIA");
+    insertProgram("TARV", "tarv Program", "MMIA");
+    insertProgram("VIA", "VIA Program", null);
+    insertProgram("TB", "Nutrition Program", "VIA");
 
-    @Test
-    public void shouldQueryProgramCodesByProgramCodeOrParentCode() throws Exception {
-        insertProgram("MMIA", "MMIA Program", null);
-        insertProgram("PTV", "ptv Program", "MMIA");
-        insertProgram("TARV", "tarv Program", "MMIA");
-        insertProgram("VIA", "VIA Program", null);
-        insertProgram("TB", "Nutrition Program", "VIA");
+    List<Long> viaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("VIA");
+    List<Long> mmiaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("MMIA");
+    Assertions.assertThat(viaProgramIds.size())
+        .isGreaterThanOrEqualTo(2);//initialized VIA programs + TB
+    Assertions.assertThat(mmiaProgramIds.size()).isGreaterThanOrEqualTo(3); // TARV + PTV + MMIA
+  }
 
-        List<String> viaProgramCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode("VIA");
-        List<String> mmiaProgramCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode("MMIA");
-        assertTrue(viaProgramCodes.contains("TB"));
-        Assertions.assertThat(mmiaProgramCodes.size()).isGreaterThanOrEqualTo(3);
-        assertTrue(mmiaProgramCodes.contains("PTV") && mmiaProgramCodes.contains("MMIA"));
-    }
+  @Test
+  public void shouldQueryProgramCodesByProgramCodeOrParentCode() throws Exception {
+    insertProgram("MMIA", "MMIA Program", null);
+    insertProgram("PTV", "ptv Program", "MMIA");
+    insertProgram("TARV", "tarv Program", "MMIA");
+    insertProgram("VIA", "VIA Program", null);
+    insertProgram("TB", "Nutrition Program", "VIA");
 
-    private void insertProgram(String programCode, String programName, String parentCode) throws LMISException {
-        Program program = new ProgramBuilder()
-                .setProgramCode(programCode)
-                .setProgramName(programName)
-                .setParentCode(parentCode).build();
-        programRepository.createOrUpdate(program);
-    }
+    List<String> viaProgramCodes = programRepository
+        .queryProgramCodesByProgramCodeOrParentCode("VIA");
+    List<String> mmiaProgramCodes = programRepository
+        .queryProgramCodesByProgramCodeOrParentCode("MMIA");
+    assertTrue(viaProgramCodes.contains("TB"));
+    Assertions.assertThat(mmiaProgramCodes.size()).isGreaterThanOrEqualTo(3);
+    assertTrue(mmiaProgramCodes.contains("PTV") && mmiaProgramCodes.contains("MMIA"));
+  }
+
+  private void insertProgram(String programCode, String programName, String parentCode)
+      throws LMISException {
+    Program program = new ProgramBuilder()
+        .setProgramCode(programCode)
+        .setProgramName(programName)
+        .setParentCode(parentCode).build();
+    programRepository.createOrUpdate(program);
+  }
 }

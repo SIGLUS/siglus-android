@@ -22,45 +22,45 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
 import com.google.inject.Inject;
-
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.service.SyncService;
-
 import roboguice.RoboGuice;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
-    private static final String TAG = NetworkChangeReceiver.class.getSimpleName();
 
-    @Inject
-    InternetCheck internetCheck;
+  private static final String TAG = NetworkChangeReceiver.class.getSimpleName();
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        SyncService syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
-        if (internetCheck != null) {
-            internetCheck.execute(synchronizeListener(syncService));
-        }
+  @Inject
+  InternetCheck internetCheck;
+
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    SyncService syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
+    if (internetCheck != null) {
+      internetCheck.execute(synchronizeListener(syncService));
     }
+  }
 
-    private InternetCheck.Callback synchronizeListener(final SyncService syncService) {
+  private InternetCheck.Callback synchronizeListener(final SyncService syncService) {
 
-        return internet -> {
-            if (internet) {
-                Log.d(TAG, "network connected, start sync service...");
-                LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
-                syncService.requestSyncImmediatelyByTask();
-                syncService.kickOff();
-            } else {
-                Log.d(TAG, "there is no internet connection in network receiver");
-                Log.d(TAG, "network disconnect, stop sync service...");
-                LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
-                syncService.shutDown();
-            }
-        };
-    }
+    return internet -> {
+      if (internet) {
+        Log.d(TAG, "network connected, start sync service...");
+        LMISApp.getInstance()
+            .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
+        syncService.requestSyncImmediatelyByTask();
+        syncService.kickOff();
+      } else {
+        Log.d(TAG, "there is no internet connection in network receiver");
+        Log.d(TAG, "network disconnect, stop sync service...");
+        LMISApp.getInstance()
+            .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
+        syncService.shutDown();
+      }
+    };
+  }
 }

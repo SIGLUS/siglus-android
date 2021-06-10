@@ -6,10 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RegimeProductViewModel {
-    private String shortCode;
-    private boolean checked;
 
-    public RegimeProductViewModel(String shortCode) {
-        this.shortCode = shortCode;
-    }
+  private String shortCode;
+  private boolean checked;
+
+  public RegimeProductViewModel(String shortCode) {
+    this.shortCode = shortCode;
+  }
 }

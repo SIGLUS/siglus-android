@@ -24,72 +24,71 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
+import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
-import java.util.List;
-
 public class RequisitionFormAdapter extends BaseAdapter {
 
-    private Context context;
+  private final Context context;
 
-    private VIARequisitionPresenter presenter;
+  private final VIARequisitionPresenter presenter;
 
-    private RnRForm.STATUS status = RnRForm.STATUS.AUTHORIZED;
+  private RnRForm.STATUS status = RnRForm.STATUS.AUTHORIZED;
 
-    public RequisitionFormAdapter(Context context, VIARequisitionPresenter presenter) {
-        this.context = context;
-        this.presenter = presenter;
+  public RequisitionFormAdapter(Context context, VIARequisitionPresenter presenter) {
+    this.context = context;
+    this.presenter = presenter;
+  }
+
+  @Override
+  public int getCount() {
+    return data() == null ? 0 : data().size();
+  }
+
+  @Override
+  public RequisitionFormItemViewModel getItem(int position) {
+    return data() == null ? null : data().get(position);
+  }
+
+  @Override
+  public long getItemId(int position) {
+    return position;
+  }
+
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    RequisitionFormViewHolder viewHolder;
+
+    if (convertView == null) {
+      convertView = LayoutInflater.from(context)
+          .inflate(R.layout.item_requisition_body, parent, false);
+      viewHolder = new RequisitionFormViewHolder(convertView);
+      convertView.setTag(viewHolder);
+    } else {
+      viewHolder = (RequisitionFormViewHolder) convertView.getTag();
     }
 
-    @Override
-    public int getCount() {
-        return data() == null ? 0 : data().size();
+    View currentFocus = ((Activity) context).getCurrentFocus();
+    if (currentFocus != null) {
+      currentFocus.clearFocus();
     }
 
-    @Override
-    public RequisitionFormItemViewModel getItem(int position) {
-        return data() == null ? null : data().get(position);
-    }
+    final RequisitionFormItemViewModel entry = getItem(position);
+    viewHolder.populate(entry, status);
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    return convertView;
+  }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        RequisitionFormViewHolder viewHolder;
+  public void updateStatus(RnRForm.STATUS status) {
+    this.status = status;
+    this.notifyDataSetChanged();
+  }
 
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_requisition_body, parent, false);
-            viewHolder = new RequisitionFormViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (RequisitionFormViewHolder) convertView.getTag();
-        }
-
-        View currentFocus = ((Activity) context).getCurrentFocus();
-        if (currentFocus != null) {
-            currentFocus.clearFocus();
-        }
-
-        final RequisitionFormItemViewModel entry = getItem(position);
-        viewHolder.populate(entry, status);
-
-        return convertView;
-    }
-
-    public void updateStatus(RnRForm.STATUS status) {
-        this.status = status;
-        this.notifyDataSetChanged();
-    }
-
-    private List<RequisitionFormItemViewModel> data() {
-        return presenter.getRequisitionFormItemViewModels();
-    }
+  private List<RequisitionFormItemViewModel> data() {
+    return presenter.getRequisitionFormItemViewModels();
+  }
 }

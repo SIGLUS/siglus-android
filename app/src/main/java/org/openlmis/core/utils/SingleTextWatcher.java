@@ -19,14 +19,14 @@ package org.openlmis.core.utils;
 
 public class SingleTextWatcher extends SimpleTextWatcher {
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        // Used to avoid add multiple Listeners in ListView
-        return true;
-    }
+  @Override
+  public boolean equals(Object o) {
+    // Used to avoid add multiple Listeners in ListView
+    return true;
+  }
 }

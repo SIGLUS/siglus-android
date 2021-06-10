@@ -19,9 +19,9 @@ package org.openlmis.core.presenter;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.google.inject.Inject;
-
+import java.util.Date;
+import lombok.Getter;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -33,10 +33,6 @@ import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
-
-import java.util.Date;
-
-import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -46,235 +42,240 @@ import rx.schedulers.Schedulers;
 
 public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
-    RnrFormRepository rnrFormRepository;
+  RnrFormRepository rnrFormRepository;
 
-    @Inject
-    Context context;
+  @Inject
+  Context context;
 
-    @Inject
-    StockService stockService;
+  @Inject
+  StockService stockService;
 
-    private BaseRequisitionView view;
+  private BaseRequisitionView view;
 
-    protected Date periodEndDate;
+  protected Date periodEndDate;
 
-    @Getter
-    protected RnRForm rnRForm;
+  @Getter
+  protected RnRForm rnRForm;
 
-    @Getter
-    protected boolean isHistoryForm = false;
+  @Getter
+  protected boolean isHistoryForm = false;
 
-    @Inject
-    InternetCheck internetCheck;
+  @Inject
+  InternetCheck internetCheck;
 
-    public BaseRequisitionPresenter() {
-        rnrFormRepository = initRnrFormRepository();
+  public BaseRequisitionPresenter() {
+    rnrFormRepository = initRnrFormRepository();
+  }
+
+  protected abstract RnrFormRepository initRnrFormRepository();
+
+  @Override
+  public void attachView(BaseView baseView) throws ViewNotMatchException {
+    if (baseView instanceof BaseRequisitionView) {
+      this.view = (BaseRequisitionView) baseView;
     }
+  }
 
-    protected abstract RnrFormRepository initRnrFormRepository();
+  public abstract void loadData(final long formId, Date periodEndDate);
 
+  protected Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
     @Override
-    public void attachView(BaseView baseView) throws ViewNotMatchException {
-        if (baseView instanceof BaseRequisitionView) {
-            this.view = (BaseRequisitionView) baseView;
-        }
+    public void call(RnRForm form) {
+      rnRForm = form;
+      updateFormUI();
+      loadAlertDialogIsFormStatusIsDraft();
+      view.loaded();
     }
+  };
 
-    public abstract void loadData(final long formId, Date periodEndDate);
-
-    protected Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
-        @Override
-        public void call(RnRForm form) {
-            rnRForm = form;
-            updateFormUI();
-            loadAlertDialogIsFormStatusIsDraft();
-            view.loaded();
-        }
-    };
-
-    protected Action1<Throwable> loadDataOnErrorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            view.loaded();
-            ToastUtil.show(throwable.getMessage());
-        }
-    };
-
-    public void loadAlertDialogIsFormStatusIsDraft() {
-        if (rnRForm.isSubmitted()) {
-            view.showMessageNotifyDialog();
-        }
-    }
-
-    public RnRForm getRnrForm(long formId) throws LMISException {
-        if (formId != 0) {
-            isHistoryForm = true;
-        }
-        if (rnRForm != null) {
-            return rnRForm;
-        }
-        //three branches: history, half completed draft, new draft
-        if (isHistoryForm()) {
-            return rnrFormRepository.queryRnRForm(formId);
-        }
-        RnRForm draftRequisition = rnrFormRepository.queryUnAuthorized();
-        if (draftRequisition != null) {
-            return draftRequisition;
-        }
-        return rnrFormRepository.initNormalRnrForm(periodEndDate);
-    }
-
-    public void submitRequisition() {
-        view.loading();
-        Subscription submitSubscription = createOrUpdateRnrForm().subscribe(getSubmitRequisitionSubscriber());
-        subscriptions.add(submitSubscription);
-    }
-
-    protected Subscriber<Void> getSubmitRequisitionSubscriber() {
-        return new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.loaded();
-                ToastUtil.show(e.getMessage());
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-                view.loaded();
-                updateUIAfterSubmit();
-
-                TrackRnREventUtil.trackRnRListEvent(TrackerActions.SUBMIT_RNR, rnRForm.getProgram().getProgramCode());
-            }
-        };
-    }
-
-    public void authoriseRequisition() {
-        view.loading();
-        Subscription authoriseSubscription = createOrUpdateRnrForm().subscribe(getAuthoriseRequisitionSubscriber());
-        subscriptions.add(authoriseSubscription);
-    }
-
-    protected Subscriber<Void> getAuthoriseRequisitionSubscriber() {
-        return new Subscriber<Void>() {
-
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.loaded();
-                ToastUtil.show(getCompleteErrorMessage());
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-                view.loaded();
-                view.completeSuccess();
-                Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
-                TrackRnREventUtil.trackRnRListEvent(TrackerActions.AUTHORISE_RNR, rnRForm.getProgram().getProgramCode());
-                internetCheck.execute(checkInternetListener());
-            }
-        };
-    }
-
-    private InternetCheck.Callback checkInternetListener() {
-
-        return internet -> {
-            if (internet) {
-                syncService.requestSyncImmediatelyByTask();
-            } else {
-                Log.d("Internet", "No hay conexion");
-            }
-        };
-    }
-
-    protected Observable<Void> createOrUpdateRnrForm() {
-        return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
-            try {
-                rnrFormRepository.createOrUpdateWithItems(rnRForm);
-                subscriber.onNext(null);
-                subscriber.onCompleted();
-            } catch (LMISException e) {
-                new LMISException(e, "BaseRequisitionPresenter,createOrUpdateRnrForm").reportToFabric();
-                subscriber.onError(e);
-            } finally {
-                stockService.monthlyUpdateAvgMonthlyConsumption();
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
+  protected Action1<Throwable> loadDataOnErrorAction = new Action1<Throwable>() {
     @Override
-    public void deleteDraft() {
-        if (!isHistoryForm()) {
-            try {
-                rnrFormRepository.removeRnrForm(rnRForm);
-            } catch (LMISException e) {
-                ToastUtil.show(context.getString(R.string.delete_rnr_form_failed_warning));
-                new LMISException(e, "BaseRequisitionPresenter,deleteDraft").reportToFabric();
-            }
-        }
+    public void call(Throwable throwable) {
+      view.loaded();
+      ToastUtil.show(throwable.getMessage());
     }
+  };
 
-    public void processSign(String signature) {
-        addSignature(signature);
-        if (rnRForm.isSubmitted()) {
-            submitRequisition();
-            view.showMessageNotifyDialog();
-        } else {
-            authoriseRequisition();
-        }
+  public void loadAlertDialogIsFormStatusIsDraft() {
+    if (rnRForm.isSubmitted()) {
+      view.showMessageNotifyDialog();
     }
+  }
 
-    public void addSignature(String signature) {
-        rnRForm.addSignature(signature);
+  public RnRForm getRnrForm(long formId) throws LMISException {
+    if (formId != 0) {
+      isHistoryForm = true;
     }
-
-    public RnRForm.STATUS getRnrFormStatus() {
-        if (rnRForm != null) {
-            return rnRForm.getStatus();
-        } else {
-            return RnRForm.STATUS.DRAFT;
-        }
+    if (rnRForm != null) {
+      return rnRForm;
     }
-
-    public boolean validateFormPeriod() {
-        return rnrFormRepository.isPeriodUnique(rnRForm);
+    //three branches: history, half completed draft, new draft
+    if (isHistoryForm()) {
+      return rnrFormRepository.queryRnRForm(formId);
     }
-
-    public abstract void updateUIAfterSubmit();
-
-    protected abstract void updateFormUI();
-
-    protected abstract Observable<RnRForm> getRnrFormObservable(long formId);
-
-    protected abstract int getCompleteErrorMessage();
-
-    public boolean isFormProductEditable() {
-        return !isHistoryForm()
-                && getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
-                && !(getRnRForm() != null && getRnRForm().isEmergency());
+    RnRForm draftRequisition = rnrFormRepository.queryUnAuthorized();
+    if (draftRequisition != null) {
+      return draftRequisition;
     }
+    return rnrFormRepository.initNormalRnrForm(periodEndDate);
+  }
 
-    public boolean isDraft() {
-        return getRnrFormStatus() == RnRForm.STATUS.DRAFT || getRnrFormStatus() == RnRForm.STATUS.DRAFT_MISSED;
+  public void submitRequisition() {
+    view.loading();
+    Subscription submitSubscription = createOrUpdateRnrForm()
+        .subscribe(getSubmitRequisitionSubscriber());
+    subscriptions.add(submitSubscription);
+  }
+
+  protected Subscriber<Void> getSubmitRequisitionSubscriber() {
+    return new Subscriber<Void>() {
+      @Override
+      public void onCompleted() {
+
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        view.loaded();
+        ToastUtil.show(e.getMessage());
+      }
+
+      @Override
+      public void onNext(Void aVoid) {
+        view.loaded();
+        updateUIAfterSubmit();
+
+        TrackRnREventUtil
+            .trackRnRListEvent(TrackerActions.SUBMIT_RNR, rnRForm.getProgram().getProgramCode());
+      }
+    };
+  }
+
+  public void authoriseRequisition() {
+    view.loading();
+    Subscription authoriseSubscription = createOrUpdateRnrForm()
+        .subscribe(getAuthoriseRequisitionSubscriber());
+    subscriptions.add(authoriseSubscription);
+  }
+
+  protected Subscriber<Void> getAuthoriseRequisitionSubscriber() {
+    return new Subscriber<Void>() {
+
+      @Override
+      public void onCompleted() {
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        view.loaded();
+        ToastUtil.show(getCompleteErrorMessage());
+      }
+
+      @Override
+      public void onNext(Void aVoid) {
+        view.loaded();
+        view.completeSuccess();
+        Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
+        TrackRnREventUtil
+            .trackRnRListEvent(TrackerActions.AUTHORISE_RNR, rnRForm.getProgram().getProgramCode());
+        internetCheck.execute(checkInternetListener());
+      }
+    };
+  }
+
+  private InternetCheck.Callback checkInternetListener() {
+
+    return internet -> {
+      if (internet) {
+        syncService.requestSyncImmediatelyByTask();
+      } else {
+        Log.d("Internet", "No hay conexion");
+      }
+    };
+  }
+
+  protected Observable<Void> createOrUpdateRnrForm() {
+    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+      try {
+        rnrFormRepository.createOrUpdateWithItems(rnRForm);
+        subscriber.onNext(null);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "BaseRequisitionPresenter,createOrUpdateRnrForm").reportToFabric();
+        subscriber.onError(e);
+      } finally {
+        stockService.monthlyUpdateAvgMonthlyConsumption();
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public void deleteDraft() {
+    if (!isHistoryForm()) {
+      try {
+        rnrFormRepository.removeRnrForm(rnRForm);
+      } catch (LMISException e) {
+        ToastUtil.show(context.getString(R.string.delete_rnr_form_failed_warning));
+        new LMISException(e, "BaseRequisitionPresenter,deleteDraft").reportToFabric();
+      }
     }
+  }
 
-    public boolean isDraftOrDraftMissed() {
-        return rnRForm.isDraft();
+  public void processSign(String signature) {
+    addSignature(signature);
+    if (rnRForm.isSubmitted()) {
+      submitRequisition();
+      view.showMessageNotifyDialog();
+    } else {
+      authoriseRequisition();
     }
+  }
 
-    public interface BaseRequisitionView extends BaseView {
+  public void addSignature(String signature) {
+    rnRForm.addSignature(signature);
+  }
 
-        void refreshRequisitionForm(RnRForm rnRForm);
-
-        void completeSuccess();
-
-        void showMessageNotifyDialog();
+  public RnRForm.STATUS getRnrFormStatus() {
+    if (rnRForm != null) {
+      return rnRForm.getStatus();
+    } else {
+      return RnRForm.STATUS.DRAFT;
     }
+  }
+
+  public boolean validateFormPeriod() {
+    return rnrFormRepository.isPeriodUnique(rnRForm);
+  }
+
+  public abstract void updateUIAfterSubmit();
+
+  protected abstract void updateFormUI();
+
+  protected abstract Observable<RnRForm> getRnrFormObservable(long formId);
+
+  protected abstract int getCompleteErrorMessage();
+
+  public boolean isFormProductEditable() {
+    return !isHistoryForm()
+        && getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
+        && !(getRnRForm() != null && getRnRForm().isEmergency());
+  }
+
+  public boolean isDraft() {
+    return getRnrFormStatus() == RnRForm.STATUS.DRAFT
+        || getRnrFormStatus() == RnRForm.STATUS.DRAFT_MISSED;
+  }
+
+  public boolean isDraftOrDraftMissed() {
+    return rnRForm.isDraft();
+  }
+
+  public interface BaseRequisitionView extends BaseView {
+
+    void refreshRequisitionForm(RnRForm rnRForm);
+
+    void completeSuccess();
+
+    void showMessageNotifyDialog();
+  }
 }

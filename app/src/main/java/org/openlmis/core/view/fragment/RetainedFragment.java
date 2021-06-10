@@ -18,33 +18,31 @@
 package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
-
-import org.openlmis.core.presenter.Presenter;
-
 import java.util.HashMap;
+import org.openlmis.core.presenter.Presenter;
 
 public class RetainedFragment extends BaseFragment {
 
-    private HashMap map = new HashMap<>();
+  private final HashMap map = new HashMap<>();
 
-    // this method is only called once for this fragment
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // retain this fragment
-        setRetainInstance(true);
-    }
+  // this method is only called once for this fragment
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    // retain this fragment
+    setRetainInstance(true);
+  }
 
-    @Override
-    public Presenter initPresenter() {
-        return null;
-    }
+  @Override
+  public Presenter initPresenter() {
+    return null;
+  }
 
-    public void putData(Object key, Object data) {
-        map.put(key, data);
-    }
+  public void putData(Object key, Object data) {
+    map.put(key, data);
+  }
 
-    public Object getData(Object key) {
-        return map.get(key);
-    }
+  public Object getData(Object key) {
+    return map.get(key);
+  }
 }

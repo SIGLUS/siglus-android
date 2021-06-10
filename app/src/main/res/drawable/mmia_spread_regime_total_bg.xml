@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- This is the line -->
-    <item>
-        <shape>
-            <padding
-                android:bottom="1dp"
-                android:left="1dp"
-                android:right="1dp"
-                android:top="0dp" />
-            <solid android:color="@color/color_divider" />
-        </shape>
-    </item>
-    <!-- This is the main color -->
-    <item>
-        <shape>
-            <solid android:color="@android:color/transparent" />
-        </shape>
-    </item>
+  <!-- This is the line -->
+  <item>
+    <shape>
+      <padding
+        android:bottom="1dp"
+        android:left="1dp"
+        android:right="1dp"
+        android:top="0dp" />
+      <solid android:color="@color/color_divider" />
+    </shape>
+  </item>
+  <!-- This is the main color -->
+  <item>
+    <shape>
+      <solid android:color="@android:color/transparent" />
+    </shape>
+  </item>
 
 </layer-list>

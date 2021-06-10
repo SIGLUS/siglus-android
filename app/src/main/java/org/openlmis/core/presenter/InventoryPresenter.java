@@ -20,49 +20,47 @@
 package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
-
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.Getter;
 import rx.Observable;
 
 public abstract class InventoryPresenter extends Presenter {
 
-    @Inject
-    ProductRepository productRepository;
+  @Inject
+  ProductRepository productRepository;
 
-    @Inject
-    StockRepository stockRepository;
+  @Inject
+  StockRepository stockRepository;
 
-    @Inject
-    InventoryRepository inventoryRepository;
+  @Inject
+  InventoryRepository inventoryRepository;
 
-    @Inject
-    SharedPreferenceMgr sharedPreferenceMgr;
+  @Inject
+  SharedPreferenceMgr sharedPreferenceMgr;
 
-    InventoryView view;
+  InventoryView view;
 
-    @Getter
-    final List<InventoryViewModel> inventoryViewModelList = new ArrayList<>();
+  @Getter
+  final List<InventoryViewModel> inventoryViewModelList = new ArrayList<>();
 
-    @Override
-    public void attachView(BaseView v) {
-        view = (InventoryView) v;
-    }
+  @Override
+  public void attachView(BaseView v) {
+    view = (InventoryView) v;
+  }
 
-    public abstract Observable<List<InventoryViewModel>> loadInventory();
+  public abstract Observable<List<InventoryViewModel>> loadInventory();
 
-    public interface InventoryView extends BaseView {
-        boolean validateInventory();
+  public interface InventoryView extends BaseView {
 
-        void showErrorMessage(String msg);
-    }
+    boolean validateInventory();
+
+    void showErrorMessage(String msg);
+  }
 }

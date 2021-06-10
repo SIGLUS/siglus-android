@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Dialog.Container"
+  style="@style/Dialog.Container"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <TextView
+    android:id="@+id/tv_signature_title"
+    style="@style/Dialog.Title"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:text="@string/dialog_request_signature" />
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/ly_signature"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_medium">
+
+    <EditText
+      android:id="@+id/et_signature"
+      style="@style/Dialog.EditText"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textPersonName"
+      android:maxLength="@integer/signature_length"
+      android:hint="@string/hint_signature" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <LinearLayout
+    style="@style/Dialog.ActionPanel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_medium">
 
     <TextView
-        android:id="@+id/tv_signature_title"
-        style="@style/Dialog.Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/dialog_request_signature" />
+      android:id="@+id/btn_cancel"
+      style="@style/Dialog.Btn.TextBlue"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/button_height_default"
+      android:text="@string/btn_cancel" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/ly_signature"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium">
-
-        <EditText
-            android:id="@+id/et_signature"
-            style="@style/Dialog.EditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:maxLength="@integer/signature_length"
-            android:hint="@string/hint_signature" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <LinearLayout
-        style="@style/Dialog.ActionPanel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium">
-
-        <TextView
-            android:id="@+id/btn_cancel"
-            style="@style/Dialog.Btn.TextBlue"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height_default"
-            android:text="@string/btn_cancel" />
-
-        <Button
-            android:id="@+id/btn_done"
-            style="@style/Dialog.Btn.Positive"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height_default"
-            android:layout_marginStart="16dp"
-            android:text="@string/btn_approve" />
-    </LinearLayout>
+    <Button
+      android:id="@+id/btn_done"
+      style="@style/Dialog.Btn.Positive"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/button_height_default"
+      android:layout_marginStart="16dp"
+      android:text="@string/btn_approve" />
+  </LinearLayout>
 </LinearLayout>

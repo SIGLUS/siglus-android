@@ -22,7 +22,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,39 +30,39 @@ import lombok.Setter;
 @DatabaseTable(tableName = "regimes")
 public class Regimen extends BaseModel {
 
-    public enum RegimeType {
-        Adults,
-        Paediatrics,
-    }
+  public enum RegimeType {
+    Adults,
+    Paediatrics,
+  }
 
-    @Expose
-    @SerializedName("name")
-    @DatabaseField
-    private String name;
+  @Expose
+  @SerializedName("name")
+  @DatabaseField
+  private String name;
 
-    @Expose
-    @SerializedName("code")
-    @DatabaseField
-    private String code;
+  @Expose
+  @SerializedName("code")
+  @DatabaseField
+  private String code;
 
-    @Expose
-    @SerializedName("categoryName")
-    @DatabaseField
-    private RegimeType type;
+  @Expose
+  @SerializedName("categoryName")
+  @DatabaseField
+  private RegimeType type;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private Program program;
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private Program program;
 
-    @DatabaseField
-    private boolean isCustom;
+  @DatabaseField
+  private boolean isCustom;
 
-    @Expose
-    @SerializedName("displayOrder")
-    @DatabaseField
-    private Long displayOrder;
+  @Expose
+  @SerializedName("displayOrder")
+  @DatabaseField
+  private Long displayOrder;
 
-    @Expose
-    @SerializedName("active")
-    @DatabaseField
-    private boolean active;
+  @Expose
+  @SerializedName("active")
+  @DatabaseField
+  private boolean active;
 }

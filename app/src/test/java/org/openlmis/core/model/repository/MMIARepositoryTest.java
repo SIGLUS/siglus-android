@@ -18,10 +18,24 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+
 import androidx.annotation.NonNull;
-
 import com.google.inject.AbstractModule;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -51,250 +65,261 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import roboguice.RoboGuice;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 
 @RunWith(LMISTestRunner.class)
 public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
-    ProductRepository mockProductRepository;
-    MMIARepository mmiaRepository;
-    StockRepository mockStockRepository;
-    ProgramRepository mockProgramRepository;
-    ProductProgramRepository productProgramRepository;
-    RequisitionPeriodService mockRequisitionPeriodService;
-    private Program program;
-    RegimenItemRepository regimenItemRepository;
-    private StockMovementRepository mockStockMovementRepository;
-    private ReportTypeFormRepository mockReportTypeFormRepository;
+  ProductRepository mockProductRepository;
+  MMIARepository mmiaRepository;
+  StockRepository mockStockRepository;
+  ProgramRepository mockProgramRepository;
+  ProductProgramRepository productProgramRepository;
+  RequisitionPeriodService mockRequisitionPeriodService;
+  private Program program;
+  RegimenItemRepository regimenItemRepository;
+  private StockMovementRepository mockStockMovementRepository;
+  private ReportTypeFormRepository mockReportTypeFormRepository;
 
-    @Before
-    public void setup() throws LMISException {
-        mockStockRepository = mock(StockRepository.class);
-        mockProgramRepository = mock(ProgramRepository.class);
-        mockProductRepository = mock(ProductRepository.class);
-        mockRequisitionPeriodService = mock(RequisitionPeriodService.class);
-        productProgramRepository = mock(ProductProgramRepository.class);
-        regimenItemRepository = mock(RegimenItemRepository.class);
-        mockStockMovementRepository = mock(StockMovementRepository.class);
-        mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
+  @Before
+  public void setup() throws LMISException {
+    mockStockRepository = mock(StockRepository.class);
+    mockProgramRepository = mock(ProgramRepository.class);
+    mockProductRepository = mock(ProductRepository.class);
+    mockRequisitionPeriodService = mock(RequisitionPeriodService.class);
+    productProgramRepository = mock(ProductProgramRepository.class);
+    regimenItemRepository = mock(RegimenItemRepository.class);
+    mockStockMovementRepository = mock(StockMovementRepository.class);
+    mockReportTypeFormRepository = mock(ReportTypeFormRepository.class);
 
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-        mmiaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    mmiaRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(MMIARepository.class);
 
-        program = new Program("ART", "ART", null, false, null, null);
-        when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
+    program = new Program("ART", "ART", null, false, null, null);
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
+  }
+
+
+  // TODO
+  @Ignore
+  @Test
+  public void shouldCalculateInfoFromStockCardByPeriod() throws Exception {
+    Date mockDay1 = DateUtil.parseString("2017-01-10", DateUtil.DB_DATE_FORMAT);
+    Date mockDay2 = DateUtil.parseString("2017-01-15", DateUtil.DB_DATE_FORMAT);
+    Date mockDay3 = DateUtil.parseString("2017-01-20", DateUtil.DB_DATE_FORMAT);
+    Date mockToday = DateUtil.parseString("2017-01-22", DateUtil.DB_DATE_FORMAT);
+    LMISTestApp.getInstance().setCurrentTimeMillis(mockToday.getTime());
+
+    Product product = generateProduct();
+    StockCard stockCard = generateStockCard(product);
+
+    List<StockCard> stockCards = new ArrayList<>();
+    stockCards.add(stockCard);
+
+    StockMovementItem stockMovementItem1 = createMovementItem(
+        MovementReasonManager.MovementType.ISSUE, 10, stockCard, mockDay1, mockDay1);
+    StockMovementItem stockMovementItem2 = createMovementItem(
+        MovementReasonManager.MovementType.RECEIVE, 20, stockCard, mockDay2, mockDay2);
+    StockMovementItem stockMovementItem3 = createMovementItem(
+        MovementReasonManager.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
+
+    when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class)))
+        .thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
+    when(mockStockMovementRepository
+        .queryStockItemsByCreatedDate(anyLong(), any(Date.class), any(Date.class)))
+        .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+    when(mockStockRepository.getStockCardsBeforePeriodEnd(any(RnRForm.class)))
+        .thenReturn(stockCards);
+
+    ProductProgram productProgram = new ProductProgram();
+    productProgram.setCategory("Adult");
+    when(productProgramRepository.queryByCode(anyString(), anyList())).thenReturn(productProgram);
+    List<String> mmiaCodes = newArrayList("MMIA");
+    when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString()))
+        .thenReturn(mmiaCodes);
+    List<Long> mmiaProductIds = new ArrayList<>();
+    when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(mmiaCodes, false))
+        .thenReturn(mmiaProductIds);
+    Product someProduct = ProductBuilder.buildAdultProduct();
+    when(mockProductRepository.queryProductsByProductIds(mmiaProductIds))
+        .thenReturn(newArrayList(product, someProduct));
+
+    RnRForm form = mmiaRepository.initNormalRnrForm(null);
+    assertThat(form.getRnrFormItemList().size(), is(2));
+    RnrFormItem item = form.getRnrFormItemListWrapper().get(0);
+    assertThat(item.getReceived(), is(20L));
+    assertThat(item.getInitialAmount(), is(10L));
+  }
+
+  @NonNull
+  private Product generateProduct() {
+    Product product = new Product();
+    product.setId(1L);
+    product.setCode("ABC");
+    product.setPrimaryName("Test Product");
+    product.setStrength("200");
+    return product;
+  }
+
+  @NonNull
+  private StockCard generateStockCard(Product product) {
+    StockCard stockCard = new StockCard();
+    stockCard.setProduct(product);
+    stockCard.setStockOnHand(10);
+    stockCard.setCreatedAt(RnRForm.init(program, DateUtil.today()).getPeriodEnd());
+    return stockCard;
+  }
+
+  // TODO
+  @Ignore
+  @Test
+  public void shouldSaveSuccess() throws Exception {
+    ReportTypeForm reportTypeForm = ReportTypeForm
+        .builder()
+        .code("T")
+        .name("TARV")
+        .active(true)
+        .startTime(DateUtil.parseString("2019-09-24", DateUtil.DB_DATE_FORMAT))
+        .build();
+    when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class)))
+        .thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
+    when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
+
+    RnRForm initForm = mmiaRepository.initNormalRnrForm(null);
+    List<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
+
+    for (int i = 0; i < regimenItemListWrapper.size(); i++) {
+      RegimenItem item = regimenItemListWrapper.get(i);
+      item.setAmount((long) i);
     }
 
+    List<BaseInfoItem> baseInfoItemListWrapper = initForm.getBaseInfoItemListWrapper();
+    for (int i = 0; i < baseInfoItemListWrapper.size(); i++) {
+      BaseInfoItem item = baseInfoItemListWrapper.get(i);
+      item.setValue(String.valueOf(i));
+    }
+    mmiaRepository.createOrUpdateWithItems(initForm);
 
-    // TODO
-    @Ignore
-    @Test
-    public void shouldCalculateInfoFromStockCardByPeriod() throws Exception {
-        Date mockDay1 = DateUtil.parseString("2017-01-10", DateUtil.DB_DATE_FORMAT);
-        Date mockDay2 = DateUtil.parseString("2017-01-15", DateUtil.DB_DATE_FORMAT);
-        Date mockDay3 = DateUtil.parseString("2017-01-20", DateUtil.DB_DATE_FORMAT);
-        Date mockToday = DateUtil.parseString("2017-01-22", DateUtil.DB_DATE_FORMAT);
-        LMISTestApp.getInstance().setCurrentTimeMillis(mockToday.getTime());
+    List<RnRForm> list = mmiaRepository.list();
+    RnRForm DBForm = list.get(list.size() - 1);
 
-        Product product = generateProduct();
-        StockCard stockCard = generateStockCard(product);
+    long expectRegimeTotal = RnRForm
+        .calculateTotalRegimenAmount(initForm.getRegimenItemListWrapper(),
+            MMIARegimeList.COUNTTYPE.AMOUNT);
+    long regimenTotal = RnRForm.calculateTotalRegimenAmount(DBForm.getRegimenItemListWrapper(),
+        MMIARegimeList.COUNTTYPE.AMOUNT);
+    assertThat(expectRegimeTotal, is(regimenTotal));
 
-        List<StockCard> stockCards = new ArrayList<>();
-        stockCards.add(stockCard);
+    assertThat(mmiaRepository.getTotalPatients(initForm),
+        is(mmiaRepository.getTotalPatients(DBForm)));
+  }
 
-        StockMovementItem stockMovementItem1 = createMovementItem(MovementReasonManager.MovementType.ISSUE, 10, stockCard, mockDay1, mockDay1);
-        StockMovementItem stockMovementItem2 = createMovementItem(MovementReasonManager.MovementType.RECEIVE, 20, stockCard, mockDay2, mockDay2);
-        StockMovementItem stockMovementItem3 = createMovementItem(MovementReasonManager.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
+  @Test
+  public void shouldGenerateBaseInfoItems() {
+    RnRForm rnRForm = new RnRForm();
+    List<BaseInfoItem> baseInfoItems = mmiaRepository
+        .generateBaseInfoItems(rnRForm, MMIARepository.ReportType.OLD);
+    assertThat(baseInfoItems.size(), is(7));
+    assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_NEW_PATIENTS));
+    assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_PTV));
+    assertThat(baseInfoItems.get(baseInfoItems.size() - 1).getName(),
+        is(mmiaRepository.ATTR_TOTAL_PATIENTS));
+  }
 
-        when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
-        when(mockStockMovementRepository.queryStockItemsByCreatedDate(anyLong(), any(Date.class), any(Date.class)))
-                .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
-        when(mockStockRepository.getStockCardsBeforePeriodEnd(any(RnRForm.class))).thenReturn(stockCards);
+  @Test
+  public void shouldGenerateBaseInfoItemsNew() {
+    RnRForm rnRForm = new RnRForm();
+    List<BaseInfoItem> baseInfoItems = mmiaRepository
+        .generateBaseInfoItems(rnRForm, MMIARepository.ReportType.NEW);
+    assertThat(baseInfoItems.size(), is(23));
+    assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_NEW_KEY));
+    assertThat(baseInfoItems.get(1).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_MAINTENANCE_KEY));
+    assertThat(baseInfoItems.get(2).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_ALTERATION_KEY));
+    assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSIT_KEY));
+    assertThat(baseInfoItems.get(4).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSFER_KEY));
+    assertThat(baseInfoItems.get(5).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_ADULTS_KEY));
+    assertThat(baseInfoItems.get(6).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_0TO4_KEY));
+    assertThat(baseInfoItems.get(7).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_5TO9_KEY));
+    assertThat(baseInfoItems.get(8).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_10TO14_KEY));
+    assertThat(baseInfoItems.get(9).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PPE_KEY));
+    assertThat(baseInfoItems.get(10).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PREP_KEY));
+    assertThat(baseInfoItems.get(11).getName(),
+        is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_CHILD_KEY));
+    assertThat(baseInfoItems.get(12).getName(),
+        is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY));
+  }
 
-        ProductProgram productProgram = new ProductProgram();
-        productProgram.setCategory("Adult");
-        when(productProgramRepository.queryByCode(anyString(), anyList())).thenReturn(productProgram);
-        List<String> mmiaCodes = newArrayList("MMIA");
-        when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString())).thenReturn(mmiaCodes);
-        List<Long> mmiaProductIds = new ArrayList<>();
-        when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(mmiaCodes, false)).thenReturn(mmiaProductIds);
-        Product someProduct = ProductBuilder.buildAdultProduct();
-        when(mockProductRepository.queryProductsByProductIds(mmiaProductIds)).thenReturn(newArrayList(product, someProduct));
+  @Test
+  public void shouldInitRnrFormItemWithoutMovement() throws Exception {
+    mmiaRepository = spy(mmiaRepository);
 
-        RnRForm form = mmiaRepository.initNormalRnrForm(null);
-        assertThat(form.getRnrFormItemList().size(), is(2));
-        RnrFormItem item = form.getRnrFormItemListWrapper().get(0);
-        assertThat(item.getReceived(), is(20L));
-        assertThat(item.getInitialAmount(), is(10L));
+    Product product = new Product();
+    RnRForm form = new RnRForm();
+    RnrFormItem rnrFormItem = new RnrFormItem();
+    rnrFormItem.setInventory(100L);
+    rnrFormItem.setProduct(product);
+    form.setRnrFormItemListWrapper(newArrayList(rnrFormItem));
+    doReturn(newArrayList(form)).when(mmiaRepository)
+        .listInclude(any(RnRForm.Emergency.class), anyString());
+
+    StockCard stockCard = new StockCard();
+    product.setId(20);
+    stockCard.setProduct(product);
+    Lot lot = new Lot();
+    lot.setExpirationDate(
+        DateUtil.parseString("Feb 2015", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+    stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
+    when(mockStockMovementRepository
+        .queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class)))
+        .thenReturn(new ArrayList<StockMovementItem>());
+
+    RnrFormItem rnrFormItemByPeriod = mmiaRepository
+        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+
+    assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
+    assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
+    assertThat(rnrFormItemByPeriod.getInitialAmount(), is(0L));
+
+    stockCard.setLotOnHandListWrapper(Lists.newArrayList());
+    rnrFormItemByPeriod = mmiaRepository
+        .createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+    assertNull(rnrFormItemByPeriod.getValidate());
+  }
+
+  private StockMovementItem createMovementItem(MovementReasonManager.MovementType type,
+      long quantity, StockCard stockCard, Date createdTime, Date movementDate)
+      throws LMISException {
+    StockMovementItem stockMovementItem = new StockMovementItem();
+    stockMovementItem.setMovementQuantity(quantity);
+    stockMovementItem.setMovementType(type);
+    stockMovementItem.setMovementDate(movementDate);
+    stockMovementItem.setStockCard(stockCard);
+    stockMovementItem.setCreatedTime(createdTime);
+
+    if (stockMovementItem.isPositiveMovement()) {
+      stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + quantity);
+    } else {
+      stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - quantity);
     }
 
-    @NonNull
-    private Product generateProduct() {
-        Product product = new Product();
-        product.setId(1L);
-        product.setCode("ABC");
-        product.setPrimaryName("Test Product");
-        product.setStrength("200");
-        return product;
+    stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+
+    return stockMovementItem;
+  }
+
+  public class MyTestModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+      bind(ProductRepository.class).toInstance(mockProductRepository);
+      bind(StockRepository.class).toInstance(mockStockRepository);
+      bind(ProgramRepository.class).toInstance(mockProgramRepository);
+      bind(RequisitionPeriodService.class).toInstance(mockRequisitionPeriodService);
+      bind(ProductProgramRepository.class).toInstance(productProgramRepository);
+      bind(RegimenItemRepository.class).toInstance(regimenItemRepository);
+      bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
     }
-
-    @NonNull
-    private StockCard generateStockCard(Product product) {
-        StockCard stockCard = new StockCard();
-        stockCard.setProduct(product);
-        stockCard.setStockOnHand(10);
-        stockCard.setCreatedAt(RnRForm.init(program, DateUtil.today()).getPeriodEnd());
-        return stockCard;
-    }
-
-    // TODO
-    @Ignore
-    @Test
-    public void shouldSaveSuccess() throws Exception {
-        ReportTypeForm reportTypeForm = ReportTypeForm
-                .builder()
-                .code("T")
-                .name("TARV")
-                .active(true)
-                .startTime(DateUtil.parseString("2019-09-24",DateUtil.DB_DATE_FORMAT))
-                .build();
-        when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
-        when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
-
-        RnRForm initForm = mmiaRepository.initNormalRnrForm(null);
-        List<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
-
-        for (int i = 0; i < regimenItemListWrapper.size(); i++) {
-            RegimenItem item = regimenItemListWrapper.get(i);
-            item.setAmount((long) i);
-        }
-
-        List<BaseInfoItem> baseInfoItemListWrapper = initForm.getBaseInfoItemListWrapper();
-        for (int i = 0; i < baseInfoItemListWrapper.size(); i++) {
-            BaseInfoItem item = baseInfoItemListWrapper.get(i);
-            item.setValue(String.valueOf(i));
-        }
-        mmiaRepository.createOrUpdateWithItems(initForm);
-
-        List<RnRForm> list = mmiaRepository.list();
-        RnRForm DBForm = list.get(list.size() - 1);
-
-        long expectRegimeTotal = RnRForm.calculateTotalRegimenAmount(initForm.getRegimenItemListWrapper(), MMIARegimeList.COUNTTYPE.AMOUNT);
-        long regimenTotal = RnRForm.calculateTotalRegimenAmount(DBForm.getRegimenItemListWrapper(), MMIARegimeList.COUNTTYPE.AMOUNT);
-        assertThat(expectRegimeTotal, is(regimenTotal));
-
-        assertThat(mmiaRepository.getTotalPatients(initForm), is(mmiaRepository.getTotalPatients(DBForm)));
-    }
-
-    @Test
-    public void shouldGenerateBaseInfoItems() {
-        RnRForm rnRForm = new RnRForm();
-        List<BaseInfoItem> baseInfoItems = mmiaRepository.generateBaseInfoItems(rnRForm, MMIARepository.ReportType.OLD);
-        assertThat(baseInfoItems.size(), is(7));
-        assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_NEW_PATIENTS));
-        assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_PTV));
-        assertThat(baseInfoItems.get(baseInfoItems.size() - 1).getName(), is(mmiaRepository.ATTR_TOTAL_PATIENTS));
-    }
-
-    @Test
-    public void shouldGenerateBaseInfoItemsNew() {
-        RnRForm rnRForm = new RnRForm();
-        List<BaseInfoItem> baseInfoItems = mmiaRepository.generateBaseInfoItems(rnRForm, MMIARepository.ReportType.NEW);
-        assertThat(baseInfoItems.size(), is(23));
-        assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_NEW_KEY));
-        assertThat(baseInfoItems.get(1).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_MAINTENANCE_KEY));
-        assertThat(baseInfoItems.get(2).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_ALTERATION_KEY));
-        assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSIT_KEY));
-        assertThat(baseInfoItems.get(4).getName(), is(mmiaRepository.ATTR_TABLE_TRAV_TRANSFER_KEY));
-        assertThat(baseInfoItems.get(5).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_ADULTS_KEY));
-        assertThat(baseInfoItems.get(6).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_0TO4_KEY));
-        assertThat(baseInfoItems.get(7).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_5TO9_KEY));
-        assertThat(baseInfoItems.get(8).getName(), is(mmiaRepository.ATTR_TABLE_PATIENTS_10TO14_KEY));
-        assertThat(baseInfoItems.get(9).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PPE_KEY));
-        assertThat(baseInfoItems.get(10).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_PREP_KEY));
-        assertThat(baseInfoItems.get(11).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_CHILD_KEY));
-        assertThat(baseInfoItems.get(12).getName(), is(mmiaRepository.ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY));
-    }
-
-    @Test
-    public void shouldInitRnrFormItemWithoutMovement() throws Exception {
-        mmiaRepository = spy(mmiaRepository);
-
-        Product product = new Product();
-        RnRForm form = new RnRForm();
-        RnrFormItem rnrFormItem = new RnrFormItem();
-        rnrFormItem.setInventory(100L);
-        rnrFormItem.setProduct(product);
-        form.setRnrFormItemListWrapper(newArrayList(rnrFormItem));
-        doReturn(newArrayList(form)).when(mmiaRepository).listInclude(any(RnRForm.Emergency.class), anyString());
-
-        StockCard stockCard = new StockCard();
-        product.setId(20);
-        stockCard.setProduct(product);
-        Lot lot = new Lot();
-        lot.setExpirationDate(DateUtil.parseString("Feb 2015", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-        stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
-        when(mockStockMovementRepository.queryStockMovementsByMovementDate(anyLong(), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
-
-        RnrFormItem rnrFormItemByPeriod = mmiaRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
-
-        assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
-        assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
-        assertThat(rnrFormItemByPeriod.getInitialAmount(), is(0L));
-
-        stockCard.setLotOnHandListWrapper(Lists.<LotOnHand>newArrayList());
-        rnrFormItemByPeriod = mmiaRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
-        assertNull(rnrFormItemByPeriod.getValidate());
-    }
-
-    private StockMovementItem createMovementItem(MovementReasonManager.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate) throws LMISException {
-        StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem.setMovementQuantity(quantity);
-        stockMovementItem.setMovementType(type);
-        stockMovementItem.setMovementDate(movementDate);
-        stockMovementItem.setStockCard(stockCard);
-        stockMovementItem.setCreatedTime(createdTime);
-
-        if (stockMovementItem.isPositiveMovement()) {
-            stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + quantity);
-        } else {
-            stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - quantity);
-        }
-
-        stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
-
-        return stockMovementItem;
-    }
-
-    public class MyTestModule extends AbstractModule {
-        @Override
-        protected void configure() {
-            bind(ProductRepository.class).toInstance(mockProductRepository);
-            bind(StockRepository.class).toInstance(mockStockRepository);
-            bind(ProgramRepository.class).toInstance(mockProgramRepository);
-            bind(RequisitionPeriodService.class).toInstance(mockRequisitionPeriodService);
-            bind(ProductProgramRepository.class).toInstance(productProgramRepository);
-            bind(RegimenItemRepository.class).toInstance(regimenItemRepository);
-            bind(StockMovementRepository.class).toInstance(mockStockMovementRepository);
-        }
-    }
+  }
 }

@@ -20,21 +20,22 @@ package org.openlmis.core.utils;
 import android.content.Context;
 import android.graphics.Point;
 import android.view.WindowManager;
-
 import org.openlmis.core.LMISApp;
 
 public final class DisplayUtil {
-    private DisplayUtil(){
 
-    }
+  private DisplayUtil() {
 
-    public static int getScreenWidth() {
-        Point size = new Point();
-        WindowManager windowManager = (WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE);
-        if (windowManager !=null) {
-            windowManager.getDefaultDisplay().getSize(size);
-        }
-        return size.x;
+  }
+
+  public static int getScreenWidth() {
+    Point size = new Point();
+    WindowManager windowManager = (WindowManager) LMISApp.getContext()
+        .getSystemService(Context.WINDOW_SERVICE);
+    if (windowManager != null) {
+      windowManager.getDefaultDisplay().getSize(size);
     }
+    return size.x;
+  }
 
 }

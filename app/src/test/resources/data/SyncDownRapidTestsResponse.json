@@ -1,9 +1,9 @@
 {
-  "facilityId":10,
-  "programCode":"RAPID_TEST",
-  "periodBegin":1456012800000,
-  "periodEnd":1458432000000,
-  "submittedTime":1480075380000,
+  "facilityId": 10,
+  "programCode": "RAPID_TEST",
+  "periodBegin": 1456012800000,
+  "periodEnd": 1458432000000,
+  "submittedTime": 1480075380000,
   "programDataFormSignatures": [
     {
       "type": "SUBMITTER",
@@ -14,46 +14,46 @@
       "text": "magneto"
     }
   ],
-  "programDataFormItems":[
+  "programDataFormItems": [
     {
-      "name":"PUB_PHARMACY",
-      "columnCode":"HIV-DETERMINE-CONSUME",
-      "value":10
+      "name": "PUB_PHARMACY",
+      "columnCode": "HIV-DETERMINE-CONSUME",
+      "value": 10
     },
     {
-      "name":"PUB_PHARMACY",
-      "columnCode":"HIV-DETERMINE-POSITIVE",
-      "value":5
+      "name": "PUB_PHARMACY",
+      "columnCode": "HIV-DETERMINE-POSITIVE",
+      "value": 5
     },
     {
-      "name":"PUB_PHARMACY",
-      "columnCode":"HIV-UNIGOLD-CONSUME",
-      "value":10
+      "name": "PUB_PHARMACY",
+      "columnCode": "HIV-UNIGOLD-CONSUME",
+      "value": 10
     },
     {
-      "name":"PUB_PHARMACY",
-      "columnCode":"HIV-UNIGOLD-POSITIVE",
-      "value":50
+      "name": "PUB_PHARMACY",
+      "columnCode": "HIV-UNIGOLD-POSITIVE",
+      "value": 50
     },
     {
-      "name":"PUB_PHARMACY",
-      "columnCode":"SYPHILLIS-CONSUME",
-      "value":200
+      "name": "PUB_PHARMACY",
+      "columnCode": "SYPHILLIS-CONSUME",
+      "value": 200
     },
     {
-      "name":"PUB_PHARMACY",
-      "columnCode":"SYPHILLIS-POSITIVE",
-      "value":10
+      "name": "PUB_PHARMACY",
+      "columnCode": "SYPHILLIS-POSITIVE",
+      "value": 10
     },
     {
-      "name":"PUB_PHARMACY",
-      "columnCode":"MALARIA-CONSUME",
-      "value":100
+      "name": "PUB_PHARMACY",
+      "columnCode": "MALARIA-CONSUME",
+      "value": 100
     },
     {
-      "name":"PUB_PHARMACY",
-      "columnCode":"MALARIA-POSITIVE",
-      "value":50
+      "name": "PUB_PHARMACY",
+      "columnCode": "MALARIA-POSITIVE",
+      "value": 50
     }
   ]
 }

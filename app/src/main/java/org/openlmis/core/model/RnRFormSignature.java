@@ -20,7 +20,6 @@ package org.openlmis.core.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,11 +29,12 @@ import lombok.NoArgsConstructor;
 @DatabaseTable(tableName = "rnr_form_signature")
 @NoArgsConstructor
 public class RnRFormSignature extends Signature {
-    public RnRFormSignature(RnRForm form, String signature, TYPE type) {
-        super(signature, type);
-        this.form = form;
-    }
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private RnRForm form;
+  public RnRFormSignature(RnRForm form, String signature, TYPE type) {
+    super(signature, type);
+    this.form = form;
+  }
+
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private RnRForm form;
 }

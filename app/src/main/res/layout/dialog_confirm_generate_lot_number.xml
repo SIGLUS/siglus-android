@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  style="@style/Dialog.Container.padding_normal">
+
+  <TextView
+    style="@style/Dialog.TitleLeft"
+    android:layout_width="500dp"
+    android:layout_height="wrap_content"
+    android:text="@string/title_generate_lot_number"
+    android:textSize="@dimen/font_size_large"
+    android:paddingBottom="@dimen/padding_medium"
+    android:textStyle="bold" />
+
+  <TextView
+    android:id="@+id/tv_generate_lot_number_msg"
+    android:textSize="@dimen/font_size_medium"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/Dialog.Container.padding_normal">
+    android:paddingTop="@dimen/padding_medium"
+    android:orientation="vertical">
 
-    <TextView
-        style="@style/Dialog.TitleLeft"
-        android:layout_width="500dp"
-        android:layout_height="wrap_content"
-        android:text="@string/title_generate_lot_number"
-        android:textSize="@dimen/font_size_large"
-        android:paddingBottom="@dimen/padding_medium"
-        android:textStyle="bold" />
+    <Button
+      android:id="@+id/btn_confirm_generate"
+      android:textSize="@dimen/font_size_medium"
+      style="@style/Dialog.Btn.TextBlue"
+      android:layout_alignParentRight="true"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/button_height_medium"
+      android:text="@string/btn_confirm_generate_lot_number"
+      android:tag="@string/btn_confirm_generate_lot_number" />
 
-    <TextView
-        android:id="@+id/tv_generate_lot_number_msg"
-        android:textSize="@dimen/font_size_medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_medium"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btn_confirm_generate"
-            android:textSize="@dimen/font_size_medium"
-            style="@style/Dialog.Btn.TextBlue"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height_medium"
-            android:text="@string/btn_confirm_generate_lot_number"
-            android:tag="@string/btn_confirm_generate_lot_number"/>
-
-        <Button
-            android:id="@+id/btn_cancel"
-            android:textSize="@dimen/font_size_medium"
-            style="@style/Dialog.Btn.TextBlue"
-            android:layout_below="@+id/btn_confirm_generate"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height_medium"
-            android:layout_marginStart="16dp"
-            android:text="@string/btn_cancel" />
-    </RelativeLayout>
+    <Button
+      android:id="@+id/btn_cancel"
+      android:textSize="@dimen/font_size_medium"
+      style="@style/Dialog.Btn.TextBlue"
+      android:layout_below="@+id/btn_confirm_generate"
+      android:layout_alignParentRight="true"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/button_height_medium"
+      android:layout_marginStart="16dp"
+      android:text="@string/btn_cancel" />
+  </RelativeLayout>
 </LinearLayout>

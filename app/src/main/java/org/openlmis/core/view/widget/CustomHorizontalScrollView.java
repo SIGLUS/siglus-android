@@ -18,42 +18,42 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.HorizontalScrollView;
+import androidx.annotation.NonNull;
 
 public class CustomHorizontalScrollView extends HorizontalScrollView {
 
-    private int mTouchSlop;
-    private float mPrevY;
+  private final int mTouchSlop;
+  private float mPrevY;
 
-    public CustomHorizontalScrollView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+  public CustomHorizontalScrollView(Context context, AttributeSet attrs) {
+    super(context, attrs);
 
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-    }
+    mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+  }
 
-    @Override
-    public boolean onInterceptTouchEvent(@NonNull MotionEvent event) {
+  @Override
+  public boolean onInterceptTouchEvent(@NonNull MotionEvent event) {
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                MotionEvent down = MotionEvent.obtain(event);
-                mPrevY = down.getY();
-                down.recycle();
-                break;
+    switch (event.getAction()) {
+      case MotionEvent.ACTION_DOWN:
+        MotionEvent down = MotionEvent.obtain(event);
+        mPrevY = down.getY();
+        down.recycle();
+        break;
 
-            case MotionEvent.ACTION_MOVE:
-                final float eventY = event.getY();
-                float yDiff = Math.abs(eventY - mPrevY);
+      case MotionEvent.ACTION_MOVE:
+        final float eventY = event.getY();
+        float yDiff = Math.abs(eventY - mPrevY);
 
-                if (yDiff > mTouchSlop) {
-                    return false;
-                }
+        if (yDiff > mTouchSlop) {
+          return false;
         }
-
-        return super.onInterceptTouchEvent(event);
     }
+
+    return super.onInterceptTouchEvent(event);
+  }
 }

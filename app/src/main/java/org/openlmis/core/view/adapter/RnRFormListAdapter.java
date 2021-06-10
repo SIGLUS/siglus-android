@@ -19,61 +19,62 @@
 package org.openlmis.core.view.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.RnRFormViewHolder;
 import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
-import java.util.List;
-
 public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> {
 
-    private LayoutInflater inflater;
-    private List<RnRFormViewModel> data;
+  private final LayoutInflater inflater;
+  private final List<RnRFormViewModel> data;
 
-    private RnRFormItemClickListener itemClickListener;
+  private final RnRFormItemClickListener itemClickListener;
 
-    public RnRFormListAdapter(Context context, List<RnRFormViewModel> data, RnRFormItemClickListener rnRFormItemClickListener) {
-        this.inflater = LayoutInflater.from(context);
-        this.data = data;
-        this.itemClickListener = rnRFormItemClickListener;
+  public RnRFormListAdapter(Context context, List<RnRFormViewModel> data,
+      RnRFormItemClickListener rnRFormItemClickListener) {
+    this.inflater = LayoutInflater.from(context);
+    this.data = data;
+    this.itemClickListener = rnRFormItemClickListener;
+  }
+
+  public void refreshList(List<RnRFormViewModel> data) {
+    this.data.clear();
+    this.data.addAll(data);
+    notifyDataSetChanged();
+  }
+
+  @Override
+  public int getItemCount() {
+    return data == null ? 0 : data.size();
+  }
+
+  @Override
+  public RnRFormViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+    if (viewType == RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL
+        || (viewType == RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY)
+        || viewType == RnRFormViewModel.TYPE_MISSED_PERIOD) {
+      return new RnRFormViewHolder(inflater.inflate(R.layout.item_report_no_button, parent, false),
+          itemClickListener);
     }
 
-    public void refreshList(List<RnRFormViewModel> data) {
-        this.data.clear();
-        this.data.addAll(data);
-        notifyDataSetChanged();
-    }
+    return new RnRFormViewHolder(inflater.inflate(R.layout.item_report, parent, false),
+        itemClickListener);
+  }
 
-    @Override
-    public int getItemCount() {
-        return data == null ? 0 : data.size();
-    }
+  @Override
+  public void onBindViewHolder(RnRFormViewHolder holder, int position) {
+    holder.populate(data.get(position));
+  }
 
-    @Override
-    public RnRFormViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        if (viewType == RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL
-                || (viewType == RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY)
-                || viewType == RnRFormViewModel.TYPE_MISSED_PERIOD) {
-            return new RnRFormViewHolder(inflater.inflate(R.layout.item_report_no_button, parent, false), itemClickListener);
-        }
-
-        return new RnRFormViewHolder(inflater.inflate(R.layout.item_report, parent, false), itemClickListener);
-    }
-
-    @Override
-    public void onBindViewHolder(RnRFormViewHolder holder, int position) {
-        holder.populate(data.get(position));
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return data.get(position).getType();
-    }
+  @Override
+  public int getItemViewType(int position) {
+    return data.get(position).getType();
+  }
 
 }

@@ -21,10 +21,12 @@ package org.openlmis.core.persistence.migrations;
 import org.openlmis.core.persistence.Migration;
 
 public class CreateRnRFormSignature extends Migration {
-    @Override
-    public void up() {
-        execSQL("CREATE TABLE `rnr_form_signature` (`form_id` BIGINT, `signature` VARCHAR, `type` VARCHAR ,`id` INTEGER PRIMARY KEY AUTOINCREMENT)");
-        execSQL("CREATE UNIQUE INDEX `rnr_form_signature_id_idx` ON `rnr_form_signature` ( `id` )");
-    }
+
+  @Override
+  public void up() {
+    execSQL(
+        "CREATE TABLE `rnr_form_signature` (`form_id` BIGINT, `signature` VARCHAR, `type` VARCHAR ,`id` INTEGER PRIMARY KEY AUTOINCREMENT)");
+    execSQL("CREATE UNIQUE INDEX `rnr_form_signature_id_idx` ON `rnr_form_signature` ( `id` )");
+  }
 }
 

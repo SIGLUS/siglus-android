@@ -22,7 +22,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,21 +30,21 @@ import lombok.Setter;
 @DatabaseTable(tableName = "services")
 public class Service extends BaseModel {
 
-    @Expose
-    @SerializedName("name")
-    @DatabaseField
-    private String name;
+  @Expose
+  @SerializedName("name")
+  @DatabaseField
+  private String name;
 
-    @Expose
-    @SerializedName("code")
-    @DatabaseField
-    private String code;
+  @Expose
+  @SerializedName("code")
+  @DatabaseField
+  private String code;
 
-    @Expose
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    Program program;
+  @Expose
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  Program program;
 
-    @Expose
-    @DatabaseField
-    private boolean active;
+  @Expose
+  @DatabaseField
+  private boolean active;
 }

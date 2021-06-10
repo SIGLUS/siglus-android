@@ -20,31 +20,31 @@ package org.openlmis.core.view.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
+import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-import java.util.List;
-
 public class InitialInventoryAdapter extends InventoryListAdapter<InitialInventoryViewHolder> {
 
-    private InitialInventoryViewHolder.ViewHistoryListener listener;
+  private final InitialInventoryViewHolder.ViewHistoryListener listener;
 
-    public InitialInventoryAdapter(List<InventoryViewModel> data, InitialInventoryViewHolder.ViewHistoryListener listener) {
-        super(data);
-        this.listener = listener;
-    }
+  public InitialInventoryAdapter(List<InventoryViewModel> data,
+      InitialInventoryViewHolder.ViewHistoryListener listener) {
+    super(data);
+    this.listener = listener;
+  }
 
-    @Override
-    public void onBindViewHolder(final InitialInventoryViewHolder holder, final int position) {
-        final InventoryViewModel viewModel = filteredList.get(position);
-        holder.populate(viewModel, queryKeyWord, listener);
-    }
+  @Override
+  public void onBindViewHolder(final InitialInventoryViewHolder holder, final int position) {
+    final InventoryViewModel viewModel = filteredList.get(position);
+    holder.populate(viewModel, queryKeyWord, listener);
+  }
 
 
-    @Override
-    public InitialInventoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new InitialInventoryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_initial_inventory, parent, false));
-    }
+  @Override
+  public InitialInventoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    return new InitialInventoryViewHolder(LayoutInflater.from(parent.getContext())
+        .inflate(R.layout.item_initial_inventory, parent, false));
+  }
 }

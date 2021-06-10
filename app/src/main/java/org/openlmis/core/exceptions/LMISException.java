@@ -20,65 +20,66 @@ package org.openlmis.core.exceptions;
 
 
 import android.util.Log;
-
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 
 public class LMISException extends Exception {
-    private static final String OPEN_LMIS_ERROR = "OpenLMISError";
 
-    private final String msg;
+  private static final String OPEN_LMIS_ERROR = "OpenLMISError";
 
-    public LMISException(String msg) {
-        super(msg);
-        this.msg = msg;
-    }
+  private final String msg;
 
-    public LMISException(Exception e) {
-        super(e);
-        this.msg = "";
-    }
+  public LMISException(String msg) {
+    super(msg);
+    this.msg = msg;
+  }
 
-    public LMISException(Exception e, String msg) {
-        super(e);
-        this.msg = msg;
-    }
+  public LMISException(Exception e) {
+    super(e);
+    this.msg = "";
+  }
 
-    public LMISException(Throwable throwable) {
-        super(throwable);
-        this.msg = "";
-    }
-    public LMISException(Throwable throwable, String msg) {
-        super(throwable);
-        this.msg = msg;
-    }
+  public LMISException(Exception e, String msg) {
+    super(e);
+    this.msg = msg;
+  }
 
-    public void reportToFabric() {
-        //this will save exception messages locally
-        //it only uploads to fabric server when network is available
-        //so this actually behaves analogously with our sync data logic
-        if (!BuildConfig.DEBUG) {
-            LMISApp.getInstance().logErrorToFirebase(this);
-        }
-        Log.e(OPEN_LMIS_ERROR, this.getMessage(), this);
-    }
+  public LMISException(Throwable throwable) {
+    super(throwable);
+    this.msg = "";
+  }
 
-    public String getMsg() {
-        return msg;
-    }
+  public LMISException(Throwable throwable, String msg) {
+    super(throwable);
+    this.msg = msg;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof LMISException && ((LMISException) o).getMsg().equals(msg);
+  public void reportToFabric() {
+    //this will save exception messages locally
+    //it only uploads to fabric server when network is available
+    //so this actually behaves analogously with our sync data logic
+    if (!BuildConfig.DEBUG) {
+      LMISApp.getInstance().logErrorToFirebase(this);
     }
+    Log.e(OPEN_LMIS_ERROR, this.getMessage(), this);
+  }
 
-    @Override
-    public int hashCode() {
-        return msg != null ? msg.hashCode() : 0;
-    }
+  public String getMsg() {
+    return msg;
+  }
 
-    @Override
-    public String toString() {
-        return msg;
-    }
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof LMISException && ((LMISException) o).getMsg().equals(msg);
+  }
+
+  @Override
+  public int hashCode() {
+    return msg != null ? msg.hashCode() : 0;
+  }
+
+  @Override
+  public String toString() {
+    return msg;
+  }
 }

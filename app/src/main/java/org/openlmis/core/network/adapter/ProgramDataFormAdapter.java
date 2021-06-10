@@ -29,7 +29,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.inject.Inject;
-
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.util.Date;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -42,99 +44,103 @@ import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-
-import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.util.Date;
-
 import roboguice.RoboGuice;
 
-public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>, JsonDeserializer<ProgramDataForm> {
+public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>,
+    JsonDeserializer<ProgramDataForm> {
 
-    @Inject
-    public ProgramRepository programRepository;
+  @Inject
+  public ProgramRepository programRepository;
 
-    @Inject
-    public ProgramDataFormRepository programDataFormRepository;
+  @Inject
+  public ProgramDataFormRepository programDataFormRepository;
 
-    private final Gson gson;
-    private final JsonParser jsonParser;
+  private final Gson gson;
+  private final JsonParser jsonParser;
 
-    public ProgramDataFormAdapter() {
-        RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
-        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapter(Date.class, new DateAdapter()).setDateFormat(DateFormat.LONG)
-                .registerTypeAdapter(ProgramDataFormItem.class, new ProgramDataFormItemAdapter())
-                .registerTypeAdapter(ProgramDataFormBasicItem.class, new ProgramDataFormBasicItemAdapter())
-                .create();
-        jsonParser = new JsonParser();
+  public ProgramDataFormAdapter() {
+    RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
+    gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+        .registerTypeAdapter(Date.class, new DateAdapter()).setDateFormat(DateFormat.LONG)
+        .registerTypeAdapter(ProgramDataFormItem.class, new ProgramDataFormItemAdapter())
+        .registerTypeAdapter(ProgramDataFormBasicItem.class, new ProgramDataFormBasicItemAdapter())
+        .create();
+    jsonParser = new JsonParser();
+  }
+
+
+  @Override
+  public ProgramDataForm deserialize(JsonElement json, Type typeOfT,
+      JsonDeserializationContext context) throws JsonParseException {
+    ProgramDataForm programDataForm = gson.fromJson(json.toString(), ProgramDataForm.class);
+
+    try {
+      String programCode = json.getAsJsonObject().get("programCode").getAsString();
+      if (programCode.equals(Constants.RAPID_TEST_OLD_CODE)) {
+        programCode = Constants.RAPID_TEST_CODE;
+      }
+
+      Program program = programRepository.queryByCode(programCode);
+      programDataForm.setProgram(program);
+    } catch (LMISException e) {
+      new LMISException(e, "ProgramDataFormAdapter.deserialize").reportToFabric();
+      throw new JsonParseException("can not find Program by programCode");
+    }
+    programDataForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+    programDataForm.setSynced(true);
+    for (ProgramDataFormItem item : programDataForm.getProgramDataFormItemListWrapper()) {
+      item.setForm(programDataForm);
     }
 
-
-    @Override
-    public ProgramDataForm deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        ProgramDataForm programDataForm = gson.fromJson(json.toString(), ProgramDataForm.class);
-
-        try {
-            String programCode = json.getAsJsonObject().get("programCode").getAsString();
-            if (programCode.equals(Constants.RAPID_TEST_OLD_CODE)) {
-                programCode = Constants.RAPID_TEST_CODE;
-            }
-
-            Program program = programRepository.queryByCode(programCode);
-            programDataForm.setProgram(program);
-        } catch (LMISException e) {
-            new LMISException(e,"ProgramDataFormAdapter.deserialize").reportToFabric();
-            throw new JsonParseException("can not find Program by programCode");
-        }
-        programDataForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
-        programDataForm.setSynced(true);
-        for (ProgramDataFormItem item : programDataForm.getProgramDataFormItemListWrapper()) {
-            item.setForm(programDataForm);
-        }
-
-        for (ProgramDataFormSignature signature : programDataForm.getSignaturesWrapper()) {
-            signature.setForm(programDataForm);
-        }
-
-        for (ProgramDataFormBasicItem basicItem : programDataForm.getFormBasicItemListWrapper()) {
-            basicItem.setForm(programDataForm);
-        }
-
-        return programDataForm;
+    for (ProgramDataFormSignature signature : programDataForm.getSignaturesWrapper()) {
+      signature.setForm(programDataForm);
     }
 
-    @Override
-    public JsonElement serialize(ProgramDataForm src, Type typeOfSrc, JsonSerializationContext context) {
-        try {
-            return buildProgramDataFormJson(src);
-        } catch (LMISException e) {
-            throw new JsonParseException("can not find Signature by programDataForm");
-        } catch (NullPointerException e) {
-            throw new JsonParseException("No Program associated !");
-        }
-
+    for (ProgramDataFormBasicItem basicItem : programDataForm.getFormBasicItemListWrapper()) {
+      basicItem.setForm(programDataForm);
     }
 
-    private JsonElement buildProgramDataFormJson(ProgramDataForm programDataForm) throws LMISException {
-        JsonObject root = gson.toJsonTree(programDataForm).getAsJsonObject();
-        String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-        String programCode = programDataForm.getProgram().getProgramCode();
-        String periodBegin = DateUtil.formatDate(programDataForm.getPeriodBegin(), DateUtil.DB_DATE_FORMAT);
-        String periodEnd = DateUtil.formatDate(programDataForm.getPeriodEnd(), DateUtil.DB_DATE_FORMAT);
-        String submittedTime = DateUtil.formatDate(programDataForm.getSubmittedTime(), DateUtil.ISO_BASIC_DATE_TIME_FORMAT);
+    return programDataForm;
+  }
 
-        root.addProperty("facilityId", facilityId);
-        if (programCode.equals(Constants.RAPID_TEST_CODE)) {
-            programCode = Constants.RAPID_TEST_OLD_CODE;
-        }
-        root.addProperty("programCode", programCode);
-        root.addProperty("periodBegin", periodBegin);
-        root.addProperty("periodEnd", periodEnd);
-        root.addProperty("submittedTime", submittedTime);
-        root.add("programDataFormItems", jsonParser.parse(gson.toJson(programDataForm.getProgramDataFormItemListWrapper())));
-        root.add("programDataFormBasicItems", jsonParser.parse(gson.toJson(programDataForm.getFormBasicItemListWrapper())));
-        root.add("programDataFormSignatures", jsonParser.parse(gson.toJson(programDataForm.getSignaturesWrapper())));
-        return root;
+  @Override
+  public JsonElement serialize(ProgramDataForm src, Type typeOfSrc,
+      JsonSerializationContext context) {
+    try {
+      return buildProgramDataFormJson(src);
+    } catch (LMISException e) {
+      throw new JsonParseException("can not find Signature by programDataForm");
+    } catch (NullPointerException e) {
+      throw new JsonParseException("No Program associated !");
     }
+
+  }
+
+  private JsonElement buildProgramDataFormJson(ProgramDataForm programDataForm)
+      throws LMISException {
+    JsonObject root = gson.toJsonTree(programDataForm).getAsJsonObject();
+    String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+    String programCode = programDataForm.getProgram().getProgramCode();
+    String periodBegin = DateUtil
+        .formatDate(programDataForm.getPeriodBegin(), DateUtil.DB_DATE_FORMAT);
+    String periodEnd = DateUtil.formatDate(programDataForm.getPeriodEnd(), DateUtil.DB_DATE_FORMAT);
+    String submittedTime = DateUtil
+        .formatDate(programDataForm.getSubmittedTime(), DateUtil.ISO_BASIC_DATE_TIME_FORMAT);
+
+    root.addProperty("facilityId", facilityId);
+    if (programCode.equals(Constants.RAPID_TEST_CODE)) {
+      programCode = Constants.RAPID_TEST_OLD_CODE;
+    }
+    root.addProperty("programCode", programCode);
+    root.addProperty("periodBegin", periodBegin);
+    root.addProperty("periodEnd", periodEnd);
+    root.addProperty("submittedTime", submittedTime);
+    root.add("programDataFormItems",
+        jsonParser.parse(gson.toJson(programDataForm.getProgramDataFormItemListWrapper())));
+    root.add("programDataFormBasicItems",
+        jsonParser.parse(gson.toJson(programDataForm.getFormBasicItemListWrapper())));
+    root.add("programDataFormSignatures",
+        jsonParser.parse(gson.toJson(programDataForm.getSignaturesWrapper())));
+    return root;
+  }
 }

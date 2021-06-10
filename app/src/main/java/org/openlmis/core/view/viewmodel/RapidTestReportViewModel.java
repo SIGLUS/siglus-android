@@ -1,5 +1,19 @@
 package org.openlmis.core.view.viewmodel;
 
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.consumption;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.positive;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.unjustified;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.Data;
+import lombok.Getter;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -14,359 +28,363 @@ import org.openlmis.core.model.Signature;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import lombok.Data;
-import lombok.Getter;
-
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.consumption;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.positive;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.unjustified;
-
 @Data
 public class RapidTestReportViewModel implements Serializable {
-    Period period;
-    String observation;
-    private Status status;
-    private Date syncedTime;
 
-    MovementReasonManager movementReasonManager;
+  Period period;
+  String observation;
+  private Status status;
+  private Date syncedTime;
 
-    RapidTestFormItemViewModel itemTotal;
-    RapidTestFormItemViewModel itemRealTotal;
-    RapidTestFormItemViewModel itemAPEs;
+  MovementReasonManager movementReasonManager;
 
-    List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
-    Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
+  RapidTestFormItemViewModel itemTotal;
+  RapidTestFormItemViewModel itemRealTotal;
+  RapidTestFormItemViewModel itemAPEs;
 
-    List<ProgramDataFormBasicItem> basicItems = new ArrayList<>();
+  List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
+  Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
 
-    private ProgramDataForm rapidTestForm = new ProgramDataForm();
+  List<ProgramDataFormBasicItem> basicItems = new ArrayList<>();
 
-    public static long DEFAULT_FORM_ID = 0;
-    public static String DEFAULT_TOTAl_NULL = "";
+  private ProgramDataForm rapidTestForm = new ProgramDataForm();
 
-    public RapidTestReportViewModel(Period period) {
-        this.period = period;
-        status = Status.MISSING;
-        observation = "";
-        setupCategories();
-        setItemViewModelMap();
+  public static long DEFAULT_FORM_ID = 0;
+  public static String DEFAULT_TOTAl_NULL = "";
+
+  public RapidTestReportViewModel(Period period) {
+    this.period = period;
+    status = Status.MISSING;
+    observation = "";
+    setupCategories();
+    setItemViewModelMap();
+  }
+
+  public RapidTestReportViewModel(Period period, Status statusInput) {
+    this.period = period;
+    status = statusInput;
+    observation = "";
+    setupCategories();
+    setItemViewModelMap();
+  }
+
+  private void setupCategories() {
+    movementReasonManager = MovementReasonManager.getInstance();
+    List<MovementReasonManager.MovementReason> issueReasons = FluentIterable.from(
+        movementReasonManager
+            .buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
+        .filter(movementReason -> !movementReason.getCode().equals("PUB_PHARMACY")).toList();
+
+    for (MovementReasonManager.MovementReason movementReason : issueReasons) {
+      RapidTestFormItemViewModel item = new RapidTestFormItemViewModel(movementReason);
+      itemViewModelList.add(item);
     }
 
-    public RapidTestReportViewModel(Period period, Status statusInput) {
-        this.period = period;
-        status = statusInput;
-        observation = "";
-        setupCategories();
-        setItemViewModelMap();
+    MovementReasonManager.MovementReason totalCategory = new MovementReasonManager.MovementReason(
+        MovementReasonManager.MovementType.ISSUE, "TOTAL",
+        LMISApp.getInstance().getString(R.string.total));
+    MovementReasonManager.MovementReason realTotalCategory = new MovementReasonManager.MovementReason(
+        MovementReasonManager.MovementType.ISSUE, "realTotalCategory",
+        LMISApp.getInstance().getString(R.string.total));
+    MovementReasonManager.MovementReason totalAPES = new MovementReasonManager.MovementReason(
+        MovementReasonManager.MovementType.ISSUE, "APES",
+        LMISApp.getInstance().getString(R.string.ape));
+
+    itemTotal = new RapidTestFormItemViewModel(totalCategory);
+    itemRealTotal = new RapidTestFormItemViewModel(realTotalCategory);
+    itemAPEs = new RapidTestFormItemViewModel(totalAPES);
+    itemAPEs.setAPEItem();
+
+    itemViewModelList.add(itemTotal);
+    itemViewModelList.add(itemAPEs);
+  }
+
+  private void setItemViewModelMap() {
+    for (RapidTestFormItemViewModel viewModel : itemViewModelList) {
+      itemViewModelMap.put(viewModel.getIssueReason().getCode(), viewModel);
+    }
+  }
+
+  public RapidTestReportViewModel(ProgramDataForm programDataForm) {
+    setRapidTestForm(programDataForm);
+    DateTime beginDateTime = new DateTime(programDataForm.getPeriodBegin());
+    DateTime endDateTime = new DateTime(programDataForm.getPeriodEnd());
+    period = new Period(beginDateTime, endDateTime);
+    observation = programDataForm.getObservation();
+
+    if (programDataForm.getFormBasicItemListWrapper() != null) {
+      basicItems.addAll(programDataForm.getFormBasicItemListWrapper());
     }
 
-    private void setupCategories() {
-        movementReasonManager = MovementReasonManager.getInstance();
-        List<MovementReasonManager.MovementReason> issueReasons = FluentIterable.from(movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
-                .filter(movementReason -> !movementReason.getCode().equals("PUB_PHARMACY")).toList();
+    setupCategories();
+    setItemViewModelMap();
+    setFormItemViewModels(programDataForm.getProgramDataFormItemListWrapper());
+  }
 
-        for (MovementReasonManager.MovementReason movementReason : issueReasons) {
-            RapidTestFormItemViewModel item = new RapidTestFormItemViewModel(movementReason);
-            itemViewModelList.add(item);
-        }
-
-        MovementReasonManager.MovementReason totalCategory = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "TOTAL", LMISApp.getInstance().getString(R.string.total));
-        MovementReasonManager.MovementReason realTotalCategory = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "realTotalCategory", LMISApp.getInstance().getString(R.string.total));
-        MovementReasonManager.MovementReason totalAPES = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "APES", LMISApp.getInstance().getString(R.string.ape));
-
-        itemTotal = new RapidTestFormItemViewModel(totalCategory);
-        itemRealTotal = new RapidTestFormItemViewModel(realTotalCategory);
-        itemAPEs = new RapidTestFormItemViewModel(totalAPES);
-        itemAPEs.setAPEItem();
-
-        itemViewModelList.add(itemTotal);
-        itemViewModelList.add(itemAPEs);
+  private void setFormItemViewModels(List<ProgramDataFormItem> programDataFormItemList) {
+    for (ProgramDataFormItem item : programDataFormItemList) {
+      itemViewModelMap.get(item.getName())
+          .setColumnValue(item.getProgramDataColumn(), item.getValue());
     }
-
-    private void setItemViewModelMap() {
-        for (RapidTestFormItemViewModel viewModel : itemViewModelList) {
-            itemViewModelMap.put(viewModel.getIssueReason().getCode(), viewModel);
-        }
+    addCompatibleWithNotSubmitUnjustified();
+    addCompatibleWithNotSubmitAPE();
+    for (ColumnCode columnCode : ColumnCode.values()) {
+      updateTotal(columnCode, consumption);
+      updateTotal(columnCode, positive);
+      updateTotal(columnCode, unjustified);
     }
+    updateAPEWaring();
+  }
 
-    public RapidTestReportViewModel(ProgramDataForm programDataForm) {
-        setRapidTestForm(programDataForm);
-        DateTime beginDateTime = new DateTime(programDataForm.getPeriodBegin());
-        DateTime endDateTime = new DateTime(programDataForm.getPeriodEnd());
-        period = new Period(beginDateTime, endDateTime);
-        observation = programDataForm.getObservation();
-
-        if (programDataForm.getFormBasicItemListWrapper() != null) {
-            basicItems.addAll(programDataForm.getFormBasicItemListWrapper());
-        }
-
-        setupCategories();
-        setItemViewModelMap();
-        setFormItemViewModels(programDataForm.getProgramDataFormItemListWrapper());
+  private void addCompatibleWithNotSubmitUnjustified() {
+    for (RapidTestFormItemViewModel formItemViewModel : itemViewModelList) {
+      formItemViewModel.updateUnjustifiedColumn();
     }
+  }
 
-    private void setFormItemViewModels(List<ProgramDataFormItem> programDataFormItemList) {
-        for (ProgramDataFormItem item : programDataFormItemList) {
-            itemViewModelMap.get(item.getName()).setColumnValue(item.getProgramDataColumn(), item.getValue());
-        }
-        addCompatibleWithNotSubmitUnjustified();
-        addCompatibleWithNotSubmitAPE();
-        for (ColumnCode columnCode : ColumnCode.values()) {
-            updateTotal(columnCode, consumption);
-            updateTotal(columnCode, positive);
-            updateTotal(columnCode, unjustified);
-        }
-        updateAPEWaring();
+  private void addCompatibleWithNotSubmitAPE() {
+    for (ColumnCode columnName : ColumnCode.values()) {
+      if (isNeedAPE(columnName)) {
+        RapidTestFormGridViewModel viewModel = itemAPEs.rapidTestFormGridViewModelMap
+            .get(columnName);
+        itemAPEs.updateNoValueGridRowToZero(viewModel);
+      }
     }
+  }
 
-    private void addCompatibleWithNotSubmitUnjustified() {
-        for (RapidTestFormItemViewModel formItemViewModel : itemViewModelList) {
-            formItemViewModel.updateUnjustifiedColumn();
-        }
+  private Boolean isNeedAPE(ColumnCode columnName) {
+    for (RapidTestFormItemViewModel viewModel : itemViewModelList) {
+      if (!viewModel.rapidTestFormGridViewModelMap.get(columnName).isEmpty()) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    private void addCompatibleWithNotSubmitAPE() {
-        for (ColumnCode columnName : ColumnCode.values()) {
-            if (isNeedAPE(columnName)) {
-                RapidTestFormGridViewModel viewModel = itemAPEs.rapidTestFormGridViewModelMap.get(columnName);
-                itemAPEs.updateNoValueGridRowToZero(viewModel);
-            }
-        }
+  public void setRapidTestForm(ProgramDataForm rapidTestForm) {
+    this.rapidTestForm = rapidTestForm;
+    switch (rapidTestForm.getStatus()) {
+      case DRAFT:
+      case SUBMITTED:
+        this.status = Status.INCOMPLETE;
+        break;
+      case AUTHORIZED:
+        this.status = Status.COMPLETED;
+        break;
+      default:
+        this.status = Status.MISSING;
     }
+    if (rapidTestForm.isSynced()) {
+      this.status = Status.SYNCED;
+    }
+  }
 
-    private Boolean isNeedAPE(ColumnCode columnName) {
-        for (RapidTestFormItemViewModel viewModel : itemViewModelList) {
-            if (!viewModel.rapidTestFormGridViewModelMap.get(columnName).isEmpty()) {
-                return true;
-            }
-        }
+  public Date getSyncedTime() {
+    return rapidTestForm.getSubmittedTime();
+  }
+
+  public void convertFormViewModelToDataModel(Program program) {
+    rapidTestForm.setProgram(program);
+    rapidTestForm.setPeriodBegin(period.getBegin().toDate());
+    rapidTestForm.setPeriodEnd(period.getEnd().toDate());
+    rapidTestForm.setObservation(observation);
+    rapidTestForm.getProgramDataFormItemListWrapper().clear();
+    rapidTestForm.setFormBasicItemListWrapper(basicItems);
+    convertFormItemViewModelToDataModel();
+  }
+
+  private void convertFormItemViewModelToDataModel() {
+    for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+      rapidTestForm.getProgramDataFormItemListWrapper().addAll(itemViewModel.convertToDataModel());
+    }
+    for (ProgramDataFormItem item : rapidTestForm.getProgramDataFormItemListWrapper()) {
+      item.setForm(rapidTestForm);
+    }
+  }
+
+  public boolean isSynced() {
+    return status == Status.SYNCED;
+  }
+
+  public boolean isEditable() {
+    return status.isEditable() && (isDraft() || isReadyForCompleted());
+  }
+
+
+  public boolean isDraft() {
+    return rapidTestForm.getStatus() == null
+        || rapidTestForm.getStatus() == ProgramDataForm.STATUS.DRAFT;
+  }
+
+  private boolean isReadyForCompleted() {
+    return rapidTestForm.getStatus() == null
+        || rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
+  }
+
+  public boolean validatePositive() {
+    for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+      if (!itemViewModel.validatePositive()) {
         return false;
+      }
     }
+    return true;
+  }
 
-    public void setRapidTestForm(ProgramDataForm rapidTestForm) {
-        this.rapidTestForm = rapidTestForm;
-        switch (rapidTestForm.getStatus()) {
-            case DRAFT:
-            case SUBMITTED:
-                this.status = Status.INCOMPLETE;
-                break;
-            case AUTHORIZED:
-                this.status = Status.COMPLETED;
-                break;
-            default:
-                this.status = Status.MISSING;
+  public boolean validateUnjustified() {
+    for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+      if (!itemViewModel.validateUnjustified()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public boolean validateAPES() {
+    for (RapidTestFormGridViewModel itemViewModel : itemAPEs.rapidTestFormGridViewModelList) {
+      if (itemViewModel.isNeedAddGridViewWarning()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public boolean validateOnlyAPES() {
+    return itemRealTotal.isEmpty() && !itemAPEs.isEmpty();
+  }
+
+  public void addSignature(String signature) {
+    if (rapidTestForm.getSignaturesWrapper().size() == 0) {
+      rapidTestForm.getSignaturesWrapper()
+          .add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
+      rapidTestForm.setStatus(ProgramDataForm.STATUS.SUBMITTED);
+    } else {
+      rapidTestForm.getSignaturesWrapper()
+          .add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.APPROVER));
+      rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
+      rapidTestForm.setSubmittedTime(DateUtil.getCurrentDate());
+      status = Status.COMPLETED;
+    }
+  }
+
+  public boolean isAuthorized() {
+    return rapidTestForm.getStatus() == ProgramDataForm.STATUS.AUTHORIZED;
+  }
+
+  public boolean isFormEmpty() {
+    for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+      if (!itemViewModel.isEmpty()
+          && (itemViewModel.issueReason != null
+          && itemViewModel.issueReason.getCode() != null
+          && !itemViewModel.issueReason.getCode().endsWith("TOTAL"))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public boolean isSubmitted() {
+    return rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
+  }
+
+  public void updateTotal(ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {
+    itemTotal.clearValue(columnCode, gridColumnCode);
+    itemRealTotal.clearValue(columnCode, gridColumnCode);
+    Total total = new Total();
+    total.longTotal = 0;
+    total.stringTotal = DEFAULT_TOTAl_NULL;
+    for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
+      if (itemViewModel == itemAPEs) {
+        continue;
+      }
+      RapidTestFormGridViewModel gridViewModel = itemViewModel.getRapidTestFormGridViewModelMap()
+          .get(columnCode);
+      total = calculateTotalLogic(total, gridViewModel, gridColumnCode);
+    }
+    setTotalRowValue(itemTotal, columnCode, gridColumnCode, String.valueOf(total.longTotal));
+    setTotalRowValue(itemRealTotal, columnCode, gridColumnCode, total.stringTotal);
+  }
+
+  public void updateAPEWaring() {
+    for (RapidTestFormGridViewModel viewModel : itemRealTotal.rapidTestFormGridViewModelList) {
+      RapidTestFormGridViewModel apeViewModel = itemAPEs.rapidTestFormGridViewModelMap
+          .get(viewModel.getColumnCode());
+      apeViewModel.isNeedAllAPEValue = !viewModel.isEmpty();
+    }
+  }
+
+  private Total calculateTotalLogic(Total total, RapidTestFormGridViewModel gridViewModel,
+      RapidTestGridColumnCode gridColumnCode) {
+    switch (gridColumnCode) {
+      case consumption:
+        if (!gridViewModel.getConsumptionValue().equals("")) {
+          total.longTotal += Long.parseLong(gridViewModel.getConsumptionValue());
+          total.stringTotal = String.valueOf(total.longTotal);
         }
-        if (rapidTestForm.isSynced()) {
-            this.status = Status.SYNCED;
+        break;
+      case positive:
+        if (!gridViewModel.getPositiveValue().equals("")) {
+          total.longTotal += Long.parseLong(gridViewModel.getPositiveValue());
+          total.stringTotal = String.valueOf(total.longTotal);
         }
-    }
-
-    public Date getSyncedTime() {
-        return rapidTestForm.getSubmittedTime();
-    }
-
-    public void convertFormViewModelToDataModel(Program program) {
-        rapidTestForm.setProgram(program);
-        rapidTestForm.setPeriodBegin(period.getBegin().toDate());
-        rapidTestForm.setPeriodEnd(period.getEnd().toDate());
-        rapidTestForm.setObservation(observation);
-        rapidTestForm.getProgramDataFormItemListWrapper().clear();
-        rapidTestForm.setFormBasicItemListWrapper(basicItems);
-        convertFormItemViewModelToDataModel();
-    }
-
-    private void convertFormItemViewModelToDataModel() {
-        for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-            rapidTestForm.getProgramDataFormItemListWrapper().addAll(itemViewModel.convertToDataModel());
+        break;
+      case unjustified:
+        if (!gridViewModel.getUnjustifiedValue().equals("")) {
+          total.longTotal += Long.parseLong(gridViewModel.getUnjustifiedValue());
+          total.stringTotal = String.valueOf(total.longTotal);
         }
-        for (ProgramDataFormItem item : rapidTestForm.getProgramDataFormItemListWrapper()) {
-            item.setForm(rapidTestForm);
-        }
+        break;
     }
 
-    public boolean isSynced() {
-        return status == Status.SYNCED;
+    return total;
+  }
+
+  private void setTotalRowValue(RapidTestFormItemViewModel totalItem, ColumnCode columnCode,
+      RapidTestGridColumnCode gridColumnCode, String total) {
+    switch (gridColumnCode) {
+      case consumption:
+        totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setConsumptionValue(total);
+        break;
+      case positive:
+        totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setPositiveValue(total);
+        break;
+      case unjustified:
+        totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setUnjustifiedValue(total);
+        break;
     }
+  }
 
-    public boolean isEditable() {
-        return status.isEditable() && (isDraft() || isReadyForCompleted());
+  public enum Status {
+    MISSING(true, 0),
+    INCOMPLETE(true, 1),
+    COMPLETED(false, 2),
+    SYNCED(false, 3),
+    FIRST_MISSING(false, 4),
+    UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD(false, 5),
+    CANNOT_DO_MONTHLY_INVENTORY(false, 6),
+    COMPLETE_INVENTORY(false, 7),
+    INACTIVE(false, 8);
+
+
+    @Getter
+    private final boolean editable;
+    @Getter
+    private final int viewType;
+
+    Status(boolean editable, int viewType) {
+      this.editable = editable;
+      this.viewType = viewType;
     }
-
-
-    public boolean isDraft() {
-        return rapidTestForm.getStatus() == null || rapidTestForm.getStatus() == ProgramDataForm.STATUS.DRAFT;
-    }
-
-    private boolean isReadyForCompleted() {
-        return rapidTestForm.getStatus() == null || rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
-    }
-
-    public boolean validatePositive() {
-        for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-            if (!itemViewModel.validatePositive()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean validateUnjustified() {
-        for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-            if (!itemViewModel.validateUnjustified()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean validateAPES() {
-        for (RapidTestFormGridViewModel itemViewModel : itemAPEs.rapidTestFormGridViewModelList) {
-            if (itemViewModel.isNeedAddGridViewWarning()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean validateOnlyAPES() {
-        return itemRealTotal.isEmpty() && !itemAPEs.isEmpty();
-    }
-
-    public void addSignature(String signature) {
-        if (rapidTestForm.getSignaturesWrapper().size() == 0) {
-            rapidTestForm.getSignaturesWrapper().add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
-            rapidTestForm.setStatus(ProgramDataForm.STATUS.SUBMITTED);
-        } else {
-            rapidTestForm.getSignaturesWrapper().add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.APPROVER));
-            rapidTestForm.setStatus(ProgramDataForm.STATUS.AUTHORIZED);
-            rapidTestForm.setSubmittedTime(DateUtil.getCurrentDate());
-            status = Status.COMPLETED;
-        }
-    }
-
-    public boolean isAuthorized() {
-        return rapidTestForm.getStatus() == ProgramDataForm.STATUS.AUTHORIZED;
-    }
-
-    public boolean isFormEmpty() {
-        for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-            if (!itemViewModel.isEmpty()
-                    && (itemViewModel.issueReason != null
-                    && itemViewModel.issueReason.getCode() != null
-                    && !itemViewModel.issueReason.getCode().endsWith("TOTAL"))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean isSubmitted() {
-        return rapidTestForm.getStatus() == ProgramDataForm.STATUS.SUBMITTED;
-    }
-
-    public void updateTotal(ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {
-        itemTotal.clearValue(columnCode, gridColumnCode);
-        itemRealTotal.clearValue(columnCode, gridColumnCode);
-        Total total = new Total();
-        total.longTotal = 0;
-        total.stringTotal = DEFAULT_TOTAl_NULL;
-        for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-            if (itemViewModel == itemAPEs) {
-                continue;
-            }
-            RapidTestFormGridViewModel gridViewModel = itemViewModel.getRapidTestFormGridViewModelMap().get(columnCode);
-            total = calculateTotalLogic(total, gridViewModel, gridColumnCode);
-        }
-        setTotalRowValue(itemTotal, columnCode, gridColumnCode, String.valueOf(total.longTotal));
-        setTotalRowValue(itemRealTotal, columnCode, gridColumnCode, total.stringTotal);
-    }
-
-    public void updateAPEWaring() {
-        for (RapidTestFormGridViewModel viewModel : itemRealTotal.rapidTestFormGridViewModelList) {
-            RapidTestFormGridViewModel apeViewModel = itemAPEs.rapidTestFormGridViewModelMap.get(viewModel.getColumnCode());
-            apeViewModel.isNeedAllAPEValue = !viewModel.isEmpty();
-        }
-    }
-
-    private Total calculateTotalLogic(Total total, RapidTestFormGridViewModel gridViewModel, RapidTestGridColumnCode gridColumnCode) {
-        switch (gridColumnCode) {
-            case consumption:
-                if (!gridViewModel.getConsumptionValue().equals("")) {
-                    total.longTotal += Long.parseLong(gridViewModel.getConsumptionValue());
-                    total.stringTotal = String.valueOf(total.longTotal);
-                }
-                break;
-            case positive:
-                if (!gridViewModel.getPositiveValue().equals("")) {
-                    total.longTotal += Long.parseLong(gridViewModel.getPositiveValue());
-                    total.stringTotal = String.valueOf(total.longTotal);
-                }
-                break;
-            case unjustified:
-                if (!gridViewModel.getUnjustifiedValue().equals("")) {
-                    total.longTotal += Long.parseLong(gridViewModel.getUnjustifiedValue());
-                    total.stringTotal = String.valueOf(total.longTotal);
-                }
-                break;
-        }
-
-        return total;
-    }
-
-    private void setTotalRowValue(RapidTestFormItemViewModel totalItem, ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode, String total) {
-        switch (gridColumnCode) {
-            case consumption:
-                totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setConsumptionValue(total);
-                break;
-            case positive:
-                totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setPositiveValue(total);
-                break;
-            case unjustified:
-                totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setUnjustifiedValue(total);
-                break;
-        }
-    }
-
-    public enum Status {
-        MISSING(true, 0),
-        INCOMPLETE(true, 1),
-        COMPLETED(false, 2),
-        SYNCED(false, 3),
-        FIRST_MISSING(false, 4),
-        UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD(false, 5),
-        CANNOT_DO_MONTHLY_INVENTORY(false, 6),
-        COMPLETE_INVENTORY(false, 7),
-        INACTIVE(false, 8);
-
-
-        @Getter
-        private boolean editable;
-        @Getter
-        private int viewType;
-
-        Status(boolean editable, int viewType) {
-            this.editable = editable;
-            this.viewType = viewType;
-        }
-    }
+  }
 }
 
 class Total {
-    long longTotal;
-    String stringTotal;
 
-    // 构造函数
-    public Total() {
-        super();
-    }
+  long longTotal;
+  String stringTotal;
+
+  // 构造函数
+  public Total() {
+    super();
+  }
 
 }

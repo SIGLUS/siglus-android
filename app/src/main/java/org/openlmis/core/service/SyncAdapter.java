@@ -26,10 +26,10 @@ import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
-
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
-
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -38,87 +38,85 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-
-import java.util.List;
-
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import roboguice.RoboGuice;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-    private static final String TAG = SyncAdapter.class.getSimpleName();
 
-    @Inject
-    SyncUpManager syncUpManager;
+  private static final String TAG = SyncAdapter.class.getSimpleName();
 
-    @Inject
-    SyncDownManager syncDownManager;
+  @Inject
+  SyncUpManager syncUpManager;
 
-    @Inject
-    UpgradeManager upgradeManager;
+  @Inject
+  SyncDownManager syncDownManager;
 
-    @Inject
-    SharedPreferenceMgr sharedPreferenceMgr;
+  @Inject
+  UpgradeManager upgradeManager;
 
-    @Inject
-    DirtyDataManager dirtyDataManager;
+  @Inject
+  SharedPreferenceMgr sharedPreferenceMgr;
 
-    Context context;
+  @Inject
+  DirtyDataManager dirtyDataManager;
 
-    public SyncAdapter(Context context, boolean autoInitialize) {
-        super(context, autoInitialize);
-        RoboGuice.getInjector(context).injectMembers(this);
-        this.context = context;
+  Context context;
+
+  public SyncAdapter(Context context, boolean autoInitialize) {
+    super(context, autoInitialize);
+    RoboGuice.getInjector(context).injectMembers(this);
+    this.context = context;
+  }
+
+  @Override
+  public void onPerformSync(Account account, Bundle extras, String authority,
+      ContentProviderClient provider, SyncResult syncResult) {
+    User user = UserInfoMgr.getInstance().getUser();
+    if (user == null) {
+      Log.d(TAG, "No user login, skip sync....");
+      return;
     }
-
-    @Override
-    public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        User user = UserInfoMgr.getInstance().getUser();
-        if (user == null) {
-            Log.d(TAG, "No user login, skip sync....");
-            return;
-        }
-        Log.d(TAG, "===> Syncing Data to server");
-        if (shouldCorrectData(extras) && shouldStartDataCheck()) {
-            List<StockCard> deleteStockCards = dirtyDataManager.correctData();
-            if (!CollectionUtils.isEmpty(deleteStockCards)) {
-                sendDeletedProductBroadcast();
-            }
-        }
-        upgradeManager.triggerUpgrade();
-        triggerSync();
+    Log.d(TAG, "===> Syncing Data to server");
+    if (shouldCorrectData(extras) && shouldStartDataCheck()) {
+      List<StockCard> deleteStockCards = dirtyDataManager.correctData();
+      if (!CollectionUtils.isEmpty(deleteStockCards)) {
+        sendDeletedProductBroadcast();
+      }
     }
+    upgradeManager.triggerUpgrade();
+    triggerSync();
+  }
 
-    private boolean shouldStartDataCheck() {
-        long now = LMISApp.getInstance().getCurrentTimeMillis();
-        long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
-        return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-                && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
-                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
-    }
+  private boolean shouldStartDataCheck() {
+    long now = LMISApp.getInstance().getCurrentTimeMillis();
+    long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
+    return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
+        && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)
+        && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
+  }
 
-    private boolean shouldCorrectData(Bundle extras) {
-        return extras != null
-                && extras.getBoolean(Constants.IS_USER_TRIGGERED_SYCED)
-                && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
-                && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
-    }
+  private boolean shouldCorrectData(Bundle extras) {
+    return extras != null
+        && extras.getBoolean(Constants.IS_USER_TRIGGERED_SYCED)
+        && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
+        && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training);
+  }
 
-    private void triggerSync() {
-        sendSyncStartBroadcast();
-        syncDownManager.syncDownServerData();
-        syncUpManager.syncUpData(context);
-    }
-
-
-    private void sendSyncStartBroadcast() {
-        Intent intent = new Intent();
-        intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
+  private void triggerSync() {
+    sendSyncStartBroadcast();
+    syncDownManager.syncDownServerData();
+    syncUpManager.syncUpData(context);
+  }
 
 
-    private void sendDeletedProductBroadcast() {
-        Intent intent = new Intent(Constants.INTENT_FILTER_DELETED_PRODUCT);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
+  private void sendSyncStartBroadcast() {
+    Intent intent = new Intent();
+    intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
+    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+  }
+
+
+  private void sendDeletedProductBroadcast() {
+    Intent intent = new Intent(Constants.INTENT_FILTER_DELETED_PRODUCT);
+    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+  }
 }

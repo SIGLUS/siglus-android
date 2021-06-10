@@ -18,15 +18,14 @@
 
 package org.openlmis.core.network.model;
 
-import org.openlmis.core.model.RnRForm;
-
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.openlmis.core.model.RnRForm;
 
 @Getter
 @Setter
 public class SyncDownRequisitionsResponse {
-    List<RnRForm> requisitions;
+
+  List<RnRForm> requisitions;
 }

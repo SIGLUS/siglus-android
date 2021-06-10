@@ -22,27 +22,27 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class CutBaseLineTextView extends androidx.appcompat.widget.AppCompatTextView {
 
-    public CutBaseLineTextView(@NonNull Context context) {
-        this(context, null);
-    }
+  public CutBaseLineTextView(@NonNull Context context) {
+    this(context, null);
+  }
 
-    public CutBaseLineTextView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+  public CutBaseLineTextView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
 
-    public CutBaseLineTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
+  public CutBaseLineTextView(@NonNull Context context, @Nullable AttributeSet attrs,
+      int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+  }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        canvas.translate(0,getPaint().getFontMetricsInt().descent);
-        super.onDraw(canvas);
-    }
+  @Override
+  protected void onDraw(Canvas canvas) {
+    canvas.translate(0, getPaint().getFontMetricsInt().descent);
+    super.onDraw(canvas);
+  }
 }

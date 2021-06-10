@@ -1,13 +1,13 @@
 <resources>
-    <string name="server_base_url">https://qa.siglus.us</string>
-    <string name="server_base_url_host">dev.siglusv2.com</string>
-    <integer name="server_base_url_port">80</integer>
-    <string name="sync_account_type">org.clintonhealthaccess.lmismoz.dev</string>
-    <integer name="sync_interval">3600</integer>
-    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.dev</string>
-    <string name="ga_trackingId">I am a track id</string>
-    <bool name="ga_dryRun">true</bool>
-    <string name="app_name">@string/app_name_in_dev</string>
-    <string name="app_time_out">3600000</string>
-    <string name="appcenter_app_key" translatable="false">a17c2b2d-8341-4657-af2d-9ddcc87e6edc</string>
+  <string name="server_base_url">https://qa.siglus.us</string>
+  <string name="server_base_url_host">dev.siglusv2.com</string>
+  <integer name="server_base_url_port">80</integer>
+  <string name="sync_account_type">org.clintonhealthaccess.lmismoz.dev</string>
+  <integer name="sync_interval">3600</integer>
+  <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.dev</string>
+  <string name="ga_trackingId">I am a track id</string>
+  <bool name="ga_dryRun">true</bool>
+  <string name="app_name">@string/app_name_in_dev</string>
+  <string name="app_time_out">3600000</string>
+  <string name="appcenter_app_key" translatable="false">a17c2b2d-8341-4657-af2d-9ddcc87e6edc</string>
 </resources>

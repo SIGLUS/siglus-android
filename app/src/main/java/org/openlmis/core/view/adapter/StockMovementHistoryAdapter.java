@@ -22,53 +22,52 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
+import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.StockMovementItemHistoryViewHolder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
-import java.util.List;
-
 
 public class StockMovementHistoryAdapter extends BaseAdapter {
 
-    List<StockMovementViewModel> stockMovementViewModels;
+  List<StockMovementViewModel> stockMovementViewModels;
 
-    public StockMovementHistoryAdapter(List<StockMovementViewModel> list) {
-        stockMovementViewModels = list;
+  public StockMovementHistoryAdapter(List<StockMovementViewModel> list) {
+    stockMovementViewModels = list;
+  }
+
+  @Override
+  public int getCount() {
+    return stockMovementViewModels.size();
+  }
+
+  @Override
+  public StockMovementViewModel getItem(int position) {
+    return stockMovementViewModels.get(position);
+  }
+
+  @Override
+  public long getItemId(int position) {
+    return position;
+  }
+
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    StockMovementItemHistoryViewHolder holder;
+
+    if (convertView == null) {
+      convertView = LayoutInflater.from(parent.getContext())
+          .inflate(R.layout.item_stock_movement, parent, false);
+      holder = new StockMovementItemHistoryViewHolder(convertView);
+
+      convertView.setTag(holder);
+    } else {
+      holder = (StockMovementItemHistoryViewHolder) convertView.getTag();
     }
+    final StockMovementViewModel model = getItem(position);
 
-    @Override
-    public int getCount() {
-        return stockMovementViewModels.size();
-    }
+    holder.populate(model);
 
-    @Override
-    public StockMovementViewModel getItem(int position) {
-        return stockMovementViewModels.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        StockMovementItemHistoryViewHolder holder;
-
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stock_movement, parent, false);
-            holder = new StockMovementItemHistoryViewHolder(convertView);
-
-            convertView.setTag(holder);
-        } else {
-            holder = (StockMovementItemHistoryViewHolder) convertView.getTag();
-        }
-        final StockMovementViewModel model = getItem(position);
-
-        holder.populate(model);
-
-        return convertView;
-    }
+    return convertView;
+  }
 }

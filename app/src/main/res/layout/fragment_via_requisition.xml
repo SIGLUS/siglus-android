@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/vg_container"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/vg_container"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:padding="@dimen/padding_small">
+
+  <LinearLayout
+    android:id="@+id/via_top_vg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:layout_marginTop="@dimen/margin_small"
+    android:orientation="horizontal">
+
+    <org.openlmis.core.view.widget.ViaReportConsultationNumberView
+      android:id="@+id/view_consultation"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@drawable/border_bg"
+      app:ems="4"
+      app:headerText="@string/label_requisition_header_consultation_header"
+      app:labelWidth="100dp"
+      app:text="@string/label_consultation" />
+
+    <org.openlmis.core.view.widget.ViaKitView
+      android:id="@+id/vg_kit"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_marginStart="5dp"
+      android:layout_weight="1" />
+  </LinearLayout>
+
+  <org.openlmis.core.view.widget.ViaRequisitionBodyView
+    android:id="@+id/view_via_body"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/padding_small">
+    android:layout_above="@+id/action_panel"
+    android:layout_below="@id/via_top_vg"
+    android:background="@drawable/border_bg_light_gray" />
 
-    <LinearLayout
-        android:id="@+id/via_top_vg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
-        android:orientation="horizontal">
-
-        <org.openlmis.core.view.widget.ViaReportConsultationNumberView
-            android:id="@+id/view_consultation"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/border_bg"
-            app:ems="4"
-            app:headerText="@string/label_requisition_header_consultation_header"
-            app:labelWidth="100dp"
-            app:text="@string/label_consultation" />
-
-        <org.openlmis.core.view.widget.ViaKitView
-            android:id="@+id/vg_kit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <org.openlmis.core.view.widget.ViaRequisitionBodyView
-        android:id="@+id/view_via_body"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/action_panel"
-        android:layout_below="@id/via_top_vg"
-        android:background="@drawable/border_bg_light_gray"/>
-
-    <org.openlmis.core.view.widget.ActionPanelView
-        android:id="@+id/action_panel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+  <org.openlmis.core.view.widget.ActionPanelView
+    android:id="@+id/action_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true" />
 </RelativeLayout>
 

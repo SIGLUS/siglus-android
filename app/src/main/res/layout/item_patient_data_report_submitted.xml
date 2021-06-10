@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Card.Padded"
+  style="@style/Card.Padded"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    style="@style/ItemRnr.Type2Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        style="@style/ItemRnr.Type2Container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+      android:id="@+id/tv_period"
+      style="@style/ItemRnr.PeriodTextType2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/color_red"
+      android:drawableLeft="@drawable/ic_error"
+      android:textColor="@color/color_white" />
 
-        <TextView
-            android:id="@+id/tv_period"
-            style="@style/ItemRnr.PeriodTextType2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_red"
-            android:drawableLeft="@drawable/ic_error"
-            android:textColor="@color/color_white"/>
+    <View
+      android:id="@+id/action_divider"
+      style="@style/HorizontalLine" />
 
-        <View
-            android:id="@+id/action_divider"
-            style="@style/HorizontalLine" />
+    <TextView
+      android:id="@+id/tv_report_status"
+      style="@style/ItemRnr.MessageTextType2"
+      android:layout_width="match_parent"
+      android:text="@string/report_submitted_synced_pending_message"
+      android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/tv_report_status"
-            style="@style/ItemRnr.MessageTextType2"
-            android:layout_width="match_parent"
-            android:text="@string/report_submitted_synced_pending_message"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
+  </LinearLayout>
 
 </androidx.cardview.widget.CardView>

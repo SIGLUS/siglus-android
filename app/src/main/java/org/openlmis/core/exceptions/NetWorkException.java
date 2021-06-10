@@ -22,7 +22,7 @@ package org.openlmis.core.exceptions;
 
 public class NetWorkException extends LMISException {
 
-    public NetWorkException(Exception e) {
-        super(e);
-    }
+  public NetWorkException(Exception e) {
+    super(e);
+  }
 }

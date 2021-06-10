@@ -22,23 +22,22 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @DatabaseTable(tableName = "service_items")
-public class ServiceItem extends BaseModel{
+public class ServiceItem extends BaseModel {
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private RnrFormItem formItem;
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private RnrFormItem formItem;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private Service service;
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private Service service;
 
-    @Expose
-    @SerializedName("patientsOnTreatment")
-    @DatabaseField
-    private Long amount;
+  @Expose
+  @SerializedName("patientsOnTreatment")
+  @DatabaseField
+  private Long amount;
 }

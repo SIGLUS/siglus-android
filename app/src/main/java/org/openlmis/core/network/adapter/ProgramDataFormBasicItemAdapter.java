@@ -11,61 +11,62 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.inject.Inject;
-
+import java.lang.reflect.Type;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.repository.ProductRepository;
-
-import java.lang.reflect.Type;
-
 import roboguice.RoboGuice;
 
-public class ProgramDataFormBasicItemAdapter implements JsonSerializer<ProgramDataFormBasicItem>, JsonDeserializer<ProgramDataFormBasicItem> {
+public class ProgramDataFormBasicItemAdapter implements JsonSerializer<ProgramDataFormBasicItem>,
+    JsonDeserializer<ProgramDataFormBasicItem> {
 
-    private final Gson gson;
+  private final Gson gson;
 
-    @Inject
-    public ProductRepository productRepository;
+  @Inject
+  public ProductRepository productRepository;
 
 
-    public ProgramDataFormBasicItemAdapter() {
-        RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
-        gson = new GsonBuilder()
-                .registerTypeAdapter(Product.class, new ProductAdapter())
-                .excludeFieldsWithoutExposeAnnotation().create();
-    }
+  public ProgramDataFormBasicItemAdapter() {
+    RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
+    gson = new GsonBuilder()
+        .registerTypeAdapter(Product.class, new ProductAdapter())
+        .excludeFieldsWithoutExposeAnnotation().create();
+  }
 
+
+  @Override
+  public ProgramDataFormBasicItem deserialize(JsonElement json, Type typeOfT,
+      JsonDeserializationContext context) throws JsonParseException {
+    return gson.fromJson(json.toString(), ProgramDataFormBasicItem.class);
+  }
+
+  @Override
+  public JsonElement serialize(ProgramDataFormBasicItem src, Type typeOfSrc,
+      JsonSerializationContext context) {
+    JsonObject jsonObject = gson.toJsonTree(src).getAsJsonObject();
+    return jsonObject;
+  }
+
+  class ProductAdapter implements JsonDeserializer<Product>, JsonSerializer<Product> {
 
     @Override
-    public ProgramDataFormBasicItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return gson.fromJson(json.toString(), ProgramDataFormBasicItem.class);
+    public Product deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        throws JsonParseException {
+      try {
+        return productRepository.getByCode(json.getAsString());
+      } catch (LMISException e) {
+        new LMISException(e, "ProductAdapter.deserialize").reportToFabric();
+        throw new JsonParseException("can not find Product by code");
+      }
     }
 
     @Override
-    public JsonElement serialize(ProgramDataFormBasicItem src, Type typeOfSrc, JsonSerializationContext context) {
-        JsonObject jsonObject = gson.toJsonTree(src).getAsJsonObject();
-        return jsonObject;
+    public JsonElement serialize(Product src, Type typeOfSrc, JsonSerializationContext context) {
+      JsonParser jsonParser = new JsonParser();
+      String parseCode = src.getCode().contains(" ") ? "\"" + src.getCode() + "\"" : src.getCode();
+      return jsonParser.parse(parseCode);
     }
-
-    class ProductAdapter implements JsonDeserializer<Product>, JsonSerializer<Product> {
-
-        @Override
-        public Product deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            try {
-                return productRepository.getByCode(json.getAsString());
-            } catch (LMISException e) {
-                new LMISException(e,"ProductAdapter.deserialize").reportToFabric();
-                throw new JsonParseException("can not find Product by code");
-            }
-        }
-
-        @Override
-        public JsonElement serialize(Product src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonParser jsonParser = new JsonParser();
-            String parseCode = src.getCode().contains(" ") ? "\""+src.getCode()+"\"" : src.getCode();
-            return jsonParser.parse(parseCode);
-        }
-    }
+  }
 }

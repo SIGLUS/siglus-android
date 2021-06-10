@@ -20,45 +20,43 @@ package org.openlmis.core.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-
+import java.util.Date;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.PTVRequisitionFragment;
-
-import java.util.Date;
-
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_ptv_requisition)
 public class PTVRequisitionActivity extends BaseActivity {
 
-    @Override
-    protected ScreenName getScreenName() {
-        return ScreenName.PTV_REQUISITION_SCREEN;
-    }
+  @Override
+  protected ScreenName getScreenName() {
+    return ScreenName.PTV_REQUISITION_SCREEN;
+  }
 
-    @Override
-    protected int getThemeRes() {
-        return R.style.AppTheme_PINK;
-    }
+  @Override
+  protected int getThemeRes() {
+    return R.style.AppTheme_PINK;
+  }
 
-    @Override
-    public void onBackPressed() {
-        ((PTVRequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
-    }
+  @Override
+  public void onBackPressed() {
+    ((PTVRequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition))
+        .onBackPressed();
+  }
 
-    public static Intent getIntentToMe(Context context, long formId) {
-        Intent intent = new Intent(context, PTVRequisitionActivity.class);
-        intent.putExtra(Constants.PARAM_FORM_ID, formId);
-        return intent;
-    }
+  public static Intent getIntentToMe(Context context, long formId) {
+    Intent intent = new Intent(context, PTVRequisitionActivity.class);
+    intent.putExtra(Constants.PARAM_FORM_ID, formId);
+    return intent;
+  }
 
 
-    public static Intent getIntentToMe(Context context, Date periodEndDate) {
-        Intent intent = new Intent(context, PTVRequisitionActivity.class);
-        intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, periodEndDate);
-        return intent;
-    }
+  public static Intent getIntentToMe(Context context, Date periodEndDate) {
+    Intent intent = new Intent(context, PTVRequisitionActivity.class);
+    intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, periodEndDate);
+    return intent;
+  }
 
 }

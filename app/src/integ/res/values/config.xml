@@ -1,12 +1,12 @@
 <resources>
-    <string name="server_base_url">https://integ.siglus.us</string>
-    <string name="server_base_url_host">integ.siglus.us</string>
-    <integer name="server_base_url_port">443</integer>
-    <string name="sync_account_type">org.clintonhealthaccess.lmismoz.integ</string>
-    <integer name="sync_interval">3600</integer>
-    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.integ</string>
-    <string name="ga_trackingId">I am a track id</string>
-    <bool name="ga_dryRun">true</bool>
-    <string name="app_name">@string/app_name_in_integ</string>
-    <string name="app_time_out">3600000</string>
+  <string name="server_base_url">https://integ.siglus.us</string>
+  <string name="server_base_url_host">integ.siglus.us</string>
+  <integer name="server_base_url_port">443</integer>
+  <string name="sync_account_type">org.clintonhealthaccess.lmismoz.integ</string>
+  <integer name="sync_interval">3600</integer>
+  <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.integ</string>
+  <string name="ga_trackingId">I am a track id</string>
+  <bool name="ga_dryRun">true</bool>
+  <string name="app_name">@string/app_name_in_integ</string>
+  <string name="app_time_out">3600000</string>
 </resources>

@@ -1,18 +1,18 @@
 <resources>
-    <string name="server_base_url">http://52.76.22.134:8000</string>
-    <string name="server_base_url_host">52.76.22.134</string>
-    <integer name="server_base_url_port">8000</integer>
-    <string name="sync_account_type">org.clintonhealthaccess.lmismoz.training</string>
-    <integer name="sync_interval">3600</integer>
-    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.training</string>
+  <string name="server_base_url">http://52.76.22.134:8000</string>
+  <string name="server_base_url_host">52.76.22.134</string>
+  <integer name="server_base_url_port">8000</integer>
+  <string name="sync_account_type">org.clintonhealthaccess.lmismoz.training</string>
+  <integer name="sync_interval">3600</integer>
+  <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.training</string>
 
-    <string name="ga_trackingId">I am a track id</string>
-    <bool name="ga_dryRun">true</bool>
+  <string name="ga_trackingId">I am a track id</string>
+  <bool name="ga_dryRun">true</bool>
 
-    <string name="app_name">@string/app_name_in_training</string>
+  <string name="app_name">@string/app_name_in_training</string>
 
-    <string name="app_time_out">3600000</string>
+  <string name="app_time_out">3600000</string>
 
-    <bool name="feature_training">true</bool>
-    <string name="appcenter_app_key" translatable="false">86898d45-c0c2-4250-96e6-a56acdb0af01</string>
+  <bool name="feature_training">true</bool>
+  <string name="appcenter_app_key" translatable="false">86898d45-c0c2-4250-96e6-a56acdb0af01</string>
 </resources>

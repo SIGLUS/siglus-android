@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mmia_therapeutic_layout"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/mmia_therapeutic_layout"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@drawable/border_bg_light_gray_blod"
+  android:divider="@drawable/divider_horizontal"
+  android:orientation="vertical"
+  android:showDividers="middle">
+
+  <TextView
+    style="@style/MMIA.SpreadHeader"
+    android:text="@string/mmia_therapeutic" />
+
+  <org.openlmis.core.view.widget.MMIARegimeThreeLineList
+    android:id="@+id/mmia_regime_three_line_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_bg_light_gray_blod"
     android:divider="@drawable/divider_horizontal"
-    android:orientation="vertical"
+    android:showDividers="middle"
+    tools:layout_height="120dp">
+
+  </org.openlmis.core.view.widget.MMIARegimeThreeLineList>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end"
+    android:divider="@drawable/divider_vertical"
+    android:gravity="end"
     android:showDividers="middle">
 
+    <TextView style="@style/MMIA.RegimeThreeLineTotalLabel" />
+
     <TextView
-        style="@style/MMIA.SpreadHeader"
-        android:text="@string/mmia_therapeutic" />
+      android:id="@+id/mmia_regime_three_line_total"
+      style="@style/MMIA.RegimeThreeLineTotalText" />
 
-    <org.openlmis.core.view.widget.MMIARegimeThreeLineList
-        android:id="@+id/mmia_regime_three_line_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@drawable/divider_horizontal"
-        android:showDividers="middle"
-        tools:layout_height="120dp">
-
-    </org.openlmis.core.view.widget.MMIARegimeThreeLineList>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:divider="@drawable/divider_vertical"
-        android:gravity="end"
-        android:showDividers="middle">
-
-        <TextView style="@style/MMIA.RegimeThreeLineTotalLabel" />
-
-        <TextView
-            android:id="@+id/mmia_regime_three_line_total"
-            style="@style/MMIA.RegimeThreeLineTotalText" />
-
-        <TextView
-            android:id="@+id/mmia_regime_three_line_pharmacy"
-            style="@style/MMIA.RegimeThreeLineTotalText" />
-    </LinearLayout>
+    <TextView
+      android:id="@+id/mmia_regime_three_line_pharmacy"
+      style="@style/MMIA.RegimeThreeLineTotalText" />
+  </LinearLayout>
 </LinearLayout>

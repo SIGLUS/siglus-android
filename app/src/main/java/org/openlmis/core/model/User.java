@@ -21,13 +21,12 @@ package org.openlmis.core.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
-import org.openlmis.core.utils.HashUtil;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openlmis.core.utils.HashUtil;
+
 @Builder
 @Data
 @DatabaseTable(tableName = "users")
@@ -35,56 +34,56 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User extends BaseModel {
 
-    @DatabaseField
-    String username;
+  @DatabaseField
+  String username;
 
-    @DatabaseField
-    String userFirstName;
+  @DatabaseField
+  String userFirstName;
 
-    @DatabaseField
-    String userLastName;
+  @DatabaseField
+  String userLastName;
 
-    String password;
+  String password;
 
-    @DatabaseField(columnName = "password")
-    String passwordMD5;
+  @DatabaseField(columnName = "password")
+  String passwordMD5;
 
-    @DatabaseField
-    String facilityCode;
+  @DatabaseField
+  String facilityCode;
 
-    @DatabaseField
-    String facilityName;
+  @DatabaseField
+  String facilityName;
 
-    @DatabaseField
-    String facilityId;
+  @DatabaseField
+  String facilityId;
 
-    String accessToken;
+  String accessToken;
 
-    String tokenType;
+  String tokenType;
 
-    String referenceDataUserId;
+  String referenceDataUserId;
 
-    Boolean isTokenExpired;
+  Boolean isTokenExpired;
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-        calculatePasswordMD5();
+  public User(String username, String password) {
+    this.username = username;
+    this.password = password;
+    calculatePasswordMD5();
+  }
+
+  public void calculatePasswordMD5() {
+    this.passwordMD5 = HashUtil.md5(password);
+  }
+
+  public String getPasswordMD5() {
+    if (passwordMD5 == null && password != null) {
+      calculatePasswordMD5();
     }
+    return passwordMD5;
+  }
 
-    public void calculatePasswordMD5() {
-        this.passwordMD5 = HashUtil.md5(password);
-    }
-
-    public String getPasswordMD5() {
-        if (passwordMD5 == null && password != null) {
-            calculatePasswordMD5();
-        }
-        return passwordMD5;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-        calculatePasswordMD5();
-    }
+  public void setPassword(String password) {
+    this.password = password;
+    calculatePasswordMD5();
+  }
 }

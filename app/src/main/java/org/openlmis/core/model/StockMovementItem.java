@@ -25,7 +25,11 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.DateUtil;
@@ -35,185 +39,189 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @DatabaseTable(tableName = "stock_items")
 public class StockMovementItem extends BaseModel {
 
-    @Expose
-    @DatabaseField
-    String documentNumber;
+  @Expose
+  @DatabaseField
+  String documentNumber;
 
-    @Expose
-    @DatabaseField
-    long movementQuantity;
+  @Expose
+  @DatabaseField
+  long movementQuantity;
 
-    @Expose
-    @DatabaseField
-    Long requested;
+  @Expose
+  @DatabaseField
+  Long requested;
 
-    @DatabaseField
-    String reason;
+  @DatabaseField
+  String reason;
 
-    @DatabaseField
-    MovementReasonManager.MovementType movementType;
+  @DatabaseField
+  MovementReasonManager.MovementType movementType;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
-    StockCard stockCard;
+  @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
+  StockCard stockCard;
 
-    @DatabaseField
-    long stockOnHand;
+  @DatabaseField
+  long stockOnHand;
 
-    @Expose
-    @DatabaseField
-    String signature;
+  @Expose
+  @DatabaseField
+  String signature;
 
-    @Expose
-    String expireDates;
+  @Expose
+  String expireDates;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DB_DATE_FORMAT)
-    private java.util.Date movementDate;
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DB_DATE_FORMAT)
+  private java.util.Date movementDate;
 
-    @DatabaseField
-    private boolean synced = false;
+  @DatabaseField
+  private boolean synced = false;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
-    private java.util.Date createdTime;
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
+  private java.util.Date createdTime;
 
-    @ForeignCollectionField()
-    private ForeignCollection<LotMovementItem> foreignLotMovementItems;
+  @ForeignCollectionField()
+  private ForeignCollection<LotMovementItem> foreignLotMovementItems;
 
-    private List<LotMovementItem> lotMovementItemListWrapper;
-    private List<LotMovementItem> newAddedLotMovementItemListWrapper;
+  private List<LotMovementItem> lotMovementItemListWrapper;
+  private List<LotMovementItem> newAddedLotMovementItemListWrapper;
 
-    public StockMovementItem(StockCard stockCard, InventoryViewModel model) {
-        this.stockCard = stockCard;
-        this.movementDate = DateUtil.getCurrentDate();
-        this.reason = MovementReasonManager.INVENTORY;
-        this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
-        populateLotQuantitiesAndCalculateNewSOH(model.getNewLotMovementViewModelList(), movementType);
+  public StockMovementItem(StockCard stockCard, InventoryViewModel model) {
+    this.stockCard = stockCard;
+    this.movementDate = DateUtil.getCurrentDate();
+    this.reason = MovementReasonManager.INVENTORY;
+    this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
+    populateLotQuantitiesAndCalculateNewSOH(model.getNewLotMovementViewModelList(), movementType);
+  }
+
+  public StockMovementItem(StockCard stockCard, InventoryViewModel model,
+      boolean fromInitialInventory) {
+    this.stockCard = stockCard;
+    this.movementDate = DateUtil.getCurrentDate();
+    this.reason = MovementReasonManager.INVENTORY;
+    this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
+
+    List<LotMovementViewModel> movementViewModelList = new ArrayList<>();
+    movementViewModelList.addAll(model.getExistingLotMovementViewModelList());
+    movementViewModelList.addAll(model.getNewLotMovementViewModelList());
+    populateLotQuantitiesAndCalculateNewSOH(
+        fromInitialInventory ? movementViewModelList : model.getNewLotMovementViewModelList(),
+        movementType);
+  }
+
+  public boolean isPositiveMovement() {
+    return movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+        || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
+  }
+
+  public boolean isNegativeMovement() {
+    return movementType.equals(MovementReasonManager.MovementType.ISSUE)
+        || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
+  }
+
+  public Period getMovementPeriod() {
+    return Period.of(movementDate);
+  }
+
+  public long calculatePreviousSOH() {
+    if (isNegativeMovement()) {
+      return stockOnHand + movementQuantity;
+    } else if (isPositiveMovement()) {
+      return stockOnHand - movementQuantity;
+    } else {
+      return stockOnHand;
     }
+  }
 
-    public StockMovementItem(StockCard stockCard, InventoryViewModel model, boolean fromInitialInventory) {
-        this.stockCard = stockCard;
-        this.movementDate = DateUtil.getCurrentDate();
-        this.reason = MovementReasonManager.INVENTORY;
-        this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
+  public StockMovementItem(StockCard stockCard) {
+    this.stockCard = stockCard;
+    this.stockOnHand = stockCard.calculateSOHFromLots();
+    this.movementDate = DateUtil.getCurrentDate();
+  }
 
-        List<LotMovementViewModel> movementViewModelList = new ArrayList<>();
-        movementViewModelList.addAll(model.getExistingLotMovementViewModelList());
-        movementViewModelList.addAll(model.getNewLotMovementViewModelList());
-        populateLotQuantitiesAndCalculateNewSOH(fromInitialInventory ? movementViewModelList : model.getNewLotMovementViewModelList(), movementType);
-    }
+  public List<LotMovementItem> getLotMovementItemListWrapper() {
+    lotMovementItemListWrapper = ListUtil
+        .wrapOrEmpty(foreignLotMovementItems, lotMovementItemListWrapper);
+    return lotMovementItemListWrapper;
+  }
 
-    public boolean isPositiveMovement() {
-        return movementType.equals(MovementReasonManager.MovementType.RECEIVE)
-                || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
-    }
+  public List<LotMovementItem> getNewAddedLotMovementItemListWrapper() {
+    newAddedLotMovementItemListWrapper = ListUtil
+        .wrapOrEmpty(foreignLotMovementItems, newAddedLotMovementItemListWrapper);
+    return newAddedLotMovementItemListWrapper;
+  }
 
-    public boolean isNegativeMovement() {
-        return movementType.equals(MovementReasonManager.MovementType.ISSUE)
-                || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
-    }
-
-    public Period getMovementPeriod() {
-        return Period.of(movementDate);
-    }
-
-    public long calculatePreviousSOH() {
-        if (isNegativeMovement()) {
-            return stockOnHand + movementQuantity;
-        } else if (isPositiveMovement()) {
-            return stockOnHand - movementQuantity;
-        } else {
-            return stockOnHand;
+  public void populateLotQuantitiesAndCalculateNewSOH(
+      List<LotMovementViewModel> lotMovementViewModelList,
+      MovementReasonManager.MovementType movementType) {
+    final StockMovementItem stockMovementItem = this;
+    if (!lotMovementViewModelList.isEmpty()) {
+      long movementQuantity = 0;
+      for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
+        if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+          movementQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
         }
+      }
+      setMovementQuantity(movementQuantity);
+
+      if (isNegativeMovement()) {
+        setStockOnHand(getStockOnHand() - movementQuantity);
+      } else {
+        setStockOnHand(getStockOnHand() + movementQuantity);
+      }
+      setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList)
+          .transform(lotMovementViewModel -> {
+            LotMovementItem lotItem = lotMovementViewModel
+                .convertViewToModel(getStockCard().getProduct());
+            lotItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
+            return lotItem;
+          }).toList());
     }
+  }
 
-    public StockMovementItem(StockCard stockCard) {
-        this.stockCard = stockCard;
-        this.stockOnHand = stockCard.calculateSOHFromLots();
-        this.movementDate = DateUtil.getCurrentDate();
-    }
+  public void populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(
+      List<LotMovementViewModel> existingLotMovementList,
+      List<LotMovementViewModel> newAddedLotMovementList) {
+    final StockMovementItem stockMovementItem = this;
+    ImmutableList<LotMovementItem> existingLotMovementItemList = FluentIterable
+        .from(existingLotMovementList)
+        .transform(lotMovementViewModel -> {
+          LotMovementItem lotItem = lotMovementViewModel
+              .convertViewToModelAndResetSOH(getStockCard().getProduct());
+          lotItem.setStockMovementItem(stockMovementItem);
+          lotItem.setStockOnHandReset(true);
+          return lotItem;
+        }).toList();
 
-    public List<LotMovementItem> getLotMovementItemListWrapper() {
-        lotMovementItemListWrapper = ListUtil.wrapOrEmpty(foreignLotMovementItems, lotMovementItemListWrapper);
-        return lotMovementItemListWrapper;
-    }
+    ImmutableList<LotMovementItem> newAddedLotMovementItemList = FluentIterable
+        .from(newAddedLotMovementList)
+        .transform(lotMovementViewModel -> {
+          lotMovementViewModel
+              .setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+          LotMovementItem lotItem = lotMovementViewModel
+              .convertViewToModel(getStockCard().getProduct());
+          lotItem.setStockMovementItem(stockMovementItem);
+          return lotItem;
+        }).toList();
+    setLotMovementItemListWrapper(existingLotMovementItemList);
+    setNewAddedLotMovementItemListWrapper(newAddedLotMovementItemList);
+  }
 
-    public List<LotMovementItem> getNewAddedLotMovementItemListWrapper() {
-        newAddedLotMovementItemListWrapper = ListUtil.wrapOrEmpty(foreignLotMovementItems, newAddedLotMovementItemListWrapper);
-        return newAddedLotMovementItemListWrapper;
-    }
-
-    public void populateLotQuantitiesAndCalculateNewSOH(List<LotMovementViewModel> lotMovementViewModelList,
-                                                        MovementReasonManager.MovementType movementType) {
-        final StockMovementItem stockMovementItem = this;
-        if (!lotMovementViewModelList.isEmpty()) {
-            long movementQuantity = 0;
-            for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
-                if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
-                    movementQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
-                }
-            }
-            setMovementQuantity(movementQuantity);
-
-            if (isNegativeMovement()) {
-                setStockOnHand(getStockOnHand() - movementQuantity);
-            } else {
-                setStockOnHand(getStockOnHand() + movementQuantity);
-            }
-            setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList)
-                    .transform(lotMovementViewModel -> {
-                        LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
-                        lotItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
-                        return lotItem;
-                    }).toList());
-        }
-    }
-
-    public void populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(List<LotMovementViewModel> existingLotMovementList,
-                                                                               List<LotMovementViewModel> newAddedLotMovementList) {
-        final StockMovementItem stockMovementItem = this;
-        ImmutableList<LotMovementItem> existingLotMovementItemList = FluentIterable
-                .from(existingLotMovementList)
-                .transform(lotMovementViewModel -> {
-                    LotMovementItem lotItem = lotMovementViewModel.convertViewToModelAndResetSOH(getStockCard().getProduct());
-                    lotItem.setStockMovementItem(stockMovementItem);
-                    lotItem.setStockOnHandReset(true);
-                    return lotItem;
-                }).toList();
-
-        ImmutableList<LotMovementItem> newAddedLotMovementItemList = FluentIterable
-                .from(newAddedLotMovementList)
-                .transform(lotMovementViewModel -> {
-                    lotMovementViewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
-                    LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
-                    lotItem.setStockMovementItem(stockMovementItem);
-                    return lotItem;
-                }).toList();
-        setLotMovementItemListWrapper(existingLotMovementItemList);
-        setNewAddedLotMovementItemListWrapper(newAddedLotMovementItemList);
-    }
-
-    @Override
-    public String toString() {
-        return "[documentNumber=" + documentNumber
-                + ",reason=" + reason
-                + ",movementType=" + movementType
-                + ",productCode=" + stockCard.getProduct().getCode()
-                + ",stockOnHand=" + stockOnHand
-                + ",movementQuantity=" + movementQuantity
-                + ",stockCard.StockOnHand=" + stockCard.getStockOnHand()
-                + ",stockCard.calculateSOHFromLots=" + stockCard.calculateSOHFromLots()
-                + "]";
-    }
+  @Override
+  public String toString() {
+    return "[documentNumber=" + documentNumber
+        + ",reason=" + reason
+        + ",movementType=" + movementType
+        + ",productCode=" + stockCard.getProduct().getCode()
+        + ",stockOnHand=" + stockOnHand
+        + ",movementQuantity=" + movementQuantity
+        + ",stockCard.StockOnHand=" + stockCard.getStockOnHand()
+        + ",stockCard.calculateSOHFromLots=" + stockCard.calculateSOHFromLots()
+        + "]";
+  }
 }

@@ -7,14 +7,11 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
-
+import androidx.fragment.app.FragmentActivity;
 import com.google.inject.Inject;
 import com.google.inject.Key;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import androidx.fragment.app.FragmentActivity;
 import roboguice.RoboGuice;
 import roboguice.activity.event.OnActivityResultEvent;
 import roboguice.activity.event.OnContentChangedEvent;
@@ -34,121 +31,124 @@ import roboguice.inject.RoboInjector;
 import roboguice.util.RoboContext;
 
 /**
- * migration AndroidX
- * see {@link RoboFragmentActivity}
+ * migration AndroidX see {@link RoboFragmentActivity}
  */
 public class RoboMigrationAndroidXFragmentActivity extends FragmentActivity implements RoboContext {
-    protected EventManager eventManager;
-    protected HashMap<Key<?>,Object> scopedObjects = new HashMap<Key<?>, Object>();
+
+  protected EventManager eventManager;
+  protected HashMap<Key<?>, Object> scopedObjects = new HashMap<Key<?>, Object>();
 
 
-    @Inject ContentViewListener ignored;
+  @Inject
+  ContentViewListener ignored;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        final RoboInjector injector = RoboGuice.getInjector(this);
-        eventManager = injector.getInstance(EventManager.class);
-        injector.injectMembersWithoutViews(this);
-        super.onCreate(savedInstanceState);
-        eventManager.fire(new OnCreateEvent<Activity>(this,savedInstanceState));
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    final RoboInjector injector = RoboGuice.getInjector(this);
+    eventManager = injector.getInstance(EventManager.class);
+    injector.injectMembersWithoutViews(this);
+    super.onCreate(savedInstanceState);
+    eventManager.fire(new OnCreateEvent<Activity>(this, savedInstanceState));
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    eventManager.fire(new OnSaveInstanceStateEvent(this, outState));
+  }
+
+  @Override
+  protected void onRestart() {
+    super.onRestart();
+    eventManager.fire(new OnRestartEvent(this));
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    eventManager.fire(new OnStartEvent<Activity>(this));
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    eventManager.fire(new OnResumeEvent(this));
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    eventManager.fire(new OnPauseEvent(this));
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    eventManager.fire(new OnNewIntentEvent(this));
+  }
+
+  @Override
+  protected void onStop() {
+    try {
+      eventManager.fire(new OnStopEvent(this));
+    } finally {
+      super.onStop();
+    }
+  }
+
+  @Override
+  protected void onDestroy() {
+    try {
+      eventManager.fire(new OnDestroyEvent<Activity>(this));
+    } finally {
+      try {
+        RoboGuice.destroyInjector(this);
+      } finally {
+        super.onDestroy();
+      }
+    }
+  }
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    final Configuration currentConfig = getResources().getConfiguration();
+    super.onConfigurationChanged(newConfig);
+    eventManager.fire(new OnConfigurationChangedEvent<Activity>(this, currentConfig, newConfig));
+  }
+
+  @Override
+  public void onContentChanged() {
+    super.onContentChanged();
+    RoboGuice.getInjector(this).injectViewMembers(this);
+    eventManager.fire(new OnContentChangedEvent(this));
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    eventManager.fire(new OnActivityResultEvent(this, requestCode, resultCode, data));
+  }
+
+  @Override
+  public Map<Key<?>, Object> getScopedObjectMap() {
+    return scopedObjects;
+  }
+
+  @Override
+  public View onCreateView(String name, Context context, AttributeSet attrs) {
+    if (RoboActivity.shouldInjectOnCreateView(name)) {
+      return RoboActivity.injectOnCreateView(name, context, attrs);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        eventManager.fire(new OnSaveInstanceStateEvent(this, outState));
+    return super.onCreateView(name, context, attrs);
+  }
+
+  @Override
+  public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+    if (RoboActivity.shouldInjectOnCreateView(name)) {
+      return RoboActivity.injectOnCreateView(name, context, attrs);
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        eventManager.fire(new OnRestartEvent(this));
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        eventManager.fire(new OnStartEvent<Activity>(this));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        eventManager.fire(new OnResumeEvent(this));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        eventManager.fire(new OnPauseEvent(this));
-    }
-
-    @Override
-    protected void onNewIntent( Intent intent ) {
-        super.onNewIntent(intent);
-        eventManager.fire(new OnNewIntentEvent(this));
-    }
-
-    @Override
-    protected void onStop() {
-        try {
-            eventManager.fire(new OnStopEvent(this));
-        } finally {
-            super.onStop();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        try {
-            eventManager.fire(new OnDestroyEvent<Activity>(this));
-        } finally {
-            try {
-                RoboGuice.destroyInjector(this);
-            } finally {
-                super.onDestroy();
-            }
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        final Configuration currentConfig = getResources().getConfiguration();
-        super.onConfigurationChanged(newConfig);
-        eventManager.fire(new OnConfigurationChangedEvent<Activity>(this,currentConfig, newConfig));
-    }
-
-    @Override
-    public void onContentChanged() {
-        super.onContentChanged();
-        RoboGuice.getInjector(this).injectViewMembers(this);
-        eventManager.fire(new OnContentChangedEvent(this));
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        eventManager.fire(new OnActivityResultEvent(this, requestCode, resultCode, data));
-    }
-
-    @Override
-    public Map<Key<?>, Object> getScopedObjectMap() {
-        return scopedObjects;
-    }
-
-    @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        if (RoboActivity.shouldInjectOnCreateView(name))
-            return RoboActivity.injectOnCreateView(name, context, attrs);
-
-        return super.onCreateView(name, context, attrs);
-    }
-
-    @Override
-    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        if (RoboActivity.shouldInjectOnCreateView(name))
-            return RoboActivity.injectOnCreateView(name, context, attrs);
-
-        return super.onCreateView(parent, name, context, attrs);
-    }
+    return super.onCreateView(parent, name, context, attrs);
+  }
 }

@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Card.Padded"
+  style="@style/Card.Padded"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    style="@style/ItemRnr.Type2Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        style="@style/ItemRnr.Type2Container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+      android:id="@+id/tv_period"
+      style="@style/ItemRnr.PeriodTextType2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/tv_period"
-            style="@style/ItemRnr.PeriodTextType2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+    <View
+      android:id="@+id/action_divider"
+      style="@style/HorizontalLine" />
 
-        <View
-            android:id="@+id/action_divider"
-            style="@style/HorizontalLine" />
+    <TextView
+      android:id="@+id/tv_report_status"
+      style="@style/ItemRnr.MessageTextType2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/tv_report_status"
-            style="@style/ItemRnr.MessageTextType2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+    <ViewStub
+      android:id="@+id/tv_drug_count"
+      style="@style/ItemRnr.MessageTextType2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout="@layout/view_drug_count" />
 
-        <ViewStub
-            android:id="@+id/tv_drug_count"
-            style="@style/ItemRnr.MessageTextType2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout="@layout/view_drug_count" />
+    <TextView
+      android:id="@+id/btn_create_patient_data_report"
+      style="@style/ItemRnr.BtnView"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/button_height_form"
+      android:layout_marginBottom="@dimen/margin_small" />
+  </LinearLayout>
 
-        <TextView
-            android:id="@+id/btn_create_patient_data_report"
-            style="@style/ItemRnr.BtnView"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height_form"
-            android:layout_marginBottom="@dimen/margin_small"/>
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/iv_del"
-        android:padding="5dp"
-        android:layout_margin="@dimen/margin_small"
-        android:layout_gravity="right|top"
-        android:src="@drawable/ic_menu_grey"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+  <ImageView
+    android:id="@+id/iv_del"
+    android:padding="5dp"
+    android:layout_margin="@dimen/margin_small"
+    android:layout_gravity="right|top"
+    android:src="@drawable/ic_menu_grey"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
 </androidx.cardview.widget.CardView>

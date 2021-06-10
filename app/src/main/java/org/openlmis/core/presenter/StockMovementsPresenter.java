@@ -19,8 +19,12 @@
 package org.openlmis.core.presenter;
 
 
-import com.google.inject.Inject;
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
+import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
@@ -31,124 +35,120 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.Getter;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
-
 public class StockMovementsPresenter extends Presenter {
 
-    @Getter
-    final List<StockMovementViewModel> stockMovementModelList = new ArrayList<>();
+  @Getter
+  final List<StockMovementViewModel> stockMovementModelList = new ArrayList<>();
 
-    @Inject
-    StockRepository stockRepository;
+  @Inject
+  StockRepository stockRepository;
 
-    @Getter
-    StockCard stockCard;
+  @Getter
+  StockCard stockCard;
 
-    StockMovementView view;
+  StockMovementView view;
 
-    @Inject
-    SharedPreferenceMgr sharedPreferenceMgr;
+  @Inject
+  SharedPreferenceMgr sharedPreferenceMgr;
 
-    @Inject
-    private ProductRepository productRepository;
+  @Inject
+  private ProductRepository productRepository;
 
-    @Inject
-    private StockMovementRepository stockMovementRepository;
+  @Inject
+  private StockMovementRepository stockMovementRepository;
 
-    public StockMovementsPresenter() {
+  public StockMovementsPresenter() {
+  }
+
+  @Override
+  public void attachView(BaseView v) {
+    this.view = (StockMovementView) v;
+  }
+
+  public void setStockCard(long stockCardId) throws LMISException {
+    this.stockCard = stockRepository.queryStockCardById(stockCardId);
+    updateMenus();
+
+    view.updateExpiryDateViewGroup();
+  }
+
+  public void loadStockMovementViewModels() {
+    view.loading();
+    Subscription subscription = loadStockMovementViewModelsObserver()
+        .subscribe(loadStockMovementViewModelSubscriber());
+    subscriptions.add(subscription);
+  }
+
+  private Observer<List<StockMovementViewModel>> loadStockMovementViewModelSubscriber() {
+    return new Observer<List<StockMovementViewModel>>() {
+      @Override
+      public void onCompleted() {
+      }
+
+      @Override
+      public void onError(Throwable throwable) {
+        ToastUtil.show("Database query error :" + throwable.getMessage());
+      }
+
+      @Override
+      public void onNext(List<StockMovementViewModel> stockMovementViewModels) {
+        stockMovementModelList.clear();
+        stockMovementModelList.addAll(stockMovementViewModels);
+        view.refreshStockMovement();
+        view.loaded();
+      }
+    };
+  }
+
+  protected Observable<List<StockMovementViewModel>> loadStockMovementViewModelsObserver() {
+    return Observable.create((Observable.OnSubscribe<List<StockMovementViewModel>>) subscriber -> {
+      try {
+        List<StockMovementViewModel> list = from(
+            stockMovementRepository.listLastFiveStockMovements(stockCard.getId()))
+            .transform(stockMovementItem -> new StockMovementViewModel(stockMovementItem)).toList();
+
+        subscriber.onNext(list);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  private void updateMenus() {
+    boolean isArchivable = !stockCard.getProduct().isKit() && stockCard.getStockOnHand() == 0;
+    view.updateArchiveMenus(isArchivable);
+
+    try {
+      String code = stockCard.getProduct().getCode();
+      List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(code);
+      boolean isUnpackable = stockCard.getProduct().isKit() && kitProducts.size() > 0
+          && stockCard.getStockOnHand() != 0;
+      view.updateUnpackKitMenu(isUnpackable);
+    } catch (LMISException e) {
+      new LMISException(e, "StockMovementsPresenter.updateMenus").reportToFabric();
     }
+  }
 
-    @Override
-    public void attachView(BaseView v) {
-        this.view = (StockMovementView) v;
-    }
+  public void archiveStockCard() {
+    stockCard.getProduct().setArchived(true);
+    stockRepository.updateProductOfStockCard(stockCard.getProduct());
+  }
 
-    public void setStockCard(long stockCardId) throws LMISException {
-        this.stockCard = stockRepository.queryStockCardById(stockCardId);
-        updateMenus();
+  public interface StockMovementView extends BaseView {
 
-        view.updateExpiryDateViewGroup();
-    }
+    void refreshStockMovement();
 
-    public void loadStockMovementViewModels() {
-        view.loading();
-        Subscription subscription = loadStockMovementViewModelsObserver().subscribe(loadStockMovementViewModelSubscriber());
-        subscriptions.add(subscription);
-    }
+    void updateArchiveMenus(boolean isArchivable);
 
-    private Observer<List<StockMovementViewModel>> loadStockMovementViewModelSubscriber() {
-        return new Observer<List<StockMovementViewModel>>() {
-            @Override
-            public void onCompleted() {
-            }
+    void updateUnpackKitMenu(boolean isUnpackable);
 
-            @Override
-            public void onError(Throwable throwable) {
-                ToastUtil.show("Database query error :" + throwable.getMessage());
-            }
-
-            @Override
-            public void onNext(List<StockMovementViewModel> stockMovementViewModels) {
-                stockMovementModelList.clear();
-                stockMovementModelList.addAll(stockMovementViewModels);
-                view.refreshStockMovement();
-                view.loaded();
-            }
-        };
-    }
-
-    protected Observable<List<StockMovementViewModel>> loadStockMovementViewModelsObserver() {
-        return Observable.create((Observable.OnSubscribe<List<StockMovementViewModel>>) subscriber -> {
-            try {
-                List<StockMovementViewModel> list = from(stockMovementRepository.listLastFiveStockMovements(stockCard.getId()))
-                        .transform(stockMovementItem -> new StockMovementViewModel(stockMovementItem)).toList();
-
-                subscriber.onNext(list);
-                subscriber.onCompleted();
-            } catch (LMISException e) {
-                subscriber.onError(e);
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    private void updateMenus() {
-        boolean isArchivable = !stockCard.getProduct().isKit() && stockCard.getStockOnHand() == 0;
-        view.updateArchiveMenus(isArchivable);
-
-        try {
-            String code = stockCard.getProduct().getCode();
-            List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(code);
-            boolean isUnpackable = stockCard.getProduct().isKit() && kitProducts.size() > 0 && stockCard.getStockOnHand() != 0;
-            view.updateUnpackKitMenu(isUnpackable);
-        } catch (LMISException e) {
-            new LMISException(e, "StockMovementsPresenter.updateMenus").reportToFabric();
-        }
-    }
-
-    public void archiveStockCard() {
-        stockCard.getProduct().setArchived(true);
-        stockRepository.updateProductOfStockCard(stockCard.getProduct());
-    }
-
-    public interface StockMovementView extends BaseView {
-
-        void refreshStockMovement();
-
-        void updateArchiveMenus(boolean isArchivable);
-
-        void updateUnpackKitMenu(boolean isUnpackable);
-
-        void updateExpiryDateViewGroup();
-    }
+    void updateExpiryDateViewGroup();
+  }
 }

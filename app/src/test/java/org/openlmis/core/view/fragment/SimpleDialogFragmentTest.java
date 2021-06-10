@@ -17,39 +17,39 @@
  */
 package org.openlmis.core.view.fragment;
 
-import androidx.appcompat.app.AlertDialog;
-import android.app.Dialog;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import android.app.Dialog;
+import androidx.appcompat.app.AlertDialog;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.robolectric.util.FragmentTestUtil;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 @RunWith(LMISTestRunner.class)
 public class SimpleDialogFragmentTest {
 
-    // TODO: robolectric.android.controller.FragmentController with RoboContext
-    @Ignore
-    @Test
-    public void shouldSetCallBack() {
-        SimpleDialogFragment fragment = SimpleDialogFragment.newInstance(
-                "title",
-                "message",
-                "btn_positive",
-                "btn_negative",
-                "onBackPressed");
+  // TODO: robolectric.android.controller.FragmentController with RoboContext
+  @Ignore
+  @Test
+  public void shouldSetCallBack() {
+    SimpleDialogFragment fragment = SimpleDialogFragment.newInstance(
+        "title",
+        "message",
+        "btn_positive",
+        "btn_negative",
+        "onBackPressed");
 
-        SimpleDialogFragment.MsgDialogCallBack dialogCallBack = mock(SimpleDialogFragment.MsgDialogCallBack.class);
-        fragment.setCallBackListener(dialogCallBack);
-        FragmentTestUtil.startFragment(fragment);
+    SimpleDialogFragment.MsgDialogCallBack dialogCallBack = mock(
+        SimpleDialogFragment.MsgDialogCallBack.class);
+    fragment.setCallBackListener(dialogCallBack);
+    FragmentTestUtil.startFragment(fragment);
 
-        Dialog dialog = fragment.getDialog();
-        (((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)).performClick();
-        verify(dialogCallBack).positiveClick(anyString());
-    }
+    Dialog dialog = fragment.getDialog();
+    (((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)).performClick();
+    verify(dialogCallBack).positiveClick(anyString());
+  }
 }

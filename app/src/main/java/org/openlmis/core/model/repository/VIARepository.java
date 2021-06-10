@@ -19,31 +19,29 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
-
 import com.google.inject.Inject;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class VIARepository extends RnrFormRepository {
 
-    public static final String ATTR_CONSULTATION = "consultation";
+  public static final String ATTR_CONSULTATION = "consultation";
 
-    @Inject
-    public VIARepository(Context context) {
-        super(context);
-        programCode = Constants.VIA_PROGRAM_CODE;
-    }
+  @Inject
+  public VIARepository(Context context) {
+    super(context);
+    programCode = Constants.VIA_PROGRAM_CODE;
+  }
 
-    @Override
-    protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form, MMIARepository.ReportType type) {
-        BaseInfoItem newPatients = new BaseInfoItem(ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form,"",0);
-        List<BaseInfoItem> baseInfoItemList = new ArrayList<>();
-        baseInfoItemList.add(newPatients);
-        return baseInfoItemList;
-    }
+  @Override
+  protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form, MMIARepository.ReportType type) {
+    BaseInfoItem newPatients = new BaseInfoItem(ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form,
+        "", 0);
+    List<BaseInfoItem> baseInfoItemList = new ArrayList<>();
+    baseInfoItemList.add(newPatients);
+    return baseInfoItemList;
+  }
 }

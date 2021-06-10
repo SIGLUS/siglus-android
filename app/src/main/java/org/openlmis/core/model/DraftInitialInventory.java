@@ -4,72 +4,73 @@ import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-
+import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.openlmis.core.utils.ListUtil;
 import org.openlmis.core.view.viewmodel.BulkInitialInventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-
-import java.util.List;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @Setter
 @DatabaseTable(tableName = "draft_initial_inventory")
 @NoArgsConstructor
 public class DraftInitialInventory extends BaseModel {
-    private static final String TAG = DraftInitialInventory.class.getSimpleName();
 
-    @Deprecated
-    @DatabaseField
-    String expireDates;
+  private static final String TAG = DraftInitialInventory.class.getSimpleName();
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    Product product;
+  @Deprecated
+  @DatabaseField
+  String expireDates;
 
-    @DatabaseField(defaultValue = "false")
-    boolean done;
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  Product product;
 
-    @DatabaseField
-    Long quantity;
+  @DatabaseField(defaultValue = "false")
+  boolean done;
 
-    @ForeignCollectionField()
-    private ForeignCollection<DraftInitialInventoryLotItem> foreignDraftLotItems;
+  @DatabaseField
+  Long quantity;
 
-    private List<DraftInitialInventoryLotItem> draftLotItemListWrapper;
+  @ForeignCollectionField()
+  private ForeignCollection<DraftInitialInventoryLotItem> foreignDraftLotItems;
 
-    public DraftInitialInventory(BulkInitialInventoryViewModel viewModel) {
-        this.product = viewModel.getProduct();
-        this.quantity = viewModel.getLotListQuantityTotalAmount();
-        done = viewModel.isDone();
-        setupDraftLotList(viewModel.getExistingLotMovementViewModelList(), viewModel.getNewLotMovementViewModelList());
-    }
+  private List<DraftInitialInventoryLotItem> draftLotItemListWrapper;
 
-    public List<DraftInitialInventoryLotItem> getDraftLotItemListWrapper() {
-        draftLotItemListWrapper = ListUtil.wrapOrEmpty(foreignDraftLotItems, draftLotItemListWrapper);
-        return draftLotItemListWrapper;
-    }
+  public DraftInitialInventory(BulkInitialInventoryViewModel viewModel) {
+    this.product = viewModel.getProduct();
+    this.quantity = viewModel.getLotListQuantityTotalAmount();
+    done = viewModel.isDone();
+    setupDraftLotList(viewModel.getExistingLotMovementViewModelList(),
+        viewModel.getNewLotMovementViewModelList());
+  }
 
-    private void setupDraftLotList(List<LotMovementViewModel> existingLotMovementViewModelList,
-                                   List<LotMovementViewModel> lotMovementViewModelList) {
-        getDraftLotItemListWrapper()
-                .addAll(FluentIterable.from(existingLotMovementViewModelList)
-                        .transform(lotMovementViewModel -> {
-                            DraftInitialInventoryLotItem draftLotItem = new DraftInitialInventoryLotItem(lotMovementViewModel,
-                                    product);
-                            draftLotItem.setDraftInitialInventory(DraftInitialInventory.this);
-                            return draftLotItem;
-                        }).toList());
-        getDraftLotItemListWrapper()
-                .addAll(FluentIterable.from(lotMovementViewModelList)
-                        .transform(lotMovementViewModel -> {
-                            DraftInitialInventoryLotItem draftLotItem = new DraftInitialInventoryLotItem(lotMovementViewModel,
-                                    product);
-                            draftLotItem.setDraftInitialInventory(DraftInitialInventory.this);
-                            return draftLotItem;
-                        }).toList());
-    }
+  public List<DraftInitialInventoryLotItem> getDraftLotItemListWrapper() {
+    draftLotItemListWrapper = ListUtil.wrapOrEmpty(foreignDraftLotItems, draftLotItemListWrapper);
+    return draftLotItemListWrapper;
+  }
+
+  private void setupDraftLotList(List<LotMovementViewModel> existingLotMovementViewModelList,
+      List<LotMovementViewModel> lotMovementViewModelList) {
+    getDraftLotItemListWrapper()
+        .addAll(FluentIterable.from(existingLotMovementViewModelList)
+            .transform(lotMovementViewModel -> {
+              DraftInitialInventoryLotItem draftLotItem = new DraftInitialInventoryLotItem(
+                  lotMovementViewModel,
+                  product);
+              draftLotItem.setDraftInitialInventory(DraftInitialInventory.this);
+              return draftLotItem;
+            }).toList());
+    getDraftLotItemListWrapper()
+        .addAll(FluentIterable.from(lotMovementViewModelList)
+            .transform(lotMovementViewModel -> {
+              DraftInitialInventoryLotItem draftLotItem = new DraftInitialInventoryLotItem(
+                  lotMovementViewModel,
+                  product);
+              draftLotItem.setDraftInitialInventory(DraftInitialInventory.this);
+              return draftLotItem;
+            }).toList());
+  }
 }

@@ -19,8 +19,21 @@
 package org.openlmis.core.presenter;
 
 
-import com.google.inject.AbstractModule;
+import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.inject.AbstractModule;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,241 +52,227 @@ import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.service.SyncUpManager;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
-
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class MMIARequisitionPresenterTest {
 
-    private SyncUpManager syncUpManager;
-    private MMIARequisitionPresenter presenter;
-    private MMIARepository mmiaRepository;
-    private ProgramRepository programRepository;
-    private MMIARequisitionPresenter.MMIARequisitionView mockMMIAformView;
-    private RnRForm rnRForm;
-    private RegimenItemRepository regimenItemRepository;
+  private SyncUpManager syncUpManager;
+  private MMIARequisitionPresenter presenter;
+  private MMIARepository mmiaRepository;
+  private ProgramRepository programRepository;
+  private MMIARequisitionPresenter.MMIARequisitionView mockMMIAformView;
+  private RnRForm rnRForm;
+  private RegimenItemRepository regimenItemRepository;
 
-    @Before
-    public void setup() throws Exception {
-        mmiaRepository = mock(MMIARepository.class);
-        programRepository = mock(ProgramRepository.class);
-        mockMMIAformView = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
-        syncUpManager = mock(SyncUpManager.class);
-        regimenItemRepository = mock(RegimenItemRepository.class);
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-        MockitoAnnotations.initMocks(this);
+  @Before
+  public void setup() throws Exception {
+    mmiaRepository = mock(MMIARepository.class);
+    programRepository = mock(ProgramRepository.class);
+    mockMMIAformView = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
+    syncUpManager = mock(SyncUpManager.class);
+    regimenItemRepository = mock(RegimenItemRepository.class);
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    MockitoAnnotations.initMocks(this);
 
-        presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARequisitionPresenter.class);
-        presenter.attachView(mockMMIAformView);
-        rnRForm = new RnRForm();
-        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+    presenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(MMIARequisitionPresenter.class);
+    presenter.attachView(mockMMIAformView);
+    rnRForm = new RnRForm();
+    rnRForm.setStatus(RnRForm.STATUS.DRAFT);
 
-        when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
-        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+    when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
+    when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
 
-        presenter.loadDataOnNextAction.call(rnRForm);
+    presenter.loadDataOnNextAction.call(rnRForm);
+  }
+
+  @Test
+  public void shouldGetInitMMIAForm() throws LMISException, SQLException {
+    presenter.rnRForm = null;
+    when(mmiaRepository.queryUnAuthorized()).thenReturn(null);
+    presenter.getRnrForm(0);
+    verify(mmiaRepository).queryUnAuthorized();
+    verify(mmiaRepository).initNormalRnrForm(null);
+  }
+
+  @Test
+  public void shouldGetDraftMMIAForm() throws LMISException {
+    presenter.rnRForm = null;
+    when(mmiaRepository.queryUnAuthorized()).thenReturn(new RnRForm());
+    presenter.getRnrForm(0);
+    verify(mmiaRepository).queryUnAuthorized();
+    verify(mmiaRepository, never()).initNormalRnrForm(null);
+  }
+
+  @Test
+  public void shouldValidateForm() throws Exception {
+    ArrayList<RegimenItem> regimenItems = generateRegimenItems();
+    ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+
+    RnRForm rnRForm = new RnRForm();
+
+    when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
+    when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+    presenter.getRnrForm(0);
+  }
+
+  @Test
+  public void shouldShowErrorWhenLoadRnRFormOnError() {
+    reset(mockMMIAformView);
+    presenter.loadDataOnErrorAction.call(new Exception("I am testing the onError action"));
+    verify(mockMMIAformView).loaded();
+    assertEquals("I am testing the onError action", ShadowToast.getTextOfLatestToast());
+  }
+
+  @Test
+  public void shouldRefreshViewWhenLoadRnRFormOnNext() {
+    reset(mockMMIAformView);
+    RnRForm rnRForm = new RnRForm();
+    presenter.loadDataOnNextAction.call(rnRForm);
+
+    verify(mockMMIAformView).refreshRequisitionForm(rnRForm);
+    verify(mockMMIAformView).loaded();
+  }
+
+  @Test
+  public void shouldQueryRnRFormWhenFormIdIsValid() throws LMISException {
+    presenter.rnRForm = null;
+    presenter.getRnrForm(100L);
+    verify(mmiaRepository).queryRnRForm(100L);
+  }
+
+  @Test
+  public void shouldUnAuthorizedWhenFormIdIsInvalid() throws Exception {
+    presenter.rnRForm = null;
+    presenter.getRnrForm(0);
+
+    verify(mmiaRepository).queryUnAuthorized();
+  }
+
+  @Test
+  public void shouldSubmitFormWhenTheStatusIsDraft() throws LMISException {
+    RnRForm form = new RnRForm();
+    form.setStatus(RnRForm.STATUS.DRAFT);
+
+    String signature = "signature";
+    presenter.rnRForm = form;
+    presenter.processSign(signature);
+    waitObservableToExecute();
+
+    assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
+    verify(mmiaRepository).createOrUpdateWithItems(form);
+    verify(mockMMIAformView).setProcessButtonName(
+        LMISTestApp.getContext().getResources().getString(R.string.btn_complete));
+    verify(mockMMIAformView).showMessageNotifyDialog();
+  }
+
+  @Test
+  public void shouldAuthorizeFormWhenStatusIsSubmitted() throws LMISException {
+    RnRForm form = new RnRForm();
+    form.setStatus(RnRForm.STATUS.SUBMITTED);
+
+    String signature = "signature";
+    presenter.rnRForm = form;
+    presenter.processSign(signature);
+
+    waitObservableToExecute();
+
+    assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
+    verify(mmiaRepository).createOrUpdateWithItems(form);
+  }
+
+  @Test
+  public void shouldCreateCustomRegimenItem() throws Exception {
+    List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
+    int size = regimenItemListWrapper.size();
+    Regimen regimen = new Regimen();
+    TestSubscriber<Void> subscriber = new TestSubscriber<>();
+    presenter.addCustomRegimenItem(regimen).subscribe(subscriber);
+    subscriber.awaitTerminalEvent();
+    subscriber.assertNoErrors();
+
+    verify(regimenItemRepository).create(any(RegimenItem.class));
+    assertThat(regimenItemListWrapper.size(), is(size + 1));
+  }
+
+  @Test
+  public void shouldNotCreateCustomRegimenItemWhenExists() throws Exception {
+    List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
+    Regimen regimen = new Regimen();
+    regimen.setId(12);
+    regimen.setType(Regimen.RegimeType.Paediatrics);
+    regimen.setName("test");
+    RegimenItem regimenItem = new RegimenItem();
+    regimenItem.setRegimen(regimen);
+    regimenItemListWrapper.add(regimenItem);
+    int size = regimenItemListWrapper.size();
+
+    TestSubscriber<Void> subscriber = new TestSubscriber<>();
+    presenter.addCustomRegimenItem(regimen).subscribe(subscriber);
+    subscriber.awaitTerminalEvent();
+    subscriber.assertNoErrors();
+
+    verify(regimenItemRepository, never()).create(any(RegimenItem.class));
+    assertThat(regimenItemListWrapper.size(), is(size));
+  }
+
+  @Test
+  public void shouldDeleteCustomRegimenItem() throws Exception {
+    List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
+    RegimenItem item = new RegimenItem();
+    regimenItemListWrapper.add(item);
+    int size = regimenItemListWrapper.size();
+
+    TestSubscriber<Void> subscriber = new TestSubscriber<>();
+    presenter.deleteRegimeItem(item).subscribe(subscriber);
+    subscriber.awaitTerminalEvent();
+    subscriber.assertNoErrors();
+
+    verify(regimenItemRepository).deleteRegimeItem(item);
+    assertThat(regimenItemListWrapper.size(), is(size - 1));
+  }
+
+  @Test
+  public void shouldReturnTrueWhenHasExist() throws Exception {
+    Regimen regimen = new Regimen();
+    regimen.setId(100L);
+    regimen.setType(Regimen.RegimeType.Adults);
+    regimen.setName("test");
+    RegimenItem regimenItem = new RegimenItem();
+    regimenItem.setRegimen(regimen);
+    presenter.getRnRForm().getRegimenItemListWrapper().add(regimenItem);
+
+    assertTrue(presenter.isRegimeItemExists(regimen));
+  }
+
+  private void waitObservableToExecute() {
+    try {
+      Thread.sleep(1500);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
+  }
 
-    @Test
-    public void shouldGetInitMMIAForm() throws LMISException, SQLException {
-        presenter.rnRForm = null;
-        when(mmiaRepository.queryUnAuthorized()).thenReturn(null);
-        presenter.getRnrForm(0);
-        verify(mmiaRepository).queryUnAuthorized();
-        verify(mmiaRepository).initNormalRnrForm(null);
+  private ArrayList<RegimenItem> generateRegimenItems() {
+    ArrayList<RegimenItem> regimenItems = new ArrayList<>();
+    RegimenItem regimenItem = new RegimenItem();
+    regimenItem.setAmount(100L);
+    regimenItems.add(regimenItem);
+
+    return regimenItems;
+  }
+
+  public class MyTestModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+      bind(MMIARepository.class).toInstance(mmiaRepository);
+      bind(ProgramRepository.class).toInstance(programRepository);
+      bind(MMIARequisitionPresenter.MMIARequisitionView.class).toInstance(mockMMIAformView);
+      bind(SyncUpManager.class).toInstance(syncUpManager);
+      bind(RegimenItemRepository.class).toInstance(regimenItemRepository);
     }
-
-    @Test
-    public void shouldGetDraftMMIAForm() throws LMISException {
-        presenter.rnRForm = null;
-        when(mmiaRepository.queryUnAuthorized()).thenReturn(new RnRForm());
-        presenter.getRnrForm(0);
-        verify(mmiaRepository).queryUnAuthorized();
-        verify(mmiaRepository, never()).initNormalRnrForm(null);
-    }
-
-    @Test
-    public void shouldValidateForm() throws Exception {
-        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
-        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
-
-        RnRForm rnRForm = new RnRForm();
-
-        when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
-        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
-        presenter.getRnrForm(0);
-    }
-
-    @Test
-    public void shouldShowErrorWhenLoadRnRFormOnError() {
-        reset(mockMMIAformView);
-        presenter.loadDataOnErrorAction.call(new Exception("I am testing the onError action"));
-        verify(mockMMIAformView).loaded();
-        assertEquals("I am testing the onError action", ShadowToast.getTextOfLatestToast());
-    }
-
-    @Test
-    public void shouldRefreshViewWhenLoadRnRFormOnNext() {
-        reset(mockMMIAformView);
-        RnRForm rnRForm = new RnRForm();
-        presenter.loadDataOnNextAction.call(rnRForm);
-
-        verify(mockMMIAformView).refreshRequisitionForm(rnRForm);
-        verify(mockMMIAformView).loaded();
-    }
-
-    @Test
-    public void shouldQueryRnRFormWhenFormIdIsValid() throws LMISException {
-        presenter.rnRForm = null;
-        presenter.getRnrForm(100L);
-        verify(mmiaRepository).queryRnRForm(100L);
-    }
-
-    @Test
-    public void shouldUnAuthorizedWhenFormIdIsInvalid() throws Exception {
-        presenter.rnRForm = null;
-        presenter.getRnrForm(0);
-
-        verify(mmiaRepository).queryUnAuthorized();
-    }
-
-    @Test
-    public void shouldSubmitFormWhenTheStatusIsDraft() throws LMISException {
-        RnRForm form = new RnRForm();
-        form.setStatus(RnRForm.STATUS.DRAFT);
-
-        String signature = "signature";
-        presenter.rnRForm = form;
-        presenter.processSign(signature);
-        waitObservableToExecute();
-
-        assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
-        verify(mmiaRepository).createOrUpdateWithItems(form);
-        verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getResources().getString(R.string.btn_complete));
-        verify(mockMMIAformView).showMessageNotifyDialog();
-    }
-
-    @Test
-    public void shouldAuthorizeFormWhenStatusIsSubmitted() throws LMISException {
-        RnRForm form = new RnRForm();
-        form.setStatus(RnRForm.STATUS.SUBMITTED);
-
-        String signature = "signature";
-        presenter.rnRForm = form;
-        presenter.processSign(signature);
-
-        waitObservableToExecute();
-
-        assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
-        verify(mmiaRepository).createOrUpdateWithItems(form);
-    }
-
-    @Test
-    public void shouldCreateCustomRegimenItem() throws Exception {
-        List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
-        int size = regimenItemListWrapper.size();
-        Regimen regimen = new Regimen();
-        TestSubscriber<Void> subscriber = new TestSubscriber<>();
-        presenter.addCustomRegimenItem(regimen).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-
-        verify(regimenItemRepository).create(any(RegimenItem.class));
-        assertThat(regimenItemListWrapper.size(), is(size + 1));
-    }
-
-    @Test
-    public void shouldNotCreateCustomRegimenItemWhenExists() throws Exception {
-        List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
-        Regimen regimen = new Regimen();
-        regimen.setId(12);
-        regimen.setType(Regimen.RegimeType.Paediatrics);
-        regimen.setName("test");
-        RegimenItem regimenItem = new RegimenItem();
-        regimenItem.setRegimen(regimen);
-        regimenItemListWrapper.add(regimenItem);
-        int size = regimenItemListWrapper.size();
-
-        TestSubscriber<Void> subscriber = new TestSubscriber<>();
-        presenter.addCustomRegimenItem(regimen).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-
-        verify(regimenItemRepository, never()).create(any(RegimenItem.class));
-        assertThat(regimenItemListWrapper.size(), is(size));
-    }
-
-    @Test
-    public void shouldDeleteCustomRegimenItem() throws Exception {
-        List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
-        RegimenItem item = new RegimenItem();
-        regimenItemListWrapper.add(item);
-        int size = regimenItemListWrapper.size();
-
-        TestSubscriber<Void> subscriber = new TestSubscriber<>();
-        presenter.deleteRegimeItem(item).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-
-        verify(regimenItemRepository).deleteRegimeItem(item);
-        assertThat(regimenItemListWrapper.size(), is(size - 1));
-    }
-
-    @Test
-    public void shouldReturnTrueWhenHasExist() throws Exception {
-        Regimen regimen = new Regimen();
-        regimen.setId(100L);
-        regimen.setType(Regimen.RegimeType.Adults);
-        regimen.setName("test");
-        RegimenItem regimenItem = new RegimenItem();
-        regimenItem.setRegimen(regimen);
-        presenter.getRnRForm().getRegimenItemListWrapper().add(regimenItem);
-
-        assertTrue(presenter.isRegimeItemExists(regimen));
-    }
-
-    private void waitObservableToExecute() {
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private ArrayList<RegimenItem> generateRegimenItems() {
-        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
-        RegimenItem regimenItem = new RegimenItem();
-        regimenItem.setAmount(100L);
-        regimenItems.add(regimenItem);
-
-        return regimenItems;
-    }
-
-    public class MyTestModule extends AbstractModule {
-        @Override
-        protected void configure() {
-            bind(MMIARepository.class).toInstance(mmiaRepository);
-            bind(ProgramRepository.class).toInstance(programRepository);
-            bind(MMIARequisitionPresenter.MMIARequisitionView.class).toInstance(mockMMIAformView);
-            bind(SyncUpManager.class).toInstance(syncUpManager);
-            bind(RegimenItemRepository.class).toInstance(regimenItemRepository);
-        }
-    }
+  }
 }

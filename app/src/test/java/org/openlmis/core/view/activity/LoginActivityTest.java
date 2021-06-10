@@ -18,10 +18,13 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.robolectric.Shadows.shadowOf;
+
 import android.content.Intent;
-
 import com.google.inject.AbstractModule;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,149 +36,144 @@ import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-
 import roboguice.RoboGuice;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class LoginActivityTest {
 
-    private LoginActivity loginActivity;
+  private LoginActivity loginActivity;
 
-    private LoginPresenter mockedPresenter;
+  private LoginPresenter mockedPresenter;
 
-    @Before
-    public void setUp() {
-        mockedPresenter = mock(LoginPresenter.class);
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(LoginPresenter.class).toInstance(mockedPresenter);
-            }
-        });
-        loginActivity = Robolectric.buildActivity(LoginActivity.class).create().get();
-    }
+  @Before
+  public void setUp() {
+    mockedPresenter = mock(LoginPresenter.class);
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+      @Override
+      protected void configure() {
+        bind(LoginPresenter.class).toInstance(mockedPresenter);
+      }
+    });
+    loginActivity = Robolectric.buildActivity(LoginActivity.class).create().get();
+  }
 
-    @After
-    public void teardown() {
-        RoboGuice.Util.reset();
-    }
+  @After
+  public void teardown() {
+    RoboGuice.Util.reset();
+  }
 
-    @Test
-    public void shouldLoginWithFilledUsernameAndPassword() {
-        loginActivity.etUsername.setText("superuser");
-        loginActivity.etPassword.setText("super@password");
+  @Test
+  public void shouldLoginWithFilledUsernameAndPassword() {
+    loginActivity.etUsername.setText("superuser");
+    loginActivity.etPassword.setText("super@password");
 
-        loginActivity.btnLogin.performClick();
+    loginActivity.btnLogin.performClick();
 
-        verify(mockedPresenter).startLogin("superuser", "super@password",false);
-    }
+    verify(mockedPresenter).startLogin("superuser", "super@password", false);
+  }
 
-    @Test
-    public void shouldFilledLastLoginUser() {
-        loginActivity.saveString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, "superuser");
+  @Test
+  public void shouldFilledLastLoginUser() {
+    loginActivity.saveString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, "superuser");
 
-        LoginActivity secondLoginActivity = Robolectric.buildActivity(LoginActivity.class).create().get();
+    LoginActivity secondLoginActivity = Robolectric.buildActivity(LoginActivity.class).create()
+        .get();
 
-        assertThat(secondLoginActivity.etUsername.getText().toString()).isEqualTo("superuser");
-    }
+    assertThat(secondLoginActivity.etUsername.getText().toString()).isEqualTo("superuser");
+  }
 
-    @Test
-    public void shouldClearPasswordAfterMethodInvoked() {
-        loginActivity.etUsername.setText("superuser");
-        loginActivity.etPassword.setText("password");
+  @Test
+  public void shouldClearPasswordAfterMethodInvoked() {
+    loginActivity.etUsername.setText("superuser");
+    loginActivity.etPassword.setText("password");
 
-        loginActivity.clearPassword();
+    loginActivity.clearPassword();
 
-        assertThat(loginActivity.etPassword.getText().toString()).isEqualTo("");
-    }
+    assertThat(loginActivity.etPassword.getText().toString()).isEqualTo("");
+  }
 
-    @Test
-    public void shouldGoToHomePageAfterMethodInvoked() {
-        loginActivity.goToHomePage();
+  @Test
+  public void shouldGoToHomePageAfterMethodInvoked() {
+    loginActivity.goToHomePage();
 
-        Intent intent = shadowOf(loginActivity).getNextStartedActivity();
+    Intent intent = shadowOf(loginActivity).getNextStartedActivity();
 
-        assertThat(intent).isNotNull();
-        assertThat(intent.getComponent().getClassName()).isEqualTo(HomeActivity.class.getName());
-        assertThat(loginActivity.isFinishing());
-    }
+    assertThat(intent).isNotNull();
+    assertThat(intent.getComponent().getClassName()).isEqualTo(HomeActivity.class.getName());
+    assertThat(loginActivity.isFinishing());
+  }
 
-    @Test
-    public void shouldGoToInitInventoryAfterMethodInvoked() {
-        loginActivity.goToInitInventory();
+  @Test
+  public void shouldGoToInitInventoryAfterMethodInvoked() {
+    loginActivity.goToInitInventory();
 
-        Intent intent = shadowOf(loginActivity).getNextStartedActivity();
+    Intent intent = shadowOf(loginActivity).getNextStartedActivity();
 
-        assertThat(intent).isNotNull();
-        assertThat(intent.getComponent().getClassName()).isEqualTo(InitialInventoryActivity.class.getName());
-        assertThat(loginActivity.isFinishing());
-    }
+    assertThat(intent).isNotNull();
+    assertThat(intent.getComponent().getClassName())
+        .isEqualTo(InitialInventoryActivity.class.getName());
+    assertThat(loginActivity.isFinishing());
+  }
 
-    @Test
-    public void shouldShowInvalidAlertAfterMethodInvoked() {
-        loginActivity.showInvalidAlert();
+  @Test
+  public void shouldShowInvalidAlertAfterMethodInvoked() {
+    loginActivity.showInvalidAlert();
 
+    String invalidUserMessage = loginActivity.getResources().getString(R.string.msg_invalid_user);
 
-        String invalidUserMessage = loginActivity.getResources().getString(R.string.msg_invalid_user);
+    String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
+    String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-        String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
-        String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
+    assertThat(usernameErrorText).isNotNull();
+    assertThat(usernameErrorText).isEqualTo(invalidUserMessage);
+    assertThat(passwordErrorText).isNull();
+  }
 
-        assertThat(usernameErrorText).isNotNull();
-        assertThat(usernameErrorText).isEqualTo(invalidUserMessage);
-        assertThat(passwordErrorText).isNull();
-    }
+  @Test
+  public void shouldShowUsernameEmptyMessageAfterMethodInvoked() {
+    loginActivity.showUserNameEmpty();
 
-    @Test
-    public void shouldShowUsernameEmptyMessageAfterMethodInvoked() {
-        loginActivity.showUserNameEmpty();
+    String emptyErrorMessage = loginActivity.getResources().getString(R.string.msg_empty_user);
 
-        String emptyErrorMessage = loginActivity.getResources().getString(R.string.msg_empty_user);
+    String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
+    String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-        String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
-        String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
+    assertThat(usernameErrorText).isNotNull();
+    assertThat(usernameErrorText).isEqualTo(emptyErrorMessage);
+    assertThat(passwordErrorText).isNull();
+  }
 
-        assertThat(usernameErrorText).isNotNull();
-        assertThat(usernameErrorText).isEqualTo(emptyErrorMessage);
-        assertThat(passwordErrorText).isNull();
-    }
+  @Test
+  public void shouldShowPasswordEmptyMessageAfterMethodInvoked() {
+    loginActivity.showPasswordEmpty();
 
-    @Test
-    public void shouldShowPasswordEmptyMessageAfterMethodInvoked() {
-        loginActivity.showPasswordEmpty();
+    String emptyErrorMessage = loginActivity.getResources().getString(R.string.msg_empty_user);
 
-        String emptyErrorMessage = loginActivity.getResources().getString(R.string.msg_empty_user);
+    String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
+    String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-        String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
-        String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
+    assertThat(usernameErrorText).isNull();
+    assertThat(passwordErrorText).isNotNull();
+    assertThat(passwordErrorText).isEqualTo(emptyErrorMessage);
+  }
 
-        assertThat(usernameErrorText).isNull();
-        assertThat(passwordErrorText).isNotNull();
-        assertThat(passwordErrorText).isEqualTo(emptyErrorMessage);
-    }
+  @Test
+  public void shouldClearErrorAlertsAfterMethodInvoked() {
+    loginActivity.showInvalidAlert();
+    loginActivity.clearErrorAlerts();
 
-    @Test
-    public void shouldClearErrorAlertsAfterMethodInvoked() {
-        loginActivity.showInvalidAlert();
-        loginActivity.clearErrorAlerts();
+    assertThat(RobolectricUtils.getErrorText(loginActivity.lyUserName)).isNull();
+    assertThat(RobolectricUtils.getErrorText(loginActivity.lyPassword)).isNull();
 
-        assertThat(RobolectricUtils.getErrorText(loginActivity.lyUserName)).isNull();
-        assertThat(RobolectricUtils.getErrorText(loginActivity.lyPassword)).isNull();
+    loginActivity.showPasswordEmpty();
+    loginActivity.clearErrorAlerts();
 
-        loginActivity.showPasswordEmpty();
-        loginActivity.clearErrorAlerts();
+    assertThat(RobolectricUtils.getErrorText(loginActivity.lyUserName)).isNull();
+    assertThat(RobolectricUtils.getErrorText(loginActivity.lyPassword)).isNull();
+  }
 
-        assertThat(RobolectricUtils.getErrorText(loginActivity.lyUserName)).isNull();
-        assertThat(RobolectricUtils.getErrorText(loginActivity.lyPassword)).isNull();
-    }
-
-    @Test
-    public void shouldStartLoginWhenRestoreFromResync() throws Exception {
+  @Test
+  public void shouldStartLoginWhenRestoreFromResync() throws Exception {
 //        Intent intent = new Intent();
 //        intent.putExtra(Constants.PARAM_USERNAME, "username");
 //        intent.putExtra(Constants.PARAM_PASSWORD, "password");
@@ -183,5 +181,5 @@ public class LoginActivityTest {
 //        loginActivity = Robolectric.buildActivity(LoginActivity.class, intent).create().get();
 //
 //        verify(mockedPresenter).startLogin("username", "password");
-    }
+  }
 }

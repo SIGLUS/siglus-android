@@ -27,9 +27,9 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 import com.google.inject.Inject;
-
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
@@ -38,151 +38,150 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.adapter.StockMovementHistoryAdapter;
-
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 import roboguice.inject.InjectView;
 
-public class StockMovementHistoryFragment extends BaseFragment implements StockMovementHistoryPresenter.StockMovementHistoryView, OnRefreshListener {
+public class StockMovementHistoryFragment extends BaseFragment implements
+    StockMovementHistoryPresenter.StockMovementHistoryView, OnRefreshListener {
 
-    @Inject
-    StockMovementHistoryPresenter presenter;
+  @Inject
+  StockMovementHistoryPresenter presenter;
 
-    @InjectView(R.id.stock_movement_history_swipe_container)
-    SwipeRefreshLayout swipeRefreshLayout;
+  @InjectView(R.id.stock_movement_history_swipe_container)
+  SwipeRefreshLayout swipeRefreshLayout;
 
-    @InjectView(R.id.list)
-    ListView historyListView;
+  @InjectView(R.id.list)
+  ListView historyListView;
 
-    @InjectView(R.id.tv_archived_old_data)
-    TextView tvArchivedOldData;
+  @InjectView(R.id.tv_archived_old_data)
+  TextView tvArchivedOldData;
 
-    private long stockCardID;
-    private long startIndex = 0;
-    private boolean isLoading;
-    private boolean isFirstLoading;
+  private long stockCardID;
+  private long startIndex = 0;
+  private boolean isLoading;
+  private boolean isFirstLoading;
 
-    private BaseView baseView;
-    private BaseAdapter adapter;
-    private View containerView;
+  private BaseView baseView;
+  private BaseAdapter adapter;
+  private View containerView;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+  @Override
+  public void onAttach(Activity activity) {
+    super.onAttach(activity);
 
-        stockCardID = activity.getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
-        if (activity instanceof BaseView) {
-            baseView = (BaseView) activity;
-        } else {
-            throw new ClassCastException("Host Activity should implements LoadingView method");
-        }
+    stockCardID = activity.getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
+    if (activity instanceof BaseView) {
+      baseView = (BaseView) activity;
+    } else {
+      throw new ClassCastException("Host Activity should implements LoadingView method");
     }
+  }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        presenter.setStockCardId(stockCardID);
+    presenter.setStockCardId(stockCardID);
+  }
+
+  @Override
+  public Presenter initPresenter() {
+    return presenter;
+  }
+
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    containerView = inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
+    return containerView;
+  }
+
+  @Override
+  public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+
+    initUI();
+    if (this.isSavedInstanceState) {
+      addFooterViewIfMoreThanOneScreen();
+    } else {
+      initData();
     }
+  }
 
-    @Override
-    public Presenter initPresenter() {
-        return presenter;
+  private void initUI() {
+    adapter = new StockMovementHistoryAdapter(presenter.getStockMovementModelList());
+    historyListView.setAdapter(adapter);
+
+    swipeRefreshLayout.setOnRefreshListener(this);
+
+    if (!SharedPreferenceMgr.getInstance().hasDeletedOldStockMovement()) {
+      tvArchivedOldData.setVisibility(View.GONE);
     }
+  }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        containerView = inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
-        return containerView;
+
+  public void initData() {
+    isFirstLoading = true;
+    baseView.loading();
+    swipeRefreshLayout.post(() -> {
+      swipeRefreshLayout.setRefreshing(true);
+      loadData();
+    });
+  }
+
+  @Override
+  public void onRefresh() {
+    if (!isLoading) {
+      loadData();
     }
+  }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+  private void loadData() {
+    isLoading = true;
+    presenter.loadStockMovementViewModels(startIndex);
+    startIndex += StockMovementHistoryPresenter.MAXROWS;
+  }
 
-        initUI();
-        if (this.isSavedInstanceState) {
-            addFooterViewIfMoreThanOneScreen();
-        } else {
-            initData();
-        }
+  @Override
+  public void refreshStockMovement(boolean hasNewData) {
+    if (hasNewData) {
+      adapter.notifyDataSetChanged();
+      if (isFirstLoading) {
+        firstLoadingScrollToBottom();
+        isFirstLoading = false;
+      }
+    } else {
+      ToastUtil.showInCenter(R.string.hint_has_not_new_data);
+      baseView.loaded();
     }
+    isLoading = false;
+    swipeRefreshLayout.setRefreshing(false);
+  }
 
-    private void initUI() {
-        adapter = new StockMovementHistoryAdapter(presenter.getStockMovementModelList());
-        historyListView.setAdapter(adapter);
+  private void firstLoadingScrollToBottom() {
+    addFooterViewIfMoreThanOneScreen();
+    historyListView.post(() -> {
+      historyListView.setSelection(historyListView.getCount() - 1);
+      baseView.loaded();
+    });
+  }
 
-        swipeRefreshLayout.setOnRefreshListener(this);
+  private void addFooterViewIfMoreThanOneScreen() {
+    historyListView.post(() -> {
+      if (isGreaterThanOneScreen()) {
+        addFooterView();
+      }
+    });
+  }
 
-        if (!SharedPreferenceMgr.getInstance().hasDeletedOldStockMovement()) {
-            tvArchivedOldData.setVisibility(View.GONE);
-        }
+  private void addFooterView() {
+    TextView view = new TextView(getActivity());
+    view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, 150));
+    if (historyListView.getFooterViewsCount() == 0) {
+      historyListView.addFooterView(view);
     }
+  }
 
-
-    public void initData() {
-        isFirstLoading = true;
-        baseView.loading();
-        swipeRefreshLayout.post(() -> {
-            swipeRefreshLayout.setRefreshing(true);
-            loadData();
-        });
-    }
-
-    @Override
-    public void onRefresh() {
-        if (!isLoading) {
-            loadData();
-        }
-    }
-
-    private void loadData() {
-        isLoading = true;
-        presenter.loadStockMovementViewModels(startIndex);
-        startIndex += StockMovementHistoryPresenter.MAXROWS;
-    }
-
-    @Override
-    public void refreshStockMovement(boolean hasNewData) {
-        if (hasNewData) {
-            adapter.notifyDataSetChanged();
-            if (isFirstLoading) {
-                firstLoadingScrollToBottom();
-                isFirstLoading = false;
-            }
-        } else {
-            ToastUtil.showInCenter(R.string.hint_has_not_new_data);
-            baseView.loaded();
-        }
-        isLoading = false;
-        swipeRefreshLayout.setRefreshing(false);
-    }
-
-    private void firstLoadingScrollToBottom() {
-        addFooterViewIfMoreThanOneScreen();
-        historyListView.post(() -> {
-            historyListView.setSelection(historyListView.getCount() - 1);
-            baseView.loaded();
-        });
-    }
-
-    private void addFooterViewIfMoreThanOneScreen() {
-        historyListView.post(() -> {
-            if (isGreaterThanOneScreen()) {
-                addFooterView();
-            }
-        });
-    }
-
-    private void addFooterView() {
-        TextView view = new TextView(getActivity());
-        view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, 150));
-        if (historyListView.getFooterViewsCount() == 0) {
-            historyListView.addFooterView(view);
-        }
-    }
-
-    private boolean isGreaterThanOneScreen() {
-        return historyListView.getChildCount() < historyListView.getCount();
-    }
+  private boolean isGreaterThanOneScreen() {
+    return historyListView.getChildCount() < historyListView.getCount();
+  }
 
 }

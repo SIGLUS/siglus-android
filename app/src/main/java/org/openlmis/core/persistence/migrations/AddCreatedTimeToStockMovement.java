@@ -19,6 +19,7 @@
 package org.openlmis.core.persistence.migrations;
 
 
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -27,51 +28,52 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.Migration;
 
-import java.util.List;
-
 
 public class AddCreatedTimeToStockMovement extends Migration {
-    GenericDao<StockMovementItem> stockItemGenericDao;
+
+  GenericDao<StockMovementItem> stockItemGenericDao;
 
 
-    MovementReasonManager reasonManager;
-    DbUtil dbUtil;
+  MovementReasonManager reasonManager;
+  DbUtil dbUtil;
 
-    public AddCreatedTimeToStockMovement() {
-        stockItemGenericDao = new GenericDao<>(StockMovementItem.class, LMISApp.getContext());
-        reasonManager = MovementReasonManager.getInstance();
-        dbUtil = new DbUtil();
+  public AddCreatedTimeToStockMovement() {
+    stockItemGenericDao = new GenericDao<>(StockMovementItem.class, LMISApp.getContext());
+    reasonManager = MovementReasonManager.getInstance();
+    dbUtil = new DbUtil();
+  }
+
+  @Override
+  public void up() {
+    execSQL("ALTER TABLE 'stock_items' ADD COLUMN createdTime VARCHAR");
+    execSQL("CREATE INDEX `stock_items_created_time_idx` ON `stock_items` ( `createdTime` )");
+    try {
+      initCreatedTime();
+    } catch (LMISException e) {
+      new LMISException(e, "AddCreatedTimeToStockMovement,up").reportToFabric();
     }
+  }
 
-    @Override
-    public void up() {
-        execSQL("ALTER TABLE 'stock_items' ADD COLUMN createdTime VARCHAR");
-        execSQL("CREATE INDEX `stock_items_created_time_idx` ON `stock_items` ( `createdTime` )");
-        try {
-            initCreatedTime();
-        } catch (LMISException e) {
-            new LMISException(e, "AddCreatedTimeToStockMovement,up").reportToFabric();
-        }
+  private void initCreatedTime() throws LMISException {
+    List<StockMovementItem> itemList = stockItemGenericDao.queryForAll();
+    if (itemList == null || itemList.size() == 0) {
+      return;
     }
-
-    private void initCreatedTime() throws LMISException {
-        List<StockMovementItem> itemList = stockItemGenericDao.queryForAll();
-        if (itemList == null || itemList.size() == 0) {
-            return;
-        }
-        for (StockMovementItem item : itemList) {
-            item.setCreatedTime(item.getCreatedAt());
-        }
-        updateStockMovementItems(itemList);
+    for (StockMovementItem item : itemList) {
+      item.setCreatedTime(item.getCreatedAt());
     }
+    updateStockMovementItems(itemList);
+  }
 
-    private void updateStockMovementItems(final List<StockMovementItem> stockMovementItems) throws LMISException {
-        dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class, (DbUtil.Operation<StockMovementItem, Void>) dao -> {
-            for (StockMovementItem stockMovementItem : stockMovementItems) {
-                dao.update(stockMovementItem);
-            }
-            return null;
+  private void updateStockMovementItems(final List<StockMovementItem> stockMovementItems)
+      throws LMISException {
+    dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class,
+        (DbUtil.Operation<StockMovementItem, Void>) dao -> {
+          for (StockMovementItem stockMovementItem : stockMovementItems) {
+            dao.update(stockMovementItem);
+          }
+          return null;
         });
-    }
+  }
 
 }

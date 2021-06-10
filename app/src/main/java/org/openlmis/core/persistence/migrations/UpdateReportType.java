@@ -4,7 +4,7 @@ import org.openlmis.core.persistence.Migration;
 
 public class UpdateReportType extends Migration {
 
-    @Override
-    public void up() {
-    }
+  @Override
+  public void up() {
+  }
 }

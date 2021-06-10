@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,45 +11,46 @@ import lombok.Setter;
 @Setter
 @DatabaseTable(tableName = "program_data_Basic_items")
 public class ProgramDataFormBasicItem extends BaseModel {
-    @Expose
-    @SerializedName("productCode")
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private Product product;
 
-    @Expose
-    @SerializedName("beginningBalance")
-    @DatabaseField
-    private Long initialAmount;
+  @Expose
+  @SerializedName("productCode")
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private Product product;
 
-    @DatabaseField(defaultValue = "false")
-    private Boolean isCustomAmount;
+  @Expose
+  @SerializedName("beginningBalance")
+  @DatabaseField
+  private Long initialAmount;
 
-    @Expose
-    @SerializedName("quantityReceived")
-    @DatabaseField
-    private long received;
+  @DatabaseField(defaultValue = "false")
+  private Boolean isCustomAmount;
 
-    @Expose
-    @SerializedName("quantityDispensed")
-    @DatabaseField
-    private long issued;
+  @Expose
+  @SerializedName("quantityReceived")
+  @DatabaseField
+  private long received;
 
-    @Expose
-    @SerializedName("totalLossesAndAdjustments")
-    @DatabaseField
-    private long adjustment;
+  @Expose
+  @SerializedName("quantityDispensed")
+  @DatabaseField
+  private long issued;
 
-    @Expose
-    @SerializedName("expirationDate")
-    @DatabaseField
-    private String validate;
+  @Expose
+  @SerializedName("totalLossesAndAdjustments")
+  @DatabaseField
+  private long adjustment;
 
-    @Expose
-    @SerializedName("stockInHand")
-    @DatabaseField
-    private Long inventory;
+  @Expose
+  @SerializedName("expirationDate")
+  @DatabaseField
+  private String validate;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private ProgramDataForm form;
+  @Expose
+  @SerializedName("stockInHand")
+  @DatabaseField
+  private Long inventory;
+
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private ProgramDataForm form;
 
 }

@@ -1,116 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/ItemRequisition.Container.BodyRight"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/ItemRequisition.Container.BodyRight"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
 
-    <LinearLayout
-        style="@style/ItemRequisition.Container.Body"
-        android:layout_width="1000dp"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+  <LinearLayout
+    style="@style/ItemRequisition.Container.Body"
+    android:layout_width="1000dp"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tx_initial_amount"
-            style="@style/ItemRequisition.Text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="20"/>
+    <TextView
+      android:id="@+id/tx_initial_amount"
+      style="@style/ItemRequisition.Text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      tools:text="20" />
 
-        <TextView
-            android:id="@+id/tx_received"
-            style="@style/ItemRequisition.Text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="20"/>
+    <TextView
+      android:id="@+id/tx_received"
+      style="@style/ItemRequisition.Text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      tools:text="20" />
 
-        <TextView
-            android:id="@+id/tx_issued"
-            style="@style/ItemRequisition.Text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="20"/>
+    <TextView
+      android:id="@+id/tx_issued"
+      style="@style/ItemRequisition.Text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      tools:text="20" />
 
-        <TextView
-            android:id="@+id/tx_theoretical"
-            style="@style/ItemRequisition.Text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="20"/>
+    <TextView
+      android:id="@+id/tx_theoretical"
+      style="@style/ItemRequisition.Text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      tools:text="20" />
 
-        <TextView
-            android:id="@+id/tx_total"
-            style="@style/ItemRequisition.Text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="20"/>
+    <TextView
+      android:id="@+id/tx_total"
+      style="@style/ItemRequisition.Text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      tools:text="20" />
 
-        <TextView
-            android:id="@+id/tx_inventory"
-            style="@style/ItemRequisition.Text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="20"/>
+    <TextView
+      android:id="@+id/tx_inventory"
+      style="@style/ItemRequisition.Text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      tools:text="20" />
 
-        <TextView
-            android:id="@+id/tx_different"
-            style="@style/ItemRequisition.Text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="20"/>
+    <TextView
+      android:id="@+id/tx_different"
+      style="@style/ItemRequisition.Text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      tools:text="20" />
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="@dimen/padding_small"
-            android:minWidth="60dp">
-            <TextView
-                android:id="@+id/tx_total_request"
-                style="@style/ItemRequisition.Text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                tools:text="20"/>
-            <ImageView
-                android:id="@+id/iv_adjustment_theoratical"
-                android:layout_height="32dp"
-                android:layout_width="32dp"
-                android:padding="@dimen/padding_tiny"
-                android:src="@drawable/ic_error_black"
-                android:layout_centerVertical="true" />
-        </RelativeLayout>
-    </LinearLayout>
-
-
-    <LinearLayout
-        style="@style/ItemRequisition.Container.Body"
+    <RelativeLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="@dimen/padding_small"
+      android:minWidth="60dp">
+      <TextView
+        android:id="@+id/tx_total_request"
+        style="@style/ItemRequisition.Text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="20" />
+      <ImageView
+        android:id="@+id/iv_adjustment_theoratical"
+        android:layout_height="32dp"
+        android:layout_width="32dp"
+        android:padding="@dimen/padding_tiny"
+        android:src="@drawable/ic_error_black"
+        android:layout_centerVertical="true" />
+    </RelativeLayout>
+  </LinearLayout>
 
-        <EditText
-            android:id="@+id/et_request_amount"
-            style="@style/ItemRequisition.Text.Edit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
 
-        <EditText
-            android:id="@+id/et_approved_amount"
-            style="@style/ItemRequisition.Text.Edit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:enabled="false" />
-    </LinearLayout>
+  <LinearLayout
+    style="@style/ItemRequisition.Container.Body"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <EditText
+      android:id="@+id/et_request_amount"
+      style="@style/ItemRequisition.Text.Edit"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1" />
+
+    <EditText
+      android:id="@+id/et_approved_amount"
+      style="@style/ItemRequisition.Text.Edit"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:enabled="false" />
+  </LinearLayout>
 
 </LinearLayout>

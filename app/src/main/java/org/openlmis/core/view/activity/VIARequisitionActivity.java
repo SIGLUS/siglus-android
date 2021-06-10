@@ -20,61 +20,59 @@ package org.openlmis.core.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-
+import java.util.ArrayList;
+import java.util.Date;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.VIARequisitionFragment;
-
-import java.util.ArrayList;
-import java.util.Date;
-
 import roboguice.inject.ContentView;
 
 
 @ContentView(R.layout.activity_requisition)
 public class VIARequisitionActivity extends BaseActivity {
 
-    @Override
-    protected ScreenName getScreenName() {
-        return ScreenName.VIA_REQUISITION_SCREEN;
-    }
+  @Override
+  protected ScreenName getScreenName() {
+    return ScreenName.VIA_REQUISITION_SCREEN;
+  }
 
-    @Override
-    protected int getThemeRes() {
-        return R.style.AppTheme_PURPLE;
-    }
+  @Override
+  protected int getThemeRes() {
+    return R.style.AppTheme_PURPLE;
+  }
 
-    @Override
-    public void onBackPressed() {
-        ((VIARequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
-    }
+  @Override
+  public void onBackPressed() {
+    ((VIARequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition))
+        .onBackPressed();
+  }
 
-    //For existing requisition
-    public static Intent getIntentToMe(Context context, long formId) {
-        Intent intent = new Intent(context, VIARequisitionActivity.class);
-        intent.putExtra(Constants.PARAM_FORM_ID, formId);
-        return intent;
-    }
+  //For existing requisition
+  public static Intent getIntentToMe(Context context, long formId) {
+    Intent intent = new Intent(context, VIARequisitionActivity.class);
+    intent.putExtra(Constants.PARAM_FORM_ID, formId);
+    return intent;
+  }
 
-    //For creating new requisition
-    public static Intent getIntentToMe(Context context, Date inventory, boolean isMissedPeriod) {
-        Intent intent = new Intent(context, VIARequisitionActivity.class);
-        intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventory);
-        intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
-        return intent;
-    }
+  //For creating new requisition
+  public static Intent getIntentToMe(Context context, Date inventory, boolean isMissedPeriod) {
+    Intent intent = new Intent(context, VIARequisitionActivity.class);
+    intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventory);
+    intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
+    return intent;
+  }
 
-    //For emergency requisition
-    public static Intent getIntentToMe(Context context, ArrayList<StockCard> stockCards) {
-        Intent intent = new Intent(context, VIARequisitionActivity.class);
-        intent.putExtra(Constants.PARAM_SELECTED_EMERGENCY, stockCards);
-        return intent;
-    }
+  //For emergency requisition
+  public static Intent getIntentToMe(Context context, ArrayList<StockCard> stockCards) {
+    Intent intent = new Intent(context, VIARequisitionActivity.class);
+    intent.putExtra(Constants.PARAM_SELECTED_EMERGENCY, stockCards);
+    return intent;
+  }
 
-    public static Intent getIntentToMe(Context context) {
-        Intent intent = new Intent(context, VIARequisitionActivity.class);
-        return intent;
-    }
+  public static Intent getIntentToMe(Context context) {
+    Intent intent = new Intent(context, VIARequisitionActivity.class);
+    return intent;
+  }
 }

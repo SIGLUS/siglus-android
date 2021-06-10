@@ -19,7 +19,9 @@
 package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
-
+import java.util.Date;
+import java.util.List;
+import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -35,11 +37,6 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-
-import java.util.Date;
-import java.util.List;
-
-import lombok.Getter;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -47,155 +44,171 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class NewStockMovementPresenter extends Presenter {
-    @Inject
-    StockRepository stockRepository;
 
-    @Getter
-    final StockMovementViewModel viewModel = new StockMovementViewModel();
+  @Inject
+  StockRepository stockRepository;
 
-    @Getter
-    private StockCard stockCard;
+  @Getter
+  final StockMovementViewModel viewModel = new StockMovementViewModel();
 
-    @Getter
-    private List<MovementReasonManager.MovementReason> movementReasons;
-    private String[] reasonDescriptionList;
+  @Getter
+  private StockCard stockCard;
 
-    NewStockMovementView view;
+  @Getter
+  private List<MovementReasonManager.MovementReason> movementReasons;
+  private String[] reasonDescriptionList;
 
+  NewStockMovementView view;
+
+  @Override
+  public void attachView(BaseView v) {
+    this.view = (NewStockMovementView) v;
+  }
+
+  public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType,
+      boolean isKit) {
+    try {
+      movementReasons = MovementReasonManager.getInstance()
+          .buildReasonListForMovementType(movementType);
+      stockCard = stockRepository.queryStockCardById(stockCardId);
+      viewModel.setProduct(stockCard.getProduct());
+      viewModel.setMovementType(movementType);
+      viewModel.setKit(isKit);
+    } catch (LMISException e) {
+      new LMISException(e, " NewStockM.loadData").reportToFabric();
+    }
+    loadExistingLotMovementViewModels(movementType);
+  }
+
+  public void saveStockMovement() {
+    Subscription subscription = getSaveMovementObservable().subscribe(successAction, errorAction);
+    subscriptions.add(subscription);
+  }
+
+  protected Action1<StockMovementViewModel> successAction = new Action1<StockMovementViewModel>() {
     @Override
-    public void attachView(BaseView v) {
-        this.view = (NewStockMovementView) v;
+    public void call(StockMovementViewModel viewModel) {
+      view.goToStockCard();
     }
+  };
 
-    public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType, boolean isKit) {
-        try {
-            movementReasons = MovementReasonManager.getInstance().buildReasonListForMovementType(movementType);
-            stockCard = stockRepository.queryStockCardById(stockCardId);
-            viewModel.setProduct(stockCard.getProduct());
-            viewModel.setMovementType(movementType);
-            viewModel.setKit(isKit);
-        } catch (LMISException e) {
-            new LMISException(e, " NewStockM.loadData").reportToFabric();
-        }
-        loadExistingLotMovementViewModels(movementType);
+  protected Action1<Throwable> errorAction = new Action1<Throwable>() {
+    @Override
+    public void call(Throwable throwable) {
+      view.loaded();
+      ToastUtil.show(throwable.getMessage());
     }
+  };
 
-    public void saveStockMovement() {
-        Subscription subscription = getSaveMovementObservable().subscribe(successAction, errorAction);
-        subscriptions.add(subscription);
+
+  protected Observable<StockMovementViewModel> getSaveMovementObservable() {
+    return Observable.create((Observable.OnSubscribe<StockMovementViewModel>) subscriber -> {
+      if (convertViewModelToDataModelAndSave()) {
+        subscriber.onNext(viewModel);
+        subscriber.onCompleted();
+      } else {
+        subscriber.onError(new Exception(
+            LMISApp.getContext().getResources().getString(R.string.msg_invalid_stock_movement)));
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  private boolean convertViewModelToDataModelAndSave() {
+    viewModel.populateStockExistence(stockCard.calculateSOHFromLots());
+    StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
+    stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+
+    Date lastMovementDate = getLastMovementCreateDate();
+    if (lastMovementDate == null || stockMovementItem.getCreatedAt().after(lastMovementDate)) {
+      stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+      if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
+        SharedPreferenceMgr.getInstance()
+            .setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+      }
+      return true;
     }
+    return false;
+  }
 
-    protected Action1<StockMovementViewModel> successAction = new Action1<StockMovementViewModel>() {
-        @Override
-        public void call(StockMovementViewModel viewModel) {
-            view.goToStockCard();
-        }
-    };
-
-    protected Action1<Throwable> errorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            view.loaded();
-            ToastUtil.show(throwable.getMessage());
-        }
-    };
-
-
-    protected Observable<StockMovementViewModel> getSaveMovementObservable() {
-        return Observable.create((Observable.OnSubscribe<StockMovementViewModel>) subscriber -> {
-            if (convertViewModelToDataModelAndSave()) {
-                subscriber.onNext(viewModel);
-                subscriber.onCompleted();
-            } else {
-                subscriber.onError(new Exception(LMISApp.getContext().getResources().getString(R.string.msg_invalid_stock_movement)));
+  private void loadExistingLotMovementViewModels(
+      final MovementReasonManager.MovementType movementType) {
+    List<LotMovementViewModel> lotMovementViewModels = FluentIterable
+        .from(stockCard.getNonEmptyLotOnHandList())
+        .transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
+                DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+            lotOnHand.getQuantityOnHand().toString(), movementType))
+        .filter(lotMovementViewModel -> {
+          for (LotMovementViewModel existingLot : viewModel.getExistingLotMovementViewModelList()) {
+            if (existingLot.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
+              return false;
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    private boolean convertViewModelToDataModelAndSave() {
-        viewModel.populateStockExistence(stockCard.calculateSOHFromLots());
-        StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
-        stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
-
-        Date lastMovementDate = getLastMovementCreateDate();
-        if (lastMovementDate == null || stockMovementItem.getCreatedAt().after(lastMovementDate)) {
-            stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-            if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
-                SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void loadExistingLotMovementViewModels(final MovementReasonManager.MovementType movementType) {
-        List<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(stockCard.getNonEmptyLotOnHandList()).transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
-                DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                lotOnHand.getQuantityOnHand().toString(), movementType)).filter(lotMovementViewModel -> {
-            for (LotMovementViewModel existingLot : viewModel.getExistingLotMovementViewModelList()) {
-                if (existingLot.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
-                    return false;
-                }
-            }
-            return true;
+          }
+          return true;
         }).toSortedList((lot1, lot2) -> {
-            Date localDate = DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-            if (localDate != null) {
-                return localDate.compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-            } else {
-                return 0;
-            }
+          Date localDate = DateUtil
+              .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+          if (localDate != null) {
+            return localDate.compareTo(DateUtil
+                .parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+          } else {
+            return 0;
+          }
         });
 
-        viewModel.getExistingLotMovementViewModelList().addAll(lotMovementViewModels);
+    viewModel.getExistingLotMovementViewModelList().addAll(lotMovementViewModels);
+  }
+
+  public MovementReasonManager.MovementType getMovementType() {
+    return viewModel.getMovementType();
+  }
+
+  public boolean isKit() {
+    return viewModel.isKit();
+  }
+
+  public String[] getMovementReasonDescriptionList() {
+    if (ArrayUtils.isEmpty(reasonDescriptionList)) {
+      reasonDescriptionList = FluentIterable.from(movementReasons)
+          .transform(movementReason -> movementReason.getDescription()).toArray(String.class);
     }
+    return reasonDescriptionList;
+  }
 
-    public MovementReasonManager.MovementType getMovementType() {
-        return viewModel.getMovementType();
+  public boolean shouldLoadKitMovementPage() {
+    return !(isKit() && SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData());
+  }
+
+  public boolean validateKitQuantity() {
+    MovementReasonManager.MovementType movementType = viewModel.getTypeQuantityMap().keySet()
+        .iterator().next();
+    if (quantityIsLargerThanSoh(viewModel.getTypeQuantityMap().get(movementType), movementType)) {
+      view.showQuantityErrors(LMISApp.getContext().getString(R.string.msg_invalid_quantity));
+      return false;
     }
+    return true;
+  }
 
-    public boolean isKit() {
-        return viewModel.isKit();
-    }
+  public boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
+    return (MovementReasonManager.MovementType.ISSUE.equals(type)
+        || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type))
+        && Long.parseLong(quantity) > stockCard.calculateSOHFromLots();
+  }
 
-    public String[] getMovementReasonDescriptionList() {
-        if (ArrayUtils.isEmpty(reasonDescriptionList)) {
-            reasonDescriptionList = FluentIterable.from(movementReasons).transform(movementReason -> movementReason.getDescription()).toArray(String.class);
-        }
-        return reasonDescriptionList;
-    }
+  public Date getLastMovementDate() {
+    return stockCard.getLastStockMovementDate();
+  }
 
-    public boolean shouldLoadKitMovementPage() {
-        return !(isKit() && SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData());
-    }
+  public Date getLastMovementCreateDate() {
+    return stockCard.getLastStockMovementCreatedTime();
+  }
 
-    public boolean validateKitQuantity() {
-        MovementReasonManager.MovementType movementType = viewModel.getTypeQuantityMap().keySet().iterator().next();
-        if (quantityIsLargerThanSoh(viewModel.getTypeQuantityMap().get(movementType), movementType)) {
-            view.showQuantityErrors(LMISApp.getContext().getString(R.string.msg_invalid_quantity));
-            return false;
-        }
-        return true;
-    }
+  public interface NewStockMovementView extends BaseView {
 
-    public boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
-        return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > stockCard.calculateSOHFromLots();
-    }
+    void clearErrorAlerts();
 
-    public Date getLastMovementDate() {
-        return stockCard.getLastStockMovementDate();
-    }
+    void showQuantityErrors(String errorMsg);
 
-    public Date getLastMovementCreateDate() {
-        return stockCard.getLastStockMovementCreatedTime();
-    }
-
-    public interface NewStockMovementView extends BaseView {
-
-        void clearErrorAlerts();
-
-        void showQuantityErrors(String errorMsg);
-
-        void goToStockCard();
-    }
+    void goToStockCard();
+  }
 }

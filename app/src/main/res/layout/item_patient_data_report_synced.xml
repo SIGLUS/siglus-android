@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Card.Padded"
+  style="@style/Card.Padded"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    style="@style/ItemRnr.Type2Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        style="@style/ItemRnr.Type2Container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+      android:background="@color/color_white"
+      android:drawableLeft="@drawable/ic_done_green"
+      android:id="@+id/tv_period"
+      style="@style/ItemRnr.PeriodTextType2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
-        <TextView
-            android:background="@color/color_white"
-            android:drawableLeft="@drawable/ic_done_green"
-            android:id="@+id/tv_period"
-            style="@style/ItemRnr.PeriodTextType2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+    <View
+      android:id="@+id/action_divider"
+      style="@style/HorizontalLine" />
 
-        <View
-            android:id="@+id/action_divider"
-            style="@style/HorizontalLine" />
+    <TextView
+      android:id="@+id/tv_report_status"
+      style="@style/ItemRnr.MessageTextType2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/tv_report_status"
-            style="@style/ItemRnr.MessageTextType2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/btn_report_entry"
-            style="@style/ItemRnr.BtnView"
-            android:textColor="@color/color_blue_dark"
-            android:text="@string/btn_view_patient_data_report"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height_default"
-            android:layout_marginBottom="@dimen/margin_small"/>
-    </LinearLayout>
+    <TextView
+      android:id="@+id/btn_report_entry"
+      style="@style/ItemRnr.BtnView"
+      android:textColor="@color/color_blue_dark"
+      android:text="@string/btn_view_patient_data_report"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/button_height_default"
+      android:layout_marginBottom="@dimen/margin_small" />
+  </LinearLayout>
 </androidx.cardview.widget.CardView>

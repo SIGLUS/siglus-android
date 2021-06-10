@@ -21,7 +21,6 @@
 package org.openlmis.core.view.widget;
 
 import android.graphics.Canvas;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,22 +31,23 @@ import org.openlmis.core.LMISTestRunner;
 @RunWith(LMISTestRunner.class)
 public class CutBaseLineTextViewTest {
 
-    private CutBaseLineTextView cutBaseLineTextView;
+  private CutBaseLineTextView cutBaseLineTextView;
 
-    @Before
-    public void setUp() throws Exception {
-        cutBaseLineTextView = new CutBaseLineTextView(LMISTestApp.getContext());
-    }
+  @Before
+  public void setUp() throws Exception {
+    cutBaseLineTextView = new CutBaseLineTextView(LMISTestApp.getContext());
+  }
 
-    @Test
-    public void translateShouldInvokeCorrectTimes() {
-        // given
-        final Canvas mockCanvas = Mockito.mock(Canvas.class);
+  @Test
+  public void translateShouldInvokeCorrectTimes() {
+    // given
+    final Canvas mockCanvas = Mockito.mock(Canvas.class);
 
-        // when
-        cutBaseLineTextView.onDraw(mockCanvas);
+    // when
+    cutBaseLineTextView.onDraw(mockCanvas);
 
-        // then
-        Mockito.verify(mockCanvas, Mockito.times(1)).translate(0F, (float) cutBaseLineTextView.getPaint().getFontMetricsInt().descent);
-    }
+    // then
+    Mockito.verify(mockCanvas, Mockito.times(1))
+        .translate(0F, (float) cutBaseLineTextView.getPaint().getFontMetricsInt().descent);
+  }
 }

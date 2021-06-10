@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@color/color_green_light"
+  android:divider="@drawable/divider_vertical"
+  android:showDividers="middle">
+
+  <TextView
+    android:id="@+id/mmia_product_barcode_column_code"
+    style="@style/ItemRnr.PrimaryName"
+    android:layout_width="80dp"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    tools:text="Product name" />
+
+  <TextView
+    android:id="@+id/tv_primary_name"
+    style="@style/ItemRnr.PrimaryName"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/color_green_light"
-    android:divider="@drawable/divider_vertical"
-    android:showDividers="middle">
-
-    <TextView
-        android:id="@+id/mmia_product_barcode_column_code"
-        style="@style/ItemRnr.PrimaryName"
-        android:layout_width="80dp"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        tools:text="Product name" />
-
-    <TextView
-        android:id="@+id/tv_primary_name"
-        style="@style/ItemRnr.PrimaryName"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:text="Product name" />
+    android:layout_height="match_parent"
+    tools:text="Product name" />
 </LinearLayout>
 

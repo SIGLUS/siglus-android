@@ -20,58 +20,57 @@ package org.openlmis.core.network;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
 import com.google.inject.Inject;
-
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
-import java.net.InetSocketAddress;
-import java.net.Socket;
-
 public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, InternetListener> {
-    private static final String TAG = InternetCheck.class.getSimpleName();
-    private final int TIMEOUT = 5 * 1000;
 
-    @Inject
-    public InternetCheck() {
-    }
+  private static final String TAG = InternetCheck.class.getSimpleName();
+  private final int TIMEOUT = 5 * 1000;
 
-    public interface Callback {
-        void launchResponse(Boolean internet);
-    }
+  @Inject
+  public InternetCheck() {
+  }
 
-    @Override
-    public InternetListener doInBackground(Callback... callbacks) {
-        Callback callback = null;
-        try (Socket sock = new Socket()) {
-            if (callbacks.length > 0) {
-                callback = callbacks[0];
-            } else {
-                throw new Exception("No callback supplied");
-            }
-            sock.connect(new InetSocketAddress(getAddress(), getPORT()), TIMEOUT);
-            return new InternetListener(true, callback, null);
-        } catch (Exception e) {
-            Log.w(TAG,e);
-            return new InternetListener(false, callback, e);
-        }
-    }
+  public interface Callback {
 
-    private String getAddress() {
-        return LMISApp.getContext().getString(R.string.server_base_url_host);
-    }
+    void launchResponse(Boolean internet);
+  }
 
-    private int getPORT() {
-        return LMISApp.getContext().getResources().getInteger(R.integer.server_base_url_port);
+  @Override
+  public InternetListener doInBackground(Callback... callbacks) {
+    Callback callback = null;
+    try (Socket sock = new Socket()) {
+      if (callbacks.length > 0) {
+        callback = callbacks[0];
+      } else {
+        throw new Exception("No callback supplied");
+      }
+      sock.connect(new InetSocketAddress(getAddress(), getPORT()), TIMEOUT);
+      return new InternetListener(true, callback, null);
+    } catch (Exception e) {
+      Log.w(TAG, e);
+      return new InternetListener(false, callback, e);
     }
+  }
 
-    @Override
-    protected void onPostExecute(InternetListener internetListener) {
-        if (internetListener.getCallback() != null) {
-            internetListener.launchCallback();
-        } else {
-            Log.w(TAG,internetListener.getException());
-        }
+  private String getAddress() {
+    return LMISApp.getContext().getString(R.string.server_base_url_host);
+  }
+
+  private int getPORT() {
+    return LMISApp.getContext().getResources().getInteger(R.integer.server_base_url_port);
+  }
+
+  @Override
+  protected void onPostExecute(InternetListener internetListener) {
+    if (internetListener.getCallback() != null) {
+      internetListener.launchCallback();
+    } else {
+      Log.w(TAG, internetListener.getException());
     }
+  }
 }

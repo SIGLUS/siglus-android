@@ -7,25 +7,27 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 
 public class RequisitionBodyHorizontalScrollView extends HorizontalScrollView {
-    public RequisitionBodyHorizontalScrollView(Context context) {
-        super(context);
-    }
 
-    public RequisitionBodyHorizontalScrollView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+  public RequisitionBodyHorizontalScrollView(Context context) {
+    super(context);
+  }
 
-    public RequisitionBodyHorizontalScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
+  public RequisitionBodyHorizontalScrollView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+  }
 
-    @Override
-    public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
-        return true;
-    }
+  public RequisitionBodyHorizontalScrollView(Context context, AttributeSet attrs,
+      int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+  }
 
-    @Override
-    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
-        return 0;
-    }
+  @Override
+  public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
+    return true;
+  }
+
+  @Override
+  protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+    return 0;
+  }
 }

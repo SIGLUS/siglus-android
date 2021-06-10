@@ -19,7 +19,8 @@
 package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.presenter.DummyPresenter;
@@ -27,108 +28,104 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.activity.BaseActivity;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import roboguice.fragment.provided.RoboFragment;
 import rx.Subscription;
 
 
 public abstract class BaseFragment extends RoboFragment implements BaseView {
 
-    protected boolean isSavedInstanceState;
-    protected Presenter presenter;
-    protected List<Subscription> subscriptions = new ArrayList<>();
+  protected boolean isSavedInstanceState;
+  protected Presenter presenter;
+  protected List<Subscription> subscriptions = new ArrayList<>();
 
-    /*
-    * Life cycle of Fragment: onAttach -> onCreate -> onCreateView -> onViewCreated -> onActivityCreated -> onPause -> onStop
-    * */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // retain this fragment
-        setRetainInstance(true);
-        isSavedInstanceState = false;
+  /*
+   * Life cycle of Fragment: onAttach -> onCreate -> onCreateView -> onViewCreated -> onActivityCreated -> onPause -> onStop
+   * */
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    // retain this fragment
+    setRetainInstance(true);
+    isSavedInstanceState = false;
 
-        setPresenter();
-        attachPresenterView();
+    setPresenter();
+    attachPresenterView();
+  }
+
+  private void setPresenter() {
+    presenter = initPresenter();
+    if (presenter == null) {
+      presenter = new DummyPresenter();
     }
+  }
 
-    private void setPresenter() {
-        presenter = initPresenter();
-        if (presenter == null) {
-            presenter = new DummyPresenter();
-        }
+  private void attachPresenterView() {
+    try {
+      presenter.attachView(this);
+    } catch (ViewNotMatchException e) {
+      new LMISException(e, "BaseFragment:attachPresenterView").reportToFabric();
+      ToastUtil.show(e.getMessage());
     }
+  }
 
-    private void attachPresenterView() {
-        try {
-            presenter.attachView(this);
-        } catch (ViewNotMatchException e) {
-            new LMISException(e,"BaseFragment:attachPresenterView").reportToFabric();
-            ToastUtil.show(e.getMessage());
-        }
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    isSavedInstanceState = true;
+    super.onSaveInstanceState(outState);
+  }
+
+  public abstract Presenter initPresenter();
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    presenter.onStart();
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    presenter.onStop();
+  }
+
+  @Override
+  public void loading() {
+    if (getActivity() instanceof BaseActivity) {
+      ((BaseActivity) getActivity()).loading();
     }
+  }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        isSavedInstanceState = true;
-        super.onSaveInstanceState(outState);
+  @Override
+  public void loading(String message) {
+    if (getActivity() instanceof BaseActivity) {
+      ((BaseActivity) getActivity()).loading(message);
     }
+  }
 
-    public abstract Presenter initPresenter();
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        presenter.onStart();
+  @Override
+  public void loaded() {
+    if (getActivity() instanceof BaseActivity) {
+      ((BaseActivity) getActivity()).loaded();
     }
+  }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        presenter.onStop();
+  protected void hideImm() {
+    if (getActivity() instanceof BaseActivity) {
+      ((BaseActivity) getActivity()).hideImm();
     }
+  }
 
-    @Override
-    public void loading() {
-        if (getActivity() instanceof BaseActivity) {
-            ((BaseActivity) getActivity()).loading();
-        }
-    }
+  @Override
+  public void onDestroy() {
+    unSubscribeSubscriptions();
+    super.onDestroy();
+  }
 
-    @Override
-    public void loading(String message) {
-        if (getActivity() instanceof BaseActivity) {
-            ((BaseActivity) getActivity()).loading(message);
-        }
+  private void unSubscribeSubscriptions() {
+    for (Subscription subscription : subscriptions) {
+      if (subscription != null) {
+        subscription.unsubscribe();
+      }
     }
-
-    @Override
-    public void loaded() {
-        if (getActivity() instanceof BaseActivity) {
-            ((BaseActivity) getActivity()).loaded();
-        }
-    }
-
-    protected void hideImm() {
-        if (getActivity() instanceof BaseActivity) {
-            ((BaseActivity) getActivity()).hideImm();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        unSubscribeSubscriptions();
-        super.onDestroy();
-    }
-
-    private void unSubscribeSubscriptions() {
-        for (Subscription subscription : subscriptions) {
-            if (subscription != null) {
-                subscription.unsubscribe();
-            }
-        }
-    }
+  }
 }

@@ -17,15 +17,32 @@
  */
 package org.openlmis.core.view.fragment;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
-
+import androidx.appcompat.app.AlertDialog;
 import com.google.inject.AbstractModule;
-
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,403 +68,396 @@ import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
-
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.appcompat.app.AlertDialog;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Observer;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(LMISTestRunner.class)
 public class MMIARequisitionFragmentTest {
 
-    private MMIARequisitionPresenter mmiaFormPresenter;
-    private MMIARequisitionFragment mmiaRequisitionFragment;
-    private Program program;
-    private RnRForm form;
-    private MMIARegimeListWrap regimeListWrap;
-    private MMIAPatientInfoList mmiaPatientInfoListView;
-    private MMIARnrFormProductList rnrFormList;
-
-
-    protected ViewGroup mockRightViewGroup;
-    private ViewGroup mockRnrItemsHeaderFreeze;
-
-    @Before
-    public void setUp() throws Exception {
-        mmiaFormPresenter = mock(MMIARequisitionPresenter.class);
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(MMIARequisitionPresenter.class).toInstance(mmiaFormPresenter);
-            }
-        });
-
-        rnrFormList = mock(MMIARnrFormProductList.class);
-        SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
-        mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
-
-        regimeListWrap = mock(MMIARegimeListWrap.class);
-        mmiaPatientInfoListView = mock(MMIAPatientInfoList.class);
-        mockRnrItemsHeaderFreeze = mock(ViewGroup.class);
-        mmiaRequisitionFragment.regimeWrap = regimeListWrap;
-        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
-        mmiaRequisitionFragment.rnrFormList = rnrFormList;
-        mmiaRequisitionFragment.rnrItemsHeaderFreeze = mockRnrItemsHeaderFreeze;
-
-        when(rnrFormList.getRightHeaderView()).thenReturn(mock(ViewGroup.class));
-        when(rnrFormList.getLeftHeaderView()).thenReturn(mock(ViewGroup.class));
-        when(rnrFormList.getRnrItemsHorizontalScrollView()).thenReturn(mock(RnrFormHorizontalScrollView.class));
-
-        program = new Program();
-        program.setProgramCode("MMIA");
-        program.setProgramName("MMIA");
-        form = RnRForm.init(program, DateUtil.today());
-        form.setId(1L);
-        form.setComments("");
-        when(mmiaFormPresenter.getRnrForm(anyInt())).thenReturn(form);
-    }
-
-    private MMIARequisitionFragment getMMIARequisitionFragmentWithFormId() {
-        Intent intent = new Intent();
-        intent.putExtra(Constants.PARAM_FORM_ID, 1L);
-        MMIARequisitionActivity mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class, intent).create().get();
-        MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
-        fragment.regimeWrap = regimeListWrap;
-        fragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
-        fragment.rnrFormList = rnrFormList;
-
-        return fragment;
-    }
-
-    private MMIARequisitionFragment getMMIARequisitionFragmentWithoutIntent() {
-        MMIARequisitionActivity mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).create().get();
-        MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
-        fragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
-        fragment.rnrFormList = rnrFormList;
-
-        return fragment;
-    }
-
-    @Test
-    public void shouldInitRegimeAndMMIAListView() {
-        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
-        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
-        form.setBaseInfoItemListWrapper(baseInfoItems);
-        form.setRegimenItemListWrapper(regimenItems);
-
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-
-        verify(rnrFormList).initView(any(ArrayList.class), anyBoolean());
-        verify(regimeListWrap).initView(mmiaRequisitionFragment.tvRegimeTotal,
-                mmiaRequisitionFragment.tvRegimeTotalPharmacy,
-                mmiaRequisitionFragment.tvTotalPharmacyTitle, mmiaFormPresenter);
-        verify(mmiaPatientInfoListView).initView(baseInfoItems);
-    }
-
-    @Test
-    public void shouldShowTheCannotInitFormToastWhenTheAllStockMovementsAreNotSyncDown() {
-        reset(mmiaFormPresenter);
-        SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
-        mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
-
-        String msg = mmiaRequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
-        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
-        verify(mmiaFormPresenter, never()).loadData(anyLong(), any(Date.class));
-    }
-
-    @Test
-    public void shouldSaveCompleteWhenMethodCalled() {
-        mmiaRequisitionFragment.completeSuccess();
-
-        String successMessage = mmiaRequisitionFragment.getString(R.string.msg_mmia_submit_tip);
-        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(successMessage);
+  private MMIARequisitionPresenter mmiaFormPresenter;
+  private MMIARequisitionFragment mmiaRequisitionFragment;
+  private Program program;
+  private RnRForm form;
+  private MMIARegimeListWrap regimeListWrap;
+  private MMIAPatientInfoList mmiaPatientInfoListView;
+  private MMIARnrFormProductList rnrFormList;
+
+
+  protected ViewGroup mockRightViewGroup;
+  private ViewGroup mockRnrItemsHeaderFreeze;
+
+  @Before
+  public void setUp() throws Exception {
+    mmiaFormPresenter = mock(MMIARequisitionPresenter.class);
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+      @Override
+      protected void configure() {
+        bind(MMIARequisitionPresenter.class).toInstance(mmiaFormPresenter);
+      }
+    });
+
+    rnrFormList = mock(MMIARnrFormProductList.class);
+    SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
+    mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
+
+    regimeListWrap = mock(MMIARegimeListWrap.class);
+    mmiaPatientInfoListView = mock(MMIAPatientInfoList.class);
+    mockRnrItemsHeaderFreeze = mock(ViewGroup.class);
+    mmiaRequisitionFragment.regimeWrap = regimeListWrap;
+    mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
+    mmiaRequisitionFragment.rnrFormList = rnrFormList;
+    mmiaRequisitionFragment.rnrItemsHeaderFreeze = mockRnrItemsHeaderFreeze;
+
+    when(rnrFormList.getRightHeaderView()).thenReturn(mock(ViewGroup.class));
+    when(rnrFormList.getLeftHeaderView()).thenReturn(mock(ViewGroup.class));
+    when(rnrFormList.getRnrItemsHorizontalScrollView())
+        .thenReturn(mock(RnrFormHorizontalScrollView.class));
+
+    program = new Program();
+    program.setProgramCode("MMIA");
+    program.setProgramName("MMIA");
+    form = RnRForm.init(program, DateUtil.today());
+    form.setId(1L);
+    form.setComments("");
+    when(mmiaFormPresenter.getRnrForm(anyInt())).thenReturn(form);
+  }
+
+  private MMIARequisitionFragment getMMIARequisitionFragmentWithFormId() {
+    Intent intent = new Intent();
+    intent.putExtra(Constants.PARAM_FORM_ID, 1L);
+    MMIARequisitionActivity mmiaRequisitionActivity = Robolectric
+        .buildActivity(MMIARequisitionActivity.class, intent).create().get();
+    MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity
+        .getFragmentManager().findFragmentById(R.id.fragment_requisition);
+    fragment.regimeWrap = regimeListWrap;
+    fragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
+    fragment.rnrFormList = rnrFormList;
+
+    return fragment;
+  }
+
+  private MMIARequisitionFragment getMMIARequisitionFragmentWithoutIntent() {
+    MMIARequisitionActivity mmiaRequisitionActivity = Robolectric
+        .buildActivity(MMIARequisitionActivity.class).create().get();
+    MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity
+        .getFragmentManager().findFragmentById(R.id.fragment_requisition);
+    fragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
+    fragment.rnrFormList = rnrFormList;
+
+    return fragment;
+  }
+
+  @Test
+  public void shouldInitRegimeAndMMIAListView() {
+    ArrayList<RegimenItem> regimenItems = new ArrayList<>();
+    ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+    form.setBaseInfoItemListWrapper(baseInfoItems);
+    form.setRegimenItemListWrapper(regimenItems);
+
+    mmiaRequisitionFragment.refreshRequisitionForm(form);
+
+    verify(rnrFormList).initView(any(ArrayList.class), anyBoolean());
+    verify(regimeListWrap).initView(mmiaRequisitionFragment.tvRegimeTotal,
+        mmiaRequisitionFragment.tvRegimeTotalPharmacy,
+        mmiaRequisitionFragment.tvTotalPharmacyTitle, mmiaFormPresenter);
+    verify(mmiaPatientInfoListView).initView(baseInfoItems);
+  }
+
+  @Test
+  public void shouldShowTheCannotInitFormToastWhenTheAllStockMovementsAreNotSyncDown() {
+    reset(mmiaFormPresenter);
+    SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
+    mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
+
+    String msg = mmiaRequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
+    assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
+    verify(mmiaFormPresenter, never()).loadData(anyLong(), any(Date.class));
+  }
+
+  @Test
+  public void shouldSaveCompleteWhenMethodCalled() {
+    mmiaRequisitionFragment.completeSuccess();
 
-        assertThat(mmiaRequisitionFragment.getActivity().isFinishing()).isTrue();
-    }
+    String successMessage = mmiaRequisitionFragment.getString(R.string.msg_mmia_submit_tip);
+    assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(successMessage);
 
-    @Test
-    public void shouldShowValidationAlertWhenMethodCalled() {
-        mmiaRequisitionFragment.showValidationAlert();
+    assertThat(mmiaRequisitionFragment.getActivity().isFinishing()).isTrue();
+  }
 
-        RobolectricUtils.waitLooperIdle();
+  @Test
+  public void shouldShowValidationAlertWhenMethodCalled() {
+    mmiaRequisitionFragment.showValidationAlert();
 
-        SimpleDialogFragment fragment = (SimpleDialogFragment) mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("not_match_dialog");
+    RobolectricUtils.waitLooperIdle();
 
-        assertThat(fragment).isNotNull();
+    SimpleDialogFragment fragment = (SimpleDialogFragment) mmiaRequisitionFragment
+        .getFragmentManager().findFragmentByTag("not_match_dialog");
 
-        final Dialog dialog = fragment.getDialog();
-        assertThat(dialog).isNotNull();
-    }
+    assertThat(fragment).isNotNull();
 
-    @Test
-    public void shouldNotRemoveRnrFormWhenGoBack() {
-        mmiaRequisitionFragment.onBackPressed();
-        verify(mmiaFormPresenter, never()).deleteDraft();
-    }
+    final Dialog dialog = fragment.getDialog();
+    assertThat(dialog).isNotNull();
+  }
 
-    @Test
-    public void shouldShowSaveAndCompleteButtonWhenFormIsEditable() {
-        mmiaRequisitionFragment.initUI();
+  @Test
+  public void shouldNotRemoveRnrFormWhenGoBack() {
+    mmiaRequisitionFragment.onBackPressed();
+    verify(mmiaFormPresenter, never()).deleteDraft();
+  }
 
-        assertThat(mmiaRequisitionFragment.actionPanelView.getVisibility()).isEqualTo(View.VISIBLE);
-    }
+  @Test
+  public void shouldShowSaveAndCompleteButtonWhenFormIsEditable() {
+    mmiaRequisitionFragment.initUI();
 
-    @Test
-    public void shouldNotShowSaveAndCompleteButtonWhenFormIsNotEditable() {
-        when(mmiaFormPresenter.isHistoryForm()).thenReturn(true);
-        mmiaRequisitionFragment = getMMIARequisitionFragmentWithFormId();
+    assertThat(mmiaRequisitionFragment.actionPanelView.getVisibility()).isEqualTo(View.VISIBLE);
+  }
 
-        mmiaRequisitionFragment.initUI();
+  @Test
+  public void shouldNotShowSaveAndCompleteButtonWhenFormIsNotEditable() {
+    when(mmiaFormPresenter.isHistoryForm()).thenReturn(true);
+    mmiaRequisitionFragment = getMMIARequisitionFragmentWithFormId();
 
-        assertThat(mmiaRequisitionFragment.actionPanelView.getVisibility()).isEqualTo(View.GONE);
-    }
+    mmiaRequisitionFragment.initUI();
 
-    @Test
-    public void shouldSetTitleWithPeriod() {
-        form.setPeriodBegin(Date.valueOf("2015-04-21"));
-        form.setPeriodEnd(Date.valueOf("2015-05-20"));
+    assertThat(mmiaRequisitionFragment.actionPanelView.getVisibility()).isEqualTo(View.GONE);
+  }
 
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
+  @Test
+  public void shouldSetTitleWithPeriod() {
+    form.setPeriodBegin(Date.valueOf("2015-04-21"));
+    form.setPeriodEnd(Date.valueOf("2015-05-20"));
 
-        assertThat(mmiaRequisitionFragment.getActivity().getTitle()).isEqualTo("MMIA - 21 Apr to 20 May");
-    }
+    mmiaRequisitionFragment.refreshRequisitionForm(form);
 
-    @Test
-    public void shouldDeHighLightWhenTotalMatches() {
-        when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
+    assertThat(mmiaRequisitionFragment.getActivity().getTitle())
+        .isEqualTo("MMIA - 21 Apr to 20 May");
+  }
 
-        mmiaRequisitionFragment.regimeWrap = regimeListWrap;
-        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
+  @Test
+  public void shouldDeHighLightWhenTotalMatches() {
+    when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
 
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
+    mmiaRequisitionFragment.regimeWrap = regimeListWrap;
+    mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
-        verify(regimeListWrap).deHighLightTotal();
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
-    }
+    mmiaRequisitionFragment.refreshRequisitionForm(form);
 
+    verify(regimeListWrap).deHighLightTotal();
+    assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+  }
 
-    @Test
-    public void shouldDisplayRegimeThreeLine() {
-        List<RegimenItemThreeLines> linesList = new ArrayList<>();
-        linesList.add(new RegimenItemThreeLines(0, getString(R.string.key_regime_3lines_1)));
-        linesList.add(new RegimenItemThreeLines(1, getString(R.string.key_regime_3lines_2)));
-        linesList.add(new RegimenItemThreeLines(2, getString(R.string.key_regime_3lines_3)));
-        form.setRegimenThreeLinesWrapper(linesList);
-        mmiaRequisitionFragment.regimeWrap = regimeListWrap;
-        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-        verify(regimeListWrap).deHighLightTotal();
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
-        assertFalse(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.isCompleted());
-        assertTrue(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.hasEmptyField());
-        assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.getDataList().size()).isEqualTo(3);
-        assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.getTotal(MMIARegimeThreeLineList.COUNTTYPE.PATIENTSAMOUNT)).isEqualTo(0);
-    }
+  @Test
+  public void shouldDisplayRegimeThreeLine() {
+    List<RegimenItemThreeLines> linesList = new ArrayList<>();
+    linesList.add(new RegimenItemThreeLines(0, getString(R.string.key_regime_3lines_1)));
+    linesList.add(new RegimenItemThreeLines(1, getString(R.string.key_regime_3lines_2)));
+    linesList.add(new RegimenItemThreeLines(2, getString(R.string.key_regime_3lines_3)));
+    form.setRegimenThreeLinesWrapper(linesList);
+    mmiaRequisitionFragment.regimeWrap = regimeListWrap;
+    mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
-    private String getString(int id) {
-        return mmiaRequisitionFragment.getString(id);
-    }
+    mmiaRequisitionFragment.refreshRequisitionForm(form);
+    verify(regimeListWrap).deHighLightTotal();
+    assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+    assertFalse(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.isCompleted());
+    assertTrue(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.hasEmptyField());
+    assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView.getDataList().size())
+        .isEqualTo(3);
+    assertThat(mmiaRequisitionFragment.mmiaRegimeThreeLineListView
+        .getTotal(MMIARegimeThreeLineList.COUNTTYPE.PATIENTSAMOUNT)).isEqualTo(0);
+  }
 
-    @Test
-    public void shouldDeHighlightWhenTotalNotMatchesAndLessThanFiveWithEmptyField() {
-        when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
-        when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(true);
+  private String getString(int id) {
+    return mmiaRequisitionFragment.getString(id);
+  }
 
-        form.setComments("ab");
+  @Test
+  public void shouldDeHighlightWhenTotalNotMatchesAndLessThanFiveWithEmptyField() {
+    when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
+    when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(true);
 
-        mmiaRequisitionFragment.regimeWrap = regimeListWrap;
-        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
+    form.setComments("ab");
 
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
+    mmiaRequisitionFragment.regimeWrap = regimeListWrap;
+    mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
-    }
+    mmiaRequisitionFragment.refreshRequisitionForm(form);
 
-    @Test
-    public void shouldDeHighlightWhenTotalNotMatchesAndMoreThanFive() {
-        when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
-        when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
+    assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+  }
 
-        form.setComments("abdasdsa");
+  @Test
+  public void shouldDeHighlightWhenTotalNotMatchesAndMoreThanFive() {
+    when(mmiaPatientInfoListView.getTotal()).thenReturn(40L);
+    when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
-        mmiaRequisitionFragment.regimeWrap = regimeListWrap;
-        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
+    form.setComments("abdasdsa");
 
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
+    mmiaRequisitionFragment.regimeWrap = regimeListWrap;
+    mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
-    }
+    mmiaRequisitionFragment.refreshRequisitionForm(form);
 
-    @Test
-    public void shouldDeHighlightWhenTotalMatchesAndCommentLengthLessThanFiveAndWithoutEmptyField() {
-        when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
-        when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
+    assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+  }
 
-        mmiaRequisitionFragment.etComment.setText("ab");
+  @Test
+  public void shouldDeHighlightWhenTotalMatchesAndCommentLengthLessThanFiveAndWithoutEmptyField() {
+    when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
+    when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
-        mmiaRequisitionFragment.regimeWrap = regimeListWrap;
-        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
+    mmiaRequisitionFragment.etComment.setText("ab");
 
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
+    mmiaRequisitionFragment.regimeWrap = regimeListWrap;
+    mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
-    }
+    mmiaRequisitionFragment.refreshRequisitionForm(form);
 
-    @Test
-    public void shouldDeHighlightWhenTotalMatchesWithoutEmptyField() {
-        when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
-        when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
+    assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+  }
 
-        mmiaRequisitionFragment.etComment.setText("abcde");
+  @Test
+  public void shouldDeHighlightWhenTotalMatchesWithoutEmptyField() {
+    when(mmiaPatientInfoListView.getTotal()).thenReturn(20L);
+    when(mmiaPatientInfoListView.hasEmptyField()).thenReturn(false);
 
-        mmiaRequisitionFragment.regimeWrap = regimeListWrap;
-        mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
+    mmiaRequisitionFragment.etComment.setText("abcde");
 
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
+    mmiaRequisitionFragment.regimeWrap = regimeListWrap;
+    mmiaRequisitionFragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
 
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
-    }
+    mmiaRequisitionFragment.refreshRequisitionForm(form);
 
-    @Test
-    public void shouldShowSubmitSignatureDialog() {
-        when(mmiaFormPresenter.isDraftOrDraftMissed()).thenReturn(true);
-        mmiaRequisitionFragment.showSignDialog();
+    assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+  }
 
-        RobolectricUtils.waitLooperIdle();
+  @Test
+  public void shouldShowSubmitSignatureDialog() {
+    when(mmiaFormPresenter.isDraftOrDraftMissed()).thenReturn(true);
+    mmiaRequisitionFragment.showSignDialog();
 
-        DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
+    RobolectricUtils.waitLooperIdle();
 
-        assertThat(fragment).isNotNull();
+    DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager()
+        .findFragmentByTag("signature_dialog"));
 
-        Dialog dialog = fragment.getDialog();
+    assertThat(fragment).isNotNull();
 
-        assertThat(dialog).isNotNull();
+    Dialog dialog = fragment.getDialog();
 
-        String alertMessage = mmiaRequisitionFragment.getString(R.string.msg_mmia_submit_signature);
-        assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
-    }
+    assertThat(dialog).isNotNull();
 
-    @Test
-    public void shouldShowApproveSignatureDialog() {
-        when(mmiaFormPresenter.isDraftOrDraftMissed()).thenReturn(false);
+    String alertMessage = mmiaRequisitionFragment.getString(R.string.msg_mmia_submit_signature);
+    assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
+  }
 
-        mmiaRequisitionFragment.showSignDialog();
+  @Test
+  public void shouldShowApproveSignatureDialog() {
+    when(mmiaFormPresenter.isDraftOrDraftMissed()).thenReturn(false);
 
-        RobolectricUtils.waitLooperIdle();
+    mmiaRequisitionFragment.showSignDialog();
 
-        DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
+    RobolectricUtils.waitLooperIdle();
 
-        assertThat(fragment).isNotNull();
+    DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager()
+        .findFragmentByTag("signature_dialog"));
 
-        Dialog dialog = fragment.getDialog();
+    assertThat(fragment).isNotNull();
 
-        assertThat(dialog).isNotNull();
+    Dialog dialog = fragment.getDialog();
 
-        String alertMessage = mmiaRequisitionFragment.getString(R.string.msg_approve_signature_mmia);
-        assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
-    }
+    assertThat(dialog).isNotNull();
 
-    @Test
-    public void shouldMessageNotifyDialog() {
-        mmiaRequisitionFragment.showMessageNotifyDialog();
+    String alertMessage = mmiaRequisitionFragment.getString(R.string.msg_approve_signature_mmia);
+    assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
+  }
 
-        RobolectricUtils.waitLooperIdle();
+  @Test
+  public void shouldMessageNotifyDialog() {
+    mmiaRequisitionFragment.showMessageNotifyDialog();
 
-        DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
+    RobolectricUtils.waitLooperIdle();
 
-        assertThat(fragment).isNotNull();
+    DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager()
+        .findFragmentByTag("showMessageNotifyDialog"));
 
-        AlertDialog dialog = (AlertDialog) fragment.getDialog();
+    assertThat(fragment).isNotNull();
 
-        assertThat(dialog).isNotNull();
-    }
+    AlertDialog dialog = (AlertDialog) fragment.getDialog();
 
-    @Test
-    public void shouldDisplayFreezeHeaderWhenLocationIsAboveOrAtRnrItemsListWhenScrolling() {
-        when(rnrFormList.getHeight()).thenReturn(2000);
-        int numberOfItemsInRNR = 10;
-        mmiaRequisitionFragment.actionBarHeight = 100;
+    assertThat(dialog).isNotNull();
+  }
 
-        mockRightViewGroup = mock(ViewGroup.class);
-        when(rnrFormList.getRightViewGroup()).thenReturn(mockRightViewGroup);
-        final View mockView = mock(View.class);
-        when(mockRightViewGroup.getChildAt(numberOfItemsInRNR - 1)).thenReturn(mockView);
-        when(mockView.getHeight()).thenReturn(100);
-        when(rnrFormList.getRightViewGroup().getChildCount()).thenReturn(numberOfItemsInRNR);
+  @Test
+  public void shouldDisplayFreezeHeaderWhenLocationIsAboveOrAtRnrItemsListWhenScrolling() {
+    when(rnrFormList.getHeight()).thenReturn(2000);
+    int numberOfItemsInRNR = 10;
+    mmiaRequisitionFragment.actionBarHeight = 100;
 
-        doAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
-            ((int[]) args[0])[0] = 50;
-            ((int[]) args[0])[1] = -1700;
-            return null;
-        }).when(rnrFormList).getLocationOnScreen(any(int[].class));
+    mockRightViewGroup = mock(ViewGroup.class);
+    when(rnrFormList.getRightViewGroup()).thenReturn(mockRightViewGroup);
+    final View mockView = mock(View.class);
+    when(mockRightViewGroup.getChildAt(numberOfItemsInRNR - 1)).thenReturn(mockView);
+    when(mockView.getHeight()).thenReturn(100);
+    when(rnrFormList.getRightViewGroup().getChildCount()).thenReturn(numberOfItemsInRNR);
 
-        when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
+    doAnswer(invocation -> {
+      Object[] args = invocation.getArguments();
+      ((int[]) args[0])[0] = 50;
+      ((int[]) args[0])[1] = -1700;
+      return null;
+    }).when(rnrFormList).getLocationOnScreen(any(int[].class));
 
-        mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
-        verify(mockRnrItemsHeaderFreeze).setVisibility(View.VISIBLE);
-    }
+    when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
 
-    @Test
-    public void shouldHideFreezeHeaderWhenLocationIsBelowRnrItemsListWhenScrolling() {
-        when(rnrFormList.getHeight()).thenReturn(2000);
-        int numberOfItemsInRNR = 10;
-        mmiaRequisitionFragment.actionBarHeight = 100;
+    mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
+    verify(mockRnrItemsHeaderFreeze).setVisibility(View.VISIBLE);
+  }
 
-        mockRightViewGroup = mock(ViewGroup.class);
-        when(rnrFormList.getRightViewGroup()).thenReturn(mockRightViewGroup);
-        final View mockView = mock(View.class);
-        when(mockRightViewGroup.getChildAt(numberOfItemsInRNR - 1)).thenReturn(mockView);
-        when(mockView.getHeight()).thenReturn(100);
-        when(rnrFormList.getRightViewGroup().getChildCount()).thenReturn(numberOfItemsInRNR);
+  @Test
+  public void shouldHideFreezeHeaderWhenLocationIsBelowRnrItemsListWhenScrolling() {
+    when(rnrFormList.getHeight()).thenReturn(2000);
+    int numberOfItemsInRNR = 10;
+    mmiaRequisitionFragment.actionBarHeight = 100;
 
-        doAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
-            ((int[]) args[0])[0] = 50;
-            ((int[]) args[0])[1] = -1800;
-            return null;
-        }).when(rnrFormList).getLocationOnScreen(any(int[].class));
+    mockRightViewGroup = mock(ViewGroup.class);
+    when(rnrFormList.getRightViewGroup()).thenReturn(mockRightViewGroup);
+    final View mockView = mock(View.class);
+    when(mockRightViewGroup.getChildAt(numberOfItemsInRNR - 1)).thenReturn(mockView);
+    when(mockView.getHeight()).thenReturn(100);
+    when(rnrFormList.getRightViewGroup().getChildCount()).thenReturn(numberOfItemsInRNR);
 
-        when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
+    doAnswer(invocation -> {
+      Object[] args = invocation.getArguments();
+      ((int[]) args[0])[0] = 50;
+      ((int[]) args[0])[1] = -1800;
+      return null;
+    }).when(rnrFormList).getLocationOnScreen(any(int[].class));
 
-        mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
-        verify(mockRnrItemsHeaderFreeze).setVisibility(View.INVISIBLE);
-    }
+    when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
 
-    @Test
-    public void shouldAddCustomRegimenItem() {
-        MMIARequisitionFragment mmiaRequisitionFragmentSpy = spy(mmiaRequisitionFragment);
+    mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
+    verify(mockRnrItemsHeaderFreeze).setVisibility(View.INVISIBLE);
+  }
 
-        Regimen regimen = new Regimen();
-        Observable<Void> value = Observable.create(Observer::onCompleted);
-        when(mmiaFormPresenter.addCustomRegimenItem(regimen)).thenReturn(value);
-        RnRForm rnRForm = new RnRForm();
-        when(mmiaFormPresenter.getRnRForm()).thenReturn(rnRForm);
+  @Test
+  public void shouldAddCustomRegimenItem() {
+    MMIARequisitionFragment mmiaRequisitionFragmentSpy = spy(mmiaRequisitionFragment);
 
-        Intent data = new Intent();
-        data.putExtra(Constants.PARAM_CUSTOM_REGIMEN, regimen);
-        mmiaRequisitionFragmentSpy.onActivityResult(MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME, Activity.RESULT_OK, data);
+    Regimen regimen = new Regimen();
+    Observable<Void> value = Observable.create(Observer::onCompleted);
+    when(mmiaFormPresenter.addCustomRegimenItem(regimen)).thenReturn(value);
+    RnRForm rnRForm = new RnRForm();
+    when(mmiaFormPresenter.getRnRForm()).thenReturn(rnRForm);
 
-        verify(mmiaRequisitionFragmentSpy.regimeWrap).addCustomRegimenItem(regimen);
-    }
+    Intent data = new Intent();
+    data.putExtra(Constants.PARAM_CUSTOM_REGIMEN, regimen);
+    mmiaRequisitionFragmentSpy
+        .onActivityResult(MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME, Activity.RESULT_OK,
+            data);
+
+    verify(mmiaRequisitionFragmentSpy.regimeWrap).addCustomRegimenItem(regimen);
+  }
 }

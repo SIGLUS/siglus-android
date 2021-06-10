@@ -22,13 +22,14 @@ import lombok.Data;
 
 @Data
 public class AppInfoRequest {
-    private String facilityCode;
-    private String userName;
-    private String version;
 
-    public AppInfoRequest(String facilityCode, String userName, String version) {
-        this.facilityCode = facilityCode;
-        this.userName = userName;
-        this.version = version;
-    }
+  private String facilityCode;
+  private String userName;
+  private String version;
+
+  public AppInfoRequest(String facilityCode, String userName, String version) {
+    this.facilityCode = facilityCode;
+    this.userName = userName;
+    this.version = version;
+  }
 }

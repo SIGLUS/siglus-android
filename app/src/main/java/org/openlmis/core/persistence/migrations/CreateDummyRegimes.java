@@ -24,14 +24,14 @@ import org.openlmis.core.persistence.Migration;
 
 public class CreateDummyRegimes extends Migration {
 
-    DbUtil dbUtil;
+  DbUtil dbUtil;
 
 
-    public CreateDummyRegimes() {
-        dbUtil = new DbUtil();
-    }
+  public CreateDummyRegimes() {
+    dbUtil = new DbUtil();
+  }
 
-    @Override
-    public void up() {
-    }
+  @Override
+  public void up() {
+  }
 }

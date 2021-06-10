@@ -1,33 +1,32 @@
 package org.openlmis.core.view.fragment.builders;
 
 import com.google.inject.Inject;
-
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 
 public class WarningDialogFragmentBuilder {
 
-    @Inject
-    public WarningDialogFragmentBuilder() {
-    }
+  @Inject
+  public WarningDialogFragmentBuilder() {
+  }
 
-    public WarningDialogFragment build(WarningDialogFragment.DialogDelegate delegate,
-                                       int message, int positiveMessageButton,
-                                       int negativeMessageButton) {
+  public WarningDialogFragment build(WarningDialogFragment.DialogDelegate delegate,
+      int message, int positiveMessageButton,
+      int negativeMessageButton) {
 
-        WarningDialogFragment wipeDataDialog = WarningDialogFragment.newInstance(
-                message, positiveMessageButton, negativeMessageButton);
-        wipeDataDialog.setDelegate(delegate);
-        return wipeDataDialog;
-    }
+    WarningDialogFragment wipeDataDialog = WarningDialogFragment.newInstance(
+        message, positiveMessageButton, negativeMessageButton);
+    wipeDataDialog.setDelegate(delegate);
+    return wipeDataDialog;
+  }
 
-    public WarningDialogFragment build(WarningDialogFragment.DialogDelegate delegate,
-                                       String message, String positiveMessageButton,
-                                       String negativeMessageButton) {
+  public WarningDialogFragment build(WarningDialogFragment.DialogDelegate delegate,
+      String message, String positiveMessageButton,
+      String negativeMessageButton) {
 
-        WarningDialogFragment warningDataDialog = WarningDialogFragment.newInstanceForDeleteProduct(
-                message, positiveMessageButton, negativeMessageButton);
-        warningDataDialog.setDelegate(delegate);
-        return warningDataDialog;
-    }
+    WarningDialogFragment warningDataDialog = WarningDialogFragment.newInstanceForDeleteProduct(
+        message, positiveMessageButton, negativeMessageButton);
+    warningDataDialog.setDelegate(delegate);
+    return warningDataDialog;
+  }
 
 }

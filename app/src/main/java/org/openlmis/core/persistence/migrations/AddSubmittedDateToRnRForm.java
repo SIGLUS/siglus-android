@@ -21,8 +21,9 @@ package org.openlmis.core.persistence.migrations;
 import org.openlmis.core.persistence.Migration;
 
 public class AddSubmittedDateToRnRForm extends Migration {
-    @Override
-    public void up() {
-        execSQL("ALTER TABLE 'rnr_forms' ADD COLUMN submittedTime VARCHAR");
-    }
+
+  @Override
+  public void up() {
+    execSQL("ALTER TABLE 'rnr_forms' ADD COLUMN submittedTime VARCHAR");
+  }
 }

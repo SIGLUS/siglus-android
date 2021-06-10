@@ -1,2771 +1,3451 @@
 {
-  "programDataForms": [{
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1529532000000,
-    "periodEnd": 1532037600000,
-    "submittedTime": 1558726171535,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }],
-    "programDataFormSignatures": [{
-      "id": 213848,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 213849,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [{
-      "productCode": "22A05",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A07",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A06",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A08",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 11,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": "30/09/2020"
-    }],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1550700000000,
-    "periodEnd": 1553032800000,
-    "submittedTime": 1556090180825,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 119
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 3
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 3
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 3
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 119
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 5
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 3
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 3
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 28
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 154
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 125
-    }],
-    "programDataFormSignatures": [{
-      "id": 185199,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 185200,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1553119200000,
-    "periodEnd": 1555711200000,
-    "submittedTime": 1556090317561,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 90
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 90
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 7
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 7
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 5
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 33
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 143
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 130
-    }],
-    "programDataFormSignatures": [{
-      "id": 185211,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 185212,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1532037600000,
-    "periodEnd": 1534716000000,
-    "submittedTime": 1561333769342,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 97
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 97
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 3
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 24
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 186
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 179
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }],
-    "programDataFormSignatures": [{
-      "id": 236415,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 236416,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [{
-      "productCode": "22A05",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": null,
-      "expirationDate": null
-    }, {
-      "productCode": "22A07",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": null,
-      "expirationDate": null
-    }, {
-      "productCode": "22A06",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": null,
-      "expirationDate": null
-    }, {
-      "productCode": "22A08",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": null,
-      "expirationDate": "30/09/2020"
-    }],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1555711200000,
-    "periodEnd": 1558389600000,
-    "submittedTime": 1561334176548,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 99
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 99
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 5
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 4
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 31
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 3
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 3
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 3
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 211
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 198
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }],
-    "programDataFormSignatures": [{
-      "id": 236419,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 236420,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [{
-      "productCode": "22A05",
-      "beginningBalance": null,
-      "quantityReceived": 0,
-      "quantityDispensed": 30,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": "31/07/2020"
-    }, {
-      "productCode": "22A07",
-      "beginningBalance": null,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A06",
-      "beginningBalance": null,
-      "quantityReceived": 0,
-      "quantityDispensed": 100,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 300,
-      "expirationDate": "31/01/2020"
-    }, {
-      "productCode": "22A08",
-      "beginningBalance": null,
-      "quantityReceived": 20,
-      "quantityDispensed": 15,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 11,
-      "expirationDate": "30/09/2020"
-    }],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1526853600000,
-    "periodEnd": 1529445600000,
-    "submittedTime": 1529729559856,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 184
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 92
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 1
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 45
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 206
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 166
-    }],
-    "programDataFormSignatures": [{
-      "id": 50869,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 50870,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1558389600000,
-    "periodEnd": 1561327200000,
-    "submittedTime": 1568922091977,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 94
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 94
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 4
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 7
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 20
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 126
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 94
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 75
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 50
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }],
-    "programDataFormSignatures": [{
-      "id": 363956,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 363957,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [{
-      "productCode": "22A05",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": -30,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A07",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A06",
-      "beginningBalance": 300,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 100,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A08",
-      "beginningBalance": 11,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": -8,
-      "stockInHand": 0,
-      "expirationDate": null
-    }],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1561327200000,
-    "periodEnd": 1563573600000,
-    "submittedTime": 1568922751321,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 97
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 97
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 5
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 27
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 200
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 175
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "ACC_EMERGENCY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "MOBILE_UNIT",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "LABORATORY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "UATS",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "PNCTL",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "PAV",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "DENTAL_WARD",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }],
-    "programDataFormSignatures": [{
-      "id": 363980,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 363981,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [{
-      "productCode": "22A05",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 30,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A07",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A06",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 100,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A08",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1534802400000,
-    "periodEnd": 1537394400000,
-    "submittedTime": 1537478827240,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 62
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 61
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 5
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 31
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 175
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 152
-    }],
-    "programDataFormSignatures": [{
-      "id": 93918,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 93919,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1563573600000,
-    "periodEnd": 1566338400000,
-    "submittedTime": 1568923034241,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 89
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 30
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 4
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 25
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 165
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 107
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 78
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 32
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }],
-    "programDataFormSignatures": [{
-      "id": 363996,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 363997,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [{
-      "productCode": "22A05",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A07",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A06",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A08",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1566338400000,
-    "periodEnd": 1568844000000,
-    "submittedTime": 1568923313955,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 97
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 30
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 26
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 2
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 2
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 2
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 137
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 110
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "APES",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 93
-    }, {
-      "name": "APES",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 58
-    }, {
-      "name": "APES",
-      "columnCode": "UNJUSTIFIED_MALARIA",
-      "value": 0
-    }],
-    "programDataFormSignatures": [{
-      "id": 364008,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 364009,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [{
-      "productCode": "22A05",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A07",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 0,
-      "totalLossesAndAdjustments": 0,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A06",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 100,
-      "totalLossesAndAdjustments": -200,
-      "stockInHand": 0,
-      "expirationDate": null
-    }, {
-      "productCode": "22A08",
-      "beginningBalance": 0,
-      "quantityReceived": 0,
-      "quantityDispensed": 5,
-      "totalLossesAndAdjustments": -22,
-      "stockInHand": 5,
-      "expirationDate": null
-    }],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1537480800000,
-    "periodEnd": 1539986400000,
-    "submittedTime": 1540329216493,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 95
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 95
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 25
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 203
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 6
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 140
-    }],
-    "programDataFormSignatures": [{
-      "id": 112584,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 112585,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1540072800000,
-    "periodEnd": 1542664800000,
-    "submittedTime": 1542876192778,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 81
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 80
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 2
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 34
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 183
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 5
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 134
-    }],
-    "programDataFormSignatures": [{
-      "id": 129839,
-      "type": "SUBMITTER",
-      "text": "IFE"
-    }, {
-      "id": 129840,
-      "type": "APPROVER",
-      "text": "IFE"
-    }],
-    "programDataFormBasicItems": [],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1542751200000,
-    "periodEnd": 1545256800000,
-    "submittedTime": 1545402838567,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 94
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 94
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 31
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 5
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 158
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 134
-    }],
-    "programDataFormSignatures": [{
-      "id": 137899,
-      "type": "SUBMITTER",
-      "text": "iren"
-    }, {
-      "id": 137900,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1545343200000,
-    "periodEnd": 1547935200000,
-    "submittedTime": 1548244801913,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 76
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 76
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 2
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 3
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 28
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 90
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 72
-    }],
-    "programDataFormSignatures": [{
-      "id": 141663,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 141664,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [],
-    "observation": ""
-  }, {
-    "facilityId": 808,
-    "programCode": "RAPID_TEST",
-    "periodBegin": 1548021600000,
-    "periodEnd": 1550613600000,
-    "submittedTime": 1551171707440,
-    "programDataFormItems": [{
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 7
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 1
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVDETERMINE",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "POSITIVE_MALARIA",
-      "value": 279
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 128
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 128
-    }, {
-      "name": "MATERNITY",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 2
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVDETERMINE",
-      "value": 20
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_HIVUNIGOLD",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_SYPHILLIS",
-      "value": 0
-    }, {
-      "name": "GENERAL_WARD",
-      "columnCode": "CONSUME_MALARIA",
-      "value": 323
-    }],
-    "programDataFormSignatures": [{
-      "id": 152746,
-      "type": "SUBMITTER",
-      "text": "ife"
-    }, {
-      "id": 152747,
-      "type": "APPROVER",
-      "text": "ife"
-    }],
-    "programDataFormBasicItems": [],
-    "observation": ""
-  }]
+  "programDataForms": [
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1529532000000,
+      "periodEnd": 1532037600000,
+      "submittedTime": 1558726171535,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 213848,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 213849,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [
+        {
+          "productCode": "22A05",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A07",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A06",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A08",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 11,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": "30/09/2020"
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1550700000000,
+      "periodEnd": 1553032800000,
+      "submittedTime": 1556090180825,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 119
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 3
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 3
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 3
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 119
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 5
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 3
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 3
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 28
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 154
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 125
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 185199,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 185200,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1553119200000,
+      "periodEnd": 1555711200000,
+      "submittedTime": 1556090317561,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 90
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 90
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 7
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 7
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 5
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 33
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 143
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 130
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 185211,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 185212,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1532037600000,
+      "periodEnd": 1534716000000,
+      "submittedTime": 1561333769342,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 97
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 97
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 3
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 24
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 186
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 179
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 236415,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 236416,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [
+        {
+          "productCode": "22A05",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": null,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A07",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": null,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A06",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": null,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A08",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": null,
+          "expirationDate": "30/09/2020"
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1555711200000,
+      "periodEnd": 1558389600000,
+      "submittedTime": 1561334176548,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 99
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 99
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 5
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 4
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 31
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 3
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 3
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 3
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 211
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 198
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 236419,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 236420,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [
+        {
+          "productCode": "22A05",
+          "beginningBalance": null,
+          "quantityReceived": 0,
+          "quantityDispensed": 30,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": "31/07/2020"
+        },
+        {
+          "productCode": "22A07",
+          "beginningBalance": null,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A06",
+          "beginningBalance": null,
+          "quantityReceived": 0,
+          "quantityDispensed": 100,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 300,
+          "expirationDate": "31/01/2020"
+        },
+        {
+          "productCode": "22A08",
+          "beginningBalance": null,
+          "quantityReceived": 20,
+          "quantityDispensed": 15,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 11,
+          "expirationDate": "30/09/2020"
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1526853600000,
+      "periodEnd": 1529445600000,
+      "submittedTime": 1529729559856,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 184
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 92
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 1
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 45
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 206
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 166
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 50869,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 50870,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1558389600000,
+      "periodEnd": 1561327200000,
+      "submittedTime": 1568922091977,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 94
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 94
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 4
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 7
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 20
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 126
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 94
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 75
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 50
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 363956,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 363957,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [
+        {
+          "productCode": "22A05",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": -30,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A07",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A06",
+          "beginningBalance": 300,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 100,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A08",
+          "beginningBalance": 11,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": -8,
+          "stockInHand": 0,
+          "expirationDate": null
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1561327200000,
+      "periodEnd": 1563573600000,
+      "submittedTime": 1568922751321,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 97
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 97
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 5
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 27
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 200
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 175
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "ACC_EMERGENCY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MOBILE_UNIT",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "LABORATORY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "UATS",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PNCTL",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "PAV",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "DENTAL_WARD",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 363980,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 363981,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [
+        {
+          "productCode": "22A05",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 30,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A07",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A06",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 100,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A08",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1534802400000,
+      "periodEnd": 1537394400000,
+      "submittedTime": 1537478827240,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 62
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 61
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 5
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 31
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 175
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 152
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 93918,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 93919,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1563573600000,
+      "periodEnd": 1566338400000,
+      "submittedTime": 1568923034241,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 89
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 30
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 4
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 25
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 165
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 107
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 78
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 32
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 363996,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 363997,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [
+        {
+          "productCode": "22A05",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A07",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A06",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A08",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1566338400000,
+      "periodEnd": 1568844000000,
+      "submittedTime": 1568923313955,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 97
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 30
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 26
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 2
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 2
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 2
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 137
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 110
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "APES",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 93
+        },
+        {
+          "name": "APES",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 58
+        },
+        {
+          "name": "APES",
+          "columnCode": "UNJUSTIFIED_MALARIA",
+          "value": 0
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 364008,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 364009,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [
+        {
+          "productCode": "22A05",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A07",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 0,
+          "totalLossesAndAdjustments": 0,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A06",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 100,
+          "totalLossesAndAdjustments": -200,
+          "stockInHand": 0,
+          "expirationDate": null
+        },
+        {
+          "productCode": "22A08",
+          "beginningBalance": 0,
+          "quantityReceived": 0,
+          "quantityDispensed": 5,
+          "totalLossesAndAdjustments": -22,
+          "stockInHand": 5,
+          "expirationDate": null
+        }
+      ],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1537480800000,
+      "periodEnd": 1539986400000,
+      "submittedTime": 1540329216493,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 95
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 95
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 25
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 203
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 6
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 140
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 112584,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 112585,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1540072800000,
+      "periodEnd": 1542664800000,
+      "submittedTime": 1542876192778,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 81
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 80
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 2
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 34
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 183
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 5
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 134
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 129839,
+          "type": "SUBMITTER",
+          "text": "IFE"
+        },
+        {
+          "id": 129840,
+          "type": "APPROVER",
+          "text": "IFE"
+        }
+      ],
+      "programDataFormBasicItems": [],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1542751200000,
+      "periodEnd": 1545256800000,
+      "submittedTime": 1545402838567,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 94
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 94
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 31
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 5
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 158
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 134
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 137899,
+          "type": "SUBMITTER",
+          "text": "iren"
+        },
+        {
+          "id": 137900,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1545343200000,
+      "periodEnd": 1547935200000,
+      "submittedTime": 1548244801913,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 76
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 76
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 2
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 3
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 28
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 90
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 72
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 141663,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 141664,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [],
+      "observation": ""
+    },
+    {
+      "facilityId": 808,
+      "programCode": "RAPID_TEST",
+      "periodBegin": 1548021600000,
+      "periodEnd": 1550613600000,
+      "submittedTime": 1551171707440,
+      "programDataFormItems": [
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 7
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 1
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVDETERMINE",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "POSITIVE_MALARIA",
+          "value": 279
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 128
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 128
+        },
+        {
+          "name": "MATERNITY",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 2
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVDETERMINE",
+          "value": 20
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_HIVUNIGOLD",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_SYPHILLIS",
+          "value": 0
+        },
+        {
+          "name": "GENERAL_WARD",
+          "columnCode": "CONSUME_MALARIA",
+          "value": 323
+        }
+      ],
+      "programDataFormSignatures": [
+        {
+          "id": 152746,
+          "type": "SUBMITTER",
+          "text": "ife"
+        },
+        {
+          "id": 152747,
+          "type": "APPROVER",
+          "text": "ife"
+        }
+      ],
+      "programDataFormBasicItems": [],
+      "observation": ""
+    }
+  ]
 }

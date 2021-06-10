@@ -23,24 +23,24 @@ import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
 public class RequisitionBuilder {
 
-    public static RequisitionFormItemViewModel buildFakeRequisitionViewModel(){
-        RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel();
-        String text = String.valueOf(0);
-        viewModel.setFmn(text);
-        viewModel.setProductName(text);
-        viewModel.setInitAmount(text);
-        viewModel.setReceived(text);
-        viewModel.setIssued(text);
-        viewModel.setTheoretical(text);
-        viewModel.setAdjustedTotalRequest(text);
-        viewModel.setTotal(text);
-        viewModel.setInventory(text);
-        viewModel.setDifferent(text);
-        viewModel.setTotalRequest(text);
-        viewModel.setRequestAmount(text);
-        viewModel.setApprovedAmount(text);
-        viewModel.setItem(new RnrFormItem());
+  public static RequisitionFormItemViewModel buildFakeRequisitionViewModel() {
+    RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel();
+    String text = String.valueOf(0);
+    viewModel.setFmn(text);
+    viewModel.setProductName(text);
+    viewModel.setInitAmount(text);
+    viewModel.setReceived(text);
+    viewModel.setIssued(text);
+    viewModel.setTheoretical(text);
+    viewModel.setAdjustedTotalRequest(text);
+    viewModel.setTotal(text);
+    viewModel.setInventory(text);
+    viewModel.setDifferent(text);
+    viewModel.setTotalRequest(text);
+    viewModel.setRequestAmount(text);
+    viewModel.setApprovedAmount(text);
+    viewModel.setItem(new RnrFormItem());
 
-        return viewModel;
-    }
+    return viewModel;
+  }
 }

@@ -23,9 +23,7 @@ import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import java.util.Collection;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,24 +38,24 @@ import lombok.Setter;
 @DatabaseTable(tableName = "programs")
 public class Program extends BaseModel {
 
-    @SerializedName("code")
-    @DatabaseField
-    String programCode;
+  @SerializedName("code")
+  @DatabaseField
+  String programCode;
 
-    @SerializedName("name")
-    @DatabaseField
-    String programName;
+  @SerializedName("name")
+  @DatabaseField
+  String programName;
 
-    @SerializedName("parentCode")
-    @DatabaseField
-    String parentCode;
+  @SerializedName("parentCode")
+  @DatabaseField
+  String parentCode;
 
-    @DatabaseField
-    boolean isSupportEmergency;
+  @DatabaseField
+  boolean isSupportEmergency;
 
-    @ForeignCollectionField(columnName = "products")
-    private Collection<Product> products;
+  @ForeignCollectionField(columnName = "products")
+  private Collection<Product> products;
 
-    @ForeignCollectionField(columnName = "regimens")
-    private Collection<Regimen> regimens;
+  @ForeignCollectionField(columnName = "regimens")
+  private Collection<Regimen> regimens;
 }

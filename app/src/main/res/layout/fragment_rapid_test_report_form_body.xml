@@ -1,84 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/v_bottom_root"
+  android:id="@+id/v_bottom_root"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:layout_above="@+id/action_panel"
+  android:layout_below="@+id/rapid_test_top">
+
+  <LinearLayout
+    android:id="@+id/vg_rapid_test_report_header_title"
+    android:layout_width="@dimen/rapid_view_width"
+    android:layout_height="@dimen/repid_view_top_item_line_height"
+    android:background="@drawable/border_top_black"
+    android:orientation="horizontal">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@drawable/border_right_black_bold"
+      android:gravity="left|center"
+      android:paddingLeft="@dimen/rapid_view_view_left_padding"
+      android:text="@string/title_rapid_test_form"
+      android:textColor="@color/color_black"
+      android:textSize="@dimen/font_size_regular"
+      android:textStyle="bold" />
+
+  </LinearLayout>
+
+  <FrameLayout
+    android:id="@+id/vg_rapid_test_report_body_left_header"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_above="@+id/action_panel"
-    android:layout_below="@+id/rapid_test_top">
+    android:layout_below="@+id/vg_rapid_test_report_header_title"
+    android:layout_alignBottom="@+id/rapid_test_body"
+    android:background="@drawable/border_right_bottom_rapid_test_header">
 
-    <LinearLayout
-        android:id="@+id/vg_rapid_test_report_header_title"
-        android:layout_width="@dimen/rapid_view_width"
-        android:layout_height="@dimen/repid_view_top_item_line_height"
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:id="@+id/vg_rapid_test_report_empty_header"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/repid_view_item_two_line_height"
         android:background="@drawable/border_top_black"
-        android:orientation="horizontal">
+        android:orientation="horizontal" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/border_right_black_bold"
-            android:gravity="left|center"
-            android:paddingLeft="@dimen/rapid_view_view_left_padding"
-            android:text="@string/title_rapid_test_form"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/font_size_regular"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/vg_rapid_test_report_body_left_header"
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rapid_test_body_left_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vg_rapid_test_report_header_title"
-        android:layout_alignBottom="@+id/rapid_test_body"
-        android:background="@drawable/border_right_bottom_rapid_test_header">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/vg_rapid_test_report_empty_header"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/repid_view_item_two_line_height"
-                android:background="@drawable/border_top_black"
-                android:orientation="horizontal" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rapid_test_body_left_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/vg_rapid_test_report_empty_header"
-                android:contentDescription="rapid_test_body_left_list" />
-        </RelativeLayout>
+        android:layout_below="@+id/vg_rapid_test_report_empty_header"
+        android:contentDescription="rapid_test_body_left_list" />
+    </RelativeLayout>
 
 
-    </FrameLayout>
+  </FrameLayout>
 
-    <org.openlmis.core.view.widget.RapidTestBodyHorizontalScrollView
-        android:id="@+id/rapid_test_body"
+  <org.openlmis.core.view.widget.RapidTestBodyHorizontalScrollView
+    android:id="@+id/rapid_test_body"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/vg_rapid_test_report_header_title"
+    android:layout_marginBottom="@dimen/rapid_view_margin_bottom"
+    android:layout_toEndOf="@+id/vg_rapid_test_report_body_left_header">
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/border_left_black_bold">
+
+      <include layout="@layout/fragment_rapid_test_test_report_form_body_top_header" />
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_rapid_report_row_item_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vg_rapid_test_report_header_title"
-        android:layout_marginBottom="@dimen/rapid_view_margin_bottom"
-        android:layout_toEndOf="@+id/vg_rapid_test_report_body_left_header">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border_left_black_bold">
-
-            <include layout="@layout/fragment_rapid_test_test_report_form_body_top_header" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_rapid_report_row_item_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/vg_rapid_test_report_header"
-                android:background="@drawable/border_top_black_right_black_bold"
-                android:contentDescription="rv_rapid_report_row_item_list"
-                android:overScrollMode="never" />
-        </RelativeLayout>
-    </org.openlmis.core.view.widget.RapidTestBodyHorizontalScrollView>
+        android:layout_below="@+id/vg_rapid_test_report_header"
+        android:background="@drawable/border_top_black_right_black_bold"
+        android:contentDescription="rv_rapid_report_row_item_list"
+        android:overScrollMode="never" />
+    </RelativeLayout>
+  </org.openlmis.core.view.widget.RapidTestBodyHorizontalScrollView>
 </RelativeLayout>

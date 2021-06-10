@@ -1,10 +1,14 @@
 package org.openlmis.core.view.holder;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNotNull;
+
 import android.app.Fragment;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
-
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,107 +23,107 @@ import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.Arrays;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-
 @RunWith(LMISTestRunner.class)
 public class RequisitionFormViewHolderTest {
 
-    private RequisitionFormViewHolder viewHolder;
-    private RequisitionFormItemViewModel viewModel;
-    private DumpFragmentActivity dummyActivity;
+  private RequisitionFormViewHolder viewHolder;
+  private RequisitionFormItemViewModel viewModel;
+  private DumpFragmentActivity dummyActivity;
 
-    @Before
-    public void setup() {
-        dummyActivity = Robolectric.setupActivity(DumpFragmentActivity.class);
-        View itemView = LayoutInflater.from(dummyActivity).inflate(R.layout.item_requisition_body, null, false);
-        viewHolder = new RequisitionFormViewHolder(itemView);
-        viewModel = RequisitionBuilder.buildFakeRequisitionViewModel();
-    }
+  @Before
+  public void setup() {
+    dummyActivity = Robolectric.setupActivity(DumpFragmentActivity.class);
+    View itemView = LayoutInflater.from(dummyActivity)
+        .inflate(R.layout.item_requisition_body, null, false);
+    viewHolder = new RequisitionFormViewHolder(itemView);
+    viewModel = RequisitionBuilder.buildFakeRequisitionViewModel();
+  }
 
-    @Test
-    public void shouldHighLightRequestAmount() {
-        viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+  @Test
+  public void shouldHighLightRequestAmount() {
+    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
 
-        int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
-        int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
+    int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
+    int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
 
-        assertThat(bgReqColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(R.color.color_white)));
-        assertThat(bgAprColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(android.R.color.transparent)));
-        assertThat(viewHolder.requestAmount.isEnabled(), is(true));
-        assertThat(viewHolder.approvedAmount.isEnabled(), is(false));
-    }
-
-
-    @Test
-    public void shouldHighLightApprovedAmount() {
-        viewHolder.populate(viewModel, RnRForm.STATUS.SUBMITTED);
-
-        int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
-        int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
-
-        assertThat(bgReqColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(android.R.color.transparent)));
-        assertThat(bgAprColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(R.color.color_white)));
-        assertThat(viewHolder.requestAmount.isEnabled(), is(false));
-        assertThat(viewHolder.approvedAmount.isEnabled(), is(true));
-    }
-
-    @Test
-    public void shouldUpdateApprovedAmountWhenRequestAmountChanged() {
-
-        viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
-        viewHolder.requestAmount.setText("123");
-
-        assertThat(viewModel.getRequestAmount(), is("123"));
-        assertThat(viewModel.getApprovedAmount(), is("123"));
-        assertThat(viewHolder.requestAmount.getText().toString(), is("123"));
-    }
-
-    @Test
-    public void shouldUpdateApprovedAmountModelWhenTextChanged() {
-        viewHolder.populate(viewModel, RnRForm.STATUS.SUBMITTED);
-
-        viewHolder.approvedAmount.setText("123");
-
-        assertThat(viewModel.getRequestAmount(), is("0"));
-        assertThat(viewModel.getApprovedAmount(), is("123"));
-    }
-
-    @Test
-    public void shouldOnlyShowAdjustIconWhenAdjustmentQuantityIsNotZero() throws Exception {
-        viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
-
-        assertThat(viewHolder.adjustTheoreticalIcon.getVisibility(), is(View.GONE));
-
-        viewModel.setAdjustmentViewModels(Arrays.asList(generateAdjustmentViewModel()));
-        viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
-
-        assertThat(viewHolder.adjustTheoreticalIcon.getVisibility(), is(View.VISIBLE));
-    }
+    assertThat(bgReqColor, is(RuntimeEnvironment.application.getApplicationContext().getResources()
+        .getColor(R.color.color_white)));
+    assertThat(bgAprColor, is(RuntimeEnvironment.application.getApplicationContext().getResources()
+        .getColor(android.R.color.transparent)));
+    assertThat(viewHolder.requestAmount.isEnabled(), is(true));
+    assertThat(viewHolder.approvedAmount.isEnabled(), is(false));
+  }
 
 
-    @Test
-    public void shouldShowPopTipsTotalReminderIconClicked() {
-        viewModel.setAdjustmentViewModels(Arrays.asList(generateAdjustmentViewModel()));
-        viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+  @Test
+  public void shouldHighLightApprovedAmount() {
+    viewHolder.populate(viewModel, RnRForm.STATUS.SUBMITTED);
 
-        viewHolder.adjustTheoreticalIcon.performClick();
+    int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
+    int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
 
-        RobolectricUtils.waitLooperIdle();
+    assertThat(bgReqColor, is(RuntimeEnvironment.application.getApplicationContext().getResources()
+        .getColor(android.R.color.transparent)));
+    assertThat(bgAprColor, is(RuntimeEnvironment.application.getApplicationContext().getResources()
+        .getColor(R.color.color_white)));
+    assertThat(viewHolder.requestAmount.isEnabled(), is(false));
+    assertThat(viewHolder.approvedAmount.isEnabled(), is(true));
+  }
 
-        Fragment dialogFragment = dummyActivity.getFragmentManager().findFragmentByTag("adjustmentTheoreticalDialog");
+  @Test
+  public void shouldUpdateApprovedAmountWhenRequestAmountChanged() {
 
-        assertNotNull(dialogFragment);
-    }
+    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+    viewHolder.requestAmount.setText("123");
 
-    private RnRFormItemAdjustmentViewModel generateAdjustmentViewModel() {
-        RnRFormItemAdjustmentViewModel adjustmentViewModel = new RnRFormItemAdjustmentViewModel();
-        adjustmentViewModel.setKitName("US kit");
-        adjustmentViewModel.setKitStockOnHand(100L);
-        adjustmentViewModel.setQuantity(2);
-        return adjustmentViewModel;
-    }
+    assertThat(viewModel.getRequestAmount(), is("123"));
+    assertThat(viewModel.getApprovedAmount(), is("123"));
+    assertThat(viewHolder.requestAmount.getText().toString(), is("123"));
+  }
+
+  @Test
+  public void shouldUpdateApprovedAmountModelWhenTextChanged() {
+    viewHolder.populate(viewModel, RnRForm.STATUS.SUBMITTED);
+
+    viewHolder.approvedAmount.setText("123");
+
+    assertThat(viewModel.getRequestAmount(), is("0"));
+    assertThat(viewModel.getApprovedAmount(), is("123"));
+  }
+
+  @Test
+  public void shouldOnlyShowAdjustIconWhenAdjustmentQuantityIsNotZero() throws Exception {
+    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+
+    assertThat(viewHolder.adjustTheoreticalIcon.getVisibility(), is(View.GONE));
+
+    viewModel.setAdjustmentViewModels(Arrays.asList(generateAdjustmentViewModel()));
+    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+
+    assertThat(viewHolder.adjustTheoreticalIcon.getVisibility(), is(View.VISIBLE));
+  }
+
+
+  @Test
+  public void shouldShowPopTipsTotalReminderIconClicked() {
+    viewModel.setAdjustmentViewModels(Arrays.asList(generateAdjustmentViewModel()));
+    viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
+
+    viewHolder.adjustTheoreticalIcon.performClick();
+
+    RobolectricUtils.waitLooperIdle();
+
+    Fragment dialogFragment = dummyActivity.getFragmentManager()
+        .findFragmentByTag("adjustmentTheoreticalDialog");
+
+    assertNotNull(dialogFragment);
+  }
+
+  private RnRFormItemAdjustmentViewModel generateAdjustmentViewModel() {
+    RnRFormItemAdjustmentViewModel adjustmentViewModel = new RnRFormItemAdjustmentViewModel();
+    adjustmentViewModel.setKitName("US kit");
+    adjustmentViewModel.setKitStockOnHand(100L);
+    adjustmentViewModel.setQuantity(2);
+    return adjustmentViewModel;
+  }
 }

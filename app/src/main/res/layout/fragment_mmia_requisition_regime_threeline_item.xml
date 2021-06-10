@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_title"
-        style="@style/MMIA.Regime.Total.Label"
-        android:layout_toStartOf="@id/therapeutic_total"
-        android:text="@string/mmia_1stline" />
+  <TextView
+    android:id="@+id/tv_title"
+    style="@style/MMIA.Regime.Total.Label"
+    android:layout_toStartOf="@id/therapeutic_total"
+    android:text="@string/mmia_1stline" />
 
-    <EditText
-        android:id="@+id/therapeutic_total"
-        style="@style/MMIA.Regime.Total.Edit"
-        android:layout_toStartOf="@id/therapeutic_pharmacy" />
+  <EditText
+    android:id="@+id/therapeutic_total"
+    style="@style/MMIA.Regime.Total.Edit"
+    android:layout_toStartOf="@id/therapeutic_pharmacy" />
 
-    <EditText
-        android:id="@+id/therapeutic_pharmacy"
-        style="@style/MMIA.Regime.Total.Edit.End" />
+  <EditText
+    android:id="@+id/therapeutic_pharmacy"
+    style="@style/MMIA.Regime.Total.Edit.End" />
 </RelativeLayout>

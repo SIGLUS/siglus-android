@@ -18,6 +18,11 @@
 
 package org.openlmis.core.view.adapter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,48 +32,42 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 @RunWith(LMISTestRunner.class)
 public class PhysicalInventoryAdapterTest {
 
-    PhysicalInventoryAdapter adapter;
-    Product product;
-    StockCard stockCard;
+  PhysicalInventoryAdapter adapter;
+  Product product;
+  StockCard stockCard;
 
-    @Before
-    public void setup() {
-        adapter = new PhysicalInventoryAdapter(new ArrayList<InventoryViewModel>(), null, null, null);
+  @Before
+  public void setup() {
+    adapter = new PhysicalInventoryAdapter(new ArrayList<InventoryViewModel>(), null, null, null);
 
-        product = new Product();
-        product.setPrimaryName("Test Product");
-        product.setStrength("200");
+    product = new Product();
+    product.setPrimaryName("Test Product");
+    product.setStrength("200");
 
-        stockCard = new StockCard();
-        stockCard.setProduct(product);
+    stockCard = new StockCard();
+    stockCard.setProduct(product);
+  }
+
+  @Test
+  public void shouldFilterTheListByProductName() {
+    List<InventoryViewModel> list = new ArrayList<>();
+    for (int i = 0; i < 10; i++) {
+      InventoryViewModel model = new PhysicalInventoryViewModel(stockCard);
+      list.add(model);
+      final Product product = new Product();
+      product.setPrimaryName("Product" + i);
+      model.setProduct(product);
     }
 
-    @Test
-    public void shouldFilterTheListByProductName() {
-        List<InventoryViewModel> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            InventoryViewModel model = new PhysicalInventoryViewModel(stockCard);
-            list.add(model);
-            final Product product = new Product();
-            product.setPrimaryName("Product" + i);
-            model.setProduct(product);
-        }
+    adapter.refreshList(list);
 
-        adapter.refreshList(list);
-
-        //+1 for footer view (Done Btn)
-        assertThat(adapter.getItemCount(), is(10 + 1));
-        adapter.filter("1");
-        assertThat(adapter.getItemCount(), is(1 + 1));
-    }
+    //+1 for footer view (Done Btn)
+    assertThat(adapter.getItemCount(), is(10 + 1));
+    adapter.filter("1");
+    assertThat(adapter.getItemCount(), is(1 + 1));
+  }
 
 }

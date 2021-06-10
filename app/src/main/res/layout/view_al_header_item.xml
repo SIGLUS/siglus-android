@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bottom_border_black_bold"
-    android:orientation="horizontal">
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@drawable/bottom_border_black_bold"
+  android:orientation="horizontal">
 
-    <TextView
-        style="@style/AlReportList.numberTitle.Firsts"
-        android:text="@string/msg_product_code_6x1" />
+  <TextView
+    style="@style/AlReportList.numberTitle.Firsts"
+    android:text="@string/msg_product_code_6x1" />
 
-    <TextView
-        style="@style/AlReportList.numberTitle"
-        android:text="@string/msg_product_code_6x2" />
+  <TextView
+    style="@style/AlReportList.numberTitle"
+    android:text="@string/msg_product_code_6x2" />
 
-    <TextView
-        style="@style/AlReportList.numberTitle"
-        android:text="@string/msg_product_code_6x3" />
+  <TextView
+    style="@style/AlReportList.numberTitle"
+    android:text="@string/msg_product_code_6x3" />
 
-    <TextView
-        style="@style/AlReportList.numberTitle"
-        android:text="@string/msg_product_code_6x4" />
+  <TextView
+    style="@style/AlReportList.numberTitle"
+    android:text="@string/msg_product_code_6x4" />
 </LinearLayout>
 

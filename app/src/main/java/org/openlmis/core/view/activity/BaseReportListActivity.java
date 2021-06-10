@@ -5,34 +5,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import org.openlmis.core.utils.Constants;
 
 public abstract class BaseReportListActivity extends BaseActivity {
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    registerRnrSyncReceiver();
+  }
+
+  private void registerRnrSyncReceiver() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+    LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, filter);
+  }
+
+  BroadcastReceiver syncReceiver = new BroadcastReceiver() {
     @Override
-    protected void onStart() {
-        super.onStart();
-        registerRnrSyncReceiver();
+    public void onReceive(Context context, Intent intent) {
+      loadForms();
     }
+  };
 
-    private void registerRnrSyncReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        LocalBroadcastManager.getInstance(this).registerReceiver(syncReceiver, filter);
-    }
+  protected abstract void loadForms();
 
-    BroadcastReceiver syncReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            loadForms();
-        }
-    };
-
-    protected abstract void loadForms();
-
-    @Override
-    protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
-        super.onStop();
-    }
+  @Override
+  protected void onStop() {
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncReceiver);
+    super.onStop();
+  }
 }

@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/ItemRegime.Container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/ItemRegime.Container"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="4"
-        android:orientation="horizontal">
+  <LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="4"
+    android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/regime_name"
-            style="@style/ItemRegime.Text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            tools:text="Regime Name" />
+    <TextView
+      android:id="@+id/regime_name"
+      style="@style/ItemRegime.Text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="4"
+      tools:text="Regime Name" />
 
-        <ViewStub
-            android:id="@+id/vs_del"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout="@layout/image_view_del"
-            tools:layout="@layout/image_view_del" />
-    </LinearLayout>
+    <ViewStub
+      android:id="@+id/vs_del"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout="@layout/image_view_del"
+      tools:layout="@layout/image_view_del" />
+  </LinearLayout>
 
-    <EditText
-        android:id="@+id/regime_amount"
-        style="@style/ItemRegime.EditText"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:inputType="numberSigned"
-        tools:hint="Total patients" />
+  <EditText
+    android:id="@+id/regime_amount"
+    style="@style/ItemRegime.EditText"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="2"
+    android:inputType="numberSigned"
+    tools:hint="Total patients" />
 
-    <EditText
-        android:id="@+id/regime_pharmacy_amount"
-        style="@style/ItemRegime.EditText"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:inputType="numberSigned"
-        tools:hint="Community pharmacy"/>
+  <EditText
+    android:id="@+id/regime_pharmacy_amount"
+    style="@style/ItemRegime.EditText"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="2"
+    android:inputType="numberSigned"
+    tools:hint="Community pharmacy" />
 </LinearLayout>

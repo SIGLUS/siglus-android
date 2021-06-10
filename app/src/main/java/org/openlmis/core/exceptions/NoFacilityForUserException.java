@@ -18,12 +18,13 @@
 
 package org.openlmis.core.exceptions;
 
-public class NoFacilityForUserException extends LMISException{
-    public NoFacilityForUserException(String msg) {
-        super(msg);
-    }
+public class NoFacilityForUserException extends LMISException {
 
-    public NoFacilityForUserException(Exception e) {
-        super(e);
-    }
+  public NoFacilityForUserException(String msg) {
+    super(msg);
+  }
+
+  public NoFacilityForUserException(Exception e) {
+    super(e);
+  }
 }

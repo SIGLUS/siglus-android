@@ -23,57 +23,56 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
-
-import java.util.List;
-
 import roboguice.RoboGuice;
 
 public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout {
 
-    LayoutInflater inflater;
+  LayoutInflater inflater;
 
 
-    public LotInfoGroup(Context context, AttributeSet attributeSet) {
-        super(context, attributeSet);
-        init(context);
+  public LotInfoGroup(Context context, AttributeSet attributeSet) {
+    super(context, attributeSet);
+    init(context);
+  }
+
+  private void init(Context context) {
+    inflater = LayoutInflater.from(context);
+
+    RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
+  }
+
+  public void initLotInfoGroup(List<LotOnHand> lotOnHandList) {
+    removeAllViews();
+    ImmutableList<LotOnHand> sortedLotOnHandList = FluentIterable
+        .from(lotOnHandList)
+        .toSortedList((lotOnHand1, lotOnHand2) -> lotOnHand1.getLot().getExpirationDate()
+            .compareTo(lotOnHand2.getLot().getExpirationDate()));
+    for (LotOnHand lotOnHand : sortedLotOnHandList) {
+      addLotInfoView(lotOnHand);
     }
+  }
 
-    private void init(Context context) {
-        inflater = LayoutInflater.from(context);
+  private ViewGroup addLotInfoView(LotOnHand lotOnHand) {
+    String lotOnHandQuantity = "" + lotOnHand.getQuantityOnHand();
+    String lotInfo = lotOnHand.getLot().getLotNumber() + " - "
+        + DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
+        DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)
+        + " - "
+        + lotOnHandQuantity;
 
-        RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
-    }
-
-    public void initLotInfoGroup(List<LotOnHand> lotOnHandList) {
-        removeAllViews();
-        ImmutableList<LotOnHand> sortedLotOnHandList = FluentIterable
-                .from(lotOnHandList)
-                .toSortedList((lotOnHand1, lotOnHand2) -> lotOnHand1.getLot().getExpirationDate()
-                        .compareTo(lotOnHand2.getLot().getExpirationDate()));
-        for (LotOnHand lotOnHand : sortedLotOnHandList) {
-            addLotInfoView(lotOnHand);
-        }
-    }
-
-    private ViewGroup addLotInfoView(LotOnHand lotOnHand) {
-        String lotOnHandQuantity = "" + lotOnHand.getQuantityOnHand();
-        String lotInfo = lotOnHand.getLot().getLotNumber() + " - "
-                + DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)
-                + " - "
-                + lotOnHandQuantity;
-
-        final ViewGroup lotInfoView = (ViewGroup) inflater.inflate(R.layout.item_lot_info_for_stockcard, null);
-        TextView txLotInfo = (TextView) lotInfoView.findViewById(R.id.tx_lot_info);
-        txLotInfo.setText(lotInfo);
-        addView(lotInfoView, getChildCount());
-        return lotInfoView;
-    }
+    final ViewGroup lotInfoView = (ViewGroup) inflater
+        .inflate(R.layout.item_lot_info_for_stockcard, null);
+    TextView txLotInfo = lotInfoView.findViewById(R.id.tx_lot_info);
+    txLotInfo.setText(lotInfo);
+    addView(lotInfoView, getChildCount());
+    return lotInfoView;
+  }
 
 }

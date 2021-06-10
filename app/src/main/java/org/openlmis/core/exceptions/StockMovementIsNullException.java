@@ -21,7 +21,8 @@ package org.openlmis.core.exceptions;
 import org.openlmis.core.model.StockCard;
 
 public class StockMovementIsNullException extends LMISException {
-    public StockMovementIsNullException(StockCard stockCard) {
-        super(stockCard.getProduct().getPrimaryName() + " stock card has not have StockMovement");
-    }
+
+  public StockMovementIsNullException(StockCard stockCard) {
+    super(stockCard.getProduct().getPrimaryName() + " stock card has not have StockMovement");
+  }
 }

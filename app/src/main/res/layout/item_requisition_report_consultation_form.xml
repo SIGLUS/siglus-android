@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/ItemRequisition.Container.Report"
+  style="@style/ItemRequisition.Container.Report"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <TextView
+    android:id="@+id/via_rnr_header"
+    style="@style/ItemRequisition.ReportHeader"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:labelFor="@+id/et_external_consultations_performed"
+    android:minHeight="35dp"
+    android:text="@string/label_requisition_header_consultation_header" />
+
+  <LinearLayout
+    style="@style/ItemRequisition.Container.Body"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="35dp"
+    android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/via_rnr_header"
-        style="@style/ItemRequisition.ReportHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:labelFor="@+id/et_external_consultations_performed"
-        android:minHeight="35dp"
-        android:text="@string/label_requisition_header_consultation_header" />
+      android:id="@+id/label"
+      style="@style/ItemRequisition.ReportLabel"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="6"
+      android:labelFor="@+id/et_external_consultations_performed"
+      android:text="@string/label_consultation" />
 
-    <LinearLayout
-        style="@style/ItemRequisition.Container.Body"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="35dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/label"
-            style="@style/ItemRequisition.ReportLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="6"
-            android:labelFor="@+id/et_external_consultations_performed"
-            android:text="@string/label_consultation" />
-
-        <EditText
-            android:id="@+id/et_external_consultations_performed"
-            style="@style/ItemRequisition.ReportEdit"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
+    <EditText
+      android:id="@+id/et_external_consultations_performed"
+      style="@style/ItemRequisition.ReportEdit"
+      android:layout_width="80dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" />
+  </LinearLayout>
 
 </LinearLayout>

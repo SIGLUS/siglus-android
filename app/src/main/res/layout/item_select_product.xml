@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Card.Padded"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Card.Padded"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+      android:id="@+id/touchArea_checkbox"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:gravity="center_vertical"
+      android:orientation="vertical"
+      android:padding="@dimen/padding_normal">
 
-        <LinearLayout
-            android:id="@+id/touchArea_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_normal">
-
-            <CheckBox
-                android:id="@+id/checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/InventoryCard.ProductContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tv_product_name"
-                style="@style/Text.Black.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="@string/label_dummy_product" />
-
-            <TextView
-                android:id="@+id/tv_short_code"
-                style="@style/Text.Gray.Normal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="@string/label_dummy_unit" />
-
-        </LinearLayout>
+      <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <LinearLayout
+      style="@style/InventoryCard.ProductContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <TextView
+        android:id="@+id/tv_product_name"
+        style="@style/Text.Black.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/label_dummy_product" />
+
+      <TextView
+        android:id="@+id/tv_short_code"
+        style="@style/Text.Gray.Normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/label_dummy_unit" />
+
+    </LinearLayout>
+  </LinearLayout>
 </androidx.cardview.widget.CardView>

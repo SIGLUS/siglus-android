@@ -20,17 +20,14 @@ package org.openlmis.core.model;
 
 
 import androidx.annotation.NonNull;
-
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,127 +36,127 @@ import lombok.Setter;
 @DatabaseTable(tableName = "products")
 public class Product extends BaseModel implements Comparable<Product>, Serializable {
 
-    public static final String MEDICINE_TYPE_ADULT = "Adult";
-    public static final String MEDICINE_TYPE_CHILDREN = "Children";
-    public static final String MEDICINE_TYPE_SOLUTION = "Solution";
-    public static final String MEDICINE_TYPE_OTHER = "Other";
+  public static final String MEDICINE_TYPE_ADULT = "Adult";
+  public static final String MEDICINE_TYPE_CHILDREN = "Children";
+  public static final String MEDICINE_TYPE_SOLUTION = "Solution";
+  public static final String MEDICINE_TYPE_OTHER = "Other";
 
-    //DEPRECATED, DO NOT USE
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    Program program;
+  //DEPRECATED, DO NOT USE
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  Program program;
 
-    @DatabaseField
-    String primaryName;
+  @DatabaseField
+  String primaryName;
 
-    @DatabaseField
-    String strength;
+  @DatabaseField
+  String strength;
 
-    @DatabaseField
-    String code;
+  @DatabaseField
+  String code;
 
-    @DatabaseField
-    String type;
+  @DatabaseField
+  String type;
 
-    @SerializedName("archived")
-    @DatabaseField
-    boolean isArchived;
+  @SerializedName("archived")
+  @DatabaseField
+  boolean isArchived;
 
-    @SerializedName("active")
-    @DatabaseField
-    boolean isActive;
+  @SerializedName("active")
+  @DatabaseField
+  boolean isActive;
 
-    @DatabaseField
-    boolean isKit;
+  @DatabaseField
+  boolean isKit;
 
-    @DatabaseField
-    boolean isBasic;
+  @DatabaseField
+  boolean isBasic;
 
-    @DatabaseField(defaultValue = "false")
-    boolean isHiv;
+  @DatabaseField(defaultValue = "false")
+  boolean isHiv;
 
-    @ForeignCollectionField()
-    private ForeignCollection<Lot> lotList;
+  @ForeignCollectionField()
+  private ForeignCollection<Lot> lotList;
 
 
-    List<KitProduct> kitProductList = new ArrayList<>();
+  List<KitProduct> kitProductList = new ArrayList<>();
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof Product) {
-            Product product = (Product) o;
-            return product.getCode().equals(getCode());
-        } else {
-            return false;
-        }
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Product) {
+      Product product = (Product) o;
+      return product.getCode().equals(getCode());
+    } else {
+      return false;
+    }
+  }
+
+  public String getFormattedProductName() {
+    return getPrimaryName() + " [" + getCode() + "]";
+  }
+
+  public String getFormattedProductNameWithoutStrengthAndType() {
+    return getProductNameWithoutStrengthAndType() + " [" + getCode() + "]";
+  }
+
+  public String getProductNameWithoutStrengthAndType() {
+    String primaryName = getPrimaryName();
+    return primaryName.replace(getStrength() + getType(), "");
+  }
+
+  public String getProductFullName() {
+    return getPrimaryName() + " [" + getCode() + "]" + getStrength() + getType();
+  }
+
+  public String getProductNameWithCodeAndStrength() {
+    return getPrimaryName() + " [" + getCode() + "]" + getStrength();
+  }
+
+  @Override
+  public int hashCode() {
+    return getCode().hashCode();
+  }
+
+  @Override
+  public int compareTo(@NonNull Product another) {
+    return primaryName == null ? 0 : primaryName.compareTo(another.getPrimaryName());
+  }
+
+  public String getUnit() {
+    return strength + " " + getType();
+  }
+
+  public enum IsKit {
+    Yes(true),
+    No(false);
+
+    public boolean isKit() {
+      return isKit;
     }
 
-    public String getFormattedProductName() {
-        return getPrimaryName() + " [" + getCode() + "]";
+    private final boolean isKit;
+
+    IsKit(boolean isKit) {
+      this.isKit = isKit;
     }
+  }
 
-    public String getFormattedProductNameWithoutStrengthAndType() {
-        return getProductNameWithoutStrengthAndType() + " [" + getCode() + "]";
-    }
+  public static Product dummyProduct() {
+    Product dummyProduct = new Product();
+    dummyProduct.setCode("");
+    dummyProduct.setPrimaryName("");
+    dummyProduct.setStrength("");
+    dummyProduct.setType("");
+    return dummyProduct;
+  }
 
-    public String getProductNameWithoutStrengthAndType() {
-        String primaryName = getPrimaryName();
-        return primaryName.replace(getStrength() + getType(), "");
-    }
-
-    public String getProductFullName() {
-        return getPrimaryName() + " [" + getCode() + "]" + getStrength() + getType();
-    }
-
-    public String getProductNameWithCodeAndStrength() {
-        return getPrimaryName() + " [" + getCode() + "]" + getStrength();
-    }
-
-    @Override
-    public int hashCode() {
-        return getCode().hashCode();
-    }
-
-    @Override
-    public int compareTo(@NonNull Product another) {
-        return primaryName == null ? 0 : primaryName.compareTo(another.getPrimaryName());
-    }
-
-    public String getUnit() {
-        return strength + " " + getType();
-    }
-
-    public enum IsKit {
-        Yes(true),
-        No(false);
-
-        public boolean isKit() {
-            return isKit;
-        }
-
-        private boolean isKit;
-
-        IsKit(boolean isKit) {
-            this.isKit = isKit;
-        }
-    }
-
-    public static Product dummyProduct() {
-        Product dummyProduct = new Product();
-        dummyProduct.setCode("");
-        dummyProduct.setPrimaryName("");
-        dummyProduct.setStrength("");
-        dummyProduct.setType("");
-        return dummyProduct;
-    }
-
-    @Override
-    public String toString() {
-        return "[[code=" + code + ","
-                + "type=" + type + ","
-                + "isKit=" + isKit + ","
-                + "isHiv=" + isHiv
-                + "]"
-                + super.toString()
-                + "]";
-    }
+  @Override
+  public String toString() {
+    return "[[code=" + code + ","
+        + "type=" + type + ","
+        + "isKit=" + isKit + ","
+        + "isHiv=" + isHiv
+        + "]"
+        + super.toString()
+        + "]";
+  }
 }

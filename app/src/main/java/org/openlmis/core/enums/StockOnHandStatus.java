@@ -20,61 +20,61 @@
 
 package org.openlmis.core.enums;
 
+import androidx.annotation.ColorRes;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 
-import androidx.annotation.ColorRes;
-
 public enum StockOnHandStatus {
-    REGULAR_STOCK("regularStock", R.string.Regular_stock, R.color.color_regular_stock, R.color.color_stock_status),
-    LOW_STOCK("lowStock", R.string.Low_stock, R.color.color_low_stock, R.color.color_stock_status),
-    STOCK_OUT("stockOut", R.string.Stock_out, R.color.color_stock_out, R.color.color_stock_status),
-    OVER_STOCK("overStock", R.string.Overstock, R.color.color_over_stock, R.color.color_stock_status);
+  REGULAR_STOCK("regularStock", R.string.Regular_stock, R.color.color_regular_stock,
+      R.color.color_stock_status),
+  LOW_STOCK("lowStock", R.string.Low_stock, R.color.color_low_stock, R.color.color_stock_status),
+  STOCK_OUT("stockOut", R.string.Stock_out, R.color.color_stock_out, R.color.color_stock_status),
+  OVER_STOCK("overStock", R.string.Overstock, R.color.color_over_stock, R.color.color_stock_status);
 
-    private final String messageKey;
-    private final int description;
-    @ColorRes
-    private final int bgColor;
-    @ColorRes
-    private final int color;
+  private final String messageKey;
+  private final int description;
+  @ColorRes
+  private final int bgColor;
+  @ColorRes
+  private final int color;
 
-    StockOnHandStatus(String key, int desc, @ColorRes int bgColor, @ColorRes int color) {
-        this.messageKey = key;
-        this.description = desc;
-        this.bgColor = bgColor;
-        this.color = color;
+  StockOnHandStatus(String key, int desc, @ColorRes int bgColor, @ColorRes int color) {
+    this.messageKey = key;
+    this.description = desc;
+    this.bgColor = bgColor;
+    this.color = color;
+  }
+
+  public String getMessageKey() {
+    return messageKey;
+  }
+
+  public int getDescription() {
+    return description;
+  }
+
+  public @ColorRes
+  int getColor() {
+    return color;
+  }
+
+  public @ColorRes
+  int getBgColor() {
+    return bgColor;
+  }
+
+  public static StockOnHandStatus calculateStockOnHandLevel(StockCard stockCard) {
+    if (stockCard.getStockOnHand() == 0) {
+      return StockOnHandStatus.STOCK_OUT;
     }
-
-    public String getMessageKey() {
-        return messageKey;
+    if (stockCard.getCMM() < 0) {
+      return StockOnHandStatus.REGULAR_STOCK;
     }
-
-    public int getDescription() {
-        return description;
+    if (stockCard.isLowStock()) {
+      return StockOnHandStatus.LOW_STOCK;
+    } else if (stockCard.isOverStock()) {
+      return StockOnHandStatus.OVER_STOCK;
     }
-
-    public @ColorRes
-    int getColor() {
-        return color;
-    }
-
-    public @ColorRes
-    int getBgColor() {
-        return bgColor;
-    }
-
-    public static StockOnHandStatus calculateStockOnHandLevel(StockCard stockCard) {
-        if (stockCard.getStockOnHand() == 0) {
-            return StockOnHandStatus.STOCK_OUT;
-        }
-        if (stockCard.getCMM() < 0) {
-            return StockOnHandStatus.REGULAR_STOCK;
-        }
-        if (stockCard.isLowStock()) {
-            return StockOnHandStatus.LOW_STOCK;
-        } else if (stockCard.isOverStock()) {
-            return StockOnHandStatus.OVER_STOCK;
-        }
-        return StockOnHandStatus.REGULAR_STOCK;
-    }
+    return StockOnHandStatus.REGULAR_STOCK;
+  }
 }

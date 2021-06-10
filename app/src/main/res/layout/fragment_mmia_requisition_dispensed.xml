@@ -1,158 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 <org.openlmis.core.view.widget.MMIADispensedInfoList xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mmia_requisition_dispensed_info"
+  android:id="@+id/mmia_requisition_dispensed_info"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <TextView
+    style="@style/MMIA.SpreadHeader"
+    android:text="@string/table_dispensed" />
+
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <TextView
-        style="@style/MMIA.SpreadHeader"
-        android:text="@string/table_dispensed" />
+    <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Linear">
 
-    <LinearLayout
+      <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="48dp" />
 
-        <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Linear">
+      <TextView
+        style="@style/MMIA.Type.Dispensed.Left.Header"
+        android:text="@string/table_dispensed_left_5months" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="48dp" />
+      <TextView
+        style="@style/MMIA.Type.Dispensed.Left.Header"
+        android:text="@string/table_dispensed_left_4months" />
 
-            <TextView
-                style="@style/MMIA.Type.Dispensed.Left.Header"
-                android:text="@string/table_dispensed_left_5months" />
+      <TextView
+        style="@style/MMIA.Type.Dispensed.Left.Header"
+        android:text="@string/table_dispensed_left_3months" />
 
-            <TextView
-                style="@style/MMIA.Type.Dispensed.Left.Header"
-                android:text="@string/table_dispensed_left_4months" />
+      <TextView
+        style="@style/MMIA.Type.Dispensed.Left.Header"
+        android:text="@string/table_dispensed_left_2months" />
 
-            <TextView
-                style="@style/MMIA.Type.Dispensed.Left.Header"
-                android:text="@string/table_dispensed_left_3months" />
+      <TextView
+        style="@style/MMIA.Type.Dispensed.Left.Header"
+        android:text="@string/table_dispensed_left_last_months" />
 
-            <TextView
-                style="@style/MMIA.Type.Dispensed.Left.Header"
-                android:text="@string/table_dispensed_left_2months" />
+      <TextView
+        style="@style/MMIA.Type.Dispensed.Left.Header"
+        android:text="@string/table_dispensed_left_within_months" />
 
-            <TextView
-                style="@style/MMIA.Type.Dispensed.Left.Header"
-                android:text="@string/table_dispensed_left_last_months" />
-
-            <TextView
-                style="@style/MMIA.Type.Dispensed.Left.Header"
-                android:text="@string/table_dispensed_left_within_months" />
-
-            <TextView
-                style="@style/MMIA.Type.Dispensed.Left.Header"
-                android:text="@string/table_dispensed_left_total" />
-        </LinearLayout>
-
-        <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Linear">
-
-            <TextView
-                style="@style/MMIA.Type.Dispensed.Generic.Header"
-                android:text="@string/table_dispensed_label_ds" />
-
-            <EditText
-                android:id="@+id/type_dispensed_ds_from_last4"
-                style="@style/MMIA.Type.Dispensed.Generic.Edit"
-                android:importantForAutofill="no" />
-
-            <EditText
-                android:id="@+id/type_dispensed_ds_from_last3"
-                style="@style/MMIA.Type.Dispensed.Generic.Edit" />
-
-            <EditText
-                android:id="@+id/type_dispensed_ds_from_last2"
-                style="@style/MMIA.Type.Dispensed.Generic.Edit" />
-
-            <EditText
-                android:id="@+id/type_dispensed_ds_from_last"
-                style="@style/MMIA.Type.Dispensed.Generic.Edit" />
-
-            <EditText
-                android:id="@+id/type_dispensed_ds_from_within"
-                style="@style/MMIA.Type.Dispensed.Generic.Edit" />
-
-            <EditText
-                android:id="@+id/type_dispensed_ds_within"
-                style="@style/MMIA.Type.Dispensed.Generic.Edit" />
-
-            <TextView
-                android:id="@+id/type_dispensed_ds_total"
-                style="@style/MMIA.Type.Dispensed.Generic.Total" />
-        </LinearLayout>
-
-        <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
-
-            <TextView
-                android:id="@+id/type_dispensed_dt_title"
-                style="@style/MMIA.Type.Dispensed.Generic.Header"
-                android:text="@string/table_dispensed_label_dt" />
-
-            <EditText
-                android:id="@+id/type_dispensed_dt_from_last"
-                style="@style/MMIA.Type.Dispensed.DT.Edit" />
-
-            <EditText
-                android:id="@+id/type_dispensed_dt_from_within"
-                style="@style/MMIA.Type.Dispensed.DT.Edit" />
-
-            <EditText
-                android:id="@+id/type_dispensed_dt_within"
-                style="@style/MMIA.Type.Dispensed.DT.Edit" />
-
-            <TextView
-                android:id="@+id/type_dispensed_dt_total"
-                style="@style/MMIA.Type.Dispensed.Generic.Total" />
-        </LinearLayout>
-
-        <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
-
-            <TextView
-                android:id="@+id/type_dispensed_dm_title"
-                style="@style/MMIA.Type.Dispensed.Generic.Header"
-                android:text="@string/table_dispensed_label_dm" />
-
-            <EditText
-                android:id="@+id/type_dispensed_dm_within"
-                style="@style/MMIA.Type.Dispensed.DM.Edit" />
-
-            <TextView
-                android:id="@+id/type_dispensed_dm_total"
-                style="@style/MMIA.Type.Dispensed.Generic.Total" />
-        </LinearLayout>
-
-        <RelativeLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
-
-            <TextView
-                android:id="@+id/type_dispensed_adjustment_title"
-                style="@style/MMIA.Type.Dispensed.Generic.Header"
-                android:layout_alignParentTop="true"
-                android:text="@string/table_dispensed_label_adjustment" />
-
-            <TextView
-                android:id="@+id/type_dispensed_adjustment_text"
-                style="@style/MMIA.Type.Dispensed.Total.Edit"
-                android:layout_below="@+id/type_dispensed_adjustment_title"
-                android:background="@drawable/border_bg_light_gray" />
-
-            <TextView
-                android:id="@+id/type_dispensed_total_title"
-                style="@style/MMIA.Type.Dispensed.Generic.Header"
-                android:layout_above="@id/type_dispensed_total_within"
-                android:text="@string/table_dispensed_label_total" />
-
-            <TextView
-                android:id="@+id/type_dispensed_total_within"
-                style="@style/MMIA.Type.Dispensed.Total.Edit"
-                android:layout_above="@id/type_dispensed_total_total" />
-
-            <TextView
-                android:id="@+id/type_dispensed_total_total"
-                style="@style/MMIA.Type.Dispensed.Generic.Total"
-                android:layout_alignParentBottom="true" />
-        </RelativeLayout>
+      <TextView
+        style="@style/MMIA.Type.Dispensed.Left.Header"
+        android:text="@string/table_dispensed_left_total" />
     </LinearLayout>
+
+    <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Linear">
+
+      <TextView
+        style="@style/MMIA.Type.Dispensed.Generic.Header"
+        android:text="@string/table_dispensed_label_ds" />
+
+      <EditText
+        android:id="@+id/type_dispensed_ds_from_last4"
+        style="@style/MMIA.Type.Dispensed.Generic.Edit"
+        android:importantForAutofill="no" />
+
+      <EditText
+        android:id="@+id/type_dispensed_ds_from_last3"
+        style="@style/MMIA.Type.Dispensed.Generic.Edit" />
+
+      <EditText
+        android:id="@+id/type_dispensed_ds_from_last2"
+        style="@style/MMIA.Type.Dispensed.Generic.Edit" />
+
+      <EditText
+        android:id="@+id/type_dispensed_ds_from_last"
+        style="@style/MMIA.Type.Dispensed.Generic.Edit" />
+
+      <EditText
+        android:id="@+id/type_dispensed_ds_from_within"
+        style="@style/MMIA.Type.Dispensed.Generic.Edit" />
+
+      <EditText
+        android:id="@+id/type_dispensed_ds_within"
+        style="@style/MMIA.Type.Dispensed.Generic.Edit" />
+
+      <TextView
+        android:id="@+id/type_dispensed_ds_total"
+        style="@style/MMIA.Type.Dispensed.Generic.Total" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
+
+      <TextView
+        android:id="@+id/type_dispensed_dt_title"
+        style="@style/MMIA.Type.Dispensed.Generic.Header"
+        android:text="@string/table_dispensed_label_dt" />
+
+      <EditText
+        android:id="@+id/type_dispensed_dt_from_last"
+        style="@style/MMIA.Type.Dispensed.DT.Edit" />
+
+      <EditText
+        android:id="@+id/type_dispensed_dt_from_within"
+        style="@style/MMIA.Type.Dispensed.DT.Edit" />
+
+      <EditText
+        android:id="@+id/type_dispensed_dt_within"
+        style="@style/MMIA.Type.Dispensed.DT.Edit" />
+
+      <TextView
+        android:id="@+id/type_dispensed_dt_total"
+        style="@style/MMIA.Type.Dispensed.Generic.Total" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
+
+      <TextView
+        android:id="@+id/type_dispensed_dm_title"
+        style="@style/MMIA.Type.Dispensed.Generic.Header"
+        android:text="@string/table_dispensed_label_dm" />
+
+      <EditText
+        android:id="@+id/type_dispensed_dm_within"
+        style="@style/MMIA.Type.Dispensed.DM.Edit" />
+
+      <TextView
+        android:id="@+id/type_dispensed_dm_total"
+        style="@style/MMIA.Type.Dispensed.Generic.Total" />
+    </LinearLayout>
+
+    <RelativeLayout style="@style/MMIA.Type.Dispensed.Column.Relative">
+
+      <TextView
+        android:id="@+id/type_dispensed_adjustment_title"
+        style="@style/MMIA.Type.Dispensed.Generic.Header"
+        android:layout_alignParentTop="true"
+        android:text="@string/table_dispensed_label_adjustment" />
+
+      <TextView
+        android:id="@+id/type_dispensed_adjustment_text"
+        style="@style/MMIA.Type.Dispensed.Total.Edit"
+        android:layout_below="@+id/type_dispensed_adjustment_title"
+        android:background="@drawable/border_bg_light_gray" />
+
+      <TextView
+        android:id="@+id/type_dispensed_total_title"
+        style="@style/MMIA.Type.Dispensed.Generic.Header"
+        android:layout_above="@id/type_dispensed_total_within"
+        android:text="@string/table_dispensed_label_total" />
+
+      <TextView
+        android:id="@+id/type_dispensed_total_within"
+        style="@style/MMIA.Type.Dispensed.Total.Edit"
+        android:layout_above="@id/type_dispensed_total_total" />
+
+      <TextView
+        android:id="@+id/type_dispensed_total_total"
+        style="@style/MMIA.Type.Dispensed.Generic.Total"
+        android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+  </LinearLayout>
 </org.openlmis.core.view.widget.MMIADispensedInfoList>

@@ -19,10 +19,14 @@
 package org.openlmis.core.model.repository;
 
 
+import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
+import static org.openlmis.core.utils.Constants.TEST_KIT_PROGRAM_CODE;
+
 import android.content.Context;
-
 import com.google.inject.Inject;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProgramDataForm;
@@ -32,132 +36,140 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.helper.FormHelper;
 import org.openlmis.core.utils.DateUtil;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
-import static org.openlmis.core.utils.Constants.TEST_KIT_PROGRAM_CODE;
-
 public class ProgramBasicItemsRepository {
 
-    private Context context;
+  private final Context context;
 
-    @Inject
-    ProgramRepository programRepository;
+  @Inject
+  ProgramRepository programRepository;
 
-    @Inject
-    StockRepository stockRepository;
+  @Inject
+  StockRepository stockRepository;
 
-    @Inject
-    StockMovementRepository stockMovementRepository;
+  @Inject
+  StockMovementRepository stockMovementRepository;
 
-    @Inject
-    ProductProgramRepository productProgramRepository;
+  @Inject
+  ProductProgramRepository productProgramRepository;
 
-    @Inject
-    private ProgramDataFormRepository programDataFormRepository;
+  @Inject
+  private ProgramDataFormRepository programDataFormRepository;
 
-    @Inject
-    ProductRepository productRepository;
-
-
-    @Inject
-    FormHelper formHelper;
+  @Inject
+  ProductRepository productRepository;
 
 
-    @Inject
-    public ProgramBasicItemsRepository(Context context) {
-        this.context = context;
+  @Inject
+  FormHelper formHelper;
+
+
+  @Inject
+  public ProgramBasicItemsRepository(Context context) {
+    this.context = context;
+  }
+
+  public List<ProgramDataFormBasicItem> createInitProgramForm(ProgramDataForm form, Date periodEnd)
+      throws LMISException {
+    return generateDataFormBasicItems(form, TEST_KIT_PROGRAM_CODE, periodEnd);
+  }
+
+  private List<ProgramDataFormBasicItem> generateDataFormBasicItems(ProgramDataForm form,
+      String programCode, Date periodEnd) throws LMISException {
+    List<ProgramDataFormBasicItem> basicItems = generateBasicItem(form, programCode, periodEnd);
+    return fillAllRapidTestProducts(form, programCode, basicItems);
+  }
+
+  private List<ProgramDataFormBasicItem> generateBasicItem(final ProgramDataForm form,
+      String programCode, Date periodEnd) throws LMISException {
+    List<StockCard> stockCards = stockRepository
+        .getStockCardsBeforePeriodEnd(programCode, periodEnd);
+    List<ProgramDataFormBasicItem> items = new ArrayList<>();
+    for (StockCard stockCard : stockCards) {
+      ProgramDataFormBasicItem item = createProgramDataByPeriod(stockCard, form);
+      items.add(item);
     }
+    return items;
+  }
 
-    public List<ProgramDataFormBasicItem> createInitProgramForm(ProgramDataForm form, Date periodEnd) throws LMISException {
-        return generateDataFormBasicItems(form, TEST_KIT_PROGRAM_CODE, periodEnd);
+  private ArrayList<ProgramDataFormBasicItem> fillAllRapidTestProducts(ProgramDataForm form,
+      String programCode, List<ProgramDataFormBasicItem> basicItems) throws LMISException {
+    List<Product> products = getProgramProducts(programCode);
+    List<ProgramDataForm> rapidTestForms = programDataFormRepository
+        .listByProgramCode(RAPID_TEST_CODE);
+    ArrayList<ProgramDataFormBasicItem> result = new ArrayList<>();
+
+    for (Product product : products) {
+      ProgramDataFormBasicItem rapidItem = new ProgramDataFormBasicItem();
+      ProgramDataFormBasicItem stockFormItem = getStockCardRapidData(product, basicItems);
+      if (stockFormItem == null) {
+        rapidItem.setForm(form);
+        rapidItem.setProduct(product);
+      } else {
+        rapidItem = stockFormItem;
+      }
+
+      Long lastInventory = lastProgramInventory(product, rapidTestForms);
+      rapidItem.setIsCustomAmount(lastInventory == null);
+      rapidItem.setInitialAmount(lastInventory);
+      result.add(rapidItem);
     }
+    return result;
+  }
 
-    private List<ProgramDataFormBasicItem> generateDataFormBasicItems(ProgramDataForm form, String programCode, Date periodEnd) throws LMISException {
-        List<ProgramDataFormBasicItem> basicItems = generateBasicItem(form, programCode, periodEnd);
-        return fillAllRapidTestProducts(form, programCode, basicItems);
+  protected ProgramDataFormBasicItem createProgramDataByPeriod(StockCard stockCard,
+      final ProgramDataForm form) throws LMISException {
+    ProgramDataFormBasicItem item = new ProgramDataFormBasicItem();
+    List<StockMovementItem> stockMovementItems = stockMovementRepository
+        .queryStockItemsByCreatedDate(stockCard.getId(), form.getPeriodBegin(),
+            form.getPeriodEnd());
+    FormHelper.StockMovementModifiedItem modifiedItem = formHelper
+        .assignTotalValues(stockMovementItems);
+    item.setReceived(modifiedItem.getTotalReceived());
+    item.setIssued(modifiedItem.getTotalIssued());
+    item.setAdjustment(modifiedItem.getTotalAdjustment());
+    item.setProduct(stockCard.getProduct());
+    Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
+    if (earliestLotExpiryDate != null) {
+      item.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
     }
+    item.setForm(form);
+    return item;
+  }
 
-    private List<ProgramDataFormBasicItem> generateBasicItem(final ProgramDataForm form, String programCode, Date periodEnd) throws LMISException {
-        List<StockCard> stockCards = stockRepository.getStockCardsBeforePeriodEnd(programCode, periodEnd);
-        List<ProgramDataFormBasicItem> items = new ArrayList<>();
-        for (StockCard stockCard : stockCards) {
-            ProgramDataFormBasicItem item = createProgramDataByPeriod(stockCard, form);
-            items.add(item);
-        }
-        return items;
-    }
 
-    private ArrayList<ProgramDataFormBasicItem> fillAllRapidTestProducts(ProgramDataForm form, String programCode, List<ProgramDataFormBasicItem> basicItems) throws LMISException {
-        List<Product> products = getProgramProducts(programCode);
-        List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(RAPID_TEST_CODE);
-        ArrayList<ProgramDataFormBasicItem> result = new ArrayList<>();
-
-        for (Product product : products) {
-            ProgramDataFormBasicItem rapidItem = new ProgramDataFormBasicItem();
-            ProgramDataFormBasicItem stockFormItem = getStockCardRapidData(product, basicItems);
-            if (stockFormItem == null) {
-                rapidItem.setForm(form);
-                rapidItem.setProduct(product);
-            } else {
-                rapidItem = stockFormItem;
-            }
-
-            Long lastInventory = lastProgramInventory(product, rapidTestForms);
-            rapidItem.setIsCustomAmount(lastInventory == null);
-            rapidItem.setInitialAmount(lastInventory);
-            result.add(rapidItem);
-        }
-        return result;
-    }
-
-    protected ProgramDataFormBasicItem createProgramDataByPeriod(StockCard stockCard, final ProgramDataForm form) throws LMISException {
-        ProgramDataFormBasicItem item = new ProgramDataFormBasicItem();
-        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsByCreatedDate(stockCard.getId(), form.getPeriodBegin(), form.getPeriodEnd());
-        FormHelper.StockMovementModifiedItem modifiedItem = formHelper.assignTotalValues(stockMovementItems);
-        item.setReceived(modifiedItem.getTotalReceived());
-        item.setIssued(modifiedItem.getTotalIssued());
-        item.setAdjustment(modifiedItem.getTotalAdjustment());
-        item.setProduct(stockCard.getProduct());
-        Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
-        if (earliestLotExpiryDate != null) {
-            item.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
-        }
-        item.setForm(form);
+  private ProgramDataFormBasicItem getStockCardRapidData(Product product,
+      List<ProgramDataFormBasicItem> programDataFormBasicItems) {
+    for (ProgramDataFormBasicItem item : programDataFormBasicItems) {
+      if (item.getProduct().getId() == product.getId()) {
         return item;
+      }
     }
+    return null;
+  }
 
-
-    private ProgramDataFormBasicItem getStockCardRapidData(Product product, List<ProgramDataFormBasicItem> programDataFormBasicItems) {
-        for (ProgramDataFormBasicItem item : programDataFormBasicItems) {
-            if (item.getProduct().getId() == product.getId()) {
-                return item;
-            }
+  private Long lastProgramInventory(Product product, List<ProgramDataForm> rapidTestForms)
+      throws LMISException {
+    if (rapidTestForms.isEmpty() || rapidTestForms.size() == 1) {
+      return null;
+    }
+    List<ProgramDataFormBasicItem> programBasicItems = rapidTestForms.get(rapidTestForms.size() - 2)
+        .getFormBasicItemListWrapper();
+    if (programBasicItems != null) {
+      for (ProgramDataFormBasicItem item : programBasicItems) {
+        if (item.getProduct().getId() == product.getId()) {
+          return item.getInventory();
         }
-        return null;
+      }
     }
+    return null;
+  }
 
-    private Long lastProgramInventory(Product product, List<ProgramDataForm> rapidTestForms) throws LMISException {
-        if (rapidTestForms.isEmpty() || rapidTestForms.size() == 1) {
-            return null;
-        }
-        List<ProgramDataFormBasicItem> programBasicItems = rapidTestForms.get(rapidTestForms.size() - 2).getFormBasicItemListWrapper();
-        if (programBasicItems != null) {
-            for (ProgramDataFormBasicItem item : programBasicItems) {
-                if (item.getProduct().getId() == product.getId()) {
-                    return item.getInventory();
-                }
-            }
-        }
-        return null;
-    }
-
-    private List<Product> getProgramProducts(String programCode) throws LMISException {
-        List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
-        List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
-        List<Product> products = productRepository.queryProductsByProductIds(productIds);
-        return products;
-    }
+  private List<Product> getProgramProducts(String programCode) throws LMISException {
+    List<String> programCodes = programRepository
+        .queryProgramCodesByProgramCodeOrParentCode(programCode);
+    List<Long> productIds = productProgramRepository
+        .queryActiveProductIdsByProgramsWithKits(programCodes, false);
+    List<Product> products = productRepository.queryProductsByProductIds(productIds);
+    return products;
+  }
 }

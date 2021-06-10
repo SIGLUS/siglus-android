@@ -1,118 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Card.Padded"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Card.Padded"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/color_white"
+    android:orientation="vertical">
 
     <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@drawable/bottom_border_gray_bg"
+      android:orientation="vertical">
+
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_white"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_normal">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bottom_border_gray_bg"
-            android:orientation="vertical">
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_weight="3"
+          android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_normal">
+          <TextView
+            android:id="@+id/tv_product_name"
+            style="@style/Text.Black.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/label_dummy_product" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="3"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_product_name"
-                        style="@style/Text.Black.Medium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="@string/label_dummy_product" />
-
-                    <TextView
-                        android:id="@+id/tv_product_unit"
-                        style="@style/Text.Gray.Normal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="@string/label_dummy_unit" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="2"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_kit_expected_quantity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_gravity="right"
-                        android:layout_weight="2"
-                        android:paddingRight="@dimen/padding_larger"
-                        android:text="expected"
-                        android:textColor="@color/color_black" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/vg_soh_pop"
-                style="@android:style/Animation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:background="@drawable/inventory_pop"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/tv_alert_quantity_message"
-                    style="@style/Text.Black"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:padding="@dimen/padding_small"
-                    android:paddingLeft="@dimen/padding_medium" />
-
-                <TextView
-                    android:id="@+id/tv_confirm_no_stock"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/padding_small"
-                    android:text="@string/confirm_no_stock_receive"
-                    android:textColor="@color/color_blue_dark" />
-
-                <TextView
-                    android:id="@+id/tv_confirm_has_stock"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/padding_small"
-                    android:paddingLeft="@dimen/padding_medium"
-                    android:text="@string/confirm_stock_received"
-                    android:textColor="@color/color_blue_dark"
-                    android:visibility="gone" />
-            </LinearLayout>
+          <TextView
+            android:id="@+id/tv_product_unit"
+            style="@style/Text.Gray.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/label_dummy_unit" />
         </LinearLayout>
 
-       <org.openlmis.core.view.widget.MovementChangeLotListView
-           android:id="@+id/view_lot_list"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"/>
+        <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_weight="2"
+          android:orientation="vertical">
 
+          <TextView
+            android:id="@+id/tv_kit_expected_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="right"
+            android:layout_weight="2"
+            android:paddingRight="@dimen/padding_larger"
+            android:text="expected"
+            android:textColor="@color/color_black" />
+        </LinearLayout>
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/vg_soh_pop"
+        style="@android:style/Animation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/inventory_pop"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+          android:id="@+id/tv_alert_quantity_message"
+          style="@style/Text.Black"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:padding="@dimen/padding_small"
+          android:paddingLeft="@dimen/padding_medium" />
+
+        <TextView
+          android:id="@+id/tv_confirm_no_stock"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:paddingBottom="@dimen/padding_small"
+          android:text="@string/confirm_no_stock_receive"
+          android:textColor="@color/color_blue_dark" />
+
+        <TextView
+          android:id="@+id/tv_confirm_has_stock"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_gravity="center"
+          android:layout_weight="1"
+          android:gravity="center"
+          android:paddingBottom="@dimen/padding_small"
+          android:paddingLeft="@dimen/padding_medium"
+          android:text="@string/confirm_stock_received"
+          android:textColor="@color/color_blue_dark"
+          android:visibility="gone" />
+      </LinearLayout>
     </LinearLayout>
+
+    <org.openlmis.core.view.widget.MovementChangeLotListView
+      android:id="@+id/view_lot_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+  </LinearLayout>
 </androidx.cardview.widget.CardView>

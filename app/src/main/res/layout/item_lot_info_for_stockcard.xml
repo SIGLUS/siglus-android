@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/padding_tiny"
-    android:paddingEnd="@dimen/padding_tiny"
-    android:paddingStart="@dimen/padding_tiny"
-    android:orientation="vertical">
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:paddingBottom="@dimen/padding_tiny"
+  android:paddingEnd="@dimen/padding_tiny"
+  android:paddingStart="@dimen/padding_tiny"
+  android:orientation="vertical">
 
-    <LinearLayout
-        style="@style/LotInfo.Container"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/tx_lot_info"
-            style="@style/LotInfo.LotText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="lot info - Dec 2015" />
-    </LinearLayout>
+  <LinearLayout
+    style="@style/LotInfo.Container"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+    <TextView
+      android:id="@+id/tx_lot_info"
+      style="@style/LotInfo.LotText"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="lot info - Dec 2015" />
+  </LinearLayout>
 
 </LinearLayout>

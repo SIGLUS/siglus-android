@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  style="@style/LayoutRequisition.HeaderLeftContainer">
+
+  <TextView
+    style="@style/LayoutRequisition.TextHeader"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
-    style="@style/LayoutRequisition.HeaderLeftContainer">
+    android:layout_weight="1"
+    android:padding="2dp"
+    android:text="@string/label_fnm" />
 
-    <TextView
-        style="@style/LayoutRequisition.TextHeader"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:padding="2dp"
-        android:text="@string/label_fnm" />
-
-    <TextView
-        style="@style/LayoutRequisition.TextHeader"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:padding="2dp"
-        android:text="@string/label_product_name" />
+  <TextView
+    style="@style/LayoutRequisition.TextHeader"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="3"
+    android:padding="2dp"
+    android:text="@string/label_product_name" />
 </LinearLayout>

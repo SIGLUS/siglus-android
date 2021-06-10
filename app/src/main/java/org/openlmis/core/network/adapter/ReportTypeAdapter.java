@@ -6,26 +6,26 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import org.openlmis.core.model.ReportTypeForm;
-
 import java.lang.reflect.Type;
 import java.util.Date;
+import org.openlmis.core.model.ReportTypeForm;
 
 
 public class ReportTypeAdapter implements JsonDeserializer<ReportTypeForm> {
 
-    private final Gson gson;
+  private final Gson gson;
 
-    public ReportTypeAdapter() {
-        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapter(Date.class, new ReportDateAdapter())
-                .create();
-    }
+  public ReportTypeAdapter() {
+    gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+        .registerTypeAdapter(Date.class, new ReportDateAdapter())
+        .create();
+  }
 
-    @Override
-    public ReportTypeForm deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        ReportTypeForm reportTypeForm = gson.fromJson(json.toString(), ReportTypeForm.class);
-        return reportTypeForm;
-    }
+  @Override
+  public ReportTypeForm deserialize(JsonElement json, Type typeOfT,
+      JsonDeserializationContext context) throws JsonParseException {
+    ReportTypeForm reportTypeForm = gson.fromJson(json.toString(), ReportTypeForm.class);
+    return reportTypeForm;
+  }
 
 }

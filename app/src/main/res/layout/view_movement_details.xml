@@ -1,148 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_margin="@dimen/margin_normal"
+    android:text="@string/label_movement_detail"
+    android:textSize="@dimen/font_size_medium" />
 
-    <TextView
+  <androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:baselineAligned="false"
+      android:orientation="vertical"
+      android:paddingBottom="@dimen/padding_normal">
+
+      <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_normal"
-        android:text="@string/label_movement_detail"
-        android:textSize="@dimen/font_size_medium" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/ly_movement_date"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:layout_weight="4"
+          android:padding="@dimen/padding_normal">
 
-        <LinearLayout
+          <EditText
+            android:id="@+id/et_movement_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/padding_normal">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/ly_movement_date"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_normal"
-                    android:layout_weight="4"
-                    android:padding="@dimen/padding_normal">
-
-                    <EditText
-                        android:id="@+id/et_movement_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_date"
-                        android:drawablePadding="5dp"
-                        android:focusableInTouchMode="false"
-                        android:hint="@string/hint_movement_date"
-                        android:inputType="date" />
-                </com.google.android.material.textfield.TextInputLayout>
+            android:drawableLeft="@drawable/ic_date"
+            android:drawablePadding="5dp"
+            android:focusableInTouchMode="false"
+            android:hint="@string/hint_movement_date"
+            android:inputType="date" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_normal"
-                    android:layout_weight="3"
-                    android:padding="@dimen/padding_normal">
+        <com.google.android.material.textfield.TextInputLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:layout_weight="3"
+          android:padding="@dimen/padding_normal">
 
-                    <EditText
-                        android:id="@+id/et_document_number"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_document"
-                        android:drawablePadding="5dp"
-                        android:hint="@string/hint_document_number"
-                        android:inputType="textShortMessage"
-                        android:maxLength="@integer/document_number_length" />
-                </com.google.android.material.textfield.TextInputLayout>
+          <EditText
+            android:id="@+id/et_document_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_document"
+            android:drawablePadding="5dp"
+            android:hint="@string/hint_document_number"
+            android:inputType="textShortMessage"
+            android:maxLength="@integer/document_number_length" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
+      </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/ly_movement_reason"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_normal"
-                    android:layout_weight="4"
-                    android:padding="@dimen/padding_normal">
+        <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/ly_movement_reason"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:layout_weight="4"
+          android:padding="@dimen/padding_normal">
 
-                    <EditText
-                        android:id="@+id/et_movement_reason"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_movement_origin"
-                        android:drawablePadding="5dp"
-                        android:focusableInTouchMode="false"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
+          <EditText
+            android:id="@+id/et_movement_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_movement_origin"
+            android:drawablePadding="5dp"
+            android:focusableInTouchMode="false"
+            android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/ly_requested_quantity"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_normal"
-                    android:layout_weight="3"
-                    android:padding="@dimen/padding_normal"
-                    android:visibility="gone">
+        <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/ly_requested_quantity"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:layout_weight="3"
+          android:padding="@dimen/padding_normal"
+          android:visibility="gone">
 
-                    <EditText
-                        android:id="@+id/et_requested_quantity"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_requested_quantity"
-                        android:inputType="number"
-                        android:maxLength="@integer/edit_amount_length" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+          <EditText
+            android:id="@+id/et_requested_quantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_requested_quantity"
+            android:inputType="number"
+            android:maxLength="@integer/edit_amount_length" />
+        </com.google.android.material.textfield.TextInputLayout>
+      </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/ly_movement_quantity"
-                android:layout_width="@dimen/new_movement_button_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:padding="@dimen/padding_normal"
-                android:visibility="gone">
+      <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ly_movement_quantity"
+        android:layout_width="@dimen/new_movement_button_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:padding="@dimen/padding_normal"
+        android:visibility="gone">
 
-                <EditText
-                    android:id="@+id/et_movement_quantity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_movement_quantity"
-                    android:inputType="number"
-                    android:maxLength="@integer/edit_amount_length" />
-            </com.google.android.material.textfield.TextInputLayout>
+        <EditText
+          android:id="@+id/et_movement_quantity"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/hint_movement_quantity"
+          android:inputType="number"
+          android:maxLength="@integer/edit_amount_length" />
+      </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/ly_movement_signature"
-                android:layout_width="@dimen/new_movement_button_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:padding="@dimen/padding_normal">
+      <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ly_movement_signature"
+        android:layout_width="@dimen/new_movement_button_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:padding="@dimen/padding_normal">
 
-                <EditText
-                    android:id="@+id/et_movement_signature"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_movement_signature"
-                    android:maxLength="@integer/signature_length" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        <EditText
+          android:id="@+id/et_movement_signature"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/hint_movement_signature"
+          android:maxLength="@integer/signature_length" />
+      </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+  </androidx.cardview.widget.CardView>
 </LinearLayout>

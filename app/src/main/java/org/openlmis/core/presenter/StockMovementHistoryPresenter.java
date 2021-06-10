@@ -18,8 +18,12 @@
 
 package org.openlmis.core.presenter;
 
-import com.google.inject.Inject;
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
+import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
@@ -27,11 +31,6 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -39,69 +38,71 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
-
 public class StockMovementHistoryPresenter extends Presenter {
 
-    @Getter
-    List<StockMovementViewModel> stockMovementModelList = new ArrayList<>();
+  @Getter
+  List<StockMovementViewModel> stockMovementModelList = new ArrayList<>();
 
-    @Inject
-    StockRepository stockRepository;
+  @Inject
+  StockRepository stockRepository;
 
-    StockMovementHistoryView view;
+  StockMovementHistoryView view;
 
-    public static final long MAXROWS = 30L;
-    private long stockCardId;
+  public static final long MAXROWS = 30L;
+  private long stockCardId;
 
-    @Inject
-    private StockMovementRepository stockMovementRepository;
+  @Inject
+  private StockMovementRepository stockMovementRepository;
 
-    @Override
-    public void attachView(BaseView v) {
-        this.view = (StockMovementHistoryView) v;
-    }
+  @Override
+  public void attachView(BaseView v) {
+    this.view = (StockMovementHistoryView) v;
+  }
 
-    public void loadStockMovementViewModels(final long startIndex) {
-        Subscription subscription = Observable.create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
-            @Override
-            public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
-                try {
-                    List<StockMovementViewModel> list = from(stockMovementRepository.queryStockMovementHistory(stockCardId, startIndex, MAXROWS)).transform(new Function<StockMovementItem, StockMovementViewModel>() {
-                        @Override
-                        public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
-                            return new StockMovementViewModel(stockMovementItem);
-                        }
-                    }).toList();
-
-                    subscriber.onNext(list);
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-                .subscribe(new Action1<List<StockMovementViewModel>>() {
+  public void loadStockMovementViewModels(final long startIndex) {
+    Subscription subscription = Observable
+        .create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
+          @Override
+          public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
+            try {
+              List<StockMovementViewModel> list = from(stockMovementRepository
+                  .queryStockMovementHistory(stockCardId, startIndex, MAXROWS))
+                  .transform(new Function<StockMovementItem, StockMovementViewModel>() {
                     @Override
-                    public void call(List<StockMovementViewModel> stockMovementViewModels) {
-                        if (stockMovementViewModels.size() == 0) {
-                            view.refreshStockMovement(false);
-                        } else {
-                            stockMovementModelList.addAll(stockMovementModelList.size(), stockMovementViewModels);
-
-                            view.refreshStockMovement(true);
-                        }
-                        view.loaded();
+                    public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
+                      return new StockMovementViewModel(stockMovementItem);
                     }
-                });
-        subscriptions.add(subscription);
-    }
+                  }).toList();
 
-    public void setStockCardId(long stockId) {
-        this.stockCardId = stockId;
-    }
+              subscriber.onNext(list);
+            } catch (LMISException e) {
+              subscriber.onError(e);
+            }
+          }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+        .subscribe(new Action1<List<StockMovementViewModel>>() {
+          @Override
+          public void call(List<StockMovementViewModel> stockMovementViewModels) {
+            if (stockMovementViewModels.size() == 0) {
+              view.refreshStockMovement(false);
+            } else {
+              stockMovementModelList.addAll(stockMovementModelList.size(), stockMovementViewModels);
 
-    public interface StockMovementHistoryView extends BaseView {
-        void refreshStockMovement(boolean hasNewData);
-    }
+              view.refreshStockMovement(true);
+            }
+            view.loaded();
+          }
+        });
+    subscriptions.add(subscription);
+  }
+
+  public void setStockCardId(long stockId) {
+    this.stockCardId = stockId;
+  }
+
+  public interface StockMovementHistoryView extends BaseView {
+
+    void refreshStockMovement(boolean hasNewData);
+  }
 
 }

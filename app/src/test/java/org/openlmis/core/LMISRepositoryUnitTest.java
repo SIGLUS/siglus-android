@@ -25,8 +25,8 @@ import org.robolectric.RuntimeEnvironment;
 
 public abstract class LMISRepositoryUnitTest {
 
-    @After
-    public void tearDown() throws Exception{
-        LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
-    }
+  @After
+  public void tearDown() throws Exception {
+    LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
+  }
 }

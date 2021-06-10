@@ -1,86 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_primary_dark">#388E3C</color>
-    <color name="color_primary">#4CAF50</color>
-    <color name="color_primary_50">#504CAF50</color>
-    <color name="color_accent">#536DFE</color>
+  <color name="color_primary_dark">#388E3C</color>
+  <color name="color_primary">#4CAF50</color>
+  <color name="color_primary_50">#504CAF50</color>
+  <color name="color_accent">#536DFE</color>
 
-    <color name="color_amber">#FFC107</color>
-    <color name="color_amber_dark">#FFA000</color>
-    <color name="color_purple">#9C27B0</color>
-    <color name="color_purple_dark">#7B1FA2</color>
-    <color name="color_teal">#009688</color>
-    <color name="color_teal_dark">#00796B</color>
-    <color name="color_blue">#2196F3</color>
-    <color name="color_dark_blue">#00CED1</color>
-    <color name="color_light_blue">#4bccce</color>
-    <color name="color_blue_dark">#1976D2</color>
-    <color name="color_form_button_blue">#1890ff</color>
-    <color name="color_red">#F44336</color>
-    <color name="color_red_dark">#D32F2F</color>
-    <color name="color_material_blue_gray">#607D8B</color>
-    <color name="color_material_blue_gray_dark">#455A64</color>
+  <color name="color_amber">#FFC107</color>
+  <color name="color_amber_dark">#FFA000</color>
+  <color name="color_purple">#9C27B0</color>
+  <color name="color_purple_dark">#7B1FA2</color>
+  <color name="color_teal">#009688</color>
+  <color name="color_teal_dark">#00796B</color>
+  <color name="color_blue">#2196F3</color>
+  <color name="color_dark_blue">#00CED1</color>
+  <color name="color_light_blue">#4bccce</color>
+  <color name="color_blue_dark">#1976D2</color>
+  <color name="color_form_button_blue">#1890ff</color>
+  <color name="color_red">#F44336</color>
+  <color name="color_red_dark">#D32F2F</color>
+  <color name="color_material_blue_gray">#607D8B</color>
+  <color name="color_material_blue_gray_dark">#455A64</color>
 
-    <color name="color_divider">#B6B6B6</color>
-    <color name="color_page_gray">#EAEAEA</color>
+  <color name="color_divider">#B6B6B6</color>
+  <color name="color_page_gray">#EAEAEA</color>
 
-    <color name="color_text_primary">#212121</color>
-    <color name="color_text_secondary">#727272</color>
+  <color name="color_text_primary">#212121</color>
+  <color name="color_text_secondary">#727272</color>
 
-    <color name="color_white">#FFFFFFFF</color>
-    <color name="color_black">#F000</color>
-    <color name="color_gray">#616161</color>
-    <color name="color_green_light">#C2FFC1</color>
-    <color name="color_white_alpha">#90FFFFFF</color>
+  <color name="color_white">#FFFFFFFF</color>
+  <color name="color_black">#F000</color>
+  <color name="color_gray">#616161</color>
+  <color name="color_green_light">#C2FFC1</color>
+  <color name="color_white_alpha">#90FFFFFF</color>
 
-    <color name="color_mmia_speed_list_header">#EFEFEF</color>
-    <color name="color_item_bg">#30B6B6B6</color>
-    <color name="color_accent_light">#80536DFE</color>
-    <color name="color_mmia_info_name">#D0D0D0</color>
-    <color name="color_regime_baby">#FFFF81</color>
-    <color name="color_regime_other">#DAEEF3</color>
+  <color name="color_mmia_speed_list_header">#EFEFEF</color>
+  <color name="color_item_bg">#30B6B6B6</color>
+  <color name="color_accent_light">#80536DFE</color>
+  <color name="color_mmia_info_name">#D0D0D0</color>
+  <color name="color_regime_baby">#FFFF81</color>
+  <color name="color_regime_other">#DAEEF3</color>
 
-    <color name="color_draft_title">#889E9E9E</color>
-    <color name="color_select_title">#9E9E9E</color>
-    <color name="color_warning_banner">#FCF8E2</color>
-    <color name="color_warning_text">#8B6E37</color>
+  <color name="color_draft_title">#889E9E9E</color>
+  <color name="color_select_title">#9E9E9E</color>
+  <color name="color_warning_banner">#FCF8E2</color>
+  <color name="color_warning_text">#8B6E37</color>
 
-    <color name="color_warning_text_unpack_kit_pop">#8A6D3B</color>
+  <color name="color_warning_text_unpack_kit_pop">#8A6D3B</color>
 
-    <color name="color_requisition_banner_background">#E8D5D3</color>
-    <color name="color_requisition_banner_border">#E1BFC5</color>
-    <color name="color_requisition_banner_text">#9D3B3B</color>
+  <color name="color_requisition_banner_background">#E8D5D3</color>
+  <color name="color_requisition_banner_border">#E1BFC5</color>
+  <color name="color_requisition_banner_text">#9D3B3B</color>
 
-    <color name="color_box_bg_red">#E8D5D3</color>
-    <color name="color_box_border_red">#E1BFC5</color>
-    <color name="color_box_text_red">#9D3B3B</color>
+  <color name="color_box_bg_red">#E8D5D3</color>
+  <color name="color_box_border_red">#E1BFC5</color>
+  <color name="color_box_text_red">#9D3B3B</color>
 
-    <color name="color_add_lot_page_expire_date_warning_border">#F5E8C2</color>
-    <color name="color_add_lot_page_expire_date_warning_background">#F8F4DB</color>
-    <color name="color_add_lot_page_expire_date_warning_text">#7B602E</color>
+  <color name="color_add_lot_page_expire_date_warning_border">#F5E8C2</color>
+  <color name="color_add_lot_page_expire_date_warning_background">#F8F4DB</color>
+  <color name="color_add_lot_page_expire_date_warning_text">#7B602E</color>
 
-    <color name="color_rapid_test_form_row_header">#CCFFCC</color>
-    <color name="color_rapid_test_form_total_header">#D9D9D9</color>
+  <color name="color_rapid_test_form_row_header">#CCFFCC</color>
+  <color name="color_rapid_test_form_total_header">#D9D9D9</color>
 
-    <color name="alphabet_text_selected_color">#3F51B5</color>
-    <color name="alphabet_text_color">#616161</color>
-    <color name="alphabet_background_color">#FAFAFA</color>
-    <color name="alphabet_background_border_color">#B6B6B6</color>
+  <color name="alphabet_text_selected_color">#3F51B5</color>
+  <color name="alphabet_text_color">#616161</color>
+  <color name="alphabet_background_color">#FAFAFA</color>
+  <color name="alphabet_background_border_color">#B6B6B6</color>
 
-    <color name="physical_inventory_complete_count_background_color">#E4E4E4</color>
-    <color name="general_background_color">#EEEEEE</color>
-    <color name="white_transparent_color">#00FFFFFF</color>
+  <color name="physical_inventory_complete_count_background_color">#E4E4E4</color>
+  <color name="general_background_color">#EEEEEE</color>
+  <color name="white_transparent_color">#00FFFFFF</color>
 
-    <color name="color_pink">#fd726f</color>
-    <color name="color_pink_dark">#c54144</color>
-    <color name="color_patient_data_form_row_header">#ce93d8</color>
-    <color name="patient_data_not_editable">#CFD8DC</color>
+  <color name="color_pink">#fd726f</color>
+  <color name="color_pink_dark">#c54144</color>
+  <color name="color_patient_data_form_row_header">#ce93d8</color>
+  <color name="patient_data_not_editable">#CFD8DC</color>
 
-    <color name="color_over_stock">#6943d6</color>
-    <color name="color_regular_stock">#00832c</color>
-    <color name="color_low_stock">#fbc300</color>
-    <color name="color_stock_out">#d25555</color>
+  <color name="color_over_stock">#6943d6</color>
+  <color name="color_regular_stock">#00832c</color>
+  <color name="color_low_stock">#fbc300</color>
+  <color name="color_stock_out">#d25555</color>
 
-    <color name="color_stock_status">#ffffff</color>
+  <color name="color_stock_status">#ffffff</color>
 
 </resources>

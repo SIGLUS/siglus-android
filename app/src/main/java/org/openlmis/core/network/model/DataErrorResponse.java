@@ -6,5 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DataErrorResponse {
-    String error;
+
+  String error;
 }

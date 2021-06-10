@@ -18,15 +18,14 @@
 
 package org.openlmis.core.network.model;
 
-import org.openlmis.core.model.Program;
-
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.openlmis.core.model.Program;
 
 @Getter
 @Setter
 public class SyncUpProgramResponse {
-     List<Program> programs;
+
+  List<Program> programs;
 }

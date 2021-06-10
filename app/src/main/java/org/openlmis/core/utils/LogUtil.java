@@ -19,27 +19,28 @@ package org.openlmis.core.utils;
 
 
 import android.util.Log;
-
 import org.openlmis.core.BuildConfig;
 
 
 public final class LogUtil {
-    private static final boolean DEBUG = BuildConfig.DEBUG;
 
-    private LogUtil(){
+  private static final boolean DEBUG = BuildConfig.DEBUG;
 
+  private LogUtil() {
+
+  }
+
+  public static void i(String tag, String msg) {
+    if (DEBUG) {
+      if (msg == null) {
+        return;
+      }
+      Log.i(tag, msg);
     }
+  }
 
-    public static void i(String tag, String msg) {
-        if (DEBUG) {
-            if (msg == null)
-                return;
-            Log.i(tag, msg);
-        }
-    }
-
-    public static void s(String msg) {
-        i("sunzhuo", msg);
-    }
+  public static void s(String msg) {
+    i("sunzhuo", msg);
+  }
 
 }

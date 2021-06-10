@@ -21,8 +21,9 @@ package org.openlmis.core.persistence.migrations;
 import org.openlmis.core.persistence.Migration;
 
 public class AddLowStockAvgColumnToStockCardTable extends Migration {
-    @Override
-    public void up() {
-        execSQL("ALTER TABLE 'stock_cards' ADD COLUMN avgMonthlyConsumption REAL");
-    }
+
+  @Override
+  public void up() {
+    execSQL("ALTER TABLE 'stock_cards' ADD COLUMN avgMonthlyConsumption REAL");
+  }
 }

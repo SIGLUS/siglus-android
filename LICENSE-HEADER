@@ -15,16 +15,3 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
-
-package org.openlmis.core.exceptions;
-
-public class ViewNotMatchException extends LMISException {
-
-  public ViewNotMatchException(String msg) {
-    super(msg);
-  }
-
-  public ViewNotMatchException(Exception e) {
-    super(e);
-  }
-}

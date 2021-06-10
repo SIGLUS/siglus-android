@@ -2,7 +2,6 @@ package org.openlmis.core.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,19 +9,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @DatabaseTable(tableName = "program_data_columns")
 public class ProgramDataColumn extends BaseModel {
-    @DatabaseField
-    String code;
 
-    @DatabaseField
-    String label;
+  @DatabaseField
+  String code;
 
-    @DatabaseField
-    String description;
+  @DatabaseField
+  String label;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    Program program;
+  @DatabaseField
+  String description;
 
-    public ProgramDataColumn(String code) {
-        this.code = code;
-    }
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  Program program;
+
+  public ProgramDataColumn(String code) {
+    this.code = code;
+  }
 }

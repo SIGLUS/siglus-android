@@ -20,86 +20,94 @@ package org.openlmis.core.view.holder;
 
 import android.view.View;
 import android.widget.TextView;
-
 import org.openlmis.core.R;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-
 import roboguice.inject.InjectView;
 
 public class StockMovementItemHistoryViewHolder extends BaseViewHolder {
 
-    @InjectView(R.id.tx_date)TextView txMovementDate;
-    @InjectView(R.id.tx_reason)TextView txReason;
-    @InjectView(R.id.et_document_number)TextView etDocumentNo;
-    @InjectView(R.id.et_received)TextView etReceived;
-    @InjectView(R.id.et_negative_adjustment)TextView etNegativeAdjustment;
-    @InjectView(R.id.et_positive_adjustment)TextView etPositiveAdjustment;
-    @InjectView(R.id.et_issued)TextView etIssued;
-    @InjectView(R.id.et_requested)TextView etRequested;
-    @InjectView(R.id.tx_stock_on_hand)TextView txStockExistence;
-    @InjectView(R.id.tx_signature)TextView txSignature;
-    private final int blackColor;
-    private final int redColor;
+  @InjectView(R.id.tx_date)
+  TextView txMovementDate;
+  @InjectView(R.id.tx_reason)
+  TextView txReason;
+  @InjectView(R.id.et_document_number)
+  TextView etDocumentNo;
+  @InjectView(R.id.et_received)
+  TextView etReceived;
+  @InjectView(R.id.et_negative_adjustment)
+  TextView etNegativeAdjustment;
+  @InjectView(R.id.et_positive_adjustment)
+  TextView etPositiveAdjustment;
+  @InjectView(R.id.et_issued)
+  TextView etIssued;
+  @InjectView(R.id.et_requested)
+  TextView etRequested;
+  @InjectView(R.id.tx_stock_on_hand)
+  TextView txStockExistence;
+  @InjectView(R.id.tx_signature)
+  TextView txSignature;
+  private final int blackColor;
+  private final int redColor;
 
-    public StockMovementItemHistoryViewHolder(View itemView) {
-        super(itemView);
+  public StockMovementItemHistoryViewHolder(View itemView) {
+    super(itemView);
 
-        disableLine();
-        hideUnderline();
-        blackColor = context.getResources().getColor(R.color.color_black);
-        redColor = context.getResources().getColor(R.color.color_red);
+    disableLine();
+    hideUnderline();
+    blackColor = context.getResources().getColor(R.color.color_black);
+    redColor = context.getResources().getColor(R.color.color_red);
+  }
+
+  public void populate(final StockMovementViewModel model) {
+    txMovementDate.setText(model.getMovementDate());
+    etDocumentNo.setText(model.getDocumentNo());
+    etReceived.setText(model.getReceived());
+    etNegativeAdjustment.setText(model.getNegativeAdjustment());
+    etPositiveAdjustment.setText(model.getPositiveAdjustment());
+    etIssued.setText(model.getIssued());
+    etRequested.setText(model.getRequested());
+    txStockExistence.setText(model.getStockExistence());
+    txReason.setText(model.getReason().getDescription());
+    txSignature.setText(model.getSignature());
+
+    setItemViewTextColor(model);
+  }
+
+  private void setItemViewTextColor(StockMovementViewModel model) {
+    if (model.isIssuedReason()) {
+      setRowFontColor(blackColor);
+    } else {
+      setRowFontColor(redColor);
     }
+  }
 
-    public void populate(final StockMovementViewModel model) {
-        txMovementDate.setText(model.getMovementDate());
-        etDocumentNo.setText(model.getDocumentNo());
-        etReceived.setText(model.getReceived());
-        etNegativeAdjustment.setText(model.getNegativeAdjustment());
-        etPositiveAdjustment.setText(model.getPositiveAdjustment());
-        etIssued.setText(model.getIssued());
-        etRequested.setText(model.getRequested());
-        txStockExistence.setText(model.getStockExistence());
-        txReason.setText(model.getReason().getDescription());
-        txSignature.setText(model.getSignature());
+  private void setRowFontColor(int color) {
+    txMovementDate.setTextColor(color);
+    txReason.setTextColor(color);
+    etDocumentNo.setTextColor(color);
+    etReceived.setTextColor(color);
+    etPositiveAdjustment.setTextColor(color);
+    etNegativeAdjustment.setTextColor(color);
+    txStockExistence.setTextColor(color);
+    txSignature.setTextColor(color);
+  }
 
-        setItemViewTextColor(model);
-    }
+  private void hideUnderline() {
+    etDocumentNo.setBackground(null);
+    etIssued.setBackground(null);
+    etRequested.setBackground(null);
+    etNegativeAdjustment.setBackground(null);
+    etPositiveAdjustment.setBackground(null);
+    etReceived.setBackground(null);
+  }
 
-    private void setItemViewTextColor(StockMovementViewModel model) {
-        if (model.isIssuedReason()) {
-            setRowFontColor(blackColor);
-        } else {
-            setRowFontColor(redColor);
-        }
-    }
-
-    private void setRowFontColor(int color) {
-        txMovementDate.setTextColor(color);
-        txReason.setTextColor(color);
-        etDocumentNo.setTextColor(color);
-        etReceived.setTextColor(color);
-        etPositiveAdjustment.setTextColor(color);
-        etNegativeAdjustment.setTextColor(color);
-        txStockExistence.setTextColor(color);
-        txSignature.setTextColor(color);
-    }
-
-    private void hideUnderline() {
-        etDocumentNo.setBackground(null);
-        etIssued.setBackground(null);
-        etRequested.setBackground(null);
-        etNegativeAdjustment.setBackground(null);
-        etPositiveAdjustment.setBackground(null);
-        etReceived.setBackground(null);
-    }
-
-    private void disableLine() {
-        etDocumentNo.setEnabled(false);
-        etReceived.setEnabled(false);
-        etNegativeAdjustment.setEnabled(false);
-        etPositiveAdjustment.setEnabled(false);
-        etIssued.setEnabled(false);
-        etRequested.setEnabled(false);
-    }
+  private void disableLine() {
+    etDocumentNo.setEnabled(false);
+    etReceived.setEnabled(false);
+    etNegativeAdjustment.setEnabled(false);
+    etPositiveAdjustment.setEnabled(false);
+    etIssued.setEnabled(false);
+    etRequested.setEnabled(false);
+  }
 
 }

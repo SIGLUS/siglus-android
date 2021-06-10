@@ -23,34 +23,36 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-
 import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.DateUtil;
 
 
 public class ProductAdapter implements JsonDeserializer<Product> {
 
-    @Override
-    public Product deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return new Gson().fromJson(json, ProductResponse.class).toProduct();
-    }
+  @Override
+  public Product deserialize(JsonElement json, java.lang.reflect.Type typeOfT,
+      JsonDeserializationContext context) throws JsonParseException {
+    return new Gson().fromJson(json, ProductResponse.class).toProduct();
+  }
 
-    class ProductResponse extends Product {
-        Type form;
+  class ProductResponse extends Product {
 
-        public Product toProduct() {
-            setCreatedAt(DateUtil.getCurrentDate());
-            setUpdatedAt(this.getCreatedAt());
-            Product product = this;
-            if (form != null){
-                product.setType(form.code);
-            }
-            return product;
-        }
-    }
+    Type form;
 
-    class Type {
-        String code;
+    public Product toProduct() {
+      setCreatedAt(DateUtil.getCurrentDate());
+      setUpdatedAt(this.getCreatedAt());
+      Product product = this;
+      if (form != null) {
+        product.setType(form.code);
+      }
+      return product;
     }
+  }
+
+  class Type {
+
+    String code;
+  }
 
 }

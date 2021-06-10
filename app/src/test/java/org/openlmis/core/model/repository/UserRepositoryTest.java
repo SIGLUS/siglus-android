@@ -18,6 +18,10 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,56 +31,53 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.User;
 import org.openlmis.core.utils.HashUtil;
 import org.robolectric.RuntimeEnvironment;
-
 import roboguice.RoboGuice;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 
 @RunWith(LMISTestRunner.class)
 public class UserRepositoryTest extends LMISRepositoryUnitTest {
 
-    UserRepository userRepository;
+  UserRepository userRepository;
 
-    @Before
-    public void setup() {
-        userRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(UserRepository.class);
-    }
+  @Before
+  public void setup() {
+    userRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(UserRepository.class);
+  }
 
 
-    @Test
-    public void shouldSaveUserWithFacilityIdAndCode() {
-        User user = new User("user", "123");
-        user.setFacilityId("abc");
-        user.setFacilityCode("FC1");
-        user.setFacilityName("Facility 1");
+  @Test
+  public void shouldSaveUserWithFacilityIdAndCode() {
+    User user = new User("user", "123");
+    user.setFacilityId("abc");
+    user.setFacilityCode("FC1");
+    user.setFacilityName("Facility 1");
 
-        userRepository.createOrUpdate(user);
-        User userSaved = userRepository.mapUserFromLocal(new User("user", "123"));
+    userRepository.createOrUpdate(user);
+    User userSaved = userRepository.mapUserFromLocal(new User("user", "123"));
 
-        assertThat(userSaved, notNullValue());
-        assertThat(userSaved.getFacilityCode(), is("FC1"));
-        assertThat(userSaved.getFacilityId(), is("abc"));
-        assertThat(userSaved.getFacilityName(), is("Facility 1"));
-    }
+    assertThat(userSaved, notNullValue());
+    assertThat(userSaved.getFacilityCode(), is("FC1"));
+    assertThat(userSaved.getFacilityId(), is("abc"));
+    assertThat(userSaved.getFacilityName(), is("Facility 1"));
+  }
 
-    @Test
-    public void shouldUpdateUserWithFacilityIdAndCodeWhenUserAlreadyExist() throws LMISException {
-        User user = new User("user", "123");
-        user.setFacilityId("abc");
-        user.setFacilityCode("FC1");
-        user.setFacilityName("Facility 1");
-        userRepository.createOrUpdate(user);
+  @Test
+  public void shouldUpdateUserWithFacilityIdAndCodeWhenUserAlreadyExist() throws LMISException {
+    User user = new User("user", "123");
+    user.setFacilityId("abc");
+    user.setFacilityCode("FC1");
+    user.setFacilityName("Facility 1");
+    userRepository.createOrUpdate(user);
 
-        User newUserWithSameUserName = new User();
-        newUserWithSameUserName.setUsername("user");
-        newUserWithSameUserName.setPassword("456");
+    User newUserWithSameUserName = new User();
+    newUserWithSameUserName.setUsername("user");
+    newUserWithSameUserName.setPassword("456");
 
-        userRepository.createOrUpdate(newUserWithSameUserName);
+    userRepository.createOrUpdate(newUserWithSameUserName);
 
-        assertThat(userRepository.getUserByUsername("user").size(), is(1));
-        assertThat(userRepository.getUserByUsername("user").get(0).getPasswordMD5(), is(HashUtil.md5("456")));
-    }
+    assertThat(userRepository.getUserByUsername("user").size(), is(1));
+    assertThat(userRepository.getUserByUsername("user").get(0).getPasswordMD5(),
+        is(HashUtil.md5("456")));
+  }
 
 }

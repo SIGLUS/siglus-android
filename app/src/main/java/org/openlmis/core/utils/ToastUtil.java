@@ -17,36 +17,37 @@
  */
 package org.openlmis.core.utils;
 
-import androidx.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.Toast;
-
+import androidx.annotation.StringRes;
 import org.openlmis.core.LMISApp;
 
 public final class ToastUtil {
 
-    private ToastUtil() {
+  private ToastUtil() {
 
-    }
+  }
 
-    public static void show(CharSequence text) {
-        if (TextUtils.isEmpty(text)) return;
-        Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT).show();
+  public static void show(CharSequence text) {
+    if (TextUtils.isEmpty(text)) {
+      return;
     }
+    Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT).show();
+  }
 
-    public static void showForLongTime(@StringRes int resId) {
-        Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_LONG).show();
-    }
+  public static void showForLongTime(@StringRes int resId) {
+    Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_LONG).show();
+  }
 
-    public static void show(int resId) {
-        show(LMISApp.getContext().getString(resId));
-    }
+  public static void show(int resId) {
+    show(LMISApp.getContext().getString(resId));
+  }
 
-    public static void showInCenter(int text) {
-        Toast toast = Toast
-                .makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
+  public static void showInCenter(int text) {
+    Toast toast = Toast
+        .makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
+    toast.setGravity(Gravity.CENTER, 0, 0);
+    toast.show();
+  }
 }

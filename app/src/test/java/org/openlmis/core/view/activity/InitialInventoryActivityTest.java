@@ -1,9 +1,19 @@
 package org.openlmis.core.view.activity;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+import static org.assertj.core.util.Lists.newArrayList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
+
 import android.content.Intent;
-
 import com.google.inject.AbstractModule;
-
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,139 +34,130 @@ import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
-
-import java.util.List;
-
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.functions.Action1;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static org.assertj.core.util.Lists.newArrayList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.robolectric.Shadows.shadowOf;
-
 @RunWith(LMISTestRunner.class)
 public class InitialInventoryActivityTest {
-    private InitialInventoryActivity initialInventoryActivity;
-    private InitialInventoryPresenter mockedPresenter;
 
-    private List<InventoryViewModel> data;
+  private InitialInventoryActivity initialInventoryActivity;
+  private InitialInventoryPresenter mockedPresenter;
 
-    @Before
-    public void setUp() throws LMISException {
-        mockedPresenter = mock(InitialInventoryPresenter.class);
-        when(mockedPresenter.loadInventory()).thenReturn(Observable.<List<InventoryViewModel>>empty());
+  private List<InventoryViewModel> data;
 
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(InitialInventoryPresenter.class).toInstance(mockedPresenter);
-            }
-        });
+  @Before
+  public void setUp() throws LMISException {
+    mockedPresenter = mock(InitialInventoryPresenter.class);
+    when(mockedPresenter.loadInventory()).thenReturn(Observable.empty());
 
-        initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class).create().get();
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+      @Override
+      protected void configure() {
+        bind(InitialInventoryPresenter.class).toInstance(mockedPresenter);
+      }
+    });
 
-        InventoryListAdapter mockedAdapter = mock(InventoryListAdapter.class);
-        Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name").setStrength("10mg").build();
-        data = newArrayList(new InventoryViewModel(product), new InventoryViewModel(product));
-        when(mockedAdapter.getData()).thenReturn(data);
+    initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class).create()
+        .get();
 
-        initialInventoryActivity.mAdapter = mockedAdapter;
-    }
+    InventoryListAdapter mockedAdapter = mock(InventoryListAdapter.class);
+    Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name")
+        .setStrength("10mg").build();
+    data = newArrayList(new InventoryViewModel(product), new InventoryViewModel(product));
+    when(mockedAdapter.getData()).thenReturn(data);
 
-    @After
-    public void teardown() {
-        RoboGuice.Util.reset();
-    }
+    initialInventoryActivity.mAdapter = mockedAdapter;
+  }
 
-    @Test
-    public void shouldGoToHomePageAfterInitInventoryOrDoPhysicalInventory(){
-        initialInventoryActivity.goToNextPage();
+  @After
+  public void teardown() {
+    RoboGuice.Util.reset();
+  }
 
-        Intent startIntent = shadowOf(initialInventoryActivity).getNextStartedActivity();
-        assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
-    }
+  @Test
+  public void shouldGoToHomePageAfterInitInventoryOrDoPhysicalInventory() {
+    initialInventoryActivity.goToNextPage();
 
-    @Test
-    public void shouldGoToStockCardPageAfterAddedNewProduct(){
-        Intent intentToStockCard = new Intent();
-        intentToStockCard.putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, true);
+    Intent startIntent = shadowOf(initialInventoryActivity).getNextStartedActivity();
+    assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
+  }
 
-        initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class, intentToStockCard).create().get();
+  @Test
+  public void shouldGoToStockCardPageAfterAddedNewProduct() {
+    Intent intentToStockCard = new Intent();
+    intentToStockCard.putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, true);
 
-        initialInventoryActivity.goToNextPage();
+    initialInventoryActivity = Robolectric
+        .buildActivity(InitialInventoryActivity.class, intentToStockCard).create().get();
 
-        Intent startIntent = shadowOf(initialInventoryActivity).getNextStartedActivity();
-        assertEquals(startIntent.getComponent().getClassName(), StockCardListActivity.class.getName());
-        assertEquals(startIntent.getFlags(), Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    }
+    initialInventoryActivity.goToNextPage();
 
-    @Test
-    public void shouldShowMessageAndNeverBackWhenPressBackInInitInventory() {
-        RobolectricUtils.waitLooperIdle();
+    Intent startIntent = shadowOf(initialInventoryActivity).getNextStartedActivity();
+    assertEquals(startIntent.getComponent().getClassName(), StockCardListActivity.class.getName());
+    assertEquals(startIntent.getFlags(), Intent.FLAG_ACTIVITY_CLEAR_TOP);
+  }
 
-        initialInventoryActivity.onBackPressed();
+  @Test
+  public void shouldShowMessageAndNeverBackWhenPressBackInInitInventory() {
+    RobolectricUtils.waitLooperIdle();
 
-        assertEquals(ShadowToast.getTextOfLatestToast(), initialInventoryActivity.getString(R.string.msg_save_before_exit));
+    initialInventoryActivity.onBackPressed();
 
-        initialInventoryActivity.onBackPressed();
+    assertEquals(ShadowToast.getTextOfLatestToast(),
+        initialInventoryActivity.getString(R.string.msg_save_before_exit));
 
-        assertFalse(initialInventoryActivity.isFinishing());
-    }
+    initialInventoryActivity.onBackPressed();
 
-    @Test
-    public void shouldGetAddNewDrugActivity() {
-        Intent intent = InitialInventoryActivity.getIntentToMe(RuntimeEnvironment.application, true);
+    assertFalse(initialInventoryActivity.isFinishing());
+  }
 
-        assertNotNull(intent);
-        assertEquals(intent.getComponent().getClassName(), InitialInventoryActivity.class.getName());
-        assertTrue(intent.getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false));
-    }
+  @Test
+  public void shouldGetAddNewDrugActivity() {
+    Intent intent = InitialInventoryActivity.getIntentToMe(RuntimeEnvironment.application, true);
 
-    @Test
-    public void shouldInitUIWhenInitialInventory() {
-        assertTrue(initialInventoryActivity.loadingDialog.isShowing());
-        verify(mockedPresenter).loadInventory();
-    }
+    assertNotNull(intent);
+    assertEquals(intent.getComponent().getClassName(), InitialInventoryActivity.class.getName());
+    assertTrue(intent.getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false));
+  }
 
-    @Test
-    public void shouldDoInitialInventoryWhenBtnDoneClicked() {
-        LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-        SingleClickButtonListener.isViewClicked = false;
+  @Test
+  public void shouldInitUIWhenInitialInventory() {
+    assertTrue(initialInventoryActivity.loadingDialog.isShowing());
+    verify(mockedPresenter).loadInventory();
+  }
 
-        when(initialInventoryActivity.mAdapter.validateAll()).thenReturn(-1);
-        initialInventoryActivity.onNextMainPageAction = new Action1<Object>() {
-            @Override
-            public void call(Object o) {
-                return;
-            }
-        };
+  @Test
+  public void shouldDoInitialInventoryWhenBtnDoneClicked() {
+    LMISTestApp.getInstance().setCurrentTimeMillis(100000);
+    SingleClickButtonListener.isViewClicked = false;
 
-        when(mockedPresenter.initStockCardObservable()).thenReturn(Observable.empty());
-        initialInventoryActivity.btnDone.performClick();
-        verify(mockedPresenter).initStockCardObservable();
-    }
+    when(initialInventoryActivity.mAdapter.validateAll()).thenReturn(-1);
+    initialInventoryActivity.onNextMainPageAction = new Action1<Object>() {
+      @Override
+      public void call(Object o) {
+        return;
+      }
+    };
 
-    @Test
-    public void shouldGoToMainPageWhenOnNextCalled() {
-        initialInventoryActivity.onNextMainPageAction.call(null);
+    when(mockedPresenter.initStockCardObservable()).thenReturn(Observable.empty());
+    initialInventoryActivity.btnDone.performClick();
+    verify(mockedPresenter).initStockCardObservable();
+  }
 
-        assertNull(initialInventoryActivity.loadingDialog);
-        assertFalse(SharedPreferenceMgr.getInstance().isNeedsInventory());
-    }
+  @Test
+  public void shouldGoToMainPageWhenOnNextCalled() {
+    initialInventoryActivity.onNextMainPageAction.call(null);
 
-    @Test
-     public void shouldShowErrorWhenOnErrorCalled() {
-        String errorMessage = "This is throwable error";
-        initialInventoryActivity.errorAction.call(new Throwable(errorMessage));
+    assertNull(initialInventoryActivity.loadingDialog);
+    assertFalse(SharedPreferenceMgr.getInstance().isNeedsInventory());
+  }
 
-        assertNull(initialInventoryActivity.loadingDialog);
-    }
+  @Test
+  public void shouldShowErrorWhenOnErrorCalled() {
+    String errorMessage = "This is throwable error";
+    initialInventoryActivity.errorAction.call(new Throwable(errorMessage));
+
+    assertNull(initialInventoryActivity.loadingDialog);
+  }
 }

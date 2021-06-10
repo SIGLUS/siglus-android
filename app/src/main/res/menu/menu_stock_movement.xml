@@ -1,13 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_history"
-        android:icon="@drawable/ic_history_white"
-        android:title="@string/menu_item_stock_movement_history"
-        app:showAsAction="ifRoom|withText" />
-    <item
-        android:id="@+id/action_archive"
-        android:title="@string/menu_archive_drug"
-        android:visible="false"
-        app:showAsAction="never" />
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <item
+    android:id="@+id/action_history"
+    android:icon="@drawable/ic_history_white"
+    android:title="@string/menu_item_stock_movement_history"
+    app:showAsAction="ifRoom|withText" />
+  <item
+    android:id="@+id/action_archive"
+    android:title="@string/menu_archive_drug"
+    android:visible="false"
+    app:showAsAction="never" />
 </menu>

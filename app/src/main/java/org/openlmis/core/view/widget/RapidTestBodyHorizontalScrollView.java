@@ -7,25 +7,26 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 
 public class RapidTestBodyHorizontalScrollView extends HorizontalScrollView {
-    public RapidTestBodyHorizontalScrollView(Context context) {
-        super(context);
-    }
 
-    public RapidTestBodyHorizontalScrollView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+  public RapidTestBodyHorizontalScrollView(Context context) {
+    super(context);
+  }
 
-    public RapidTestBodyHorizontalScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
+  public RapidTestBodyHorizontalScrollView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+  }
 
-    @Override
-    public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
-        return true;
-    }
+  public RapidTestBodyHorizontalScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+  }
 
-    @Override
-    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
-        return 0;
-    }
+  @Override
+  public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
+    return true;
+  }
+
+  @Override
+  protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+    return 0;
+  }
 }

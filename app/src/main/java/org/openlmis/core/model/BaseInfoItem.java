@@ -22,7 +22,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,48 +30,48 @@ import lombok.Setter;
 @DatabaseTable(tableName = "rnr_baseInfo_items")
 public class BaseInfoItem extends BaseModel {
 
-    public enum TYPE {
-        INT,
-        STRING,
-        DATE
-    }
+  public enum TYPE {
+    INT,
+    STRING,
+    DATE
+  }
 
-    @Expose
-    @SerializedName("category")
-    @DatabaseField
-    private String name;
+  @Expose
+  @SerializedName("category")
+  @DatabaseField
+  private String name;
 
-    @DatabaseField
-    private TYPE type = TYPE.STRING;
+  @DatabaseField
+  private TYPE type = TYPE.STRING;
 
-    @Expose
-    @SerializedName("total")
-    @DatabaseField
-    private String value;
+  @Expose
+  @SerializedName("total")
+  @DatabaseField
+  private String value;
 
-    @DatabaseField(foreign = true)
-    private RnRForm rnRForm;
+  @DatabaseField(foreign = true)
+  private RnRForm rnRForm;
 
-    @Expose
-    @SerializedName("tableName")
-    @DatabaseField
-    private String tableName;
+  @Expose
+  @SerializedName("tableName")
+  @DatabaseField
+  private String tableName;
 
-    @Expose
-    @SerializedName("displayOrder")
-    @DatabaseField
-    private int displayOrder;
+  @Expose
+  @SerializedName("displayOrder")
+  @DatabaseField
+  private int displayOrder;
 
 
-    public BaseInfoItem() {
+  public BaseInfoItem() {
 
-    }
+  }
 
-    public BaseInfoItem(String name, TYPE type, RnRForm form, String tableName,int displayOrder) {
-        this.name = name;
-        this.type = type;
-        this.rnRForm = form;
-        this.tableName = tableName;
-        this.displayOrder = displayOrder;
-    }
+  public BaseInfoItem(String name, TYPE type, RnRForm form, String tableName, int displayOrder) {
+    this.name = name;
+    this.type = type;
+    this.rnRForm = form;
+    this.tableName = tableName;
+    this.displayOrder = displayOrder;
+  }
 }

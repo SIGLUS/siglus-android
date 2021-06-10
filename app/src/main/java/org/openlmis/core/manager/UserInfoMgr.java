@@ -18,52 +18,51 @@
 package org.openlmis.core.manager;
 
 
-
 import com.microsoft.appcenter.AppCenter;
-
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.model.User;
 
 public final class UserInfoMgr {
-    private static UserInfoMgr mInstance;
-    private User user;
 
-    private UserInfoMgr() {
+  private static UserInfoMgr mInstance;
+  private User user;
+
+  private UserInfoMgr() {
+  }
+
+  public static UserInfoMgr getInstance() {
+    if (mInstance == null) {
+      mInstance = new UserInfoMgr();
     }
+    return mInstance;
+  }
 
-    public static UserInfoMgr getInstance() {
-        if (mInstance == null) {
-            mInstance = new UserInfoMgr();
-        }
-        return mInstance;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public void setUser(User user) {
+    AppCenter.isEnabled().thenAccept(enable -> {
+      if (enable) {
+        AppCenter.setUserId(user.getFacilityName());
+      }
+    });
 
-    public void setUser(User user) {
-        AppCenter.isEnabled().thenAccept(enable -> {
-            if (enable) {
-                AppCenter.setUserId(user.getFacilityName());
-            }
-        });
+    SharedPreferenceMgr.getInstance().setCurrentUserFacility(user.getFacilityName());
+    SharedPreferenceMgr.getInstance().setLastLoginUser(user.getUsername());
+    SharedPreferenceMgr.getInstance().setUserFacilityId(user.getFacilityId());
+    this.user = user;
+  }
 
-        SharedPreferenceMgr.getInstance().setCurrentUserFacility(user.getFacilityName());
-        SharedPreferenceMgr.getInstance().setLastLoginUser(user.getUsername());
-        SharedPreferenceMgr.getInstance().setUserFacilityId(user.getFacilityId());
-        this.user = user;
-    }
+  public String getVersion() {
+    return BuildConfig.VERSION_NAME;
+  }
 
-    public String getVersion() {
-        return BuildConfig.VERSION_NAME;
-    }
+  public String getFacilityCode() {
+    return user == null ? "" : user.getFacilityCode();
+  }
 
-    public String getFacilityCode() {
-        return user == null ? "" : user.getFacilityCode();
-    }
-
-    public String getFacilityName() {
-        return user == null ? "" : user.getFacilityName();
-    }
+  public String getFacilityName() {
+    return user == null ? "" : user.getFacilityName();
+  }
 }

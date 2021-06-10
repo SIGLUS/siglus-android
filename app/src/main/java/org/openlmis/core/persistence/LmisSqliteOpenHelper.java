@@ -22,10 +22,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
-
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.persistence.migrations.AddALToRegimen;
@@ -107,167 +107,167 @@ import org.openlmis.core.persistence.migrations.UpdateRapidTestColumnsTemplate;
 import org.openlmis.core.persistence.migrations.UpdateRegimeShortCodeTable;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 import org.openlmis.core.persistence.migrations.UpdateReportType;
-import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
 
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
-    private static final String TAG = LmisSqliteOpenHelper.class.getSimpleName();
 
-    private static final List<Migration> MIGRATIONS;
-    private static int instanceCount = 0;
-    private static LmisSqliteOpenHelper _helperInstance;
+  private static final String TAG = LmisSqliteOpenHelper.class.getSimpleName();
 
-    static {
-        MIGRATIONS = new ArrayList<>();
-        MIGRATIONS.add(new CreateInitTables());
-        MIGRATIONS.add(new CreateDummyRegimes());
-        MIGRATIONS.add(new AddSignatureFieldInStockMovementItemTable());
-        MIGRATIONS.add(new AddFacilityIdToUser());
-        MIGRATIONS.add(new AddSyncTagToStockMovementItem());
-        MIGRATIONS.add(new ChangeMovementReasonToCode());
-        MIGRATIONS.add(new AddSubmittedDateToRnRForm());
-        MIGRATIONS.add(new SetQuantityOfStockMovementForInitialInventory());
-        MIGRATIONS.add(new CreateRnRFormSignature());
-        MIGRATIONS.add(new CreateDraftInventoryTable());
-        MIGRATIONS.add(new AddIsArchivedToProduct());
-        MIGRATIONS.add(new AddCreatedTimeToStockMovement());
-        MIGRATIONS.add(new AddSyncErrorsMessageTable());
-        MIGRATIONS.add(new AddActiveColumnToProductTable());
-        MIGRATIONS.add(new AddIsKitColumnToProduct());
-        MIGRATIONS.add(new CreateKitProductsTable());
-        MIGRATIONS.add(new UpdateProductsFalseValueToZero());
-        MIGRATIONS.add(new UpdateCreateTimeAndUpdateTime());
-        MIGRATIONS.add(new AddInventoryTable());
-        MIGRATIONS.add(new AddParentCodeToProgramTable());
-        MIGRATIONS.add(new UpdateRegimenType());
-        MIGRATIONS.add(new AddIsCustomColumnToRegime());
-        MIGRATIONS.add(new CreateRegimeShortCodeTable());
-        MIGRATIONS.add(new ChangeProgramTableName());
-        MIGRATIONS.add(new CreateProductProgramsTable());
-        MIGRATIONS.add(new AddIsEmergencyColumnToProgram());
-        MIGRATIONS.add(new AddNewPrograms());
-        MIGRATIONS.add(new ConvertEssMedsToVIAProgram());
-        MIGRATIONS.add(new AddEmergencyColumnToRnr());
-        MIGRATIONS.add(new AddCategoryColumnToProductPrograms());
-        MIGRATIONS.add(new AddLowStockAvgColumnToStockCardTable());
-        MIGRATIONS.add(new UpdateCategoryColumnForMMIAProducts());
-        MIGRATIONS.add(new AddCmmTable());
-        MIGRATIONS.add(new UpdateAvgColumn());
-        MIGRATIONS.add(new AddRequestedColumnToStockItems());
-        MIGRATIONS.add(new AddManualAddColumnToRnrFormItemsTable());
-        MIGRATIONS.add(new AddLotsTable());
-        MIGRATIONS.add(new AddLotMovementItemsTable());
-        MIGRATIONS.add(new AddLotOnHandTable());
-        MIGRATIONS.add(new CreateDraftLotMovementTable());
-        MIGRATIONS.add(new CreateProgramDataFormTable());
-        MIGRATIONS.add(new AddRapidTestProgram());
-        MIGRATIONS.add(new CreateProgramDataColumnsTable());
-        MIGRATIONS.add(new AddRapidTestColumnsTemplate());
-        MIGRATIONS.add(new CreateProgramDataItemsTable());
-        MIGRATIONS.add(new CreateProgramDataFormSignatureTable());
-        MIGRATIONS.add(new AddDoneColumnToDraftInventoryTable());
-        MIGRATIONS.add(new AddIsBasicColumnToProductsTable());
-        MIGRATIONS.add(new CreatePatientDataReportTable());
-        MIGRATIONS.add(new CreateMalariaTreatments());
-        MIGRATIONS.add(new ChangeMalariaTreatments());
-        MIGRATIONS.add(new CreatePTVProgramSchema());
-        MIGRATIONS.add(new AddMalariaSignature());
-        MIGRATIONS.add(new UpdateProgramDataFormTable());
-        MIGRATIONS.add(new UpdateStockCardProductType());
-        MIGRATIONS.add(new UpdateCustomRegimes());
-        MIGRATIONS.add(new AddIsHIVColumnToProductsTable());
-        MIGRATIONS.add(new AddALToRegimen());
-        MIGRATIONS.add(new CreateProgramBasicDataFormTable());
-        MIGRATIONS.add(new CreateReportTypeTable());
-        MIGRATIONS.add(new CreateServiceTable());
-        MIGRATIONS.add(new AddCustomAmountAndTotalToRnrFormTable());
-        MIGRATIONS.add(new AddServiceItemTable());
-        MIGRATIONS.add(new AddProgramToRegimen());
-        MIGRATIONS.add(new UpdateRapidTestColumnsTemplate());
-        MIGRATIONS.add(new UpdateRapidTestCode());
-        MIGRATIONS.add(new UpdateReportType());
-        MIGRATIONS.add(new AddRegimePharmacy());
-        MIGRATIONS.add(new AddRnrBaseInfoItem());
-        MIGRATIONS.add(new CreateRegimeThreeLineTable());
-        MIGRATIONS.add(new AddRegimeDisplayOrder());
-        MIGRATIONS.add(new UpdateRegimeShortCodeTable());
-        MIGRATIONS.add(new AddActiveToRegimes());
-        MIGRATIONS.add(new UpdateKitProductUnSynced());
-        MIGRATIONS.add(new CreateInitialInventoryDraftTables());
-        MIGRATIONS.add(new CreateDirtyDataProductTable());
-        MIGRATIONS.add(new AddVersionCodeToProgramProductTable());
-        MIGRATIONS.add(new AddLastReportEndTimeToReportType());
-        MIGRATIONS.add(new DeletePrograms());
-        MIGRATIONS.add(new DeleteReportTypes());
-        MIGRATIONS.add(new UpdateStockCardSOHStatus());
+  private static final List<Migration> MIGRATIONS;
+  private static int instanceCount = 0;
+  private static LmisSqliteOpenHelper _helperInstance;
+
+  static {
+    MIGRATIONS = new ArrayList<>();
+    MIGRATIONS.add(new CreateInitTables());
+    MIGRATIONS.add(new CreateDummyRegimes());
+    MIGRATIONS.add(new AddSignatureFieldInStockMovementItemTable());
+    MIGRATIONS.add(new AddFacilityIdToUser());
+    MIGRATIONS.add(new AddSyncTagToStockMovementItem());
+    MIGRATIONS.add(new ChangeMovementReasonToCode());
+    MIGRATIONS.add(new AddSubmittedDateToRnRForm());
+    MIGRATIONS.add(new SetQuantityOfStockMovementForInitialInventory());
+    MIGRATIONS.add(new CreateRnRFormSignature());
+    MIGRATIONS.add(new CreateDraftInventoryTable());
+    MIGRATIONS.add(new AddIsArchivedToProduct());
+    MIGRATIONS.add(new AddCreatedTimeToStockMovement());
+    MIGRATIONS.add(new AddSyncErrorsMessageTable());
+    MIGRATIONS.add(new AddActiveColumnToProductTable());
+    MIGRATIONS.add(new AddIsKitColumnToProduct());
+    MIGRATIONS.add(new CreateKitProductsTable());
+    MIGRATIONS.add(new UpdateProductsFalseValueToZero());
+    MIGRATIONS.add(new UpdateCreateTimeAndUpdateTime());
+    MIGRATIONS.add(new AddInventoryTable());
+    MIGRATIONS.add(new AddParentCodeToProgramTable());
+    MIGRATIONS.add(new UpdateRegimenType());
+    MIGRATIONS.add(new AddIsCustomColumnToRegime());
+    MIGRATIONS.add(new CreateRegimeShortCodeTable());
+    MIGRATIONS.add(new ChangeProgramTableName());
+    MIGRATIONS.add(new CreateProductProgramsTable());
+    MIGRATIONS.add(new AddIsEmergencyColumnToProgram());
+    MIGRATIONS.add(new AddNewPrograms());
+    MIGRATIONS.add(new ConvertEssMedsToVIAProgram());
+    MIGRATIONS.add(new AddEmergencyColumnToRnr());
+    MIGRATIONS.add(new AddCategoryColumnToProductPrograms());
+    MIGRATIONS.add(new AddLowStockAvgColumnToStockCardTable());
+    MIGRATIONS.add(new UpdateCategoryColumnForMMIAProducts());
+    MIGRATIONS.add(new AddCmmTable());
+    MIGRATIONS.add(new UpdateAvgColumn());
+    MIGRATIONS.add(new AddRequestedColumnToStockItems());
+    MIGRATIONS.add(new AddManualAddColumnToRnrFormItemsTable());
+    MIGRATIONS.add(new AddLotsTable());
+    MIGRATIONS.add(new AddLotMovementItemsTable());
+    MIGRATIONS.add(new AddLotOnHandTable());
+    MIGRATIONS.add(new CreateDraftLotMovementTable());
+    MIGRATIONS.add(new CreateProgramDataFormTable());
+    MIGRATIONS.add(new AddRapidTestProgram());
+    MIGRATIONS.add(new CreateProgramDataColumnsTable());
+    MIGRATIONS.add(new AddRapidTestColumnsTemplate());
+    MIGRATIONS.add(new CreateProgramDataItemsTable());
+    MIGRATIONS.add(new CreateProgramDataFormSignatureTable());
+    MIGRATIONS.add(new AddDoneColumnToDraftInventoryTable());
+    MIGRATIONS.add(new AddIsBasicColumnToProductsTable());
+    MIGRATIONS.add(new CreatePatientDataReportTable());
+    MIGRATIONS.add(new CreateMalariaTreatments());
+    MIGRATIONS.add(new ChangeMalariaTreatments());
+    MIGRATIONS.add(new CreatePTVProgramSchema());
+    MIGRATIONS.add(new AddMalariaSignature());
+    MIGRATIONS.add(new UpdateProgramDataFormTable());
+    MIGRATIONS.add(new UpdateStockCardProductType());
+    MIGRATIONS.add(new UpdateCustomRegimes());
+    MIGRATIONS.add(new AddIsHIVColumnToProductsTable());
+    MIGRATIONS.add(new AddALToRegimen());
+    MIGRATIONS.add(new CreateProgramBasicDataFormTable());
+    MIGRATIONS.add(new CreateReportTypeTable());
+    MIGRATIONS.add(new CreateServiceTable());
+    MIGRATIONS.add(new AddCustomAmountAndTotalToRnrFormTable());
+    MIGRATIONS.add(new AddServiceItemTable());
+    MIGRATIONS.add(new AddProgramToRegimen());
+    MIGRATIONS.add(new UpdateRapidTestColumnsTemplate());
+    MIGRATIONS.add(new UpdateRapidTestCode());
+    MIGRATIONS.add(new UpdateReportType());
+    MIGRATIONS.add(new AddRegimePharmacy());
+    MIGRATIONS.add(new AddRnrBaseInfoItem());
+    MIGRATIONS.add(new CreateRegimeThreeLineTable());
+    MIGRATIONS.add(new AddRegimeDisplayOrder());
+    MIGRATIONS.add(new UpdateRegimeShortCodeTable());
+    MIGRATIONS.add(new AddActiveToRegimes());
+    MIGRATIONS.add(new UpdateKitProductUnSynced());
+    MIGRATIONS.add(new CreateInitialInventoryDraftTables());
+    MIGRATIONS.add(new CreateDirtyDataProductTable());
+    MIGRATIONS.add(new AddVersionCodeToProgramProductTable());
+    MIGRATIONS.add(new AddLastReportEndTimeToReportType());
+    MIGRATIONS.add(new DeletePrograms());
+    MIGRATIONS.add(new DeleteReportTypes());
+    MIGRATIONS.add(new UpdateStockCardSOHStatus());
+  }
+
+  private LmisSqliteOpenHelper(Context context) {
+    super(context, "lmis_db", null, MIGRATIONS.size());
+    ++instanceCount;
+    Log.d(TAG, "Instance Created : total count : " + instanceCount);
+  }
+
+  public static synchronized LmisSqliteOpenHelper getInstance(Context context) {
+    if (_helperInstance == null) {
+      _helperInstance = new LmisSqliteOpenHelper(context);
     }
+    return _helperInstance;
+  }
 
-    private LmisSqliteOpenHelper(Context context) {
-        super(context, "lmis_db", null, MIGRATIONS.size());
-        ++instanceCount;
-        Log.d(TAG, "Instance Created : total count : " + instanceCount);
-    }
+  public static void closeHelper() {
+    _helperInstance = null;
+    --instanceCount;
+    Log.d(TAG, "Instance Destroyed : total count : " + instanceCount);
+  }
 
-    public static synchronized LmisSqliteOpenHelper getInstance(Context context) {
-        if (_helperInstance == null) {
-            _helperInstance = new LmisSqliteOpenHelper(context);
-        }
-        return _helperInstance;
+  @Override
+  public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
+    if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      for (Migration migration : MIGRATIONS) {
+        Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
+        migration.setSQLiteDatabase(database);
+        migration.up();
+      }
     }
+  }
 
-    public static void closeHelper() {
-        _helperInstance = null;
-        --instanceCount;
-        Log.d(TAG, "Instance Destroyed : total count : " + instanceCount);
+  @Override
+  public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion,
+      int newVersion) {
+    Log.d(TAG, "onUpgrade oldVersion=" + oldVersion + ",newVersion=" + newVersion);
+    for (int currentVersion = oldVersion; currentVersion < newVersion; currentVersion++) {
+      Migration migration = MIGRATIONS.get(currentVersion);
+      Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
+      migration.setSQLiteDatabase(database);
+      migration.up();
     }
+  }
 
-    @Override
-    public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            for (Migration migration : MIGRATIONS) {
-                Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
-                migration.setSQLiteDatabase(database);
-                migration.up();
-            }
-        }
-    }
+  @Override
+  public void onDowngrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+    throw new RuntimeException(
+        "Unexpected downgrade happened, old=" + oldVersion + ",new=" + newVersion);
+  }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        Log.d(TAG, "onUpgrade oldVersion=" + oldVersion + ",newVersion=" + newVersion);
-        for (int currentVersion = oldVersion; currentVersion < newVersion; currentVersion++) {
-            Migration migration = MIGRATIONS.get(currentVersion);
-            Log.i(TAG, "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
-            migration.setSQLiteDatabase(database);
-            migration.up();
-        }
-    }
+  @Override
+  public void close() {
+    super.close();
+    getWritableDatabase().close();
+    closeHelper();
+  }
 
-    @Override
-    public void onDowngrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        throw new RuntimeException("Unexpected downgrade happened, old=" + oldVersion + ",new=" + newVersion);
+  @Override
+  public void onOpen(SQLiteDatabase db) {
+    super.onOpen(db);
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)
+        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+      db.disableWriteAheadLogging();
     }
+  }
 
-    @Override
-    public void close() {
-        super.close();
-        getWritableDatabase().close();
-        closeHelper();
-    }
-
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            db.disableWriteAheadLogging();
-        }
-    }
-
-    public static int getDBVersion() {
-        return MIGRATIONS.size();
-    }
+  public static int getDBVersion() {
+    return MIGRATIONS.size();
+  }
 }

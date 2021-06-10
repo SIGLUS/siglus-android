@@ -18,10 +18,17 @@
 
 package org.openlmis.core.presenter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import androidx.annotation.NonNull;
-
 import com.google.inject.AbstractModule;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,131 +47,127 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class StockMovementsPresenterTest extends LMISRepositoryUnitTest {
 
-    private StockMovementsPresenter stockMovementsPresenter;
+  private StockMovementsPresenter stockMovementsPresenter;
 
-    StockRepository mockStockRepository;
-    ProductRepository productRepository;
-    StockMovementsPresenter.StockMovementView view;
-    StockService stockServiceMock;
+  StockRepository mockStockRepository;
+  ProductRepository productRepository;
+  StockMovementsPresenter.StockMovementView view;
+  StockService stockServiceMock;
 
-    SharedPreferenceMgr sharedPreferenceMgr;
-    private StockMovementRepository mockStockMovementRepository;
+  SharedPreferenceMgr sharedPreferenceMgr;
+  private StockMovementRepository mockStockMovementRepository;
 
-    @Before
-    public void setup() throws Exception {
-        mockStockRepository = mock(StockRepository.class);
-        productRepository = mock(ProductRepository.class);
-        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
-        stockServiceMock = mock(StockService.class);
-        mockStockMovementRepository = mock(StockMovementRepository.class);
+  @Before
+  public void setup() throws Exception {
+    mockStockRepository = mock(StockRepository.class);
+    productRepository = mock(ProductRepository.class);
+    sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
+    stockServiceMock = mock(StockService.class);
+    mockStockMovementRepository = mock(StockMovementRepository.class);
 
-        view = mock(StockMovementsPresenter.StockMovementView.class);
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
+    view = mock(StockMovementsPresenter.StockMovementView.class);
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
-        stockMovementsPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementsPresenter.class);
-        stockMovementsPresenter.attachView(view);
-        stockMovementsPresenter.stockCard = StockCardBuilder.buildStockCard();
-        stockMovementsPresenter.sharedPreferenceMgr = sharedPreferenceMgr;
+    stockMovementsPresenter = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(StockMovementsPresenter.class);
+    stockMovementsPresenter.attachView(view);
+    stockMovementsPresenter.stockCard = StockCardBuilder.buildStockCard();
+    stockMovementsPresenter.sharedPreferenceMgr = sharedPreferenceMgr;
+  }
+
+  @Test
+  public void shouldEnableUnpackMenuAndUpdateExpiryDateGroupWhenStockCardSOHIsNotZeroAndKitHasProducts()
+      throws Exception {
+    //given
+    StockCard stockCard = createStockCard(100, true);
+    Product kit = ProductBuilder.buildAdultProduct();
+    kit.setKit(true);
+    stockCard.setProduct(kit);
+    when(mockStockRepository.queryStockCardById(200L)).thenReturn(stockCard);
+    when(productRepository.queryKitProductByKitCode(kit.getCode()))
+        .thenReturn(Arrays.asList(new KitProduct()));
+
+    //when
+    stockMovementsPresenter.setStockCard(200L);
+
+    //then
+    verify(view).updateUnpackKitMenu(true);
+    verify(view).updateExpiryDateViewGroup();
+  }
+
+  @Test
+  public void shouldDisableUnpackMenuWhenStockCardSOHIsNotZeroAndKitHasNoProduct()
+      throws Exception {
+    //given
+    StockCard stockCard = createStockCard(100, true);
+    Product kit = ProductBuilder.buildAdultProduct();
+    kit.setKit(true);
+    stockCard.setProduct(kit);
+    when(mockStockRepository.queryStockCardById(200L)).thenReturn(stockCard);
+    when(productRepository.queryKitProductByKitCode(kit.getCode()))
+        .thenReturn(new ArrayList<KitProduct>());
+
+    //when
+    stockMovementsPresenter.setStockCard(200L);
+
+    //then
+    verify(view).updateUnpackKitMenu(false);
+  }
+
+  @NonNull
+  private StockCard createStockCard(int stockOnHand, boolean isKit) {
+    StockCard stockCard = new StockCard();
+    stockCard.setId(200L);
+    stockCard.setStockOnHand(stockOnHand);
+    Product product = new Product();
+    product.setActive(true);
+    product.setKit(isKit);
+    product.setKitProductList(Arrays.asList(new KitProduct()));
+    stockCard.setProduct(product);
+    return stockCard;
+  }
+
+  @Test
+  public void shouldLoadStockMovementViewModelsObserver() throws Exception {
+    when(mockStockMovementRepository.listLastFiveStockMovements(anyInt()))
+        .thenReturn(new ArrayList<StockMovementItem>());
+
+    TestSubscriber<List<StockMovementViewModel>> subscriber = new TestSubscriber<>();
+    stockMovementsPresenter.loadStockMovementViewModelsObserver().subscribe(subscriber);
+
+    subscriber.awaitTerminalEvent();
+    subscriber.assertNoErrors();
+    subscriber.assertValue(new ArrayList<StockMovementViewModel>());
+  }
+
+  @Test
+  public void shouldArchiveStockCard() throws Exception {
+    //given
+    StockCard stockCard = stockMovementsPresenter.stockCard;
+    stockCard.getProduct().setArchived(false);
+
+    //when
+    stockMovementsPresenter.archiveStockCard();
+
+    //then
+    assertThat(stockCard.getProduct().isArchived()).isTrue();
+    verify(mockStockRepository).updateProductOfStockCard(stockCard.getProduct());
+  }
+
+
+  public class MyTestModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+      bind(StockRepository.class).toInstance(mockStockRepository);
+      bind(ProductRepository.class).toInstance(productRepository);
+      bind(StockService.class).toInstance(stockServiceMock);
     }
-
-    @Test
-    public void shouldEnableUnpackMenuAndUpdateExpiryDateGroupWhenStockCardSOHIsNotZeroAndKitHasProducts() throws Exception {
-        //given
-        StockCard stockCard = createStockCard(100, true);
-        Product kit = ProductBuilder.buildAdultProduct();
-        kit.setKit(true);
-        stockCard.setProduct(kit);
-        when(mockStockRepository.queryStockCardById(200L)).thenReturn(stockCard);
-        when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(Arrays.asList(new KitProduct()));
-
-        //when
-        stockMovementsPresenter.setStockCard(200L);
-
-        //then
-        verify(view).updateUnpackKitMenu(true);
-        verify(view).updateExpiryDateViewGroup();
-    }
-
-    @Test
-    public void shouldDisableUnpackMenuWhenStockCardSOHIsNotZeroAndKitHasNoProduct() throws Exception {
-        //given
-        StockCard stockCard = createStockCard(100, true);
-        Product kit = ProductBuilder.buildAdultProduct();
-        kit.setKit(true);
-        stockCard.setProduct(kit);
-        when(mockStockRepository.queryStockCardById(200L)).thenReturn(stockCard);
-        when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(new ArrayList<KitProduct>());
-
-        //when
-        stockMovementsPresenter.setStockCard(200L);
-
-        //then
-        verify(view).updateUnpackKitMenu(false);
-    }
-
-    @NonNull
-    private StockCard createStockCard(int stockOnHand, boolean isKit) {
-        StockCard stockCard = new StockCard();
-        stockCard.setId(200L);
-        stockCard.setStockOnHand(stockOnHand);
-        Product product = new Product();
-        product.setActive(true);
-        product.setKit(isKit);
-        product.setKitProductList(Arrays.asList(new KitProduct()));
-        stockCard.setProduct(product);
-        return stockCard;
-    }
-
-    @Test
-    public void shouldLoadStockMovementViewModelsObserver() throws Exception {
-        when(mockStockMovementRepository.listLastFiveStockMovements((long) anyInt())).thenReturn(new ArrayList<StockMovementItem>());
-
-        TestSubscriber<List<StockMovementViewModel>> subscriber = new TestSubscriber<>();
-        stockMovementsPresenter.loadStockMovementViewModelsObserver().subscribe(subscriber);
-
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        subscriber.assertValue(new ArrayList<StockMovementViewModel>());
-    }
-
-    @Test
-    public void shouldArchiveStockCard() throws Exception {
-        //given
-        StockCard stockCard = stockMovementsPresenter.stockCard;
-        stockCard.getProduct().setArchived(false);
-
-        //when
-        stockMovementsPresenter.archiveStockCard();
-
-        //then
-        assertThat(stockCard.getProduct().isArchived()).isTrue();
-        verify(mockStockRepository).updateProductOfStockCard(stockCard.getProduct());
-    }
-
-
-    public class MyTestModule extends AbstractModule {
-        @Override
-        protected void configure() {
-            bind(StockRepository.class).toInstance(mockStockRepository);
-            bind(ProductRepository.class).toInstance(productRepository);
-            bind(StockService.class).toInstance(stockServiceMock);
-        }
-    }
+  }
 }

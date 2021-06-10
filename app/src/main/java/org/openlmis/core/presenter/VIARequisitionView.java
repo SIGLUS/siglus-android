@@ -2,13 +2,13 @@ package org.openlmis.core.presenter;
 
 public interface VIARequisitionView extends BaseRequisitionPresenter.BaseRequisitionView {
 
-    void showListInputError(int index);
+  void showListInputError(int index);
 
-    void highLightRequestAmount();
+  void highLightRequestAmount();
 
-    void highLightApprovedAmount();
+  void highLightApprovedAmount();
 
-    void setProcessButtonName(String name);
+  void setProcessButtonName(String name);
 
-    boolean validateConsultationNumber();
+  boolean validateConsultationNumber();
 }

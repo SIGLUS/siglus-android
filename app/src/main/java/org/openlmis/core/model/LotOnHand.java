@@ -3,7 +3,6 @@ package org.openlmis.core.model;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,20 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LotOnHand extends BaseModel {
 
-    @Expose
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    Lot lot;
+  @Expose
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  Lot lot;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    StockCard stockCard;
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  StockCard stockCard;
 
-    @Expose
-    @DatabaseField
-    Long quantityOnHand;
+  @Expose
+  @DatabaseField
+  Long quantityOnHand;
 
-    public LotOnHand(Lot lot, StockCard stockCard, Long quantityOnHand) {
-        this.lot = lot;
-        this.stockCard = stockCard;
-        this.quantityOnHand = quantityOnHand;
-    }
+  public LotOnHand(Lot lot, StockCard stockCard, Long quantityOnHand) {
+    this.lot = lot;
+    this.stockCard = stockCard;
+    this.quantityOnHand = quantityOnHand;
+  }
 }

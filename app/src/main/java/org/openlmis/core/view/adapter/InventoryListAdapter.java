@@ -18,91 +18,91 @@
 
 package org.openlmis.core.view.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.TextUtils;
-
-import com.viethoa.RecyclerViewFastScroller;
-
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements FilterableAdapter, RecyclerViewFastScroller.BubbleTextGetter {
+import android.text.TextUtils;
+import androidx.recyclerview.widget.RecyclerView;
+import com.viethoa.RecyclerViewFastScroller;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-    @Getter
-    List<InventoryViewModel> data;
+public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> extends
+    RecyclerView.Adapter<VH> implements FilterableAdapter,
+    RecyclerViewFastScroller.BubbleTextGetter {
 
-    @Getter
-    @Setter
-    List<InventoryViewModel> filteredList = new ArrayList<>();
-    String queryKeyWord;
+  @Getter
+  List<InventoryViewModel> data;
 
-    public InventoryListAdapter(List<InventoryViewModel> data) {
-        this.data = data;
-        filteredList = new ArrayList<>();
+  @Getter
+  @Setter
+  List<InventoryViewModel> filteredList = new ArrayList<>();
+  String queryKeyWord;
+
+  public InventoryListAdapter(List<InventoryViewModel> data) {
+    this.data = data;
+    filteredList = new ArrayList<>();
+  }
+
+  @Override
+  public int getItemCount() {
+    return filteredList.size();
+  }
+
+  @Override
+  public void filter(final String keyword) {
+    this.queryKeyWord = keyword;
+
+    List<InventoryViewModel> filteredViewModels;
+
+    if (TextUtils.isEmpty(keyword)) {
+      filteredViewModels = data;
+    } else {
+      filteredViewModels = from(data)
+          .filter(inventoryViewModel ->
+              inventoryViewModel.getProduct().getProductFullName().toLowerCase()
+                  .contains(keyword.toLowerCase())).toList();
+    }
+    filteredList.clear();
+    filteredList.addAll(filteredViewModels);
+    this.notifyDataSetChanged();
+  }
+
+  public void refreshList(List<InventoryViewModel> data) {
+    this.data = data;
+    filter(queryKeyWord);
+  }
+
+  @Override
+  public int validateAll() {
+    int position = -1;
+    for (int i = 0; i < data.size(); i++) {
+      if (!data.get(i).validate()) {
+        position = i;
+        break;
+      }
     }
 
-    @Override
-    public int getItemCount() {
-        return filteredList.size();
+    this.notifyDataSetChanged();
+    return position;
+  }
+
+  public void refresh() {
+    filter(queryKeyWord);
+  }
+
+  public String getTextToShowInBubble(int position) {
+    if (position < 0 || position >= data.size()) {
+      return null;
     }
 
-    @Override
-    public void filter(final String keyword) {
-        this.queryKeyWord = keyword;
-
-        List<InventoryViewModel> filteredViewModels;
-
-        if (TextUtils.isEmpty(keyword)) {
-            filteredViewModels = data;
-        } else {
-            filteredViewModels = from(data)
-                    .filter(inventoryViewModel ->
-                            inventoryViewModel.getProduct().getProductFullName().toLowerCase()
-                                    .contains(keyword.toLowerCase())).toList();
-        }
-        filteredList.clear();
-        filteredList.addAll(filteredViewModels);
-        this.notifyDataSetChanged();
+    String name = data.get(position).getProductName();
+    if (name == null || name.length() < 1) {
+      return null;
     }
 
-    public void refreshList(List<InventoryViewModel> data) {
-        this.data = data;
-        filter(queryKeyWord);
-    }
-
-    @Override
-    public int validateAll() {
-        int position = -1;
-        for (int i = 0; i < data.size(); i++) {
-            if (!data.get(i).validate()) {
-                position = i;
-                break;
-            }
-        }
-
-        this.notifyDataSetChanged();
-        return position;
-    }
-
-    public void refresh() {
-        filter(queryKeyWord);
-    }
-
-    public String getTextToShowInBubble(int position) {
-        if (position < 0 || position >= data.size())
-            return null;
-
-        String name = data.get(position).getProductName();
-        if (name == null || name.length() < 1)
-            return null;
-
-        return data.get(position).getProductName().substring(0, 1);
-    }
+    return data.get(position).getProductName().substring(0, 1);
+  }
 }

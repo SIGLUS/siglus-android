@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/header"
-    style="@style/MMIA.SpreadHeader"
-    android:text="@string/label_mmia_speed_info_header" />
+  android:id="@+id/header"
+  style="@style/MMIA.SpreadHeader"
+  android:text="@string/label_mmia_speed_info_header" />

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:background="@drawable/border_bg_light_gray_no_right"
-    android:divider="@drawable/divider_horizontal"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:showDividers="middle">
+  android:layout_width="0dp"
+  android:layout_height="match_parent"
+  android:layout_weight="1"
+  android:background="@drawable/border_bg_light_gray_no_right"
+  android:divider="@drawable/divider_horizontal"
+  android:gravity="center"
+  android:orientation="vertical"
+  android:showDividers="middle">
 
-    <org.openlmis.core.view.widget.RotateTextView
-        android:id="@+id/regime_left_header_adult"
-        style="@style/MMIA.RegimeLeftHeader"
-        android:text="@string/label_mmia_regime_adult" />
+  <org.openlmis.core.view.widget.RotateTextView
+    android:id="@+id/regime_left_header_adult"
+    style="@style/MMIA.RegimeLeftHeader"
+    android:text="@string/label_mmia_regime_adult" />
 
-    <org.openlmis.core.view.widget.RotateTextView
-        android:id="@+id/regime_left_header_children"
-        style="@style/MMIA.RegimeLeftHeader"
-        android:text="@string/label_mmia_regime_children" />
+  <org.openlmis.core.view.widget.RotateTextView
+    android:id="@+id/regime_left_header_children"
+    style="@style/MMIA.RegimeLeftHeader"
+    android:text="@string/label_mmia_regime_children" />
 
 </LinearLayout>

@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.widget.LinearLayout;
 
 public class DummyActivity extends Activity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        LinearLayout view = new LinearLayout(this);
-        setContentView(view);
-    }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    LinearLayout view = new LinearLayout(this);
+    setContentView(view);
+  }
 }

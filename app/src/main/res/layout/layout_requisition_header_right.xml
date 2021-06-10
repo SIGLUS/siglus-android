@@ -1,207 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/LayoutRequisition.HeaderRightContainer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+  style="@style/LayoutRequisition.HeaderRightContainer"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    style="@style/Divider.Horizontal"
+    android:layout_width="1000dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+      style="@style/LayoutRequisition.TextHeader"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/request_provincial_district_level" />
 
     <LinearLayout
-        style="@style/Divider.Horizontal"
-        android:layout_width="1000dp"
+      style="@style/Divider.Vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:weightSum="8">
+
+      <TextView
+        style="@style/LayoutRequisition.TextHeader"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:text="@string/title_stock_move_ment" />
+
+      <TextView
+        style="@style/LayoutRequisition.TextHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="@string/title_inventory_info" />
+    </LinearLayout>
+
+    <LinearLayout
+      style="@style/Divider.Vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:weightSum="8">
+
+      <LinearLayout
+        style="@style/Divider.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="7"
         android:orientation="vertical">
 
-        <TextView
-            style="@style/LayoutRequisition.TextHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/request_provincial_district_level" />
-
         <LinearLayout
-            style="@style/Divider.Vertical"
-            android:layout_width="match_parent"
+          style="@style/Divider.Vertical"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="8">
+            android:layout_weight="1"
+            android:text="@string/label_initial_amount_requisition" />
 
-            <TextView
-                style="@style/LayoutRequisition.TextHeader"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"
-                android:text="@string/title_stock_move_ment" />
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/label_received_requisition" />
 
-            <TextView
-                style="@style/LayoutRequisition.TextHeader"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="@string/title_inventory_info" />
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/label_issued_mmia" />
+
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/label_theoretical" />
+
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/label_total_requisition" />
+
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/label_inventory" />
+
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/label_different" />
         </LinearLayout>
 
         <LinearLayout
-            style="@style/Divider.Vertical"
-            android:layout_width="match_parent"
+          style="@style/Divider.Vertical"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="8">
+            android:layout_weight="1"
+            android:text="SI" />
 
-            <LinearLayout
-                style="@style/Divider.Horizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="7"
-                android:orientation="vertical">
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="E" />
 
-                <LinearLayout
-                    style="@style/Divider.Vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="S" />
 
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/label_initial_amount_requisition" />
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SF=SI+E-S" />
 
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/label_received_requisition" />
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="P" />
 
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/label_issued_mmia" />
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="I" />
 
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/label_theoretical" />
+          <TextView
+            style="@style/LayoutRequisition.CellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="I-SF" />
 
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/label_total_requisition" />
-
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/label_inventory" />
-
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/label_different" />
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/Divider.Vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="SI" />
-
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="E" />
-
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="S" />
-
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="SF=SI+E-S" />
-
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="P" />
-
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I" />
-
-                    <TextView
-                        style="@style/LayoutRequisition.CellText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I-SF" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-            <TextView
-                style="@style/LayoutRequisition.CellText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/label_total_requested" />
         </LinearLayout>
 
-    </LinearLayout>
+      </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+      <TextView
+        style="@style/LayoutRequisition.CellText"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:divider="@drawable/divider_vertical"
-        android:orientation="horizontal"
-        android:showDividers="middle|end">
-
-        <TextView
-            android:id="@+id/tv_label_request"
-            style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/label_request_amount" />
-
-        <TextView
-            android:id="@+id/tv_label_approve"
-            style="@style/LayoutRequisition.CellText"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/label_approved_amount" />
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/label_total_requested" />
     </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_vertical"
+    android:orientation="horizontal"
+    android:showDividers="middle|end">
+
+    <TextView
+      android:id="@+id/tv_label_request"
+      style="@style/LayoutRequisition.CellText"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:text="@string/label_request_amount" />
+
+    <TextView
+      android:id="@+id/tv_label_approve"
+      style="@style/LayoutRequisition.CellText"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:text="@string/label_approved_amount" />
+  </LinearLayout>
 
 
 </LinearLayout>

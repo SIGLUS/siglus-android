@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginTop="@dimen/margin_small">
+
+  <LinearLayout
+    android:id="@+id/new_movement_panel"
+    style="@style/FormAction.Container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_small">
+    android:layout_height="@dimen/button_bar_height_default">
 
-    <LinearLayout
-        android:id="@+id/new_movement_panel"
-        style="@style/FormAction.Container"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button_bar_height_default">
+    <Button
+      android:id="@+id/btn_new_movement"
+      style="@style/FormAction.CompleteBtn.StockMovement"
+      android:layout_width="@dimen/new_movement_button_width"
+      android:layout_height="@dimen/button_height_default"
+      android:text="@string/btn_new_movement"
+      android:textAlignment="center" />
 
-        <Button
-            android:id="@+id/btn_new_movement"
-            style="@style/FormAction.CompleteBtn.StockMovement"
-            android:layout_width="@dimen/new_movement_button_width"
-            android:layout_height="@dimen/button_height_default"
-            android:text="@string/btn_new_movement"
-            android:textAlignment="center" />
-
-    </LinearLayout>
+  </LinearLayout>
 </androidx.cardview.widget.CardView>

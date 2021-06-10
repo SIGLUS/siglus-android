@@ -1,133 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <LinearLayout
+    android:id="@+id/vg_edit_lot_area"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/vg_edit_lot_area"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rv_existing_lot_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:overScrollMode="never"
+      android:scrollbars="none" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_existing_lot_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_new_lot_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
-
-        <LinearLayout
-            android:id="@+id/ly_action_panel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/padding_normal">
-
-            <TextView
-                android:id="@+id/btn_add_new_lot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/border_round_blue"
-                android:text="@string/btn_add_new_lot"
-                android:textColor="@color/color_accent"
-                android:textSize="@dimen/font_size_normal" />
-
-            <LinearLayout
-                android:id="@+id/btn_no_stock_done"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/margin_medium"
-                android:background="@drawable/border_round_blue">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_done_indigo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingStart="@dimen/padding_tiny"
-                    android:text="@string/btn_no_stock"
-                    android:textColor="@color/color_accent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_btn_verify"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/margin_medium"
-                android:background="@drawable/border_round_blue"
-                android:visibility="gone">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_done_indigo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingStart="@dimen/padding_tiny"
-                    android:text="@string/btn_done"
-                    android:textColor="@color/color_accent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_btn_remove_product"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/margin_medium"
-                android:background="@drawable/border_round_blue"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingStart="@dimen/padding_tiny"
-                    android:text="@string/btn_remove_stock"
-                    android:textColor="@color/color_accent" />
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rv_new_lot_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:overScrollMode="never"
+      android:scrollbars="none" />
 
     <LinearLayout
-        android:id="@+id/vg_lot_info_review"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_normal"
-        android:paddingBottom="@dimen/font_size_small"
-        android:visibility="gone">
+      android:id="@+id/ly_action_panel"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="0dp"
+      android:orientation="horizontal"
+      android:padding="@dimen/padding_normal">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_lot_info_review"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/padding_small" />
+      <TextView
+        android:id="@+id/btn_add_new_lot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_round_blue"
+        android:text="@string/btn_add_new_lot"
+        android:textColor="@color/color_accent"
+        android:textSize="@dimen/font_size_normal" />
+
+      <LinearLayout
+        android:id="@+id/btn_no_stock_done"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:background="@drawable/border_round_blue">
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:src="@drawable/ic_done_indigo" />
 
         <TextView
-            android:id="@+id/btn_edit"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border_round_blue"
-            android:gravity="center"
-            android:text="@string/btn_edit"
-            android:textColor="@color/color_accent"
-            android:textSize="@dimen/font_size_regular" />
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:gravity="center_vertical"
+          android:paddingStart="@dimen/padding_tiny"
+          android:text="@string/btn_no_stock"
+          android:textColor="@color/color_accent" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/ll_btn_verify"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:background="@drawable/border_round_blue"
+        android:visibility="gone">
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:src="@drawable/ic_done_indigo" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:gravity="center_vertical"
+          android:paddingStart="@dimen/padding_tiny"
+          android:text="@string/btn_done"
+          android:textColor="@color/color_accent" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/ll_btn_remove_product"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:background="@drawable/border_round_blue"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:gravity="center_vertical"
+          android:paddingStart="@dimen/padding_tiny"
+          android:text="@string/btn_remove_stock"
+          android:textColor="@color/color_accent" />
+      </LinearLayout>
     </LinearLayout>
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/vg_lot_info_review"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_normal"
+    android:paddingBottom="@dimen/font_size_small"
+    android:visibility="gone">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rv_lot_info_review"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingBottom="@dimen/padding_small" />
+
+    <TextView
+      android:id="@+id/btn_edit"
+      android:layout_width="80dp"
+      android:layout_height="wrap_content"
+      android:background="@drawable/border_round_blue"
+      android:gravity="center"
+      android:text="@string/btn_edit"
+      android:textColor="@color/color_accent"
+      android:textSize="@dimen/font_size_regular" />
+  </LinearLayout>
 </LinearLayout>

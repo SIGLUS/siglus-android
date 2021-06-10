@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/et_warning_border"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/repid_view_body_item_line_height"
-    android:orientation="horizontal">
+  android:id="@+id/et_warning_border"
+  android:layout_width="match_parent"
+  android:layout_height="@dimen/repid_view_body_item_line_height"
+  android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/et_consume_rapid_test_report_grid_total"
-        style="@style/RapidTestForm.SecondPartGridItemTotal" />
+  <TextView
+    android:id="@+id/et_consume_rapid_test_report_grid_total"
+    style="@style/RapidTestForm.SecondPartGridItemTotal" />
 
-    <TextView
-        android:id="@+id/et_positive_rapid_test_report_grid_total"
-        style="@style/RapidTestForm.SecondPartGridItemTotal" />
+  <TextView
+    android:id="@+id/et_positive_rapid_test_report_grid_total"
+    style="@style/RapidTestForm.SecondPartGridItemTotal" />
 
-    <TextView
-        android:id="@+id/et_unjustified_rapid_test_report_grid_total"
-        style="@style/RapidTestForm.SecondPartGridItemTotal"
-        android:background="@drawable/al_border_right_black_bold" />
+  <TextView
+    android:id="@+id/et_unjustified_rapid_test_report_grid_total"
+    style="@style/RapidTestForm.SecondPartGridItemTotal"
+    android:background="@drawable/al_border_right_black_bold" />
 </LinearLayout>

@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Card.Padded"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Card.Padded"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    style="@style/Card.Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        style="@style/Card.Container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+      android:id="@+id/tv_product_name"
+      style="@style/ArchivedCard.ProductName"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="@string/label_dummy_product" />
 
-        <TextView
-            android:id="@+id/tv_product_name"
-            style="@style/ArchivedCard.ProductName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@string/label_dummy_product" />
+    <TextView
+      android:id="@+id/tv_product_unit"
+      style="@style/ArchivedCard.ProductUnit"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="@string/label_dummy_unit" />
 
-        <TextView
-            android:id="@+id/tv_product_unit"
-            style="@style/ArchivedCard.ProductUnit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@string/label_dummy_unit" />
+    <TextView
+      style="@style/ArchivedCard.Label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_small"
+      android:text="@string/label_removed_drug_from_stock" />
 
-        <TextView
-            style="@style/ArchivedCard.Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:text="@string/label_removed_drug_from_stock" />
+    <TextView
+      android:id="@+id/action_view_history"
+      style="@style/ArchivedCard.ViewHistory"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_small"
+      android:text="@string/label_view_movement_history" />
 
-        <TextView
-            android:id="@+id/action_view_history"
-            style="@style/ArchivedCard.ViewHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:text="@string/label_view_movement_history" />
-
-        <TextView
-            android:id="@+id/action_archive_back"
-            style="@style/ArchivedCard.ArchiveBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_add_drug_to_stock" />
-    </LinearLayout>
+    <TextView
+      android:id="@+id/action_archive_back"
+      style="@style/ArchivedCard.ArchiveBack"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/label_add_drug_to_stock" />
+  </LinearLayout>
 </androidx.cardview.widget.CardView>

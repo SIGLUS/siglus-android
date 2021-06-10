@@ -28,18 +28,18 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Build;
-import androidx.multidex.MultiDex;
 import android.text.TextUtils;
-
+import androidx.multidex.MultiDex;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
-
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import net.danlew.android.joda.JodaTimeAndroid;
-
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.AnalyticsTrackers;
 import org.openlmis.core.googleAnalytics.ScreenName;
@@ -54,166 +54,163 @@ import org.openlmis.core.network.NetworkSchedulerService;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
 import roboguice.RoboGuice;
 
-@SuppressWarnings({"squid:S2696","squid:S5803"})
+@SuppressWarnings({"squid:S2696", "squid:S5803"})
 public class LMISApp extends Application {
 
-    private static LMISApp instance;
+  private static LMISApp instance;
 
-    private static final int FACILITY_CUSTOM_DIMENSION_KEY = 1;
+  private static final int FACILITY_CUSTOM_DIMENSION_KEY = 1;
 
-    private static final int JOB_ID_NETWORK_CHANGE = 123;
+  private static final int JOB_ID_NETWORK_CHANGE = 123;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        if (!isRoboUniTest()) {
-            Stetho.initializeWithDefaults(this);
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    if (!isRoboUniTest()) {
+      Stetho.initializeWithDefaults(this);
+    }
+    JodaTimeAndroid.init(this);
+    RoboGuice.getInjector(this).injectMembersWithoutViews(this);
+    final SharedPreferenceMgr sharedPreferenceMgr = RoboGuice.getInjector(this)
+        .getInstance(SharedPreferenceMgr.class);
+    //fix: Reset the syncing flag on illegal exit during initialization
+    sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+
+    setupAppCenter();
+    setupGoogleAnalytics();
+
+    LMISApp.instance = this;
+    registerNetWorkChangeListener();
+  }
+
+  // Test case throw IO error
+  private boolean isRoboUniTest() {
+    return "robolectric".equals(Build.FINGERPRINT);
+  }
+
+  private void registerNetWorkChangeListener() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      startScheduleJob();
+    } else {
+      registerNetWorkListener();
+    }
+  }
+
+  @TargetApi(Build.VERSION_CODES.N)
+  private void startScheduleJob() {
+    JobInfo myJob = new JobInfo.Builder(JOB_ID_NETWORK_CHANGE,
+        new ComponentName(this, NetworkSchedulerService.class))
+        .setMinimumLatency(1000)
+        .setOverrideDeadline(2000)
+        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+        .setPersisted(true)
+        .build();
+
+    JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+    jobScheduler.schedule(myJob);
+  }
+
+  private void registerNetWorkListener() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+    NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver();
+    registerReceiver(networkChangeReceiver, filter);
+  }
+
+  protected void setupGoogleAnalytics() {
+    AnalyticsTrackers.initialize(this);
+  }
+
+  public static LMISApp getInstance() {
+    return instance;
+  }
+
+  private void setupAppCenter() {
+    AppCenter.start(this, getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
+    AppCenter.setEnabled(true);
+    Analytics.setEnabled(true);
+  }
+
+  public long getCurrentTimeMillis() {
+    return DateUtil.getCurrentDate().getTime();
+  }
+
+  public static Context getContext() {
+    return instance.getApplicationContext();
+  }
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    MovementReasonManager.getInstance().refresh();
+  }
+
+  public boolean getFeatureToggleFor(int id) {
+    return getResources().getBoolean(id);
+  }
+
+  public void logErrorToFirebase(LMISException exception) {
+    Analytics.isEnabled().thenAccept(enable -> {
+      final StackTraceElement[] traceElements = exception.getStackTrace();
+      if (enable != null && enable && (traceElements.length > 0)) {
+        Map<String, String> properties = new HashMap<>(traceElements.length);
+
+        for (int i = traceElements.length - 1; i >= 0; i--) {
+          properties.put(Integer.toString(i), traceElements[i].toString());
         }
-        JodaTimeAndroid.init(this);
-        RoboGuice.getInjector(this).injectMembersWithoutViews(this);
-        final SharedPreferenceMgr sharedPreferenceMgr = RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
-        //fix: Reset the syncing flag on illegal exit during initialization
-        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+        AppCenter.setUserId(UserInfoMgr.getInstance().getFacilityName());
+        Analytics.trackEvent(exception.getMsg(), properties);
+      }
+    });
+  }
 
-        setupAppCenter();
-        setupGoogleAnalytics();
+  public LMISRestApi getRestApi() {
+    return LMISRestManager.getInstance(this).getLmisRestApi();
+  }
 
-        LMISApp.instance = this;
-        registerNetWorkChangeListener();
-    }
+  public void trackScreen(ScreenName screenName) {
+    Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
+    mTracker.setScreenName(screenName.getName());
+    mTracker.send(new HitBuilders.ScreenViewBuilder()
+        .setCustomDimension(FACILITY_CUSTOM_DIMENSION_KEY, getFacilityNameForGA())
+        .build());
+  }
 
-    // Test case throw IO error
-    private boolean isRoboUniTest() {
-        return "robolectric".equals(Build.FINGERPRINT);
-    }
+  public void trackEvent(TrackerCategories category, TrackerActions action) {
+    Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
+    mTracker.send(new HitBuilders.EventBuilder(category.getString(), action.getString())
+        .setCustomDimension(FACILITY_CUSTOM_DIMENSION_KEY, getFacilityNameForGA())
+        .build());
+  }
 
-    private void registerNetWorkChangeListener() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            startScheduleJob();
-        } else {
-            registerNetWorkListener();
+  private String getFacilityNameForGA() {
+    String facilityName = UserInfoMgr.getInstance().getFacilityName();
+    return TextUtils.isEmpty(facilityName)
+        ? SharedPreferenceMgr.getInstance().getCurrentUserFacility() : facilityName;
+  }
+
+  public void wipeAppData() {
+    File cache = getCacheDir();
+    File appDir = new File(cache.getParent());
+    if (new File(getCacheDir().getParent()).exists()) {
+      for (String s : appDir.list()) {
+        if (!s.equals("lib")) {
+          FileUtil.deleteDir(new File(appDir, s));
         }
+      }
     }
+    android.os.Process.killProcess(android.os.Process.myPid());
+  }
 
-    @TargetApi(Build.VERSION_CODES.N)
-    private void startScheduleJob() {
-        JobInfo myJob = new JobInfo.Builder(JOB_ID_NETWORK_CHANGE, new ComponentName(this, NetworkSchedulerService.class))
-                .setMinimumLatency(1000)
-                .setOverrideDeadline(2000)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPersisted(true)
-                .build();
+  public boolean isQAEnabled() {
+    return SharedPreferenceMgr.getInstance().isQaDebugEnabled();
+  }
 
-        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.schedule(myJob);
-    }
-
-    private void registerNetWorkListener() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, filter);
-    }
-
-    protected void setupGoogleAnalytics() {
-        AnalyticsTrackers.initialize(this);
-    }
-
-    public static LMISApp getInstance() {
-        return instance;
-    }
-
-    private void setupAppCenter() {
-        AppCenter.start(this, getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
-        AppCenter.setEnabled(true);
-        Analytics.setEnabled(true);
-    }
-
-    public long getCurrentTimeMillis() {
-        return DateUtil.getCurrentDate().getTime();
-    }
-
-    public static Context getContext() {
-        return instance.getApplicationContext();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        MovementReasonManager.getInstance().refresh();
-    }
-
-    public boolean getFeatureToggleFor(int id) {
-        return getResources().getBoolean(id);
-    }
-
-    public void logErrorToFirebase(LMISException exception) {
-        Analytics.isEnabled().thenAccept(enable -> {
-            final StackTraceElement[] traceElements = exception.getStackTrace();
-            if (enable != null && enable && (traceElements.length > 0)) {
-                Map<String, String> properties = new HashMap<>(traceElements.length);
-
-                for (int i = traceElements.length - 1; i >= 0; i--) {
-                    properties.put(Integer.toString(i), traceElements[i].toString());
-                }
-                AppCenter.setUserId(UserInfoMgr.getInstance().getFacilityName());
-                Analytics.trackEvent(exception.getMsg(), properties);
-            }
-        });
-    }
-
-    public LMISRestApi getRestApi() {
-        return LMISRestManager.getInstance(this).getLmisRestApi();
-    }
-
-    public void trackScreen(ScreenName screenName) {
-        Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
-        mTracker.setScreenName(screenName.getName());
-        mTracker.send(new HitBuilders.ScreenViewBuilder()
-                .setCustomDimension(FACILITY_CUSTOM_DIMENSION_KEY, getFacilityNameForGA())
-                .build());
-    }
-
-    public void trackEvent(TrackerCategories category, TrackerActions action) {
-        Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
-        mTracker.send(new HitBuilders.EventBuilder(category.getString(), action.getString())
-                .setCustomDimension(FACILITY_CUSTOM_DIMENSION_KEY, getFacilityNameForGA())
-                .build());
-    }
-
-    private String getFacilityNameForGA() {
-        String facilityName = UserInfoMgr.getInstance().getFacilityName();
-        return TextUtils.isEmpty(facilityName)
-                ? SharedPreferenceMgr.getInstance().getCurrentUserFacility() : facilityName;
-    }
-
-    public void wipeAppData() {
-        File cache = getCacheDir();
-        File appDir = new File(cache.getParent());
-        if (new File(getCacheDir().getParent()).exists()) {
-            for (String s : appDir.list()) {
-                if (!s.equals("lib")) {
-                    FileUtil.deleteDir(new File(appDir, s));
-                }
-            }
-        }
-        android.os.Process.killProcess(android.os.Process.myPid());
-    }
-
-    public boolean isQAEnabled() {
-        return SharedPreferenceMgr.getInstance().isQaDebugEnabled();
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(base);
-    }
+  @Override
+  protected void attachBaseContext(Context base) {
+    super.attachBaseContext(base);
+    MultiDex.install(base);
+  }
 }

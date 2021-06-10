@@ -19,9 +19,11 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
-
 import com.google.inject.Inject;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
@@ -36,137 +38,140 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.helper.FormHelper;
 import org.openlmis.core.utils.Constants;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 public class PTVRepository extends RnrFormRepository {
 
-    @Inject
-    ProgramRepository programRepository;
+  @Inject
+  ProgramRepository programRepository;
 
-    @Inject
-    ProductRepository productRepository;
+  @Inject
+  ProductRepository productRepository;
 
-    @Inject
-    RegimenRepository regimenRepository;
+  @Inject
+  RegimenRepository regimenRepository;
 
-    @Inject
-    ServiceFormRepository serviceFormRepository;
+  @Inject
+  ServiceFormRepository serviceFormRepository;
 
-    @Inject
-    ProductProgramRepository productProgramRepository;
+  @Inject
+  ProductProgramRepository productProgramRepository;
 
-    @Inject
-    FormHelper formHelper;
+  @Inject
+  FormHelper formHelper;
 
-    @Inject
-    public PTVRepository(Context context) {
-        super(context);
-        programCode = Constants.PTV_PROGRAM_CODE;
+  @Inject
+  public PTVRepository(Context context) {
+    super(context);
+    programCode = Constants.PTV_PROGRAM_CODE;
+  }
+
+  @Override
+  public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
+      throws LMISException {
+    List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
+    return fillAllPTVProduct(form, rnrFormItems);
+  }
+
+  @Override
+  protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+    List<RegimenItem> regimenItems = new ArrayList<>();
+    List<String> regimenCodes = Arrays
+        .asList(Constants.PTV_REGIME_ADULT, Constants.PTV_REGIME_CHILD);
+    for (String regimenCode : regimenCodes) {
+      RegimenItem newRegimenItem = new RegimenItem();
+      Regimen regimen = regimenRepository.getByCode(regimenCode);
+      newRegimenItem.setRegimen(regimen);
+      newRegimenItem.setForm(form);
+      regimenItems.add(newRegimenItem);
     }
+    return regimenItems;
+  }
 
-    @Override
-    public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) throws LMISException {
-        List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
-        return fillAllPTVProduct(form, rnrFormItems);
+  @Override
+  protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate)
+      throws LMISException {
+    RnrFormItem rnrFormItem = new RnrFormItem();
+    List<StockMovementItem> stockMovementItems = stockMovementRepository
+        .queryStockItemsByCreatedDate(stockCard.getId(), startDate, endDate);
+
+    if (stockMovementItems.isEmpty()) {
+      rnrFormItem.setReceived(0);
+      rnrFormItem.setIssued((long) 0);
+    } else {
+      FormHelper.StockMovementModifiedItem modifiedItem = formHelper
+          .assignTotalValues(stockMovementItems);
+      rnrFormItem.setReceived(modifiedItem.getTotalReceived());
+      rnrFormItem.setIssued(modifiedItem.getTotalIssued());
     }
+    rnrFormItem.setProduct(stockCard.getProduct());
+    return rnrFormItem;
+  }
 
-    @Override
-    protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
-        List<RegimenItem> regimenItems = new ArrayList<>();
-        List<String> regimenCodes = Arrays.asList(Constants.PTV_REGIME_ADULT, Constants.PTV_REGIME_CHILD);
-        for (String regimenCode: regimenCodes) {
-            RegimenItem newRegimenItem = new RegimenItem();
-            Regimen regimen = regimenRepository.getByCode(regimenCode);
-            newRegimenItem.setRegimen(regimen);
-            newRegimenItem.setForm(form);
-            regimenItems.add(newRegimenItem);
-        }
-        return regimenItems;
+  protected ArrayList<RnrFormItem> fillAllPTVProduct(RnRForm form, List<RnrFormItem> rnrFormItems)
+      throws LMISException {
+    List<Product> products;
+    List<String> programCodes = Arrays.asList(Constants.PTV_PROGRAM_CODE);
+    List<Long> productIds = productProgramRepository
+        .queryActiveProductIdsByProgramsWithKits(programCodes, false);
+    products = productRepository.queryProductsByProductIds(productIds);
+    Program program = programRepository.queryByCode(Constants.PTV_PROGRAM_CODE);
+    List<Service> services = serviceFormRepository.listAllActiveWithProgram(program);
+    ArrayList<RnrFormItem> result = new ArrayList<>();
+
+    for (Product product : products) {
+      RnrFormItem rnrFormItem = new RnrFormItem();
+      rnrFormItem.setForm(form);
+      rnrFormItem.setProduct(product);
+      RnrFormItem stockFormItem = getStockCardRnr(product, rnrFormItems);
+      if (stockFormItem != null) {
+        rnrFormItem = stockFormItem;
+      } else {
+        rnrFormItem.setReceived(0);
+        rnrFormItem.setIssued((long) 0);
+      }
+      Long lastInventory = getLastRnrInventory(product);
+      rnrFormItem.setIsCustomAmount(lastInventory == null);
+      rnrFormItem.setInitialAmount(lastInventory);
+      rnrFormItem.setRequestAmount((long) 0);
+      rnrFormItem.setApprovedAmount((long) 0);
+      rnrFormItem.setServiceItemListWrapper(getServiceItem(rnrFormItem, services));
+      result.add(rnrFormItem);
     }
+    return result;
+  }
 
-    @Override
-    protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
-        RnrFormItem rnrFormItem = new RnrFormItem();
-        List<StockMovementItem> stockMovementItems = stockMovementRepository.queryStockItemsByCreatedDate(stockCard.getId(), startDate, endDate);
 
-        if (stockMovementItems.isEmpty()) {
-            rnrFormItem.setReceived(0);
-            rnrFormItem.setIssued((long) 0);
-        } else {
-            FormHelper.StockMovementModifiedItem modifiedItem =  formHelper.assignTotalValues(stockMovementItems);
-            rnrFormItem.setReceived(modifiedItem.getTotalReceived());
-            rnrFormItem.setIssued(modifiedItem.getTotalIssued());
-        }
-        rnrFormItem.setProduct(stockCard.getProduct());
-        return rnrFormItem;
+  private Long getLastRnrInventory(Product product) throws LMISException {
+    List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.No, programCode);
+    if (rnRForms.isEmpty() || rnRForms.size() == 1) {
+      return null;
     }
-
-    protected ArrayList<RnrFormItem> fillAllPTVProduct(RnRForm form, List<RnrFormItem> rnrFormItems) throws LMISException {
-        List<Product> products;
-        List<String> programCodes = Arrays.asList(Constants.PTV_PROGRAM_CODE);
-        List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
-        products = productRepository.queryProductsByProductIds(productIds);
-        Program program = programRepository.queryByCode(Constants.PTV_PROGRAM_CODE);
-        List<Service> services = serviceFormRepository.listAllActiveWithProgram(program);
-        ArrayList<RnrFormItem> result = new ArrayList<>();
-
-        for (Product product : products) {
-            RnrFormItem rnrFormItem = new RnrFormItem();
-            rnrFormItem.setForm(form);
-            rnrFormItem.setProduct(product);
-            RnrFormItem stockFormItem = getStockCardRnr(product, rnrFormItems);
-            if (stockFormItem != null) {
-                rnrFormItem = stockFormItem;
-            } else {
-                rnrFormItem.setReceived(0);
-                rnrFormItem.setIssued((long) 0);
-            }
-            Long lastInventory = getLastRnrInventory(product);
-            rnrFormItem.setIsCustomAmount(lastInventory == null);
-            rnrFormItem.setInitialAmount(lastInventory);
-            rnrFormItem.setRequestAmount((long) 0);
-            rnrFormItem.setApprovedAmount((long) 0);
-            rnrFormItem.setServiceItemListWrapper(getServiceItem(rnrFormItem, services));
-            result.add(rnrFormItem);
-        }
-        return result;
+    List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2)
+        .getRnrFormItemListWrapper();
+    for (RnrFormItem item : rnrFormItemListWrapper) {
+      if (item.getProduct().getId() == product.getId()) {
+        return item.getInventory();
+      }
     }
+    return null;
+  }
 
-
-    private Long getLastRnrInventory(Product product) throws LMISException {
-        List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.No, programCode);
-        if (rnRForms.isEmpty() || rnRForms.size() == 1) {
-            return null;
-        }
-        List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
-        for (RnrFormItem item : rnrFormItemListWrapper) {
-            if (item.getProduct().getId() == product.getId()) {
-                return item.getInventory();
-            }
-        }
-        return null;
+  private List<ServiceItem> getServiceItem(RnrFormItem rnrFormItem, List<Service> services) {
+    List<ServiceItem> serviceItems = new ArrayList<>();
+    for (Service service : services) {
+      ServiceItem serviceItem = new ServiceItem();
+      serviceItem.setService(service);
+      serviceItem.setFormItem(rnrFormItem);
+      serviceItems.add(serviceItem);
     }
+    return serviceItems;
+  }
 
-    private List<ServiceItem> getServiceItem(RnrFormItem rnrFormItem, List<Service> services) {
-        List<ServiceItem> serviceItems = new ArrayList<>();
-        for (Service service : services) {
-            ServiceItem serviceItem = new ServiceItem();
-            serviceItem.setService(service);
-            serviceItem.setFormItem(rnrFormItem);
-            serviceItems.add(serviceItem);
-        }
-        return serviceItems;
+  private RnrFormItem getStockCardRnr(Product product, List<RnrFormItem> rnrStockFormItems) {
+    for (RnrFormItem item : rnrStockFormItems) {
+      if (item.getProduct().getId() == product.getId()) {
+        return item;
+      }
     }
-
-    private RnrFormItem getStockCardRnr(Product product, List<RnrFormItem> rnrStockFormItems) {
-        for (RnrFormItem item : rnrStockFormItems) {
-            if (item.getProduct().getId() == product.getId()) {
-                return  item;
-            }
-        }
-        return null;
-    }
+    return null;
+  }
 }

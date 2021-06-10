@@ -21,46 +21,45 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
-
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_stock_movement_history)
 public class StockMovementHistoryActivity extends BaseActivity {
 
-    private boolean isKit;
+  private boolean isKit;
 
-    @Override
-    protected ScreenName getScreenName() {
-        return ScreenName.STOCK_CARD_MOVEMENT_HISTORY_SCREEN;
+  @Override
+  protected ScreenName getScreenName() {
+    return ScreenName.STOCK_CARD_MOVEMENT_HISTORY_SCREEN;
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
+    super.onCreate(savedInstanceState);
+    setTitle(getIntent().getStringExtra(Constants.PARAM_STOCK_NAME));
+
+    if (getIntent().getBooleanExtra(Constants.PARAM_IS_FROM_ARCHIVE, false)
+        && getSupportActionBar() != null) {
+      getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white);
     }
+  }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
-        super.onCreate(savedInstanceState);
-        setTitle(getIntent().getStringExtra(Constants.PARAM_STOCK_NAME));
+  @Override
+  protected int getThemeRes() {
+    return isKit ? R.style.AppTheme_TEAL : super.getThemeRes();
+  }
 
-        if (getIntent().getBooleanExtra(Constants.PARAM_IS_FROM_ARCHIVE, false) && getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white);
-        }
-    }
-
-    @Override
-    protected int getThemeRes() {
-        return isKit ? R.style.AppTheme_TEAL : super.getThemeRes();
-    }
-
-    public static Intent getIntentToMe(Context context, long stockCardId, String stockName,
-                                       boolean isFromArchive, boolean isKit) {
-        Intent intent = new Intent(context, StockMovementHistoryActivity.class);
-        intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);
-        intent.putExtra(Constants.PARAM_STOCK_NAME, stockName);
-        intent.putExtra(Constants.PARAM_IS_FROM_ARCHIVE, isFromArchive);
-        intent.putExtra(Constants.PARAM_IS_KIT, isKit);
-        return intent;
-    }
+  public static Intent getIntentToMe(Context context, long stockCardId, String stockName,
+      boolean isFromArchive, boolean isKit) {
+    Intent intent = new Intent(context, StockMovementHistoryActivity.class);
+    intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);
+    intent.putExtra(Constants.PARAM_STOCK_NAME, stockName);
+    intent.putExtra(Constants.PARAM_IS_FROM_ARCHIVE, isFromArchive);
+    intent.putExtra(Constants.PARAM_IS_KIT, isKit);
+    return intent;
+  }
 }

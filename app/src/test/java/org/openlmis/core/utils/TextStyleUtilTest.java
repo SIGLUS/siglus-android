@@ -18,28 +18,30 @@
 
 package org.openlmis.core.utils;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
 @RunWith(LMISTestRunner.class)
 public class TextStyleUtilTest {
-    @Test
-    public void shouldColorString() throws Exception {
-        String queryKeyWord = "querykeyword";
-        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(queryKeyWord);
 
-        SpannableStringBuilder colorString = TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stringBuilder);
+  @Test
+  public void shouldColorString() throws Exception {
+    String queryKeyWord = "querykeyword";
+    SpannableStringBuilder stringBuilder = new SpannableStringBuilder(queryKeyWord);
 
-        assertThat(colorString.getSpans(0, queryKeyWord.length(), ForegroundColorSpan.class)[0].getForegroundColor(),
-                   is(LMISApp.getContext().getResources().getColor(R.color.color_accent)));
-    }
+    SpannableStringBuilder colorString = TextStyleUtil
+        .getHighlightQueryKeyWord(queryKeyWord, stringBuilder);
+
+    assertThat(colorString.getSpans(0, queryKeyWord.length(), ForegroundColorSpan.class)[0]
+            .getForegroundColor(),
+        is(LMISApp.getContext().getResources().getColor(R.color.color_accent)));
+  }
 }

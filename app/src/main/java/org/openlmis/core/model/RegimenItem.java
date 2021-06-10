@@ -22,39 +22,38 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @DatabaseTable(tableName = "regime_items")
-public class RegimenItem extends BaseModel{
+public class RegimenItem extends BaseModel {
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private RnRForm form;
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private RnRForm form;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private Regimen regimen;
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private Regimen regimen;
 
-    @Expose
-    @SerializedName("patientsOnTreatment")
-    @DatabaseField
-    private Long amount;
+  @Expose
+  @SerializedName("patientsOnTreatment")
+  @DatabaseField
+  private Long amount;
 
-    @Expose
-    @SerializedName("hf")
-    @DatabaseField
-    private Long hf;
+  @Expose
+  @SerializedName("hf")
+  @DatabaseField
+  private Long hf;
 
-    @Expose
-    @SerializedName("chw")
-    @DatabaseField
-    private Long chw;
+  @Expose
+  @SerializedName("chw")
+  @DatabaseField
+  private Long chw;
 
-    @Expose
-    @SerializedName("comunitaryPharmacy")
-    @DatabaseField
-    private Long pharmacy;
+  @Expose
+  @SerializedName("comunitaryPharmacy")
+  @DatabaseField
+  private Long pharmacy;
 
 }

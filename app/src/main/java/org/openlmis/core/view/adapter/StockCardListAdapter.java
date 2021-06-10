@@ -22,71 +22,70 @@ package org.openlmis.core.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHolder> {
 
-    protected StockCardViewHolder.OnItemViewClickListener listener;
+  protected StockCardViewHolder.OnItemViewClickListener listener;
 
-    public StockCardListAdapter(List<InventoryViewModel> inventoryViewModel, StockCardViewHolder.OnItemViewClickListener listener) {
-        super(inventoryViewModel);
-        this.listener = listener;
-    }
+  public StockCardListAdapter(List<InventoryViewModel> inventoryViewModel,
+      StockCardViewHolder.OnItemViewClickListener listener) {
+    super(inventoryViewModel);
+    this.listener = listener;
+  }
 
-    @Override
-    public StockCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_stockcard, parent, false);
+  @Override
+  public StockCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    View view = LayoutInflater.from(parent.getContext())
+        .inflate(R.layout.item_stockcard, parent, false);
 
-        return createViewHolder(view);
-    }
+    return createViewHolder(view);
+  }
 
-    @Override
-    public void onBindViewHolder(StockCardViewHolder holder, final int position) {
-        final InventoryViewModel inventoryViewModel = filteredList.get(position);
-        holder.populate(inventoryViewModel, queryKeyWord);
-    }
+  @Override
+  public void onBindViewHolder(StockCardViewHolder holder, final int position) {
+    final InventoryViewModel inventoryViewModel = filteredList.get(position);
+    holder.populate(inventoryViewModel, queryKeyWord);
+  }
 
-    public void sortBySOH(final boolean asc) {
+  public void sortBySOH(final boolean asc) {
 
-        Comparator<InventoryViewModel> stockCardComparator = (lhs, rhs) -> {
-            if (asc) {
-                return (int) (lhs.getStockOnHand() - rhs.getStockOnHand());
-            } else {
-                return (int) (rhs.getStockOnHand() - lhs.getStockOnHand());
-            }
-        };
+    Comparator<InventoryViewModel> stockCardComparator = (lhs, rhs) -> {
+      if (asc) {
+        return (int) (lhs.getStockOnHand() - rhs.getStockOnHand());
+      } else {
+        return (int) (rhs.getStockOnHand() - lhs.getStockOnHand());
+      }
+    };
 
-        Collections.sort(filteredList, stockCardComparator);
-        Collections.sort(data, stockCardComparator);
+    Collections.sort(filteredList, stockCardComparator);
+    Collections.sort(data, stockCardComparator);
 
-        this.notifyDataSetChanged();
-    }
+    this.notifyDataSetChanged();
+  }
 
-    public void sortByName(final boolean asc) {
+  public void sortByName(final boolean asc) {
 
-        Comparator<InventoryViewModel> stockCardComparator = (lhs, rhs) -> {
-            if (asc) {
-                return lhs.getProduct().getPrimaryName().compareTo(rhs.getProduct().getPrimaryName());
-            } else {
-                return rhs.getProduct().getPrimaryName().compareTo(lhs.getProduct().getPrimaryName());
-            }
-        };
+    Comparator<InventoryViewModel> stockCardComparator = (lhs, rhs) -> {
+      if (asc) {
+        return lhs.getProduct().getPrimaryName().compareTo(rhs.getProduct().getPrimaryName());
+      } else {
+        return rhs.getProduct().getPrimaryName().compareTo(lhs.getProduct().getPrimaryName());
+      }
+    };
 
-        Collections.sort(filteredList, stockCardComparator);
-        Collections.sort(data, stockCardComparator);
+    Collections.sort(filteredList, stockCardComparator);
+    Collections.sort(data, stockCardComparator);
 
-        this.notifyDataSetChanged();
-    }
+    this.notifyDataSetChanged();
+  }
 
-    protected StockCardViewHolder createViewHolder(View view) {
-        return new StockCardViewHolder(view, listener);
-    }
+  protected StockCardViewHolder createViewHolder(View view) {
+    return new StockCardViewHolder(view, listener);
+  }
 }

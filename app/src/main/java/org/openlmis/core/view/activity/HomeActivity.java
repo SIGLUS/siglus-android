@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.activity;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -42,10 +44,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
-
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -69,476 +76,489 @@ import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
-
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
 @ContentView(R.layout.activity_home_page)
 public class HomeActivity extends BaseActivity implements HomePresenter.HomeView {
 
-    private static final String EXPORT_DATA_PARENT_DIR = "//data//";
+  private static final String EXPORT_DATA_PARENT_DIR = "//data//";
 
-    @InjectView(R.id.btn_stock_card)
-    Button btnStockCard;
+  @InjectView(R.id.btn_stock_card)
+  Button btnStockCard;
 
-    @InjectView(R.id.btn_inventory)
-    Button btnInventory;
+  @InjectView(R.id.btn_inventory)
+  Button btnInventory;
 
-    IncompleteRequisitionBanner incompleteRequisitionBanner;
+  IncompleteRequisitionBanner incompleteRequisitionBanner;
 
-    SyncTimeView syncTimeView;
+  SyncTimeView syncTimeView;
 
-    @InjectView(R.id.btn_mmia_list)
-    Button btnMMIAList;
+  @InjectView(R.id.btn_mmia_list)
+  Button btnMMIAList;
 
-    @InjectView(R.id.btn_via_list)
-    Button btnVIAList;
+  @InjectView(R.id.btn_via_list)
+  Button btnVIAList;
 
-    @InjectView(R.id.btn_kit_stock_card)
-    Button btnKitStockCard;
+  @InjectView(R.id.btn_kit_stock_card)
+  Button btnKitStockCard;
 
-    @InjectView(R.id.btn_rapid_test)
-    Button btnRapidTestReport;
+  @InjectView(R.id.btn_rapid_test)
+  Button btnRapidTestReport;
 
-    @InjectView(R.id.btn_ptv_card)
-    Button btnPTVReport;
+  @InjectView(R.id.btn_ptv_card)
+  Button btnPTVReport;
 
-    @InjectView(R.id.btn_al)
-    Button btnALReport;
+  @InjectView(R.id.btn_al)
+  Button btnALReport;
 
-    @InjectView(R.id.rl_al)
-    RelativeLayout viewAl;
+  @InjectView(R.id.rl_al)
+  RelativeLayout viewAl;
 
-    @InjectView(R.id.dv_product_dashboard)
-    DashboardView dvProductDashboard;
+  @InjectView(R.id.dv_product_dashboard)
+  DashboardView dvProductDashboard;
 
-    @InjectResource(R.integer.back_twice_interval)
-    private int backTwiceInterval;
+  @InjectResource(R.integer.back_twice_interval)
+  private int backTwiceInterval;
 
-    @Inject
-    SyncService syncService;
-    @Inject
-    SharedPreferenceMgr sharedPreferenceMgr;
-    @Inject
-    DirtyDataManager dirtyDataManager;
+  @Inject
+  SyncService syncService;
+  @Inject
+  SharedPreferenceMgr sharedPreferenceMgr;
+  @Inject
+  DirtyDataManager dirtyDataManager;
 
-    @InjectPresenter(HomePresenter.class)
-    private HomePresenter homePresenter;
+  @InjectPresenter(HomePresenter.class)
+  private HomePresenter homePresenter;
 
-    private boolean exitPressedOnce = false;
+  private boolean exitPressedOnce = false;
 
-    private static final int PERMISSION_REQUEST_CODE = 200;
+  private static final int PERMISSION_REQUEST_CODE = 200;
 
+  @Override
+  protected ScreenName getScreenName() {
+    return ScreenName.HOME_SCREEN;
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    if (UserInfoMgr.getInstance().getUser() == null) {
+      // In case some users use some unknown way entered here!!!
+      logout();
+      finish();
+    } else {
+      setTitle(UserInfoMgr.getInstance().getFacilityName());
+      syncTimeView = findViewById(R.id.view_sync_time);
+      incompleteRequisitionBanner = findViewById(
+          R.id.view_incomplete_requisition_banner);
+      if (getSupportActionBar() != null) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+      }
+    }
+    registerSyncStartReceiver();
+    registerSyncFinishedReceiver();
+    registerErrorFinishedReceiver();
+
+    if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rapid_test)) {
+      btnRapidTestReport.setVisibility(View.GONE);
+    }
+
+    updateButtonConfigView();
+  }
+
+  private void registerSyncStartReceiver() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(Constants.INTENT_FILTER_START_SYNC_DATA);
+    LocalBroadcastManager.getInstance(this).registerReceiver(syncStartReceiver, filter);
+  }
+
+  private void registerSyncFinishedReceiver() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+    LocalBroadcastManager.getInstance(this).registerReceiver(syncFinishedReceiver, filter);
+  }
+
+  private void registerErrorFinishedReceiver() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
+    LocalBroadcastManager.getInstance(this).registerReceiver(syncErrorReceiver, filter);
+  }
+
+  @Override
+  protected int getThemeRes() {
+    return R.style.AppTheme_Gray;
+  }
+
+  BroadcastReceiver syncStartReceiver = new BroadcastReceiver() {
     @Override
-    protected ScreenName getScreenName() {
-        return ScreenName.HOME_SCREEN;
+    public void onReceive(Context context, Intent intent) {
+      syncTimeView.showSyncProgressBarAndHideIcon();
     }
+  };
 
+  BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (UserInfoMgr.getInstance().getUser() == null) {
-            // In case some users use some unknown way entered here!!!
-            logout();
-            finish();
-        } else {
-            setTitle(UserInfoMgr.getInstance().getFacilityName());
-            syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
-            incompleteRequisitionBanner = (IncompleteRequisitionBanner) findViewById(R.id.view_incomplete_requisition_banner);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-        }
-        registerSyncStartReceiver();
-        registerSyncFinishedReceiver();
-        registerErrorFinishedReceiver();
-
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rapid_test)) {
-            btnRapidTestReport.setVisibility(View.GONE);
-        }
-
-        updateButtonConfigView();
+    public void onReceive(Context context, Intent intent) {
+      setSyncedTime();
+      refreshDashboard();
     }
+  };
 
-    private void registerSyncStartReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-        LocalBroadcastManager.getInstance(this).registerReceiver(syncStartReceiver, filter);
-    }
-
-    private void registerSyncFinishedReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-        LocalBroadcastManager.getInstance(this).registerReceiver(syncFinishedReceiver, filter);
-    }
-
-    private void registerErrorFinishedReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-        LocalBroadcastManager.getInstance(this).registerReceiver(syncErrorReceiver, filter);
-    }
-
+  BroadcastReceiver syncErrorReceiver = new BroadcastReceiver() {
     @Override
-    protected int getThemeRes() {
-        return R.style.AppTheme_Gray;
+    public void onReceive(Context context, Intent intent) {
+      String msg = intent.getStringExtra(Constants.SYNC_MOVEMENT_ERROR);
+      if (msg != null) {
+        syncTimeView.setSyncedMovementError(msg);
+      } else {
+        syncTimeView.setSyncStockCardLastYearError();
+      }
+    }
+  };
+
+  @Override
+  protected void onDestroy() {
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncStartReceiver);
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncFinishedReceiver);
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncErrorReceiver);
+    super.onDestroy();
+  }
+
+  private void updateButtonConfigView() {
+    List<ReportTypeForm> reportTypes = sharedPreferenceMgr.getReportTypesData();
+    List<Pair<String, Button>> buttonConfigs = Arrays
+        .asList(new Pair<>(Constants.VIA_REPORT, btnVIAList),
+            new Pair<>(Constants.MMIA_REPORT, btnMMIAList),
+            new Pair<>(Constants.AL_REPORT, btnALReport),
+            new Pair<>(Constants.PTV_REPORT, btnPTVReport),
+            new Pair<>(Constants.RAPID_REPORT, btnRapidTestReport));
+    for (Pair<String, Button> buttonConfig : buttonConfigs) {
+      ReportTypeForm reportType = getReportType(buttonConfig.first, reportTypes);
+      Button button = buttonConfig.second;
+      if (button != btnALReport) {
+        button.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
+      } else {
+        viewAl.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
+      }
     }
 
-    BroadcastReceiver syncStartReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            syncTimeView.showSyncProgressBarAndHideIcon();
-        }
-    };
+    if (btnPTVReport.getVisibility() == View.VISIBLE
+        || btnMMIAList.getVisibility() == View.VISIBLE) {
+      ReportTypeForm ptv = getReportType(Constants.PTV_REPORT, reportTypes);
+      ReportTypeForm mmia = getReportType(Constants.MMIA_REPORT, reportTypes);
+      btnPTVReport.setVisibility((ptv == null || !ptv.active) ? View.GONE : View.VISIBLE);
+      btnMMIAList.setVisibility(mmia == null || !mmia.active ? View.GONE : View.VISIBLE);
+    }
+  }
 
-    BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            setSyncedTime();
-            refreshDashboard();
-        }
-    };
+  private ReportTypeForm getReportType(String code, List<ReportTypeForm> reportTypes) {
+    for (ReportTypeForm typeForm : reportTypes) {
+      if (typeForm.getCode().equalsIgnoreCase(code)) {
+        return typeForm;
+      }
+    }
+    return null;
+  }
 
-    BroadcastReceiver syncErrorReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String msg = intent.getStringExtra(Constants.SYNC_MOVEMENT_ERROR);
-            if (msg != null) {
-                syncTimeView.setSyncedMovementError(msg);
-            } else {
-                syncTimeView.setSyncStockCardLastYearError();
-            }
-        }
-    };
 
-    @Override
-    protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncStartReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncFinishedReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(syncErrorReceiver);
-        super.onDestroy();
+  public void onClickStockCard(View view) {
+    if (!isHaveDirtyData()) {
+      startActivity(StockCardListActivity.class);
+    }
+  }
+
+  public void onClickKitStockCard(View view) {
+    if (!isHaveDirtyData()) {
+      startActivity(KitStockCardListActivity.class);
+    }
+  }
+
+  public void onClickInventory(View view) {
+    if (!isHaveDirtyData()) {
+      Intent intent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
+      startActivity(intent);
+    }
+  }
+
+  public void onClickRapidTestHistory(View view) {
+    if (!isHaveDirtyData()) {
+      Intent intent = new Intent(this, RapidTestReportsActivity.class);
+      startActivity(intent);
+    }
+  }
+
+  public void onClickAL(View view) {
+    if (!isHaveDirtyData()) {
+      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.AL_PROGRAM));
+      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_AL, Constants.AL_PROGRAM_CODE);
+    }
+  }
+
+  public void syncData() {
+    Log.d("HomeActivity", "requesting immediate sync");
+    syncService.requestSyncImmediatelyFromUserTrigger();
+  }
+
+  public void onClickMMIAHistory(View view) {
+    if (!isHaveDirtyData()) {
+      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.MMIA_PROGRAM));
+      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_MMIA, Constants.MMIA_PROGRAM_CODE);
+    }
+  }
+
+  public void onClickVIAHistory(View view) {
+    if (!isHaveDirtyData()) {
+      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.VIA_PROGRAM));
+      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_VIA, Constants.VIA_PROGRAM_CODE);
+    }
+  }
+
+  public void onClickPtvStockCard(View view) {
+    if (!isHaveDirtyData()) {
+      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.PTV_PROGRAM));
+      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_PTV, Constants.PTV_PROGRAM_CODE);
+    }
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      incompleteRequisitionBanner.setIncompleteRequisitionBanner();
+    } else {
+      incompleteRequisitionBanner.setVisibility(View.GONE);
+    }
+    if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
+      syncTimeView.setSyncStockCardLastYearError();
+    } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+      syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
+    } else {
+      setSyncedTime();
     }
 
-    private void updateButtonConfigView() {
-        List<ReportTypeForm> reportTypes = sharedPreferenceMgr.getReportTypesData();
-        List<Pair<String, Button>> buttonConfigs = Arrays.asList(new Pair<>(Constants.VIA_REPORT, btnVIAList),
-                new Pair<>(Constants.MMIA_REPORT, btnMMIAList),
-                new Pair<>(Constants.AL_REPORT, btnALReport),
-                new Pair<>(Constants.PTV_REPORT, btnPTVReport),
-                new Pair<>(Constants.RAPID_REPORT, btnRapidTestReport));
-        for (Pair<String, Button> buttonConfig : buttonConfigs) {
-            ReportTypeForm reportType = getReportType(buttonConfig.first, reportTypes);
-            Button button = buttonConfig.second;
-            if (button != btnALReport) {
-                button.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
-            } else {
-                viewAl.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
-            }
-        }
+    dirtyDataManager.dirtyDataMonthlyCheck();
+    isHaveDirtyData();
 
-        if (btnPTVReport.getVisibility() == View.VISIBLE || btnMMIAList.getVisibility() == View.VISIBLE) {
-            ReportTypeForm ptv = getReportType(Constants.PTV_REPORT, reportTypes);
-            ReportTypeForm mmia = getReportType(Constants.MMIA_REPORT, reportTypes);
-            btnPTVReport.setVisibility((ptv == null || !ptv.active) ? View.GONE : View.VISIBLE);
-            btnMMIAList.setVisibility(mmia == null || !mmia.active ? View.GONE : View.VISIBLE);
-        }
+    refreshDashboard();
+  }
+
+  protected void setSyncedTime() {
+    if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
+        .isSyncingLastYearStockCards()) {
+      syncTimeView.showLastSyncTime();
+      updateButtonConfigView();
+    } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+      syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
+    } else {
+      syncTimeView.setSyncStockCardLastYearText();
     }
+  }
 
-    private ReportTypeForm getReportType(String code, List<ReportTypeForm> reportTypes) {
-        for (ReportTypeForm typeForm : reportTypes) {
-            if (typeForm.getCode().equalsIgnoreCase(code)) {
-                return typeForm;
-            }
-        }
-        return null;
+  @Override
+  public void onBackPressed() {
+    if (exitPressedOnce) {
+      moveTaskToBack(true);
+    } else {
+      ToastUtil.show(R.string.msg_back_twice_to_exit);
+      new Handler().postDelayed(() -> exitPressedOnce = false, backTwiceInterval);
     }
+    exitPressedOnce = !exitPressedOnce;
+  }
 
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    super.onCreateOptionsMenu(menu);
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu_home, menu);
+    return true;
+  }
 
-    public void onClickStockCard(View view) {
-        if (!isHaveDirtyData()) {
-            startActivity(StockCardListActivity.class);
-        }
-    }
-
-    public void onClickKitStockCard(View view) {
-        if (!isHaveDirtyData()) {
-            startActivity(KitStockCardListActivity.class);
-        }
-    }
-
-    public void onClickInventory(View view) {
-        if (!isHaveDirtyData()) {
-            Intent intent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    public void onClickRapidTestHistory(View view) {
-        if (!isHaveDirtyData()) {
-            Intent intent = new Intent(this, RapidTestReportsActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    public void onClickAL(View view) {
-        if (!isHaveDirtyData()) {
-            startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.AL_PROGRAM));
-            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_AL, Constants.AL_PROGRAM_CODE);
-        }
-    }
-
-    public void syncData() {
-        Log.d("HomeActivity", "requesting immediate sync");
-        syncService.requestSyncImmediatelyFromUserTrigger();
-    }
-
-    public void onClickMMIAHistory(View view) {
-        if (!isHaveDirtyData()) {
-            startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.MMIA_PROGRAM));
-            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_MMIA, Constants.MMIA_PROGRAM_CODE);
-        }
-    }
-
-    public void onClickVIAHistory(View view) {
-        if (!isHaveDirtyData()) {
-            startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.VIA_PROGRAM));
-            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_VIA, Constants.VIA_PROGRAM_CODE);
-        }
-    }
-
-    public void onClickPtvStockCard(View view) {
-        if (!isHaveDirtyData()) {
-            startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.PTV_PROGRAM));
-            TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_PTV, Constants.PTV_PROGRAM_CODE);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            incompleteRequisitionBanner.setIncompleteRequisitionBanner();
-        } else {
-            incompleteRequisitionBanner.setVisibility(View.GONE);
-        }
-        if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
-            syncTimeView.setSyncStockCardLastYearError();
-        } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-            syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
-        } else {
-            setSyncedTime();
-        }
-
-        dirtyDataManager.dirtyDataMonthlyCheck();
-        isHaveDirtyData();
-
-        refreshDashboard();
-    }
-
-    protected void setSyncedTime() {
-        if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
-            syncTimeView.showLastSyncTime();
-            updateButtonConfigView();
-        } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-            syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
-        } else {
-            syncTimeView.setSyncStockCardLastYearText();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (exitPressedOnce) {
-            moveTaskToBack(true);
-        } else {
-            ToastUtil.show(R.string.msg_back_twice_to_exit);
-            new Handler().postDelayed(() -> exitPressedOnce = false, backTwiceInterval);
-        }
-        exitPressedOnce = !exitPressedOnce;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_home, menu);
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.action_sign_out:
+        startActivity(LoginActivity.class);
+        finish();
         return true;
+      case R.id.action_sync_data:
+        syncData();
+        return true;
+      case R.id.action_wipe_data:
+        alertWipeData();
+        return true;
+      case R.id.action_export_db:
+        exportDB();
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
     }
+  }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_sign_out:
-                startActivity(LoginActivity.class);
-                finish();
-                return true;
-            case R.id.action_sync_data:
-                syncData();
-                return true;
-            case R.id.action_wipe_data:
-                alertWipeData();
-                return true;
-            case R.id.action_export_db:
-                exportDB();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+  private void exportDB() {
+    int permissionCheck = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
+    if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+      exportDBHavePermission();
+    } else {
+      if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("get permssion");
+        alertBuilder.setMessage("storage permssion");
+        alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+          @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+          public void onClick(DialogInterface dialog, int which) {
+            ActivityCompat
+                .requestPermissions(HomeActivity.this, new String[]{WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_CODE);
+          }
+        });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+        Log.e("", "permission denied, show dialog");
+      } else {
+        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE},
+            PERMISSION_REQUEST_CODE);
+      }
     }
+  }
 
-    private void exportDB() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            exportDBHavePermission();
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("get permssion");
-                alertBuilder.setMessage("storage permssion");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(HomeActivity.this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-                    }
-                });
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-                Log.e("", "permission denied, show dialog");
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-            }
-        }
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+      @NonNull int[] grantResults) {
+    if (requestCode != PERMISSION_REQUEST_CODE) {
+      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+      return;
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode != PERMISSION_REQUEST_CODE) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            return;
-        }
-        if (permissions.length <= 0 || grantResults.length <= 0) {
-            finish();
-            return;
-        }
-        boolean flag = true;
-        for (int grantResult : grantResults) {
-            if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                flag = false;
-                break;
-            }
-        }
-        if (flag) {
-            exportDBHavePermission();
-        } else {
-            finish();
-        }
+    if (permissions.length <= 0 || grantResults.length <= 0) {
+      finish();
+      return;
     }
-
-    private void exportDBHavePermission() {
-        File currentDB = new File(Environment.getDataDirectory(), EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
-        File currentXML = new File(Environment.getDataDirectory(), EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName() + "//shared_prefs//LMISPreference.xml");
-        File tempBackup = new File(Environment.getDataDirectory(), EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_copy");
-        File currentXMLBackup = new File(Environment.getDataDirectory(), EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName() + "//shared_prefs//LMISPreferenceBackup.xml");
-        File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
-        File xmlExternalBackup = new File(Environment.getExternalStorageDirectory(), "LMISPreferenceBackup.xml");
-        try {
-            FileUtil.copy(currentDB, tempBackup);
-            FileUtil.copy(currentXML, currentXMLBackup);
-            ExportSqliteOpenHelper.removePrivateUserInfo(this);
-            FileUtil.copy(tempBackup, externalBackup);
-            FileUtil.copy(currentXMLBackup, xmlExternalBackup);
-            ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
-        } catch (Exception e) {
-            new LMISException(e, "HomeActivity.exportDB").reportToFabric();
-            ToastUtil.show(e.getMessage());
-        } finally {
-            if (tempBackup.canRead()) {
-                FileUtil.deleteDir(tempBackup);
-            }
-            if (currentXMLBackup.canRead()) {
-                FileUtil.deleteDir(currentXMLBackup);
-            }
-        }
+    boolean flag = true;
+    for (int grantResult : grantResults) {
+      if (grantResult != PackageManager.PERMISSION_GRANTED) {
+        flag = false;
+        break;
+      }
     }
-
-    public static Intent getIntentToMe(Context context) {
-        Intent intent = new Intent(context, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return intent;
+    if (flag) {
+      exportDBHavePermission();
+    } else {
+      finish();
     }
+  }
 
-    private void alertWipeData() {
-        new InternetCheck().execute(validateConnectionListener());
+  private void exportDBHavePermission() {
+    File currentDB = new File(Environment.getDataDirectory(),
+        EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
+            + "//databases//lmis_db");
+    File currentXML = new File(Environment.getDataDirectory(),
+        EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
+            + "//shared_prefs//LMISPreference.xml");
+    File tempBackup = new File(Environment.getDataDirectory(),
+        EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
+            + "//databases//lmis_copy");
+    File currentXMLBackup = new File(Environment.getDataDirectory(),
+        EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
+            + "//shared_prefs//LMISPreferenceBackup.xml");
+    File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
+    File xmlExternalBackup = new File(Environment.getExternalStorageDirectory(),
+        "LMISPreferenceBackup.xml");
+    try {
+      FileUtil.copy(currentDB, tempBackup);
+      FileUtil.copy(currentXML, currentXMLBackup);
+      ExportSqliteOpenHelper.removePrivateUserInfo(this);
+      FileUtil.copy(tempBackup, externalBackup);
+      FileUtil.copy(currentXMLBackup, xmlExternalBackup);
+      ToastUtil.show(
+          Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
+    } catch (Exception e) {
+      new LMISException(e, "HomeActivity.exportDB").reportToFabric();
+      ToastUtil.show(e.getMessage());
+    } finally {
+      if (tempBackup.canRead()) {
+        FileUtil.deleteDir(tempBackup);
+      }
+      if (currentXMLBackup.canRead()) {
+        FileUtil.deleteDir(currentXMLBackup);
+      }
     }
+  }
 
-    private InternetCheck.Callback validateConnectionListener() {
+  public static Intent getIntentToMe(Context context) {
+    Intent intent = new Intent(context, HomeActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    return intent;
+  }
 
-        return internet -> {
-            if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-                ToastUtil.show(R.string.message_wipe_no_connection);
-            } else {
-                WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(), R.string.message_warning_wipe_data, R.string.btn_positive, R.string.btn_negative);
-                getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
-            }
-        };
+  private void alertWipeData() {
+    new InternetCheck().execute(validateConnectionListener());
+  }
+
+  private InternetCheck.Callback validateConnectionListener() {
+
+    return internet -> {
+      if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+        ToastUtil.show(R.string.message_wipe_no_connection);
+      } else {
+        WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder
+            .build(buildWipeDialogDelegate(), R.string.message_warning_wipe_data,
+                R.string.btn_positive, R.string.btn_negative);
+        getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning")
+            .commitNow();
+      }
+    };
+  }
+
+  private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {
+    return () -> {
+      setRestartIntent();
+      LMISApp.getInstance().wipeAppData();
+    };
+  }
+
+  private void setRestartIntent() {
+    int requestCode = 100;
+    int startAppInterval = 500;
+
+    User currentUser = UserInfoMgr.getInstance().getUser();
+    Intent intent = new Intent(this, LoginActivity.class);
+    intent.putExtra(Constants.PARAM_USERNAME, currentUser.getUsername());
+    intent.putExtra(Constants.PARAM_PASSWORD, currentUser.getPassword());
+
+    PendingIntent mPendingIntent = PendingIntent
+        .getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+    AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    if (mgr != null) {
+      mgr.set(AlarmManager.RTC, LMISApp.getInstance().getCurrentTimeMillis() + startAppInterval,
+          mPendingIntent);
     }
+  }
 
-    private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {
-        return () -> {
-            setRestartIntent();
-            LMISApp.getInstance().wipeAppData();
-        };
+  private boolean isHaveDirtyData() {
+    if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
+        || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
+      showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
+      return true;
     }
+    return false;
+  }
 
-    private void setRestartIntent() {
-        int requestCode = 100;
-        int startAppInterval = 500;
-
-        User currentUser = UserInfoMgr.getInstance().getUser();
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra(Constants.PARAM_USERNAME, currentUser.getUsername());
-        intent.putExtra(Constants.PARAM_PASSWORD, currentUser.getPassword());
-
-        PendingIntent mPendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (mgr != null) {
-            mgr.set(AlarmManager.RTC, LMISApp.getInstance().getCurrentTimeMillis() + startAppInterval, mPendingIntent);
-        }
+  private void refreshDashboard() {
+    if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr
+        .isSyncingLastYearStockCards()) {
+      dvProductDashboard.resetState(true);
+    } else {
+      homePresenter.getDashboardData();
     }
+  }
 
-    private boolean isHaveDirtyData() {
-        if (!CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedProduct())
-                || !CollectionUtils.isEmpty(sharedPreferenceMgr.getDeletedMovementItems())) {
-            showDeletedWarningDialog(dirtyDataManager::deleteAndReset);
-            return true;
-        }
-        return false;
-    }
-
-    private void refreshDashboard() {
-        if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
-            dvProductDashboard.resetState(true);
-        } else {
-            homePresenter.getDashboardData();
-        }
-    }
-
-    @Override
-    public void updateDashboard(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-        dvProductDashboard.setData(regularAmount, outAmount, lowAmount, overAmount);
-    }
+  @Override
+  public void updateDashboard(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+    dvProductDashboard.setData(regularAmount, outAmount, lowAmount, overAmount);
+  }
 }

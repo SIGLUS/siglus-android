@@ -25,38 +25,38 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.inject.Inject;
-
+import java.lang.reflect.Type;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Service;
 import org.openlmis.core.model.repository.ProgramRepository;
-
-import java.lang.reflect.Type;
-
 import roboguice.RoboGuice;
 
 public class ServiceAdapter implements JsonDeserializer<Service> {
-    @Inject
-    public ProgramRepository programRepository;
 
-    private final Gson gson;
+  @Inject
+  public ProgramRepository programRepository;
 
-    public ServiceAdapter() {
-        RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
-        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+  private final Gson gson;
+
+  public ServiceAdapter() {
+    RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
+    gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+  }
+
+  @Override
+  public Service deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+      throws JsonParseException {
+    Service service = gson.fromJson(json.toString(), Service.class);
+    try {
+      Program program = programRepository
+          .queryByCode(json.getAsJsonObject().get("programCode").getAsString());
+      service.setProgram(program);
+    } catch (LMISException e) {
+      new LMISException(e, "ServiceAdapter.deserialize").reportToFabric();
+      throw new JsonParseException("can not find Program by programCode");
     }
-
-    @Override
-    public Service deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        Service service = gson.fromJson(json.toString(), Service.class);
-        try {
-            Program program = programRepository.queryByCode(json.getAsJsonObject().get("programCode").getAsString());
-            service.setProgram(program);
-        } catch (LMISException e) {
-            new LMISException(e,"ServiceAdapter.deserialize").reportToFabric();
-            throw new JsonParseException("can not find Program by programCode");
-        }
-        return service;
-    }
+    return service;
+  }
 }

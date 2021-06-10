@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <stroke
-        android:width="2dp"
-        android:color="@color/color_add_lot_page_expire_date_warning_border" />
-    <solid android:color="@color/color_add_lot_page_expire_date_warning_background" />
-    <corners android:radius="5dp" />
+  android:shape="rectangle">
+  <stroke
+    android:width="2dp"
+    android:color="@color/color_add_lot_page_expire_date_warning_border" />
+  <solid android:color="@color/color_add_lot_page_expire_date_warning_background" />
+  <corners android:radius="5dp" />
 </shape>

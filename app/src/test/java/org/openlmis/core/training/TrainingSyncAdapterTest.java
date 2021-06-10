@@ -1,5 +1,12 @@
 package org.openlmis.core.training;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,60 +21,53 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.service.SyncUpManager;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.Date;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(LMISTestRunner.class)
 public class TrainingSyncAdapterTest {
-    private TrainingSyncAdapter trainingSyncAdapter;
-    private SyncUpManager mockSyncUpManager;
-    private SharedPreferenceMgr sharedPreferenceMgr;
 
-    @Before
-    public void setUp() throws Exception {
-        mockSyncUpManager = mock(SyncUpManager.class);
-        sharedPreferenceMgr = new SharedPreferenceMgr(RuntimeEnvironment.application);
-        trainingSyncAdapter = new TrainingSyncAdapter();
-        trainingSyncAdapter.sharedPreferenceMgr = sharedPreferenceMgr;
-        trainingSyncAdapter.syncUpManager = mockSyncUpManager;
-        sharedPreferenceMgr.getPreference().edit().clear();
-        UserInfoMgr.getInstance().setUser(new User());
-        LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime());
-    }
+  private TrainingSyncAdapter trainingSyncAdapter;
+  private SyncUpManager mockSyncUpManager;
+  private SharedPreferenceMgr sharedPreferenceMgr;
 
-    @Test
-    @Ignore
-    // TODO local: success, GOCD : failed
-    /**
-     *
-     *     Expected: is <28>
-     *      but: was <17>
-     * */
-    public void shouldRequestTrainingSyncWhenTrainingFeatureIsOn() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_training, true);
-        trainingSyncAdapter.onPerformSync();
+  @Before
+  public void setUp() throws Exception {
+    mockSyncUpManager = mock(SyncUpManager.class);
+    sharedPreferenceMgr = new SharedPreferenceMgr(RuntimeEnvironment.application);
+    trainingSyncAdapter = new TrainingSyncAdapter();
+    trainingSyncAdapter.sharedPreferenceMgr = sharedPreferenceMgr;
+    trainingSyncAdapter.syncUpManager = mockSyncUpManager;
+    sharedPreferenceMgr.getPreference().edit().clear();
+    UserInfoMgr.getInstance().setUser(new User());
+    LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime());
+  }
 
-        verify(mockSyncUpManager).fakeSyncRnr();
-        verify(mockSyncUpManager).fakeSyncStockCards();
-        verify(mockSyncUpManager).fakeSyncUpCmms();
+  @Test
+  @Ignore
+  // TODO local: success, GOCD : failed
+  /**
+   *
+   *     Expected: is <28>
+   *      but: was <17>
+   * */
+  public void shouldRequestTrainingSyncWhenTrainingFeatureIsOn() throws Exception {
+    LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_training, true);
+    trainingSyncAdapter.onPerformSync();
 
-        when(mockSyncUpManager.fakeSyncRnr()).thenReturn(true);
-        when(mockSyncUpManager.fakeSyncStockCards()).thenReturn(true);
-        trainingSyncAdapter.onPerformSync();
-        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getRnrLastSyncTime();
-        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getStockLastSyncTime();
-        DateTime rnrFormDate = new DateTime(lastRnrFormSyncedTimestamp);
-        DateTime stockCardDate = new DateTime(lastStockCardSyncedTimestamp);
+    verify(mockSyncUpManager).fakeSyncRnr();
+    verify(mockSyncUpManager).fakeSyncStockCards();
+    verify(mockSyncUpManager).fakeSyncUpCmms();
 
-        DateTime expectDate = new DateTime();
-        assertThat(rnrFormDate.getDayOfMonth(), is(expectDate.getDayOfMonth()));
-        assertThat(rnrFormDate.getHourOfDay(), is(expectDate.getHourOfDay()));
-        assertThat(stockCardDate.getDayOfMonth(), is(expectDate.getDayOfMonth()));
-        assertThat(stockCardDate.getHourOfDay(), is(expectDate.getHourOfDay()));
-    }
+    when(mockSyncUpManager.fakeSyncRnr()).thenReturn(true);
+    when(mockSyncUpManager.fakeSyncStockCards()).thenReturn(true);
+    trainingSyncAdapter.onPerformSync();
+    long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getRnrLastSyncTime();
+    long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getStockLastSyncTime();
+    DateTime rnrFormDate = new DateTime(lastRnrFormSyncedTimestamp);
+    DateTime stockCardDate = new DateTime(lastStockCardSyncedTimestamp);
+
+    DateTime expectDate = new DateTime();
+    assertThat(rnrFormDate.getDayOfMonth(), is(expectDate.getDayOfMonth()));
+    assertThat(rnrFormDate.getHourOfDay(), is(expectDate.getHourOfDay()));
+    assertThat(stockCardDate.getDayOfMonth(), is(expectDate.getDayOfMonth()));
+    assertThat(stockCardDate.getHourOfDay(), is(expectDate.getHourOfDay()));
+  }
 }

@@ -24,5 +24,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SyncUpRequisitionResponse {
-    String requisitionId;
+
+  String requisitionId;
 }

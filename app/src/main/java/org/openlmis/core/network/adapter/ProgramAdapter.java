@@ -23,27 +23,27 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-
+import java.lang.reflect.Type;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
-import java.lang.reflect.Type;
 
 public class ProgramAdapter implements JsonDeserializer<Program> {
 
-    @Override
-    public Program deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        Program program = new Gson().fromJson(json.toString(), Program.class);
-        fillProgram(program);
+  @Override
+  public Program deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+      throws JsonParseException {
+    Program program = new Gson().fromJson(json.toString(), Program.class);
+    fillProgram(program);
 
-        return program;
-    }
+    return program;
+  }
 
-    public static void fillProgram(Program program) {
-        if (program.getRegimens() == null) {
-            return;
-        }
-        for (Regimen item : program.getRegimens()) {
-            item.setProgram(program);
-        }
+  public static void fillProgram(Program program) {
+    if (program.getRegimens() == null) {
+      return;
     }
+    for (Regimen item : program.getRegimens()) {
+      item.setProgram(program);
+    }
+  }
 }
