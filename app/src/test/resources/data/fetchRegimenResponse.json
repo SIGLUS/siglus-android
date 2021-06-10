@@ -1,0 +1,1304 @@
+[
+  {
+    "code": "RG MMC",
+    "name": "Regime Genérico MMC",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 53,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "3La",
+    "name": "TDF+3TC+RAL+DRV+RTV",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 76,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "1alt1",
+    "name": "ABC+3TC+DTG",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 66,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "2Op1",
+    "name": "2as Optimizadas ATV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 60,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2A",
+    "name": "AZT+3TC+NVP",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 3,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "3Lb",
+    "name": "AZT+3TC+RAL+DRV+RTV",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 14,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "2Op3",
+    "name": "2as Optimizadas DRV+RTV",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 62,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT Malaria_inj",
+    "name": "Malaria Teste Rápido Injustificado",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 82,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "DUMMY Malaria",
+    "name": "DUMMY Malaria",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 57,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TDF13",
+    "name": "TDF+AZT+LPV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 11,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT Malaria+",
+    "name": "Malaria Teste Positivos +",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 37,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "PTV Crianças",
+    "name": "PTV Crianças OpA+",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 44,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TTBSA",
+    "name": "Tratamento TB Sensivel Adulto",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 17,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "ABCPedXarope",
+    "name": "ABC+3TC+LPV/r (2DFC+LPV/r 80/20)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 100,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "C7A",
+    "name": "TDF+3TC+LPV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 12,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT Malaria",
+    "name": "Malaria Teste Rápido Consumo",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 36,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "PTV Mulheres",
+    "name": "PTV Mulheres OpA+",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 43,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "DET_inj",
+    "name": "HIV Determine Injustificado",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 80,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "PTV Pediatri",
+    "name": "PTV Pediatrico",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 10,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "ABC12",
+    "name": "ABC+3TC+LPV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 50,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "Uni_inj",
+    "name": "HIV Unigold Injustificado",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 81,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB MDR Km-Lfx-Eto-Cs-E-Z",
+    "name": "TB MDR Km-Lfx-Eto-Cs-E-Z",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 27,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "KUS-AL1x6",
+    "name": "Consultas AL US/APE Malaria 1x6",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 29,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "X3N",
+    "name": "ABC+AZT+LPV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 47,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "X5APed",
+    "name": "ABC+3TC+EFV Ped (2DFC+EFV 200)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 85,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "C6A",
+    "name": "TDF+ABC+LPV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 9,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "3Lbb",
+    "name": "ABC+3TC+RAL+DRV+RTV",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 68,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "ABCPedCpts",
+    "name": "ABC+3TC+LPV/r (2DFC+LPV/r 100/25)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 86,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "DUMMY Tuberculose",
+    "name": "DUMMY Tuberculose",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 95,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2C",
+    "name": "AZT+3TC+ABC",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 48,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2F",
+    "name": "AZT+3TC+LPV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 1,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB MDR  Km-Lfx-Eto-PAS-E-Z",
+    "name": "TB MDR Km-Lfx-Eto-PAS-E-Z",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 24,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2B",
+    "name": "AZT+3TC+EFV",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 51,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT Sífilis_inj",
+    "name": "Sífilis Teste Rápido Injustificado",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 83,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB MDR  Cp-Lfx-Eto-PAS-E-Z",
+    "name": "TB MDR Cp-Lfx-Eto-PAS-E-Z",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 25,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2Bped",
+    "name": "AZT+3TC+EFV (2FDC+EFV 200)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 93,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "Uni",
+    "name": "HIV Unigold Consumo",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 39,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "DET",
+    "name": "HIV Determine Consumo",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 41,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB Profilaxia Criança",
+    "name": "TB Profilaxia Criança",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 20,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB MDR  Lfx-Eto-Cs-E-Z",
+    "name": "TB MDR Lfx-Eto-Cs-E-Z",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 23,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT Sífilis",
+    "name": "Sífilis Teste Rápido Consumo",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 42,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2Fped Xarope",
+    "name": "AZT+3TC+LPV/r (2DFC+LPV/r 80/20)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 101,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "KAPE",
+    "name": "Consultas Kit APE",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 94,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "REGUNIC",
+    "name": "Regime Único",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 52,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB MDR  Cp-Lfx-Eto-Cs-E-Z",
+    "name": "TB MDR Cp-Lfx-Eto-Cs-E-Z",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 19,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "KUS",
+    "name": "Consultas Kit US",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 16,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "X6APed",
+    "name": "ABC+3TC+DTG (2DFCped+DTG50)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 84,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2Fped Granulos",
+    "name": "AZT+3TC+LPV/r (2DFC+LPV/r 40/10)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 90,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT Malaria_inj_APE",
+    "name": "APE- Malaria Teste Rápido Injustificado",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 99,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "VC1",
+    "name": "Via Clássica",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 28,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT TB",
+    "name": "TB Teste Rápido",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 34,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "X5C",
+    "name": "ABC+3TC+NVP",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 45,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB MDR Adulto Regime 3",
+    "name": "TB MDR Adulto Regime 3",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 55,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT Malaria+_APE",
+    "name": "APE- Malaria Teste Positivos +",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 97,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB Profilaxia Adulto",
+    "name": "TB Profilaxia Adulto",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 21,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2Cped",
+    "name": "AZT+3TC+ABC (2FDC+ABC Baby)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 49,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "X3N1",
+    "name": "ABC+AZT+3TC+LPV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 46,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "SR",
+    "name": "S/Regime",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 59,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "DUMMY PME",
+    "name": "DUMMY PME",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 96,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "2Op2",
+    "name": "2as Optimizadas ATV/r+RAL",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 61,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "PreEP",
+    "name": "TDF+FTC PreEP",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 75,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RG AI",
+    "name": "Regime Genérico AI",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 54,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2Fped",
+    "name": "AZT+3TC+LPV/r (2FDC+LPV/r Baby)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 2,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "1aLTLD",
+    "name": "TDF+3TC+DTG",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 73,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT TB +",
+    "name": "TB Testes Positivos +",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 33,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB MDR  Lfx-Eto-PAS-E-Z",
+    "name": "TB MDR Lfx-Eto-PAS-E-Z",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 22,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2Aped",
+    "name": "AZT+3TC+NVP (3FDC Baby)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 4,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "C4A",
+    "name": "TDF+ABC+3TC+LPV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 7,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "1TB3",
+    "name": "AZT+3TC+RAL",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 71,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "1TB1",
+    "name": "TDF+3TC+RAL",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 74,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "C1A",
+    "name": "TDF+AZT+3TC+LPV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 8,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TB Peds",
+    "name": "Tratamento TB Sensivel Criança",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 18,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "ABCPedGranulos",
+    "name": "ABC+3TC+LPV/r (2DFC+LPV/r 40/10)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 87,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "1TB2",
+    "name": "ABC+3TC+RAL",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 67,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "2alt2",
+    "name": "ABC+3TC+ATV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 65,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "2alt3",
+    "name": "AZT+3TC+ATV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 69,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A4A",
+    "name": "TDF+3TC+EFV",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 5,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT Sífilis+",
+    "name": "Sífilis Teste Positivos +",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 35,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "1alt2",
+    "name": "AZT+3TC+DTG",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 70,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "2alt1",
+    "name": "TDF+3TC+ATV/r",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 72,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "A2Fped Cpts",
+    "name": "AZT+3TC+LPV/r (2DFC+LPV/r 100/25)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 89,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RetTB",
+    "name": "Retratamento TB",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 26,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "TDF12",
+    "name": "TDF+3TC+NVP",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 13,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "3op1",
+    "name": "3a Linha adaptada DRV+RAL+RTV",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 63,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "KUS-AL4x6",
+    "name": "Consultas AL US/APE Malaria 4x6",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 30,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "3L_3TC",
+    "name": "3TC+RAL+DRV+RTV",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 64,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "KUS-AL3x6",
+    "name": "Consultas AL US/APE Malaria 3x6",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 32,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "X5CPed",
+    "name": "ABC+3TC+NVP (2FDC+NVP50)",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 92,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "KUS-AL2x6",
+    "name": "Consultas AL US/APE Malaria 2x6",
+    "programCode": "VC",
+    "programName": "Via Clássica",
+    "active": true,
+    "displayOrder": 31,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "Uni+",
+    "name": "HIV Unigold Positivos +",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 38,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "DET+",
+    "name": "HIV Determine Positivos +",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 40,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "RDT Malaria_APE",
+    "name": "APE- Malaria Teste Rápido Consumo",
+    "programCode": "TR",
+    "programName": "Testes Rápidos Diag.",
+    "active": true,
+    "displayOrder": 98,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  },
+  {
+    "code": "X5A",
+    "name": "ABC+3TC+EFV",
+    "programCode": "T",
+    "programName": "TARV",
+    "active": true,
+    "displayOrder": 6,
+    "isCustom": false,
+    "category": {
+      "code": "DEFAULT",
+      "name": "Default",
+      "displayOrder": 0
+    }
+  }
+]

@@ -29,6 +29,7 @@ import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
+import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
@@ -91,6 +92,10 @@ public interface LMISRestApi {
 
   @PUT("/api/siglusapi/android/me/facility/cmms")
   Void syncUpCmms(@Body List<CmmEntry> cmms) throws LMISException;
+
+  @GET("/api/siglusapi/android/regimens")
+  SyncDownRegimensResponse fetchRegimens();
+
 
   @GET("/rest-api/requisitions")
   SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode,

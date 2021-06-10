@@ -51,12 +51,14 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.ProductsResponseAdapter;
 import org.openlmis.core.network.adapter.ProgramAdapter;
 import org.openlmis.core.network.adapter.ProgramDataFormAdapter;
+import org.openlmis.core.network.adapter.RegimenAdapter;
 import org.openlmis.core.network.adapter.ReportTypeAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.ServiceAdapter;
 import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
+import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncService;
 import retrofit.Callback;
@@ -174,17 +176,18 @@ public class LMISRestManager {
     request.addHeader("AndroidSDKVersion", Build.VERSION.SDK_INT + "");
   }
 
-  private GsonConverter registerTypeAdapter() {
-    return new GsonConverter(new GsonBuilder()
-        .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
-        .registerTypeAdapter(StockCard.class, new StockCardAdapter())
-        .registerTypeAdapter(ProgramDataForm.class, new ProgramDataFormAdapter())
-        .registerTypeAdapter(ReportTypeForm.class, new ReportTypeAdapter())
-        .registerTypeAdapter(Service.class, new ServiceAdapter())
-        .registerTypeAdapter(Program.class, new ProgramAdapter())
-        .registerTypeAdapter(SyncDownLatestProductsResponse.class, new ProductsResponseAdapter())
-        .create());
-  }
+    private GsonConverter registerTypeAdapter() {
+        return new GsonConverter(new GsonBuilder()
+                .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
+                .registerTypeAdapter(StockCard.class, new StockCardAdapter())
+                .registerTypeAdapter(ProgramDataForm.class, new ProgramDataFormAdapter())
+                .registerTypeAdapter(ReportTypeForm.class, new ReportTypeAdapter())
+                .registerTypeAdapter(Service.class, new ServiceAdapter())
+                .registerTypeAdapter(Program.class, new ProgramAdapter())
+                .registerTypeAdapter(SyncDownLatestProductsResponse.class, new ProductsResponseAdapter())
+                .registerTypeAdapter(SyncDownRegimensResponse.class, new RegimenAdapter())
+                .create());
+    }
 
   private String getAndroidId() {
     return Settings.Secure

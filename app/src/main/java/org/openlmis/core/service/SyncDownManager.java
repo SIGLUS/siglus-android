@@ -43,6 +43,7 @@ import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.ServiceFormRepository;
@@ -56,6 +57,7 @@ import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
+import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
@@ -107,6 +109,8 @@ public class SyncDownManager {
   DirtyDataManager dirtyDataManager;
   @Inject
   UserRepository userRepository;
+  @Inject
+  RegimenRepository regimenRepository;
 
   public SyncDownManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -122,6 +126,7 @@ public class SyncDownManager {
       try {
         // TODO: Remove the comment when developing to the corresponding api
         syncDownFacilityInfo(subscriber1);
+        syncDownRegimens(subscriber1);
         // syncDownService(subscriber1);
         syncDownProducts(subscriber1);
         // syncDownLastMonthStockCards(subscriber1);
@@ -186,6 +191,18 @@ public class SyncDownManager {
       throw e;
     }
   }
+
+    private void syncDownRegimens(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        try {
+            subscriber.onNext(SyncProgress.SyncingRegimens);
+            fetchAndSaveRegimens();
+            subscriber.onNext(SyncProgress.RegimensSynced);
+        } catch (LMISException e) {
+            LMISException e1 = new LMISException(errorMessage(R.string.msg_fetching_regimens_failed));
+            e1.reportToFabric();
+            throw e;
+        }
+    }
 
 
   private void syncDownService(Subscriber<? super SyncProgress> subscriber) throws LMISException {
@@ -526,6 +543,15 @@ public class SyncDownManager {
     return programs;
   }
 
+    private void fetchAndSaveRegimens() throws LMISException {
+        SyncDownRegimensResponse syncDownRegimensResponse = lmisRestApi.fetchRegimens();
+        if (syncDownRegimensResponse == null) {
+            LMISException e = new LMISException("fetch regimen exception");
+            e.reportToFabric();
+            throw e;
+        }
+        regimenRepository.batchSave(syncDownRegimensResponse.getRegimenList());
+    }
 
   private void fetchAndSaveRequisition() throws LMISException {
     final String facilityCode = UserInfoMgr.getInstance().getUser().getFacilityCode();
@@ -569,6 +595,7 @@ public class SyncDownManager {
 
   public enum SyncProgress {
     SyncingFacilityInfo(R.string.msg_fetching_facility_info),
+    SyncingRegimens(R.string.msg_fetching_regimens),
     SyncingServiceList(R.string.msg_service_lists),
     SyncingProduct(R.string.msg_fetching_products),
     SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
@@ -578,6 +605,7 @@ public class SyncDownManager {
     ProductSynced,
     ServiceSynced,
     FacilityInfoSynced,
+    RegimensSynced,
     StockCardsLastMonthSynced,
     RequisitionSynced,
     StockCardsLastYearSynced,

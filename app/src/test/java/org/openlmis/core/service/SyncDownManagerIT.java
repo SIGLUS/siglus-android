@@ -26,6 +26,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -35,12 +36,14 @@ import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManagerMock;
+import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
@@ -60,6 +63,7 @@ public class SyncDownManagerIT {
   private UserRepository userRepository;
   private StockRepository stockRepository;
   private LotRepository lotRepository;
+  private RegimenRepository regimenRepository;
   private User defaultUser1;
   private SharedPreferenceMgr sharedPreferenceMgr;
   private ProgramDataFormRepository programDataFormRepository;
@@ -85,6 +89,8 @@ public class SyncDownManagerIT {
         .getInstance(StockRepository.class);
     lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(LotRepository.class);
+      regimenRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(RegimenRepository.class);
     programDataFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(ProgramDataFormRepository.class);
     stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
@@ -146,6 +152,9 @@ public class SyncDownManagerIT {
     String authSuccessResponse = JsonFileReader.readJson(getClass(), "AuthSuccessResponse.json");
     String V3ProductsResponseAdapterResponse = JsonFileReader
         .readJson(getClass(), "V3ProductsResponseAdapterTest.json");
+    String regimenJson = JsonFileReader.readJson(getClass(),"fetchRegimenResponse.json");
+    String facilityInfoJson = JsonFileReader
+        .readJson(getClass(),"fetchFacilityInfoResponse.json");
 
     lmisRestManager.addNewMockedResponse(
         "/api/oauth/token?grant_type=password&username=cs_gelo&password=password", 200, "OK",
@@ -177,6 +186,9 @@ public class SyncDownManagerIT {
     lmisRestManager.addNewMockedResponse("/rest-api/latest-products", 200, "OK", json);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/products", 200, "OK",
         V3ProductsResponseAdapterResponse);
+    lmisRestManager.addNewMockedResponse("/api/siglusapi/android/regimens",200,"OK",regimenJson);
+    lmisRestManager.addNewMockedResponse(
+        "/api/siglusapi/android/me/facility", 200, "OK", facilityInfoJson);
   }
 
   // TODO
@@ -225,6 +237,25 @@ public class SyncDownManagerIT {
     assertEquals(4, programs.size());
     assertEquals(4, reportTypeForms.size());
   }
+
+    @Test
+    public void shouldSyncDownRegimens() throws Exception {
+        // given
+        String regimenJson = JsonFileReader.readJson(getClass(),"fetchRegimenResponse.json");
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/api/siglusapi/android/regimens",200,"OK",regimenJson,RuntimeEnvironment.application);
+        mockResponse(lmisRestManager);
+        syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+
+        // when
+        SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+        syncDownManager.syncDownServerData(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        List<Regimen> regimenList = regimenRepository.listDefaultRegime();
+
+        // then
+        assertEquals(93,regimenList.size());
+    }
 
 
   @Ignore

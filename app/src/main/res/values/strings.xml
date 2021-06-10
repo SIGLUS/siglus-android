@@ -592,4 +592,6 @@
   <string name="home_label_requisition_and_report">Requisition &#038; Report</string>
   <string name="home_label_issue_voucher_and_pod">Issue Voucher &#038; PoD</string>
   <string name="title_issue_voucher_and_pod">Issue Voucher &#038; PoD</string>
+  <string name="msg_fetching_regimens">Downloading regimens…</string>
+  <string name="msg_fetching_regimens_failed">Download of regimens info from the server failed, please login again.</string>
 </resources>

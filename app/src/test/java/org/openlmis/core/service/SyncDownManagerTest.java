@@ -15,10 +15,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.FacilityInfoSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.RegimensSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastMonthSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastYearSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingFacilityInfo;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRegimens;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.content.Context;
@@ -43,6 +45,7 @@ import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ProgramDataForm.Status;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.Service;
@@ -67,6 +70,7 @@ import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
+import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
@@ -142,6 +146,7 @@ public class SyncDownManagerTest {
   public void shouldSyncDownServerData() throws Exception {
     // given
     mockFacilityInfoResponse();
+    mockRegimenResponse();
     mockSyncDownLatestProductResponse();
     mockReportResponse();
     mockRequisitionResponse();
@@ -159,6 +164,8 @@ public class SyncDownManagerTest {
     // then
     assertThat(subscriber.syncProgresses.get(0), is(SyncingFacilityInfo));
     assertThat(subscriber.syncProgresses.get(1), is(FacilityInfoSynced));
+    assertThat(subscriber.syncProgresses.get(2),is(SyncingRegimens));
+    assertThat(subscriber.syncProgresses.get(3),is(RegimensSynced));
     // To Do when the following interface was developed
 //        assertThat(subscriber.syncProgresses.get(2), is(SyncingProduct));
 //        assertThat(subscriber.syncProgresses.get(3), is(SyncingStockCardsLastMonth));
@@ -176,6 +183,7 @@ public class SyncDownManagerTest {
   public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
     // given
     mockFacilityInfoResponse();
+    mockRegimenResponse();
     mockReportResponse();
     mockSyncDownLatestProductResponse();
     mockRequisitionResponse();
@@ -195,7 +203,7 @@ public class SyncDownManagerTest {
     laterEnterSubscriber.assertNoTerminalEvent();
 
     // then
-    assertThat(firstEnterSubscriber.syncProgresses.size(), is(4));
+    assertThat(firstEnterSubscriber.syncProgresses.size(), is(6));
     assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
   }
 
@@ -427,6 +435,11 @@ public class SyncDownManagerTest {
     when(lmisRestApi.fetchFacilityInfo()).thenReturn(facilityInfoResponse);
   }
 
+  private void mockRegimenResponse() {
+     SyncDownRegimensResponse syncDownRegimensResponse = getRegimenResponse();
+     when(lmisRestApi.fetchRegimens()).thenReturn(syncDownRegimensResponse);
+  }
+
   private void mockFetchProgramsResponse() throws LMISException, ParseException {
     SyncUpProgramResponse response = getFetchProgramsResponse();
     when(lmisRestApi.fetchPrograms(anyLong())).thenReturn(response);
@@ -479,6 +492,13 @@ public class SyncDownManagerTest {
     facilityInfoResponse.setSupportedPrograms(supportedPrograms);
     return facilityInfoResponse;
   }
+
+  private SyncDownRegimensResponse getRegimenResponse() {
+    SyncDownRegimensResponse syncDownRegimensResponse = new SyncDownRegimensResponse();
+    List<Regimen> regimenList = new ArrayList<>();
+    syncDownRegimensResponse.setRegimenList(regimenList);
+    return syncDownRegimensResponse;
+    }
 
   private SyncUpProgramResponse getFetchProgramsResponse() throws ParseException, LMISException {
     SyncUpProgramResponse syncUpProgramResponse = new SyncUpProgramResponse();
