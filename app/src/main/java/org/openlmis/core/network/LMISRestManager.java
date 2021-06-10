@@ -34,7 +34,6 @@ import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ReportTypeForm;
@@ -42,14 +41,13 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.Service;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
-import org.openlmis.core.network.adapter.ProductAdapter;
 import org.openlmis.core.network.adapter.ProgramAdapter;
 import org.openlmis.core.network.adapter.ProgramDataFormAdapter;
 import org.openlmis.core.network.adapter.ReportTypeAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.ServiceAdapter;
 import org.openlmis.core.network.adapter.StockCardAdapter;
-import org.openlmis.core.network.adapter.V3ProductsResponseAdapter;
+import org.openlmis.core.network.adapter.ProductsResponseAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.UserResponse;
@@ -184,13 +182,12 @@ public class LMISRestManager {
     private GsonConverter registerTypeAdapter() {
         return new GsonConverter(new GsonBuilder()
                 .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
-                .registerTypeAdapter(Product.class, new ProductAdapter())
                 .registerTypeAdapter(StockCard.class, new StockCardAdapter())
                 .registerTypeAdapter(ProgramDataForm.class, new ProgramDataFormAdapter())
                 .registerTypeAdapter(ReportTypeForm.class, new ReportTypeAdapter())
                 .registerTypeAdapter(Service.class, new ServiceAdapter())
                 .registerTypeAdapter(Program.class, new ProgramAdapter())
-                .registerTypeAdapter(SyncDownLatestProductsResponse.class, new V3ProductsResponseAdapter())
+                .registerTypeAdapter(SyncDownLatestProductsResponse.class, new ProductsResponseAdapter())
                 .create());
     }
 

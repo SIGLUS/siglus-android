@@ -46,7 +46,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
-import org.openlmis.core.network.adapter.V3ProductsResponseAdapter;
+import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SupportedProgram;
@@ -473,7 +473,7 @@ public class SyncDownManager {
         user.setFacilityName(facilityInfoResponse.getName());
         userRepository.createOrUpdate(user);
         UserInfoMgr.getInstance().setUser(user);
-        V3ProductsResponseAdapter.addPrograms(programs);
+        ProgramCacheManager.addPrograms(programs);
         programRepository.batchCreateOrUpdatePrograms(programs);
         sharedPreferenceMgr.setReportTypesData(reportTypeForms);
         reportTypeFormRepository.batchCreateOrUpdateReportTypes(reportTypeForms);

@@ -42,14 +42,12 @@ import androidx.core.content.ContextCompat;
 
 public class DashboardView extends ConstraintLayout {
 
+    private static final String DEFAULT_TEXT = "--";
+
     DashboardCircleView circleView;
-
     LinearLayoutCompat llTotalProducts;
-
     ImageView ivLoading;
-
     TextView tvTotalProduct;
-
     TextView tvRegularAmount;
     TextView tvOutAmount;
     TextView tvLowAmount;
@@ -68,6 +66,42 @@ public class DashboardView extends ConstraintLayout {
         initView(context);
     }
 
+    public void setData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+        resetState(false);
+        circleView.setData(createNewData(regularAmount, outAmount, lowAmount, overAmount));
+        tvTotalProduct.setText(String.valueOf(regularAmount + outAmount + lowAmount + overAmount));
+        tvRegularAmount.setText(String.valueOf(regularAmount));
+        tvOutAmount.setText(String.valueOf(outAmount));
+        tvLowAmount.setText(String.valueOf(lowAmount));
+        tvOverAmount.setText(String.valueOf(overAmount));
+    }
+
+    public void resetState(boolean isLoading) {
+        if (isLoading) {
+            startLoading();
+        } else {
+            ivLoading.clearAnimation();
+        }
+        ivLoading.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
+        llTotalProducts.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
+        circleView.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    protected List<DashboardCircleView.Item> createNewData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+        final ArrayList<DashboardCircleView.Item> result = new ArrayList<>();
+        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_regular_stock), regularAmount));
+        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_stock_out), outAmount));
+        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_low_stock), lowAmount));
+        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_over_stock), overAmount));
+        return result;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        ivLoading.clearAnimation();
+        super.onDetachedFromWindow();
+    }
+
     private void initView(Context context) {
         final View rootView = LayoutInflater.from(context).inflate(R.layout.view_dashboard, this);
         circleView = rootView.findViewById(R.id.dc_product_total);
@@ -82,42 +116,12 @@ public class DashboardView extends ConstraintLayout {
         startLoading();
     }
 
-    public void setData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-        resetState(false);
-        circleView.setData(createNewData(regularAmount, outAmount, lowAmount, overAmount));
-        tvTotalProduct.setText(String.valueOf(regularAmount + outAmount + lowAmount + overAmount));
-        tvRegularAmount.setText(String.valueOf(regularAmount));
-        tvOutAmount.setText(String.valueOf(outAmount));
-        tvLowAmount.setText(String.valueOf(lowAmount));
-        tvOverAmount.setText(String.valueOf(overAmount));
-    }
-
-    List<DashboardCircleView.Item> createNewData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-        final ArrayList<DashboardCircleView.Item> result = new ArrayList<>();
-        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_regular_stock), regularAmount));
-        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_stock_out), outAmount));
-        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_low_stock), lowAmount));
-        result.add(new DashboardCircleView.Item(ContextCompat.getColor(getContext(), R.color.color_over_stock), overAmount));
-        return result;
-    }
-
-    public void resetState(boolean isLoading) {
-        if (isLoading) {
-            startLoading();
-        } else {
-            ivLoading.clearAnimation();
-        }
-        ivLoading.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
-        llTotalProducts.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
-        circleView.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
-    }
-
     private void startLoading() {
         // set amount
-        tvRegularAmount.setText("--");
-        tvOutAmount.setText("--");
-        tvLowAmount.setText("--");
-        tvOverAmount.setText("--");
+        tvRegularAmount.setText(DEFAULT_TEXT);
+        tvOutAmount.setText(DEFAULT_TEXT);
+        tvLowAmount.setText(DEFAULT_TEXT);
+        tvOverAmount.setText(DEFAULT_TEXT);
 
         // start rotate
         Animation anim = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -126,11 +130,5 @@ public class DashboardView extends ConstraintLayout {
         anim.setRepeatCount(Animation.INFINITE);
         anim.setInterpolator(new LinearInterpolator());
         ivLoading.startAnimation(anim);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        ivLoading.clearAnimation();
-        super.onDetachedFromWindow();
     }
 }

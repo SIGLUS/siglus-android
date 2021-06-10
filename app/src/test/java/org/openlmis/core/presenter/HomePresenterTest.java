@@ -38,6 +38,8 @@ import roboguice.RoboGuice;
 import rx.Subscription;
 import rx.observers.TestSubscriber;
 
+import static org.mockito.Matchers.eq;
+
 @RunWith(LMISTestRunner.class)
 public class HomePresenterTest {
 
@@ -74,7 +76,7 @@ public class HomePresenterTest {
 
         // then
         testSubscriber.assertNoErrors();
-        Mockito.verify(view, Mockito.times(1)).updateDashboard(1, 1, 1, 1);
+        Mockito.verify(view, Mockito.times(1)).updateDashboard(eq(1), eq(1), eq(1), eq(1));
     }
 
     @Test
@@ -87,13 +89,10 @@ public class HomePresenterTest {
 
         // when
         presenter.getDashboardData();
-        presenter.getDashboardData();
         testSubscriber.awaitTerminalEvent();
 
         // then
         Mockito.verify(mockSubscribe,Mockito.times(1)).unsubscribe();
         MatcherAssert.assertThat(presenter.subscriptions.size(), Matchers.is(1));
     }
-
-
 }

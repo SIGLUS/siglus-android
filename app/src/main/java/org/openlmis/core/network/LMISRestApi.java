@@ -73,14 +73,17 @@ public interface LMISRestApi {
     @POST("/api/siglusapi/android/me/facility/archivedProducts")
     Void syncUpArchivedProducts(@Body List<String> archivedProductsCodes) throws LMISException;
 
-    @PUT("/rest-api/facilities/{facilityId}/Cmms")
-    Void syncUpCmms(@Path("facilityId") String facilityId, @Body List<CmmEntry> cmms) throws LMISException;
-
     @POST("/api/siglusapi/android/me/app-info")
     Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
 
     @POST("/rest-api/facilities/{facilityId}/deleteStockCards")
     SyncUpDeletedMovementResponse syncUpDeletedData(@Path("facilityId") Long facilityId, @Body List<DirtyDataItemEntry> entryList) throws LMISException;
+
+    @POST("/rest-api/programData")
+    Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
+
+    @PUT("/rest-api/facilities/{facilityId}/Cmms")
+    Void syncUpCmms(@Path("facilityId") String facilityId, @Body List<CmmEntry> cmms) throws LMISException;
 
     //sync down
     @GET("/api/siglusapi/android/me/facility")
@@ -110,9 +113,6 @@ public interface LMISRestApi {
 
     @GET("/rest-api/programs/{facilityId}")
     SyncUpProgramResponse fetchPrograms(@Path("facilityId") Long facilityId) throws LMISException;
-
-    @POST("/rest-api/programData")
-    Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
 
     @GET("/rest-api/re-sync")
     Void recordReSyncAction() throws LMISException;

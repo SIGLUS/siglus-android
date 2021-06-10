@@ -84,7 +84,6 @@ public class DashboardViewTest {
 
     @Test
     public void shouldClearAnimationAfterDetachedFromWindow() {
-        // given
         // when
         dashboardView.onDetachedFromWindow();
 

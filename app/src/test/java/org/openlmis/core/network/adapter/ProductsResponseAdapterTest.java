@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.utils.JsonFileReader;
 
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(LMISTestRunner.class)
-public class V3ProductsResponseAdapterTest {
+public class ProductsResponseAdapterTest {
 
     @Test
     public void addPrograms() {
@@ -43,13 +44,13 @@ public class V3ProductsResponseAdapterTest {
         program.setProgramCode("VC");
         final ArrayList<Program> programs = new ArrayList<>();
         programs.add(program);
-        V3ProductsResponseAdapter.addPrograms(programs);
-        assertThat(V3ProductsResponseAdapter.PROGRAMS_CACHE.get("VC"), Matchers.is(program));
+        ProgramCacheManager.addPrograms(programs);
+        assertThat(ProgramCacheManager.getPrograms("VC"), Matchers.is(program));
     }
 
     @Test
     public void deserialize() {
-        V3ProductsResponseAdapter stockMovementItemAdapter = new V3ProductsResponseAdapter();
+        ProductsResponseAdapter stockMovementItemAdapter = new ProductsResponseAdapter();
         String json = JsonFileReader.readJson(getClass(), "V3ProductsResponseAdapterTest.json");
         SyncDownLatestProductsResponse syncDownLatestProductsResponse = stockMovementItemAdapter.deserialize(new JsonParser().parse(json), null, null);
 

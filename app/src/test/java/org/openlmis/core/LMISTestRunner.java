@@ -66,7 +66,6 @@ public class LMISTestRunner extends RobolectricTestRunner {
         @Override
         public void beforeTest(Method method) {
             super.beforeTest(method);
-            LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application);
             RxAndroidPlugins.getInstance().reset();
             RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
                 @Override

@@ -99,8 +99,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setProduct(product);
 
         stockRepository.createOrUpdate(stockCard);
-        final List<StockCard> list = stockRepository.list();
-        assertEquals(stockCard, list.get(0));
+        assertEquals(stockCard, stockRepository.list().get(0));
 
         stockCard.setStockOnHand(10000);
         stockRepository.createOrUpdate(stockCard);
@@ -366,11 +365,16 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void queryStockCountGroupByStockOnHandStatusTest() throws LMISException {
+        // given
         createStockAndProduct(1, 100, -1);
         createStockAndProduct(2, 0, -1);
         createStockAndProduct(3, 100, 101);
         createStockAndProduct(4, 201, 100);
+
+        // when
         final Map<String, Integer> stockOnHandStatusMap = stockRepository.queryStockCountGroupByStockOnHandStatus();
+
+        // then
         MatcherAssert.assertThat(stockOnHandStatusMap.get(StockOnHandStatus.REGULAR_STOCK.name()), Matchers.is(1));
         MatcherAssert.assertThat(stockOnHandStatusMap.get(StockOnHandStatus.LOW_STOCK.name()), Matchers.is(1));
         MatcherAssert.assertThat(stockOnHandStatusMap.get(StockOnHandStatus.STOCK_OUT.name()), Matchers.is(1));

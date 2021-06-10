@@ -63,40 +63,11 @@ public class DashboardCircleView extends View {
         initView(context);
     }
 
-    private void initView(Context context) {
-        circlePaint.setAntiAlias(true);
-        ringWidth = context.getResources().getDimensionPixelOffset(R.dimen.dash_board_circle_ring_width);
-        circlePaint.setStrokeWidth(ringWidth);
-        circlePaint.setStyle(Paint.Style.STROKE);
-    }
-
     public void setData(List<Item> data) {
         if (data == null) return;
         this.data = data;
         calculateAngle(data);
         postInvalidate();
-    }
-
-    private void calculateAngle(@NonNull List<Item> data) {
-        int totalAmount = 0;
-        for (Item item : data) {
-            totalAmount += Math.max(item.amount, 0);
-        }
-        if (totalAmount == 0) return;
-        float startAngle = DEFAULT_START_ANGLE;
-        for (Item item : data) {
-            item.startAngle = startAngle;
-            item.sweepAngle = (360 - (ONE_PIECE_ANGLE * getSpaceCount(data))) * (Math.max(item.amount, 0)) / totalAmount;
-            startAngle += item.sweepAngle + ONE_PIECE_ANGLE;
-        }
-    }
-
-    int getSpaceCount(@NonNull List<Item> data) {
-        int result = 0;
-        for (Item item : data) {
-            if (item.amount > 0) result++;
-        }
-        return result <= 1 ? 0 : result;
     }
 
     @Override
@@ -118,6 +89,35 @@ public class DashboardCircleView extends View {
         super.onDraw(canvas);
         for (Item item : data) {
             drawOnePiece(canvas, item);
+        }
+    }
+
+    protected int getSpaceCount(@NonNull List<Item> data) {
+        int count = 0;
+        for (Item item : data) {
+            if (item.amount > 0) count++;
+        }
+        return count <= 1 ? 0 : count;
+    }
+
+    private void initView(Context context) {
+        circlePaint.setAntiAlias(true);
+        ringWidth = context.getResources().getDimensionPixelOffset(R.dimen.dash_board_circle_ring_width);
+        circlePaint.setStrokeWidth(ringWidth);
+        circlePaint.setStyle(Paint.Style.STROKE);
+    }
+
+    private void calculateAngle(@NonNull List<Item> data) {
+        int totalAmount = 0;
+        for (Item item : data) {
+            totalAmount += Math.max(item.amount, 0);
+        }
+        if (totalAmount == 0) return;
+        float startAngle = DEFAULT_START_ANGLE;
+        for (Item item : data) {
+            item.startAngle = startAngle;
+            item.sweepAngle = (360 - (ONE_PIECE_ANGLE * getSpaceCount(data))) * (Math.max(item.amount, 0)) / totalAmount;
+            startAngle += item.sweepAngle + ONE_PIECE_ANGLE;
         }
     }
 

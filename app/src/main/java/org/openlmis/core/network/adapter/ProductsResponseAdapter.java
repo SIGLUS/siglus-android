@@ -29,28 +29,18 @@ import com.google.gson.JsonParseException;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
-import org.openlmis.core.model.Program;
+import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * adapt v2 products api response to @see <a href="https://showdoc.siglus.us/web/#/9?page_id=310">v3 products api</a>
  */
-public class V3ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestProductsResponse> {
-
-    static final HashMap<String, Program> PROGRAMS_CACHE = new HashMap<>();
-
-    public static synchronized void addPrograms(List<Program> programs) {
-        if (programs == null) return;
-        for (Program program : programs) {
-            PROGRAMS_CACHE.put(program.getProgramCode(), program);
-        }
-    }
+public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestProductsResponse> {
 
     @Override
     public SyncDownLatestProductsResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -85,7 +75,7 @@ public class V3ProductsResponseAdapter implements JsonDeserializer<SyncDownLates
         final Product product = new Product();
         product.setCode(jsonProduct.get("productCode").getAsString());
         product.setPrimaryName(jsonProduct.get("fullProductName").getAsString());
-        product.setProgram(PROGRAMS_CACHE.get(product.getCode()));
+        product.setProgram(ProgramCacheManager.getPrograms(product.getCode()));
         product.setStrength("");
         product.setType("");
         product.setArchived(getBoolean(jsonProduct, "archived", false));
