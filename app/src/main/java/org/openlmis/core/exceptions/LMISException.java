@@ -18,7 +18,6 @@
 
 package org.openlmis.core.exceptions;
 
-
 import android.util.Log;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;

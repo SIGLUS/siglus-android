@@ -171,16 +171,16 @@ public class LMISApp extends Application {
   }
 
   public void trackScreen(ScreenName screenName) {
-    Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
-    mTracker.setScreenName(screenName.getName());
-    mTracker.send(new HitBuilders.ScreenViewBuilder()
+    Tracker tracker = AnalyticsTrackers.getInstance().getDefault();
+    tracker.setScreenName(screenName.getName());
+    tracker.send(new HitBuilders.ScreenViewBuilder()
         .setCustomDimension(FACILITY_CUSTOM_DIMENSION_KEY, getFacilityNameForGA())
         .build());
   }
 
   public void trackEvent(TrackerCategories category, TrackerActions action) {
-    Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
-    mTracker.send(new HitBuilders.EventBuilder(category.getString(), action.getString())
+    Tracker tracker = AnalyticsTrackers.getInstance().getDefault();
+    tracker.send(new HitBuilders.EventBuilder(category.getString(), action.getString())
         .setCustomDimension(FACILITY_CUSTOM_DIMENSION_KEY, getFacilityNameForGA())
         .build());
   }
@@ -202,10 +202,6 @@ public class LMISApp extends Application {
       }
     }
     android.os.Process.killProcess(android.os.Process.myPid());
-  }
-
-  public boolean isQAEnabled() {
-    return SharedPreferenceMgr.getInstance().isQaDebugEnabled();
   }
 
   @Override

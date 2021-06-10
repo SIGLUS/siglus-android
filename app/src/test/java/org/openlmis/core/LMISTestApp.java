@@ -71,7 +71,7 @@ public class LMISTestApp extends LMISApp {
   }
 
   @Override
-  public boolean isQAEnabled() {
+  public boolean isQaEnabled() {
     return false;
   }
 
