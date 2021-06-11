@@ -41,6 +41,7 @@ import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class InventoryRepositoryTest {
 
   private InventoryRepository repository;

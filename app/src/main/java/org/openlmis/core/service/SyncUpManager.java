@@ -67,6 +67,7 @@ import org.roboguice.shaded.goole.common.collect.Sets;
 import rx.Observable;
 
 @Singleton
+@SuppressWarnings("PMD")
 public class SyncUpManager {
 
   private static final String TAG = "SyncUpManager";

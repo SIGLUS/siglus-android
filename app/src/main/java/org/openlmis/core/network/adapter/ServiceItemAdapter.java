@@ -37,6 +37,7 @@ import org.openlmis.core.model.ServiceItem;
 import org.openlmis.core.model.repository.ServiceFormRepository;
 import roboguice.RoboGuice;
 
+@SuppressWarnings("PMD")
 public class ServiceItemAdapter implements JsonDeserializer<ServiceItem>,
     JsonSerializer<ServiceItem> {
 

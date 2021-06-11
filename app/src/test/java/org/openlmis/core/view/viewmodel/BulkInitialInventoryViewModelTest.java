@@ -1,6 +1,5 @@
 package org.openlmis.core.view.viewmodel;
 
-
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -17,6 +16,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.StockCardBuilder;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class BulkInitialInventoryViewModelTest {
 
   private BulkInitialInventoryViewModel viewModel;

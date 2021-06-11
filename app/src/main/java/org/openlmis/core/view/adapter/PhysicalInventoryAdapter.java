@@ -32,6 +32,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
+@SuppressWarnings("PMD")
 public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn implements
     FilterableAdapter, RecyclerViewFastScroller.BubbleTextGetter {
 

@@ -18,7 +18,6 @@
 
 package org.openlmis.core.service;
 
-
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -71,7 +70,6 @@ import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
@@ -92,6 +90,7 @@ import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.schedulers.Schedulers;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class SyncUpManagerTest {
 
   private RnrFormRepository mockedRnrFormRepository;
@@ -103,8 +102,6 @@ public class SyncUpManagerTest {
   private StockRepository stockRepository;
   private SyncUpManager syncUpManager;
   private ProgramDataFormRepository mockedProgramDataFormRepository;
-  private ProductRepository productRepository;
-  private StockMovementRepository stockMovementRepository;
   private DirtyDataRepository mockedDirtyDataRepository;
 
   @Before
@@ -116,7 +113,6 @@ public class SyncUpManagerTest {
     mockedProgramDataFormRepository = mock(ProgramDataFormRepository.class);
     mockedSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
     mockedLmisRestApi = mock(LMISRestApi.class);
-    stockMovementRepository = mock(StockMovementRepository.class);
     mockedDirtyDataRepository = mock(DirtyDataRepository.class);
 
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -127,8 +123,6 @@ public class SyncUpManagerTest {
 
     stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(StockRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(ProductRepository.class);
 
     User user = new User("user", "123");
     user.setFacilityCode("FC1");

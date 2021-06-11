@@ -31,7 +31,6 @@ import roboguice.inject.InjectView;
 
 public class BulkInitialInventoryWithLotViewHolder extends BaseViewHolder {
 
-  private static final String TAG = BulkInitialInventoryWithLotViewHolder.class.getSimpleName();
   @InjectView(R.id.tv_product_name)
   TextView tvProductName;
 

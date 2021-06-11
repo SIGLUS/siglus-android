@@ -46,6 +46,7 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
+@SuppressWarnings("PMD")
 public interface LMISRestApi {
 
   @POST("/api/oauth/token")

@@ -64,8 +64,8 @@ import retrofit.client.Response;
 import roboguice.RoboGuice;
 import rx.Subscriber;
 
-
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class LoginPresenterTest {
 
   UserRepository userRepository;
@@ -325,18 +325,8 @@ public class LoginPresenterTest {
   }
 
   @Ignore
-  public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleON()
-      throws Exception {
+  public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleON() {
     User user = UserBuilder.defaultUser();
-    UserResponse userResponse = new UserResponse();
-//        userResponse.setUserInformation(user);
-//        userResponse.setFacilitySupportedPrograms(Arrays.asList(
-//                new ProgramBuilder().setProgramCode("via_code").setProgramName("VIA name").build(),
-//                new ProgramBuilder().setProgramCode("mmia_code").setProgramName("MMIA name").build(),
-//                new ProgramBuilder().setProgramCode("nutrition_code").setProgramName("Nutrition name").setParentCode("via_code").build()
-//        ));
-
-//        presenter.saveUserDataToLocalDatabase(userResponse);
 
     verify(userRepository).createOrUpdate(user);
   }

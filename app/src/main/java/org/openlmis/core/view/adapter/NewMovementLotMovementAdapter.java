@@ -21,6 +21,7 @@ package org.openlmis.core.view.adapter;
 import java.util.List;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
+@SuppressWarnings("PMD")
 public class NewMovementLotMovementAdapter extends LotMovementAdapter {
 
   public NewMovementLotMovementAdapter(List<LotMovementViewModel> data) {

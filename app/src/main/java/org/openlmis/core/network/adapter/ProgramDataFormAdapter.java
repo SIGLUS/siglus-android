@@ -47,6 +47,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
+@SuppressWarnings("PMD")
 public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>,
     JsonDeserializer<ProgramDataForm> {
 

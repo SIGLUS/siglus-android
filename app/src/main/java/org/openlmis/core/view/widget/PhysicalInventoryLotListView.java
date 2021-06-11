@@ -35,7 +35,6 @@ import roboguice.inject.InjectView;
 
 public class PhysicalInventoryLotListView extends BaseLotListView {
 
-  private static final String TAG = PhysicalInventoryLotListView.class.getSimpleName();
   @InjectView(R.id.btn_done)
   ViewGroup btnDone;
 

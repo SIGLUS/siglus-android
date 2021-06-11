@@ -33,8 +33,6 @@ import rx.Subscriber;
 
 public class RequisitionProductViewHolder extends BaseViewHolder {
 
-  private static final String TAG = RequisitionProductViewHolder.class.getSimpleName();
-
   @InjectView(R.id.tx_FNM)
   TextView productCode;
 

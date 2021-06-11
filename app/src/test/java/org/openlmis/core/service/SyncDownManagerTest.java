@@ -84,6 +84,7 @@ import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class SyncDownManagerTest {
 
   private SyncDownManager syncDownManager;
@@ -432,8 +433,7 @@ public class SyncDownManagerTest {
   }
 
   private void mockFetchPTVServiceResponse() throws LMISException {
-    SyncDownServiceResponse response = getSyncDownServiceResponse();
-
+    getSyncDownServiceResponse();
   }
 
   private SyncDownServiceResponse getSyncDownServiceResponse() throws LMISException {

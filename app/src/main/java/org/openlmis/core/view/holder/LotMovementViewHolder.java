@@ -47,6 +47,7 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import roboguice.inject.InjectView;
 
+@SuppressWarnings("PMD")
 public class LotMovementViewHolder extends BaseViewHolder {
 
   @InjectView(R.id.et_lot_amount)

@@ -1,6 +1,5 @@
 package org.openlmis.core.view.activity;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -46,6 +45,7 @@ import rx.Observable;
 import rx.Subscriber;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class RnRFormListActivityTest {
 
   private RnRFormListActivity rnRFormListActivity;

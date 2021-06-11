@@ -5,6 +5,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.persistence.Migration;
 import org.openlmis.core.utils.DateUtil;
 
+@SuppressWarnings("PMD")
 public class CreateRegimeShortCodeTable extends Migration {
 
   @Override

@@ -35,13 +35,11 @@ import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-
 public class DirtyDataRepository {
 
   private static final String TAG = DirtyDataRepository.class.getSimpleName();
 
   GenericDao<DirtyDataItemInfo> deleteItemInfoGenericDao;
-  private final Context context;
 
   @Inject
   DbUtil dbUtil;
@@ -55,7 +53,6 @@ public class DirtyDataRepository {
   @Inject
   public DirtyDataRepository(Context context) {
     deleteItemInfoGenericDao = new GenericDao<>(DirtyDataItemInfo.class, context);
-    this.context = context;
   }
 
   public void saveAll(List<DirtyDataItemInfo> dirtyDataItemsInfo) {

@@ -26,6 +26,7 @@ import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
 
   private ProductProgramRepository repository;

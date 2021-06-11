@@ -38,7 +38,6 @@ import roboguice.inject.InjectView;
 
 public class BulkInitialInventoryLotListView extends BaseLotListView {
 
-  private static final String TAG = BulkInitialInventoryLotListView.class.getSimpleName();
   @InjectView(R.id.btn_no_stock_done)
   ViewGroup btnNoStockDone;
 

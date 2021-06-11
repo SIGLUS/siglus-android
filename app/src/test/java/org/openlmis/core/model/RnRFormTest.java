@@ -25,6 +25,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class RnRFormTest {
 
   private RnRForm rnRForm;

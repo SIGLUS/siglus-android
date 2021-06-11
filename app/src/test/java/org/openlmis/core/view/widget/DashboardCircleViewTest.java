@@ -39,6 +39,7 @@ import org.openlmis.core.LMISTestRunner;
 @RunWith(LMISTestRunner.class)
 public class DashboardCircleViewTest {
 
+  public static final String COLOR_DBCDEA = "#dbcdea";
   private DashboardCircleView dashboardCircleView;
 
   @Before
@@ -52,8 +53,8 @@ public class DashboardCircleViewTest {
     final ArrayList<DashboardCircleView.Item> normalItems = new ArrayList<>();
     normalItems.add(new DashboardCircleView.Item(Color.parseColor("#abcdef"), 100));
     normalItems.add(new DashboardCircleView.Item(Color.parseColor("#adcbdf"), 200));
-    normalItems.add(new DashboardCircleView.Item(Color.parseColor("#dbcdea"), 300));
-    normalItems.add(new DashboardCircleView.Item(Color.parseColor("#dbcdea"), 400));
+    normalItems.add(new DashboardCircleView.Item(Color.parseColor(COLOR_DBCDEA), 300));
+    normalItems.add(new DashboardCircleView.Item(Color.parseColor(COLOR_DBCDEA), 400));
 
     // when
     dashboardCircleView.setData(normalItems);
@@ -68,8 +69,8 @@ public class DashboardCircleViewTest {
     final ArrayList<DashboardCircleView.Item> abnormalItems = new ArrayList<>();
     abnormalItems.add(new DashboardCircleView.Item(Color.parseColor("#abcdef"), -1));
     abnormalItems.add(new DashboardCircleView.Item(Color.parseColor("#adcbdf"), -2));
-    abnormalItems.add(new DashboardCircleView.Item(Color.parseColor("#dbcdea"), 300));
-    abnormalItems.add(new DashboardCircleView.Item(Color.parseColor("#dbcdea"), 400));
+    abnormalItems.add(new DashboardCircleView.Item(Color.parseColor(COLOR_DBCDEA), 300));
+    abnormalItems.add(new DashboardCircleView.Item(Color.parseColor(COLOR_DBCDEA), 400));
 
     // when
     dashboardCircleView.setData(abnormalItems);
@@ -119,8 +120,8 @@ public class DashboardCircleViewTest {
     final ArrayList<DashboardCircleView.Item> normalItems = new ArrayList<>();
     normalItems.add(new DashboardCircleView.Item(Color.parseColor("#abcdef"), 100));
     normalItems.add(new DashboardCircleView.Item(Color.parseColor("#adcbdf"), 200));
-    normalItems.add(new DashboardCircleView.Item(Color.parseColor("#dbcdea"), 300));
-    normalItems.add(new DashboardCircleView.Item(Color.parseColor("#dbcdea"), 400));
+    normalItems.add(new DashboardCircleView.Item(Color.parseColor(COLOR_DBCDEA), 300));
+    normalItems.add(new DashboardCircleView.Item(Color.parseColor(COLOR_DBCDEA), 400));
     final Canvas mockCanvas = Mockito.mock(Canvas.class);
 
     // when

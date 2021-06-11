@@ -28,6 +28,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
 
 @Data
+@SuppressWarnings("PMD")
 public class InventoryViewModel extends BaseStockMovementViewModel {
 
   long productId;

@@ -26,6 +26,7 @@ import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.widget.SyncDateBottomSheet;
 
+@SuppressWarnings("PMD")
 public class SyncErrorsPresenter extends Presenter {
 
   private SyncDateBottomSheet view;

@@ -16,6 +16,7 @@ import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class CmmRepositoryTest {
 
   private CmmRepository cmmRepository;

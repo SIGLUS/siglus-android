@@ -55,7 +55,6 @@ import rx.functions.Action1;
 public class PTVRequisitionFragment extends BaseReportFragment implements
     PTVRequisitionPresenter.PTVRequisitionView {
 
-  private static final String TAG = PTVRequisitionFragment.class.getSimpleName();
   private long formId;
   protected View containerView;
   private Date periodEndDate;

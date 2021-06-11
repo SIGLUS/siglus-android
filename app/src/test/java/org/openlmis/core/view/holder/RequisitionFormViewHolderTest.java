@@ -24,6 +24,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class RequisitionFormViewHolderTest {
 
   private RequisitionFormViewHolder viewHolder;

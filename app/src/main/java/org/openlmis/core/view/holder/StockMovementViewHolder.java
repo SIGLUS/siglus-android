@@ -50,7 +50,7 @@ import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.MovementTypeDialog;
 import roboguice.inject.InjectView;
 
-
+@SuppressWarnings("PMD")
 public class StockMovementViewHolder extends BaseViewHolder {
 
   @InjectView(R.id.tx_date)

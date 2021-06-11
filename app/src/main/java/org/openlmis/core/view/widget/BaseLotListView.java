@@ -45,7 +45,6 @@ import roboguice.inject.InjectView;
 
 public class BaseLotListView extends FrameLayout {
 
-  private static final String TAG = BaseLotListView.class.getSimpleName();
   public static final String ADD_LOT = "add_new_lot";
   protected Context context;
 

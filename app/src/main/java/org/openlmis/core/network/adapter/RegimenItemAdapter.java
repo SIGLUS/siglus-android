@@ -37,7 +37,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.repository.RegimenRepository;
 import roboguice.RoboGuice;
 
-
+@SuppressWarnings("PMD")
 public class RegimenItemAdapter implements JsonSerializer<RegimenItem>,
     JsonDeserializer<RegimenItem> {
 

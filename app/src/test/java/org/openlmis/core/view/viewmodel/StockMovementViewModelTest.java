@@ -46,6 +46,10 @@ import org.openlmis.core.view.widget.NewMovementLotListView;
 @RunWith(LMISTestRunner.class)
 public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
+  public static final String ISSUE = "issue";
+  public static final String NUMBER_100 = "100";
+  public static final String DOCUMENT_NO = "111";
+  public static final String STOCK_EXISTENCE = "123";
   private StockMovementViewModel stockMovementViewModel;
   private MovementReasonManager.MovementReason movementReason;
   private Calendar featureCalendar;
@@ -68,35 +72,35 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   @Test
   public void shouldReturnValidWhenStockMovementViewModelHasAllData() {
     stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason);
-    stockMovementViewModel.setReceived("100");
+    stockMovementViewModel.setReceived(NUMBER_100);
     assertTrue(stockMovementViewModel.validateInputValid());
   }
 
   @Test
   public void shouldReturnFalseIfMovementDateIsMissing() {
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason);
-    stockMovementViewModel.setReceived("100");
+    stockMovementViewModel.setReceived(NUMBER_100);
     assertFalse(stockMovementViewModel.validateEmpty());
   }
 
   @Test
   public void shouldReturnFalseIfReasonIsMissing() {
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setMovementDate("2016-11-20");
-    stockMovementViewModel.setReceived("100");
+    stockMovementViewModel.setReceived(NUMBER_100);
     assertFalse(stockMovementViewModel.validateEmpty());
   }
 
   @Test
   public void shouldReturnFalseIfAllQuantitiesAreEmpty() {
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason);
     stockMovementViewModel.setMovementDate("2016-11-20");
     assertFalse(stockMovementViewModel.validateEmpty());
@@ -105,10 +109,10 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   @Test
   public void shouldSetRequestedAsNullWhenRequestedIsNull() throws Exception {
     stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason);
-    stockMovementViewModel.setReceived("100");
+    stockMovementViewModel.setReceived(NUMBER_100);
     StockMovementItem stockMovementItem = stockMovementViewModel
         .convertViewToModel(new StockCard());
     assertNull(stockMovementItem.getRequested());
@@ -117,11 +121,11 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   @Test
   public void shouldSetRequestedAsNullWhenRequestedIsEmpty() throws Exception {
     stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(
-        MovementReasonManager.MovementType.ISSUE, "issue", "issue"));
-    stockMovementViewModel.setIssued("100");
+        MovementReasonManager.MovementType.ISSUE, ISSUE, ISSUE));
+    stockMovementViewModel.setIssued(NUMBER_100);
     stockMovementViewModel.setRequested("");
     StockMovementItem stockMovementItem = stockMovementViewModel
         .convertViewToModel(new StockCard());
@@ -130,8 +134,8 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldReturnFalseIfReceivedIsZero() {
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason);
     stockMovementViewModel.setReceived("0");
     assertFalse(stockMovementViewModel.validateQuantitiesNotZero());
@@ -139,8 +143,8 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldReturnFalseIfIssueIsZero() {
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason);
     stockMovementViewModel.setIssued("0");
     assertFalse(stockMovementViewModel.validateQuantitiesNotZero());
@@ -148,8 +152,8 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldReturnFalseIfNegativeAdjustmentIsZero() {
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason);
     stockMovementViewModel.setNegativeAdjustment("0");
     assertFalse(stockMovementViewModel.validateQuantitiesNotZero());
@@ -157,8 +161,8 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldReturnFalseIfPositiveAdjustmentIsZero() {
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason);
     stockMovementViewModel.setPositiveAdjustment("0");
     assertFalse(stockMovementViewModel.validateQuantitiesNotZero());
@@ -166,8 +170,8 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldReturnTrueIfReceivedIsNotZero() {
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason);
     stockMovementViewModel.setReceived("12");
     assertTrue(stockMovementViewModel.validateQuantitiesNotZero());
@@ -176,11 +180,11 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   @Test
   public void shouldSetRequestedCorrectlyWhenRequestedNotEmptyAndNotNull() throws Exception {
     stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
-    stockMovementViewModel.setStockExistence("123");
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(
-        MovementReasonManager.MovementType.ISSUE, "issue", "issue"));
-    stockMovementViewModel.setIssued("100");
+        MovementReasonManager.MovementType.ISSUE, ISSUE, ISSUE));
+    stockMovementViewModel.setIssued(NUMBER_100);
     stockMovementViewModel.setRequested("999");
     StockMovementItem stockMovementItem = stockMovementViewModel
         .convertViewToModel(new StockCard());
@@ -196,7 +200,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     stockMovementViewModel.setStockExistence("1");
     stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(
         MovementReasonManager.MovementType.RECEIVE, "receive", "entries"));
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReceived("0");
     stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
     LotMovementViewModel lot1 = new LotMovementViewModel();
@@ -220,7 +224,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     stockMovementViewModel.setStockExistence("1");
     stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(
         MovementReasonManager.MovementType.RECEIVE, "receive", "entries"));
-    stockMovementViewModel.setDocumentNo("111");
+    stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
     stockMovementViewModel.setReceived("0");
     stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
     LotMovementViewModel lot1 = new LotMovementViewModel();
@@ -244,7 +248,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   @Test
   public void shouldValidateEarlyExpiredLotIssued() throws Exception {
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
-        .setLotSOH("100")
+        .setLotSOH(NUMBER_100)
         .setExpiryDate(DateUtil.formatDateWithoutDay(oldCalendar.getTime()))
         .setQuantity(null).build());
     assertEquals(NewMovementLotListView.LotStatus.containExpiredLots,
@@ -252,7 +256,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
     stockMovementViewModel.existingLotMovementViewModelList.clear();
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
-        .setLotSOH("100")
+        .setLotSOH(NUMBER_100)
         .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
         .setQuantity("50").build());
     assertEquals(NewMovementLotListView.LotStatus.defaultStatus,
@@ -266,7 +270,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     stockMovementViewModel.existingLotMovementViewModelList
         .add(new LotMovementViewModelBuilder().build());
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
-        .setLotSOH("100")
+        .setLotSOH(NUMBER_100)
         .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
         .setQuantity("50").build());
     // LotMovementViewModelBuilder().build() : expireDate == null
@@ -275,9 +279,9 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
     stockMovementViewModel.existingLotMovementViewModelList.clear();
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
-        .setLotSOH("100")
+        .setLotSOH(NUMBER_100)
         .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
-        .setQuantity("100").build());
+        .setQuantity(NUMBER_100).build());
     stockMovementViewModel.existingLotMovementViewModelList
         .add(new LotMovementViewModelBuilder().build());
     stockMovementViewModel.existingLotMovementViewModelList
@@ -285,7 +289,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     stockMovementViewModel.existingLotMovementViewModelList
         .add(new LotMovementViewModelBuilder().build());
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
-        .setLotSOH("100")
+        .setLotSOH(NUMBER_100)
         .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
         .setQuantity("50").build());
     assertEquals(NewMovementLotListView.LotStatus.containExpiredLots,
@@ -295,7 +299,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     stockMovementViewModel.existingLotMovementViewModelList
         .add(new LotMovementViewModelBuilder().build());
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
-        .setLotSOH("100")
+        .setLotSOH(NUMBER_100)
         .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
         .setQuantity("50")
         .build());
@@ -304,12 +308,12 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
 
     stockMovementViewModel.existingLotMovementViewModelList.clear();
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
-        .setLotSOH("100")
+        .setLotSOH(NUMBER_100)
         .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar.getTime()))
         .setQuantity(null)
         .build());
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
-        .setLotSOH("100")
+        .setLotSOH(NUMBER_100)
         .setExpiryDate(DateUtil.formatDateWithoutDay(featureCalendar1.getTime()))
         .setQuantity("10")
         .build());
@@ -320,17 +324,17 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   @Test
   public void shouldValidateLotChange() throws Exception {
     stockMovementViewModel.existingLotMovementViewModelList.add(
-        new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50")
+        new LotMovementViewModelBuilder().setLotSOH(NUMBER_100).setQuantity("50")
             .setHasLotDataChanged(false).build());
     assertFalse(stockMovementViewModel.hasLotDataChanged());
 
     stockMovementViewModel.newLotMovementViewModelList
-        .add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("30").build());
+        .add(new LotMovementViewModelBuilder().setLotSOH(NUMBER_100).setQuantity("30").build());
     assertTrue(stockMovementViewModel.hasLotDataChanged());
 
     stockMovementViewModel.newLotMovementViewModelList.clear();
     stockMovementViewModel.existingLotMovementViewModelList.add(
-        new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50")
+        new LotMovementViewModelBuilder().setLotSOH(NUMBER_100).setQuantity("50")
             .setHasLotDataChanged(true).build());
     stockMovementViewModel.setSignature("signa");
     stockMovementViewModel.setReason(

@@ -79,6 +79,7 @@ import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   RnrFormRepository rnrFormRepository;

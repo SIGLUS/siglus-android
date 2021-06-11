@@ -33,6 +33,7 @@ import org.openlmis.core.view.widget.NewMovementLotListView.LotStatus;
 
 @Data
 @NoArgsConstructor
+@SuppressWarnings("PMD")
 public class StockMovementViewModel extends BaseStockMovementViewModel {
 
   MovementReasonManager.MovementReason reason;

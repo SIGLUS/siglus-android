@@ -55,6 +55,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+@SuppressWarnings("PMD")
 public class RnrFormRepository {
 
   @Inject

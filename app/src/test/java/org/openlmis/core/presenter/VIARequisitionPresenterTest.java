@@ -84,6 +84,7 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class VIARequisitionPresenterTest {
 
   private VIARequisitionPresenter presenter;

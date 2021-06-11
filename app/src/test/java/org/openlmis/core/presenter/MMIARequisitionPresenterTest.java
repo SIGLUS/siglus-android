@@ -57,6 +57,7 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class MMIARequisitionPresenterTest {
 
   private SyncUpManager syncUpManager;

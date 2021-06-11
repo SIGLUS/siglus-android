@@ -27,6 +27,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnrFormItem;
 
 @Data
+@SuppressWarnings("PMD")
 public class RequisitionFormItemViewModel {
 
   private String fmn;

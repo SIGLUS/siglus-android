@@ -50,6 +50,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+@SuppressWarnings("PMD")
 public class RnRFormListPresenter extends Presenter {
 
   @Inject

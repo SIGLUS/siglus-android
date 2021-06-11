@@ -26,6 +26,7 @@ import java.net.Socket;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
+@SuppressWarnings("PMD")
 public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, InternetListener> {
 
   private static final String TAG = InternetCheck.class.getSimpleName();

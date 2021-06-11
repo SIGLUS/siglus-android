@@ -42,6 +42,7 @@ import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class StockMovementViewHolderTest {
 
   private StockMovementViewHolder viewHolder;
@@ -189,8 +190,7 @@ public class StockMovementViewHolderTest {
   }
 
   @Test
-  public void shouldValidateMovementDateOnSelectionAndShowToastIfInvalid()
-      throws ParseException, LMISException {
+  public void shouldValidateMovementDateOnSelectionAndShowToastIfInvalid() {
     viewHolder.populate(viewModel, stockCard);
 
     StockMovementViewHolder.MovementDateListener movementDateListener = viewHolder.new MovementDateListener(

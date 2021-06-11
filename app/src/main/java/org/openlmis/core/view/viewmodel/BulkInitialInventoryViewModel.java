@@ -32,6 +32,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
+@SuppressWarnings("PMD")
 public class BulkInitialInventoryViewModel extends InventoryViewModel {
 
   private static final String TAG = BulkInitialInventoryViewModel.class.getSimpleName();

@@ -31,6 +31,7 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+@SuppressWarnings("PMD")
 public class ProductProgramRepository {
 
   GenericDao<ProductProgram> genericDao;

@@ -33,12 +33,14 @@ import org.openlmis.core.utils.DateUtil;
 @RunWith(LMISTestRunner.class)
 public class RapidTestReportViewModelTest {
 
+  public static final String PROGRAM_NAME = "name";
+  public static final String PERIOD = "2016-09-11";
   RapidTestReportViewModel viewModel;
 
   @Test
   public void shouldConvertToDataModel() throws Exception {
     viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
     RapidTestFormItemViewModel itemViewModel = new RapidTestFormItemViewModel(
         new MovementReasonManager.MovementReason(
             MovementReasonManager.MovementType.ISSUE,
@@ -46,7 +48,7 @@ public class RapidTestReportViewModelTest {
     List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(itemViewModel);
     viewModel.setItemViewModelList(itemViewModelList);
 
-    Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null, null);
+    Program program = new Program(Constants.RAPID_TEST_CODE, PROGRAM_NAME, "", false, null, null);
     viewModel.convertFormViewModelToDataModel(program);
     assertFalse(this.viewModel.isSynced());
     assertFalse(this.viewModel.isSubmitted());
@@ -73,7 +75,7 @@ public class RapidTestReportViewModelTest {
     RapidTestFormItemViewModel itemViewModel = mock(RapidTestFormItemViewModel.class);
     List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(itemViewModel);
     viewModel.setItemViewModelList(itemViewModelList);
-    Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null, null);
+    Program program = new Program(Constants.RAPID_TEST_CODE, PROGRAM_NAME, "", false, null, null);
     viewModel.convertFormViewModelToDataModel(program);
     verify(itemViewModel).convertToDataModel();
     assertNull(this.viewModel.getSyncedTime());
@@ -91,7 +93,7 @@ public class RapidTestReportViewModelTest {
   @Test
   public void shouldSetRapidTestFormAndUpdateStatus() throws Exception {
     viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
     ProgramDataForm rapidTestForm = new ProgramDataForm();
     rapidTestForm.setStatus(Status.DRAFT);
     viewModel.setRapidTestForm(rapidTestForm);
@@ -118,7 +120,7 @@ public class RapidTestReportViewModelTest {
   @Test
   public void shouldConvertViewModelAndUpdateDataModel() throws Exception {
     viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
     MovementReasonManager.MovementReason reason1 = new MovementReasonManager.MovementReason(
         MovementReasonManager.MovementType.ISSUE, "ACC_EMERGENCY", "Acc emergency");
 
@@ -138,10 +140,10 @@ public class RapidTestReportViewModelTest {
     rapidTestForm.setPeriodEnd(this.viewModel.getPeriod().getEnd().toDate());
     this.viewModel.setRapidTestForm(rapidTestForm);
     this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().add(
-        new ProgramDataFormItem("name", new ProgramDataColumnBuilder().setCode("code").build(),
+        new ProgramDataFormItem(PROGRAM_NAME, new ProgramDataColumnBuilder().setCode("code").build(),
             100));
 
-    Program program = new Program(Constants.RAPID_TEST_CODE, "name", "", false, null, null);
+    Program program = new Program(Constants.RAPID_TEST_CODE, PROGRAM_NAME, "", false, null, null);
     this.viewModel.convertFormViewModelToDataModel(program);
 
     assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().size(), is(3));
@@ -165,7 +167,7 @@ public class RapidTestReportViewModelTest {
   @Test
   public void shouldValidateItemList() throws Exception {
     viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
     RapidTestFormItemViewModel itemViewModel1 = mock(RapidTestFormItemViewModel.class);
     RapidTestFormItemViewModel itemViewModel2 = mock(RapidTestFormItemViewModel.class);
 
@@ -183,7 +185,7 @@ public class RapidTestReportViewModelTest {
   @Test
   public void shouldReturnIsAuthorized() throws Exception {
     viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
     assertFalse(viewModel.isAuthorized());
 
 
@@ -192,7 +194,7 @@ public class RapidTestReportViewModelTest {
   @Test
   public void shouldSetSignature() throws Exception {
     viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
 
     assertNull(viewModel.getRapidTestForm().getStatus());
 
@@ -213,7 +215,7 @@ public class RapidTestReportViewModelTest {
   @Test
   public void shouldUpdateTotal() throws Exception {
     viewModel = new RapidTestReportViewModel(
-        Period.of(DateUtil.parseString("2016-09-11", DateUtil.DB_DATE_FORMAT)));
+        Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
     viewModel.getItemViewModelList().get(0).getGridHIVDetermine().setConsumptionValue("100");
     viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDETERMINE, consumption);
     assertEquals("100", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());

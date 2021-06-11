@@ -58,7 +58,6 @@ public class BulkInitialInventoryPresenterTest extends LMISRepositoryUnitTest {
   private LongSparseArray<InventoryViewModel> models;
   private LongSparseArray<Product> basicProducts;
   private LongSparseArray<Product> noBasicProducts;
-  private final int DEFAULT_ID = 0;
 
   @Before
   public void setup() throws Exception {

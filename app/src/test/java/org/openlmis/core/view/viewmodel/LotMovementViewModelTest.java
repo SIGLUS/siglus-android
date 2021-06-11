@@ -16,6 +16,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.Product;
 
+@SuppressWarnings("PMD")
 public class LotMovementViewModelTest {
 
   private final LotMovementViewModel viewModel = new LotMovementViewModel();

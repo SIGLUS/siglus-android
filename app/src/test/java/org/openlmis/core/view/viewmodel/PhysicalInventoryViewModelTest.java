@@ -18,6 +18,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class PhysicalInventoryViewModelTest {
 
   private PhysicalInventoryViewModel viewModel;

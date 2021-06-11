@@ -37,6 +37,7 @@ import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import roboguice.RoboGuice;
 
+@SuppressWarnings("PMD")
 public class ProgramDataFormBasicItemAdapter implements JsonSerializer<ProgramDataFormBasicItem>,
     JsonDeserializer<ProgramDataFormBasicItem> {
 

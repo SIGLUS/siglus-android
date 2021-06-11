@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
+apply plugin: 'pmd'
 apply plugin: 'com.github.spotbugs'
 apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
 apply from: "${rootProject.projectDir}/gradle/appcenter.gradle"
@@ -16,10 +17,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         flavorDimensions "1"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                includeCompileClasspath true
-            }
+        buildFeatures {
+            dataBinding = true
         }
         if (project.hasProperty("prodsim")) {
             versionCode((new Date().getTime() / 1000).toInteger())
@@ -112,14 +111,28 @@ android {
 }
 
 task checkstyle(type: Checkstyle) {
-    configFile file("config/quality/checkstyle/checkstyle.xml")
+    configFile file("config/checkstyle/checkstyle.xml")
     source 'src/main'
     include '**/*.java'
     exclude '**/gen/**'
     exclude '**/migrations/**'
-
     classpath = files()
     ignoreFailures false
+}
+
+task pmd(type: Pmd) {
+    ruleSetFiles = files("config/pmd/ruleset.xml")
+    ignoreFailures = false
+    consoleOutput = true
+    ruleSets = []
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    reports {
+        xml.enabled = false
+        html.enabled = true
+        html.destination = file("$project.buildDir/outputs/pmd/pmd.html")
+    }
 }
 
 spotbugs {

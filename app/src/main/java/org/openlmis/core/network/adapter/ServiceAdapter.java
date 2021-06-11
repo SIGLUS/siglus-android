@@ -33,6 +33,7 @@ import org.openlmis.core.model.Service;
 import org.openlmis.core.model.repository.ProgramRepository;
 import roboguice.RoboGuice;
 
+@SuppressWarnings("PMD")
 public class ServiceAdapter implements JsonDeserializer<Service> {
 
   @Inject

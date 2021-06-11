@@ -62,8 +62,6 @@ import rx.Subscription;
 public class SelectPeriodActivity extends BaseActivity implements
     SelectPeriodPresenter.SelectPeriodView {
 
-  private static final String TAG = SelectPeriodActivity.class.getSimpleName();
-
   @InjectView(R.id.tv_select_period_instruction)
   protected TextView tvInstruction;
 

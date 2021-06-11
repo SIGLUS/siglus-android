@@ -44,6 +44,7 @@ import rx.Subscription;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class UnpackKitPresenterTest {
 
   private UnpackKitPresenter presenter;

@@ -110,6 +110,7 @@ import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
 
+@SuppressWarnings("PMD")
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
   private static final String TAG = LmisSqliteOpenHelper.class.getSimpleName();

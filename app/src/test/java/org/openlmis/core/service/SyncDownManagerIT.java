@@ -49,7 +49,7 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
-
+@SuppressWarnings("PMD")
 public class SyncDownManagerIT {
 
   private SyncDownManager syncDownManager;

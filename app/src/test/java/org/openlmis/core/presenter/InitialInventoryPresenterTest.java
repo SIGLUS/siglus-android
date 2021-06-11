@@ -48,6 +48,7 @@ import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
   private InitialInventoryPresenter initialInventoryPresenter;

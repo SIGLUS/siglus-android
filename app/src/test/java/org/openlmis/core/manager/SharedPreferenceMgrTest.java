@@ -20,6 +20,7 @@ import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class SharedPreferenceMgrTest {
 
   private SharedPreferenceMgr sharedPreferenceMgr;

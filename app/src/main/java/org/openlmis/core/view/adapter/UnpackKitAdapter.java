@@ -30,6 +30,7 @@ import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import rx.functions.Action1;
 
+@SuppressWarnings("PMD")
 public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implements
     FilterableAdapter {
 

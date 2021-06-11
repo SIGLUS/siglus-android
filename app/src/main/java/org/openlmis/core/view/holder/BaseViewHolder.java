@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import roboguice.inject.InjectView;
 
+@SuppressWarnings("PMD")
 public class BaseViewHolder extends RecyclerView.ViewHolder {
 
   private ArrayList<ViewMembersInjector> viewsForInjection;

@@ -31,6 +31,7 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class SelectPeriodPresenterTest {
 
   private SelectPeriodPresenter.SelectPeriodView view;

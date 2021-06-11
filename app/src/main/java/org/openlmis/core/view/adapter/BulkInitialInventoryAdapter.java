@@ -31,7 +31,6 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHolder> {
 
-  private static final String TAG = BulkInitialInventoryAdapter.class.getSimpleName();
   private final RemoveNonBasicProduct removeNonBasicProductListener;
   private final InventoryItemStatusChangeListener refreshCompleteCountListener;
 

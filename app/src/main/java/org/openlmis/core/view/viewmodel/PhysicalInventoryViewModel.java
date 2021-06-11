@@ -33,6 +33,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
+@SuppressWarnings("PMD")
 public class PhysicalInventoryViewModel extends InventoryViewModel {
 
   private DraftInventory draftInventory;

@@ -33,6 +33,7 @@ import roboguice.RoboGuice;
 import rx.Observable;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class SelectRegimeProductsActivityTest {
 
   private SelectRegimeProductsActivity selectProductsActivity;

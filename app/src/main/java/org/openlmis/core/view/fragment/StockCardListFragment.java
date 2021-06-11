@@ -56,8 +56,6 @@ import roboguice.inject.InjectView;
 public class StockCardListFragment extends BaseFragment implements
     StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
 
-  private static final String TAG = StockCardListFragment.class.getSimpleName();
-
   @InjectView(R.id.sort_spinner)
   Spinner sortSpinner;
 

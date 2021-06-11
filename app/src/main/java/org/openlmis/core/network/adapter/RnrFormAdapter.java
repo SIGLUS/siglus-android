@@ -46,6 +46,7 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import roboguice.RoboGuice;
 
+@SuppressWarnings("PMD")
 public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer<RnRForm> {
 
   @Inject

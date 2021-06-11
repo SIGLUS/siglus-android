@@ -38,6 +38,7 @@ import org.openlmis.core.model.ServiceItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import roboguice.RoboGuice;
 
+@SuppressWarnings("PMD")
 public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
     JsonDeserializer<RnrFormItem> {
 

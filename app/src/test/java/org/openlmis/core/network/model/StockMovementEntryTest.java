@@ -1,6 +1,5 @@
 package org.openlmis.core.network.model;
 
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -22,6 +21,7 @@ import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class StockMovementEntryTest {
 
   @Test

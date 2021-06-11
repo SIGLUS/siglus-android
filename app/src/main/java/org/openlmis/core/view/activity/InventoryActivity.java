@@ -44,6 +44,7 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.functions.Action1;
 
+@SuppressWarnings("PMD")
 public abstract class InventoryActivity extends SearchBarActivity implements
     InventoryPresenter.InventoryView, SimpleDialogFragment.MsgDialogCallBack {
 

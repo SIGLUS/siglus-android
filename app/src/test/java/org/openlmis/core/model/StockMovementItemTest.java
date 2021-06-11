@@ -13,6 +13,7 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
+@SuppressWarnings("PMD")
 public class StockMovementItemTest {
 
   private StockMovementItem stockMovementItem;

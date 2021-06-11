@@ -79,9 +79,6 @@ public class MMIAPatientInfoList extends LinearLayout {
   private LayoutInflater layoutInflater;
   private List<BaseInfoItem> dataList;
   private final Map<String, List<BaseInfoItem>> tableMap = new HashMap<>();
-
-
-  private boolean hasDataChanged = false;
   private boolean dataWithOldFormat = false;
 
   public MMIAPatientInfoList(Context context) {
@@ -298,7 +295,6 @@ public class MMIAPatientInfoList extends LinearLayout {
 
     @Override
     public void afterTextChanged(Editable editable) {
-      hasDataChanged = true;
       item.setValue(editable.toString());
     }
   }

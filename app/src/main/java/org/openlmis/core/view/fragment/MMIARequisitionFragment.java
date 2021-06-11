@@ -65,7 +65,6 @@ import rx.functions.Action1;
 public class MMIARequisitionFragment extends BaseReportFragment implements
     MMIARequisitionPresenter.MMIARequisitionView {
 
-  private static final String TAG = MMIARequisitionFragment.class.getSimpleName();
   @InjectView(R.id.rnr_form_list)
   protected MMIARnrFormProductList rnrFormList;
 

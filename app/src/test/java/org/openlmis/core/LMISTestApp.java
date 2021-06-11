@@ -40,7 +40,7 @@ public class LMISTestApp extends LMISApp {
 
   @Override
   public boolean getFeatureToggleFor(int id) {
-    return featureToggles.get(id) == null ? false : featureToggles.get(id);
+    return featureToggles.get(id) != null && featureToggles.get(id);
   }
 
   @Override

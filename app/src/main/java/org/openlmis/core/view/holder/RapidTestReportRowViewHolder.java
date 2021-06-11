@@ -31,8 +31,6 @@ import roboguice.inject.InjectView;
 
 public class RapidTestReportRowViewHolder extends BaseViewHolder {
 
-  private static final String TAG = RapidTestReportRowViewHolder.class.getSimpleName();
-
   @InjectView(R.id.rv_rapid_report_grid_item_list)
   RecyclerView rvRapidReportGridListView;
 

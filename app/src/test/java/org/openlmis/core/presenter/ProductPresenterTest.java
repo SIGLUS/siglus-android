@@ -33,6 +33,7 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class ProductPresenterTest {
 
   private ProductPresenter presenter;

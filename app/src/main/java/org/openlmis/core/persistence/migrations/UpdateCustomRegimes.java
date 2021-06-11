@@ -6,10 +6,10 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.Migration;
 import org.openlmis.core.utils.DateUtil;
 
+@SuppressWarnings("PMD")
 public class UpdateCustomRegimes extends Migration {
 
   DbUtil dbUtil;
-
 
   public UpdateCustomRegimes() {
     dbUtil = new DbUtil();

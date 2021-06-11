@@ -27,8 +27,6 @@ import roboguice.inject.InjectView;
 
 public class RapidTestReportBodyLeftHeaderViewHolder extends BaseViewHolder {
 
-  private static final String TAG = RapidTestReportBodyLeftHeaderViewHolder.class.getSimpleName();
-
   @InjectView(R.id.rapid_body_left_title)
   TextView mTitle;
 

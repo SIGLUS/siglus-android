@@ -45,9 +45,9 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+@SuppressWarnings("PMD")
 public class UnpackKitPresenter extends Presenter {
 
-  private static final String TAG = UnpackKitPresenter.class.getSimpleName();
   @Inject
   private ProductRepository productRepository;
 

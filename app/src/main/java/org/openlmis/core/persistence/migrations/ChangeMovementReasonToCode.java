@@ -18,7 +18,6 @@
 
 package org.openlmis.core.persistence.migrations;
 
-
 import java.util.List;
 import java.util.Locale;
 import org.openlmis.core.LMISApp;
@@ -31,7 +30,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.Migration;
 
-
+@SuppressWarnings("PMD")
 public class ChangeMovementReasonToCode extends Migration {
 
   GenericDao<StockMovementItem> stockItemGenericDao;

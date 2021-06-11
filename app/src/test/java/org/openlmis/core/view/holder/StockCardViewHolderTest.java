@@ -23,6 +23,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class StockCardViewHolderTest {
 
   private StockCardViewHolder viewHolder;

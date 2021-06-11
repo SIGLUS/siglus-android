@@ -51,7 +51,6 @@ public class ProgramDataFormRepository {
   private final GenericDao<ProgramDataForm> genericDao;
   private final GenericDao<ProgramDataFormItem> programDataFormItemGenericDao;
   private final GenericDao<ProgramDataFormBasicItem> programDataFormBasicItemGenericDao;
-  private final GenericDao<ProgramDataColumn> programDataColumnGenericDao;
   private final Context context;
 
   @Inject
@@ -65,7 +64,6 @@ public class ProgramDataFormRepository {
     this.context = context;
     genericDao = new GenericDao<>(ProgramDataForm.class, context);
     programDataFormItemGenericDao = new GenericDao<>(ProgramDataFormItem.class, context);
-    programDataColumnGenericDao = new GenericDao<>(ProgramDataColumn.class, context);
     programDataFormBasicItemGenericDao = new GenericDao<>(ProgramDataFormBasicItem.class, context);
   }
 

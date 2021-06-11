@@ -52,6 +52,7 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 
+@SuppressWarnings("PMD")
 public class StockRepository {
 
   private static final String TAG = StockRepository.class.getSimpleName();

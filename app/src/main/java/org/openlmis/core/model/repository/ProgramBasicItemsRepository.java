@@ -21,7 +21,6 @@ package org.openlmis.core.model.repository;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
 import static org.openlmis.core.utils.Constants.TEST_KIT_PROGRAM_CODE;
 
-import android.content.Context;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,8 +35,6 @@ import org.openlmis.core.model.helper.FormHelper;
 import org.openlmis.core.utils.DateUtil;
 
 public class ProgramBasicItemsRepository {
-
-  private final Context context;
 
   @Inject
   ProgramRepository programRepository;
@@ -57,15 +54,8 @@ public class ProgramBasicItemsRepository {
   @Inject
   ProductRepository productRepository;
 
-
   @Inject
   FormHelper formHelper;
-
-
-  @Inject
-  public ProgramBasicItemsRepository(Context context) {
-    this.context = context;
-  }
 
   public List<ProgramDataFormBasicItem> createInitProgramForm(ProgramDataForm form, Date periodEnd)
       throws LMISException {

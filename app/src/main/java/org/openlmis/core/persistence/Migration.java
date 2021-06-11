@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 
+@SuppressWarnings("PMD")
 public abstract class Migration {
 
   public static final String DIR_MIGRATION = "migrations";

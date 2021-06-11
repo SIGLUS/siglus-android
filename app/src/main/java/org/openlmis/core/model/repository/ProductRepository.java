@@ -16,7 +16,6 @@
  * information contact info@OpenLMIS.org
  */
 
-
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
@@ -42,6 +41,7 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+@SuppressWarnings("PMD")
 public class ProductRepository {
 
   private static final String TAG = ProductRepository.class.getSimpleName();

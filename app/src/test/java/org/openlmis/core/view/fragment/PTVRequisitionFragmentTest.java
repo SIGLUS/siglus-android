@@ -16,7 +16,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.PTVRequisitionPresenter;
 import org.openlmis.core.view.activity.PTVRequisitionActivity;
-import org.openlmis.core.view.widget.PTVTestRnrForm;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
@@ -25,14 +24,12 @@ import roboguice.RoboGuice;
 public class PTVRequisitionFragmentTest {
 
   private PTVRequisitionPresenter ptvRequisitionPresenter;
-  private PTVTestRnrForm ptvTable;
   private PTVRequisitionFragment ptvRequisitionFragment;
   private SharedPreferenceMgr sharedPreferenceMgr;
 
   @Before
   public void setUp() {
     ptvRequisitionPresenter = mock(PTVRequisitionPresenter.class);
-    ptvTable = mock(PTVTestRnrForm.class);
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyModule());
     ptvRequisitionFragment = getPtvRequisitionFragment();
     sharedPreferenceMgr = mock(SharedPreferenceMgr.class);

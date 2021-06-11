@@ -6,8 +6,6 @@ public class LotMovementViewModelBuilder {
 
   private final LotMovementViewModel viewModel;
 
-  private MovementReasonManager.MovementType movementType;
-
   public LotMovementViewModelBuilder() {
     viewModel = new LotMovementViewModel();
   }

@@ -23,7 +23,6 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
@@ -43,8 +42,6 @@ public class BulkInitialInventoryActivityTest {
   private LongSparseArray<Product> noBasicProducts;
   private LongSparseArray<Product> basicProducts;
   private ProductRepository productRepositoryMock;
-  private SingleClickButtonListener singleClickButtonListener;
-
 
   @Before
   public void setUp() throws LMISException {
@@ -53,7 +50,6 @@ public class BulkInitialInventoryActivityTest {
 
     mockedAdapter = mock(BulkInitialInventoryAdapter.class);
     productRepositoryMock = mock(ProductRepository.class);
-    singleClickButtonListener = mock(SingleClickButtonListener.class);
 
     Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name")
         .setStrength("10mg").build();

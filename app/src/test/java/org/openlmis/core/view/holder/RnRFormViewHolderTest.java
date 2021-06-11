@@ -30,6 +30,7 @@ import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 @RunWith(LMISTestRunner.class)
+@SuppressWarnings("PMD")
 public class RnRFormViewHolderTest {
 
   private Program program;

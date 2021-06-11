@@ -19,7 +19,6 @@
 package org.openlmis.core.service;
 
 import android.content.Intent;
-import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -71,6 +70,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 @Singleton
+@SuppressWarnings("PMD")
 public class SyncDownManager {
 
   private static final int DAYS_OF_MONTH = 30;

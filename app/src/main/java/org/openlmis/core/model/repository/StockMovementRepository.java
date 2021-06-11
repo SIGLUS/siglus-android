@@ -51,6 +51,7 @@ import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
+@SuppressWarnings("PMD")
 public class StockMovementRepository {
 
   @Inject
