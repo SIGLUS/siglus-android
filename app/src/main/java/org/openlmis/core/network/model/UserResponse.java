@@ -18,19 +18,19 @@
 
 package org.openlmis.core.network.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
 @Data
 public class UserResponse {
 
-  @JsonProperty("access_token")
+  @SerializedName("access_token")
   private String accessToken;
 
-  @JsonProperty("token_type")
+  @SerializedName("token_type")
   private String tokenType;
 
-  @JsonProperty("expires_in")
+  @SerializedName("expires_in")
   private int expiresIn;
 
   private String scope;

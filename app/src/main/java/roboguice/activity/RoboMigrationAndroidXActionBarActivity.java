@@ -49,8 +49,7 @@ import roboguice.inject.RoboInjector;
 import roboguice.util.RoboContext;
 
 /**
- * migration AndroidX, ActionBarAction only in support-v7.jar see {@link
- * roboguice.activity.RoboActionBarActivity}
+ * migration AndroidX, ActionBarAction only in support-v7.jar see {@link roboguice.activity.RoboActionBarActivity}
  */
 public class RoboMigrationAndroidXActionBarActivity extends AppCompatActivity implements
     RoboContext {

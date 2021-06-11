@@ -128,8 +128,7 @@ public class LoginPresenterTest {
     verify(internetCheck1).execute(internetCheckCallBack.capture());
     internetCheckCallBack.getValue().launchResponse(true);
     verify(mockActivity).loading();
-    verify(mockedApi)
-        .authorizeUser(eq("password"), eq("username"), eq("password"), loginCB.capture());
+    verify(mockedApi).login(eq("password"), eq("username"), eq("password"), loginCB.capture());
 
     loginCB.getValue().success(userResponse, retrofitResponse);
 
@@ -143,8 +142,7 @@ public class LoginPresenterTest {
     internetCheckCallBack.getValue().launchResponse(true);
     verify(mockActivity).loading();
 
-    verify(mockedApi)
-        .authorizeUser(eq("password"), eq("username"), eq("password"), loginCB.capture());
+    verify(mockedApi).login(eq("password"), eq("username"), eq("password"), loginCB.capture());
 
     List<Program> supportedPrograms = newArrayList(new ProgramBuilder().build(),
         new ProgramBuilder().build());
@@ -176,8 +174,7 @@ public class LoginPresenterTest {
     // when
     internetCheckCallBack.getValue().launchResponse(true);
     // then
-    verify(mockedApi)
-        .authorizeUser(eq("password"), eq("CS_Role1"), eq("password1"), loginCB.capture());
+    verify(mockedApi).login(eq("password"), eq("CS_Role1"), eq("password1"), loginCB.capture());
 
     // when
     loginCB.getValue().success(userResponse, retrofitResponse);
@@ -206,8 +203,7 @@ public class LoginPresenterTest {
     // when
     internetCheckCallBack.getValue().launchResponse(true);
     // then
-    verify(mockedApi)
-        .authorizeUser(eq("password"), eq("CS_Role1"), eq("password1"), loginCB.capture());
+    verify(mockedApi).login(eq("password"), eq("CS_Role1"), eq("password1"), loginCB.capture());
 
     // when
     loginCB.getValue().success(userResponse, retrofitResponse);
@@ -222,8 +218,7 @@ public class LoginPresenterTest {
     presenter.startLogin("username", "password", false);
     verify(internetCheck1).execute(internetCheckCallBack.capture());
     internetCheckCallBack.getValue().launchResponse(true);
-    verify(mockedApi)
-        .authorizeUser(eq("password"), eq("username"), eq("password"), loginCB.capture());
+    verify(mockedApi).login(eq("password"), eq("username"), eq("password"), loginCB.capture());
     loginCB.getValue().success(userResponse, retrofitResponse);
 
     verify(syncDownManager).syncDownServerData(any(Subscriber.class));

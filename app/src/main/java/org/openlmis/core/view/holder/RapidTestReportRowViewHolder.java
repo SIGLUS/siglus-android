@@ -54,8 +54,7 @@ public class RapidTestReportRowViewHolder extends BaseViewHolder {
   }
 
   /**
-   * don`t use notifyDataChange update value, it will make item relayout and recyclerView scroll
-   * unexpected pixel
+   * don`t use notifyDataChange update value, it will make item relayout and recyclerView scroll unexpected pixel
    */
   public void updateRowValue() {
     for (int i = 0; i < adapter.getItemCount(); i++) {

@@ -399,6 +399,7 @@ public class RapidTestReportViewModel implements Serializable {
   }
 
   private static class Total {
+
     long longTotal;
     String stringTotal;
 

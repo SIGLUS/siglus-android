@@ -118,24 +118,24 @@ public class SelectRegimeProductsActivity extends BaseActivity {
 
   Subscriber<List<RegimeProductViewModel>> subscriber =
       new Subscriber<List<RegimeProductViewModel>>() {
-    @Override
-    public void onCompleted() {
-      loaded();
-      mAdapter.notifyDataSetChanged();
-    }
+        @Override
+        public void onCompleted() {
+          loaded();
+          mAdapter.notifyDataSetChanged();
+        }
 
-    @Override
-    public void onError(Throwable e) {
-      loaded();
-      ToastUtil.show(e.getMessage());
-    }
+        @Override
+        public void onError(Throwable e) {
+          loaded();
+          ToastUtil.show(e.getMessage());
+        }
 
-    @Override
-    public void onNext(List<RegimeProductViewModel> data) {
-      viewModels.clear();
-      viewModels.addAll(data);
-    }
-  };
+        @Override
+        public void onNext(List<RegimeProductViewModel> data) {
+          viewModels.clear();
+          viewModels.addAll(data);
+        }
+      };
 
   Subscriber<Regimen> saveSubscriber = new Subscriber<Regimen>() {
     @Override

@@ -145,15 +145,15 @@ public class LoginPresenter extends Presenter {
   private InternetCheck.Callback checkNetworkConnected(User user, boolean fromReSync) {
     return internet -> {
       if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-        authorizeAndLoginUserRemote(user, fromReSync);
+        loginRemote(user, fromReSync);
       } else {
-        authorizeAndLoginUserLocal(user);
+        loginLocal(user);
       }
     };
   }
 
 
-  private void authorizeAndLoginUserLocal(User user) {
+  private void loginLocal(User user) {
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
       TrainingEnvironmentHelper.getInstance().setUpData();
     }
@@ -180,36 +180,34 @@ public class LoginPresenter extends Presenter {
     }
   }
 
-  private void authorizeAndLoginUserRemote(final User user, final boolean fromReSync) {
+  private void loginRemote(final User user, final boolean fromReSync) {
     if (UserInfoMgr.getInstance().getUser() != null) {
       UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
     }
     LMISApp.getInstance().getRestApi()
-        .authorizeUser(GRANT_TYPE, user.getUsername(), user.getPassword(),
-            new Callback<UserResponse>() {
-              @Override
-              public void success(UserResponse userResponse, Response response) {
-                if (userResponse == null || userResponse.getAccessToken() == null) {
-                  onLoginFailed();
-                } else {
-                  user.setAccessToken(userResponse.getAccessToken());
-                  user.setTokenType(userResponse.getTokenType());
-                  user.setReferenceDataUserId(userResponse.getReferenceDataUserId());
-                  user.setIsTokenExpired(false);
+        .login(GRANT_TYPE, user.getUsername(), user.getPassword(), new Callback<UserResponse>() {
+          @Override
+          public void success(UserResponse userResponse, Response response) {
+            if (userResponse == null || userResponse.getAccessToken() == null) {
+              onLoginFailed();
+            } else {
+              user.setAccessToken(userResponse.getAccessToken());
+              user.setTokenType(userResponse.getTokenType());
+              user.setReferenceDataUserId(userResponse.getReferenceDataUserId());
+              user.setIsTokenExpired(false);
+              onLoginSuccess(user, fromReSync);
+            }
+          }
 
-                  onLoginSuccess(user, fromReSync);
-                }
-              }
-
-              @Override
-              public void failure(RetrofitError error) {
-                if (error.getCause() instanceof NetWorkException) {
-                  authorizeAndLoginUserLocal(user);
-                } else {
-                  onLoginFailed();
-                }
-              }
-            });
+          @Override
+          public void failure(RetrofitError error) {
+            if (error.getCause() instanceof NetWorkException) {
+              loginLocal(user);
+            } else {
+              onLoginFailed();
+            }
+          }
+        });
   }
 
   protected void saveUserDataToLocalDatabase(final User user) throws LMISException {

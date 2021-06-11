@@ -54,7 +54,7 @@ public class LMISRestManagerMock extends LMISRestManager {
   }
 
   @Override
-  public void refreshUserAuthorize(User user, RetrofitError cause) {
-    super.refreshUserAuthorize(user, cause);
+  public void refreshAccessToken(User user, RetrofitError cause) {
+    super.refreshAccessToken(user, cause);
   }
 }

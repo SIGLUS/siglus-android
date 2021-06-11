@@ -34,8 +34,7 @@ import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 
 /**
- * adapt v2 products api response to @see <a href="https://showdoc.siglus.us/web/#/9?page_id=310">v3
- * products api</a>
+ * adapt v2 products api response to @see <a href="https://showdoc.siglus.us/web/#/9?page_id=310">v3 products api</a>
  */
 public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestProductsResponse> {
 

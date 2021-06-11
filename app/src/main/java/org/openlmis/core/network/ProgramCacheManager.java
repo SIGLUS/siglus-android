@@ -25,8 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.openlmis.core.model.Program;
 
 /**
- * cache program from facility info api response note: only for network response adapter, if you
- * want get program in other place, please use {@link org.openlmis.core.model.repository.ProgramRepository}
+ * cache program from facility info api response note: only for network response adapter, if you want get program in
+ * other place, please use {@link org.openlmis.core.model.repository.ProgramRepository}
  */
 public final class ProgramCacheManager {
 

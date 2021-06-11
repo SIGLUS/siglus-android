@@ -199,7 +199,7 @@ public class SyncDownManagerIT {
     subscriber.assertNoErrors();
 
     // then
-    verify(lmisRestManager.getLmisRestApi(), times(1)).authorizeUser(any(), any(), any(), any());
+    verify(lmisRestManager.getLmisRestApi(), times(1)).login(any(), any(), any(), any());
 
   }
 

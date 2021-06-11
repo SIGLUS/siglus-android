@@ -49,11 +49,23 @@ import retrofit.http.Query;
 public interface LMISRestApi {
 
   @POST("/api/oauth/token")
-  void authorizeUser(@Query("grant_type") String grantType, @Query("username") String username,
+  void login(@Query("grant_type") String grantType, @Query("username") String username,
       @Query("password") String password, Callback<UserResponse> callback);
 
-  //sync up
+  @GET("/api/siglusapi/android/me/facility/products")
+  SyncDownLatestProductsResponse fetchLatestProducts(@Query("lastSyncTime") String afterUpdatedTime)
+      throws LMISException;
 
+  @GET("/api/siglusapi/android/me/facility")
+  FacilityInfoResponse fetchFacilityInfo() throws LMISException;
+
+  @POST("/api/siglusapi/android/me/facility/archivedProducts")
+  Void syncUpArchivedProducts(@Body List<String> archivedProductsCodes) throws LMISException;
+
+  @POST("/api/siglusapi/android/me/app-info")
+  Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
+
+  // below are v2 apis
   @POST("/rest-api/requisitions")
   SyncUpRequisitionResponse submitRequisition(@Body RnRForm rnRForm) throws LMISException;
 
@@ -69,12 +81,6 @@ public interface LMISRestApi {
   Void syncUpUnSyncedStockCards(@Path("facilityId") String facilityId,
       @Body List<String> unSyncedStockCardCodes) throws LMISException;
 
-  @POST("/api/siglusapi/android/me/facility/archivedProducts")
-  Void syncUpArchivedProducts(@Body List<String> archivedProductsCodes) throws LMISException;
-
-  @POST("/api/siglusapi/android/me/app-info")
-  Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
-
   @POST("/rest-api/facilities/{facilityId}/deleteStockCards")
   SyncUpDeletedMovementResponse syncUpDeletedData(@Path("facilityId") Long facilityId,
       @Body List<DirtyDataItemEntry> entryList) throws LMISException;
@@ -86,10 +92,6 @@ public interface LMISRestApi {
   Void syncUpCmms(@Path("facilityId") String facilityId, @Body List<CmmEntry> cmms)
       throws LMISException;
 
-  //sync down
-  @GET("/api/siglusapi/android/me/facility")
-  FacilityInfoResponse fetchFacilityInfo() throws LMISException;
-
   @GET("/rest-api/requisitions")
   SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode,
       @Query("startDate") String startDate) throws LMISException;
@@ -98,10 +100,6 @@ public interface LMISRestApi {
   SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId,
       @Query("startTime") String startDate,
       @Query("endTime") String endDate) throws LMISException;
-
-  @GET("/api/siglusapi/android/me/facility/products")
-  SyncDownLatestProductsResponse fetchLatestProducts(@Query("lastSyncTime") String afterUpdatedTime)
-      throws LMISException;
 
   @GET("/rest-api/programData/facilities/{facilityId}")
   SyncDownProgramDataResponse fetchProgramDataForms(@Path("facilityId") Long facilityId)

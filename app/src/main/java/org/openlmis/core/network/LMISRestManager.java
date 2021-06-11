@@ -198,7 +198,7 @@ public class LMISRestManager {
       Response r = cause.getResponse();
       if (r != null && r.getStatus() == 401) {
         UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
-        refreshUserAuthorize(UserInfoMgr.getInstance().getUser(), cause);
+        refreshAccessToken(UserInfoMgr.getInstance().getUser(), cause);
       }
       if (r != null && r.getStatus() == 400) {
         return new SyncServerException(
@@ -214,34 +214,33 @@ public class LMISRestManager {
     }
   }
 
-  public void refreshUserAuthorize(User user, RetrofitError cause) {
+  public void refreshAccessToken(User user, RetrofitError cause) {
     LMISApp.getInstance().getRestApi()
-        .authorizeUser(GRANT_TYPE, user.getUsername(), user.getPassword(),
-            new Callback<UserResponse>() {
-              @SneakyThrows
-              @Override
-              public void success(UserResponse userResponse, Response response) {
-                if (userResponse == null || userResponse.getAccessToken() == null) {
-                  throw new UnauthorizedException(cause);
-                } else {
-                  user.setAccessToken(userResponse.getAccessToken());
-                  user.setTokenType(userResponse.getTokenType());
-                  user.setIsTokenExpired(false);
-                  UserInfoMgr.getInstance().setUser(user);
-                  syncService.requestSyncImmediatelyByTask();
-                }
-              }
+        .login(GRANT_TYPE, user.getUsername(), user.getPassword(), new Callback<UserResponse>() {
+          @SneakyThrows
+          @Override
+          public void success(UserResponse userResponse, Response response) {
+            if (userResponse == null || userResponse.getAccessToken() == null) {
+              throw new UnauthorizedException(cause);
+            } else {
+              user.setAccessToken(userResponse.getAccessToken());
+              user.setTokenType(userResponse.getTokenType());
+              user.setIsTokenExpired(false);
+              UserInfoMgr.getInstance().setUser(user);
+              syncService.requestSyncImmediatelyByTask();
+            }
+          }
 
-              @SneakyThrows
-              @Override
-              public void failure(RetrofitError error) {
-                if (error.getCause() instanceof NetWorkException) {
-                  throw new NetWorkException(cause);
-                } else {
-                  throw new UnauthorizedException(cause);
-                }
-              }
-            });
+          @SneakyThrows
+          @Override
+          public void failure(RetrofitError error) {
+            if (error.getCause() instanceof NetWorkException) {
+              throw new NetWorkException(cause);
+            } else {
+              throw new UnauthorizedException(cause);
+            }
+          }
+        });
   }
 
 }
