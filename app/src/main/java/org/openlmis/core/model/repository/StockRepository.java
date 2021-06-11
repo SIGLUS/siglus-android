@@ -615,11 +615,9 @@ public class StockRepository {
     } catch (LMISException e) {
       Log.w(TAG, e);
     }
-
   }
 
-  private List<LotOnHand> getLotOnHandByStockCards(final Set<String> stockCardIds)
-      throws LMISException {
+  private List<LotOnHand> getLotOnHandByStockCards(final Set<String> stockCardIds) throws LMISException {
     return dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
         .where()
         .in("stockCard_id", stockCardIds)
@@ -628,17 +626,15 @@ public class StockRepository {
 
   public Map<String, Integer> queryStockCountGroupByStockOnHandStatus() {
     String rawSql = "SELECT COUNT(stockOnHandStatus), stockOnHandStatus FROM stock_cards "
-        + "WHERE product_id IN ( SELECT id FROM products WHERE isActive =1 AND isArchived = 0 ) "
-        + "GROUP BY stockOnHandStatus;";
+        + "WHERE product_id IN ( SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND isKit = 0 )"
+        + " GROUP BY stockOnHandStatus;";
     final HashMap<String, Integer> result = new HashMap<>();
-    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
-        .getWritableDatabase().rawQuery(rawSql, null);
+    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
+        .rawQuery(rawSql, null);
     if (cursor.moveToFirst()) {
       do {
-        final String stockOnHandStatus = cursor
-            .getString(cursor.getColumnIndexOrThrow("stockOnHandStatus"));
-        final int stockCount = cursor
-            .getInt(cursor.getColumnIndexOrThrow("COUNT(stockOnHandStatus)"));
+        final String stockOnHandStatus = cursor.getString(cursor.getColumnIndexOrThrow("stockOnHandStatus"));
+        final int stockCount = cursor.getInt(cursor.getColumnIndexOrThrow("COUNT(stockOnHandStatus)"));
         result.put(stockOnHandStatus, stockCount);
       } while (cursor.moveToNext());
     }

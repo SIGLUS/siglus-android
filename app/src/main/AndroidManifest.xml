@@ -2,182 +2,149 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.openlmis.core">
 
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-  <uses-permission android:name="android.permission.INTERNET" />
-  <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-  <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-  <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-  <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
-  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
   <application
-    android:name=".LMISApp"
     android:allowBackup="true"
     android:fullBackupContent="@xml/appcenter_backup_rule"
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
+    android:name=".LMISApp"
     android:supportsRtl="false"
     android:theme="@style/AppTheme">
 
     <activity
-      android:name=".view.activity.LoginActivity"
-      android:label="@string/app_name"
-      android:screenOrientation="portrait"
-      android:theme="@style/AppTheme.NoActionBar"
       android:exported="true"
-      android:permission="">
+      android:label="@string/app_name"
+      android:name=".view.activity.LoginActivity"
+      android:permission=""
+      android:screenOrientation="portrait"
+      android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <action android:name="android.intent.action.VIEW" />
-
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
     <activity
+      android:label="@string/title_init_inventory"
       android:name=".view.activity.InitialInventoryActivity"
-      android:label="@string/title_init_inventory"
       android:screenOrientation="portrait" />
     <activity
+      android:label="@string/title_init_inventory"
       android:name=".view.activity.BulkInitialInventoryActivity"
-      android:label="@string/title_init_inventory"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.AddNonBasicProductsActivity"
       android:label="@string/title_add_non_basic_products"
+      android:name=".view.activity.AddNonBasicProductsActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.PhysicalInventoryActivity"
       android:label="@string/title_physical_inventory"
+      android:name=".view.activity.PhysicalInventoryActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.RapidTestReportsActivity"
       android:label="@string/title_rapid_test_reports"
+      android:name=".view.activity.RapidTestReportsActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.RapidTestReportFormActivity"
       android:configChanges="orientation|screenSize"
       android:label="@string/title_rapid_test_form"
+      android:name=".view.activity.RapidTestReportFormActivity"
       android:screenOrientation="portrait"
       android:windowSoftInputMode="adjustNothing|stateHidden" />
     <activity
-      android:name=".view.activity.PTVRequisitionActivity"
       android:label="@string/label_ptv_name"
+      android:name=".view.activity.PTVRequisitionActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.UnpackKitActivity"
       android:label="@string/title_unpack_kit"
+      android:name=".view.activity.UnpackKitActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.HomeActivity"
       android:label="@string/title_home"
+      android:name=".view.activity.HomeActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.StockCardListActivity"
       android:label="@string/title_stock_cards"
+      android:name=".view.activity.StockCardListActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.KitStockCardListActivity"
       android:label="@string/title_kit_stock_cards"
+      android:name=".view.activity.KitStockCardListActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.MMIARequisitionActivity"
       android:configChanges="orientation|screenSize"
       android:label="@string/label_mmia_title"
+      android:name=".view.activity.MMIARequisitionActivity"
       android:windowSoftInputMode="stateHidden" />
     <activity
-      android:name=".view.activity.ALRequisitionActivity"
       android:configChanges="orientation|screenSize"
       android:label="@string/label_AL_title"
+      android:name=".view.activity.ALRequisitionActivity"
       android:windowSoftInputMode="stateHidden" />
     <activity
-      android:name=".view.activity.ArchivedDrugsListActivity"
       android:label="@string/title_archived_drugs"
+      android:name=".view.activity.ArchivedDrugsListActivity"
       android:screenOrientation="portrait"
       android:windowSoftInputMode="stateHidden" />
     <activity
-      android:name=".view.activity.VIARequisitionActivity"
       android:label="@string/title_requisition"
+      android:name=".view.activity.VIARequisitionActivity"
       android:windowSoftInputMode="adjustPan|stateHidden" />
     <activity android:name=".view.activity.StockMovementHistoryActivity" />
     <activity
+      android:label="@string/title_stock_movement"
       android:name=".view.activity.StockMovementsWithLotActivity"
-      android:label="@string/title_stock_movement"
       android:windowSoftInputMode="adjustPan|stateHidden" />
     <activity
-      android:name=".view.activity.NewStockMovementActivity"
       android:label="Title drug"
+      android:name=".view.activity.NewStockMovementActivity"
       android:windowSoftInputMode="adjustPan|stateHidden" />
     <activity
-      android:name=".view.activity.RnRFormListActivity"
       android:label="@string/title_stock_movement"
+      android:name=".view.activity.RnRFormListActivity"
       android:screenOrientation="portrait"
       android:windowSoftInputMode="adjustPan|stateHidden" />
     <activity
-      android:name=".view.activity.SelectPeriodActivity"
       android:label="@string/title_select_period"
+      android:name=".view.activity.SelectPeriodActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.SelectUnpackKitNumActivity"
       android:label="@string/title_select_unpack_num"
+      android:name=".view.activity.SelectUnpackKitNumActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.SelectRegimeProductsActivity"
       android:label="@string/title_select_drugs"
+      android:name=".view.activity.SelectRegimeProductsActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.SelectEmergencyProductsActivity"
       android:label="@string/title_select_emergency_products"
+      android:name=".view.activity.SelectEmergencyProductsActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.AddDrugsToVIAActivity"
       android:label="@string/title_add_drugs_to_form"
+      android:name=".view.activity.AddDrugsToVIAActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.AllDrugsMovementHistoryActivity"
       android:label="@string/title_movement_history"
+      android:name=".view.activity.AllDrugsMovementHistoryActivity"
       android:screenOrientation="landscape" />
 
-    <service
-      android:name=".service.SyncService"
-      android:exported="true"
-      android:permission="">
-      <intent-filter>
-        <action android:name="android.content.SyncAdapter" />
-      </intent-filter>
+    <activity
+      android:label="@string/title_issue_voucher_and_pod"
+      android:name=".view.activity.IssueVoucherActivity"
+      android:screenOrientation="portrait" />
 
-      <meta-data
-        android:name="android.content.SyncAdapter"
-        android:resource="@xml/syncadapter" />
-    </service>
-    <service
-      android:name=".service.AuthenticatorService"
-      android:exported="true"
-      android:permission="">
-      <intent-filter>
-        <action android:name="android.accounts.AccountAuthenticator" />
-      </intent-filter>
-
-      <meta-data
-        android:name="android.accounts.AccountAuthenticator"
-        android:resource="@xml/authenticator" />
-    </service>
-    <service
-      android:name=".network.NetworkSchedulerService"
-      android:exported="true"
-      android:permission="android.permission.BIND_JOB_SERVICE" />
-
+    <meta-data
+      android:name="com.google.android.gms.version"
+      android:value="@integer/google_play_services_version" />
     <provider
-      android:name=".service.StubContentProvider"
       android:authorities="@string/sync_content_authority"
+      android:name=".service.StubContentProvider"
       android:syncable="true" />
     <provider
-      android:name="androidx.core.content.FileProvider"
       android:authorities="${applicationId}.FileProvider"
       android:exported="false"
-      android:grantUriPermissions="true">
+      android:grantUriPermissions="true"
+      android:name="androidx.core.content.FileProvider">
       <meta-data
         android:name="android.support.FILE_PROVIDER_PATHS"
         android:resource="@xml/filepath_data" />
@@ -194,38 +161,75 @@
       </intent-filter>
     </receiver>
 
-    <meta-data
-      android:name="com.google.android.gms.version"
-      android:value="@integer/google_play_services_version" />
-    <!--
-       Optionally, register AnalyticsReceiver and AnalyticsService to support background
-       dispatching on non-Google Play devices
-    -->
     <receiver
-      android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-      android:enabled="true">
+      android:enabled="true"
+      android:name="com.google.android.gms.analytics.AnalyticsReceiver">
       <intent-filter>
         <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
       </intent-filter>
     </receiver>
-
-    <service
-      android:name="com.google.android.gms.analytics.AnalyticsService"
-      android:enabled="true"
-      android:exported="false" />
-    <!--
-         Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
-         installation campaign reporting
-    -->
     <receiver
-      android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
-      android:exported="true">
+      android:exported="true"
+      android:name="com.google.android.gms.analytics.CampaignTrackingReceiver">
       <intent-filter>
         <action android:name="com.android.vending.INSTALL_REFERRER" />
       </intent-filter>
     </receiver>
 
+    <service
+      android:exported="true"
+      android:name=".service.SyncService"
+      android:permission="">
+      <intent-filter>
+        <action android:name="android.content.SyncAdapter" />
+      </intent-filter>
+
+      <meta-data
+        android:name="android.content.SyncAdapter"
+        android:resource="@xml/syncadapter" />
+    </service>
+    <!--
+       Optionally, register AnalyticsReceiver and AnalyticsService to support background
+       dispatching on non-Google Play devices
+    -->
+    <service
+      android:exported="true"
+      android:name=".service.AuthenticatorService"
+      android:permission="">
+      <intent-filter>
+        <action android:name="android.accounts.AccountAuthenticator" />
+      </intent-filter>
+
+      <meta-data
+        android:name="android.accounts.AccountAuthenticator"
+        android:resource="@xml/authenticator" />
+    </service>
+
+    <service
+      android:exported="true"
+      android:name=".network.NetworkSchedulerService"
+      android:permission="android.permission.BIND_JOB_SERVICE" />
+    <!--
+         Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
+         installation campaign reporting
+    -->
+    <service
+      android:enabled="true"
+      android:exported="false"
+      android:name="com.google.android.gms.analytics.AnalyticsService" />
+
     <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
   </application>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+  <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+  <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+  <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
 </manifest>

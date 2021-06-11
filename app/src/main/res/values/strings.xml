@@ -47,7 +47,7 @@
 
   <!-- Home Page -->
   <string name="label_stock_cards">Stock Card Overview</string>
-  <string name="label_kits_stock_cards">KITS</string>
+  <string name="label_kits_stock_cards">Kits</string>
   <string name="label_sync">Sync Data</string>
   <string name="action_add_new_drug">Add new product</string>
   <plurals name="minute_unit">
@@ -589,4 +589,7 @@
   <string name="dashboard_product_types">Total Products</string>
   <string name="msg_fetching_facility_info">Downloading facility info…</string>
   <string name="msg_fetching_facility_info_failed">Download of facility info from the server failed, please login again.</string>
+  <string name="home_label_requisition_and_report">Requisition &#038; Report</string>
+  <string name="home_label_issue_voucher_and_pod">Issue Voucher &#038; PoD</string>
+  <string name="title_issue_voucher_and_pod">Issue Voucher &#038; PoD</string>
 </resources>

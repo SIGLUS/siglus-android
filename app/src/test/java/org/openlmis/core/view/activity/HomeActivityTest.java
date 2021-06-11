@@ -35,7 +35,6 @@ import static org.robolectric.Shadows.shadowOf;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import com.google.inject.AbstractModule;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
@@ -94,54 +93,52 @@ public class HomeActivityTest {
 
   @Test
   public void shouldGoToStockCardsPage() {
-    homeActivity.btnStockCard.performClick();
+    // when
+    homeActivity.findViewById(R.id.btn_stock_card).performClick();
 
+    // then
     Intent nextStartedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertEquals(StockCardListActivity.class.getName(),
-        nextStartedIntent.getComponent().getClassName());
+    assertEquals(StockCardListActivity.class.getName(), nextStartedIntent.getComponent().getClassName());
   }
 
   @Test
   public void shouldGoToKitsStockCardsPage() throws Exception {
-    homeActivity.btnKitStockCard.performClick();
+    // when
+    homeActivity.findViewById(R.id.btn_kits).performClick();
 
+    // then
     Intent nextStartedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertEquals(KitStockCardListActivity.class.getName(),
-        nextStartedIntent.getComponent().getClassName());
+    assertEquals(KitStockCardListActivity.class.getName(), nextStartedIntent.getComponent().getClassName());
   }
 
   @Test
   public void shouldGoToInventoryPage() {
-    homeActivity.btnInventory.performClick();
+    // when
+    homeActivity.findViewById(R.id.btn_inventory).performClick();
 
+    // then
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
-
-    assertThat(startedIntent.getComponent().getClassName(),
-        equalTo(PhysicalInventoryActivity.class.getName()));
+    assertThat(startedIntent.getComponent().getClassName(), equalTo(PhysicalInventoryActivity.class.getName()));
   }
 
   @Test
-  public void shouldGoToMMIAHistoryPage() {
-    homeActivity.btnMMIAList.performClick();
+  public void shouldGoRnRPage() {
+    // when
+    homeActivity.findViewById(R.id.btn_requisitions).performClick();
 
+    // then
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
-
-    assertThat(startedIntent.getComponent().getClassName(),
-        equalTo(RnRFormListActivity.class.getName()));
-    assertThat(startedIntent.getSerializableExtra(Constants.PARAM_PROGRAM_CODE),
-        is(Constants.Program.MMIA_PROGRAM));
+    assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
+    assertThat(startedIntent.getSerializableExtra(Constants.PARAM_PROGRAM_CODE), is(Constants.Program.VIA_PROGRAM));
   }
 
   @Test
-  public void shouldGoToViaHistoryPage() {
-    homeActivity.btnVIAList.performClick();
+  public void shouldGoToIssueVoucherPage() {
+    homeActivity.findViewById(R.id.btn_issue_voucher).performClick();
 
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
 
-    assertThat(startedIntent.getComponent().getClassName(),
-        equalTo(RnRFormListActivity.class.getName()));
-    assertThat(startedIntent.getSerializableExtra(Constants.PARAM_PROGRAM_CODE),
-        is(Constants.Program.VIA_PROGRAM));
+    assertThat(startedIntent.getComponent().getClassName(), equalTo(IssueVoucherActivity.class.getName()));
   }
 
   private void verifyNextPage(String className) {
@@ -206,41 +203,6 @@ public class HomeActivityTest {
     assertTrue(homeActivity.isFinishing());
     verifyNextPage(LoginActivity.class.getName());
   }
-
-  @Test
-  public void shouldShowNewTextOfMMIAListAndVIALIstButtons() throws Exception {
-    HomeActivity activity = Robolectric.buildActivity(HomeActivity.class).create().get();
-
-    assertThat(activity.btnMMIAList.getText().toString(),
-        is(activity.getString(R.string.mmia_list)));
-    assertThat(activity.btnVIAList.getText().toString(),
-        is(activity.getString(R.string.requisition_list)));
-  }
-
-  @Test
-  public void shouldShowMMIARapidTestALButtons() {
-    when(mockSharedPreferenceMgr.getReportTypesData())
-        .thenReturn(ReportTypeBuilder.getReportTypeForms(getClass(), "HomeActivityEntry.json"));
-    HomeActivity homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
-
-    assertEquals(homeActivity.btnMMIAList.getVisibility(), View.VISIBLE);
-    assertEquals(homeActivity.btnRapidTestReport.getVisibility(), View.VISIBLE);
-    assertEquals(homeActivity.btnALReport.getVisibility(), View.VISIBLE);
-    assertEquals(homeActivity.btnPTVReport.getVisibility(), View.GONE);
-  }
-
-  @Test
-  public void shouldNotShowMMIAAndPTVBoth() {
-    when(mockSharedPreferenceMgr.getReportTypesData()).thenReturn(
-        ReportTypeBuilder.getReportTypeForms(getClass(), "HomeActivityNoMMIAAndPTV.json"));
-    HomeActivity homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
-
-    assertEquals(homeActivity.btnMMIAList.getVisibility(), View.GONE);
-    assertEquals(homeActivity.btnRapidTestReport.getVisibility(), View.VISIBLE);
-    assertEquals(homeActivity.btnALReport.getVisibility(), View.VISIBLE);
-    assertEquals(homeActivity.btnPTVReport.getVisibility(), View.GONE);
-  }
-
 
   @Test
   public void shouldShowWarningDialogWhenWipeDataWiped() throws Exception {

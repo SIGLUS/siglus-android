@@ -37,13 +37,10 @@ import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -51,8 +48,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -60,7 +55,6 @@ import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.persistence.ExportSqliteOpenHelper;
@@ -86,36 +80,9 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private static final String EXPORT_DATA_PARENT_DIR = "//data//";
 
-  @InjectView(R.id.btn_stock_card)
-  Button btnStockCard;
-
-  @InjectView(R.id.btn_inventory)
-  Button btnInventory;
-
   IncompleteRequisitionBanner incompleteRequisitionBanner;
 
   SyncTimeView syncTimeView;
-
-  @InjectView(R.id.btn_mmia_list)
-  Button btnMMIAList;
-
-  @InjectView(R.id.btn_via_list)
-  Button btnVIAList;
-
-  @InjectView(R.id.btn_kit_stock_card)
-  Button btnKitStockCard;
-
-  @InjectView(R.id.btn_rapid_test)
-  Button btnRapidTestReport;
-
-  @InjectView(R.id.btn_ptv_card)
-  Button btnPTVReport;
-
-  @InjectView(R.id.btn_al)
-  Button btnALReport;
-
-  @InjectView(R.id.rl_al)
-  RelativeLayout viewAl;
 
   @InjectView(R.id.dv_product_dashboard)
   DashboardView dvProductDashboard;
@@ -136,62 +103,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private boolean exitPressedOnce = false;
 
   private static final int PERMISSION_REQUEST_CODE = 200;
-
-  @Override
-  protected ScreenName getScreenName() {
-    return ScreenName.HOME_SCREEN;
-  }
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    if (UserInfoMgr.getInstance().getUser() == null) {
-      // In case some users use some unknown way entered here!!!
-      logout();
-      finish();
-    } else {
-      setTitle(UserInfoMgr.getInstance().getFacilityName());
-      syncTimeView = findViewById(R.id.view_sync_time);
-      incompleteRequisitionBanner = findViewById(
-          R.id.view_incomplete_requisition_banner);
-      if (getSupportActionBar() != null) {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-      }
-    }
-    registerSyncStartReceiver();
-    registerSyncFinishedReceiver();
-    registerErrorFinishedReceiver();
-
-    if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rapid_test)) {
-      btnRapidTestReport.setVisibility(View.GONE);
-    }
-
-    updateButtonConfigView();
-  }
-
-  private void registerSyncStartReceiver() {
-    IntentFilter filter = new IntentFilter();
-    filter.addAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-    LocalBroadcastManager.getInstance(this).registerReceiver(syncStartReceiver, filter);
-  }
-
-  private void registerSyncFinishedReceiver() {
-    IntentFilter filter = new IntentFilter();
-    filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-    LocalBroadcastManager.getInstance(this).registerReceiver(syncFinishedReceiver, filter);
-  }
-
-  private void registerErrorFinishedReceiver() {
-    IntentFilter filter = new IntentFilter();
-    filter.addAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-    LocalBroadcastManager.getInstance(this).registerReceiver(syncErrorReceiver, filter);
-  }
-
-  @Override
-  protected int getThemeRes() {
-    return R.style.AppTheme_Gray;
-  }
 
   BroadcastReceiver syncStartReceiver = new BroadcastReceiver() {
     @Override
@@ -220,60 +131,16 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
   };
 
-  @Override
-  protected void onDestroy() {
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncStartReceiver);
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncFinishedReceiver);
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncErrorReceiver);
-    super.onDestroy();
-  }
-
-  private void updateButtonConfigView() {
-    List<ReportTypeForm> reportTypes = sharedPreferenceMgr.getReportTypesData();
-    List<Pair<String, Button>> buttonConfigs = Arrays
-        .asList(new Pair<>(Constants.VIA_REPORT, btnVIAList),
-            new Pair<>(Constants.MMIA_REPORT, btnMMIAList),
-            new Pair<>(Constants.AL_REPORT, btnALReport),
-            new Pair<>(Constants.PTV_REPORT, btnPTVReport),
-            new Pair<>(Constants.RAPID_REPORT, btnRapidTestReport));
-    for (Pair<String, Button> buttonConfig : buttonConfigs) {
-      ReportTypeForm reportType = getReportType(buttonConfig.first, reportTypes);
-      Button button = buttonConfig.second;
-      if (button != btnALReport) {
-        button.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
-      } else {
-        viewAl.setVisibility(reportType == null ? View.GONE : View.VISIBLE);
-      }
-    }
-
-    if (btnPTVReport.getVisibility() == View.VISIBLE
-        || btnMMIAList.getVisibility() == View.VISIBLE) {
-      ReportTypeForm ptv = getReportType(Constants.PTV_REPORT, reportTypes);
-      ReportTypeForm mmia = getReportType(Constants.MMIA_REPORT, reportTypes);
-      btnPTVReport.setVisibility((ptv == null || !ptv.active) ? View.GONE : View.VISIBLE);
-      btnMMIAList.setVisibility(mmia == null || !mmia.active ? View.GONE : View.VISIBLE);
-    }
-  }
-
-  private ReportTypeForm getReportType(String code, List<ReportTypeForm> reportTypes) {
-    for (ReportTypeForm typeForm : reportTypes) {
-      if (typeForm.getCode().equalsIgnoreCase(code)) {
-        return typeForm;
-      }
-    }
-    return null;
-  }
-
-
   public void onClickStockCard(View view) {
     if (!isHaveDirtyData()) {
       startActivity(StockCardListActivity.class);
     }
   }
 
-  public void onClickKitStockCard(View view) {
+  public void onClickRequisitions(View view) {
     if (!isHaveDirtyData()) {
-      startActivity(KitStockCardListActivity.class);
+      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.VIA_PROGRAM));
+      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_VIA, Constants.VIA_PROGRAM_CODE);
     }
   }
 
@@ -284,79 +151,21 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
   }
 
-  public void onClickRapidTestHistory(View view) {
+  public void onClickKits(View view) {
     if (!isHaveDirtyData()) {
-      Intent intent = new Intent(this, RapidTestReportsActivity.class);
-      startActivity(intent);
+      startActivity(KitStockCardListActivity.class);
     }
   }
 
-  public void onClickAL(View view) {
+  public void onClickIssueVoucher(View view) {
     if (!isHaveDirtyData()) {
-      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.AL_PROGRAM));
-      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_AL, Constants.AL_PROGRAM_CODE);
+      startActivity(new Intent(this, IssueVoucherActivity.class));
     }
   }
 
   public void syncData() {
     Log.d("HomeActivity", "requesting immediate sync");
     syncService.requestSyncImmediatelyFromUserTrigger();
-  }
-
-  public void onClickMMIAHistory(View view) {
-    if (!isHaveDirtyData()) {
-      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.MMIA_PROGRAM));
-      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_MMIA, Constants.MMIA_PROGRAM_CODE);
-    }
-  }
-
-  public void onClickVIAHistory(View view) {
-    if (!isHaveDirtyData()) {
-      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.VIA_PROGRAM));
-      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_VIA, Constants.VIA_PROGRAM_CODE);
-    }
-  }
-
-  public void onClickPtvStockCard(View view) {
-    if (!isHaveDirtyData()) {
-      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.PTV_PROGRAM));
-      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_PTV, Constants.PTV_PROGRAM_CODE);
-    }
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-
-    if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      incompleteRequisitionBanner.setIncompleteRequisitionBanner();
-    } else {
-      incompleteRequisitionBanner.setVisibility(View.GONE);
-    }
-    if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
-      syncTimeView.setSyncStockCardLastYearError();
-    } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-      syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
-    } else {
-      setSyncedTime();
-    }
-
-    dirtyDataManager.dirtyDataMonthlyCheck();
-    isHaveDirtyData();
-
-    refreshDashboard();
-  }
-
-  protected void setSyncedTime() {
-    if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
-        .isSyncingLastYearStockCards()) {
-      syncTimeView.showLastSyncTime();
-      updateButtonConfigView();
-    } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-      syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
-    } else {
-      syncTimeView.setSyncStockCardLastYearText();
-    }
   }
 
   @Override
@@ -368,6 +177,17 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       new Handler().postDelayed(() -> exitPressedOnce = false, backTwiceInterval);
     }
     exitPressedOnce = !exitPressedOnce;
+  }
+
+  public static Intent getIntentToMe(Context context) {
+    Intent intent = new Intent(context, HomeActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    return intent;
+  }
+
+  @Override
+  public void updateDashboard(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+    dvProductDashboard.setData(regularAmount, outAmount, lowAmount, overAmount);
   }
 
   @Override
@@ -399,37 +219,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
   }
 
-  private void exportDB() {
-    int permissionCheck = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
-    if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-      exportDBHavePermission();
-    } else {
-      if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) {
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-        alertBuilder.setCancelable(true);
-        alertBuilder.setTitle("get permssion");
-        alertBuilder.setMessage("storage permssion");
-        alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-          @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-          public void onClick(DialogInterface dialog, int which) {
-            ActivityCompat
-                .requestPermissions(HomeActivity.this, new String[]{WRITE_EXTERNAL_STORAGE},
-                    PERMISSION_REQUEST_CODE);
-          }
-        });
-        AlertDialog alert = alertBuilder.create();
-        alert.show();
-        Log.e("", "permission denied, show dialog");
-      } else {
-        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE},
-            PERMISSION_REQUEST_CODE);
-      }
-    }
-  }
-
   @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-      @NonNull int[] grantResults) {
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     if (requestCode != PERMISSION_REQUEST_CODE) {
       super.onRequestPermissionsResult(requestCode, permissions, grantResults);
       return;
@@ -452,6 +243,101 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
   }
 
+  @Override
+  protected ScreenName getScreenName() {
+    return ScreenName.HOME_SCREEN;
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    if (UserInfoMgr.getInstance().getUser() == null) {
+      // In case some users use some unknown way entered here!!!
+      logout();
+      finish();
+    } else {
+      setTitle(UserInfoMgr.getInstance().getFacilityName());
+      syncTimeView = findViewById(R.id.view_sync_time);
+      incompleteRequisitionBanner = findViewById(R.id.view_incomplete_requisition_banner);
+      if (getSupportActionBar() != null) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+      }
+    }
+    registerSyncStartReceiver();
+    registerSyncFinishedReceiver();
+    registerErrorFinishedReceiver();
+  }
+
+  @Override
+  protected int getThemeRes() {
+    return R.style.AppTheme_Gray;
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      incompleteRequisitionBanner.setIncompleteRequisitionBanner();
+    } else {
+      incompleteRequisitionBanner.setVisibility(View.GONE);
+    }
+    if (sharedPreferenceMgr.isStockCardLastYearSyncError()) {
+      syncTimeView.setSyncStockCardLastYearError();
+    } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+      syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
+    } else {
+      setSyncedTime();
+    }
+
+    dirtyDataManager.dirtyDataMonthlyCheck();
+    isHaveDirtyData();
+    refreshDashboard();
+  }
+
+  @Override
+  protected void onDestroy() {
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncStartReceiver);
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncFinishedReceiver);
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncErrorReceiver);
+    super.onDestroy();
+  }
+
+  protected void setSyncedTime() {
+    if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+      syncTimeView.showLastSyncTime();
+    } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+      syncTimeView.setSyncedMovementError(sharedPreferenceMgr.getStockMovementSyncError());
+    } else {
+      syncTimeView.setSyncStockCardLastYearText();
+    }
+  }
+
+  private void exportDB() {
+    int permissionCheck = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
+    if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+      exportDBHavePermission();
+    } else {
+      if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("get permssion");
+        alertBuilder.setMessage("storage permssion");
+        alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+          @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+          public void onClick(DialogInterface dialog, int which) {
+            ActivityCompat
+                .requestPermissions(HomeActivity.this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+          }
+        });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+        Log.e("", "permission denied, show dialog");
+      } else {
+        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+      }
+    }
+  }
+
   private void exportDBHavePermission() {
     File currentDB = new File(Environment.getDataDirectory(),
         EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
@@ -466,16 +352,14 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         EXPORT_DATA_PARENT_DIR + LMISApp.getContext().getApplicationContext().getPackageName()
             + "//shared_prefs//LMISPreferenceBackup.xml");
     File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
-    File xmlExternalBackup = new File(Environment.getExternalStorageDirectory(),
-        "LMISPreferenceBackup.xml");
+    File xmlExternalBackup = new File(Environment.getExternalStorageDirectory(), "LMISPreferenceBackup.xml");
     try {
       FileUtil.copy(currentDB, tempBackup);
       FileUtil.copy(currentXML, currentXMLBackup);
       ExportSqliteOpenHelper.removePrivateUserInfo(this);
       FileUtil.copy(tempBackup, externalBackup);
       FileUtil.copy(currentXMLBackup, xmlExternalBackup);
-      ToastUtil.show(
-          Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
+      ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_success, externalBackup.getPath())));
     } catch (Exception e) {
       new LMISException(e, "HomeActivity.exportDB").reportToFabric();
       ToastUtil.show(e.getMessage());
@@ -489,12 +373,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
   }
 
-  public static Intent getIntentToMe(Context context) {
-    Intent intent = new Intent(context, HomeActivity.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    return intent;
-  }
-
   private void alertWipeData() {
     new InternetCheck().execute(validateConnectionListener());
   }
@@ -506,10 +384,9 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         ToastUtil.show(R.string.message_wipe_no_connection);
       } else {
         WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder
-            .build(buildWipeDialogDelegate(), R.string.message_warning_wipe_data,
-                R.string.btn_positive, R.string.btn_negative);
-        getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning")
-            .commitNow();
+            .build(buildWipeDialogDelegate(), R.string.message_warning_wipe_data, R.string.btn_positive,
+                R.string.btn_negative);
+        getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
       }
     };
   }
@@ -524,18 +401,15 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private void setRestartIntent() {
     int requestCode = 100;
     int startAppInterval = 500;
-
     User currentUser = UserInfoMgr.getInstance().getUser();
     Intent intent = new Intent(this, LoginActivity.class);
     intent.putExtra(Constants.PARAM_USERNAME, currentUser.getUsername());
     intent.putExtra(Constants.PARAM_PASSWORD, currentUser.getPassword());
-
     PendingIntent mPendingIntent = PendingIntent
         .getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     if (mgr != null) {
-      mgr.set(AlarmManager.RTC, LMISApp.getInstance().getCurrentTimeMillis() + startAppInterval,
-          mPendingIntent);
+      mgr.set(AlarmManager.RTC, LMISApp.getInstance().getCurrentTimeMillis() + startAppInterval, mPendingIntent);
     }
   }
 
@@ -549,16 +423,28 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   }
 
   private void refreshDashboard() {
-    if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr
-        .isSyncingLastYearStockCards()) {
+    if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
       dvProductDashboard.resetState(true);
-    } else {
-      homePresenter.getDashboardData();
+      return;
     }
+    homePresenter.getDashboardData();
   }
 
-  @Override
-  public void updateDashboard(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-    dvProductDashboard.setData(regularAmount, outAmount, lowAmount, overAmount);
+  private void registerSyncStartReceiver() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(Constants.INTENT_FILTER_START_SYNC_DATA);
+    LocalBroadcastManager.getInstance(this).registerReceiver(syncStartReceiver, filter);
+  }
+
+  private void registerSyncFinishedReceiver() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+    LocalBroadcastManager.getInstance(this).registerReceiver(syncFinishedReceiver, filter);
+  }
+
+  private void registerErrorFinishedReceiver() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
+    LocalBroadcastManager.getInstance(this).registerReceiver(syncErrorReceiver, filter);
   }
 }

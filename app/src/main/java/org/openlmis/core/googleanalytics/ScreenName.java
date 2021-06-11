@@ -42,7 +42,8 @@ public enum ScreenName {
   ADD_DRUGS_TO_VIA_SCREEN("Add Drugs to VIA Classica Screen"),
   RAPID_TEST_REPORT_FORM_SCREEN("Rapid Test Report Form"),
   MALARIA_DATA_REPORT_FORM_SCREEN("Patient Data Report"),
-  ALL_DRUGS_MOVEMENT_HISTORY_SCREEN("All Drugs Movement History Screen");
+  ALL_DRUGS_MOVEMENT_HISTORY_SCREEN("All Drugs Movement History Screen"),
+  ISSUE_VOUCHER_AND_POD("Issue Voucher and PoD Screen");
 
   private final String name;
 

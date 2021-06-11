@@ -38,7 +38,7 @@
 
   <!--Home Page-->
   <string name="label_stock_cards">Visão geral da ficha de stock</string>
-  <string name="label_kits_stock_cards">KITS</string>
+  <string name="label_kits_stock_cards">Kits</string>
   <string name="label_sync">Sincronizar dados</string>
   <string name="action_add_new_drug">Adicionar novo produto</string>
   <plurals name="minute_unit">

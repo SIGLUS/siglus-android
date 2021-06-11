@@ -5,167 +5,137 @@
   android:layout_height="match_parent"
   android:fillViewport="true">
 
-  <org.openlmis.core.view.widget.IncompleteRequisitionBanner
-    android:id="@+id/view_incomplete_requisition_banner"
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent" />
+    android:layout_height="0dp"
+    android:layout_marginLeft="@dimen/px_32"
+    android:layout_marginRight="@dimen/px_32"
+    app:layout_constraintBottom_toTopOf="@id/view_sync_time"
+    app:layout_constraintTop_toBottomOf="@id/gl_half_screen">
 
-  <org.openlmis.core.view.widget.DashboardView
-    android:id="@+id/dv_product_dashboard"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="@id/gl_half_screen"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent" />
+    <TextView
+      android:id="@+id/btn_stock_card"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:paddingTop="@dimen/px_16"
+      android:paddingLeft="@dimen/px_16"
+      android:background="@drawable/shape_home_stock_card_background"
+      android:gravity="left|top"
+      android:onClick="onClickStockCard"
+      android:text="@string/label_stock_cards"
+      android:textColor="@color/color_white"
+      android:textSize="@dimen/px_24"
+      app:layout_constraintBottom_toTopOf="@id/btn_inventory"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_weight="25" />
+
+    <TextView
+      android:id="@+id/btn_inventory"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginTop="@dimen/px_8"
+      android:layout_marginRight="@dimen/px_4"
+      android:paddingTop="@dimen/px_14"
+      android:paddingLeft="@dimen/px_16"
+      android:background="@drawable/shape_home_inventory_background"
+      android:gravity="left|top"
+      android:onClick="onClickInventory"
+      android:text="@string/button_inventory"
+      android:textColor="@color/color_white"
+      android:textSize="@dimen/px_24"
+      app:layout_constraintBottom_toTopOf="@id/btn_kits"
+      app:layout_constraintHorizontal_weight="1"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toLeftOf="@id/btn_requisitions"
+      app:layout_constraintTop_toBottomOf="@id/btn_stock_card"
+      app:layout_constraintVertical_weight="22" />
+
+    <TextView
+      android:id="@+id/btn_requisitions"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginLeft="@dimen/px_4"
+      android:paddingTop="@dimen/px_14"
+      android:paddingLeft="@dimen/px_16"
+      android:background="@drawable/shape_home_requisitions_background"
+      android:gravity="left|top"
+      android:onClick="onClickRequisitions"
+      android:text="@string/home_label_requisition_and_report"
+      android:textColor="@color/color_white"
+      android:textSize="@dimen/px_24"
+      app:layout_constraintBottom_toBottomOf="@id/btn_inventory"
+      app:layout_constraintHorizontal_weight="1"
+      app:layout_constraintLeft_toRightOf="@id/btn_inventory"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="@id/btn_inventory" />
+
+    <TextView
+      android:id="@+id/btn_kits"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginTop="@dimen/px_8"
+      android:paddingTop="@dimen/px_14"
+      android:paddingLeft="@dimen/px_16"
+      android:background="@drawable/shape_home_kit_background"
+      android:gravity="left|top"
+      android:onClick="onClickKits"
+      android:text="@string/label_kits_stock_cards"
+      android:textColor="@color/color_white"
+      android:textSize="@dimen/px_24"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintHorizontal_weight="1"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toLeftOf="@id/btn_issue_voucher"
+      app:layout_constraintTop_toBottomOf="@id/btn_inventory"
+      app:layout_constraintVertical_weight="22" />
+
+    <TextView
+      android:id="@+id/btn_issue_voucher"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginLeft="@dimen/px_4"
+      android:paddingTop="@dimen/px_14"
+      android:paddingLeft="@dimen/px_16"
+      android:background="@drawable/shape_home_issue_voucher_background"
+      android:gravity="left|top"
+      android:onClick="onClickIssueVoucher"
+      android:text="@string/home_label_issue_voucher_and_pod"
+      android:textColor="@color/color_white"
+      android:textSize="@dimen/px_24"
+      app:layout_constraintBottom_toBottomOf="@id/btn_kits"
+      app:layout_constraintHorizontal_weight="1"
+      app:layout_constraintLeft_toRightOf="@id/btn_kits"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="@id/btn_kits" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/gl_half_screen"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    app:layout_constraintGuide_percent="0.5" />
+    app:layout_constraintGuide_percent="0.6" />
 
-  <LinearLayout
-    style="@style/Home.Container"
+  <org.openlmis.core.view.widget.DashboardView
+    android:id="@+id/dv_product_dashboard"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:orientation="vertical"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/gl_half_screen">
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="@id/gl_half_screen"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-      android:id="@+id/btn_stock_card"
-      style="@style/Homepage.Button"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"
-      android:background="@color/color_primary"
-      android:onClick="onClickStockCard"
-      android:text="@string/label_stock_cards" />
+  <org.openlmis.core.view.widget.IncompleteRequisitionBanner
+    android:id="@+id/view_incomplete_requisition_banner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="4"
-      android:orientation="horizontal">
-
-      <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:layout_weight="2"
-        android:orientation="vertical">
-
-        <RelativeLayout
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:layout_weight="1">
-
-          <Button
-            android:id="@+id/btn_inventory"
-            style="@style/Homepage.Button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="0dp"
-            android:background="@color/color_blue"
-            android:onClick="onClickInventory"
-            android:text="@string/button_inventory" />
-        </RelativeLayout>
-
-        <RelativeLayout
-          android:id="@+id/rl_al"
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:layout_weight="1">
-
-          <Button
-            android:id="@+id/btn_al"
-            style="@style/Homepage.Button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:background="@color/color_light_blue"
-            android:onClick="onClickAL"
-            android:text="@string/button_AL" />
-        </RelativeLayout>
-
-      </LinearLayout>
-
-      <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="3"
-        android:orientation="vertical">
-
-        <Button
-          android:id="@+id/btn_via_list"
-          style="@style/Homepage.Button"
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:layout_marginTop="10dp"
-          android:layout_weight="1"
-          android:background="@color/color_purple"
-          android:onClick="onClickVIAHistory"
-          android:text="@string/requisition_list" />
-
-        <Button
-          android:id="@+id/btn_mmia_list"
-          style="@style/Homepage.Button"
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:layout_marginTop="10dp"
-          android:layout_weight="1"
-          android:background="@color/color_amber"
-          android:onClick="onClickMMIAHistory"
-          android:text="@string/mmia_list" />
-
-        <Button
-          android:id="@+id/btn_ptv_card"
-          style="@style/Homepage.Button"
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:layout_marginTop="10dp"
-          android:layout_weight="1"
-          android:background="@color/color_pink"
-          android:onClick="onClickPtvStockCard"
-          android:text="@string/label_ptv" />
-
-        <Button
-          android:id="@+id/btn_kit_stock_card"
-          style="@style/Homepage.Button"
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:layout_marginTop="10dp"
-          android:layout_weight="1"
-          android:background="@color/color_teal"
-          android:onClick="onClickKitStockCard"
-          android:text="@string/label_kits_stock_cards" />
-
-        <Button
-          android:id="@+id/btn_rapid_test"
-          style="@style/Homepage.Button"
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:layout_marginTop="10dp"
-          android:layout_weight="1"
-          android:background="@color/color_material_blue_gray"
-          android:onClick="onClickRapidTestHistory"
-          android:text="@string/title_rapid_test" />
-
-      </LinearLayout>
-
-    </LinearLayout>
-
-    <org.openlmis.core.view.widget.SyncTimeView
-      android:id="@+id/view_sync_time"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/margin_normal" />
-
-  </LinearLayout>
-
+  <org.openlmis.core.view.widget.SyncTimeView
+    android:id="@+id/view_sync_time"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_normal"
+    app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
