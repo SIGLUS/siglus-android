@@ -341,7 +341,7 @@ public class SyncUpManager {
             .transform(CmmEntry::createFrom)
             .toList();
 
-        lmisRestApi.syncUpCmms(UserInfoMgr.getInstance().getUser().getFacilityId(), cmmEntries);
+        lmisRestApi.syncUpCmms(cmmEntries);
 
         for (Cmm cmm : unsyncedCmms) {
           cmm.setSynced(true);

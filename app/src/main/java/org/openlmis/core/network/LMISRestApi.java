@@ -88,9 +88,8 @@ public interface LMISRestApi {
   @POST("/rest-api/programData")
   Void syncUpProgramDataForm(@Body ProgramDataForm programDataForm) throws LMISException;
 
-  @PUT("/rest-api/facilities/{facilityId}/Cmms")
-  Void syncUpCmms(@Path("facilityId") String facilityId, @Body List<CmmEntry> cmms)
-      throws LMISException;
+  @PUT("api/siglusapi/android/me/facility/cmms")
+  Void syncUpCmms(@Body List<CmmEntry> cmms) throws LMISException;
 
   @GET("/rest-api/requisitions")
   SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode,

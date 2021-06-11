@@ -27,7 +27,6 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -410,7 +409,7 @@ public class SyncUpManagerTest {
     syncUpManager.syncUpCmms();
 
     //then
-    verify(mockedLmisRestApi, times(1)).syncUpCmms(eq("123"), anyListOf(CmmEntry.class));
+    verify(mockedLmisRestApi, times(1)).syncUpCmms(anyListOf(CmmEntry.class));
     assertThat(cmm.isSynced(), is(true));
     verify(mockedCmmRepository).save(cmm);
   }
@@ -425,7 +424,7 @@ public class SyncUpManagerTest {
     syncUpManager.syncUpCmms();
 
     //then
-    verify(mockedLmisRestApi, never()).syncUpCmms(anyString(), anyList());
+    verify(mockedLmisRestApi, never()).syncUpCmms(anyList());
   }
 
   @Test
@@ -435,7 +434,7 @@ public class SyncUpManagerTest {
 
     Cmm cmm = cmms.get(0);
     when(mockedCmmRepository.listUnsynced()).thenReturn(cmms);
-    when(mockedLmisRestApi.syncUpCmms(any(String.class), anyList()))
+    when(mockedLmisRestApi.syncUpCmms(anyList()))
         .thenThrow(new LMISException("some error"));
 
     assertThat(cmm.isSynced(), is(false));
@@ -444,7 +443,7 @@ public class SyncUpManagerTest {
     syncUpManager.syncUpCmms();
 
     //then
-    verify(mockedLmisRestApi, times(1)).syncUpCmms(eq("123"), anyListOf(CmmEntry.class));
+    verify(mockedLmisRestApi, times(1)).syncUpCmms(anyListOf(CmmEntry.class));
     assertThat(cmm.isSynced(), is(false));
     verify(mockedCmmRepository, never()).save(cmm);
   }
