@@ -27,7 +27,7 @@ public class CmmEntry {
 
   String productCode;
 
-  float cmmValue;
+  float cmm;
 
   String periodBegin;
 
@@ -35,7 +35,7 @@ public class CmmEntry {
 
   public CmmEntry(String productCode, float cmmValue, String periodBegin, String periodEnd) {
     this.productCode = productCode;
-    this.cmmValue = cmmValue;
+    this.cmm = cmmValue;
     this.periodBegin = periodBegin;
     this.periodEnd = periodEnd;
   }
