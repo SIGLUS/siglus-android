@@ -117,7 +117,11 @@ task checkstyle(type: Checkstyle) {
     exclude '**/gen/**'
     exclude '**/migrations/**'
     classpath = files()
-    ignoreFailures false
+    ignoreFailures = false
+    reports {
+        html.enabled = true
+        xml.enabled = false
+    }
 }
 
 task pmd(type: Pmd) {
@@ -129,23 +133,15 @@ task pmd(type: Pmd) {
     include '**/*.java'
     exclude '**/gen/**'
     reports {
-        xml.enabled = false
         html.enabled = true
-        html.destination = file("$project.buildDir/outputs/pmd/pmd.html")
+        xml.enabled = false
     }
 }
 
-spotbugs {
+tasks.withType(SpotBugsTask) {
     ignoreFailures = true
-    reportsDir = file("$project.buildDir/SpotBugsReports")
     effort = "max"
     reportLevel = "high"
-}
-
-tasks.withType(SpotBugsTask) {
-    dependsOn 'assembleDev'
-    classes = files("$project.buildDir/intermediates/javac")
-    excludeFilter = file("${projectDir.absolutePath}/spot-bugs-exclude.xml")
     reports {
         html.enabled = true
         xml.enabled = false

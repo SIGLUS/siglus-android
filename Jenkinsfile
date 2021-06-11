@@ -5,14 +5,23 @@ pipeline {
         timestamps ()
     }
     stages {
-        stage('Build') {
+        stage('Static Code Analysis') {
             steps {
-                println "gradle: build"
                 sh '''
                     pwd && ls -l
-                    ./gradlew clean checkstyle pmd testLocalDebug
+                    ./gradlew clean checkstyle pmd spotbugsLocalDebug
                 '''
-                println "sonarqube: analysis"
+            }
+        }
+        stage('Unit Test') {
+            steps {
+                sh '''
+                    ./gradlew testLocalDebug
+                '''
+            }
+        }
+        stage('Sonarqube Analysis') {
+            steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONARQUBE_TOKEN')]) {
                     sh '''
                         if [ "$GIT_BRANCH" = "master" ]; then
