@@ -140,22 +140,26 @@ public class SyncDownManager {
     syncDownServerData(new Subscriber<SyncProgress>() {
       @Override
       public void onCompleted() {
-        if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
-            .isSyncingLastYearStockCards()) {
-          sendSyncStartBroadcast();
-          sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
-          // TODO: Remove the comment when developing to the corresponding api
-          // syncStockCardsLastYearSilently.performSync()
-          // .subscribe(getSyncLastYearStockCardSubscriber());
-        } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
-            .isSyncingLastYearStockCards()) {
-          if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-            sendSyncFinishedBroadcast();
-          }
-        } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr
-            .isSyncingLastYearStockCards()) {
-          sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        }
+        // TODO: Remove the comment when developing to the corresponding api
+        sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
+        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+        sharedPreferenceMgr.setStockLastSyncTime();
+        sendSyncFinishedBroadcast();
+        // if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
+        //     .isSyncingLastYearStockCards()) {
+        //   sendSyncStartBroadcast();
+        // sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
+        // syncStockCardsLastYearSilently.performSync()
+        // .subscribe(getSyncLastYearStockCardSubscriber());
+        // } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
+        //     .isSyncingLastYearStockCards()) {
+        //   if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+        //     sendSyncFinishedBroadcast();
+        //   }
+        // } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr
+        //     .isSyncingLastYearStockCards()) {
+        //   sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+        // }
       }
 
       @Override

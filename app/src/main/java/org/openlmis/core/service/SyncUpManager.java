@@ -129,7 +129,7 @@ public class SyncUpManager {
       // syncRapidTestForms();
       // syncUpUnSyncedStockCardCodes();
       syncAppVersion();
-      // syncUpCmms();
+      syncUpCmms();
     }
     Log.d(TAG, "sync Up Data end");
     isSyncing = false;
