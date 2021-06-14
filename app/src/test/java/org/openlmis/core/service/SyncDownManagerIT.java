@@ -191,7 +191,7 @@ public class SyncDownManagerIT {
         "/api/siglusapi/android/me/facility", 200, "OK", facilityInfoJson);
   }
 
-  // TODO
+  // TODO: fix the test later as a teach card
   @Ignore
   @Test
   public void shouldRefreshTokenWhenTokenExpired() {

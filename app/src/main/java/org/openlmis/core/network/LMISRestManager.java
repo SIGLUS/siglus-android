@@ -19,8 +19,16 @@
 package org.openlmis.core.network;
 
 import static javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier;
+import static org.openlmis.core.utils.Constants.ANDROID_SDK_VERSION;
+import static org.openlmis.core.utils.Constants.AUTHORIZATION;
 import static org.openlmis.core.utils.Constants.BASIC_AUTH;
+import static org.openlmis.core.utils.Constants.DEVICE_INFO;
+import static org.openlmis.core.utils.Constants.FACILITY_CODE;
+import static org.openlmis.core.utils.Constants.FACILITY_NAME;
 import static org.openlmis.core.utils.Constants.GRANT_TYPE;
+import static org.openlmis.core.utils.Constants.UNIQUE_ID;
+import static org.openlmis.core.utils.Constants.USER_NAME;
+import static org.openlmis.core.utils.Constants.VERSION_CODE;
 
 import android.content.Context;
 import android.os.Build;
@@ -151,16 +159,16 @@ public class LMISRestManager {
     return request -> {
       User user = UserInfoMgr.getInstance().getUser();
       if (user != null && !user.getIsTokenExpired()) {
-        request.addHeader("Authorization", user.getTokenType() + " " + user.getAccessToken());
-        request.addHeader("UserName", user.getUsername());
-        request.addHeader("FacilityCode", user.getFacilityCode());
-        request.addHeader("FacilityName", user.getFacilityName());
+        request.addHeader(AUTHORIZATION, user.getTokenType() + " " + user.getAccessToken());
+        request.addHeader(USER_NAME, user.getUsername());
+        request.addHeader(FACILITY_CODE, user.getFacilityCode());
+        request.addHeader(FACILITY_NAME, user.getFacilityName());
       } else {
-        request.addHeader("Authorization", BASIC_AUTH);
+        request.addHeader(AUTHORIZATION, BASIC_AUTH);
       }
 
       if (BuildConfig.MONITOR_DEVICE_ID) {
-        request.addHeader("UniqueId", getAndroidId());
+        request.addHeader(UNIQUE_ID, getAndroidId());
       }
 
       addDeviceInfoToRequestHeader(request);
@@ -171,9 +179,9 @@ public class LMISRestManager {
     String versionCode = String.valueOf(BuildConfig.VERSION_CODE);
     String deviceInfo = "OS: " + Build.VERSION.RELEASE
         + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL;
-    request.addHeader("DeviceInfo", deviceInfo);
-    request.addHeader("VersionCode", versionCode);
-    request.addHeader("AndroidSDKVersion", Build.VERSION.SDK_INT + "");
+    request.addHeader(DEVICE_INFO, deviceInfo);
+    request.addHeader(VERSION_CODE, versionCode);
+    request.addHeader(ANDROID_SDK_VERSION, Build.VERSION.SDK_INT + "");
   }
 
   private GsonConverter registerTypeAdapter() {

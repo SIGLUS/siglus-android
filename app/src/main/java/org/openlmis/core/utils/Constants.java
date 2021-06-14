@@ -176,6 +176,15 @@ public final class Constants {
 
   // basic auth
   public static final String BASIC_AUTH = "Basic dXNlci1jbGllbnQ6Y2hhbmdlbWU=";
+  public static final String AUTHORIZATION = "Authorization";
+  public static final String USER_NAME = "UserName";
+  public static final String FACILITY_CODE = "FacilityCode";
+  public static final String FACILITY_NAME = "FacilityName";
+  public static final String UNIQUE_ID = "UniqueId";
+  public static final String DEVICE_INFO = "DeviceInfo";
+  public static final String VERSION_CODE = "VersionCode";
+  public static final String ANDROID_SDK_VERSION = "AndroidSDKVersion";
+
 
   private Constants() {
 

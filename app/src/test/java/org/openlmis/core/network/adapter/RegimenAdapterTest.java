@@ -16,7 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class RegimenAdapterTest {
 
     @Test
-    public void deserialize() {
+    public void shouldDeserializeRegimenSuccess() {
         // given
         RegimenAdapter regimenAdapter = new RegimenAdapter();
         String json = JsonFileReader.readJson(getClass(), "fetchRegimenResponse.json");

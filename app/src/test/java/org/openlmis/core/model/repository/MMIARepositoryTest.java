@@ -102,7 +102,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
   }
 
 
-  // TODO
+  // TODO: fix the test
   @Ignore
   @Test
   public void shouldCalculateInfoFromStockCardByPeriod() throws Exception {
@@ -172,7 +172,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     return stockCard;
   }
 
-  // TODO
+  // TODO : fix the test
   @Ignore
   @Test
   public void shouldSaveSuccess() throws Exception {
