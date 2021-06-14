@@ -192,17 +192,17 @@ public class SyncDownManager {
     }
   }
 
-    private void syncDownRegimens(Subscriber<? super SyncProgress> subscriber) throws LMISException {
-        try {
-            subscriber.onNext(SyncProgress.SyncingRegimens);
-            fetchAndSaveRegimens();
-            subscriber.onNext(SyncProgress.RegimensSynced);
-        } catch (LMISException e) {
-            LMISException e1 = new LMISException(errorMessage(R.string.msg_fetching_regimens_failed));
-            e1.reportToFabric();
-            throw e;
-        }
+  private void syncDownRegimens(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+    try {
+      subscriber.onNext(SyncProgress.SyncingRegimens);
+      fetchAndSaveRegimens();
+      subscriber.onNext(SyncProgress.RegimensSynced);
+    } catch (LMISException e) {
+      LMISException e1 = new LMISException(errorMessage(R.string.msg_fetching_regimens_failed));
+      e1.reportToFabric();
+      throw e;
     }
+  }
 
 
   private void syncDownService(Subscriber<? super SyncProgress> subscriber) throws LMISException {
@@ -543,15 +543,15 @@ public class SyncDownManager {
     return programs;
   }
 
-    private void fetchAndSaveRegimens() throws LMISException {
-        SyncDownRegimensResponse syncDownRegimensResponse = lmisRestApi.fetchRegimens();
-        if (syncDownRegimensResponse == null) {
-            LMISException e = new LMISException("fetch regimen exception");
-            e.reportToFabric();
-            throw e;
-        }
-        regimenRepository.batchSave(syncDownRegimensResponse.getRegimenList());
+  private void fetchAndSaveRegimens() throws LMISException {
+    SyncDownRegimensResponse syncDownRegimensResponse = lmisRestApi.fetchRegimens();
+    if (syncDownRegimensResponse == null) {
+      LMISException e = new LMISException("fetch regimen exception");
+      e.reportToFabric();
+      throw e;
     }
+    regimenRepository.batchSave(syncDownRegimensResponse.getRegimenList());
+  }
 
   private void fetchAndSaveRequisition() throws LMISException {
     final String facilityCode = UserInfoMgr.getInstance().getUser().getFacilityCode();

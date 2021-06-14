@@ -23,12 +23,13 @@ import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-
 import lombok.AllArgsConstructor;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder;
+
 
 @Builder
 @Getter
@@ -38,11 +39,11 @@ import lombok.Builder;
 @DatabaseTable(tableName = "regimes")
 public class Regimen extends BaseModel {
 
-    public enum RegimeType {
-        Adults,
-        Paediatrics,
-        Default
-    }
+  public enum RegimeType {
+    Adults,
+    Paediatrics,
+    Default
+  }
 
   @Expose
   @SerializedName("name")

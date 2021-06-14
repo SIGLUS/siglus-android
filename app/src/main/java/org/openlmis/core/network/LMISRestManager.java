@@ -176,18 +176,18 @@ public class LMISRestManager {
     request.addHeader("AndroidSDKVersion", Build.VERSION.SDK_INT + "");
   }
 
-    private GsonConverter registerTypeAdapter() {
-        return new GsonConverter(new GsonBuilder()
-                .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
-                .registerTypeAdapter(StockCard.class, new StockCardAdapter())
-                .registerTypeAdapter(ProgramDataForm.class, new ProgramDataFormAdapter())
-                .registerTypeAdapter(ReportTypeForm.class, new ReportTypeAdapter())
-                .registerTypeAdapter(Service.class, new ServiceAdapter())
-                .registerTypeAdapter(Program.class, new ProgramAdapter())
-                .registerTypeAdapter(SyncDownLatestProductsResponse.class, new ProductsResponseAdapter())
-                .registerTypeAdapter(SyncDownRegimensResponse.class, new RegimenAdapter())
-                .create());
-    }
+  private GsonConverter registerTypeAdapter() {
+    return new GsonConverter(new GsonBuilder()
+        .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
+        .registerTypeAdapter(StockCard.class, new StockCardAdapter())
+        .registerTypeAdapter(ProgramDataForm.class, new ProgramDataFormAdapter())
+        .registerTypeAdapter(ReportTypeForm.class, new ReportTypeAdapter())
+        .registerTypeAdapter(Service.class, new ServiceAdapter())
+        .registerTypeAdapter(Program.class, new ProgramAdapter())
+        .registerTypeAdapter(SyncDownLatestProductsResponse.class, new ProductsResponseAdapter())
+        .registerTypeAdapter(SyncDownRegimensResponse.class, new RegimenAdapter())
+        .create());
+  }
 
   private String getAndroidId() {
     return Settings.Secure
