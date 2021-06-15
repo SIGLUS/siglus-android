@@ -627,8 +627,8 @@ public class StockRepository {
 
   public Map<String, Integer> queryStockCountGroupByStockOnHandStatus() {
     String rawSql = "SELECT COUNT(stockOnHandStatus), stockOnHandStatus FROM stock_cards "
-        + "WHERE product_id IN ( SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND isKit = 0 )"
-        + " GROUP BY stockOnHandStatus;";
+        + "WHERE product_id IN ( SELECT id FROM products WHERE isActive = 1 AND isArchived = 0 AND isKit = 0 ) "
+        + "GROUP BY stockOnHandStatus;";
     final HashMap<String, Integer> result = new HashMap<>();
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
         .rawQuery(rawSql, null);
