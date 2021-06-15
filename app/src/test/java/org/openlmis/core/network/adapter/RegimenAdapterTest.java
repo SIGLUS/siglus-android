@@ -6,6 +6,7 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.Regimen.RegimeType;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.utils.JsonFileReader;
 
@@ -26,6 +27,8 @@ public class RegimenAdapterTest {
         // then
         assertThat(syncDownRegimensResponse.getRegimenList().get(0).getCode(), Matchers.is("RG MMC"));
         assertThat(syncDownRegimensResponse.getRegimenList().get(0).getName(),Matchers.is("Regime Genérico MMC"));
+        assertThat(syncDownRegimensResponse.getRegimenList().get(1).getType(),Matchers.is(RegimeType.Adults));
+        assertThat(syncDownRegimensResponse.getRegimenList().get(2).getType(),Matchers.is(RegimeType.Paediatrics));
     }
 
 }
