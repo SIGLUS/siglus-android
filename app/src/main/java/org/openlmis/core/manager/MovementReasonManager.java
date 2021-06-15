@@ -76,7 +76,7 @@ public final class MovementReasonManager {
     typeList = initTypeList(this.context.getResources().getConfiguration().locale);
   }
 
-  public synchronized static MovementReasonManager getInstance() {
+  public static synchronized MovementReasonManager getInstance() {
     if (instance == null) {
       instance = new MovementReasonManager(LMISApp.getContext());
     }

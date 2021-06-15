@@ -49,7 +49,7 @@ import roboguice.inject.InjectView;
 
 public class AddLotDialogFragment extends BaseDialogFragment {
 
-  public boolean IS_OCCUPIED = false;
+  public boolean isOccupied = false;
 
   @InjectView(R.id.ly_lot_number)
   private TextInputLayout lyLotNumber;
@@ -239,7 +239,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     if (onDismissListener != null) {
       onDismissListener.onDismissAction();
     }
-    IS_OCCUPIED = false;
+    isOccupied = false;
     super.onDismiss(dialog);
   }
 }
