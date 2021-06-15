@@ -43,7 +43,6 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManagerMock;
-import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
