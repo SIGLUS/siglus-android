@@ -24,11 +24,9 @@ import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,12 +42,15 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 import java.io.File;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.googleanalytics.TrackerActions;
@@ -104,33 +105,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private static final int PERMISSION_REQUEST_CODE = 200;
 
-  BroadcastReceiver syncStartReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      syncTimeView.showSyncProgressBarAndHideIcon();
-    }
-  };
-
-  BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      setSyncedTime();
-      refreshDashboard();
-    }
-  };
-
-  BroadcastReceiver syncErrorReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      String msg = intent.getStringExtra(Constants.SYNC_MOVEMENT_ERROR);
-      if (msg != null) {
-        syncTimeView.setSyncedMovementError(msg);
-      } else {
-        syncTimeView.setSyncStockCardLastYearError();
-      }
-    }
-  };
-
   public void onClickStockCard(View view) {
     if (!isHaveDirtyData()) {
       startActivity(StockCardListActivity.class);
@@ -166,6 +140,28 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   public void syncData() {
     Log.d("HomeActivity", "requesting immediate sync");
     syncService.requestSyncImmediatelyFromUserTrigger();
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveSyncStatusEvent(SyncStatusEvent event) {
+    switch (event.getStatus()) {
+      case START:
+        syncTimeView.showSyncProgressBarAndHideIcon();
+        break;
+      case FINISH:
+        setSyncedTime();
+        refreshDashboard();
+        break;
+      case ERROR:
+        if (event.getMsg() != null) {
+          syncTimeView.setSyncedMovementError(event.getMsg());
+        } else {
+          syncTimeView.setSyncStockCardLastYearError();
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   @Override
@@ -251,6 +247,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    EventBus.getDefault().register(this);
     if (UserInfoMgr.getInstance().getUser() == null) {
       // In case some users use some unknown way entered here!!!
       logout();
@@ -263,9 +260,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
       }
     }
-    registerSyncStartReceiver();
-    registerSyncFinishedReceiver();
-    registerErrorFinishedReceiver();
   }
 
   @Override
@@ -296,9 +290,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   @Override
   protected void onDestroy() {
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncStartReceiver);
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncFinishedReceiver);
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(syncErrorReceiver);
+    EventBus.getDefault().unregister(this);
     super.onDestroy();
   }
 
@@ -428,23 +420,5 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       return;
     }
     homePresenter.getDashboardData();
-  }
-
-  private void registerSyncStartReceiver() {
-    IntentFilter filter = new IntentFilter();
-    filter.addAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-    LocalBroadcastManager.getInstance(this).registerReceiver(syncStartReceiver, filter);
-  }
-
-  private void registerSyncFinishedReceiver() {
-    IntentFilter filter = new IntentFilter();
-    filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-    LocalBroadcastManager.getInstance(this).registerReceiver(syncFinishedReceiver, filter);
-  }
-
-  private void registerErrorFinishedReceiver() {
-    IntentFilter filter = new IntentFilter();
-    filter.addAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-    LocalBroadcastManager.getInstance(this).registerReceiver(syncErrorReceiver, filter);
   }
 }

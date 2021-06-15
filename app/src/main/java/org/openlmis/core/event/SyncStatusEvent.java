@@ -16,35 +16,27 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.activity;
+package org.openlmis.core.event;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.openlmis.core.event.SyncStatusEvent;
-import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
+import lombok.Getter;
 
-public abstract class BaseReportListActivity extends BaseActivity {
+@Getter
+public class SyncStatusEvent {
 
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveSyncStatusEvent(SyncStatusEvent event) {
-    if (event.getStatus() != SyncStatus.FINISH) {
-      return;
-    }
-    loadForms();
+  public enum SyncStatus {
+    START, FINISH, ERROR
   }
 
-  @Override
-  protected void onStart() {
-    super.onStart();
-    EventBus.getDefault().register(this);
+  private final SyncStatus status;
+
+  private String msg;
+
+  public SyncStatusEvent(SyncStatus status) {
+    this.status = status;
   }
 
-  @Override
-  protected void onStop() {
-    EventBus.getDefault().unregister(this);
-    super.onStop();
+  public SyncStatusEvent(SyncStatus status, String msg) {
+    this.status = status;
+    this.msg = msg;
   }
-
-  protected abstract void loadForms();
 }

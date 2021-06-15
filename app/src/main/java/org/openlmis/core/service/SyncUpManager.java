@@ -21,10 +21,8 @@ package org.openlmis.core.service;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.sql.SQLException;
@@ -34,7 +32,10 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
+import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.event.SyncStatusEvent;
+import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -136,9 +137,7 @@ public class SyncUpManager {
     isSyncing = false;
     if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && TextUtils
         .isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-      Intent intent = new Intent();
-      intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-      LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+      EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));
     }
   }
 
@@ -243,9 +242,7 @@ public class SyncUpManager {
   private void saveStockMovementErrors(SyncUpStockMovementDataSplitResponse response) {
     List<String> syncErrorProduct = FluentIterable.from(response.getErrorProductCodes()).limit(3)
         .toList();
-    Intent intent = new Intent(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-    intent.putExtra(Constants.SYNC_MOVEMENT_ERROR, syncErrorProduct.toString());
-    LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, syncErrorProduct.toString()));
     sharedPreferenceMgr.setStockMovementSyncError(syncErrorProduct.toString());
     syncErrorsRepository
         .save(new SyncError(response.getErrorProductCodes().toString(), SyncType.SyncMovement, 2L));

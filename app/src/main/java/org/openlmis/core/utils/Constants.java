@@ -128,12 +128,6 @@ public final class Constants {
   public static final int REQUEST_NEW_MOVEMENT_PAGE = 600;
 
   // Broadcast Intent Filter
-  public static final String INTENT_FILTER_START_SYNC_DATA =
-      LMISApp.getContext().getPackageName() + ".start.sync_data";
-  public static final String INTENT_FILTER_FINISH_SYNC_DATA =
-      LMISApp.getContext().getPackageName() + ".finish.sync_data";
-  public static final String INTENT_FILTER_ERROR_SYNC_DATA =
-      LMISApp.getContext().getPackageName() + ".error.sync_data";
   public static final String INTENT_FILTER_DELETED_PRODUCT =
       LMISApp.getContext().getPackageName() + ".deleted.product";
   // sync within AndroidManifest.xml

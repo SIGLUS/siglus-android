@@ -18,10 +18,8 @@
 
 package org.openlmis.core.service;
 
-import android.content.Intent;
 import android.util.Log;
 import androidx.annotation.NonNull;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.sql.SQLException;
@@ -29,8 +27,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.event.SyncStatusEvent;
+import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -306,21 +307,11 @@ public class SyncDownManager {
   }
 
   private void sendSyncErrorBroadcast() {
-    Intent intent = new Intent();
-    intent.setAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-    LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
-  }
-
-  private void sendSyncStartBroadcast() {
-    Intent intent = new Intent();
-    intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-    LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR));
   }
 
   private void sendSyncFinishedBroadcast() {
-    Intent intent = new Intent();
-    intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-    LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));
     sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
   }
 

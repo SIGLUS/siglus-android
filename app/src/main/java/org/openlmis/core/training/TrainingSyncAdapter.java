@@ -19,14 +19,14 @@
 package org.openlmis.core.training;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.inject.Inject;
+import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.event.SyncStatusEvent;
+import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.service.SyncUpManager;
-import org.openlmis.core.utils.Constants;
 import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -70,16 +70,12 @@ public class TrainingSyncAdapter {
   }
 
   private void sendSyncStartBroadcast() {
-    Intent intent = new Intent();
-    intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.START));
 
   }
 
   private void sendSyncFinishedBroadcast() {
-    Intent intent = new Intent();
-    intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));
   }
 
   public void requestSync() {

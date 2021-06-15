@@ -33,12 +33,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.material.textfield.TextInputLayout;
 import org.apache.commons.lang3.StringUtils;
+import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.event.SyncStatusEvent;
+import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
@@ -285,21 +287,15 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   }
 
   public void sendSyncStartBroadcast() {
-    Intent intent = new Intent();
-    intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
-    LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.START));
   }
 
   public void sendSyncFinishedBroadcast() {
-    Intent intent = new Intent();
-    intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-    LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));
   }
 
   @Override
   public void sendSyncErrorBroadcast() {
-    Intent intent = new Intent();
-    intent.setAction(Constants.INTENT_FILTER_ERROR_SYNC_DATA);
-    LocalBroadcastManager.getInstance(LMISApp.getContext()).sendBroadcast(intent);
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR));
   }
 }
