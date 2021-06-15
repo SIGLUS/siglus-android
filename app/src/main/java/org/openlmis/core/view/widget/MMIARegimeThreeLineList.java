@@ -204,7 +204,12 @@ public class MMIARegimeThreeLineList extends LinearLayout {
 
     @Override
     public void afterTextChanged(Editable editable) {
-      long count = Long.parseLong(editable.toString());
+      long count = 0L;
+      try {
+        count = Long.parseLong(editable.toString());
+      } catch (NumberFormatException ignored) {
+        // do nothing
+      }
       if (CountType.PATIENTSAMOUNT == type) {
         item.setPatientsAmount(count);
         mmiaThreeLinePatientsTotal.setText(String.valueOf(getTotal(type)));
