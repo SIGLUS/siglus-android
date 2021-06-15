@@ -58,7 +58,7 @@ public final class FileUtil {
   }
 
   public static void copyInputStreamToFile(InputStream in, File file) {
-    try (PrintWriter writer = new PrintWriter(file); OutputStream out = new FileOutputStream(
+    try (PrintWriter writer = new PrintWriter(file, "UTF_8"); OutputStream out = new FileOutputStream(
         file)) {
       writer.print("");
       byte[] buf = new byte[1024];

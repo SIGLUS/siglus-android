@@ -31,14 +31,14 @@ import org.openlmis.core.model.RegimenItem;
 @Data
 public class ALReportItemViewModel implements Serializable {
 
-  private ALGridViewModel gridOne = new ALGridViewModel(ALGridViewModel.ALColumnCode.OneColumn);
-  private ALGridViewModel gridTwo = new ALGridViewModel(ALGridViewModel.ALColumnCode.TwoColumn);
-  private ALGridViewModel gridThree = new ALGridViewModel(ALGridViewModel.ALColumnCode.ThreeColumn);
-  private ALGridViewModel gridFour = new ALGridViewModel(ALGridViewModel.ALColumnCode.FourColumn);
+  private transient ALGridViewModel gridOne = new ALGridViewModel(ALGridViewModel.ALColumnCode.OneColumn);
+  private transient ALGridViewModel gridTwo = new ALGridViewModel(ALGridViewModel.ALColumnCode.TwoColumn);
+  private transient ALGridViewModel gridThree = new ALGridViewModel(ALGridViewModel.ALColumnCode.ThreeColumn);
+  private transient ALGridViewModel gridFour = new ALGridViewModel(ALGridViewModel.ALColumnCode.FourColumn);
 
-  private List<ALGridViewModel> alGridViewModelList = Arrays
+  private transient List<ALGridViewModel> alGridViewModelList = Arrays
       .asList(gridOne, gridTwo, gridThree, gridFour);
-  private Map<String, ALGridViewModel> alGridViewModelMap = new HashMap<>();
+  private transient Map<String, ALGridViewModel> alGridViewModelMap = new HashMap<>();
   private ALReportViewModel.ALItemType itemType;
   private boolean showCheckTip = false;
 

@@ -54,21 +54,21 @@ public class RapidTestReportViewModel implements Serializable {
   private Status status;
   private Date syncedTime;
 
-  MovementReasonManager movementReasonManager;
+  transient MovementReasonManager movementReasonManager;
 
-  RapidTestFormItemViewModel itemTotal;
-  RapidTestFormItemViewModel itemRealTotal;
-  RapidTestFormItemViewModel itemAPEs;
+  transient RapidTestFormItemViewModel itemTotal;
+  transient RapidTestFormItemViewModel itemRealTotal;
+  transient RapidTestFormItemViewModel itemAPEs;
 
-  List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
-  Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
+  transient List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
+  transient Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
 
   List<ProgramDataFormBasicItem> basicItems = new ArrayList<>();
 
   private ProgramDataForm rapidTestForm = new ProgramDataForm();
 
-  public static long DEFAULT_FORM_ID = 0;
-  public static String DEFAULT_TOTAl_NULL = "";
+  public static final long DEFAULT_FORM_ID = 0;
+  public static final String DEFAULT_TOTAl_NULL = "";
 
   public RapidTestReportViewModel(Period period) {
     this.period = period;

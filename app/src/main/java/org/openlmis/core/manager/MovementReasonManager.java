@@ -64,7 +64,6 @@ public final class MovementReasonManager {
 
   private static MovementReasonManager instance;
 
-
   Map<String, ArrayList<MovementReason>> reasonCache;
   Map<String, ArrayList<MovementType>> typeCache;
 
@@ -77,7 +76,7 @@ public final class MovementReasonManager {
     typeList = initTypeList(this.context.getResources().getConfiguration().locale);
   }
 
-  public static MovementReasonManager getInstance() {
+  public synchronized static MovementReasonManager getInstance() {
     if (instance == null) {
       instance = new MovementReasonManager(LMISApp.getContext());
     }
@@ -85,7 +84,7 @@ public final class MovementReasonManager {
   }
 
 
-  public void refresh() {
+  public synchronized void refresh() {
     instance = new MovementReasonManager(LMISApp.getContext());
   }
 

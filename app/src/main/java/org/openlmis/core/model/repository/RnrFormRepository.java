@@ -317,7 +317,7 @@ public class RnrFormRepository {
 
   protected List<RnRForm> listNotSynchronizedFromStarTime() throws LMISException {
     List<RnRForm> rnRForms = new ArrayList<>();
-    for (Constants.Program program : Constants.PROGRAMES) {
+    for (Constants.Program program : Constants.PROGRAMS) {
       rnRForms.addAll(listNotSynchronizedFromReportStartTime(program.getCode()));
     }
     return rnRForms;

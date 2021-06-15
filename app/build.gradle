@@ -139,7 +139,7 @@ task pmd(type: Pmd) {
 }
 
 tasks.withType(SpotBugsTask) {
-    ignoreFailures = true
+    ignoreFailures = false
     effort = "max"
     reportLevel = "high"
     reports {

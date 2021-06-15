@@ -42,7 +42,7 @@ public class KitStockCardListFragment extends StockCardListFragment {
     return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
   }
 
-  protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener =
+  protected StockCardViewHolder.OnItemViewClickListener viewClickListener =
       inventoryViewModel -> {
         Intent intent = getStockMovementIntent(inventoryViewModel);
         startActivityForResult(intent, Constants.REQUEST_UNPACK_KIT);
@@ -53,8 +53,7 @@ public class KitStockCardListFragment extends StockCardListFragment {
 
   @Override
   protected void createAdapter() {
-    mAdapter = new KitStockCardListAdapter(new ArrayList<InventoryViewModel>(),
-        onItemViewClickListener);
+    mAdapter = new KitStockCardListAdapter(new ArrayList<>(), viewClickListener);
   }
 
   @Override

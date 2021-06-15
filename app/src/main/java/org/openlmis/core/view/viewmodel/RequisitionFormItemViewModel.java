@@ -113,7 +113,7 @@ public class RequisitionFormItemViewModel {
 
   private void adjustTheoreticalByKitProductAmount() {
     long adjustAmount = calculateAdjustAmount();
-    long theoreticalTotalRequest = Long.valueOf(this.totalRequest);
+    long theoreticalTotalRequest = Long.parseLong(this.totalRequest);
     if (adjustAmount <= theoreticalTotalRequest) {
       theoreticalTotalRequest = theoreticalTotalRequest - adjustAmount;
     } else {

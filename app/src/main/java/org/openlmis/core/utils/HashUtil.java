@@ -18,6 +18,7 @@
 
 package org.openlmis.core.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.openlmis.core.exceptions.LMISException;
@@ -30,7 +31,7 @@ public final class HashUtil {
   public static String md5(String s) {
     try {
       MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-      digest.update(s.getBytes());
+      digest.update(s.getBytes(StandardCharsets.UTF_8));
       byte[] messageDigest = digest.digest();
 
       StringBuffer hexString = new StringBuffer();

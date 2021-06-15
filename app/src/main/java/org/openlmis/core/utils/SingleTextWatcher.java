@@ -18,6 +18,8 @@
 
 package org.openlmis.core.utils;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class SingleTextWatcher extends SimpleTextWatcher {
 
   @Override
@@ -25,6 +27,7 @@ public class SingleTextWatcher extends SimpleTextWatcher {
     return super.hashCode();
   }
 
+  @SuppressWarnings("EQ_ALWAYS_TRUE")
   @Override
   public boolean equals(Object o) {
     // Used to avoid add multiple Listeners in ListView

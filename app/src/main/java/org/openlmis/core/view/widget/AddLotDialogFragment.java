@@ -49,7 +49,7 @@ import roboguice.inject.InjectView;
 
 public class AddLotDialogFragment extends BaseDialogFragment {
 
-  public static boolean IS_OCCUPIED = false;
+  public boolean IS_OCCUPIED = false;
 
   @InjectView(R.id.ly_lot_number)
   private TextInputLayout lyLotNumber;

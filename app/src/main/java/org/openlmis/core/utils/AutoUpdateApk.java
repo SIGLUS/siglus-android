@@ -44,6 +44,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.LinkedList;
 import java.util.List;
@@ -488,7 +489,7 @@ public class AutoUpdateApk {
   }
 
   private static int crc32(String str) {
-    byte[] bytes = str.getBytes();
+    byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
     Checksum checksum = new CRC32();
     checksum.update(bytes, 0, bytes.length);
     return (int) checksum.getValue();

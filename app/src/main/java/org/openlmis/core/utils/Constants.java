@@ -19,6 +19,7 @@
 package org.openlmis.core.utils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -66,12 +67,12 @@ public final class Constants {
   public static final String PTV_PROGRAM_CODE = "PTV";
   public static final String TEST_KIT_PROGRAM_CODE = "TEST_KIT";
   public static final String VIA_PROGRAM_CHILD_CODE_TARV = "TARV";
-  public static final List<Constants.Program> PROGRAMES = Arrays
-      .asList(Constants.Program.VIA_PROGRAM,
+  public static final List<Constants.Program> PROGRAMS = Collections
+      .unmodifiableList(Arrays.asList(Constants.Program.VIA_PROGRAM,
           Constants.Program.MMIA_PROGRAM,
           Constants.Program.AL_PROGRAM,
           Constants.Program.PTV_PROGRAM,
-          Constants.Program.RAPID_TEST_PROGRAM);
+          Constants.Program.RAPID_TEST_PROGRAM));
 
   //Don't change these reportTypes codes!!!
   public static final String MMIA_REPORT = "MMIA";

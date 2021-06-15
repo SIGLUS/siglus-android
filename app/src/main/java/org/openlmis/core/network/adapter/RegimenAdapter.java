@@ -28,7 +28,9 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.model.Regimen;
+import org.openlmis.core.model.Regimen.RegimeType;
 import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 
@@ -47,7 +49,7 @@ public class RegimenAdapter implements JsonDeserializer<SyncDownRegimensResponse
           .code(jsonObject.get("code").getAsString())
           .program(ProgramCacheManager.getPrograms(jsonObject.get("programCode").getAsString()))
           .active(jsonObject.get("active").getAsBoolean())
-          .type(getType(jsonObject, "category", Regimen.RegimeType.Default))
+          .type(getType(jsonObject))
           .displayOrder(Long.valueOf(jsonObject.get("displayOrder").getAsString()))
           .isCustom(jsonObject.get("isCustom").getAsBoolean())
           .build();
@@ -57,18 +59,17 @@ public class RegimenAdapter implements JsonDeserializer<SyncDownRegimensResponse
     return syncDownRegimensResponse;
   }
 
-  private Regimen.RegimeType getType(JsonObject jsonObject, String memberName,
-      Regimen.RegimeType defaultType) {
+  private Regimen.RegimeType getType(JsonObject jsonObject) {
+    String memberName = "category";
     if (!jsonObject.has(memberName)) {
-      return defaultType;
+      return RegimeType.Default;
     }
-    JsonObject category = jsonObject.get(memberName).getAsJsonObject();
-    if (category.get("name").equals(Regimen.RegimeType.Adults)) {
+    String regimenType = jsonObject.get(memberName).getAsJsonObject().get("code").getAsString();
+    if (StringUtils.equalsIgnoreCase(regimenType, RegimeType.Adults.name())) {
       return Regimen.RegimeType.Adults;
-    } else if (category.get("name").equals(Regimen.RegimeType.Paediatrics)) {
+    } else if (StringUtils.equalsIgnoreCase(regimenType, RegimeType.Paediatrics.name())) {
       return Regimen.RegimeType.Paediatrics;
-    } else {
-      return Regimen.RegimeType.Default;
     }
+    return Regimen.RegimeType.Default;
   }
 }

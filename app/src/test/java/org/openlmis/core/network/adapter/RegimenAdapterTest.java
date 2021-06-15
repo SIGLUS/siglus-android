@@ -11,7 +11,6 @@ import org.openlmis.core.utils.JsonFileReader;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
 @RunWith(LMISTestRunner.class)
 public class RegimenAdapterTest {
 

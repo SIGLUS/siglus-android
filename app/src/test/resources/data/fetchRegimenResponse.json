@@ -22,8 +22,8 @@
     "displayOrder": 76,
     "isCustom": false,
     "category": {
-      "code": "DEFAULT",
-      "name": "Default",
+      "code": "ADULTS",
+      "name": "Adults",
       "displayOrder": 0
     }
   },
@@ -36,8 +36,8 @@
     "displayOrder": 66,
     "isCustom": false,
     "category": {
-      "code": "DEFAULT",
-      "name": "Default",
+      "code": "Paediatrics",
+      "name": "Paediatrics",
       "displayOrder": 0
     }
   },

@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
@@ -58,7 +59,7 @@ public abstract class Migration {
     db.beginTransaction();
     try {
       InputStream io = manager.open(path);
-      BufferedReader reader = new BufferedReader(new InputStreamReader(io));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(io, StandardCharsets.UTF_8));
 
       String line = reader.readLine();
       while (line != null) {

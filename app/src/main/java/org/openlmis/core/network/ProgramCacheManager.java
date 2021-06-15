@@ -46,7 +46,7 @@ public final class ProgramCacheManager {
 
   @Nullable
   public static Program getPrograms(@Nullable String programCode) {
-    if (PROGRAMS_CACHE.containsKey(programCode)) {
+    if (programCode != null && PROGRAMS_CACHE.containsKey(programCode)) {
       return PROGRAMS_CACHE.get(programCode);
     }
     return null;
