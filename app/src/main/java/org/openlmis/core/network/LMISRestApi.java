@@ -94,7 +94,7 @@ public interface LMISRestApi {
   Void syncUpCmms(@Body List<CmmEntry> cmms) throws LMISException;
 
   @GET("/api/siglusapi/android/regimens")
-  SyncDownRegimensResponse fetchRegimens();
+  SyncDownRegimensResponse fetchRegimens() throws LMISException;
 
 
   @GET("/rest-api/requisitions")

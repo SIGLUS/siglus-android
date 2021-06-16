@@ -435,7 +435,7 @@ public class SyncDownManagerTest {
     when(lmisRestApi.fetchFacilityInfo()).thenReturn(facilityInfoResponse);
   }
 
-  private void mockRegimenResponse() {
+  private void mockRegimenResponse() throws LMISException {
      SyncDownRegimensResponse syncDownRegimensResponse = getRegimenResponse();
      when(lmisRestApi.fetchRegimens()).thenReturn(syncDownRegimensResponse);
   }
