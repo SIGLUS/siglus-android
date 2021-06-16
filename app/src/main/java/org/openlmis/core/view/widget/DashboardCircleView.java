@@ -121,7 +121,9 @@ public class DashboardCircleView extends View {
       item.startAngle = startAngle;
       item.sweepAngle = (360 - (ONE_PIECE_ANGLE * getSpaceCount(data))) * (Math.max(item.amount, 0))
           / totalAmount;
-      startAngle += item.sweepAngle + ONE_PIECE_ANGLE;
+      if (item.sweepAngle > 0) {
+        startAngle += item.sweepAngle + ONE_PIECE_ANGLE;
+      }
     }
   }
 
