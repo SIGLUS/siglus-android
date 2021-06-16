@@ -36,6 +36,8 @@ public class StockCardListActivity extends SearchBarActivity {
   protected static final int MENU_ID_ADD_NEW_DRUG = 100;
   protected static final int MENU_ID_ARCHIVE_LIST = 200;
   private static final int MENU_ID_MOVEMENT_HISTORY = 300;
+  private static final int MENU_ID_BULK_ISSUES = 400;
+  private static final int MENU_ID_BULK_ENTRIES = 500;
   protected StockCardListFragment stockCardFragment;
 
   @Override
@@ -73,6 +75,9 @@ public class StockCardListActivity extends SearchBarActivity {
       case MENU_ID_MOVEMENT_HISTORY:
         startActivity(AllDrugsMovementHistoryActivity.getIntentToMe(this));
         return true;
+      case MENU_ID_BULK_ENTRIES:
+        startActivity(BulkEntriesActivity.class);
+        return true;
       default:
         return super.onOptionsItemSelected(item);
     }
@@ -96,6 +101,7 @@ public class StockCardListActivity extends SearchBarActivity {
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
     if (stockCardFragment != null) {
       stockCardFragment.onActivityResult(requestCode, resultCode, data);
     }
@@ -114,6 +120,10 @@ public class StockCardListActivity extends SearchBarActivity {
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_all_drugs_movements_history)) {
       menu.add(Menu.NONE, MENU_ID_MOVEMENT_HISTORY, 300,
           getString(R.string.menu_item_stock_movement_history))
+          .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+      menu.add(Menu.NONE, MENU_ID_BULK_ISSUES, 400, getString(R.string.action_bulk_issues))
+          .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+      menu.add(Menu.NONE, MENU_ID_BULK_ENTRIES, 500, getString(R.string.action_bulk_entries))
           .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
   }

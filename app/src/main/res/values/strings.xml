@@ -595,4 +595,7 @@
   <string name="msg_fetching_regimens">Downloading regimens…</string>
   <string name="msg_fetching_regimens_failed">Download of regimens info from the server failed, please login again.</string>
   <string name="msg_calculating_cmm">Calculating CMM...</string>
+  <string name="action_bulk_entries">Bulk Entries</string>
+  <string name="action_bulk_issues">Bulk Issues</string>
+  <string name="msg_no_product_in_bulk_entries">There is no Product, please add</string>
 </resources>

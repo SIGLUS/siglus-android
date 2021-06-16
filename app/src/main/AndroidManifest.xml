@@ -133,6 +133,11 @@
       android:name=".view.activity.IssueVoucherActivity"
       android:screenOrientation="portrait" />
 
+    <activity
+      android:label="Entries"
+      android:name=".view.activity.BulkEntriesActivity"
+      android:screenOrientation="portrait"/>
+
     <meta-data
       android:name="com.google.android.gms.version"
       android:value="@integer/google_play_services_version" />
