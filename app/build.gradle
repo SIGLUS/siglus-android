@@ -174,7 +174,7 @@ dependencies {
     implementation 'com.squareup.okhttp:okhttp:2.2.0'
     implementation 'com.j256.ormlite:ormlite-android:4.45'
     implementation 'org.apmem.tools:layouts:1.10@aar'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'net.danlew:android.joda:2.9.1'
     implementation 'com.google.android.gms:play-services-analytics:17.0.0'
     implementation 'org.roboguice:roboblender:3.0.1'

@@ -23,6 +23,18 @@
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 
+  <TextView
+    android:id="@+id/tv_percent_and_loading_tips"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/msg_calculating_cmm"
+    android:textColor="#73000000"
+    android:textSize="@dimen/px_18"
+    app:layout_constraintBottom_toBottomOf="@id/dc_product_total"
+    app:layout_constraintLeft_toLeftOf="@id/dc_product_total"
+    app:layout_constraintRight_toRightOf="@id/dc_product_total"
+    app:layout_constraintTop_toTopOf="@id/dc_product_total" />
+
   <androidx.appcompat.widget.LinearLayoutCompat
     android:id="@+id/ll_dashboard_total_product"
     android:layout_width="0dp"

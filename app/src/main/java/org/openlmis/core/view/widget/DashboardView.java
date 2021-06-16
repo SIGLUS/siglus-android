@@ -44,6 +44,7 @@ public class DashboardView extends ConstraintLayout {
   LinearLayoutCompat llTotalProducts;
   ImageView ivLoading;
   TextView tvTotalProduct;
+  TextView tvCalculatingCMMTips;
   TextView tvRegularAmount;
   TextView tvOutAmount;
   TextView tvLowAmount;
@@ -62,8 +63,8 @@ public class DashboardView extends ConstraintLayout {
     initView(context);
   }
 
-  public void setData(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-    resetState(false);
+  public void setCmm(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+    resetState(false, false);
     circleView.setData(createNewData(regularAmount, outAmount, lowAmount, overAmount));
     tvTotalProduct.setText(String.valueOf(regularAmount + outAmount + lowAmount + overAmount));
     tvRegularAmount.setText(String.valueOf(regularAmount));
@@ -72,15 +73,24 @@ public class DashboardView extends ConstraintLayout {
     tvOverAmount.setText(String.valueOf(overAmount));
   }
 
-  public void resetState(boolean isLoading) {
+  public void showLoadingCmm() {
+    resetState(true, true);
+  }
+
+  public void showLoadingPercent(float percent) {
+    resetState(true, false);
+  }
+
+  private void resetState(boolean isLoading, boolean isCalculatingCmm) {
     if (isLoading) {
       startLoading();
     } else {
       ivLoading.clearAnimation();
     }
+    tvCalculatingCMMTips.setVisibility(isLoading && isCalculatingCmm ? View.VISIBLE : View.INVISIBLE);
     ivLoading.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
-    llTotalProducts.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
-    circleView.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
+    llTotalProducts.setVisibility(isLoading && isCalculatingCmm ? View.INVISIBLE : View.VISIBLE);
+    circleView.setVisibility(isLoading || isCalculatingCmm ? View.INVISIBLE : View.VISIBLE);
   }
 
   protected List<DashboardCircleView.Item> createNewData(int regularAmount, int outAmount,
@@ -111,12 +121,13 @@ public class DashboardView extends ConstraintLayout {
     circleView = rootView.findViewById(R.id.dc_product_total);
     ivLoading = rootView.findViewById(R.id.iv_dashboard_loading);
     llTotalProducts = rootView.findViewById(R.id.ll_dashboard_total_product);
+    tvCalculatingCMMTips = rootView.findViewById(R.id.tv_percent_and_loading_tips);
     tvTotalProduct = rootView.findViewById(R.id.tv_total_product);
     tvRegularAmount = rootView.findViewById(R.id.tv_regular_stock_amount);
     tvOutAmount = rootView.findViewById(R.id.tv_stock_out_amount);
     tvLowAmount = rootView.findViewById(R.id.tv_low_stock_amount);
     tvOverAmount = rootView.findViewById(R.id.tv_over_stock_amount);
-    resetState(true);
+    resetState(true, false);
     startLoading();
   }
 

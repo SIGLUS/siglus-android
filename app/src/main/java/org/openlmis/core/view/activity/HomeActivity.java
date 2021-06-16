@@ -50,6 +50,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
@@ -104,6 +105,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private boolean exitPressedOnce = false;
 
   private static final int PERMISSION_REQUEST_CODE = 200;
+
+  private boolean isCmmCalculating = false;
 
   public void onClickStockCard(View view) {
     if (!isHaveDirtyData()) {
@@ -164,6 +167,12 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     }
   }
 
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveCmmCalculateEvent(CmmCalculateEvent event) {
+    isCmmCalculating = event.isStart();
+    refreshDashboard();
+  }
+
   @Override
   public void onBackPressed() {
     if (exitPressedOnce) {
@@ -183,7 +192,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   @Override
   public void updateDashboard(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-    dvProductDashboard.setData(regularAmount, outAmount, lowAmount, overAmount);
+    dvProductDashboard.setCmm(regularAmount, outAmount, lowAmount, overAmount);
   }
 
   @Override
@@ -416,9 +425,12 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private void refreshDashboard() {
     if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
-      dvProductDashboard.resetState(true);
-      return;
+      // TODO set real percent
+      dvProductDashboard.showLoadingPercent(0.1f);
+    } else if (isCmmCalculating) {
+      dvProductDashboard.showLoadingCmm();
+    } else {
+      homePresenter.getDashboardData();
     }
-    homePresenter.getDashboardData();
   }
 }

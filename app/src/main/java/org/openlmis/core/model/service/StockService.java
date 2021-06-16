@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
+import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -79,6 +81,7 @@ public class StockService {
 
   public void immediatelyUpdateAvgMonthlyConsumption() {
     try {
+      EventBus.getDefault().post(new CmmCalculateEvent(true));
       List<StockCard> stockCards = stockRepository.list();
       for (StockCard stockCard : stockCards) {
         stockCard.setAvgMonthlyConsumption(calculateAverageMonthlyConsumption(stockCard));
@@ -88,6 +91,8 @@ public class StockService {
       SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
     } catch (LMISException e) {
       new LMISException(e, "StockService:immediatelyUpdate").reportToFabric();
+    } finally {
+      EventBus.getDefault().post(new CmmCalculateEvent(false));
     }
   }
 
