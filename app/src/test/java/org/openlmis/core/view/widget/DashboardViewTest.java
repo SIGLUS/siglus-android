@@ -49,7 +49,7 @@ public class DashboardViewTest {
     int overAmount = 400;
 
     // when
-    dashboardView.setCmm(regularAmount, outAmount, lowAmount, overAmount);
+    dashboardView.showCmm(regularAmount, outAmount, lowAmount, overAmount);
 
     // then
     MatcherAssert.assertThat(dashboardView.ivLoading.getAnimation(), Matchers.equalTo(null));

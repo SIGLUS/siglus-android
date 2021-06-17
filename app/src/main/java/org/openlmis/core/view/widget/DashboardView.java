@@ -38,6 +38,12 @@ import org.openlmis.core.R;
 
 public class DashboardView extends ConstraintLayout {
 
+  private enum State {
+    SHOW_CMM,
+    SHOW_PERCENT,
+    SHOW_CALCULATING
+  }
+
   private static final String DEFAULT_TEXT = "--";
 
   DashboardCircleView circleView;
@@ -63,8 +69,8 @@ public class DashboardView extends ConstraintLayout {
     initView(context);
   }
 
-  public void setCmm(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-    resetState(false, false);
+  public void showCmm(int regularAmount, int outAmount, int lowAmount, int overAmount) {
+    changeState(State.SHOW_CMM);
     circleView.setData(createNewData(regularAmount, outAmount, lowAmount, overAmount));
     tvTotalProduct.setText(String.valueOf(regularAmount + outAmount + lowAmount + overAmount));
     tvRegularAmount.setText(String.valueOf(regularAmount));
@@ -74,23 +80,23 @@ public class DashboardView extends ConstraintLayout {
   }
 
   public void showLoadingCmm() {
-    resetState(true, true);
+    changeState(State.SHOW_CALCULATING);
   }
 
-  public void showLoadingPercent(float percent) {
-    resetState(true, false);
+  public void showLoadingPercent() {
+    changeState(State.SHOW_PERCENT);
   }
 
-  private void resetState(boolean isLoading, boolean isCalculatingCmm) {
-    if (isLoading) {
-      startLoading();
-    } else {
+  private void changeState(State state) {
+    if (state == State.SHOW_CMM) {
       ivLoading.clearAnimation();
+    } else {
+      startLoading();
     }
-    tvCalculatingCMMTips.setVisibility(isLoading && isCalculatingCmm ? View.VISIBLE : View.INVISIBLE);
-    ivLoading.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
-    llTotalProducts.setVisibility(isLoading && isCalculatingCmm ? View.INVISIBLE : View.VISIBLE);
-    circleView.setVisibility(isLoading || isCalculatingCmm ? View.INVISIBLE : View.VISIBLE);
+    tvCalculatingCMMTips.setVisibility(state == State.SHOW_CALCULATING ? View.VISIBLE : View.INVISIBLE);
+    ivLoading.setVisibility(state == State.SHOW_CMM ? View.INVISIBLE : View.VISIBLE);
+    llTotalProducts.setVisibility(state == State.SHOW_CALCULATING ? View.INVISIBLE : View.VISIBLE);
+    circleView.setVisibility(state == State.SHOW_CMM ? View.VISIBLE : View.INVISIBLE);
   }
 
   protected List<DashboardCircleView.Item> createNewData(int regularAmount, int outAmount,
@@ -127,8 +133,7 @@ public class DashboardView extends ConstraintLayout {
     tvOutAmount = rootView.findViewById(R.id.tv_stock_out_amount);
     tvLowAmount = rootView.findViewById(R.id.tv_low_stock_amount);
     tvOverAmount = rootView.findViewById(R.id.tv_over_stock_amount);
-    resetState(true, false);
-    startLoading();
+    changeState(State.SHOW_PERCENT);
   }
 
   private void startLoading() {
