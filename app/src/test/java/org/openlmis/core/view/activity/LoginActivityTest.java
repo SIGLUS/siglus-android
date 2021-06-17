@@ -36,6 +36,7 @@ import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -45,6 +46,7 @@ public class LoginActivityTest {
   private LoginActivity loginActivity;
 
   private LoginPresenter mockedPresenter;
+  private ActivityController<LoginActivity> activityController;
 
   @Before
   public void setUp() {
@@ -55,11 +57,13 @@ public class LoginActivityTest {
         bind(LoginPresenter.class).toInstance(mockedPresenter);
       }
     });
-    loginActivity = Robolectric.buildActivity(LoginActivity.class).create().get();
+    activityController = Robolectric.buildActivity(LoginActivity.class);
+    loginActivity = activityController.create().get();
   }
 
   @After
   public void teardown() {
+    activityController.pause().stop().destroy();
     RoboGuice.Util.reset();
   }
 

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import android.content.Intent;
 import com.google.inject.AbstractModule;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,7 @@ import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 import rx.Observable;
 
@@ -37,6 +39,7 @@ public class UnpackKitActivityTest {
   private UnpackKitActivity unpackKitActivity;
   private Product product;
   private InventoryViewModel viewModel;
+  private ActivityController<UnpackKitActivity> activityController;
 
   @Before
   public void setUp() throws Exception {
@@ -60,8 +63,14 @@ public class UnpackKitActivityTest {
     Intent intent = new Intent()
         .putExtra(Constants.PARAM_KIT_CODE, "SD0001")
         .putExtra(Constants.PARAM_KIT_NUM, 1);
-    unpackKitActivity = Robolectric.buildActivity(UnpackKitActivity.class, intent).create()
-        .visible().get();
+    activityController = Robolectric.buildActivity(UnpackKitActivity.class, intent);
+    unpackKitActivity = activityController.create().visible().get();
+  }
+
+  @After
+  public void teardown() {
+    activityController.pause().stop().destroy();
+    RoboGuice.Util.reset();
   }
 
   @Test

@@ -37,6 +37,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import com.google.inject.AbstractModule;
 import org.hamcrest.core.Is;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +55,7 @@ import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
@@ -68,6 +70,7 @@ public class HomeActivityTest {
   private SharedPreferenceMgr mockSharedPreferenceMgr;
   private InternetCheck internetCheck;
   private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
+  private ActivityController<HomeActivity> activityController;
 
   @Before
   public void setUp() {
@@ -87,7 +90,14 @@ public class HomeActivityTest {
     });
     when(mockSharedPreferenceMgr.getReportTypesData()).
         thenReturn(newArrayList(new ReportTypeBuilder().getMMIAReportTypeForm()));
-    homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
+    activityController = Robolectric.buildActivity(HomeActivity.class);
+    homeActivity = activityController.create().get();
+  }
+
+  @After
+  public void tearDown(){
+    activityController.pause().stop().destroy();
+    RoboGuice.Util.reset();
   }
 
   @Test

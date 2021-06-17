@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,6 +38,7 @@ import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Scheduler;
@@ -55,6 +57,7 @@ public class SelectPeriodActivityTest {
   private final List<SelectInventoryViewModel> inventoryList = new ArrayList<>();
   private StockMovementRepository stockMovementRepository;
   private StockRepository stockRepository;
+  private ActivityController<SelectPeriodActivity> activityController;
 
   @Before
   public void setUp() throws Exception {
@@ -77,8 +80,8 @@ public class SelectPeriodActivityTest {
     Intent intent = new Intent();
     intent.putExtra(Constants.PARAM_PROGRAM_CODE, "MMIA");
     intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, true);
-    selectPeriodActivity = Robolectric.buildActivity(SelectPeriodActivity.class, intent).create()
-        .get();
+    activityController = Robolectric.buildActivity(SelectPeriodActivity.class, intent);
+    selectPeriodActivity = activityController.create().get();
 
     List<SelectInventoryViewModel> selectInventoryViewModels = Arrays.asList(
         new SelectInventoryViewModel(
@@ -96,6 +99,12 @@ public class SelectPeriodActivityTest {
         return Schedulers.immediate();
       }
     });
+  }
+
+  @After
+  public void teardown() {
+    activityController.pause().stop().destroy();
+    RoboGuice.Util.reset();
   }
 
   @Test

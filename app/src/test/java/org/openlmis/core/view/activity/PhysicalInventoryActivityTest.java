@@ -26,6 +26,7 @@ import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
@@ -37,6 +38,7 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
   private PhysicalInventoryPresenter mockedPresenter;
 
   private List<InventoryViewModel> data;
+  private ActivityController<PhysicalInventoryActivity> activityController;
 
   @Before
   public void setUp() throws LMISException {
@@ -50,8 +52,8 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
       }
     });
 
-    physicalInventoryActivity = Robolectric.buildActivity(PhysicalInventoryActivity.class).create()
-        .get();
+    activityController = Robolectric.buildActivity(PhysicalInventoryActivity.class);
+    physicalInventoryActivity = activityController.create().get();
 
     InventoryListAdapter mockedAdapter = mock(InventoryListAdapter.class);
     Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name")
@@ -65,6 +67,7 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
 
   @After
   public void teardown() {
+    activityController.pause().stop().destroy();
     RoboGuice.Util.reset();
   }
 

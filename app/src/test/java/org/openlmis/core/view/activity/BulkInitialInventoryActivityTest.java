@@ -25,6 +25,7 @@ import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Scheduler;
@@ -42,6 +43,7 @@ public class BulkInitialInventoryActivityTest {
   private LongSparseArray<Product> noBasicProducts;
   private LongSparseArray<Product> basicProducts;
   private ProductRepository productRepositoryMock;
+  private ActivityController<BulkInitialInventoryActivity> activityController;
 
   @Before
   public void setUp() throws LMISException {
@@ -58,8 +60,8 @@ public class BulkInitialInventoryActivityTest {
 
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
-    bulkInventoryActivity = Robolectric.buildActivity(BulkInitialInventoryActivity.class).create()
-        .get();
+    activityController = Robolectric.buildActivity(BulkInitialInventoryActivity.class);
+    bulkInventoryActivity = activityController.create().get();
 
     RxAndroidPlugins.getInstance().reset();
     RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
@@ -77,6 +79,7 @@ public class BulkInitialInventoryActivityTest {
 
   @After
   public void teardown() {
+    activityController.pause().stop().destroy();
     RoboGuice.Util.reset();
   }
 
@@ -115,8 +118,8 @@ public class BulkInitialInventoryActivityTest {
     assertEquals(12, viewModels.size());
 
     bulkInventoryActivity.btnSave.performClick();
-//        verify(bulkInventoryActivity).btnSave.getVisibility()
-//        assertThat(bulkInventoryActivity, new StartedMatcher(BulkInitialInventoryActivity.class));
+    //        verify(bulkInventoryActivity).btnSave.getVisibility()
+    //        assertThat(bulkInventoryActivity, new StartedMatcher(BulkInitialInventoryActivity.class));
   }
 
   @NonNull

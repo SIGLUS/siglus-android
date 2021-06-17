@@ -26,6 +26,7 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -34,6 +35,7 @@ public class NewStockMovementActivityTest {
 
   private NewStockMovementActivity newStockMovementActivity;
   private NewStockMovementPresenter mockedPresenter;
+  private ActivityController<NewStockMovementActivity> activityController;
 
   @Before
   public void setUp() throws Exception {
@@ -77,12 +79,13 @@ public class NewStockMovementActivityTest {
         .putExtra(Constants.PARAM_MOVEMENT_TYPE, MovementReasonManager.MovementType.ISSUE)
         .putExtra(Constants.PARAM_STOCK_CARD_ID, 0L)
         .putExtra(Constants.PARAM_IS_KIT, false);
-    newStockMovementActivity = Robolectric.buildActivity(NewStockMovementActivity.class, intent)
-        .create().get();
+    activityController = Robolectric.buildActivity(NewStockMovementActivity.class, intent);
+    newStockMovementActivity = activityController.create().get();
   }
 
   @After
   public void teardown() {
+    activityController.pause().stop().destroy();
     RoboGuice.Util.reset();
   }
 

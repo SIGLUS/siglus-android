@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.view.Menu;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,16 +12,25 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.robolectric.Robolectric;
+import org.robolectric.android.controller.ActivityController;
+import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
 public class KitStockCardListActivityTest {
 
   private KitStockCardListActivity kitStockCardListActivity;
+  private ActivityController<KitStockCardListActivity> activityController;
 
   @Before
   public void setUp() throws Exception {
-    kitStockCardListActivity = Robolectric.buildActivity(KitStockCardListActivity.class).create()
-        .get();
+    activityController = Robolectric.buildActivity(KitStockCardListActivity.class);
+    kitStockCardListActivity = activityController.create().get();
+  }
+
+  @After
+  public void teardown() {
+    activityController.pause().stop().destroy();
+    RoboGuice.Util.reset();
   }
 
   @Test

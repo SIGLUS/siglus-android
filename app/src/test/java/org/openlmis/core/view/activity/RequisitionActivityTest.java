@@ -37,6 +37,7 @@ import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
@@ -44,6 +45,7 @@ public class RequisitionActivityTest {
 
   private RequisitionActivity requisitionActivity;
   private RequisitionPresenter mockedPresenter;
+  private ActivityController<RequisitionActivity> requisitionActivityActivityController;
 
   @Before
   public void setUp() throws Exception {
@@ -54,9 +56,17 @@ public class RequisitionActivityTest {
         bind(RequisitionPresenter.class).toInstance(mockedPresenter);
       }
     });
-    requisitionActivity = Robolectric.buildActivity(RequisitionActivity.class).create().get();
+    requisitionActivityActivityController = Robolectric
+        .buildActivity(RequisitionActivity.class);
+    requisitionActivity = requisitionActivityActivityController.create().get();
 
     verify(mockedPresenter, times(1)).getSupportPrograms();
+  }
+
+  @After
+  public void tearDown() {
+    requisitionActivityActivityController.pause().stop().destroy();
+    RoboGuice.Util.reset();
   }
 
   @Test

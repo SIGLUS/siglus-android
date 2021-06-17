@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Intent;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,7 @@ import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
@@ -38,6 +40,7 @@ public class SelectRegimeProductsActivityTest {
 
   private SelectRegimeProductsActivity selectProductsActivity;
   ProductPresenter presenter;
+  private ActivityController<SelectRegimeProductsActivity> activityController;
 
   @Before
   public void setUp() throws Exception {
@@ -52,8 +55,14 @@ public class SelectRegimeProductsActivityTest {
 
     Intent intent = new Intent();
     intent.putExtra(SelectRegimeProductsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
-    selectProductsActivity = Robolectric.buildActivity(SelectRegimeProductsActivity.class, intent)
-        .create().get();
+    activityController = Robolectric.buildActivity(SelectRegimeProductsActivity.class, intent);
+    selectProductsActivity = activityController.create().get();
+  }
+
+  @After
+  public void teardown() {
+    activityController.pause().stop().destroy();
+    RoboGuice.Util.reset();
   }
 
   @Test

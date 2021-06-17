@@ -18,6 +18,7 @@ import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowApplication;
 import roboguice.RoboGuice;
 
@@ -27,6 +28,7 @@ public class ArchivedDrugsListActivityTest {
   private ArchivedDrugsListActivity archivedListActivity;
   private StockCard stockCard;
   private StockCardPresenter mockedPresenter;
+  private ActivityController<ArchivedDrugsListActivity> activityController;
 
   @Before
   public void setUp() {
@@ -38,8 +40,8 @@ public class ArchivedDrugsListActivityTest {
       }
     });
 
-    archivedListActivity = Robolectric.buildActivity(ArchivedDrugsListActivity.class).create()
-        .get();
+    activityController = Robolectric.buildActivity(ArchivedDrugsListActivity.class);
+    archivedListActivity = activityController.create().get();
 
     Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40")
         .setStrength("10mg").setType("VIA").build();
@@ -52,6 +54,7 @@ public class ArchivedDrugsListActivityTest {
 
   @After
   public void tearDown() {
+    activityController.pause().stop().destroy();
     RoboGuice.Util.reset();
   }
 

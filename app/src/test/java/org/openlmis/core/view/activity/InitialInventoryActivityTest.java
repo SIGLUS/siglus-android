@@ -33,6 +33,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -45,6 +46,7 @@ public class InitialInventoryActivityTest {
   private InitialInventoryPresenter mockedPresenter;
 
   private List<InventoryViewModel> data;
+  private ActivityController<InitialInventoryActivity> activityController;
 
   @Before
   public void setUp() throws LMISException {
@@ -58,8 +60,8 @@ public class InitialInventoryActivityTest {
       }
     });
 
-    initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class).create()
-        .get();
+    activityController = Robolectric.buildActivity(InitialInventoryActivity.class);
+    initialInventoryActivity = activityController.create().get();
 
     InventoryListAdapter mockedAdapter = mock(InventoryListAdapter.class);
     Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name")
@@ -72,6 +74,7 @@ public class InitialInventoryActivityTest {
 
   @After
   public void teardown() {
+    activityController.pause().stop().destroy();
     RoboGuice.Util.reset();
   }
 

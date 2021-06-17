@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.google.inject.AbstractModule;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -36,6 +38,7 @@ public class SelectEmergencyProductsActivityTest {
   private SelectEmergencyProductsActivity activity;
 
   private ProductPresenter productPresenter;
+  private ActivityController<SelectEmergencyProductsActivity> activityController;
 
   @Before
   public void setUp() throws Exception {
@@ -50,8 +53,14 @@ public class SelectEmergencyProductsActivityTest {
 
     when(productPresenter.loadEmergencyProducts()).thenReturn(createDummyObservable());
 
-    activity = Robolectric.buildActivity(SelectEmergencyProductsActivity.class).create().start()
-        .resume().visible().get();
+    activityController = Robolectric.buildActivity(SelectEmergencyProductsActivity.class);
+    activity = activityController.create().start().resume().visible().get();
+  }
+
+  @After
+  public void teardown() {
+    activityController.pause().stop().destroy();
+    RoboGuice.Util.reset();
   }
 
   @Test

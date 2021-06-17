@@ -129,10 +129,21 @@ public class RequisitionPeriodServiceTest {
     when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
     Period period = requisitionPeriodService
         .generateNextPeriod(new ArrayList<>(), programMMIA.getProgramCode(), null);
-    assertThat(period.getBegin(),
-        is(new DateTime(DateUtil.parseString("2020-04-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
-    assertThat(period.getEnd(),
-        is(new DateTime(DateUtil.parseString("2020-05-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+    final DateTime dateTime = new DateTime();
+    final int dayOfMonth = dateTime.dayOfMonth().get();
+    if (dayOfMonth >= Period.INVENTORY_BEGIN_DAY && dayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
+      assertThat(period.getBegin(),
+          is(new DateTime(DateUtil
+              .parseString("2020-" + (dateTime.monthOfYear().get() - 1) + "-18 12:00:00", DateUtil.DB_DATE_FORMAT))));
+      assertThat(period.getEnd(),
+          is(new DateTime(
+              DateUtil.parseString("2020-" + dateTime.monthOfYear().get() + "-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+    } else {
+      assertThat(period.getBegin(),
+          is(new DateTime(DateUtil.parseString("2020-04-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
+      assertThat(period.getEnd(),
+          is(new DateTime(DateUtil.parseString("2020-05-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+    }
   }
 
   @Test

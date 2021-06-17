@@ -36,6 +36,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowIntent;
@@ -51,6 +52,7 @@ public class RnRFormListActivityTest {
   private RnRFormListActivity rnRFormListActivity;
   private RnRFormListPresenter mockedPresenter;
   private Intent intent;
+  private ActivityController<RnRFormListActivity> activityController;
 
   @Before
   public void setUp() {
@@ -68,12 +70,13 @@ public class RnRFormListActivityTest {
 
     intent = new Intent();
     intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.Program.MMIA_PROGRAM);
-    rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class, intent).create()
-        .get();
+    activityController = Robolectric.buildActivity(RnRFormListActivity.class, intent);
+    rnRFormListActivity = activityController.create().get();
   }
 
   @After
   public void teardown() {
+    activityController.pause().stop().destroy();
     RoboGuice.Util.reset();
   }
 
