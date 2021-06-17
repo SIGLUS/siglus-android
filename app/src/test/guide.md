@@ -69,6 +69,9 @@ During the testing, if we want to mock the LoginPresenter in LoginActivityTest, 
 
     @After
     public void teardown() {
+        // clean activiy instan after test
+        activityController.pause().stop().destroy();
+        // clean DI instance
         RoboGuice.Util.reset();
     }
 ```
