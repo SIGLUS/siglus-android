@@ -19,7 +19,6 @@
 package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -33,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

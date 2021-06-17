@@ -18,13 +18,13 @@
 
 package org.openlmis.core.view.activity;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -196,6 +196,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode,resultCode,data);
     if (areThereSelectedProducts(requestCode, resultCode, data)) {
       presenter.addNonBasicProductsToInventory((ArrayList<Product>) data
           .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS));
@@ -205,7 +206,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
       setTotal();
     }
   }
-
 
   @Override
   public void onBackPressed() {
@@ -231,7 +231,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         getString(R.string.btn_positive),
         getString(R.string.btn_negative),
         "onBackPressed");
-    dialogFragment.show(getFragmentManager(), "");
+    dialogFragment.show(getSupportFragmentManager(), "");
   }
 
   private boolean areThereSelectedProducts(int requestCode, int resultCode, Intent data) {

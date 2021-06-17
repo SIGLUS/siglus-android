@@ -42,7 +42,7 @@ public class PTVRequisitionActivity extends BaseActivity {
 
   @Override
   public void onBackPressed() {
-    ((PTVRequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition))
+    ((PTVRequisitionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_requisition))
         .onBackPressed();
   }
 

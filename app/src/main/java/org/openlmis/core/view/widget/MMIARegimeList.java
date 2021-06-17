@@ -31,6 +31,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.fragment.app.FragmentActivity;
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.LMISApp;
@@ -268,7 +269,7 @@ public class MMIARegimeList extends LinearLayout {
   protected void showDelConfirmDialog(final RegimenItem item) {
     SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
         LMISApp.getContext().getString(R.string.msg_regime_del_confirm));
-    dialogFragment.show(((Activity) getContext()).getFragmentManager(), "del_confirm_dialog");
+    dialogFragment.show(((FragmentActivity) getContext()).getSupportFragmentManager(), "del_confirm_dialog");
     dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
       @Override
       public void positiveClick(String tag) {
