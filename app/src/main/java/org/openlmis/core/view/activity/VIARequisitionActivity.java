@@ -45,7 +45,7 @@ public class VIARequisitionActivity extends BaseActivity {
 
   @Override
   public void onBackPressed() {
-    ((VIARequisitionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_requisition))
+    ((VIARequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition))
         .onBackPressed();
   }
 

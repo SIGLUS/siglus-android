@@ -247,7 +247,6 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(resultCode,resultCode,data);
     if (resultCode == Activity.RESULT_OK && (requestCode == Constants.REQUEST_UNPACK_KIT
         || requestCode == Constants.REQUEST_NEW_MOVEMENT_PAGE)) {
       loadStockCard();
@@ -280,7 +279,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
                 .transform(movementType -> movementType.getDescription()).toArray(String.class);
             newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(),
                 selections);
-            newMovementDialog.show(getSupportFragmentManager(), "");
+            newMovementDialog.show(getFragmentManager(), "");
             break;
           default:
             // do nothing

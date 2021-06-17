@@ -43,7 +43,7 @@ public class MMIARequisitionActivity extends BaseActivity {
 
   @Override
   public void onBackPressed() {
-    ((MMIARequisitionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_requisition))
+    ((MMIARequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition))
         .onBackPressed();
   }
 

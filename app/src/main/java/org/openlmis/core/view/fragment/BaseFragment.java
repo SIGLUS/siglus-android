@@ -28,10 +28,10 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.activity.BaseActivity;
-import roboguice.fragment.RoboMigrationAndroidXFragment;
+import roboguice.fragment.provided.RoboFragment;
 import rx.Subscription;
 
-public abstract class BaseFragment extends RoboMigrationAndroidXFragment implements BaseView {
+public abstract class BaseFragment extends RoboFragment implements BaseView {
 
   protected boolean isSavedInstanceState;
   protected Presenter presenter;

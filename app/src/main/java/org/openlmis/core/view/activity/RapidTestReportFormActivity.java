@@ -45,7 +45,7 @@ public class RapidTestReportFormActivity extends BaseActivity implements Keyboar
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    rapidTestReportFormFragment = (RapidTestReportFormFragment) getSupportFragmentManager()
+    rapidTestReportFormFragment = (RapidTestReportFormFragment) getFragmentManager()
         .findFragmentById(R.id.fragment_rapid_test_report_form);
     keyboardHeightProvider = new KeyboardHeightProvider(this);
     findViewById(R.id.fl_rapid_test_root).post(keyboardHeightProvider::start);

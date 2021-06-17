@@ -20,6 +20,7 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -28,13 +29,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.FragmentManager;
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import roboguice.fragment.RoboMigrationAndroidXDialogFragment;
+import roboguice.fragment.provided.RoboDialogFragment;
 
-public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
+public class SimpleDialogFragment extends RoboDialogFragment {
 
   private static final String ARG_TITLE = "title";
   private static final String ARG_MESSAGE = "message";

@@ -50,7 +50,7 @@ public class StockCardListActivity extends SearchBarActivity {
     super.onCreate(savedInstanceState);
     if (savedInstanceState == null) {
       stockCardFragment = createFragment();
-      getSupportFragmentManager().beginTransaction().replace(R.id.stock_card_container, stockCardFragment)
+      getFragmentManager().beginTransaction().replace(R.id.stock_card_container, stockCardFragment)
           .commit();
     }
   }

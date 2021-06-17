@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -25,7 +26,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
@@ -166,7 +166,7 @@ public class BaseLotListView extends FrameLayout {
     addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
     addLotDialogFragment.setOnDismissListener(getOnAddNewLotDialogDismissListener());
     addLotDialogFragment.setAddLotWithoutNumberListener(getAddLotWithoutNumberListener());
-    addLotDialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(), ADD_LOT);
+    addLotDialogFragment.show(((Activity) context).getFragmentManager(), ADD_LOT);
     return true;
   }
 

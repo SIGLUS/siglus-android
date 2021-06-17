@@ -130,7 +130,7 @@ public class NewStockMovementActivity extends BaseActivity implements
         reasonsDialog.setArguments(bundle);
         reasonsDialog
             .setMovementTypeOnClickListener(new MovementTypeOnClickListener(reasonsDialog));
-        reasonsDialog.show(getSupportFragmentManager(), "SELECT_REASONS");
+        reasonsDialog.show(getFragmentManager(), "SELECT_REASONS");
       }
     };
   }

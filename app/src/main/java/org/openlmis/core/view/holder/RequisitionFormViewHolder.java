@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.holder;
 
+import android.app.Activity;
+import android.app.DialogFragment;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -25,8 +27,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -110,7 +110,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
             Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
             context.getString(R.string.btn_ok));
         dialogFragment
-            .show(((FragmentActivity) context).getSupportFragmentManager(), "adjustmentTheoreticalDialog");
+            .show(((Activity) context).getFragmentManager(), "adjustmentTheoreticalDialog");
       });
     }
   }

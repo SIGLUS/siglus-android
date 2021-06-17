@@ -19,10 +19,10 @@
 package org.openlmis.core.view.activity;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import androidx.fragment.app.DialogFragment;
 import com.viethoa.RecyclerViewFastScroller;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.TrackerActions;
@@ -142,7 +142,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         getString(R.string.btn_positive),
         getString(R.string.btn_negative),
         "onBackPressed");
-    dialogFragment.show(getSupportFragmentManager(), "");
+    dialogFragment.show(getFragmentManager(), "");
   }
 
   @Override
@@ -160,7 +160,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     signatureDialog.setArguments(SignatureDialog
         .getBundleToMe(getString(R.string.label_physical_inventory_signature_title)));
     signatureDialog.setDelegate(signatureDialogDelegate);
-    signatureDialog.show(getSupportFragmentManager());
+    signatureDialog.show(getFragmentManager());
   }
 
   protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
