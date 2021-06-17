@@ -131,18 +131,19 @@ public class RequisitionPeriodServiceTest {
         .generateNextPeriod(new ArrayList<>(), programMMIA.getProgramCode(), null);
     final DateTime dateTime = new DateTime();
     final int dayOfMonth = dateTime.dayOfMonth().get();
+    final int monthOfYear = dateTime.monthOfYear().get();
     if (dayOfMonth >= Period.INVENTORY_BEGIN_DAY && dayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
       assertThat(period.getBegin(),
           is(new DateTime(DateUtil
-              .parseString("2020-" + (dateTime.monthOfYear().get() - 1) + "-18 12:00:00", DateUtil.DB_DATE_FORMAT))));
+              .parseString("2020-" + (monthOfYear - 1) + "-18 12:00:00", DateUtil.DB_DATE_FORMAT))));
       assertThat(period.getEnd(),
           is(new DateTime(
-              DateUtil.parseString("2020-" + dateTime.monthOfYear().get() + "-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString("2020-" + monthOfYear + "-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
     } else {
       assertThat(period.getBegin(),
-          is(new DateTime(DateUtil.parseString("2020-04-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
+          is(new DateTime(DateUtil.parseString("2020-" + (monthOfYear - 1) + "-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
       assertThat(period.getEnd(),
-          is(new DateTime(DateUtil.parseString("2020-05-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+          is(new DateTime(DateUtil.parseString("2020-" + monthOfYear + "-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
     }
   }
 
