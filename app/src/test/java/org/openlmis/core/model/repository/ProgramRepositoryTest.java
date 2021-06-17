@@ -16,7 +16,10 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.model.builder.ReportTypeFormBuilder;
+import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
@@ -26,6 +29,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
   ProgramRepository programRepository;
   ProductRepository productRepository;
+  ReportTypeFormRepository reportTypeFormRepository;
   ArrayList<Product> products = new ArrayList<>();
 
   @Before
@@ -34,6 +38,8 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         .getInstance(ProgramRepository.class);
     productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(ProductRepository.class);
+    reportTypeFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(ReportTypeFormRepository.class);
 
     Product product = new Product();
     product.setCode("test code");
@@ -122,6 +128,22 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
     assertTrue(mmiaProgramCodes.contains("PTV") && mmiaProgramCodes.contains("MMIA"));
   }
 
+  @Test
+  public void shouldQueryActivePrograms() throws Exception {
+    // given
+    insertProgram("MMIA", "MMIA Program", null);
+    insertProgram("VIA", "VIA Program", null);
+    insertReportType("MMIA", "MMIA Program", true);
+    insertReportType("PTV", "VIA Program", false);
+
+    // when
+    final List<Program> activePrograms = programRepository.queryActiveProgram();
+
+    // then
+    Assertions.assertThat(activePrograms.size()).isEqualTo(1);
+    Assertions.assertThat(activePrograms.get(0).getProgramCode()).isEqualTo("MMIA");
+  }
+
   private void insertProgram(String programCode, String programName, String parentCode)
       throws LMISException {
     Program program = new ProgramBuilder()
@@ -129,5 +151,16 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         .setProgramName(programName)
         .setParentCode(parentCode).build();
     programRepository.createOrUpdate(program);
+  }
+
+  private void insertReportType(String code, String programName, boolean isActive) throws LMISException {
+    final ReportTypeForm reportTypeForm = new ReportTypeFormBuilder()
+        .setCode(code)
+        .setActive(isActive)
+        .setName(programName)
+        .setStartTime(DateUtil.getCurrentDate())
+        .setLastReportEndTime("0")
+        .build();
+    reportTypeFormRepository.createOrUpdate(reportTypeForm);
   }
 }

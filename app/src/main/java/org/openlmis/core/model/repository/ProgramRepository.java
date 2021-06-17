@@ -21,12 +21,15 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -141,5 +144,19 @@ public class ProgramRepository {
     return dbUtil.withDao(Program.class, dao -> dao.queryBuilder()
         .where().eq("parentCode", programCode)
         .or().eq("programCode", programCode).query());
+  }
+
+  public List<Program> queryActiveProgram() throws LMISException {
+    final List<Program> programs = genericDao.queryForAll();
+    final List<ReportTypeForm> reportTypes = dbUtil.withDao(ReportTypeForm.class, Dao::queryForAll);
+    return FluentIterable.from(programs).filter(program -> {
+      for (ReportTypeForm reportTypeForm : reportTypes) {
+        if (reportTypeForm.getCode().equals(Objects.requireNonNull(program).getProgramCode())
+            && reportTypeForm.active) {
+          return true;
+        }
+      }
+      return false;
+    }).toList();
   }
 }

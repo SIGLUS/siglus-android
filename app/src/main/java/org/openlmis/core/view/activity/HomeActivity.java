@@ -54,7 +54,6 @@ import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
@@ -67,7 +66,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
@@ -116,8 +114,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   public void onClickRequisitions(View view) {
     if (!isHaveDirtyData()) {
-      startActivity(RnRFormListActivity.getIntentToMe(this, Constants.Program.VIA_PROGRAM));
-      TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_VIA, Constants.VIA_PROGRAM_CODE);
+      Intent intent = new Intent(HomeActivity.this, RequisitionActivity.class);
+      startActivity(intent);
     }
   }
 

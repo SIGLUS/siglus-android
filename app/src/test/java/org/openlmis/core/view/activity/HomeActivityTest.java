@@ -49,7 +49,6 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.network.InternetCheck;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.mocks.InternetCheckMockForHomeActivity;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
@@ -122,14 +121,13 @@ public class HomeActivityTest {
   }
 
   @Test
-  public void shouldGoRnRPage() {
+  public void shouldGoRequisitionPage() {
     // when
     homeActivity.findViewById(R.id.btn_requisitions).performClick();
 
     // then
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
-    assertThat(startedIntent.getSerializableExtra(Constants.PARAM_PROGRAM_CODE), is(Constants.Program.VIA_PROGRAM));
+    assertThat(startedIntent.getComponent().getClassName(), equalTo(RequisitionActivity.class.getName()));
   }
 
   @Test

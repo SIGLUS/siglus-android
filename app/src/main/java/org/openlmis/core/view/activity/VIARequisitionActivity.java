@@ -30,7 +30,7 @@ import org.openlmis.core.view.fragment.VIARequisitionFragment;
 import roboguice.inject.ContentView;
 
 
-@ContentView(R.layout.activity_requisition)
+@ContentView(R.layout.activity_via_requisition)
 public class VIARequisitionActivity extends BaseActivity {
 
   @Override

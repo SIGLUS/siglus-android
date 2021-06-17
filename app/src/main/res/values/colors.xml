@@ -83,4 +83,6 @@
 
   <color name="color_stock_status">#ffffff</color>
 
+  <color name="color_requisition_background">#80aa19b6</color>
+
 </resources>

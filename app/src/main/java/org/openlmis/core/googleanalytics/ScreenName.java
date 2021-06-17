@@ -44,7 +44,8 @@ public enum ScreenName {
   MALARIA_DATA_REPORT_FORM_SCREEN("Patient Data Report"),
   ALL_DRUGS_MOVEMENT_HISTORY_SCREEN("All Drugs Movement History Screen"),
   ISSUE_VOUCHER_AND_POD("Issue Voucher and PoD Screen"),
-  BULK_ENTRIES_SCREEN("Bulk Entries Screen");
+  BULK_ENTRIES_SCREEN("Bulk Entries Screen"),
+  REQUISITION_SCREEN("Requisition Screen");
 
   private final String name;
 
