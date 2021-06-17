@@ -47,9 +47,9 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
   @InjectPresenter(RequisitionPresenter.class)
   private RequisitionPresenter requisitionPresenter;
 
-   RequisitionNavigatorAdapter navigatorAdapter;
+  RequisitionNavigatorAdapter navigatorAdapter;
 
-   RequisitionPageAdapter pageAdapter;
+  RequisitionPageAdapter pageAdapter;
 
   private OnPageChangeCallback pageChangeCallback = new OnPageChangeCallback() {
     @Override
