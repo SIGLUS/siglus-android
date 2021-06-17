@@ -136,12 +136,17 @@ public class RequisitionPeriodServiceTest {
       assertThat(period.getBegin(),
           is(new DateTime(DateUtil
               .parseString("2020-" + (monthOfYear - 1) + "-18 12:00:00", DateUtil.DB_DATE_FORMAT))));
+      assertThat(period.getEnd(),
+          is(new DateTime(
+              DateUtil.parseString("2020-" + monthOfYear + "-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
     } else {
       assertThat(period.getBegin(),
-          is(new DateTime(DateUtil.parseString("2020-" + (monthOfYear - 1) + "-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
+          is(new DateTime(
+              DateUtil.parseString("2020-" + (monthOfYear - 2) + "-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
+      assertThat(period.getEnd(),
+          is(new DateTime(
+              DateUtil.parseString("2020-" + (monthOfYear - 1) + "-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
     }
-    assertThat(period.getEnd(),
-        is(new DateTime(DateUtil.parseString("2020-" + monthOfYear + "-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
   }
 
   @Test
