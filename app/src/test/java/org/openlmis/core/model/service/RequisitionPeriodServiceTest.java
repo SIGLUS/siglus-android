@@ -135,17 +135,18 @@ public class RequisitionPeriodServiceTest {
     if (dayOfMonth >= Period.INVENTORY_BEGIN_DAY && dayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
       assertThat(period.getBegin(),
           is(new DateTime(DateUtil
-              .parseString("2020-" + (monthOfYear - 1) + "-18 12:00:00", DateUtil.DB_DATE_FORMAT))));
+              .parseString(String.format("2020-%s-%s 12:00:00", (monthOfYear - 1), dayOfMonth),
+                  DateUtil.DB_DATE_FORMAT))));
       assertThat(period.getEnd(),
           is(new DateTime(
-              DateUtil.parseString("2020-" + monthOfYear + "-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("2020-%s-20 12:00:00", monthOfYear), DateUtil.DB_DATE_FORMAT))));
     } else {
       assertThat(period.getBegin(),
           is(new DateTime(
-              DateUtil.parseString("2020-" + (monthOfYear - 2) + "-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("2020-%s-21 12:00:00", (monthOfYear - 2)), DateUtil.DB_DATE_FORMAT))));
       assertThat(period.getEnd(),
           is(new DateTime(
-              DateUtil.parseString("2020-" + (monthOfYear - 1) + "-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+              DateUtil.parseString(String.format("2020-%s-20 12:00:00", (monthOfYear - 1)), DateUtil.DB_DATE_FORMAT))));
     }
   }
 
