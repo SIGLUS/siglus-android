@@ -20,10 +20,10 @@ pipeline {
                 '''
             }
         }
-        stage('Unit Test Coverage Verification') {
+        stage('Test Coverage Verification') {
             steps {
                 sh '''
-                    ./gradlew jacocoTestReport jacocoTestCoverageVerification
+                    ./gradlew jacocoTestCoverageVerification
                 '''
             }
         }
