@@ -20,12 +20,19 @@ pipeline {
                 '''
             }
         }
+        stage('Unit Test Coverage Verification') {
+            steps {
+                sh '''
+                    ./gradlew jacocoTestReport jacocoTestCoverageVerification
+                '''
+            }
+        }
         stage('Sonarqube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONARQUBE_TOKEN')]) {
                     sh '''
                         if [ "$GIT_BRANCH" = "master" ]; then
-                            ./gradlew jacoco sonarqube -x test -Dsonar.projectKey=siglus-android -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONARQUBE_TOKEN
+                            ./gradlew sonarqube -x test -Dsonar.projectKey=siglus-android -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONARQUBE_TOKEN
                         fi
                     '''
                 }

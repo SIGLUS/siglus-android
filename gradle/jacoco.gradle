@@ -1,6 +1,32 @@
 apply plugin: 'jacoco'
 
+def jacocoCoverageThreshold = 0.49
 def buildDir = "$project.buildDir"
+def jacocoFileFilter = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/*$ViewInjector*.*',
+        '**/*$ViewBinder*.*',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        'android/**',
+        'com/google/**',
+        'com/intellij/**',
+        'junit/**',
+        'net/**',
+        'okhttp/**',
+        'org/**',
+        'rx/**',
+        '**/*_MembersInjector.class',
+        '**/Dagger*Component.class', // covers component implementations
+        '**/Dagger*Component$Builder.class', // covers component builders
+        '**/*Module_*Factory.class'
+]
+def coverageSourceDirs = ["./src/main/java"]
+def javaClasses = fileTree(
+        dir: "$buildDir/intermediates/javac/localDebug/classes/org",
+        excludes: jacocoFileFilter
+)
 
 jacoco {
     toolVersion "0.8.6"
@@ -13,42 +39,28 @@ tasks.withType(Test) {
 task jacocoTestReport(type: JacocoReport, dependsOn: "testLocalDebugUnitTest") {
     group = "Reporting"
     reports {
-        xml.enabled = true
         html.enabled = true
-        html.destination file("$buildDir/jacoco")
+        xml.enabled = true
         csv.enabled false
+        html.destination file("$buildDir/jacoco")
         xml.destination file("../build/reports/jacocoTestReport.xml")
     }
-
-    def coverageSourceDirs = ["./src/main/java"]
-    def fileFilter = [
-            '**/R.class',
-            '**/R$*.class',
-            '**/*$ViewInjector*.*',
-            '**/*$ViewBinder*.*',
-            '**/BuildConfig.*',
-            '**/Manifest*.*',
-            'android/**',
-            'com/google/**',
-            'com/intellij/**',
-            'junit/**',
-            'net/**',
-            'okhttp/**',
-            'org/**',
-            'rx/**',
-            '**/*_MembersInjector.class',
-            '**/Dagger*Component.class', // covers component implementations
-            '**/Dagger*Component$Builder.class', // covers component builders
-            '**/*Module_*Factory.class'
-    ]
-    def javaClasses = fileTree(
-            dir: "$buildDir/intermediates/javac/localDebug/classes/org",
-            excludes: fileFilter
-    )
     classDirectories.from = files([javaClasses])
     sourceDirectories.from = files([coverageSourceDirs])
     additionalSourceDirs.from = files([coverageSourceDirs])
-    executionData.from = fileTree(dir: "$buildDir", includes: [
-            "jacoco/testLocalDebugUnitTest.exec"
-    ])
+    executionData.from = fileTree(dir: "$buildDir", includes: ["jacoco/testLocalDebugUnitTest.exec"])
+}
+
+task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: "testLocalDebugUnitTest") {
+    classDirectories.from = files([javaClasses])
+    sourceDirectories.from = files([coverageSourceDirs])
+    additionalSourceDirs.from = files([coverageSourceDirs])
+    executionData.from = fileTree(dir: "$buildDir", includes: ["jacoco/testLocalDebugUnitTest.exec"])
+    violationRules {
+        rule {
+            limit {
+                minimum = jacocoCoverageThreshold
+            }
+        }
+    }
 }
