@@ -16,16 +16,29 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.fragment;
+package roboguice.actiivty;
 
 import android.os.Bundle;
-import roboguice.fragment.RoboMigrationAndroidXDialogFragment;
+import android.view.View;
+import android.widget.LinearLayout;
+import org.openlmis.core.googleanalytics.ScreenName;
+import org.openlmis.core.view.activity.BaseActivity;
 
-public class BaseDialogFragment extends RoboMigrationAndroidXDialogFragment {
+public class FragmentControllerActivity  extends BaseActivity {
+
+  public static final int ID_CONTAINER = View.generateViewId();
 
   @Override
-  public void onCreate(Bundle savedInstanceState) {
+  protected ScreenName getScreenName() {
+    return null;
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setRetainInstance(true);
+    LinearLayout view = new LinearLayout(this);
+    view.setId(ID_CONTAINER);
+
+    setContentView(view);
   }
 }

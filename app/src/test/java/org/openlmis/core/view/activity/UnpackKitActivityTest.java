@@ -109,7 +109,8 @@ public class UnpackKitActivityTest {
         .onCreateViewHolder(unpackKitActivity.productListRecycleView, 1).itemView
         .findViewById(R.id.btn_complete).performClick();
     RobolectricUtils.waitLooperIdle();
-    assertNotNull(unpackKitActivity.getFragmentManager()
+
+    assertNotNull(unpackKitActivity.getSupportFragmentManager()
         .findFragmentByTag("signature_dialog_for_unpack_kit"));
   }
 }

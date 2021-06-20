@@ -279,7 +279,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
                 .transform(movementType -> movementType.getDescription()).toArray(String.class);
             newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(),
                 selections);
-            newMovementDialog.show(getFragmentManager(), "");
+            newMovementDialog.show(getSupportFragmentManager(), "");
             break;
           default:
             // do nothing

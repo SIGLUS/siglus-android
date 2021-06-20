@@ -13,9 +13,9 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.view.adapter.KitStockCardListAdapter;
-import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
+import roboguice.fragment.SupportFragmentController;
 
 @RunWith(LMISTestRunner.class)
 public class KitStockCardListFragmentTest {
@@ -32,7 +32,7 @@ public class KitStockCardListFragmentTest {
         bind(StockCardPresenter.class).toInstance(mockStockCardPresenter);
       }
     });
-    fragment = Robolectric.buildFragment(KitStockCardListFragment.class).create().get();
+    fragment = SupportFragmentController.of(KitStockCardListFragment.class).create().get();
   }
 
   @After

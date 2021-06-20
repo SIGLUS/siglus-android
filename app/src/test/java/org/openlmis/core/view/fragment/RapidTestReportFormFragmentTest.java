@@ -71,7 +71,7 @@ public class RapidTestReportFormFragmentTest {
     RapidTestReportFormActivity rapidTestRequisitionActivity = Robolectric
         .buildActivity(RapidTestReportFormActivity.class).create().get();
     RapidTestReportFormFragment fragment = (RapidTestReportFormFragment) rapidTestRequisitionActivity
-        .getFragmentManager().findFragmentById(R.id.fragment_requisition);
+        .getSupportFragmentManager().findFragmentById(R.id.fragment_requisition);
 
     return fragment;
   }

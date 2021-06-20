@@ -179,7 +179,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
                   viewModel.getExpiryDate(), lotMovementAdapter.getProductName())),
           getString(R.string.btn_remove_lot),
           getString(R.string.btn_cancel), "confirm_dialog");
-      dialogFragment.show(((BaseActivity) context).getFragmentManager(), "confirm_dialog");
+      dialogFragment.show(((BaseActivity) context).getSupportFragmentManager(), "confirm_dialog");
       dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
         @Override
         public void positiveClick(String tag) {

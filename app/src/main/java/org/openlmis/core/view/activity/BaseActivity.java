@@ -21,7 +21,6 @@ package org.openlmis.core.view.activity;
 
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +30,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.StyleRes;
+import androidx.fragment.app.FragmentManager;
 import com.google.inject.Inject;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -209,7 +209,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   }
 
   private void initDataFragment() {
-    FragmentManager fm = getFragmentManager();
+    FragmentManager fm = getSupportFragmentManager();
     dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
 
     if (dataFragment == null) {

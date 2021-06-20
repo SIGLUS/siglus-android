@@ -18,13 +18,13 @@
 
 package org.openlmis.core.view.activity;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -231,7 +231,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         getString(R.string.btn_positive),
         getString(R.string.btn_negative),
         "onBackPressed");
-    dialogFragment.show(getFragmentManager(), "");
+    dialogFragment.show(getSupportFragmentManager(), "");
   }
 
   private boolean areThereSelectedProducts(int requestCode, int resultCode, Intent data) {

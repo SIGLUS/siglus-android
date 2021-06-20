@@ -16,16 +16,24 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.fragment;
+package roboguice.fragment;
 
 import android.os.Bundle;
-import roboguice.fragment.RoboMigrationAndroidXDialogFragment;
+import android.view.View;
+import androidx.fragment.app.DialogFragment;
+import roboguice.RoboGuice;
 
-public class BaseDialogFragment extends RoboMigrationAndroidXDialogFragment {
+public class RoboMigrationAndroidXDialogFragment extends DialogFragment {
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setRetainInstance(true);
+    RoboGuice.getInjector(requireActivity()).injectMembersWithoutViews(this);
+  }
+
+  @Override
+  public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    RoboGuice.getInjector(requireActivity()).injectViewMembers(this);
   }
 }

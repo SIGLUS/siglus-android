@@ -40,6 +40,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.SelectRegimeProductsActivity;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -268,7 +269,7 @@ public class MMIARegimeList extends LinearLayout {
   protected void showDelConfirmDialog(final RegimenItem item) {
     SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
         LMISApp.getContext().getString(R.string.msg_regime_del_confirm));
-    dialogFragment.show(((Activity) getContext()).getFragmentManager(), "del_confirm_dialog");
+    dialogFragment.show(((BaseActivity) getContext()).getSupportFragmentManager(), "del_confirm_dialog");
     dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
       @Override
       public void positiveClick(String tag) {

@@ -2,9 +2,14 @@ package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
 import android.widget.LinearLayout;
-import roboguice.activity.RoboMigrationAndroidXFragmentActivity;
+import org.openlmis.core.googleanalytics.ScreenName;
 
-public class DumpFragmentActivity extends RoboMigrationAndroidXFragmentActivity {
+public class DumpFragmentActivity extends BaseActivity {
+
+  @Override
+  protected ScreenName getScreenName() {
+    return null;
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

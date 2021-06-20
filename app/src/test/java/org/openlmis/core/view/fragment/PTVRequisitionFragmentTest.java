@@ -69,7 +69,7 @@ public class PTVRequisitionFragmentTest {
     PTVRequisitionActivity ptvRequisitionActivity = Robolectric
         .buildActivity(PTVRequisitionActivity.class).create().get();
     PTVRequisitionFragment fragment = (PTVRequisitionFragment) ptvRequisitionActivity
-        .getFragmentManager().findFragmentById(R.id.fragment_requisition);
+        .getSupportFragmentManager().findFragmentById(R.id.fragment_requisition);
 
     return fragment;
   }

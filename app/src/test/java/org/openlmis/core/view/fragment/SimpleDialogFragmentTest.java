@@ -23,17 +23,15 @@ import static org.mockito.Mockito.verify;
 
 import android.app.Dialog;
 import androidx.appcompat.app.AlertDialog;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.robolectric.util.FragmentTestUtil;
+import org.openlmis.core.utils.RobolectricUtils;
+import roboguice.fragment.SupportFragmentTestUtil;
 
 @RunWith(LMISTestRunner.class)
 public class SimpleDialogFragmentTest {
 
-  // TODO: robolectric.android.controller.FragmentController with RoboContext
-  @Ignore
   @Test
   public void shouldSetCallBack() {
     SimpleDialogFragment fragment = SimpleDialogFragment.newInstance(
@@ -46,10 +44,11 @@ public class SimpleDialogFragmentTest {
     SimpleDialogFragment.MsgDialogCallBack dialogCallBack = mock(
         SimpleDialogFragment.MsgDialogCallBack.class);
     fragment.setCallBackListener(dialogCallBack);
-    FragmentTestUtil.startFragment(fragment);
+    SupportFragmentTestUtil.startFragment(fragment);
 
     Dialog dialog = fragment.getDialog();
     (((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)).performClick();
+    RobolectricUtils.waitLooperIdle();
     verify(dialogCallBack).positiveClick(anyString());
   }
 }

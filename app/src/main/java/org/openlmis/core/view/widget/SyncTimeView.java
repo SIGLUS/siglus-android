@@ -169,7 +169,7 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
     syncDateBottomSheet
         .setArguments(SyncDateBottomSheet.getArgumentsToMe(rnrLastSyncTime, stockLastSyncTime));
-    syncDateBottomSheet.show(((BaseActivity) context).getFragmentManager());
+    syncDateBottomSheet.show(((BaseActivity) context).getSupportFragmentManager());
   }
 
   public void showSyncProgressBarAndHideIcon() {

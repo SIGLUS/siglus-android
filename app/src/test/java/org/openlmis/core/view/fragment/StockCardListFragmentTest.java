@@ -77,7 +77,7 @@ public class StockCardListFragmentTest {
 
     fragment = new StockCardListFragment();
 
-    stockCardListActivity.getFragmentManager().beginTransaction().add(fragment, null).commit();
+    stockCardListActivity.getSupportFragmentManager().beginTransaction().add(fragment, null).commit();
 
     fragment.presenter = mock(StockCardPresenter.class);
     return fragment;

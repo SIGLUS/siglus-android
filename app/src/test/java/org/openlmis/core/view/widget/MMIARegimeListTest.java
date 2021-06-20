@@ -67,7 +67,7 @@ public class MMIARegimeListTest {
     RobolectricUtils.waitLooperIdle();
 
     SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) dummyActivity
-        .getFragmentManager().findFragmentByTag("del_confirm_dialog");
+        .getSupportFragmentManager().findFragmentByTag("del_confirm_dialog");
     SimpleDialogFragment.MsgDialogCallBack mListener = del_confirm_dialog.getMListener();
     mListener.positiveClick("");
 

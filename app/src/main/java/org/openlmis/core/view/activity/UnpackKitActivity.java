@@ -142,7 +142,7 @@ public class UnpackKitActivity extends BaseActivity {
     signatureDialog.setArguments(
         SignatureDialog.getBundleToMe(getString(R.string.dialog_unpack_kit_signature)));
     signatureDialog.setDelegate(signatureDialogDelegate);
-    signatureDialog.show(getFragmentManager(), "signature_dialog_for_unpack_kit");
+    signatureDialog.show(getSupportFragmentManager(), "signature_dialog_for_unpack_kit");
   }
 
   protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
@@ -216,6 +216,6 @@ public class UnpackKitActivity extends BaseActivity {
         dialogFragment.dismiss();
       }
     });
-    dialogFragment.show(getFragmentManager(), "back_confirm_dialog");
+    dialogFragment.show(getSupportFragmentManager(), "back_confirm_dialog");
   }
 }

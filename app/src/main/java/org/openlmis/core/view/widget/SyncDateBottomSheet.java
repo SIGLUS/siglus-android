@@ -19,7 +19,6 @@
 package org.openlmis.core.view.widget;
 
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
@@ -70,7 +70,8 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.dialog_sync_date_bottom_sheet, container, false);
+    final View inflate = inflater.inflate(R.layout.dialog_sync_date_bottom_sheet, container, false);
+    return inflate;
   }
 
   @Override

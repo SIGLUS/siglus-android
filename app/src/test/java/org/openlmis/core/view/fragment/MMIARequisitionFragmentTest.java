@@ -34,11 +34,11 @@ import static org.mockito.Mockito.when;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import com.google.inject.AbstractModule;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -100,7 +100,6 @@ public class MMIARequisitionFragmentTest {
     rnrFormList = mock(MMIARnrFormProductList.class);
     SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(false);
     mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
-
     regimeListWrap = mock(MMIARegimeListWrap.class);
     mmiaPatientInfoListView = mock(MMIAPatientInfoList.class);
     mockRnrItemsHeaderFreeze = mock(ViewGroup.class);
@@ -127,9 +126,9 @@ public class MMIARequisitionFragmentTest {
     Intent intent = new Intent();
     intent.putExtra(Constants.PARAM_FORM_ID, 1L);
     MMIARequisitionActivity mmiaRequisitionActivity = Robolectric
-        .buildActivity(MMIARequisitionActivity.class, intent).create().get();
+        .buildActivity(MMIARequisitionActivity.class, intent).create().start().resume().get();
     MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity
-        .getFragmentManager().findFragmentById(R.id.fragment_requisition);
+        .getSupportFragmentManager().findFragmentById(R.id.fragment_requisition);
     fragment.regimeWrap = regimeListWrap;
     fragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
     fragment.rnrFormList = rnrFormList;
@@ -139,9 +138,9 @@ public class MMIARequisitionFragmentTest {
 
   private MMIARequisitionFragment getMMIARequisitionFragmentWithoutIntent() {
     MMIARequisitionActivity mmiaRequisitionActivity = Robolectric
-        .buildActivity(MMIARequisitionActivity.class).create().get();
+        .buildActivity(MMIARequisitionActivity.class).create().start().resume().get();
     MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity
-        .getFragmentManager().findFragmentById(R.id.fragment_requisition);
+        .getSupportFragmentManager().findFragmentById(R.id.fragment_requisition);
     fragment.mmiaPatientInfoListView = mmiaPatientInfoListView;
     fragment.rnrFormList = rnrFormList;
 
@@ -340,7 +339,7 @@ public class MMIARequisitionFragmentTest {
 
     RobolectricUtils.waitLooperIdle();
 
-    DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager()
+    DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getParentFragmentManager()
         .findFragmentByTag("signature_dialog"));
 
     assertThat(fragment).isNotNull();

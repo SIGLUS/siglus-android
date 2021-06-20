@@ -115,7 +115,7 @@ public class RequisitionProductViewHolderTest {
     RobolectricUtils.waitLooperIdle();
 
     SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) viaRequisitionActivity
-        .getFragmentManager().findFragmentByTag("del_confirm_dialog");
+        .getSupportFragmentManager().findFragmentByTag("del_confirm_dialog");
     assertNotNull(del_confirm_dialog);
   }
 

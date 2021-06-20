@@ -24,7 +24,7 @@ public class KitStockCardListActivityTest {
   @Before
   public void setUp() throws Exception {
     activityController = Robolectric.buildActivity(KitStockCardListActivity.class);
-    kitStockCardListActivity = activityController.create().get();
+    kitStockCardListActivity = activityController.create().start().resume().get();
   }
 
   @After

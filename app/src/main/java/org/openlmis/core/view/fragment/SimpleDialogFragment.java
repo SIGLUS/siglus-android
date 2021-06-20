@@ -20,7 +20,6 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -29,12 +28,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import lombok.Getter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import roboguice.fragment.provided.RoboDialogFragment;
+import roboguice.fragment.RoboMigrationAndroidXDialogFragment;
 
-public class SimpleDialogFragment extends RoboDialogFragment {
+public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
 
   private static final String ARG_TITLE = "title";
   private static final String ARG_MESSAGE = "message";
@@ -144,27 +144,24 @@ public class SimpleDialogFragment extends RoboDialogFragment {
   }
 
   private void changeUserInterface(AlertDialog alertDialog) {
-    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-      @Override
-      public void onShow(DialogInterface dialog) {
-        Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
-        positiveButton.setTypeface(null, Typeface.BOLD);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            (int) getResources().getDimension(R.dimen.button_height_default));
-        positiveButton.setLayoutParams(layoutParams);
-        positiveButton.setTextColor(getResources().getColor(R.color.color_accent));
+    alertDialog.setOnShowListener(dialog -> {
+      Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+      positiveButton.setTypeface(null, Typeface.BOLD);
+      LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+          LinearLayout.LayoutParams.WRAP_CONTENT,
+          (int) getResources().getDimension(R.dimen.button_height_default));
+      positiveButton.setLayoutParams(layoutParams);
+      positiveButton.setTextColor(getResources().getColor(R.color.color_accent));
 
-        if (hasNegativeButton()) {
-          final Button negativeButton = ((AlertDialog) dialog)
-              .getButton(DialogInterface.BUTTON_NEGATIVE);
-          negativeButton.setTypeface(null, Typeface.BOLD);
-          negativeButton.setTextColor(getResources().getColor(R.color.color_accent));
-        }
-
-        TextView textView = ((AlertDialog) dialog).findViewById(android.R.id.message);
-        textView.setTextSize(20);
+      if (hasNegativeButton()) {
+        final Button negativeButton = ((AlertDialog) dialog)
+            .getButton(DialogInterface.BUTTON_NEGATIVE);
+        negativeButton.setTypeface(null, Typeface.BOLD);
+        negativeButton.setTextColor(getResources().getColor(R.color.color_accent));
       }
+
+      TextView textView = ((AlertDialog) dialog).findViewById(android.R.id.message);
+      textView.setTextSize(20);
     });
   }
 

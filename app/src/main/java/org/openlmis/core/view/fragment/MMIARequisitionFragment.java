@@ -19,7 +19,6 @@
 package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -33,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -419,7 +419,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
         getString(R.string.msg_regime_total_and_patient_total_not_match),
         getString(R.string.btn_ok),
         TAG_MISMATCH);
-    dialogFragment.show(getFragmentManager(), "not_match_dialog");
+    dialogFragment.show(getParentFragmentManager(), "not_match_dialog");
   }
 
   @Override

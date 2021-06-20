@@ -42,7 +42,7 @@ public class ALRequisitionActivity extends BaseActivity {
 
   @Override
   public void onBackPressed() {
-    ((ALRequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition))
+    ((ALRequisitionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_requisition))
         .onBackPressed();
   }
 

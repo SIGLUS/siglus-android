@@ -28,11 +28,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import java.sql.Date;
@@ -109,8 +109,8 @@ public class VIARequisitionFragmentTest {
     Intent intent = new Intent();
     intent.putExtra(Constants.PARAM_FORM_ID, 1L);
     VIARequisitionActivity viaRequisitionActivity = Robolectric
-        .buildActivity(VIARequisitionActivity.class, intent).create().visible().get();
-    return (VIARequisitionFragment) viaRequisitionActivity.getFragmentManager()
+        .buildActivity(VIARequisitionActivity.class, intent).create().start().resume().visible().get();
+    return (VIARequisitionFragment) viaRequisitionActivity.getSupportFragmentManager()
         .findFragmentById(R.id.fragment_requisition);
   }
 
@@ -181,8 +181,8 @@ public class VIARequisitionFragmentTest {
 
     RobolectricUtils.waitLooperIdle();
 
-    DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity()
-        .getFragmentManager().findFragmentByTag("back_confirm_dialog"));
+    DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getParentFragmentManager()
+        .findFragmentByTag("back_confirm_dialog"));
 
     assertThat(fragment).isNotNull();
 
@@ -205,8 +205,8 @@ public class VIARequisitionFragmentTest {
 
     RobolectricUtils.waitLooperIdle();
 
-    DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity()
-        .getFragmentManager().findFragmentByTag("signature_dialog"));
+    DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.requireActivity()
+        .getSupportFragmentManager().findFragmentByTag("signature_dialog"));
 
     assertThat(fragment).isNotNull();
 
@@ -226,8 +226,8 @@ public class VIARequisitionFragmentTest {
 
     RobolectricUtils.waitLooperIdle();
 
-    DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity()
-        .getFragmentManager().findFragmentByTag("signature_dialog"));
+    DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.requireActivity()
+        .getSupportFragmentManager().findFragmentByTag("signature_dialog"));
 
     assertThat(fragment).isNotNull();
 
@@ -245,8 +245,8 @@ public class VIARequisitionFragmentTest {
 
     RobolectricUtils.waitLooperIdle();
 
-    DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.getActivity()
-        .getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
+    DialogFragment fragment = (DialogFragment) (viaRequisitionFragment.requireActivity()
+        .getSupportFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
 
     assertThat(fragment).isNotNull();
 

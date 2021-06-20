@@ -10,23 +10,20 @@ import android.view.View;
 import com.google.inject.AbstractModule;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.Robolectric;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.android.controller.FragmentController;
 import roboguice.RoboGuice;
+import roboguice.fragment.SupportDialogFragmentController;
 
-@Ignore
 @RunWith(LMISTestRunner.class)
 public class SyncDateBottomSheetTest {
 
-  protected SyncDateBottomSheet fragment;
-  protected FragmentController fragmentController;
+  protected SupportDialogFragmentController<SyncDateBottomSheet> fragmentController;
   SyncErrorsPresenter presenter;
   private long timeMills;
 
@@ -39,87 +36,105 @@ public class SyncDateBottomSheetTest {
         bind(SyncErrorsPresenter.class).toInstance(presenter);
       }
     });
-    fragment = new SyncDateBottomSheet();
-    fragmentController = Robolectric.buildFragment(SyncDateBottomSheet.class,
-        SyncDateBottomSheet.getArgumentsToMe(1, 1));
+    fragmentController = SupportDialogFragmentController
+        .of(SyncDateBottomSheet.class, SyncDateBottomSheet.getArgumentsToMe(1, 1));
+    RobolectricUtils.waitLooperIdle();
     timeMills = new DateTime().getMillis();
-
   }
 
-  @Ignore
   @Test
   public void shouldShowRnrFormLastSyncedTimeCorrectly() {
+    // given
+    SyncDateBottomSheet fragment = fragmentController.setupDialogFragment();
+    RobolectricUtils.waitLooperIdle();
+
+    // when
     String formatRnrLastSyncTimeWithMinute = fragment
         .formatRnrLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_MINUTE);
-    assertThat(formatRnrLastSyncTimeWithMinute, equalTo("Requisition last synced 20 minutes ago"));
-
     String formatRnrLastSyncTimeWithHour = fragment
         .formatRnrLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_HOUR);
-    assertThat(formatRnrLastSyncTimeWithHour, equalTo("Requisition last synced 20 hours ago"));
-
     String formatRnrLastSyncTimeWithDay = fragment
         .formatRnrLastSyncTime(timeMills - 1 * DateUtil.MILLISECONDS_DAY);
-    assertThat(formatRnrLastSyncTimeWithDay, equalTo("Requisition last synced 1 day ago"));
-
     String formatRnrLastSyncTimeWithDays = fragment
         .formatRnrLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_DAY);
+
+    // that
+    assertThat(formatRnrLastSyncTimeWithMinute, equalTo("Requisition last synced 20 minutes ago"));
+    assertThat(formatRnrLastSyncTimeWithHour, equalTo("Requisition last synced 20 hours ago"));
+    assertThat(formatRnrLastSyncTimeWithDay, equalTo("Requisition last synced 1 day ago"));
     assertThat(formatRnrLastSyncTimeWithDays, equalTo("Requisition last synced 20 days ago"));
   }
 
-  @Ignore
   @Test
   public void shouldShowStockCardLastSyncedTimeCorrectly() {
-    String formatStockCardLastSyncTimeWithMinute = fragment
-        .formatStockCardLastSyncTime(timeMills - 1 * DateUtil.MILLISECONDS_MINUTE);
-    assertThat(formatStockCardLastSyncTimeWithMinute,
-        equalTo("Stock cards last synced 1 minute ago"));
+    // given
+    SyncDateBottomSheet fragment = fragmentController.setupDialogFragment();
+    RobolectricUtils.waitLooperIdle();
 
+    // when
+    String formatStockCardLastSyncTimeWithMinute = fragment
+        .formatStockCardLastSyncTime(timeMills - DateUtil.MILLISECONDS_MINUTE);
     String formatStockCardLastSyncTimeWithMinutes = fragment
         .formatStockCardLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_MINUTE);
-    assertThat(formatStockCardLastSyncTimeWithMinutes,
-        equalTo("Stock cards last synced 20 minutes ago"));
-
     String formatStockCardLastSyncTimeWithHour = fragment
         .formatStockCardLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_HOUR);
-    assertThat(formatStockCardLastSyncTimeWithHour,
-        equalTo("Stock cards last synced 20 hours ago"));
-
     String formatStockCardLastSyncTimeWithDay = fragment
         .formatStockCardLastSyncTime(timeMills - 20 * DateUtil.MILLISECONDS_DAY);
+
+    // that
+    assertThat(formatStockCardLastSyncTimeWithMinute,
+        equalTo("Stock cards last synced 1 minute ago"));
+    assertThat(formatStockCardLastSyncTimeWithMinutes,
+        equalTo("Stock cards last synced 20 minutes ago"));
+    assertThat(formatStockCardLastSyncTimeWithHour,
+        equalTo("Stock cards last synced 20 hours ago"));
     assertThat(formatStockCardLastSyncTimeWithDay, equalTo("Stock cards last synced 20 days ago"));
   }
 
   @Test
-  @Ignore
   public void shouldShowErrorMsgWhenFirstSyncFailed() throws Exception {
+    // given
     when(presenter.hasRnrSyncError()).thenReturn(true);
     when(presenter.hasStockCardSyncError()).thenReturn(true);
+    SyncDateBottomSheet fragment = fragmentController.setupDialogFragment();
+    RobolectricUtils.waitLooperIdle();
 
+    // when
     String formatRnrLastSyncTime = fragment.formatRnrLastSyncTime(0);
-    assertThat(formatRnrLastSyncTime, equalTo("Initial requisition sync failed, please retry."));
-
     String formatStockCardLastSyncTimeWithMinute = fragment.formatStockCardLastSyncTime(0);
+
+    // that
+    assertThat(formatRnrLastSyncTime, equalTo("Initial requisition sync failed, please retry."));
     assertThat(formatStockCardLastSyncTimeWithMinute,
         equalTo("Initial stock card sync failed, please retry."));
   }
 
   @Test
-  @Ignore
   public void shouldShowEmptyMsgWhenHasNotSynced() throws Exception {
-    String formatRnrLastSyncTime = fragment.formatRnrLastSyncTime(0);
-    assertThat(formatRnrLastSyncTime, equalTo(""));
+    // given
+    SyncDateBottomSheet fragment = fragmentController.setupDialogFragment();
+    RobolectricUtils.waitLooperIdle();
 
+    // when
+    String formatRnrLastSyncTime = fragment.formatRnrLastSyncTime(0);
     String formatStockCardLastSyncTimeWithMinute = fragment.formatStockCardLastSyncTime(0);
+
+    // that
+    assertThat(formatRnrLastSyncTime, equalTo(""));
     assertThat(formatStockCardLastSyncTimeWithMinute, equalTo(""));
   }
 
   @Test
-  @Ignore
   public void shouldShowErrorIconWhenHasSyncError() throws Exception {
+    // given
     when(presenter.hasRnrSyncError()).thenReturn(true);
     when(presenter.hasStockCardSyncError()).thenReturn(true);
-    fragmentController.create();
 
+    // when
+    SyncDateBottomSheet fragment = fragmentController.setupDialogFragment();
+    RobolectricUtils.waitLooperIdle();
+
+    // that
     assertThat(fragment.ivRnRError.getVisibility(), is(View.VISIBLE));
     assertThat(fragment.ivStockcardError.getVisibility(), is(View.VISIBLE));
   }

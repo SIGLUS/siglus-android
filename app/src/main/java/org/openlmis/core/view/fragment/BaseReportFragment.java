@@ -67,7 +67,7 @@ public abstract class BaseReportFragment extends BaseFragment {
         getString(R.string.btn_positive),
         getString(R.string.btn_negative),
         "back_confirm_dialog");
-    dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
+    dialogFragment.show(getParentFragmentManager(), "back_confirm_dialog");
     dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
       @Override
       public void positiveClick(String tag) {
@@ -87,7 +87,7 @@ public abstract class BaseReportFragment extends BaseFragment {
     signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
     signatureDialog.setDelegate(signatureDialogDelegate);
 
-    signatureDialog.show(this.getFragmentManager());
+    signatureDialog.show(this.getParentFragmentManager());
   }
 
   protected abstract String getSignatureDialogTitle();
@@ -106,7 +106,7 @@ public abstract class BaseReportFragment extends BaseFragment {
     SimpleDialogFragment notifyDialog = SimpleDialogFragment.newInstance(null,
         getNotifyDialogMsg(), null, getString(R.string.btn_continue), "showMessageNotifyDialog");
 
-    notifyDialog.show(getActivity().getFragmentManager(), "showMessageNotifyDialog");
+    notifyDialog.show(getParentFragmentManager(), "showMessageNotifyDialog");
   }
 
   protected abstract String getNotifyDialogMsg();

@@ -4,10 +4,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-import android.app.Fragment;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import androidx.fragment.app.Fragment;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,7 +114,7 @@ public class RequisitionFormViewHolderTest {
 
     RobolectricUtils.waitLooperIdle();
 
-    Fragment dialogFragment = dummyActivity.getFragmentManager()
+    Fragment dialogFragment = dummyActivity.getSupportFragmentManager()
         .findFragmentByTag("adjustmentTheoreticalDialog");
 
     assertNotNull(dialogFragment);
