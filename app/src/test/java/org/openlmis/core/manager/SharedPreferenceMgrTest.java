@@ -9,7 +9,6 @@ import com.google.inject.AbstractModule;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -33,8 +32,8 @@ public class SharedPreferenceMgrTest {
     stockRepository = mock(StockRepository.class);
     rnrFormRepository = mock(RnrFormRepository.class);
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(SharedPreferenceMgr.class);
+    sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
+    sharedPreferenceMgr.stockRepository = stockRepository;
     nowDateTime = new DateTime();
   }
 
@@ -43,7 +42,6 @@ public class SharedPreferenceMgrTest {
     assertThat(sharedPreferenceMgr.hasSyncedVersion(), is(false));
   }
 
-  @Ignore
   @Test
   public void shouldGetLastMonthSyncedIsTrueWhenHaveLocalData() throws Exception {
     when(stockRepository.hasStockData()).thenReturn(true);

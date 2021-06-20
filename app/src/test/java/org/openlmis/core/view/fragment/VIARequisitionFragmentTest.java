@@ -42,7 +42,6 @@ import java.util.TimeZone;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -123,7 +122,6 @@ public class VIARequisitionFragmentTest {
   }
 
   @Test
-  @Ignore
   public void shouldSetEmergencyViewWhenRnrIsEmergency() {
     ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(
         DateUtil.parseString("2015-04-21 17:30:00 UTC", DateUtil.DATE_TIME_FORMAT).getTime());

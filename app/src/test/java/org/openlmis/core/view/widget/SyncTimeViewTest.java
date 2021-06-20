@@ -14,7 +14,6 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -25,7 +24,6 @@ import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
-@Ignore
 @RunWith(LMISTestRunner.class)
 public class SyncTimeViewTest {
 
@@ -45,7 +43,6 @@ public class SyncTimeViewTest {
     nowDateTime = new DateTime();
   }
 
-  @Ignore
   @Test
   public void shouldDisplayGreenIconAndTimeUnitIsMinute() throws Exception {
     // given
@@ -65,7 +62,6 @@ public class SyncTimeViewTest {
         is(R.drawable.icon_circle_green));
   }
 
-  @Ignore
   @Test
   public void shouldDisplayGreenIconAndTimeUnitIsHour() throws Exception {
     // given
@@ -85,7 +81,6 @@ public class SyncTimeViewTest {
         is(R.drawable.icon_circle_green));
   }
 
-  @Ignore
   @Test
   public void shouldDisplayYellowIconAndTimeUnitIsDay() throws Exception {
     // given
@@ -103,7 +98,6 @@ public class SyncTimeViewTest {
         is(R.drawable.icon_circle_yellow));
   }
 
-  @Ignore
   @Test
   public void shouldDisplayRedIconAndTimeUnitIsDay() throws Exception {
     // given

@@ -2,6 +2,8 @@ package org.openlmis.core.view.activity;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -9,6 +11,7 @@ import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.text.Html;
 import android.text.Spanned;
@@ -21,7 +24,6 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -40,9 +42,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
-import rx.Observable;
 import rx.Scheduler;
-import rx.Subscriber;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
@@ -120,36 +120,36 @@ public class SelectPeriodActivityTest {
   }
 
   @Test
-  @Ignore
   public void shouldInVisibleWarningWhenUserChoseTheInventory() throws Exception {
+    // given
     LMISTestApp.getInstance().setCurrentTimeMillis(100000);
     SingleClickButtonListener.isViewClicked = false;
-
     when(stockMovementRepository.listLastFiveStockMovements(anyLong()))
         .thenReturn(newArrayList(new StockMovementItem()));
     when(stockMovementRepository.queryFirstStockMovementByStockCardId(anyLong()))
         .thenReturn(new StockMovementItem());
     when(stockRepository.list()).thenReturn(newArrayList(new StockCard()));
+    when(mockedPresenter.correctDirtyObservable(any())).thenCallRealMethod();
 
+    // when
     selectPeriodActivity.refreshDate(inventoryList);
 
+    // that
     shadowOf(selectPeriodActivity.vgContainer).performItemClick(2);
-
     assertThat(selectPeriodActivity.tvSelectPeriodWarning.getVisibility(), is(View.INVISIBLE));
 
-    Subscriber subscriber = new TestSubscriber();
-
-    Observable observable = selectPeriodActivity.presenter
-        .correctDirtyObservable(Constants.Program.MMIA_PROGRAM);
-
-    observable.subscribe(subscriber);
+    // given
+    selectPeriodActivity.presenter
+        .correctDirtyObservable(Constants.Program.MMIA_PROGRAM)
+        .subscribe(new TestSubscriber());
 
     selectPeriodActivity.nextBtn.performClick();
-//
-//        assertTrue(selectPeriodActivity.isFinishing());
-//        assertThat(shadowOf(selectPeriodActivity).getResultCode(), is(Activity.RESULT_OK));
-//        Date selectedDate = (Date) shadowOf(selectPeriodActivity).getResultIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
-//        assertThat(selectedDate, is(new DateTime("2016-01-19").toDate()));
+
+    assertTrue(selectPeriodActivity.isFinishing());
+    assertThat(shadowOf(selectPeriodActivity).getResultCode(), is(Activity.RESULT_OK));
+    Date selectedDate = (Date) shadowOf(selectPeriodActivity).getResultIntent()
+        .getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
+    assertThat(selectedDate, is(new DateTime("2016-01-19").toDate()));
   }
 
   @Test

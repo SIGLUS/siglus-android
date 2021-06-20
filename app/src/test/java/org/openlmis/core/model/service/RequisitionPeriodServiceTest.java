@@ -90,8 +90,6 @@ public class RequisitionPeriodServiceTest {
   }
 
   @Test
-  //TODO later
-  @Ignore
   public void shouldGeneratePeriodOfJan21ToFebWhenRnrNotExists() throws Exception {
     when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString()))
         .thenReturn(new DateTime("2016-02-17").toDate());
@@ -150,13 +148,20 @@ public class RequisitionPeriodServiceTest {
     }
   }
 
-  @Test
-  //TODO later
+  // TODO confirm generateNextPeriod logic
   @Ignore
+  @Test
   public void shouldGeneratePeriodOfFeb18ToMarWhenRnrNotExists() throws Exception {
     when(mockStockMovementRepository.queryEarliestStockMovementDateByProgram(anyString()))
         .thenReturn(DateUtil.parseString("2016-02-18 13:00:00", DateUtil.DATE_TIME_FORMAT));
-
+    ReportTypeForm reportTypeForm = new ReportTypeFormBuilder()
+        .setActive(true)
+        .setCode(Constants.MMIA_REPORT)
+        .setName(Constants.MMIA_PROGRAM_CODE)
+        .setStartTime(new DateTime(DateUtil.parseString("2016-02-01", DateUtil.DB_DATE_FORMAT)).toDate())
+        .build();
+    when(mockReportTypeFormRepository.queryByCode(programMMIA.getProgramCode())).thenReturn(reportTypeForm);
+    when(mockReportTypeFormRepository.getReportType(programMMIA.getProgramCode())).thenReturn(reportTypeForm);
     Period period = requisitionPeriodService.generateNextPeriod(programMMIA.getProgramCode(), null);
 
     assertThat(period.getBegin(),
