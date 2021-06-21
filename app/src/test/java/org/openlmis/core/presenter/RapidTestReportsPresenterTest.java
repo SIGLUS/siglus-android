@@ -26,7 +26,6 @@ import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.ProgramDataFormPeriodService;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.roboguice.shaded.goole.common.base.Optional;
@@ -93,7 +92,7 @@ public class RapidTestReportsPresenterTest {
     when(fifthPeriod.generateNextAvailablePeriod()).thenReturn(Optional.of(sixthPeriod));
     when(sixthPeriod.generateNextAvailablePeriod()).thenReturn(emptyOptional);
 
-    Program programRapidTest = new Program(Constants.RAPID_TEST_CODE,
+    Program programRapidTest = new Program(Program.RAPID_TEST_CODE,
         "Rapid Test",
         null,
         false,
@@ -121,17 +120,15 @@ public class RapidTestReportsPresenterTest {
         .setSynced(true)
         .setStatus(Status.AUTHORIZED)
         .build();
-    when(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
-        .thenReturn(
-            newArrayList(programDataForm1, programDataForm2, programDataForm3, programDataForm4));
+    when(programDataFormRepository.listByProgramCode(Program.RAPID_TEST_CODE))
+        .thenReturn(newArrayList(programDataForm1, programDataForm2, programDataForm3, programDataForm4));
     ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
         setActive(true)
-        .setCode(Constants.RAPID_REPORT)
-        .setName(Constants.RAPID_TEST_CODE)
-        .setStartTime(
-            new DateTime(DateUtil.parseString("2016-09-10", DateUtil.DB_DATE_FORMAT)).toDate())
+        .setCode(Program.RAPID_TEST_CODE)
+        .setName(Program.RAPID_TEST_CODE)
+        .setStartTime(new DateTime(DateUtil.parseString("2016-09-10", DateUtil.DB_DATE_FORMAT)).toDate())
         .build();
-    when(reportTypeFormRepository.queryByCode(Constants.RAPID_REPORT))
+    when(reportTypeFormRepository.queryByCode(Program.RAPID_TEST_CODE))
         .thenReturn(reportTypeForm);
 
     presenter.loadViewModels();

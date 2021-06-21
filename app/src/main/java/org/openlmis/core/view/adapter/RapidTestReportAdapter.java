@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import org.openlmis.core.R;
+import org.openlmis.core.view.fragment.BaseFragment;
 import org.openlmis.core.view.holder.RapidTestReportViewHolder;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 
@@ -31,20 +32,22 @@ public class RapidTestReportAdapter extends RecyclerView.Adapter<RapidTestReport
 
   private final Context context;
   private final List<RapidTestReportViewModel> viewModels;
+  private BaseFragment container;
 
-  public RapidTestReportAdapter(Context context, List<RapidTestReportViewModel> viewModels) {
-    this.context = context;
+  public RapidTestReportAdapter(BaseFragment container, List<RapidTestReportViewModel> viewModels) {
+    this.context = container.requireContext();
     this.viewModels = viewModels;
+    this.container = container;
   }
 
   @Override
   public RapidTestReportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     if (viewType == RapidTestReportViewModel.Status.COMPLETED.getViewType()) {
       return new RapidTestReportViewHolder(
-          LayoutInflater.from(context).inflate(R.layout.item_report_no_button, parent, false));
+          LayoutInflater.from(context).inflate(R.layout.item_report_no_button, parent, false), container);
     }
     return new RapidTestReportViewHolder(
-        LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report, parent, false));
+        LayoutInflater.from(context).inflate(R.layout.item_rapid_test_report, parent, false), container);
   }
 
   @Override

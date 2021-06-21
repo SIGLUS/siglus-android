@@ -15,6 +15,7 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
@@ -52,19 +53,28 @@ public class ProgramDataFormPeriodServiceTest {
 
     ReportTypeForm reportTypeForm = new ReportTypeFormBuilder()
         .setActive(true)
-        .setCode(Constants.RAPID_TEST_CODE)
+        .setCode(Program.RAPID_TEST_CODE)
         .setName(Constants.RAPID_TEST_OLD_CODE)
         .setStartTime(
             new DateTime(DateUtil.parseString("2015-01-01", DateUtil.DB_DATE_FORMAT)).toDate())
         .setLastReportEndTime("2020-01-20 23:59:59")
         .build();
-    when(mockReportTypeFormRepository.queryByCode("TEST_KIT")).thenReturn(reportTypeForm);
+    when(mockReportTypeFormRepository.queryByCode(Program.RAPID_TEST_CODE)).thenReturn(reportTypeForm);
     when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
     Period period = periodService.getFirstStandardPeriod().get();
-    assertThat(period.getBegin(),
-        is(new DateTime(DateUtil.parseString("2020-05-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
-    assertThat(period.getEnd(),
-        is(new DateTime(DateUtil.parseString("2020-06-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+    final DateTime currentDate = new DateTime();
+    String beginDateBuilder = (currentDate.year().get() - 1)
+        + "-"
+        + currentDate.monthOfYear().get()
+        + "-21 12:00:00";
+    String endDateBuilder = (currentDate.year().get() - 1)
+        + "-"
+        + (currentDate.monthOfYear().get() + 1)
+        + "-20 12:00:00";
+    final DateTime expectBeginTime = new DateTime(DateUtil.parseString(beginDateBuilder, DateUtil.DB_DATE_FORMAT));
+    assertThat(period.getBegin(), is(expectBeginTime));
+    final DateTime expectEndTime = new DateTime(DateUtil.parseString(endDateBuilder, DateUtil.DB_DATE_FORMAT));
+    assertThat(period.getEnd(), is(expectEndTime));
   }
 
   @Test

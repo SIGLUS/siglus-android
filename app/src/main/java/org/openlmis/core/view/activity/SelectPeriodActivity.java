@@ -240,9 +240,6 @@ public class SelectPeriodActivity extends BaseActivity implements
       case VIA_PROGRAM_CODE:
         program = Constants.Program.VIA_PROGRAM;
         break;
-      case PTV_PROGRAM_CODE:
-        program = Constants.Program.PTV_PROGRAM;
-        break;
       case RAPID_TEST_CODE:
         program = Constants.Program.RAPID_TEST_PROGRAM;
         break;

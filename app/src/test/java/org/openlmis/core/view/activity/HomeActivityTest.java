@@ -137,7 +137,7 @@ public class HomeActivityTest {
 
     // then
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
-    assertThat(startedIntent.getComponent().getClassName(), equalTo(RequisitionActivity.class.getName()));
+    assertThat(startedIntent.getComponent().getClassName(), equalTo(ReportListActivity.class.getName()));
   }
 
   @Test

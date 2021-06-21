@@ -94,18 +94,12 @@ public class RnRFormListActivity extends BaseReportListActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     program = getProgram();
-
     setTitle(program.getTitle());
-
     if (!SharedPreferenceMgr.getInstance().hasDeletedOldRnr()) {
       tvArchivedOldData.setVisibility(View.GONE);
     }
-
-    presenter.setViewProgram(program);
     presenter.setProgramCode(program.getCode());
-
     listView.setLayoutManager(new LinearLayoutManager(this));
     listView.setHasFixedSize(true);
     data = new ArrayList<>();
@@ -221,9 +215,6 @@ public class RnRFormListActivity extends BaseReportListActivity {
       case AL_PROGRAM:
         intent = ALRequisitionActivity.getIntentToMe(this, rnrFormId);
         break;
-      case PTV_PROGRAM:
-        intent = PTVRequisitionActivity.getIntentToMe(this, rnrFormId);
-        break;
       default:
         // do nothing
     }
@@ -241,9 +232,6 @@ public class RnRFormListActivity extends BaseReportListActivity {
         break;
       case AL_PROGRAM:
         intent = ALRequisitionActivity.getIntentToMe(this, periodEndDate);
-        break;
-      case PTV_PROGRAM:
-        intent = PTVRequisitionActivity.getIntentToMe(this, periodEndDate);
         break;
       default:
         // do nothing

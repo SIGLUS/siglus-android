@@ -1,6 +1,7 @@
 package org.openlmis.core.network.adapter;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 import com.google.gson.JsonParser;
 import org.junit.Test;
@@ -18,7 +19,7 @@ public class ProductAdapterTest {
     Product deserializedProduct = productAdapter
         .deserialize(new JsonParser().parse(json), null, null);
 
-    assertEquals(true, deserializedProduct.isActive());
+    assertTrue(deserializedProduct.isActive());
     assertEquals("Comprimidos", deserializedProduct.getType());
     assertEquals("Digoxina 0,25mg Comp", deserializedProduct.getPrimaryName());
     assertEquals("0,25mg", deserializedProduct.getStrength());

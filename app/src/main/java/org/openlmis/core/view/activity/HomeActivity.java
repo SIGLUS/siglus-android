@@ -114,7 +114,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   public void onClickRequisitions(View view) {
     if (!isHaveDirtyData()) {
-      Intent intent = new Intent(HomeActivity.this, RequisitionActivity.class);
+      Intent intent = new Intent(HomeActivity.this, ReportListActivity.class);
       startActivity(intent);
     }
   }

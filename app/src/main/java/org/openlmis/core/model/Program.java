@@ -37,6 +37,11 @@ import lombok.Setter;
 @DatabaseTable(tableName = "programs")
 public class Program extends BaseModel {
 
+  public static final String MALARIA_CODE = "ML";
+  public static final String RAPID_TEST_CODE = "TR";
+  public static final String TARV_CODE = "T";
+  public static final String VIA_CODE = "VC";
+
   @SerializedName("code")
   @DatabaseField
   String programCode;

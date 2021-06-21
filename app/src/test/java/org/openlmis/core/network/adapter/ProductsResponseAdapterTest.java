@@ -58,5 +58,6 @@ public class ProductsResponseAdapterTest {
         Matchers.is("22A07"));
     assertThat(syncDownLatestProductsResponse.getLatestProducts().get(1).getProduct().getCode(),
         Matchers.is("26B01"));
+    assertThat(syncDownLatestProductsResponse.getLatestProducts().get(0).getProductPrograms(),Matchers.hasSize(1));
   }
 }

@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.util.TypedValue;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
+import java.util.HashMap;
 import java.util.List;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
@@ -32,13 +33,22 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.view.widget.RequisitionPageIndicator;
 
-public class RequisitionNavigatorAdapter extends CommonNavigatorAdapter {
+public class ReportListNavigatorAdapter extends CommonNavigatorAdapter {
+
+  private static final HashMap<String, Integer> PROGRAM_CODE_NAME = new HashMap<>();
+
+  static {
+    PROGRAM_CODE_NAME.put(Program.VIA_CODE, R.string.vc_program_name);
+    PROGRAM_CODE_NAME.put(Program.MALARIA_CODE, R.string.ml_program_name);
+    PROGRAM_CODE_NAME.put(Program.TARV_CODE, R.string.tarv_program_name);
+    PROGRAM_CODE_NAME.put(Program.RAPID_TEST_CODE, R.string.tr_program_name);
+  }
 
   private List<Program> data;
 
-  private ViewPager2 viewPager;
+  private final ViewPager2 viewPager;
 
-  public RequisitionNavigatorAdapter(ViewPager2 viewPager) {
+  public ReportListNavigatorAdapter(ViewPager2 viewPager) {
     this.viewPager = viewPager;
   }
 
@@ -56,10 +66,10 @@ public class RequisitionNavigatorAdapter extends CommonNavigatorAdapter {
   public IPagerTitleView getTitleView(Context context, int index) {
     ColorTransitionPagerTitleView titleView = new ColorTransitionPagerTitleView(context);
     titleView.setSingleLine(false);
-    titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX,context.getResources().getDimensionPixelSize(R.dimen.px_20));
+    titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimensionPixelSize(R.dimen.px_20));
     titleView.setNormalColor(Color.BLACK);
     titleView.setSelectedColor(Color.BLACK);
-    titleView.setText(data.get(index).getProgramName());
+    titleView.setText(getProgramNameByCode(context, data.get(index).getProgramCode()));
     titleView.setOnClickListener(view -> viewPager.setCurrentItem(index));
     return titleView;
   }
@@ -70,5 +80,13 @@ public class RequisitionNavigatorAdapter extends CommonNavigatorAdapter {
     indicator.setLineColors(ContextCompat.getColor(context, R.color.color_purple));
     indicator.setSelectedBackgroundColor(ContextCompat.getColor(context, R.color.color_requisition_background));
     return indicator;
+  }
+
+  String getProgramNameByCode(Context context, String programCode) {
+    final Integer resourceId = PROGRAM_CODE_NAME.get(programCode);
+    if (resourceId == null) {
+      return "NULL";
+    }
+    return context.getString(resourceId);
   }
 }

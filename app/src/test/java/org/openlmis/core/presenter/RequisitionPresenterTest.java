@@ -31,6 +31,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.presenter.ReportListPresenter.ReportListView;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
@@ -38,14 +39,14 @@ import rx.observers.TestSubscriber;
 @RunWith(LMISTestRunner.class)
 public class RequisitionPresenterTest {
 
-  RequisitionPresenter.RequisitionView view;
-  RequisitionPresenter presenter;
+  ReportListView view;
+  ReportListPresenter presenter;
   ProgramRepository mockProgramRepository;
 
   @Before
   public void setUp() throws Exception {
-    view = Mockito.mock(RequisitionPresenter.RequisitionView.class);
-    presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RequisitionPresenter.class);
+    view = Mockito.mock(ReportListView.class);
+    presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ReportListPresenter.class);
     mockProgramRepository = Mockito.mock(ProgramRepository.class);
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
         binder -> binder.bind(ProgramRepository.class).toInstance(mockProgramRepository));

@@ -41,10 +41,6 @@
       android:name=".view.activity.PhysicalInventoryActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:label="@string/title_rapid_test_reports"
-      android:name=".view.activity.RapidTestReportsActivity"
-      android:screenOrientation="portrait" />
-    <activity
       android:configChanges="orientation|screenSize"
       android:label="@string/title_rapid_test_form"
       android:name=".view.activity.RapidTestReportFormActivity"
@@ -136,7 +132,7 @@
       android:name=".view.activity.BulkEntriesActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".view.activity.RequisitionActivity"
+      android:name=".view.activity.ReportListActivity"
       android:screenOrientation="portrait"
       android:label="@string/home_label_requisition_and_report" />
 

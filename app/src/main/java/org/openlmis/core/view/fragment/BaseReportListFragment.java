@@ -16,37 +16,35 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.adapter;
+package org.openlmis.core.view.fragment;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import java.util.List;
-import org.openlmis.core.model.Program;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.openlmis.core.event.SyncStatusEvent;
+import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 
-public class RequisitionPageAdapter extends FragmentStateAdapter {
+public abstract class BaseReportListFragment extends BaseFragment {
 
-  private List<Program> data;
-
-  public RequisitionPageAdapter(@NonNull FragmentActivity fragmentActivity) {
-    super(fragmentActivity);
-  }
-
-  public void setData(List<Program> data) {
-    this.data = data;
-    notifyDataSetChanged();
-  }
-
-  @NonNull
-  @Override
-  public Fragment createFragment(int position) {
-    // TODO create fragment by program
-    return new Fragment();
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveSyncStatusEvent(SyncStatusEvent event) {
+    if (event.getStatus() != SyncStatus.FINISH) {
+      return;
+    }
+    loadForms();
   }
 
   @Override
-  public int getItemCount() {
-    return data == null ? 0 : data.size();
+  public void onStart() {
+    super.onStart();
+    EventBus.getDefault().register(this);
   }
+
+  @Override
+  public void onStop() {
+    EventBus.getDefault().unregister(this);
+    super.onStop();
+  }
+
+  protected abstract void loadForms();
 }

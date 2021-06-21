@@ -111,6 +111,7 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
     productProgram.setProductCode(product.getCode());
     productProgram.setActive(product.isActive());
     productProgram.setCategory(category);
+    productPrograms.add(productProgram);
     return productPrograms;
   }
 

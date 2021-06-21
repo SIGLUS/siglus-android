@@ -25,9 +25,9 @@ import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
@@ -87,17 +87,14 @@ public class RnRFormViewModel {
 
   private void setName(String programCode) {
     switch (programCode) {
-      case Constants.MMIA_PROGRAM_CODE:
-        this.name = LMISApp.getContext().getString(R.string.label_mmia_name);
+      case Program.TARV_CODE:
+        this.name = LMISApp.getContext().getString(R.string.tarv_program_name);
         break;
-      case Constants.VIA_PROGRAM_CODE:
+      case Program.VIA_CODE:
         this.name = LMISApp.getContext().getString(R.string.label_via_name);
         break;
-      case Constants.AL_PROGRAM_CODE:
-        this.name = LMISApp.getContext().getString(R.string.label_al_name);
-        break;
-      case Constants.PTV_PROGRAM_CODE:
-        this.name = LMISApp.getContext().getString(R.string.label_ptv_name);
+      case Program.MALARIA_CODE:
+        this.name = LMISApp.getContext().getString(R.string.ml_program_name);
         break;
       default:
         this.name = StringUtils.EMPTY;

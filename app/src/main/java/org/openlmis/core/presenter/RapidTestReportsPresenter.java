@@ -41,6 +41,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.repository.InventoryRepository;
@@ -48,7 +49,6 @@ import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.service.ProgramDataFormPeriodService;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
@@ -105,7 +105,7 @@ public class RapidTestReportsPresenter extends Presenter {
   }
 
   private void generateViewModelsForAllPeriods() throws LMISException {
-    ReportTypeForm typeForm = reportTypeFormRepository.queryByCode(Constants.RAPID_REPORT);
+    ReportTypeForm typeForm = reportTypeFormRepository.queryByCode(Program.RAPID_TEST_CODE);
     Optional<Period> period = periodService.getFirstStandardPeriod();
     DateTime startPeriodTime = new DateTime(typeForm.getStartTime());
 
@@ -115,12 +115,10 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     if (period.isPresent()) {
-      List<ProgramDataForm> rapidTestForms = programDataFormRepository
-          .listByProgramCode(RAPID_TEST_CODE);
+      List<ProgramDataForm> rapidTestForms = programDataFormRepository.listByProgramCode(Program.RAPID_TEST_CODE);
       isHaveFirstPeriod = !isAllRapidTestFormInDBCompleted(rapidTestForms);
       while (period.isPresent()) {
-        RapidTestReportViewModel rapidTestReportViewModel = getViewModel(period.get(),
-            rapidTestForms);
+        RapidTestReportViewModel rapidTestReportViewModel = getViewModel(period.get(), rapidTestForms);
         viewModelList.add(rapidTestReportViewModel);
         period = generateNextPeriod(rapidTestReportViewModel.getPeriod().getEnd());
       }

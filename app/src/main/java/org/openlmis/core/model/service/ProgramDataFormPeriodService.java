@@ -26,13 +26,13 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
-import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Optional;
 
 public class ProgramDataFormPeriodService {
@@ -51,7 +51,7 @@ public class ProgramDataFormPeriodService {
     Period period = null;
     DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     ReportTypeForm reportTypeForm = reportTypeFormRepository
-        .queryByCode(Constants.TEST_KIT_PROGRAM_CODE);
+        .queryByCode(Program.RAPID_TEST_CODE);
 
     if (reportTypeForm.lastReportEndTime != null) {
       DateTime lastReportEndTime = dateTimeFormatter
@@ -61,7 +61,7 @@ public class ProgramDataFormPeriodService {
         period = new Period(initializeDateTime);
       } else {
         List<ProgramDataForm> forms = programDataFormRepository
-            .listByProgramCode(Constants.TEST_KIT_PROGRAM_CODE);
+            .listByProgramCode(Program.RAPID_TEST_CODE);
         if (forms != null && !forms.isEmpty()) {
           period = new Period(new DateTime(forms.get(0).getPeriodBegin()));
         } else {

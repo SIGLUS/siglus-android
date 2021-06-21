@@ -41,8 +41,8 @@ public class RnRFormViewHolderTest {
   public void setup() {
     mockedListener = mock(RnRFormViewHolder.RnRFormItemClickListener.class);
     program = new Program();
-    program.setProgramCode("MMIA");
-    program.setProgramName("MMIA");
+    program.setProgramCode(Program.TARV_CODE);
+    program.setProgramName(Program.TARV_CODE);
   }
 
   private RnRFormViewHolder getViewHolderByType(int viewType) {
@@ -96,7 +96,7 @@ public class RnRFormViewHolderTest {
 
   @Test
   public void shouldShowUnCompleteInventory() {
-    RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA",
+    RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), Program.TARV_CODE,
         RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
 
     viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
@@ -116,7 +116,7 @@ public class RnRFormViewHolderTest {
 
   @Test
   public void shouldShowCompletedInventory() {
-    RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA",
+    RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), Program.TARV_CODE,
         RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
 
     viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
@@ -124,8 +124,7 @@ public class RnRFormViewHolderTest {
 
     assertThat(viewHolder.tvPeriod.getText().toString(), is(viewModel.getTitle()));
     assertThat(viewHolder.tvMessage.getText().toString(),
-        is(getStringResource(R.string.label_completed_mmia_physical_inventory_message,
-            viewModel.getName())));
+        is(getStringResource(R.string.label_completed_mmia_physical_inventory_message, viewModel.getName())));
     assertThat(((ColorDrawable) viewHolder.tvPeriod.getBackground()).getColor(),
         is(getColorResource(R.color.color_draft_title)));
     assertThat(viewHolder.btnView.getText().toString(),

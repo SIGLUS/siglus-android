@@ -25,7 +25,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
-import org.openlmis.core.utils.Constants;
 
 public class ReportTypeFormRepository {
 
@@ -69,17 +68,6 @@ public class ReportTypeFormRepository {
   }
 
   public ReportTypeForm getReportType(final String programCode) throws LMISException {
-    String reportTypeCode = getReportTypeCode(programCode);
-    return queryByCode(reportTypeCode);
+    return queryByCode(programCode);
   }
-
-  public String getReportTypeCode(final String programCode) {
-    for (Constants.Program program : Constants.PROGRAMS) {
-      if (program.getCode().equals(programCode)) {
-        return program.getReportType();
-      }
-    }
-    return Constants.Program.VIA_PROGRAM.getReportType();
-  }
-
 }

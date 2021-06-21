@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.holder;
 
-import android.app.Activity;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
@@ -34,6 +33,7 @@ import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.activity.RapidTestReportFormActivity;
 import org.openlmis.core.view.activity.SelectPeriodActivity;
+import org.openlmis.core.view.fragment.BaseFragment;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.InjectView;
@@ -50,8 +50,11 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
   TextView btnReportEntry;
   private RapidTestReportViewModel viewModel;
 
-  public RapidTestReportViewHolder(View itemView) {
+  private BaseFragment container;
+
+  public RapidTestReportViewHolder(View itemView, BaseFragment container) {
     super(itemView);
+    this.container = container;
   }
 
   public void populate(final RapidTestReportViewModel rapidTestReportViewModel) {
@@ -143,17 +146,17 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
   private void configIncompleteHolder() {
     setGrayHeader();
     tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_incomplete_requisition,
-        context.getString(R.string.title_rapid_test_reports))));
+        context.getString(R.string.tr_program_name))));
     setWhiteButton();
     btnReportEntry.setText(context.getString(R.string.btn_view_incomplete_requisition,
-        context.getString(R.string.title_rapid_test_reports)));
+        context.getString(R.string.tr_program_name)));
     btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());
   }
 
   private void configCompletedHolder() {
     String error;
     error = context.getString(R.string.label_unsynced_requisition,
-        context.getString(R.string.title_rapid_test_reports));
+        context.getString(R.string.tr_program_name));
     setRedHeader();
     tvReportStatus.setText(Html.fromHtml(error));
   }
@@ -161,11 +164,11 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
   private void configSyncHolder(RapidTestReportViewModel rapidTestReportViewModel) {
     setWhiteHeader();
     tvReportStatus.setText(Html.fromHtml(context.getString(R.string.label_submitted_message,
-        context.getString(R.string.title_rapid_test_reports),
+        context.getString(R.string.tr_program_name),
         DateUtil.formatDate(rapidTestReportViewModel.getSyncedTime()))));
     setWhiteButton();
     btnReportEntry.setText(context.getString(R.string.btn_view_requisition,
-        context.getString(R.string.title_rapid_test_reports)));
+        context.getString(R.string.tr_program_name)));
     btnReportEntry.setOnClickListener(goToRapidTestReportActivityListener());
   }
 
@@ -204,7 +207,7 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
       @Override
       public void onSingleClick(View v) {
         ((BaseActivity) context).loading();
-        ((Activity) context).startActivityForResult(SelectPeriodActivity
+        container.startActivityForResult(SelectPeriodActivity
                 .getIntentToMe(context, Constants.RAPID_TEST_CODE, viewModel.getPeriod()),
             Constants.REQUEST_SELECT_PERIOD_END);
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, Constants.RAPID_TEST_CODE);
@@ -218,12 +221,11 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        ((BaseActivity) context).loading();
-        ((Activity) context)
-            .startActivityForResult(PhysicalInventoryActivity.getIntentToMe(context),
-                Constants.REQUEST_FROM_RNR_LIST_PAGE);
+        container.loading();
+        container.startActivityForResult(PhysicalInventoryActivity.getIntentToMe(context),
+            Constants.REQUEST_FROM_RNR_LIST_PAGE);
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, Constants.RAPID_TEST_CODE);
-        ((BaseActivity) context).loaded();
+        container.loaded();
       }
     };
   }
@@ -233,19 +235,19 @@ public class RapidTestReportViewHolder extends BaseViewHolder {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        ((BaseActivity) context).loading();
+        container.loading();
         if (viewModel.getRapidTestForm() == null) {
-          ((Activity) context).startActivityForResult(RapidTestReportFormActivity
+          container.startActivityForResult(RapidTestReportFormActivity
                   .getIntentToMe(context, RapidTestReportViewModel.DEFAULT_FORM_ID,
                       viewModel.getPeriod(), viewModel.getPeriod().getBegin()),
               Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
         } else {
-          ((Activity) context).startActivityForResult(RapidTestReportFormActivity
+          container.startActivityForResult(RapidTestReportFormActivity
                   .getIntentToMe(context, viewModel.getRapidTestForm().getId(), viewModel.getPeriod(),
                       viewModel.getPeriod().getBegin()),
               Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
         }
-        ((BaseActivity) context).loaded();
+        container.loaded();
       }
     };
   }
