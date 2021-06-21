@@ -594,9 +594,10 @@
   <string name="title_issue_voucher_and_pod">Issue Voucher &#038; PoD</string>
   <string name="msg_fetching_regimens">Downloading regimens…</string>
   <string name="msg_fetching_regimens_failed">Download of regimens info from the server failed, please login again.</string>
-  <string name="msg_calculating_cmm">Calculating CMM…</string>
-  <string name="action_bulk_entries">Bulk Entries</string>
-  <string name="action_bulk_issues">Bulk Issues</string>
+
+  <string name="msg_calculating_cmm">Calculating CMM...</string>
+  <string name="action_bulk_entries">Multiple Entries</string>
+  <string name="action_bulk_issues">Multiple Issues</string>
   <string name="msg_no_product_in_bulk_entries">There is no Product, please add</string>
   <string name="vc_program_name">Requisition</string>
   <string name="ml_program_name">Malaria</string>
@@ -605,4 +606,6 @@
   <string name="msg_cannot_create_emergency_requisition">Cannot create emergency requisition</string>
   <string name="label_stockcard_lot_code">Lot Code</string>
   <string name="label_stockcard_lot_expire_date">Expiry Date</string>
+  <string name="label_stockcard_lot_last_update">Last Update</string>
+  <string name="btn_add">ADD</string>
 </resources>

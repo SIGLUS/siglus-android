@@ -18,8 +18,14 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
+import java.io.Serializable;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import roboguice.inject.ContentView;
@@ -40,7 +46,35 @@ public class BulkEntriesActivity extends BaseActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    getMenuInflater().inflate(R.menu.menu_bulk_entries,menu);
+    getMenuInflater().inflate(R.menu.menu_bulk_entries, menu);
     return true;
   }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.action_add_product) {
+      Intent intent = new Intent(this, AddProductsToBulkEntriesActivity.class);
+      startActivity(intent);
+      // openAddProductSActivityForResult();
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
+    }
+  }
+
+//  public void openAddProductSActivityForResult() {
+//    Intent intent = new Intent(getApplicationContext(),AddProductsToBulkEntriesActivity.class);
+//    intent.putExtra(AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS
+//        ,(Serializable)bulkEntriesPresenter.getAllAddedProducts());
+//    addProductsActivityResultLauncher.launch(intent);
+//  }
+
+  ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          Intent data = result.getData();
+
+        }
+      });
 }

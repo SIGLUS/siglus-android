@@ -141,6 +141,10 @@ public class ProductRepository {
     return activeProducts;
   }
 
+  public List<Product> listAllProducts() throws LMISException {
+    return dbUtil.withDao(Product.class,dao -> dao.queryBuilder().query());
+  }
+
 
   public void save(final List<Product> products) {
     try {

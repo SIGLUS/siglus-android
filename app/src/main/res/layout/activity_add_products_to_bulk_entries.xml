@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <TextView
+    android:id="@+id/tv_total"
+    style="@style/Inventory.TextTotal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:text="Total: 136"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toTopOf="@+id/bulk_entries_products" />
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/bulk_entries_products"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:scrollbars="vertical"
+    app:layout_constraintBottom_toTopOf="@id/btn_add_products"
+    app:layout_constraintTop_toBottomOf="@+id/tv_total"/>
+
+  <Button
+    android:id="@+id/btn_add_products"
+    style="@style/FormAction.CompleteBtn"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/button_height_default"
+    android:layout_marginTop="@dimen/px_9"
+    android:layout_marginBottom="@dimen/px_9"
+    android:text="@string/btn_add"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/bulk_entries_products"
+    app:layout_constraintWidth_percent="0.4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
