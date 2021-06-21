@@ -47,6 +47,12 @@ public class LotMovementItem extends BaseModel {
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private StockMovementItem stockMovementItem;
 
+  @DatabaseField
+  String reason;
+
+  @DatabaseField
+  String documentNumber;
+
   private boolean isStockOnHandReset;
 
   public void setStockMovementItemAndUpdateMovementQuantity(StockMovementItem stockMovementItem) {

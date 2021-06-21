@@ -199,16 +199,15 @@ public class SyncUpManager {
         return false;
       }
 
-      final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
       List<StockMovementEntry> movementEntriesToSync =
-          convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
+          convertStockMovementItemsToStockMovementEntriesForSync(stockMovementItems);
 
       if (movementEntriesToSync == null || movementEntriesToSync.isEmpty()) {
         new LMISException("SyncUpManager.movementEntriesToSync").reportToFabric();
         return false;
       }
       SyncUpStockMovementDataSplitResponse response = lmisRestApi
-          .syncUpStockMovementDataSplit(facilityId, movementEntriesToSync);
+          .syncUpStockMovementDataSplit(movementEntriesToSync);
 
       List<StockMovementItem> shouldMarkSyncedItems = new ArrayList<>();
 
@@ -438,12 +437,11 @@ public class SyncUpManager {
   }
 
   private List<StockMovementEntry> convertStockMovementItemsToStockMovementEntriesForSync(
-      final String facilityId,
       List<StockMovementItem> stockMovementItems) {
 
     return FluentIterable.from(stockMovementItems).transform(stockMovementItem -> {
       if (stockMovementItem.getStockCard().getProduct() != null) {
-        return new StockMovementEntry(stockMovementItem, facilityId);
+        return new StockMovementEntry(stockMovementItem);
       } else {
         return null;
       }

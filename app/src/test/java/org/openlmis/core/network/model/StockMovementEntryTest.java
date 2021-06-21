@@ -1,10 +1,7 @@
 package org.openlmis.core.network.model;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import org.junit.Test;
@@ -26,6 +23,7 @@ public class StockMovementEntryTest {
 
   @Test
   public void shouldCreateStockMovementEntryForSyncUp() {
+    // given
     StockCard stockCard = StockCardBuilder.buildStockCard();
 
     StockMovementItem stockMovementItem = new StockMovementItemBuilder()
@@ -65,22 +63,20 @@ public class StockMovementEntryTest {
     stockMovementItem
         .setLotMovementItemListWrapper(newArrayList(lotMovementItem1, lotMovementItem2));
 
-    StockMovementEntry entry = new StockMovementEntry(stockMovementItem, "123");
-    assertThat(entry.getFacilityId(), is("123"));
-    assertThat(entry.getProductCode(), is("productCode"));
+    // when
+    StockMovementEntry entry = new StockMovementEntry(stockMovementItem);
+    StockMovementEntry entry1 = new StockMovementEntry(stockMovementItem);
+
+    // then
+    assertEquals(entry.getProductCode(), "productCode");
     assertEquals(entry.getQuantity(), 50);
-    assertThat(entry.getReasonName(), is("reason"));
-    assertThat(entry.getOccurred(), is("2016-01-01"));
-    assertThat(entry.getReferenceNumber(), is("123"));
-    assertNull(entry.getRequestedQuantity());
-    assertThat(entry.getLotEventList().size(), is(2));
-    assertThat(entry.getLotEventList().get(0).getLotNumber(), is("ABC"));
-    assertThat(entry.getLotEventList().get(0).getExpirationDate(), is("2020-10-31"));
-    assertThat(entry.getLotEventList().get(0).getQuantity(), is(30L));
-    assertThat(entry.getLotEventList().get(0).getCustomProps().get("SOH"), is("50"));
-
-    StockMovementEntry entry1 = new StockMovementEntry(stockMovementItem, "123");
-
+    assertEquals(entry.getOccurred(), "2016-01-01");
+    assertEquals(entry.getDocumentationNo(), "123");
+    assertEquals(entry.getLotEventList().size(), 2);
+    assertEquals(entry.getLotEventList().get(0).getLotNumber(), "ABC");
+    assertEquals(entry.getLotEventList().get(0).getExpirationDate(), "2020-10-31");
+    assertEquals(entry.getLotEventList().get(0).getQuantity(), 30L);
+    assertEquals(entry.getLotEventList().get(0).getSoh(), 50);
     assertEquals(entry, entry1);
     assertNotEquals(entry.getLotEventList().get(0), entry.getLotEventList().get(1));
   }

@@ -434,7 +434,6 @@ public class StockRepository {
             getStockCardCursor.getInt(getStockCardCursor.getColumnIndexOrThrow("id"))).get(0);
         addNewStockMovementItem.setCreatedTime(now);
         addNewStockMovementItem.setStockOnHand(0);
-        addNewStockMovementItem.setDocumentNumber(null);
         addNewStockMovementItem.setMovementDate(now);
         addNewStockMovementItem
             .setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);

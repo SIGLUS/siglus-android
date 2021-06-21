@@ -74,9 +74,8 @@ public interface LMISRestApi {
   @POST("/rest-api/sdp-requisitions")
   SyncUpRequisitionResponse submitEmergencyRequisition(@Body RnRForm rnRForm) throws LMISException;
 
-  @POST("/rest-api/facilities/split/{facilityId}/stockCards")
-  SyncUpStockMovementDataSplitResponse syncUpStockMovementDataSplit(
-      @Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries)
+  @POST("/api/siglusapi/android/me/facility/stockCards")
+  SyncUpStockMovementDataSplitResponse syncUpStockMovementDataSplit(@Body List<StockMovementEntry> entries)
       throws LMISException;
 
   @POST("/rest-api/facilities/{facilityId}/unSyncedStockCards")

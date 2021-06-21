@@ -49,6 +49,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
 @SuppressWarnings("PMD")
@@ -118,10 +119,22 @@ public class StockMovementRepository {
     create(stockMovementItem);
     if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())
         || CollectionUtils.isNotEmpty(stockMovementItem.getNewAddedLotMovementItemListWrapper())) {
-      lotRepository
-          .batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
-      lotRepository.batchCreateLotsAndLotMovements(
-          stockMovementItem.getNewAddedLotMovementItemListWrapper());
+      List<LotMovementItem> lotMovementItems = FluentIterable.from(
+          stockMovementItem.getLotMovementItemListWrapper())
+          .transform(lotMovementItem -> {
+            lotMovementItem.setReason(stockMovementItem.getReason());
+            lotMovementItem.setDocumentNumber(stockMovementItem.getDocumentNumber());
+            return lotMovementItem;
+          }).toList();
+      lotRepository.batchCreateLotsAndLotMovements(lotMovementItems);
+      List<LotMovementItem> newAddedLotMovementItems = FluentIterable.from(
+          stockMovementItem.getNewAddedLotMovementItemListWrapper())
+          .transform(lotMovementItem -> {
+            lotMovementItem.setReason(stockMovementItem.getReason());
+            lotMovementItem.setDocumentNumber(stockMovementItem.getDocumentNumber());
+            return lotMovementItem;
+          }).toList();
+      lotRepository.batchCreateLotsAndLotMovements(newAddedLotMovementItems);
     }
   }
 

@@ -19,7 +19,6 @@
 package org.openlmis.core.network.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,56 +32,26 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 @NoArgsConstructor
 public class StockMovementEntry {
 
-  String facilityId;
-  String productCode;
-  long quantity;
-  String reasonName;
+  String processedDate;
+  String signature;
   String occurred;
-  String referenceNumber;
+  String documentationNo;
+  String productCode;
   String type;
-  String createdTime;
-  Long requestedQuantity;
-
-  HashMap<String, String> customProps = new HashMap<>();
+  long soh;
+  long quantity;
   List<LotMovementEntry> lotEventList = new ArrayList<>();
 
-  public StockMovementEntry(StockMovementItem stockMovementItem, String facilityId) {
+  public StockMovementEntry(StockMovementItem stockMovementItem) {
+    this.setProcessedDate(new DateTime(stockMovementItem.getCreatedTime())
+            .toString(ISODateTimeFormat.dateTime()));
+    this.setSignature(stockMovementItem.getSignature());
+    this.setOccurred(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
+    this.setDocumentationNo(stockMovementItem.getDocumentNumber());
     this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
+    this.setType(stockMovementItem.getMovementType().toString());
+    this.setSoh(stockMovementItem.getStockOnHand());
     this.setQuantity(stockMovementItem.getMovementQuantity());
-    this.setReasonName(stockMovementItem.getReason());
-    this.setFacilityId(facilityId);
-    this.setType("ADJUSTMENT");
-    this.setOccurred(
-        DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
-    this.setCreatedTime(new DateTime(stockMovementItem.getCreatedTime())
-        .toString(ISODateTimeFormat.basicDateTime()));
-    this.setReferenceNumber(stockMovementItem.getDocumentNumber());
-    this.setRequestedQuantity(stockMovementItem.getRequested());
-    this.getCustomProps().put("signature", stockMovementItem.getSignature());
-    this.getCustomProps().put("SOH", String.valueOf(stockMovementItem.getStockOnHand()));
-
-    if (stockMovementItem.getLotMovementItemListWrapper() != null) {
-      lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper())
-          .transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());
-    }
-  }
-
-  public StockMovementEntry(StockMovementItem stockMovementItem, String facilityId,
-      String productCode) {
-    this.setProductCode(productCode);
-    this.setQuantity(stockMovementItem.getMovementQuantity());
-    this.setReasonName(stockMovementItem.getReason());
-    this.setFacilityId(facilityId);
-    this.setType("ADJUSTMENT");
-    this.setOccurred(
-        DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
-    this.setCreatedTime(new DateTime(stockMovementItem.getCreatedTime())
-        .toString(ISODateTimeFormat.basicDateTime()));
-    this.setReferenceNumber(stockMovementItem.getDocumentNumber());
-    this.setRequestedQuantity(stockMovementItem.getRequested());
-    this.getCustomProps().put("signature", stockMovementItem.getSignature());
-    this.getCustomProps().put("SOH", String.valueOf(stockMovementItem.getStockOnHand()));
-
     if (stockMovementItem.getLotMovementItemListWrapper() != null) {
       lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper())
           .transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());

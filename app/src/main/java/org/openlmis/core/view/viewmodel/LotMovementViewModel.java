@@ -41,6 +41,9 @@ public class LotMovementViewModel implements Serializable {
   private String quantity;
   private String lotSoh;
   private MovementReasonManager.MovementType movementType;
+  private String movementReason;
+  private String documentNumber;
+
 
   boolean valid = true;
   boolean quantityLessThanSoh = true;

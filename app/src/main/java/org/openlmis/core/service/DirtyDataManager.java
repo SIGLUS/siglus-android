@@ -286,7 +286,7 @@ public class DirtyDataManager {
     }
     List<DirtyDataItemInfo> dirtyDataItemInfos = new ArrayList<>();
     for (Map.Entry entry : items.entrySet()) {
-      dirtyDataItemInfos.add(convertStockMovementItemsToStockMovementEntriesForSave(facilityId,
+      dirtyDataItemInfos.add(convertStockMovementItemsToStockMovementEntriesForSave(
           (List<StockMovementItem>) entry.getValue(), (String) entry.getKey(), fullyDelete));
     }
     dirtyDataRepository.saveAll(dirtyDataItemInfos);
@@ -332,14 +332,12 @@ public class DirtyDataManager {
   }
 
   private DirtyDataItemInfo convertStockMovementItemsToStockMovementEntriesForSave(
-      final String facilityId,
       List<StockMovementItem> stockMovementItems,
       String productCode,
       boolean fullyDelete) {
     List<StockMovementEntry> movementEntries = FluentIterable.from(stockMovementItems)
-        .transform(stockMovementItem -> {
-          return new StockMovementEntry(stockMovementItem, facilityId, productCode);
-        }).toList();
+        .transform(stockMovementItem -> new StockMovementEntry(stockMovementItem))
+        .toList();
 
     Gson gson = new GsonBuilder().create();
     Type type = new TypeToken<List<StockMovementEntry>>() {
@@ -376,7 +374,7 @@ public class DirtyDataManager {
         deleteProductList.add(code);
       }
       dirtyDataItemInfos.add(
-          convertStockMovementItemsToStockMovementEntriesForSave(facilityId, items,
+          convertStockMovementItemsToStockMovementEntriesForSave(items,
               stockCardIdToCode.get(map.getKey()), true));
     }
     filterStockCards.addAll(stockMovementItems.keySet());
@@ -403,7 +401,7 @@ public class DirtyDataManager {
       List<StockMovementItem> items = (List<StockMovementItem>) map.getValue();
       List<StockMovementItem> deleteItems = items.subList(0, items.size() - 2);
       dirtyDataItemInfos.add(
-          convertStockMovementItemsToStockMovementEntriesForSave(facilityId, items,
+          convertStockMovementItemsToStockMovementEntriesForSave(items,
               stockCardIdToCode.get(map.getKey()), false));
       deleteList.addAll(deleteItems);
     }

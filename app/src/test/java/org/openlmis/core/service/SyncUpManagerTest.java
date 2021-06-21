@@ -25,7 +25,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -75,7 +74,6 @@ import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
-import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.network.model.SyncUpStockMovementDataSplitResponse;
@@ -176,7 +174,7 @@ public class SyncUpManagerTest {
     SyncUpStockMovementDataSplitResponse response = new SyncUpStockMovementDataSplitResponse();
     response.setErrorProductCodes(newArrayList());
 
-    when(mockedLmisRestApi.syncUpStockMovementDataSplit(any(String.class), any(List.class)))
+    when(mockedLmisRestApi.syncUpStockMovementDataSplit(any(List.class)))
         .thenReturn(response);
 
     syncUpManager.syncStockCards();
@@ -197,7 +195,7 @@ public class SyncUpManagerTest {
     SyncUpStockMovementDataSplitResponse response = new SyncUpStockMovementDataSplitResponse();
     response.setErrorProductCodes(newArrayList("product1", "product2"));
 
-    when(mockedLmisRestApi.syncUpStockMovementDataSplit(any(String.class), any(List.class)))
+    when(mockedLmisRestApi.syncUpStockMovementDataSplit(any(List.class)))
         .thenReturn(response);
 
     syncUpManager.syncStockCards();
@@ -217,7 +215,7 @@ public class SyncUpManagerTest {
       throws LMISException, SQLException, ParseException {
     createTestStockCardData();
     doThrow(new LMISException("mocked exception")).when(mockedLmisRestApi)
-        .syncUpStockMovementDataSplit(anyString(), anyList());
+        .syncUpStockMovementDataSplit(anyList());
 
     syncUpManager.syncStockCards();
 
@@ -230,7 +228,7 @@ public class SyncUpManagerTest {
     StockCard stockCard = createTestStockCardData();
 
     doThrow(new RuntimeException("Sync Failed")).when(mockedLmisRestApi)
-        .syncUpStockMovementDataSplit(anyString(), anyList());
+        .syncUpStockMovementDataSplit(anyList());
 
     try {
       syncUpManager.syncStockCards();
@@ -270,19 +268,6 @@ public class SyncUpManagerTest {
     stockRepository.addStockMovementAndUpdateStockCard(item);
     stockRepository.refresh(stockCard);
     return stockCard;
-  }
-
-  @Test
-  public void shouldSetTypeAndCustomPropsAfterNewStockMovementEntry()
-      throws LMISException, ParseException {
-    StockCard stockCard = createTestStockCardData();
-    StockMovementItem stockMovementItem = stockCard.getForeignStockMovementItems().iterator()
-        .next();
-    StockMovementEntry stockMovementEntry = new StockMovementEntry(stockMovementItem, null);
-
-    assertEquals(stockMovementEntry.getType(), "ADJUSTMENT");
-    assertEquals(stockMovementEntry.getCustomProps().get("expirationDates"),
-        stockMovementItem.getStockCard().getExpireDates());
   }
 
   @Test
