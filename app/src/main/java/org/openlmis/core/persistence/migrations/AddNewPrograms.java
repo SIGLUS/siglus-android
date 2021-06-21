@@ -6,6 +6,6 @@ public class AddNewPrograms extends Migration {
 
   @Override
   public void up() {
-
+    // do nothing
   }
 }

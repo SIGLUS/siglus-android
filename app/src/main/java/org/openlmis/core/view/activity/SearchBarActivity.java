@@ -18,15 +18,18 @@
 
 package org.openlmis.core.view.activity;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import androidx.appcompat.widget.SearchView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.DisplayUtil;
 
+@SuppressWarnings("squid:S110")
 public abstract class SearchBarActivity extends BaseActivity {
 
   protected SearchView searchView;
@@ -62,13 +65,9 @@ public abstract class SearchBarActivity extends BaseActivity {
   private void changeSearchButtonUI() {
     final View searchButton = searchView.findViewById(R.id.search_button);
 
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.WRAP_CONTENT,
-        LinearLayout.LayoutParams.WRAP_CONTENT
-    );
+    LayoutParams params = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
     params.width = (int) getResources().getDimension(R.dimen.search_button_width);
-    params
-        .setMargins(0, 0, (int) getResources().getDimension(R.dimen.search_button_right_margin), 0);
+    params.setMargins(0, 0, (int) getResources().getDimension(R.dimen.search_button_right_margin), 0);
     searchButton.setLayoutParams(params);
   }
 

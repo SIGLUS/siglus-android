@@ -56,7 +56,7 @@ public class AddCreatedTimeToStockMovement extends Migration {
 
   private void initCreatedTime() throws LMISException {
     List<StockMovementItem> itemList = stockItemGenericDao.queryForAll();
-    if (itemList == null || itemList.size() == 0) {
+    if (itemList == null || itemList.isEmpty()) {
       return;
     }
     for (StockMovementItem item : itemList) {
@@ -67,13 +67,12 @@ public class AddCreatedTimeToStockMovement extends Migration {
 
   private void updateStockMovementItems(final List<StockMovementItem> stockMovementItems)
       throws LMISException {
-    dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class,
-        (DbUtil.Operation<StockMovementItem, Void>) dao -> {
-          for (StockMovementItem stockMovementItem : stockMovementItems) {
-            dao.update(stockMovementItem);
-          }
-          return null;
-        });
+    dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class, dao -> {
+      for (StockMovementItem stockMovementItem : stockMovementItems) {
+        dao.update(stockMovementItem);
+      }
+      return null;
+    });
   }
 
 }

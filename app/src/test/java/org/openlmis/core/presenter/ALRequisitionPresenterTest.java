@@ -26,6 +26,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.repository.ALRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.presenter.ALRequisitionPresenter.ALRequisitionView;
 import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.viewmodel.ALReportItemViewModel;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -37,7 +38,6 @@ import rx.observers.TestSubscriber;
 public class ALRequisitionPresenterTest {
 
   private ALRequisitionPresenter alRequisitionPresenter;
-  private ALRequisitionPresenter.ALRequisitionView alRequisitionView;
   private ALRepository mockALRepository;
   private RnrFormRepository mockRnrFormRepository;
 
@@ -45,12 +45,11 @@ public class ALRequisitionPresenterTest {
   public void setUp() throws ViewNotMatchException {
     alRequisitionPresenter = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(ALRequisitionPresenter.class);
-    alRequisitionView = mock(ALRequisitionPresenter.ALRequisitionView.class);
     mockALRepository = mock(ALRepository.class);
     mockRnrFormRepository = mock(RnrFormRepository.class);
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
     MockitoAnnotations.initMocks(this);
-    alRequisitionPresenter.attachView(alRequisitionView);
+    alRequisitionPresenter.attachView(mock(ALRequisitionView.class));
   }
 
   @NonNull
@@ -68,23 +67,23 @@ public class ALRequisitionPresenterTest {
     ALReportItemViewModel itemCHW = alRequisitionPresenter.alReportViewModel.getItemCHW();
     ALReportItemViewModel itemTotal = alRequisitionPresenter.alReportViewModel.getItemTotal();
 
-    assertThat(itemHF.getGridOne().getColumnCode(), is(ALGridViewModel.ALColumnCode.OneColumn));
-    assertThat(itemHF.getGridTwo().getColumnCode(), is(ALGridViewModel.ALColumnCode.TwoColumn));
-    assertThat(itemHF.getGridThree().getColumnCode(), is(ALGridViewModel.ALColumnCode.ThreeColumn));
-    assertThat(itemHF.getGridFour().getColumnCode(), is(ALGridViewModel.ALColumnCode.FourColumn));
+    assertThat(itemHF.getGridOne().getColumnCode(), is(ALGridViewModel.ALColumnCode.ONE_COLUMN));
+    assertThat(itemHF.getGridTwo().getColumnCode(), is(ALGridViewModel.ALColumnCode.TWO_COLUMN));
+    assertThat(itemHF.getGridThree().getColumnCode(), is(ALGridViewModel.ALColumnCode.THREE_COLUMN));
+    assertThat(itemHF.getGridFour().getColumnCode(), is(ALGridViewModel.ALColumnCode.FOUR_COLUMN));
 
-    assertThat(itemCHW.getGridOne().getColumnCode(), is(ALGridViewModel.ALColumnCode.OneColumn));
-    assertThat(itemCHW.getGridTwo().getColumnCode(), is(ALGridViewModel.ALColumnCode.TwoColumn));
+    assertThat(itemCHW.getGridOne().getColumnCode(), is(ALGridViewModel.ALColumnCode.ONE_COLUMN));
+    assertThat(itemCHW.getGridTwo().getColumnCode(), is(ALGridViewModel.ALColumnCode.TWO_COLUMN));
     assertThat(itemCHW.getGridThree().getColumnCode(),
-        is(ALGridViewModel.ALColumnCode.ThreeColumn));
-    assertThat(itemCHW.getGridFour().getColumnCode(), is(ALGridViewModel.ALColumnCode.FourColumn));
+        is(ALGridViewModel.ALColumnCode.THREE_COLUMN));
+    assertThat(itemCHW.getGridFour().getColumnCode(), is(ALGridViewModel.ALColumnCode.FOUR_COLUMN));
 
-    assertThat(itemTotal.getGridOne().getColumnCode(), is(ALGridViewModel.ALColumnCode.OneColumn));
-    assertThat(itemTotal.getGridTwo().getColumnCode(), is(ALGridViewModel.ALColumnCode.TwoColumn));
+    assertThat(itemTotal.getGridOne().getColumnCode(), is(ALGridViewModel.ALColumnCode.ONE_COLUMN));
+    assertThat(itemTotal.getGridTwo().getColumnCode(), is(ALGridViewModel.ALColumnCode.TWO_COLUMN));
     assertThat(itemTotal.getGridThree().getColumnCode(),
-        is(ALGridViewModel.ALColumnCode.ThreeColumn));
+        is(ALGridViewModel.ALColumnCode.THREE_COLUMN));
     assertThat(itemTotal.getGridFour().getColumnCode(),
-        is(ALGridViewModel.ALColumnCode.FourColumn));
+        is(ALGridViewModel.ALColumnCode.FOUR_COLUMN));
   }
 
   @Test

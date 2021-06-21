@@ -86,8 +86,6 @@ public class ALRequisitionFragment extends BaseReportFragment implements
   @InjectView(R.id.al_left_header)
   LinearLayout alLeftHeader;
 
-  public static int LIST_ITEM_HEIGHT = -1;
-
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -131,10 +129,10 @@ public class ALRequisitionFragment extends BaseReportFragment implements
 
   private void updateHeaderSize() {
     alHeaderTop.setHeight(alHeader.getLayoutParams().height);
-    LIST_ITEM_HEIGHT = alItemContainer.getHeight() / 3;
-    alHeaderChw.setHeight(LIST_ITEM_HEIGHT);
-    alHeaderHf.setHeight(LIST_ITEM_HEIGHT);
-    alHeaderTotal.setHeight(LIST_ITEM_HEIGHT);
+    int listItemHeight = alItemContainer.getHeight() / 3;
+    alHeaderChw.setHeight(listItemHeight);
+    alHeaderHf.setHeight(listItemHeight);
+    alHeaderTotal.setHeight(listItemHeight);
   }
 
   protected void initUI() {
@@ -181,7 +179,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements
 
       @Override
       public void onNext(Void aVoid) {
-
+        // do nothing
       }
     };
   }

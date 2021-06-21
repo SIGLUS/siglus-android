@@ -33,18 +33,18 @@ public abstract class BaseReportFragment extends BaseFragment {
   @InjectView(R.id.action_panel)
   ActionPanelView actionPanelView;
 
-  BaseReportPresenter presenter;
+  BaseReportPresenter baseReportFragmentPresenter;
 
   protected abstract BaseReportPresenter injectPresenter();
 
   @Override
   public Presenter initPresenter() {
-    return presenter;
+    return baseReportFragmentPresenter;
   }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
-    presenter = injectPresenter();
+    baseReportFragmentPresenter = injectPresenter();
     super.onCreate(savedInstanceState);
   }
 
@@ -53,7 +53,7 @@ public abstract class BaseReportFragment extends BaseFragment {
   }
 
   public void onBackPressed() {
-    if (presenter.isDraft()) {
+    if (baseReportFragmentPresenter.isDraft()) {
       showConfirmDialog();
     } else {
       finish();
@@ -71,7 +71,7 @@ public abstract class BaseReportFragment extends BaseFragment {
     dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
       @Override
       public void positiveClick(String tag) {
-        presenter.deleteDraft();
+        baseReportFragmentPresenter.deleteDraft();
         finish();
       }
 
@@ -94,7 +94,7 @@ public abstract class BaseReportFragment extends BaseFragment {
 
   protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
     public void onSign(String sign) {
-      Subscription subscription = presenter.getOnSignObservable(sign)
+      Subscription subscription = baseReportFragmentPresenter.getOnSignObservable(sign)
           .subscribe(getOnSignedAction());
       subscriptions.add(subscription);
     }

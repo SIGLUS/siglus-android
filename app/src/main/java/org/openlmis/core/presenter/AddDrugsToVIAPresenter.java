@@ -29,7 +29,6 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.AddDrugsToViaInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -43,20 +42,19 @@ public class AddDrugsToVIAPresenter extends Presenter {
   @Getter
   final List<InventoryViewModel> inventoryViewModelList = new ArrayList<>();
 
-  public AddDrugsToVIAPresenter() {
-  }
-
   @Override
   public void attachView(BaseView v) {
+    // do nothing
   }
 
+  @SuppressWarnings("squid:S1905")
   public Observable<Void> loadActiveProductsNotInVIAForm(final List<String> existingProducts) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
         inventoryViewModelList.addAll(FluentIterable
             .from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm())
             .filter(product -> !existingProducts.contains(product.getCode()))
-            .transform((Function<Product, InventoryViewModel>) AddDrugsToViaInventoryViewModel::new)
+            .transform(AddDrugsToViaInventoryViewModel::new)
             .toList());
         subscriber.onNext(null);
         subscriber.onCompleted();

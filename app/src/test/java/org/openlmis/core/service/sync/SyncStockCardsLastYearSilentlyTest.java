@@ -44,7 +44,6 @@ public class SyncStockCardsLastYearSilentlyTest {
 
   @Test
   public void shouldSyncLastYearStockCards() {
-
     syncStockCardsLastYearSilently.performSync().subscribe(new GetOnCompleteSubscriber());
   }
 

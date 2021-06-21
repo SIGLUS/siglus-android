@@ -26,10 +26,10 @@ import org.openlmis.core.model.RegimenItem;
 public class ALGridViewModel {
 
   public enum ALColumnCode {
-    OneColumn("1x6"),
-    TwoColumn("2x6"),
-    ThreeColumn("3x6"),
-    FourColumn("4x6");
+    ONE_COLUMN("1x6"),
+    TWO_COLUMN("2x6"),
+    THREE_COLUMN("3x6"),
+    FOUR_COLUMN("4x6");
     private final String columnCodeName;
 
     ALColumnCode(String code) {
@@ -42,8 +42,8 @@ public class ALGridViewModel {
   }
 
   public enum ALGridColumnCode {
-    treatment,
-    existentStock
+    TREATMENT,
+    EXISTENT_STOCK
   }
 
   public static final String COLUMN_CODE_PREFIX_TREATMENTS = "Consultas AL US/APE Malaria ";

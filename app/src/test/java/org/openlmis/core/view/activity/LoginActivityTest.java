@@ -84,7 +84,7 @@ public class LoginActivityTest {
     LoginActivity secondLoginActivity = Robolectric.buildActivity(LoginActivity.class).create()
         .get();
 
-    assertThat(secondLoginActivity.etUsername.getText().toString()).isEqualTo("superuser");
+    assertThat(secondLoginActivity.etUsername.getText().toString()).hasToString("superuser");
   }
 
   @Test
@@ -94,7 +94,7 @@ public class LoginActivityTest {
 
     loginActivity.clearPassword();
 
-    assertThat(loginActivity.etPassword.getText().toString()).isEqualTo("");
+    assertThat(loginActivity.etPassword.getText().toString()).isEmpty();
   }
 
   @Test
@@ -105,7 +105,7 @@ public class LoginActivityTest {
 
     assertThat(intent).isNotNull();
     assertThat(intent.getComponent().getClassName()).isEqualTo(HomeActivity.class.getName());
-    assertThat(loginActivity.isFinishing());
+    assertThat(loginActivity.isFinishing()).isTrue();
   }
 
   @Test
@@ -117,7 +117,7 @@ public class LoginActivityTest {
     assertThat(intent).isNotNull();
     assertThat(intent.getComponent().getClassName())
         .isEqualTo(InitialInventoryActivity.class.getName());
-    assertThat(loginActivity.isFinishing());
+    assertThat(loginActivity.isFinishing()).isTrue();
   }
 
   @Test
@@ -129,8 +129,7 @@ public class LoginActivityTest {
     String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
     String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-    assertThat(usernameErrorText).isNotNull();
-    assertThat(usernameErrorText).isEqualTo(invalidUserMessage);
+    assertThat(usernameErrorText).isNotNull().isEqualTo(invalidUserMessage);
     assertThat(passwordErrorText).isNull();
   }
 
@@ -143,8 +142,7 @@ public class LoginActivityTest {
     String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
     String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-    assertThat(usernameErrorText).isNotNull();
-    assertThat(usernameErrorText).isEqualTo(emptyErrorMessage);
+    assertThat(usernameErrorText).isNotNull().isEqualTo(emptyErrorMessage);
     assertThat(passwordErrorText).isNull();
   }
 
@@ -158,8 +156,7 @@ public class LoginActivityTest {
     String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
     assertThat(usernameErrorText).isNull();
-    assertThat(passwordErrorText).isNotNull();
-    assertThat(passwordErrorText).isEqualTo(emptyErrorMessage);
+    assertThat(passwordErrorText).isNotNull().isEqualTo(emptyErrorMessage);
   }
 
   @Test
@@ -177,14 +174,4 @@ public class LoginActivityTest {
     assertThat(RobolectricUtils.getErrorText(loginActivity.lyPassword)).isNull();
   }
 
-  @Test
-  public void shouldStartLoginWhenRestoreFromResync() throws Exception {
-//        Intent intent = new Intent();
-//        intent.putExtra(Constants.PARAM_USERNAME, "username");
-//        intent.putExtra(Constants.PARAM_PASSWORD, "password");
-//
-//        loginActivity = Robolectric.buildActivity(LoginActivity.class, intent).create().get();
-//
-//        verify(mockedPresenter).startLogin("username", "password");
-  }
 }

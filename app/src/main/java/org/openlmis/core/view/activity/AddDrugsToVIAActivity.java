@@ -41,6 +41,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 
+@SuppressWarnings("squid:S110")
 @ContentView(R.layout.activity_add_drugs_to_via)
 public class AddDrugsToVIAActivity extends SearchBarActivity {
 
@@ -138,10 +139,6 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
 
   private void showErrorMessage(String msg) {
     ToastUtil.show(msg);
-  }
-
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
   }
 
   @Override

@@ -32,26 +32,13 @@ import org.openlmis.core.utils.Constants;
 public class ALRepository extends RnrFormRepository {
 
   @Inject
-  ProgramRepository programRepository;
-
-  @Inject
-  ProductRepository productRepository;
-
-  @Inject
-  RegimenRepository regimenRepository;
-
-  @Inject
-  ProductProgramRepository productProgramRepository;
-
-  @Inject
   public ALRepository(Context context) {
     super(context);
     programCode = Constants.AL_PROGRAM_CODE;
   }
 
   @Override
-  public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
-      throws LMISException {
+  public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) {
     return new ArrayList<>();
   }
 

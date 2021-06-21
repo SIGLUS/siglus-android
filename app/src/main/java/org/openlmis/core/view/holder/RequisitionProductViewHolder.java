@@ -44,8 +44,6 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
 
   private VIARequisitionPresenter presenter;
 
-  private Context context;
-
   public RequisitionProductViewHolder(View itemView) {
     super(itemView);
   }
@@ -62,7 +60,7 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
   private void setDeleteIconForNewAddedProducts(final RequisitionFormItemViewModel entry) {
     if (!hideDeleteIconInVIAPage() && isNewAddedProduct(entry)) {
       ivDelete.setVisibility(View.VISIBLE);
-      ivDelete.setOnClickListener((v) -> showDelConfirmDialog(entry.getItem()));
+      ivDelete.setOnClickListener(v -> showDelConfirmDialog(entry.getItem()));
     } else {
       ivDelete.setVisibility(View.INVISIBLE);
     }
@@ -72,7 +70,7 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
     return entry.getItem().isManualAdd();
   }
 
-  public Boolean hideDeleteIconInVIAPage() {
+  public boolean hideDeleteIconInVIAPage() {
     return !(presenter.getRnRForm() != null && presenter.getRnRForm().canRemoveAddedProducts())
         || (presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency());
   }
@@ -97,14 +95,14 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
 
           @Override
           public void onNext(Void aVoid) {
-
+            // do nothing
           }
         });
       }
 
       @Override
       public void negativeClick(String tag) {
-
+        // do nothing
       }
     });
 

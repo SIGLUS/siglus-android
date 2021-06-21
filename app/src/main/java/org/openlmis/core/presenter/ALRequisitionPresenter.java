@@ -39,7 +39,7 @@ import org.openlmis.core.view.viewmodel.ALGridViewModel;
 import org.openlmis.core.view.viewmodel.ALReportViewModel;
 import roboguice.RoboGuice;
 import rx.Observable;
-import rx.Subscriber;
+import rx.Observable.OnSubscribe;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -94,33 +94,27 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
 
   @Override
   protected Observable<RnRForm> getRnrFormObservable(long formId) {
-    return Observable.create(new Observable.OnSubscribe<RnRForm>() {
-      @Override
-      public void call(Subscriber<? super RnRForm> subscriber) {
-        try {
-          rnRForm = getRnrForm(formId);
-          subscriber.onNext(rnRForm);
-          subscriber.onCompleted();
-        } catch (LMISException e) {
-          new LMISException(e, "ALRequisitionPresenter,getRnrFormObservable").reportToFabric();
-          subscriber.onError(e);
-        }
+    return Observable.create((OnSubscribe<RnRForm>) subscriber -> {
+      try {
+        rnRForm = getRnrForm(formId);
+        subscriber.onNext(rnRForm);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "ALRequisitionPresenter,getRnrFormObservable").reportToFabric();
+        subscriber.onError(e);
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
   public Observable<Void> getSaveFormObservable() {
-    return Observable.create(new Observable.OnSubscribe<Void>() {
-      @Override
-      public void call(Subscriber<? super Void> subscriber) {
-        try {
-          setViewModels();
-          rnrFormRepository.createOrUpdateWithItems(rnRForm);
-          subscriber.onCompleted();
-        } catch (LMISException e) {
-          new LMISException(e, "ALRequisitionPresenter,getSaveFormObservable").reportToFabric();
-          subscriber.onError(e);
-        }
+    return Observable.create((OnSubscribe<Void>) subscriber -> {
+      try {
+        setViewModels();
+        rnrFormRepository.createOrUpdateWithItems(rnRForm);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "ALRequisitionPresenter,getSaveFormObservable").reportToFabric();
+        subscriber.onError(e);
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
@@ -192,8 +186,8 @@ public class ALRequisitionPresenter extends BaseRequisitionPresenter {
   }
 
   private Regimen.RegimeType getRegimenType(String columnName) {
-    if (columnName.equals(ALGridViewModel.ALColumnCode.OneColumn.getColumnName())
-        || columnName.equals(ALGridViewModel.ALColumnCode.TwoColumn.getColumnName())) {
+    if (columnName.equals(ALGridViewModel.ALColumnCode.ONE_COLUMN.getColumnName())
+        || columnName.equals(ALGridViewModel.ALColumnCode.TWO_COLUMN.getColumnName())) {
       return Regimen.RegimeType.Paediatrics;
     } else {
       return Regimen.RegimeType.Adults;

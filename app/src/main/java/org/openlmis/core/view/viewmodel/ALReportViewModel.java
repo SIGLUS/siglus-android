@@ -31,8 +31,8 @@ import org.openlmis.core.model.RnRForm;
 public class ALReportViewModel implements Serializable {
 
   public enum ALItemType {
-    Total("total"),
-    hf("hf"),
+    TOTAL("total"),
+    HF("hf"),
     CHW("chw");
     private final String itemType;
 
@@ -53,19 +53,15 @@ public class ALReportViewModel implements Serializable {
   private List<ALReportItemViewModel> itemViewModelList = new ArrayList<>();
   private Map<String, ALReportItemViewModel> itemViewModelMap = new HashMap<>();
 
-  public static long DEFAULT_FORM_ID = 0;
-  public static String DEFAULT_TOTAl_NULL = "";
-
-
   public ALReportViewModel() {
     setupCategories();
     setItemViewModelMap();
   }
 
   private void setupCategories() {
-    itemHF = new ALReportItemViewModel(ALItemType.hf);
+    itemHF = new ALReportItemViewModel(ALItemType.HF);
     itemCHW = new ALReportItemViewModel(ALItemType.CHW);
-    itemTotal = new ALReportItemViewModel(ALItemType.Total);
+    itemTotal = new ALReportItemViewModel(ALItemType.TOTAL);
     itemViewModelList.add(itemHF);
     itemViewModelList.add(itemCHW);
     itemViewModelList.add(itemTotal);
@@ -86,7 +82,7 @@ public class ALReportViewModel implements Serializable {
 
   private void setFormItemViewModels(RnRForm form) {
     List<RegimenItem> regimenItems = form.getRegimenItemListWrapper();
-    if (regimenItems.size() > 0) {
+    if (!regimenItems.isEmpty()) {
       for (RegimenItem regimen : regimenItems) {
         itemHF.setColumnValue(regimen, regimen.getHf());
         itemCHW.setColumnValue(regimen, regimen.getChw());
@@ -98,7 +94,7 @@ public class ALReportViewModel implements Serializable {
   public void updateTotal(ALGridViewModel.ALColumnCode columnCode,
       ALGridViewModel.ALGridColumnCode gridColumnCode) {
     clearCheckTip();
-    if (gridColumnCode == ALGridViewModel.ALGridColumnCode.treatment) {
+    if (gridColumnCode == ALGridViewModel.ALGridColumnCode.TREATMENT) {
       Long hf = itemHF.getAlGridViewModelMap().get(columnCode.getColumnName()).getTreatmentsValue();
       Long chf = itemCHW.getAlGridViewModelMap().get(columnCode.getColumnName())
           .getTreatmentsValue();

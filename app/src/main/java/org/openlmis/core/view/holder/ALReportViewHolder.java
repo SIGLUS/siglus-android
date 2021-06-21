@@ -67,7 +67,7 @@ public class ALReportViewHolder extends BaseViewHolder {
     this.viewModel = alReportViewModel;
     removeTextWatcher();
     setEditTextValue();
-    if (viewModel.getItemType() != ALReportViewModel.ALItemType.Total) {
+    if (viewModel.getItemType() != ALReportViewModel.ALItemType.TOTAL) {
       this.quantityChangeListener = changeListener;
       configureEditTextWatch();
       checkTips();
@@ -107,7 +107,7 @@ public class ALReportViewHolder extends BaseViewHolder {
       ALReportViewHolder.EditTextWatcher textWatcher = new ALReportViewHolder.EditTextWatcher(
           editText);
       editText.addTextChangedListener(textWatcher);
-      editPairWatcher.add(new Pair(editText, textWatcher));
+      editPairWatcher.add(new Pair<>(editText, textWatcher));
     }
   }
 
@@ -139,40 +139,40 @@ public class ALReportViewHolder extends BaseViewHolder {
     @Override
     public void afterTextChanged(Editable etText) {
       ALGridViewModel gridViewModel = viewModel.getGridOne();
-      ALGridViewModel.ALGridColumnCode gridColumnCode = ALGridViewModel.ALGridColumnCode.treatment;
+      ALGridViewModel.ALGridColumnCode gridColumnCode = ALGridViewModel.ALGridColumnCode.TREATMENT;
       switch (editText.getId()) {
         case R.id.one_treatment:
           gridViewModel = viewModel.getGridOne();
           break;
         case R.id.one_Stock:
           gridViewModel = viewModel.getGridOne();
-          gridColumnCode = ALGridViewModel.ALGridColumnCode.existentStock;
+          gridColumnCode = ALGridViewModel.ALGridColumnCode.EXISTENT_STOCK;
           break;
         case R.id.two_treatment:
           gridViewModel = viewModel.getGridTwo();
           break;
         case R.id.two_Stock:
           gridViewModel = viewModel.getGridTwo();
-          gridColumnCode = ALGridViewModel.ALGridColumnCode.existentStock;
+          gridColumnCode = ALGridViewModel.ALGridColumnCode.EXISTENT_STOCK;
           break;
         case R.id.three_treatment:
           gridViewModel = viewModel.getGridThree();
           break;
         case R.id.three_stock:
           gridViewModel = viewModel.getGridThree();
-          gridColumnCode = ALGridViewModel.ALGridColumnCode.existentStock;
+          gridColumnCode = ALGridViewModel.ALGridColumnCode.EXISTENT_STOCK;
           break;
         case R.id.four_treatment:
           gridViewModel = viewModel.getGridFour();
           break;
         case R.id.four_stock:
           gridViewModel = viewModel.getGridFour();
-          gridColumnCode = ALGridViewModel.ALGridColumnCode.existentStock;
+          gridColumnCode = ALGridViewModel.ALGridColumnCode.EXISTENT_STOCK;
           break;
         default:
           // do nothing
       }
-      if (gridColumnCode == ALGridViewModel.ALGridColumnCode.treatment) {
+      if (gridColumnCode == ALGridViewModel.ALGridColumnCode.TREATMENT) {
         gridViewModel.setTreatmentsValue(getEditValue(etText));
       } else {
         gridViewModel.setExistentStockValue(getEditValue(etText));
@@ -181,13 +181,13 @@ public class ALReportViewHolder extends BaseViewHolder {
     }
 
     private Long getEditValue(Editable etText) {
-      Long editText;
+      Long editTextValue;
       try {
-        editText = Long.valueOf(etText.toString());
+        editTextValue = Long.valueOf(etText.toString());
       } catch (NumberFormatException e) {
-        editText = null;
+        editTextValue = null;
       }
-      return editText;
+      return editTextValue;
     }
   }
 

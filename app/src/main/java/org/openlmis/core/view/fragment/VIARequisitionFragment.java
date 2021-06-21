@@ -48,6 +48,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
+import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
@@ -147,11 +148,11 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     if (item.getItemId() == R.id.action_add_new_drugs_to_via) {
       ArrayList<String> productCodes = new ArrayList<>(FluentIterable
           .from(presenter.getRequisitionFormItemViewModels())
-          .transform(requisitionFormItemViewModel -> requisitionFormItemViewModel.getFmn())
+          .transform(RequisitionFormItemViewModel::getFmn)
           .toList());
 
-      startActivityForResult(AddDrugsToVIAActivity
-              .getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), productCodes),
+      startActivityForResult(
+          AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), productCodes),
           REQUEST_ADD_DRUGS_TO_VIA);
       return true;
     }

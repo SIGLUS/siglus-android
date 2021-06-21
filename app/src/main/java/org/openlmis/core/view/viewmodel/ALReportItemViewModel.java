@@ -31,10 +31,10 @@ import org.openlmis.core.model.RegimenItem;
 @Data
 public class ALReportItemViewModel implements Serializable {
 
-  private transient ALGridViewModel gridOne = new ALGridViewModel(ALGridViewModel.ALColumnCode.OneColumn);
-  private transient ALGridViewModel gridTwo = new ALGridViewModel(ALGridViewModel.ALColumnCode.TwoColumn);
-  private transient ALGridViewModel gridThree = new ALGridViewModel(ALGridViewModel.ALColumnCode.ThreeColumn);
-  private transient ALGridViewModel gridFour = new ALGridViewModel(ALGridViewModel.ALColumnCode.FourColumn);
+  private transient ALGridViewModel gridOne = new ALGridViewModel(ALGridViewModel.ALColumnCode.ONE_COLUMN);
+  private transient ALGridViewModel gridTwo = new ALGridViewModel(ALGridViewModel.ALColumnCode.TWO_COLUMN);
+  private transient ALGridViewModel gridThree = new ALGridViewModel(ALGridViewModel.ALColumnCode.THREE_COLUMN);
+  private transient ALGridViewModel gridFour = new ALGridViewModel(ALGridViewModel.ALColumnCode.FOUR_COLUMN);
 
   private transient List<ALGridViewModel> alGridViewModelList = Arrays
       .asList(gridOne, gridTwo, gridThree, gridFour);

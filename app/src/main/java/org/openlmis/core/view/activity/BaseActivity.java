@@ -78,7 +78,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
   StockMovementRepository stockMovementRepository;
 
   protected RetainedFragment dataFragment;
-  protected Presenter presenter;
+  protected Presenter basePresenter;
   protected List<Subscription> subscriptions = new ArrayList<>();
 
   protected Class<? extends Presenter> presenterClass;
@@ -102,24 +102,24 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
         throw new RuntimeException("Invalid InjectPresenter class :" + annotation.value());
       }
 
-      presenter = initPresenter(annotation.value());
+      basePresenter = initPresenter(annotation.value());
       try {
         annotatedFiled.get().setAccessible(true);
-        annotatedFiled.get().set(this, presenter);
+        annotatedFiled.get().set(this, basePresenter);
       } catch (IllegalAccessException e) {
         throw new RuntimeException(
             "InjectPresenter type cast failed :" + annotation.value().getSimpleName());
       }
     }
-    if (presenter == null) {
-      presenter = new DummyPresenter();
+    if (basePresenter == null) {
+      basePresenter = new DummyPresenter();
     }
   }
 
   @Override
   protected void onStart() {
     super.onStart();
-    presenter.onStart();
+    basePresenter.onStart();
     sendScreenToGoogleAnalytics();
   }
 
@@ -169,7 +169,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
     injectPresenter();
 
     try {
-      presenter.attachView(BaseActivity.this);
+      basePresenter.attachView(BaseActivity.this);
     } catch (ViewNotMatchException e) {
       new LMISException(e, "BaseActivity:onCreate").reportToFabric();
       ToastUtil.show(e.getMessage());
@@ -191,9 +191,9 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   @Override
   protected void onDestroy() {
-    if (presenter != null && presenterClass != null) {
-      presenter.onStop();
-      dataFragment.putData(presenterClass.getSimpleName(), presenter);
+    if (basePresenter != null && presenterClass != null) {
+      basePresenter.onStop();
+      dataFragment.putData(presenterClass.getSimpleName(), basePresenter);
     }
 
     unSubscribeSubscriptions();

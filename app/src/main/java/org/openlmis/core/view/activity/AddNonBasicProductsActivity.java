@@ -68,8 +68,7 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
     super.onCreate(savedInstanceState);
     initRecyclerView();
     loading(getString(R.string.add_products_loading_message));
-    previouslyProductCodes = (List<String>) getIntent()
-        .getSerializableExtra(SELECTED_NON_BASIC_PRODUCTS);
+    previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_NON_BASIC_PRODUCTS);
     btnCancel.setOnClickListener(cancelListener());
     btnAddProducts.setOnClickListener(addProductsListener());
     Subscription subscription = presenter.getAllNonBasicProductsViewModels(previouslyProductCodes)

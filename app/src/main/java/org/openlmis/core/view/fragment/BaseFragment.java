@@ -34,7 +34,7 @@ import rx.Subscription;
 public abstract class BaseFragment extends RoboMigrationAndroidXFragment implements BaseView {
 
   protected boolean isSavedInstanceState;
-  protected Presenter presenter;
+  protected Presenter baseFragmentPresenter;
   protected List<Subscription> subscriptions = new ArrayList<>();
 
   /*
@@ -53,15 +53,15 @@ public abstract class BaseFragment extends RoboMigrationAndroidXFragment impleme
   }
 
   private void setPresenter() {
-    presenter = initPresenter();
-    if (presenter == null) {
-      presenter = new DummyPresenter();
+    baseFragmentPresenter = initPresenter();
+    if (baseFragmentPresenter == null) {
+      baseFragmentPresenter = new DummyPresenter();
     }
   }
 
   private void attachPresenterView() {
     try {
-      presenter.attachView(this);
+      baseFragmentPresenter.attachView(this);
     } catch (ViewNotMatchException e) {
       new LMISException(e, "BaseFragment:attachPresenterView").reportToFabric();
       ToastUtil.show(e.getMessage());
@@ -79,13 +79,13 @@ public abstract class BaseFragment extends RoboMigrationAndroidXFragment impleme
   @Override
   public void onStart() {
     super.onStart();
-    presenter.onStart();
+    baseFragmentPresenter.onStart();
   }
 
   @Override
   public void onDestroyView() {
     super.onDestroyView();
-    presenter.onStop();
+    baseFragmentPresenter.onStop();
   }
 
   @Override

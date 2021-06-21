@@ -21,7 +21,6 @@ package org.openlmis.core.view.holder;
 import android.text.Editable;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,12 +61,7 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
   public AddDrugsToVIAViewHolder(View itemView) {
     super(itemView);
     txQuantity.setHint(R.string.label_hint_amount_requisition);
-    taCheckbox.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        triggerCheckbox();
-      }
-    });
+    taCheckbox.setOnClickListener(v -> triggerCheckbox());
   }
 
   public void populate(String queryKeyWord, final AddDrugsToViaInventoryViewModel viewModel) {
@@ -93,19 +87,16 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
     final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
     txQuantity.removeTextChangedListener(textWatcher);
 
-    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked) {
-          showEditPanel(View.VISIBLE);
-        } else {
-          showEditPanel(View.GONE);
-          populateEditPanel(StringUtils.EMPTY);
+    checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+      if (isChecked) {
+        showEditPanel(View.VISIBLE);
+      } else {
+        showEditPanel(View.GONE);
+        populateEditPanel(StringUtils.EMPTY);
 
-          viewModel.setQuantity(StringUtils.EMPTY);
-        }
-        viewModel.setChecked(isChecked);
+        viewModel.setQuantity(StringUtils.EMPTY);
       }
+      viewModel.setChecked(isChecked);
     });
 
     txQuantity.addTextChangedListener(textWatcher);
@@ -124,7 +115,8 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
     checkBox.setChecked(!checkBox.isChecked());
   }
 
-  class EditTextWatcher extends SingleTextWatcher {
+  @SuppressWarnings("squid:S2160")
+  static class EditTextWatcher extends SingleTextWatcher {
 
     private final AddDrugsToViaInventoryViewModel viewModel;
 

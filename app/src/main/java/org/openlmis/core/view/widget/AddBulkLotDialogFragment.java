@@ -28,9 +28,10 @@ import lombok.Getter;
 import org.openlmis.core.R;
 import roboguice.inject.InjectView;
 
+@SuppressWarnings("squid:S110")
 public class AddBulkLotDialogFragment extends AddLotDialogFragment {
 
-  public static boolean IS_OCCUPIED = false;
+  public static final boolean IS_OCCUPIED = false;
 
   @InjectView(R.id.et_soh_amount)
   private EditText etSOHAmount;

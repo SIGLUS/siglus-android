@@ -213,7 +213,7 @@ public class HomeActivityTest {
   }
 
   @Test
-  public void shouldShowWarningDialogWhenWipeDataWiped() throws Exception {
+  public void shouldShowWarningDialogWhenWipeDataWiped() {
     WarningDialogFragment.DialogDelegate delegate = anyObject();
     int message = anyInt();
     int positiveMessageButton = anyInt();

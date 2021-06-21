@@ -27,6 +27,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.ALRequisitionFragment;
 import roboguice.inject.ContentView;
 
+@SuppressWarnings("squid:S110")
 @ContentView(R.layout.activity_al_requisition)
 public class ALRequisitionActivity extends BaseActivity {
 
