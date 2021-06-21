@@ -135,7 +135,7 @@ public class ReportListFragment extends BaseReportListFragment {
 
   @Override
   public void onActivityResult(int requestCode, int resultCode,
-      @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+      @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode != Activity.RESULT_OK) {
       return;
