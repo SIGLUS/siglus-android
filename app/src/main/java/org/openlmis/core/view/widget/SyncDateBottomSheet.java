@@ -28,6 +28,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import com.google.inject.Inject;
@@ -117,10 +118,9 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
     }
   }
 
-  public void show(FragmentManager fragmentManager) {
+  public void show(@NonNull FragmentManager fragmentManager) {
     //avoid the duplicate Dialog
-    if (fragmentManager != null
-        && fragmentManager.findFragmentByTag("sync_date_bottom_sheet") != null) {
+    if (fragmentManager.findFragmentByTag("sync_date_bottom_sheet") != null) {
       return;
     }
     super.show(fragmentManager, "sync_date_bottom_sheet");

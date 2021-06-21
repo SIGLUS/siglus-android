@@ -27,6 +27,7 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 import lombok.Getter;
@@ -51,13 +52,11 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
   @Getter
   private MsgDialogCallBack mListener;
 
-  public static SimpleDialogFragment newInstance(String title, CharSequence message,
-      String positiveText) {
+  public static SimpleDialogFragment newInstance(String title, CharSequence message, String positiveText) {
     return newInstance(title, message, positiveText, null, null);
   }
 
-  public static SimpleDialogFragment newInstance(String title, CharSequence message,
-      String positiveText, String tag) {
+  public static SimpleDialogFragment newInstance(String title, CharSequence message, String positiveText, String tag) {
     return newInstance(title, message, positiveText, null, tag);
   }
 
@@ -86,9 +85,9 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
   }
 
   @Override
-  public void show(FragmentManager manager, String tag) {
+  public void show(@NonNull FragmentManager manager, String tag) {
     //avoid the duplicate Dialog
-    if (manager != null && manager.findFragmentByTag(tag) != null) {
+    if (manager.findFragmentByTag(tag) != null) {
       return;
     }
     super.show(manager, tag);

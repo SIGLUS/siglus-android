@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.presenter.Presenter;
@@ -78,18 +79,16 @@ public class RapidTestReportListFragment extends BaseReportListFragment {
   }
 
   @Override
-  public void onActivityResult(int requestCode, int resultCode,
-      @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM
         || requestCode == Constants.REQUEST_FROM_RNR_LIST_PAGE) {
       loadForms();
-    } else if (requestCode == Constants.REQUEST_SELECT_PERIOD_END
-        && resultCode == Activity.RESULT_OK) {
+    } else if (requestCode == Constants.REQUEST_SELECT_PERIOD_END && resultCode == Activity.RESULT_OK && data != null) {
       Period period = (Period) data.getSerializableExtra(Constants.PARAM_PERIOD);
       startActivityForResult(RapidTestReportFormActivity
-              .getIntentToMe(requireContext(), RapidTestReportViewModel.DEFAULT_FORM_ID,
-                  period, period.getBegin()),
+              .getIntentToMe(requireContext(), RapidTestReportViewModel.DEFAULT_FORM_ID, period,
+                  Objects.requireNonNull(period).getBegin()),
           Constants.REQUEST_CREATE_OR_MODIFY_RAPID_TEST_FORM);
     }
   }

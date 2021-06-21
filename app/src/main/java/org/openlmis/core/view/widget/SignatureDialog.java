@@ -183,9 +183,9 @@ public class SignatureDialog extends BaseDialogFragment {
     return bundle;
   }
 
-  public void show(FragmentManager manager) {
+  public void show(@NonNull FragmentManager manager) {
     //avoid the duplicate Dialog
-    if (manager != null && manager.findFragmentByTag("signature_dialog") != null) {
+    if (manager.findFragmentByTag("signature_dialog") != null) {
       return;
     }
     super.show(manager, "signature_dialog");
