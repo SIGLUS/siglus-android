@@ -190,7 +190,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   @Override
   public void updateDashboard(int regularAmount, int outAmount, int lowAmount, int overAmount) {
-    dvProductDashboard.showCmm(regularAmount, outAmount, lowAmount, overAmount);
+    dvProductDashboard.showFinished(regularAmount, outAmount, lowAmount, overAmount);
   }
 
   @Override
@@ -424,9 +424,9 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private void refreshDashboard() {
     if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
       // TODO set real percent
-      dvProductDashboard.showLoadingPercent();
+      dvProductDashboard.showLoading();
     } else if (isCmmCalculating) {
-      dvProductDashboard.showLoadingCmm();
+      dvProductDashboard.showCalculating();
     } else {
       homePresenter.getDashboardData();
     }

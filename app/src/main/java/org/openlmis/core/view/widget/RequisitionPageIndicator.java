@@ -75,7 +75,7 @@ public class RequisitionPageIndicator extends View implements IPagerIndicator {
       backgroundPaint.setColor(color);
     }
 
-    // 计算锚点位置
+    // calculate anchor position
     PositionData current = FragmentContainerHelper.getImitativePositionData(mPositionDataList, position);
     PositionData next = FragmentContainerHelper.getImitativePositionData(mPositionDataList, position + 1);
 
@@ -99,10 +99,12 @@ public class RequisitionPageIndicator extends View implements IPagerIndicator {
 
   @Override
   public void onPageSelected(int position) {
+    // do nothing
   }
 
   @Override
   public void onPageScrollStateChanged(int state) {
+    // do nothing
   }
 
   @Override
