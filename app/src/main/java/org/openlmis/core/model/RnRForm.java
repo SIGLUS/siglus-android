@@ -262,12 +262,10 @@ public class RnRForm extends BaseModel {
 
   public void addSignature(String signature) {
     if (isDraft()) {
-      getSignaturesWrapper()
-          .add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.SUBMITTER));
+      getSignaturesWrapper().add(new RnRFormSignature(this, signature, Signature.TYPE.SUBMITTER));
       status = isMissed() ? Status.SUBMITTED_MISSED : Status.SUBMITTED;
     } else {
-      getSignaturesWrapper()
-          .add(new RnRFormSignature(this, signature, RnRFormSignature.TYPE.APPROVER));
+      getSignaturesWrapper().add(new RnRFormSignature(this, signature, Signature.TYPE.APPROVER));
       status = Status.AUTHORIZED;
       submittedTime = DateUtil.today();
     }
@@ -282,13 +280,13 @@ public class RnRForm extends BaseModel {
     NO(false);
 
     public boolean emergency() {
-      return emergency;
+      return isEmergency;
     }
 
-    private final boolean emergency;
+    private final boolean isEmergency;
 
-    Emergency(boolean emergency) {
-      this.emergency = emergency;
+    Emergency(boolean isEmergency) {
+      this.isEmergency = isEmergency;
     }
   }
 

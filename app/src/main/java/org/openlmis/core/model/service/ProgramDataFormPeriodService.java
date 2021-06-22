@@ -46,6 +46,7 @@ public class ProgramDataFormPeriodService {
   @Inject
   private StockMovementRepository stockMovementRepository;
 
+  @SuppressWarnings("squid:S3776")
   public Optional<Period> getFirstStandardPeriod() throws LMISException {
     DateTime initializeDateTime;
     Period period = null;

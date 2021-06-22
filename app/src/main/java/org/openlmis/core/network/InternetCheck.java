@@ -25,8 +25,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 
-@SuppressWarnings("PMD")
 public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, InternetListener> {
 
   private static final String TAG = InternetCheck.class.getSimpleName();
@@ -34,6 +34,7 @@ public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, Inter
 
   @Inject
   public InternetCheck() {
+    // do nothing
   }
 
   public interface Callback {
@@ -48,7 +49,7 @@ public class InternetCheck extends AsyncTask<InternetCheck.Callback, Void, Inter
       if (callbacks.length > 0) {
         callback = callbacks[0];
       } else {
-        throw new Exception("No callback supplied");
+        throw new LMISException("No callback supplied");
       }
       sock.connect(new InetSocketAddress(getAddress(), getPORT()), TIMEOUT);
       return new InternetListener(true, callback, null);

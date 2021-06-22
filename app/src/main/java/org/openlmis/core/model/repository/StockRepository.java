@@ -56,6 +56,10 @@ import org.openlmis.core.utils.DateUtil;
 public class StockRepository {
 
   private static final String TAG = StockRepository.class.getSimpleName();
+  public static final String PRODUCT_ID = "product_id";
+  public static final String STOCK_ON_HAND = "stockOnHand";
+  public static final String AVG_MONTHLY_CONSUMPTION = "avgMonthlyConsumption";
+  public static final String STOCK_CARD_ID = "stockCard_id";
   @Inject
   DbUtil dbUtil;
   @Inject
@@ -184,16 +188,16 @@ public class StockRepository {
     } catch (LMISException e) {
       new LMISException(e, "StockRepository:list").reportToFabric();
     }
-    return null;
+    return Collections.emptyList();
   }
 
   public boolean hasStockData() {
     List<StockCard> list = list();
-    return list != null && list.size() > 0;
+    return list != null && !list.isEmpty();
   }
 
   private boolean hasStockCardData(List<StockCard> list) {
-    return list != null && list.size() > 0;
+    return list != null && !list.isEmpty();
   }
 
   public boolean hasOldDate() {
@@ -216,14 +220,13 @@ public class StockRepository {
   public List<StockCard> listStockCardsByProductIds(final List<Long> productIds)
       throws LMISException {
     return dbUtil.withDao(StockCard.class,
-        dao -> dao.queryBuilder().where().in("product_id", productIds).query());
+        dao -> dao.queryBuilder().where().in(PRODUCT_ID, productIds).query());
   }
 
   public List<StockCard> listEmergencyStockCards() throws LMISException {
     List<Program> programs = programRepository.listEmergencyPrograms();
 
-    List<String> programCodes = from(programs).transform(program -> program.getProgramCode())
-        .toList();
+    List<String> programCodes = from(programs).transform(Program::getProgramCode).toList();
     List<Long> productIds = productProgramRepository
         .queryActiveProductIdsByProgramsWithKits(programCodes, false);
     return listStockCardsByProductIds(productIds);
@@ -235,7 +238,7 @@ public class StockRepository {
 
   public StockCard queryStockCardByProductId(final long productId) throws LMISException {
     return dbUtil.withDao(StockCard.class,
-        dao -> dao.queryBuilder().where().eq("product_id", productId).queryForFirst());
+        dao -> dao.queryBuilder().where().eq(PRODUCT_ID, productId).queryForFirst());
   }
 
   public void updateStockCardWithProduct(final StockCard stockCard) throws LMISException {
@@ -276,10 +279,10 @@ public class StockRepository {
       do {
         StockCard stockCard = new StockCard();
         stockCard.setProduct(productRepository
-            .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
-        stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+            .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow(PRODUCT_ID))));
+        stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
         stockCard.setAvgMonthlyConsumption(
-            cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
+            cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
         stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
         stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
         stockCardList.add(stockCard);
@@ -304,10 +307,10 @@ public class StockRepository {
       do {
         StockCard stockCard = new StockCard();
         stockCard.setProduct(productRepository
-            .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
-        stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+            .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow(PRODUCT_ID))));
+        stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
         stockCard.setAvgMonthlyConsumption(
-            cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
+            cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
         stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
         stockCardList.add(stockCard);
       } while (cursor.moveToNext());
@@ -321,7 +324,7 @@ public class StockRepository {
   private List<LotOnHand> getLotOnHandByStockCard(final long stockCardId) throws LMISException {
     return dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
         .where()
-        .eq("stockCard_id", stockCardId)
+        .eq(STOCK_CARD_ID, stockCardId)
         .query());
   }
 
@@ -376,10 +379,10 @@ public class StockRepository {
     if (cursor.moveToFirst()) {
       stockCard = new StockCard();
       stockCard.setProduct(productRepository
-          .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
-      stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+          .getProductById(cursor.getLong(cursor.getColumnIndexOrThrow(PRODUCT_ID))));
+      stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
       stockCard.setAvgMonthlyConsumption(
-          cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
+          cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
       stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
       stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
     }
@@ -445,7 +448,7 @@ public class StockRepository {
         addNewStockMovementItem.setCreatedAt(now);
         addNewStockMovementItem.setUpdatedAt(now);
         addNewStockMovementItem.setStockCard(stockCard);
-        dbUtil.withDao(StockMovementItem.class, (DbUtil.Operation<StockMovementItem, Void>) dao -> {
+        dbUtil.withDao(StockMovementItem.class, dao -> {
           dao.createOrUpdate(addNewStockMovementItem);
           return null;
         });
@@ -539,7 +542,7 @@ public class StockRepository {
         list.add(lot);
         lotInfoMap.put(stockCardId, list);
       } else {
-        List<Map<String, String>> list = new ArrayList();
+        List<Map<String, String>> list = new ArrayList<>();
         list.add(lot);
         lotInfoMap.put(stockCardId, list);
       }
@@ -547,7 +550,7 @@ public class StockRepository {
   }
 
   private void getLotInfo(List<Map<String, String>> lotList, Cursor cursor) {
-    String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow("stockCard_id"));
+    String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow(STOCK_CARD_ID));
     String lotNumber = cursor.getString(cursor.getColumnIndexOrThrow("lotNumber"));
     String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow("expirationDate"));
     String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow("quantityOnHand"));
@@ -577,7 +580,7 @@ public class StockRepository {
     if (cursor.moveToFirst()) {
       do {
         StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+        stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
         stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
         checkedStockCards.add(stockCard);
       } while (cursor.moveToNext());
@@ -606,7 +609,7 @@ public class StockRepository {
           lotOnHand.setQuantityOnHand((long) 0);
         }
       }
-      dbUtil.withDaoAsBatch(LotOnHand.class, (DbUtil.Operation<LotOnHand, Void>) dao -> {
+      dbUtil.withDaoAsBatch(LotOnHand.class, dao -> {
         for (LotOnHand lotOnHand : lotOnHands) {
           dao.createOrUpdate(lotOnHand);
         }
@@ -620,7 +623,7 @@ public class StockRepository {
   private List<LotOnHand> getLotOnHandByStockCards(final Set<String> stockCardIds) throws LMISException {
     return dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
         .where()
-        .in("stockCard_id", stockCardIds)
+        .in(STOCK_CARD_ID, stockCardIds)
         .query());
   }
 

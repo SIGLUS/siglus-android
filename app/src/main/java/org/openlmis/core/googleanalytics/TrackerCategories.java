@@ -19,8 +19,8 @@
 package org.openlmis.core.googleanalytics;
 
 public enum TrackerCategories {
-  StockMovement("F.d.S"),
-  Inventory("Inventory"),
+  STOCK_MOVEMENT("F.d.S"),
+  INVENTORY("Inventory"),
   MMIA("MMIA"),
   VIA("VIA"),
   NETWORK("Network"),

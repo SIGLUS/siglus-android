@@ -66,9 +66,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
 
       try {
         List<Product> basicProducts = productRepository.listBasicProducts();
-        inventoryViewModelList.addAll(
-            from(basicProducts).transform(product -> convertProductToStockCardViewModel(product))
-                .toList());
+        inventoryViewModelList.addAll(from(basicProducts).transform(this::convertProductToStockCardViewModel).toList());
         subscriber.onNext(inventoryViewModelList);
         defaultViewModelList = new ArrayList<>(inventoryViewModelList);
         subscriber.onCompleted();
@@ -85,18 +83,15 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     try {
       InventoryViewModel viewModel;
       if (product.isArchived()) {
-        viewModel = new InventoryViewModel(
-            stockRepository.queryStockCardByProductId(product.getId()));
-        viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+        viewModel = new InventoryViewModel(stockRepository.queryStockCardByProductId(product.getId()));
       } else {
         viewModel = new InventoryViewModel(product);
-        viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
       }
+      viewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
       viewModel.setChecked(false);
       return viewModel;
     } catch (LMISException e) {
-      new LMISException(e, "InitialInventoryPresenter.convertProductToStockCardViewModel")
-          .reportToFabric();
+      new LMISException(e, "InitialInventoryPresenter.convertProductToStockCardViewModel").reportToFabric();
     }
     return null;
   }

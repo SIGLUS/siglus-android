@@ -31,9 +31,9 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-@SuppressWarnings("PMD")
 public class ProductProgramRepository {
 
+  private static final String PROGRAM_CODE = "programCode";
   GenericDao<ProductProgram> genericDao;
 
   @Inject
@@ -51,14 +51,14 @@ public class ProductProgramRepository {
   public ProductProgram queryByCode(final String productCode, final String programCode)
       throws LMISException {
     return dbUtil.withDao(ProductProgram.class,
-        dao -> dao.queryBuilder().where().eq("programCode", programCode).and()
+        dao -> dao.queryBuilder().where().eq(PROGRAM_CODE, programCode).and()
             .eq("productCode", productCode).queryForFirst());
   }
 
   public ProductProgram queryByCode(final String productCode, final List<String> programCodes)
       throws LMISException {
     return dbUtil.withDao(ProductProgram.class,
-        dao -> dao.queryBuilder().where().in("programCode", programCodes).and()
+        dao -> dao.queryBuilder().where().in(PROGRAM_CODE, programCodes).and()
             .eq("productCode", productCode).queryForFirst());
   }
 
@@ -79,7 +79,7 @@ public class ProductProgramRepository {
       final List<String> programCodes) throws LMISException {
     return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder()
         .where().eq("isActive", true)
-        .and().in("programCode", programCodes)
+        .and().in(PROGRAM_CODE, programCodes)
         .query());
   }
 
@@ -89,7 +89,7 @@ public class ProductProgramRepository {
     return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder()
         .where().eq("isActive", true)
         .and().eq("versionCode", BuildConfig.VERSION_CODE)
-        .and().in("programCode", programCodes)
+        .and().in(PROGRAM_CODE, programCodes)
         .query());
   }
 

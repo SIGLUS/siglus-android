@@ -23,6 +23,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import java.io.Serializable;
+import lombok.EqualsAndHashCode;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.DateUtil;
 
@@ -35,7 +37,8 @@ public class ProductAdapter implements JsonDeserializer<Product> {
     return new Gson().fromJson(json, ProductResponse.class).toProduct();
   }
 
-  class ProductResponse extends Product {
+  @EqualsAndHashCode(callSuper = false)
+  static class ProductResponse extends Product {
 
     Type form;
 
@@ -50,7 +53,7 @@ public class ProductAdapter implements JsonDeserializer<Product> {
     }
   }
 
-  class Type {
+  static class Type implements Serializable {
 
     String code;
   }

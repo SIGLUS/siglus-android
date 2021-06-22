@@ -52,9 +52,15 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
-@SuppressWarnings("PMD")
 public class StockMovementRepository {
 
+  private static final String STOCK_CARD_ID = "stockCard_id";
+  private static final String MOVEMENT_DATE = "movementDate";
+  private static final String CREATED_TIME = "createdTime";
+  private static final String STOCK_ON_HAND = "stockOnHand";
+  private static final String SELECT_RESULT =
+      "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' || movementQuantity || ',' || stockOnHand || "
+          + "',' || movementDate || ',' || createdTime || ',' || reason ,  ';') as movementItems ";
   @Inject
   DbUtil dbUtil;
   @Inject
@@ -84,15 +90,14 @@ public class StockMovementRepository {
   }
 
   public List<StockMovementItem> listUnSynced() throws LMISException {
-    return dbUtil
-        .withDao(StockMovementItem.class, dao -> dao.queryBuilder().where().eq("synced", false)
-            .and().isNotNull("stockCard_id").query());
+    return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder().where().eq("synced", false)
+        .and().isNotNull(STOCK_CARD_ID).query());
   }
 
   protected void batchCreateOrUpdateStockMovementsAndLotInfo(
       final List<StockMovementItem> stockMovementItems) throws LMISException {
     dbUtil.withDaoAsBatch(StockMovementItem.class,
-        (DbUtil.Operation<StockMovementItem, Void>) dao -> {
+        dao -> {
           for (StockMovementItem stockMovementItem : stockMovementItems) {
             updateDateTimeIfEmpty(stockMovementItem);
             dao.createOrUpdate(stockMovementItem);
@@ -141,7 +146,7 @@ public class StockMovementRepository {
   public void batchCreateOrUpdateStockMovementsAndLotMovements(
       final List<StockMovementItem> stockMovementItems) throws LMISException {
     dbUtil.withDaoAsBatch(StockMovementItem.class,
-        (DbUtil.Operation<StockMovementItem, Void>) dao -> {
+        dao -> {
           for (StockMovementItem stockMovementItem : stockMovementItems) {
             updateDateTimeIfEmpty(stockMovementItem);
             dao.createOrUpdate(stockMovementItem);
@@ -160,8 +165,8 @@ public class StockMovementRepository {
 
   public StockMovementItem getFirstStockMovement() throws LMISException {
     return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
-        .orderBy("movementDate", true)
-        .orderBy("createdTime", true)
+        .orderBy(MOVEMENT_DATE, true)
+        .orderBy(CREATED_TIME, true)
         .queryForFirst());
   }
 
@@ -196,7 +201,7 @@ public class StockMovementRepository {
     List<String> movementDates = new ArrayList<>();
     if (cursor.moveToFirst()) {
       do {
-        movementDates.add(cursor.getString(cursor.getColumnIndexOrThrow("movementDate")));
+        movementDates.add(cursor.getString(cursor.getColumnIndexOrThrow(MOVEMENT_DATE)));
       } while (cursor.moveToNext());
     }
     if (!cursor.isClosed()) {
@@ -221,10 +226,10 @@ public class StockMovementRepository {
   public StockMovementItem queryFirstStockMovementByStockCardId(final long stockCardId)
       throws LMISException {
     return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
-        .orderBy("movementDate", true)
-        .orderBy("createdTime", true)
+        .orderBy(MOVEMENT_DATE, true)
+        .orderBy(CREATED_TIME, true)
         .where()
-        .eq("stockCard_id", stockCardId)
+        .eq(STOCK_CARD_ID, stockCardId)
         .queryForFirst());
   }
 
@@ -232,21 +237,21 @@ public class StockMovementRepository {
       final long startIndex, final long maxRows) throws LMISException {
     return dbUtil.withDao(StockMovementItem.class,
         dao -> dao.queryBuilder().offset(startIndex).limit(maxRows)
-            .orderBy("movementDate", true)
-            .orderBy("createdTime", true)
+            .orderBy(MOVEMENT_DATE, true)
+            .orderBy(CREATED_TIME, true)
             .orderBy("id", true)
-            .where().eq("stockCard_id", stockCardId).query());
+            .where().eq(STOCK_CARD_ID, stockCardId).query());
   }
 
   public List<StockMovementItem> queryStockItemsByCreatedDate(final long stockCardId,
       final Date periodBeginDate, final Date periodEndDate) throws LMISException {
     return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
-        .orderBy("movementDate", true)
-        .orderBy("createdTime", true)
+        .orderBy(MOVEMENT_DATE, true)
+        .orderBy(CREATED_TIME, true)
         .where()
-        .eq("stockCard_id", stockCardId)
-        .and().gt("createdTime", periodBeginDate)//difference from the api above
-        .and().le("createdTime", periodEndDate)
+        .eq(STOCK_CARD_ID, stockCardId)
+        .and().gt(CREATED_TIME, periodBeginDate)//difference from the api above
+        .and().le(CREATED_TIME, periodEndDate)
         .query());
   }
 
@@ -265,12 +270,10 @@ public class StockMovementRepository {
     if (cursor.moveToFirst()) {
       do {
         StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem
-            .setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
-        stockMovementItem
-            .setMovementQuantity(cursor.getLong(cursor.getColumnIndexOrThrow("movementQuantity")));
-        stockMovementItem.setMovementType(MovementReasonManager.MovementType
-            .valueOf(cursor.getString(cursor.getColumnIndexOrThrow("movementType"))));
+        stockMovementItem.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
+        stockMovementItem.setMovementQuantity(cursor.getLong(cursor.getColumnIndexOrThrow("movementQuantity")));
+        stockMovementItem.setMovementType(
+            MovementReasonManager.MovementType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("movementType"))));
         stockItems.add(stockMovementItem);
       } while (cursor.moveToNext());
     }
@@ -283,22 +286,22 @@ public class StockMovementRepository {
   public List<StockMovementItem> queryStockMovementsByMovementDate(final long stockCardId,
       final Date startDate, final Date endDate) throws LMISException {
     return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
-        .orderBy("movementDate", true)
-        .orderBy("createdTime", true)
+        .orderBy(MOVEMENT_DATE, true)
+        .orderBy(CREATED_TIME, true)
         .where()
-        .eq("stockCard_id", stockCardId)
-        .and().ge("movementDate", startDate)
-        .and().le("movementDate", endDate)
+        .eq(STOCK_CARD_ID, stockCardId)
+        .and().ge(MOVEMENT_DATE, startDate)
+        .and().le(MOVEMENT_DATE, endDate)
         .query());
   }
 
   public List<StockMovementItem> listLastFiveStockMovements(final long stockCardId)
       throws LMISException {
     return dbUtil.withDao(StockMovementItem.class, dao -> Lists.reverse(dao.queryBuilder().limit(5L)
-        .orderBy("movementDate", false)
-        .orderBy("createdTime", false)
+        .orderBy(MOVEMENT_DATE, false)
+        .orderBy(CREATED_TIME, false)
         .orderBy("id", false)
-        .where().eq("stockCard_id", stockCardId).query()));
+        .where().eq(STOCK_CARD_ID, stockCardId).query()));
   }
 
   public List<StockMovementItem> listLastTwoStockMovements() {
@@ -313,20 +316,18 @@ public class StockMovementRepository {
       do {
         StockMovementItem item = new StockMovementItem();
         Date createTime = DateUtil
-            .parseString(cursor.getString(cursor.getColumnIndexOrThrow("createdTime")),
-                DateUtil.DATE_TIME_FORMAT);
+            .parseString(cursor.getString(cursor.getColumnIndexOrThrow(CREATED_TIME)), DateUtil.DATE_TIME_FORMAT);
         item.setCreatedTime(createTime);
         Date movementDate = DateUtil
-            .parseString(cursor.getString(cursor.getColumnIndexOrThrow("movementDate")),
-                DB_DATE_FORMAT);
+            .parseString(cursor.getString(cursor.getColumnIndexOrThrow(MOVEMENT_DATE)), DB_DATE_FORMAT);
         item.setMovementDate(movementDate);
         item.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-        item.setStockOnHand(cursor.getInt(cursor.getColumnIndexOrThrow("stockOnHand")));
+        item.setStockOnHand(cursor.getInt(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
         item.setMovementQuantity(cursor.getInt(cursor.getColumnIndexOrThrow("movementQuantity")));
-        item.setMovementType(MovementReasonManager.MovementType
-            .valueOf(cursor.getString(cursor.getColumnIndexOrThrow("movementType"))));
+        item.setMovementType(
+            MovementReasonManager.MovementType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("movementType"))));
         StockCard stockCard = new StockCard();
-        stockCard.setId(cursor.getInt(cursor.getColumnIndexOrThrow("stockCard_id")));
+        stockCard.setId(cursor.getInt(cursor.getColumnIndexOrThrow(STOCK_CARD_ID)));
         item.setStockCard(stockCard);
         items.add(item);
 
@@ -342,18 +343,16 @@ public class StockMovementRepository {
   public List<StockMovementItem> queryMovementByStockCardId(final long stockCardId)
       throws LMISException {
     return dbUtil.withDao(StockMovementItem.class, dao ->
-        dao.queryBuilder().orderBy("movementDate", true)
-            .orderBy("createdTime", true)
+        dao.queryBuilder().orderBy(MOVEMENT_DATE, true)
+            .orderBy(CREATED_TIME, true)
             .orderBy("id", true)
-            .where().eq("stockCard_id", stockCardId).query()
+            .where().eq(STOCK_CARD_ID, stockCardId).query()
     );
   }
 
   public Map<String, List<StockMovementItem>> queryStockMovement(Set<String> stockCardIds) {
     String ids = StringUtils.join(stockCardIds != null ? stockCardIds : new HashSet<>(), ',');
-    String rawSql = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
-        + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
-        + "|| createdTime || ',' || reason ,  ';') as movementItems "
+    String rawSql = SELECT_RESULT
         + "from stock_items where stockCard_id in ( "
         + ids
         + ")  GROUP BY stockCard_id";
@@ -391,11 +390,10 @@ public class StockMovementRepository {
       do {
         StockMovementItem item = new StockMovementItem();
         Date createTime = DateUtil
-            .parseString(cursor.getString(cursor.getColumnIndexOrThrow("createdTime")),
-                DateUtil.DATE_TIME_FORMAT);
+            .parseString(cursor.getString(cursor.getColumnIndexOrThrow(CREATED_TIME)), DateUtil.DATE_TIME_FORMAT);
         item.setCreatedTime(createTime);
         item.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-        item.setStockOnHand(cursor.getInt(cursor.getColumnIndexOrThrow("stockOnHand")));
+        item.setStockOnHand(cursor.getInt(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
         items.add(item);
       } while (cursor.moveToNext());
     }
@@ -410,7 +408,7 @@ public class StockMovementRepository {
   public void deleteStockMovementItems(final StockCard stockCard) throws LMISException {
     List<StockMovementItem> items = dbUtil.withDao(StockMovementItem.class,
         dao -> dao.queryBuilder()
-            .where().eq("stockCard_id", stockCard.getId())
+            .where().eq(STOCK_CARD_ID, stockCard.getId())
             .query());
     for (StockMovementItem item : items) {
       genericDao.delete(item);
@@ -450,9 +448,7 @@ public class StockMovementRepository {
   }
 
   public Map<String, List<StockMovementItem>> queryNoSignatureStockCardsMovements() {
-    String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
-        + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
-        + "|| createdTime || ',' || reason ,  ';') as movementItems ,count(*) as count ";
+    String selectResult = SELECT_RESULT + ",count(*) as count ";
     String stockCardHavingSignatureNotNull = "( select stockCard_id from stock_items "
         + "where signature not null group by stockCard_id ) ";
     String querySql = selectResult
@@ -503,9 +499,7 @@ public class StockMovementRepository {
       Set<String> filterStockCards) {
     String filterIds = StringUtils
         .join(filterStockCards != null ? filterStockCards : new HashSet<>(), ',');
-    String selectResult = "select stockCard_id, GROUP_CONCAT(id || ',' || movementType || ',' "
-        + "|| movementQuantity || ',' || stockOnHand || ',' || movementDate || ',' "
-        + "|| createdTime || ',' || reason ,  ';') as movementItems ";
+    String selectResult = SELECT_RESULT;
     String havingDuplicatedNoSignature =
         "( select stockCard_id from stock_items where signature IS NULL and stockCard_id not in ( "
             + filterIds
@@ -544,7 +538,7 @@ public class StockMovementRepository {
 
   private void getStockMovementItems(Map<String, List<StockMovementItem>> stockCardsMovements,
       Cursor cursor) {
-    String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow("stockCard_id"));
+    String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow(STOCK_CARD_ID));
     List<StockMovementItem> stockMovementItems = new ArrayList<>();
     String strMovementItems = cursor.getString(cursor.getColumnIndexOrThrow("movementItems"));
     String[] listMovementItems = strMovementItems.split(";");
@@ -571,18 +565,15 @@ public class StockMovementRepository {
   }
 
 
-  public static class SortClass implements Comparator {
+  public static class SortClass implements Comparator<StockMovementItem> {
 
     @Override
-    public int compare(Object o1, Object o2) {
-      StockMovementItem item1 = (StockMovementItem) o1;
-      StockMovementItem item2 = (StockMovementItem) o2;
-      int compareMovementDate = item1.getMovementDate().compareTo(item2.getMovementDate());
+    public int compare(StockMovementItem o1, StockMovementItem o2) {
+      int compareMovementDate = o1.getMovementDate().compareTo(o2.getMovementDate());
       if (compareMovementDate == 0) {
-        int compareCreatedTime = item1.getCreatedTime().compareTo(item2.getCreatedTime());
+        int compareCreatedTime = o1.getCreatedTime().compareTo(o2.getCreatedTime());
         if (compareCreatedTime == 0) {
-          int comparedId = item1.getId() > item2.getId() ? 1 : -1;
-          return comparedId;
+          return o1.getId() > o2.getId() ? 1 : -1;
         }
         return compareCreatedTime;
       } else {
@@ -593,7 +584,7 @@ public class StockMovementRepository {
 
   public void resetKeepItemToNotSynced(Map<String, List<StockMovementItem>> stockMovementItemsMap) {
     List<String> keepMovements = new ArrayList<>();
-    for (Map.Entry map : stockMovementItemsMap.entrySet()) {
+    for (Map.Entry<String, List<StockMovementItem>> map : stockMovementItemsMap.entrySet()) {
       keepMovements.add(String.valueOf(stockMovementItemsMap.get(map.getKey()).get(0).getId()));
     }
     String updateSql = "update stock_items set synced = 0 where id in ("

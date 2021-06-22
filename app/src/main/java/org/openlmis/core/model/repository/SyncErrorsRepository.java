@@ -20,6 +20,7 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.SyncError;
@@ -29,6 +30,7 @@ import org.openlmis.core.persistence.GenericDao;
 
 public class SyncErrorsRepository {
 
+  public static final String SYNC_TYPE = "syncType";
   final Context context;
   GenericDao<SyncError> genericDao;
 
@@ -61,11 +63,11 @@ public class SyncErrorsRepository {
       final long syncObjectId) {
     try {
       return dbUtil.withDao(SyncError.class, dao -> dao.queryBuilder()
-          .where().eq("syncType", syncType)
+          .where().eq(SYNC_TYPE, syncType)
           .and().eq("syncObjectId", syncObjectId).query());
     } catch (LMISException e) {
       new LMISException(e, "SyncErrorsRepository.getBy").reportToFabric();
-      return null;
+      return Collections.emptyList();
     }
   }
 
@@ -73,7 +75,7 @@ public class SyncErrorsRepository {
     try {
       return dbUtil.withDao(SyncError.class, dao -> dao.delete(dao.queryBuilder()
           .orderBy("id", false)
-          .where().eq("syncType", syncType)
+          .where().eq(SYNC_TYPE, syncType)
           .and().eq("syncObjectId", syncObjectId).query()));
     } catch (LMISException e) {
       new LMISException(e, "SyncErrorsRepository.deleteBy").reportToFabric();
@@ -83,7 +85,7 @@ public class SyncErrorsRepository {
 
   public boolean hasSyncErrorOf(final SyncType syncType) throws LMISException {
     SyncError syncError = dbUtil.withDao(SyncError.class,
-        dao -> dao.queryBuilder().where().eq("syncType", syncType).queryForFirst());
+        dao -> dao.queryBuilder().where().eq(SYNC_TYPE, syncType).queryForFirst());
     return syncError != null;
   }
 }

@@ -48,6 +48,10 @@ import org.openlmis.core.utils.DateUtil;
 
 public class ProgramDataFormRepository {
 
+  private static final String FORM_ID = "form_id";
+  private static final String WHERE_PERIOD_END =
+      "WHERE form_id IN (SELECT id FROM program_data_forms WHERE periodEnd < '";
+  private static final String END_STRING = "' );";
   private final GenericDao<ProgramDataForm> genericDao;
   private final GenericDao<ProgramDataFormItem> programDataFormItemGenericDao;
   private final GenericDao<ProgramDataFormBasicItem> programDataFormBasicItemGenericDao;
@@ -68,24 +72,23 @@ public class ProgramDataFormRepository {
   }
 
   public void batchCreateOrUpdate(final ProgramDataForm form) throws SQLException {
-    TransactionManager
-        .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-            (Callable<Void>) () -> {
-              genericDao.createOrUpdate(form);
-              Log.d("---|show items size|---",
-                  "" + form.getProgramDataFormItemListWrapper().size());
-              saveFormItems(form);
-              Log.d("---|show items size|---", "" + form.getFormBasicItemListWrapper().size());
-              saveFormBasicItems(form);
-              saveSignatures(form.getSignaturesWrapper());
-              return null;
-            });
+    TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
+        () -> {
+          genericDao.createOrUpdate(form);
+          Log.d("---|show items size|---",
+              "" + form.getProgramDataFormItemListWrapper().size());
+          saveFormItems(form);
+          Log.d("---|show items size|---", "" + form.getFormBasicItemListWrapper().size());
+          saveFormBasicItems(form);
+          saveSignatures(form.getSignaturesWrapper());
+          return null;
+        });
   }
 
   private void saveSignatures(final List<ProgramDataFormSignature> signatures)
       throws LMISException {
     dbUtil.withDao(ProgramDataFormSignature.class,
-        (DbUtil.Operation<ProgramDataFormSignature, Void>) dao -> {
+        dao -> {
           for (ProgramDataFormSignature signature : signatures) {
             dao.createOrUpdate(signature);
           }
@@ -137,18 +140,18 @@ public class ProgramDataFormRepository {
 
   private void deleteFormBasicItems(final long formId) throws LMISException {
     dbUtil.withDao(ProgramDataFormBasicItem.class,
-        (DbUtil.Operation<ProgramDataFormBasicItem, Void>) dao -> {
+        dao -> {
           DeleteBuilder<ProgramDataFormBasicItem, String> deleteBuilder = dao.deleteBuilder();
-          deleteBuilder.where().eq("form_id", formId);
+          deleteBuilder.where().eq(FORM_ID, formId);
           deleteBuilder.delete();
           return null;
         });
   }
 
   private void deleteFormItemsByFormId(final long formId) throws LMISException {
-    dbUtil.withDao(ProgramDataFormItem.class, (DbUtil.Operation<ProgramDataFormItem, Void>) dao -> {
+    dbUtil.withDao(ProgramDataFormItem.class, dao -> {
       DeleteBuilder<ProgramDataFormItem, String> deleteBuilder = dao.deleteBuilder();
-      deleteBuilder.where().eq("form_id", formId);
+      deleteBuilder.where().eq(FORM_ID, formId);
       deleteBuilder.delete();
       return null;
     });
@@ -170,19 +173,18 @@ public class ProgramDataFormRepository {
   }
 
   public void delete(final ProgramDataForm programDataForm) throws SQLException {
-    TransactionManager
-        .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-            (Callable<Void>) () -> {
-              genericDao.delete(programDataForm);
-              deleteFormItemsByFormId(programDataForm.getId());
-              return null;
-            });
+    TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
+        () -> {
+          genericDao.delete(programDataForm);
+          deleteFormItemsByFormId(programDataForm.getId());
+          return null;
+        });
   }
 
   public List<ProgramDataFormItem> listProgramDataItemsByFormId(final long formId)
       throws LMISException {
     return dbUtil.withDao(ProgramDataFormItem.class,
-        dao -> dao.queryBuilder().where().eq("form_id", formId).query());
+        dao -> dao.queryBuilder().where().eq(FORM_ID, formId).query());
   }
 
   public void deleteProgramDirtyData(List<String> productCodeList) {
@@ -230,7 +232,7 @@ public class ProgramDataFormRepository {
     Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(),
         SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
-    if (list != null && list.size() > 0) {
+    if (list != null && !list.isEmpty()) {
       for (ProgramDataForm programDataForm : list) {
         if (programDataForm.getPeriodEnd().before(dueDateShouldDataLivedInDB)) {
           return true;
@@ -247,14 +249,14 @@ public class ProgramDataFormRepository {
             DateUtil.DB_DATE_FORMAT);
 
     String rawSqlDeleteProgramDataItems = "DELETE FROM program_data_items "
-        + "WHERE form_id IN (SELECT id FROM program_data_forms WHERE periodEnd < '"
-        + dueDateShouldDataLivedInDB + "' );";
+        + WHERE_PERIOD_END
+        + dueDateShouldDataLivedInDB + END_STRING;
     String rawSqlDeleteSignatures = "DELETE FROM program_data_form_signatures "
-        + "WHERE form_id IN (SELECT id FROM program_data_forms WHERE periodEnd < '"
-        + dueDateShouldDataLivedInDB + "' );";
+        + WHERE_PERIOD_END
+        + dueDateShouldDataLivedInDB + END_STRING;
     String rawSqlDeleteProgramBasicItems = "DELETE FROM program_data_Basic_items "
-        + "WHERE form_id IN (SELECT id FROM program_data_forms WHERE periodEnd < '"
-        + dueDateShouldDataLivedInDB + "' );";
+        + WHERE_PERIOD_END
+        + dueDateShouldDataLivedInDB + END_STRING;
     String rawSqlDeleteProgramDataForms = "DELETE FROM program_data_forms "
         + "WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "'; ";
 

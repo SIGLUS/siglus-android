@@ -47,7 +47,7 @@ import org.roboguice.shaded.goole.common.collect.Ordering;
 
 public class StockService {
 
-  private final int highStockCalculateMonthQuantity = 3;
+  private static final int HIGH_STOCK_CALCULATE_MONTH_QUANTITY = 3;
 
   @Inject
   StockRepository stockRepository;
@@ -57,9 +57,6 @@ public class StockService {
   StockMovementRepository stockMovementRepository;
   @Inject
   DirtyDataManager dirtyDataManager;
-
-  public StockService() {
-  }
 
   protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
     StockMovementItem stockMovementItem = stockMovementRepository
@@ -96,6 +93,7 @@ public class StockService {
     }
   }
 
+  @SuppressWarnings("squid:S135")
   protected float calculateAverageMonthlyConsumption(StockCard stockCard) {
     Date firstPeriodBegin;
     try {
@@ -110,30 +108,30 @@ public class StockService {
 
     List<Long> issuePerMonths = new ArrayList<>();
     Period period = Period.of(today());
-    int periodQuantity = DateUtil
-        .calculateDateMonthOffset(firstPeriodBegin, period.getBegin().toDate());
+    int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, period.getBegin().toDate());
 
     for (int i = 0; i < periodQuantity; i++) {
       period = period.previous();
       Long totalIssuesEachMonth = calculateTotalIssuesPerPeriod(stockCard, period);
 
-      if (hasStockOutTotoalIssue(totalIssuesEachMonth)) {
+      if (hasStockOutTotalIssue(totalIssuesEachMonth)) {
         continue;
       }
 
       issuePerMonths.add(totalIssuesEachMonth);
-      if (issuePerMonths.size() == highStockCalculateMonthQuantity) {
+      if (issuePerMonths.size() == HIGH_STOCK_CALCULATE_MONTH_QUANTITY) {
         break;
       }
     }
-    if (issuePerMonths.size() < 1) {
+    // TODO: need check
+    if (issuePerMonths.isEmpty()) {
       return -1;
     }
 
     return getTotalIssues(issuePerMonths) * 1f / issuePerMonths.size();
   }
 
-  private Boolean hasStockOutTotoalIssue(Long totalIssuesEachMonth) {
+  private boolean hasStockOutTotalIssue(Long totalIssuesEachMonth) {
     return totalIssuesEachMonth == null;
   }
 
@@ -183,10 +181,10 @@ public class StockService {
         .anyMatch(stockMovementItem -> stockMovementItem.getStockOnHand() == 0);
   }
 
+  @SuppressWarnings("squid:S1905")
   private boolean isStockOutStatusInherited(StockCard stockCard, final Period period) {
     List<StockMovementItem> orderedMovements = Ordering.from(
-        (Comparator<StockMovementItem>) (lhs, rhs) -> lhs.getMovementDate()
-            .compareTo(rhs.getMovementDate()))
+        (Comparator<StockMovementItem>) (lhs, rhs) -> lhs.getMovementDate().compareTo(rhs.getMovementDate()))
         .sortedCopy(stockCard.getStockMovementItemsWrapper());
 
     Optional<StockMovementItem> lastMovementBeforePeriod = from(orderedMovements)

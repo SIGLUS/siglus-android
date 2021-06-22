@@ -30,7 +30,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.KitProduct;
@@ -41,10 +40,17 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-@SuppressWarnings("PMD")
 public class ProductRepository {
 
   private static final String TAG = ProductRepository.class.getSimpleName();
+  private static final String PRIMARY_NAME = "primaryName";
+  private static final String IS_ARCHIVED = "isArchived";
+  private static final String STRENGTH = "strength";
+  private static final String KIT_CODE = "kitCode";
+  private static final String CODE = "code";
+  private static final String TYPE = "type";
+  private static final String SELECT_PRODUCTS = "SELECT * FROM products WHERE isactive = '1' ";
+  private static final String ARCHIVED = "AND (isarchived = '1' OR id NOT IN (SELECT product_id from stock_cards));";
 
   GenericDao<Product> genericDao;
 
@@ -78,12 +84,7 @@ public class ProductRepository {
 
   public List<Product> listBasicProducts() throws LMISException {
 
-    String rawSql = "SELECT * FROM products "
-        + "WHERE isactive = '1' "
-        + "AND products.isbasic = '1' "
-        + "AND (isarchived = '1' "
-        + "OR id NOT IN ("
-        + "SELECT product_id from stock_cards));";
+    String rawSql = SELECT_PRODUCTS + "AND products.isbasic = '1' " + ARCHIVED;
 
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);
@@ -95,16 +96,16 @@ public class ProductRepository {
 
         product.setActive(Boolean.TRUE);
         product.setBasic(Boolean.TRUE);
-        product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow("primaryName")));
-        product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow("isArchived")) != 0);
-        product.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
+        product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow(PRIMARY_NAME)));
+        product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow(IS_ARCHIVED)) != 0);
+        product.setCode(cursor.getString(cursor.getColumnIndexOrThrow(CODE)));
         product.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-        product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow("strength")));
-        product.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+        product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow(STRENGTH)));
+        product.setType(cursor.getString(cursor.getColumnIndexOrThrow(TYPE)));
         activeProducts.add(product);
       } while (cursor.moveToNext());
     }
-    if (cursor != null && !cursor.isClosed()) {
+    if (!cursor.isClosed()) {
       cursor.close();
     }
     Collections.sort(activeProducts);
@@ -112,12 +113,7 @@ public class ProductRepository {
   }
 
   public List<Product> listProductsArchivedOrNotInStockCard() throws LMISException {
-    String rawSql = "SELECT * FROM products "
-        + "WHERE isactive = '1' "
-        + "AND products.iskit = '0' "
-        + "AND (isarchived = '1' "
-        + "OR id NOT IN ("
-        + "SELECT product_id from stock_cards));";
+    String rawSql = SELECT_PRODUCTS + "AND products.iskit = '0' " + ARCHIVED;
 
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);
@@ -129,16 +125,16 @@ public class ProductRepository {
 
         product.setActive(true);
         product.setKit(false);
-        product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow("primaryName")));
-        product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow("isArchived")) != 0);
-        product.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
+        product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow(PRIMARY_NAME)));
+        product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow(IS_ARCHIVED)) != 0);
+        product.setCode(cursor.getString(cursor.getColumnIndexOrThrow(CODE)));
         product.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-        product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow("strength")));
-        product.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+        product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow(STRENGTH)));
+        product.setType(cursor.getString(cursor.getColumnIndexOrThrow(TYPE)));
         activeProducts.add(product);
       } while (cursor.moveToNext());
     }
-    if (cursor != null && !cursor.isClosed()) {
+    if (!cursor.isClosed()) {
       cursor.close();
     }
     Collections.sort(activeProducts);
@@ -148,7 +144,7 @@ public class ProductRepository {
 
   public void save(final List<Product> products) {
     try {
-      dbUtil.withDaoAsBatch(Product.class, (DbUtil.Operation<Product, Void>) dao -> {
+      dbUtil.withDaoAsBatch(Product.class, dao -> {
         for (Product product : products) {
           dao.create(product);
         }
@@ -160,7 +156,7 @@ public class ProductRepository {
   }
 
   public void batchCreateOrUpdateProducts(final List<Product> productList) throws LMISException {
-    dbUtil.withDaoAsBatch(Product.class, (DbUtil.Operation<Product, Void>) dao -> {
+    dbUtil.withDaoAsBatch(Product.class, dao -> {
       for (Product product : productList) {
         createOrUpdate(product);
       }
@@ -240,35 +236,30 @@ public class ProductRepository {
   protected KitProduct queryKitProductByCode(final String kitCode, final String productCode)
       throws LMISException {
     return dbUtil.withDao(KitProduct.class,
-        dao -> dao.queryBuilder().where().eq("kitCode", kitCode).and()
+        dao -> dao.queryBuilder().where().eq(KIT_CODE, kitCode).and()
             .eq("productCode", productCode).queryForFirst());
   }
 
   private void deleteKitProductByCode(final String productCode) throws SQLException {
     TransactionManager
         .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-            new Callable<Object>() {
-              @Override
-              public Object call() throws Exception {
-                return dbUtil
-                    .withDao(KitProduct.class, (DbUtil.Operation<KitProduct, KitProduct>) dao -> {
-                      DeleteBuilder<KitProduct, String> deleteBuilder = dao.deleteBuilder();
-                      deleteBuilder.where().eq("kitCode", productCode);
-                      deleteBuilder.delete();
-                      return null;
-                    });
-              }
-            });
+            () -> dbUtil
+                .withDao(KitProduct.class, dao -> {
+                  DeleteBuilder<KitProduct, String> deleteBuilder = dao.deleteBuilder();
+                  deleteBuilder.where().eq(KIT_CODE, productCode);
+                  deleteBuilder.delete();
+                  return null;
+                }));
   }
 
   public List<KitProduct> queryKitProductByKitCode(final String kitCode) throws LMISException {
     return dbUtil.withDao(KitProduct.class,
-        dao -> dao.queryBuilder().where().eq("kitCode", kitCode).query());
+        dao -> dao.queryBuilder().where().eq(KIT_CODE, kitCode).query());
   }
 
   public Product getByCode(final String code) throws LMISException {
     return dbUtil
-        .withDao(Product.class, dao -> dao.queryBuilder().where().eq("code", code).queryForFirst());
+        .withDao(Product.class, dao -> dao.queryBuilder().where().eq(CODE, code).queryForFirst());
   }
 
   public Product getProductById(final long id) throws LMISException {
@@ -281,9 +272,9 @@ public class ProductRepository {
       final boolean isWithKit) throws LMISException {
     return dbUtil.withDao(Product.class, dao -> {
       Where<Product, String> queryBuilder = dao.queryBuilder()
-          .where().in("code", productCodes)
+          .where().in(CODE, productCodes)
           .and().eq("isActive", true)
-          .and().eq("isArchived", false);
+          .and().eq(IS_ARCHIVED, false);
       if (!isWithKit) {
         queryBuilder.and().eq("isKit", false);
       }
@@ -299,9 +290,9 @@ public class ProductRepository {
 
   public List<String> listArchivedProductCodes() throws LMISException {
     List<Product> isArchived = dbUtil.withDao(Product.class,
-        dao -> dao.queryBuilder().selectColumns("code").where().eq("isArchived", true).query());
+        dao -> dao.queryBuilder().selectColumns(CODE).where().eq(IS_ARCHIVED, true).query());
 
-    return FluentIterable.from(isArchived).transform(product -> product.getCode()).toList();
+    return FluentIterable.from(isArchived).transform(Product::getCode).toList();
   }
 
   public List<Product> queryProductsByProductIds(final List<Long> productIds) throws LMISException {
@@ -329,27 +320,22 @@ public class ProductRepository {
       do {
         Product product = new Product();
         product.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
-        product.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
-        product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow("primaryName")));
-        product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow("strength")));
-        product.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
-        product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow("isArchived")) == 1);
+        product.setCode(cursor.getString(cursor.getColumnIndexOrThrow(CODE)));
+        product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow(PRIMARY_NAME)));
+        product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow(STRENGTH)));
+        product.setType(cursor.getString(cursor.getColumnIndexOrThrow(TYPE)));
+        product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow(IS_ARCHIVED)) == 1);
         products.add(product);
       } while (cursor.moveToNext());
     }
-    if (cursor != null && !cursor.isClosed()) {
+    if (!cursor.isClosed()) {
       cursor.close();
     }
     return products;
   }
 
   public List<Product> listNonBasicProducts() {
-    String rawSql = "SELECT * FROM products "
-        + "WHERE isactive = '1' "
-        + "AND products.isbasic = '0' "
-        + "AND (isarchived = '1' "
-        + "OR id NOT IN ("
-        + "SELECT product_id from stock_cards));";
+    String rawSql = SELECT_PRODUCTS + "AND products.isbasic = '0' " + ARCHIVED;
 
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);
@@ -360,16 +346,16 @@ public class ProductRepository {
         Product product = new Product();
 
         product.setActive(Boolean.TRUE);
-        product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow("primaryName")));
-        product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow("isArchived")) != 0);
-        product.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
+        product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow(PRIMARY_NAME)));
+        product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow(IS_ARCHIVED)) != 0);
+        product.setCode(cursor.getString(cursor.getColumnIndexOrThrow(CODE)));
         product.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-        product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow("strength")));
-        product.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+        product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow(STRENGTH)));
+        product.setType(cursor.getString(cursor.getColumnIndexOrThrow(TYPE)));
         nonBasicProducts.add(product);
       } while (cursor.moveToNext());
     }
-    if (cursor != null && !cursor.isClosed()) {
+    if (!cursor.isClosed()) {
       cursor.close();
     }
     Collections.sort(nonBasicProducts);
@@ -378,9 +364,9 @@ public class ProductRepository {
 
   public List<Product> getProductsByCodes(final List<String> codes) throws LMISException {
     final List<Product> products = new ArrayList<>();
-    dbUtil.withDaoAsBatch(context, Product.class, (DbUtil.Operation<Product, Void>) dao -> {
+    dbUtil.withDaoAsBatch(context, Product.class, dao -> {
       for (String code : codes) {
-        Product product = dao.queryBuilder().where().eq("code", code).queryForFirst();
+        Product product = dao.queryBuilder().where().eq(CODE, code).queryForFirst();
         products.add(product);
 
       }

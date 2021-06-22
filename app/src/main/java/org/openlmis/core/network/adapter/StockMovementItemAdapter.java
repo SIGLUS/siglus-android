@@ -78,9 +78,9 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
 
   class StockMovementItemResponse extends StockMovementItem {
 
-    Map<String, String> extensions;
-    String occurred;
-    List<LotMovementItemResponse> lotMovementItems;
+    private Map<String, String> extensions;
+    private String occurred;
+    private List<LotMovementItemResponse> lotMovementItems;
 
     public StockMovementItem convertToStockMovementItem() {
       final StockMovementItem movementItem = this;
@@ -113,8 +113,8 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
 
   class LotMovementItemResponse extends LotMovementItem {
 
-    Map<String, String> extensions;
-    String lotNumber;
+    private Map<String, String> extensions;
+    private String lotNumber;
 
     public LotMovementItem convertToLotMovementItem() {
       LotMovementItem lotMovementItem = this;

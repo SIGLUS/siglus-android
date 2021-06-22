@@ -128,7 +128,7 @@ public abstract class InventoryActivity extends SearchBarActivity implements
   }
 
   protected void trackInventoryEvent(TrackerActions action) {
-    LMISApp.getInstance().trackEvent(TrackerCategories.Inventory, action);
+    LMISApp.getInstance().trackEvent(TrackerCategories.INVENTORY, action);
   }
 
   protected abstract void goToNextPage();

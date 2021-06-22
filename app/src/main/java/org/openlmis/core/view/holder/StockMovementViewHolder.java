@@ -224,7 +224,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
   }
 
   private void trackStockMovementEvent(TrackerActions action) {
-    LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, action);
+    LMISApp.getInstance().trackEvent(TrackerCategories.STOCK_MOVEMENT, action);
   }
 
   private void showDatePickerDialog(final StockMovementViewModel model,
