@@ -41,7 +41,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -102,7 +101,7 @@ public class SyncUpManagerTest {
   private SyncUpManager syncUpManager;
   private ProgramDataFormRepository mockedProgramDataFormRepository;
   private DirtyDataRepository mockedDirtyDataRepository;
-  private String  facilityID = UUID.randomUUID().toString();
+  private String  facilityID = "1";
   private String productCode =  "08N04Z";
 
   @Before
@@ -118,8 +117,7 @@ public class SyncUpManagerTest {
 
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
-    syncUpManager = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(SyncUpManager.class);
+    syncUpManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncUpManager.class);
     syncUpManager.lmisRestApi = mockedLmisRestApi;
 
     stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
