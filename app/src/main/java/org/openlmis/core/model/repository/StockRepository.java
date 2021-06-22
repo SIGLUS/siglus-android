@@ -149,7 +149,7 @@ public class StockRepository {
           .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
               () -> {
                 createOrUpdate(stockCard);
-                stockMovementRepository.batchCreateStockMovementItemAndLotItems(
+                stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(
                     stockCard.generateInitialStockMovementItem());
                 updateProductOfStockCard(stockCard.getProduct());
                 return null;
@@ -167,7 +167,7 @@ public class StockRepository {
               () -> {
                 StockCard stockcard = stockMovementItem.getStockCard();
                 createOrUpdate(stockcard);
-                stockMovementRepository.batchCreateStockMovementItemAndLotItems(stockMovementItem);
+                stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(stockMovementItem);
                 return null;
               });
     } catch (SQLException e) {
