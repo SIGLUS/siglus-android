@@ -42,7 +42,6 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -106,18 +105,6 @@ public class MMIARequisitionPresenterTest {
     presenter.getRnrForm(0);
     verify(mmiaRepository).queryUnAuthorized();
     verify(mmiaRepository, never()).initNormalRnrForm(null);
-  }
-
-  @Test
-  public void shouldValidateForm() throws Exception {
-    ArrayList<RegimenItem> regimenItems = generateRegimenItems();
-    ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
-
-    RnRForm rnRForm = new RnRForm();
-
-    when(mmiaRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
-    when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
-    presenter.getRnrForm(0);
   }
 
   @Test

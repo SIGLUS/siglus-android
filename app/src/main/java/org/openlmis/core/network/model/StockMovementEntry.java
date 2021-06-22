@@ -87,6 +87,6 @@ public class StockMovementEntry {
 
   private boolean isUnpack(StockMovementItem stockMovementItem) {
     return stockMovementItem.getMovementType() == ISSUE
-        && stockMovementItem.getReason() == UNPACK_KIT;
+        && stockMovementItem.getReason().equalsIgnoreCase(UNPACK_KIT);
   }
 }
