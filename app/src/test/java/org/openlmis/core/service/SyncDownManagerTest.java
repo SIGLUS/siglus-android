@@ -234,11 +234,6 @@ public class SyncDownManagerTest {
   }
 
   @Test
-  public void shouldSyncDownLastYearStockCard() {
-
-  }
-
-  @Test
   public void shouldUpdateNotifyBannerListWhenSOHIsZeroAndProductIsDeActive() throws Exception {
     // given
     Product product = new Product();

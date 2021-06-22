@@ -109,26 +109,6 @@ public class DirtyDataManagerTest {
   }
 
   @Test
-  public void shouldScanAllMovementAndDeleteTheWrongMovement() throws LMISException {
-    //Given
-    List<StockCard> list = Arrays.asList(stockCard3, stockCard4);
-    List<StockMovementItem> stockMovementItems3 = Arrays
-        .asList(stockMovementItem31, stockMovementItem32);
-    List<StockMovementItem> stockMovementItems4 = Arrays
-        .asList(stockMovementItem41, stockMovementItem42, stockMovementItem43);
-
-    //When
-    when(stockRepository.list()).thenReturn(list);
-    when(stockMovementRepository.queryMovementByStockCardId(3)).thenReturn(stockMovementItems3);
-    when(stockMovementRepository.queryMovementByStockCardId(4)).thenReturn(stockMovementItems4);
-//        List<StockCard> wrongStockCards = dirtyDataManager.scanAllStockMovements();
-
-    //Then
-//        assertThat(wrongStockCards.size(), is(1));
-//        assertThat(wrongStockCards.get(0).getProduct().getCode(), is("productCode4"));
-  }
-
-  @Test
   public void shouldScanWrongSOHBetweenMovementAndStockCard() {
     Product product = ProductBuilder.create()
         .setCode("productCode1")
