@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
 import roboguice.inject.InjectView;
 
@@ -42,9 +43,9 @@ public class AddProductsToBulkEntriesViewHolder extends BaseViewHolder {
   }
 
 
-  public void populate(final ProductsToBulkEntriesViewModel viewModel) {
+  public void populate(final ProductsToBulkEntriesViewModel viewModel, String queryKeyWord) {
     checkBox.setChecked(viewModel.isChecked());
-    productName.setText(viewModel.getStyledProductName());
+    productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,viewModel.getStyledProductName()));
     productType.setText(viewModel.getProduct().getType());
   }
 

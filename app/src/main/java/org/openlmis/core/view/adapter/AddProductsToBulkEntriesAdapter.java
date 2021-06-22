@@ -39,6 +39,8 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
 
   private final List<ProductsToBulkEntriesViewModel> filteredList;
 
+  private String keyWord;
+
 
   public AddProductsToBulkEntriesAdapter(
       List<ProductsToBulkEntriesViewModel> models) {
@@ -56,7 +58,7 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
 
   @Override
   public void onBindViewHolder(@NonNull AddProductsToBulkEntriesViewHolder holder, int position) {
-    holder.populate(filteredList.get(position));
+    holder.populate(filteredList.get(position),keyWord);
   }
 
   @Override
@@ -66,6 +68,7 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
 
 
   public void filter(final String keyword) {
+    keyWord = keyword;
     List<ProductsToBulkEntriesViewModel> filteredViewModels;
 
     if (TextUtils.isEmpty(keyword)) {

@@ -81,6 +81,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   @Override
   public boolean onSearchStart(String query) {
     adapter.filter(query);
+    setTotal(adapter.getItemCount());
     return false;
   }
 
@@ -132,7 +133,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
       public void onNext(List<ProductsToBulkEntriesViewModel> productsToBulkEntriesViewModels) {
         loaded();
         adapter.filter(EMPTY_STRING);
-        setTotal(productsToBulkEntriesViewModels.size());
+        setTotal(adapter.getItemCount());
         adapter.notifyDataSetChanged();
       }
     };

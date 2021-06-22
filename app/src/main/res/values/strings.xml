@@ -608,4 +608,5 @@
   <string name="label_stockcard_lot_expire_date">Expiry Date</string>
   <string name="label_stockcard_lot_last_update">Last Update</string>
   <string name="btn_add">ADD</string>
+  <string name="btn_bulk_entries_add_new_lot">ADD NEW LOT</string>
 </resources>
