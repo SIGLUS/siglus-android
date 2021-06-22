@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -51,7 +50,6 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.InjectResource;
 
@@ -147,13 +145,7 @@ public class MMIARepository extends RnrFormRepository {
   }
 
   @Inject
-  ProgramRepository programRepository;
-
-  @Inject
   ProductRepository productRepository;
-
-  @Inject
-  ProductProgramRepository productProgramRepository;
 
   @Inject
   public MMIARepository(Context context) {
@@ -181,14 +173,10 @@ public class MMIARepository extends RnrFormRepository {
     regimeThreeLines.add(attrRegimeTypeThirdLineKey);
 
     return FluentIterable.from(regimeThreeLines)
-        .transform(new Function<String, RegimenItemThreeLines>() {
-          @Nullable
-          @Override
-          public RegimenItemThreeLines apply(@Nullable String type) {
-            RegimenItemThreeLines itemThreeLines = new RegimenItemThreeLines(type);
-            itemThreeLines.setForm(form);
-            return itemThreeLines;
-          }
+        .transform(type -> {
+          RegimenItemThreeLines itemThreeLines = new RegimenItemThreeLines(type);
+          itemThreeLines.setForm(form);
+          return itemThreeLines;
         }).toList();
   }
 

@@ -49,7 +49,7 @@ public class KitStockCardListFragment extends StockCardListFragment {
       };
 
   @InjectView(R.id.product_update_banner)
-  ProductsUpdateBanner productsUpdateBanner;
+  ProductsUpdateBanner kitProductsUpdateBanner;
 
   @Override
   protected void createAdapter() {
@@ -59,12 +59,12 @@ public class KitStockCardListFragment extends StockCardListFragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    productsUpdateBanner.setVisibility(View.GONE);
+    kitProductsUpdateBanner.setVisibility(View.GONE);
   }
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    productsUpdateBanner.setVisibility(View.GONE);
+    kitProductsUpdateBanner.setVisibility(View.GONE);
   }
 }

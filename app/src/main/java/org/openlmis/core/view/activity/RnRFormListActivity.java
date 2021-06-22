@@ -30,7 +30,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +50,6 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
-import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
 import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import roboguice.inject.ContentView;
@@ -60,6 +58,7 @@ import rx.Subscriber;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_rnr_list)
+@SuppressWarnings("squid:S110")
 public class RnRFormListActivity extends BaseReportListActivity {
 
   public static final int DEFAULT_FORM_ID_OF_NOT_AUTHORIZED = 0;
@@ -77,8 +76,6 @@ public class RnRFormListActivity extends BaseReportListActivity {
 
   private Constants.Program program;
   private RnRFormListAdapter adapter;
-  @Inject
-  private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
 
   public static Intent getIntentToMe(Context context, Constants.Program programCode) {
     Intent intent = new Intent(context, RnRFormListActivity.class);
@@ -325,7 +322,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
 
       @Override
       public void onNext(Boolean hasMissed) {
-        if (hasMissed) {
+        if (Boolean.TRUE.equals(hasMissed)) {
           ToastUtil.showForLongTime(R.string.msg_create_emergency_has_missed);
         } else {
           startActivityForResult(

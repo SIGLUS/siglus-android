@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.R;
 
 public class SimpleSelectDialogFragment extends BaseDialogFragment {
@@ -32,7 +33,7 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment {
 
   @Setter
   private AdapterView.OnItemClickListener movementTypeOnClickListener;
-  private String[] selections;
+  private String[] mySelections;
 
   public SimpleSelectDialogFragment() {
   }
@@ -41,23 +42,23 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     if (getArguments() != null) {
-      selections = getArguments().getStringArray(SELECTIONS);
+      mySelections = getArguments().getStringArray(SELECTIONS);
     }
   }
 
   public SimpleSelectDialogFragment(AdapterView.OnItemClickListener movementTypeOnClickListener,
-      String[] selections) {
+      String[] mySelections) {
     this.movementTypeOnClickListener = movementTypeOnClickListener;
-    this.selections = selections;
+    this.mySelections = mySelections;
   }
 
+  @NotNull
   @Override
+  @SuppressWarnings("squid:S3740")
   public Dialog onCreateDialog(Bundle savedInstanceState) {
 
     AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
-    ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), R.layout.item_movement_type,
-        R.id.tv_option, selections);
-
+    ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), R.layout.item_movement_type, R.id.tv_option, mySelections);
     builder.setAdapter(adapter, null);
     final AlertDialog alertDialog = builder.create();
 

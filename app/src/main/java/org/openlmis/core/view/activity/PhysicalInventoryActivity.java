@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import androidx.fragment.app.DialogFragment;
-import com.viethoa.RecyclerViewFastScroller;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
@@ -34,14 +33,10 @@ import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_physical_inventory)
 public class PhysicalInventoryActivity extends InventoryActivity {
-
-  @InjectView(R.id.fast_scroller)
-  RecyclerViewFastScroller fastScroller;
 
   PhysicalInventoryPresenter presenter;
 
@@ -96,8 +91,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
   };
 
   private boolean validateInventoryFromCompleted() {
-    int position = ((PhysicalInventoryAdapter) mAdapter)
-        .validateAllForCompletedClick("Physical-Completed");
+    int position = ((PhysicalInventoryAdapter) mAdapter).validateAllForCompletedClick(KEY_FROM_PHYSICAL_COMPLETED);
     setTotal(presenter.getInventoryViewModelList().size());
     if (position >= 0) {
       clearSearch();

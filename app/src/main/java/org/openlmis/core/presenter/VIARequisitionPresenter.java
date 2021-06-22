@@ -21,7 +21,6 @@ package org.openlmis.core.presenter;
 import static org.openlmis.core.model.Product.IsKit;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-import android.content.Context;
 import android.text.TextUtils;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -63,9 +62,6 @@ import rx.schedulers.Schedulers;
 
 @ContextSingleton
 public class VIARequisitionPresenter extends BaseRequisitionPresenter {
-
-  @Inject
-  Context context;
 
   @Inject
   ProductRepository productRepository;

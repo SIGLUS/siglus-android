@@ -52,12 +52,18 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-@SuppressWarnings("PMD")
+@SuppressWarnings({"squid:S3776", "squid:S1172"})
 public class RnrFormRepository {
 
+  public static final String PROGRAM_ID = "program_id";
+  public static final String STATUS = "status";
+  public static final String PERIOD_BEGIN = "periodBegin";
+  public static final String PROGRAM_CODE = "programCode";
+  public static final String WHERE_PERIOD_END = "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '";
+  public static final String WHERE_PROGRAM_CODE = "WHERE programCode='";
+  public static final String END_STRING = "' );";
   @Inject
   DbUtil dbUtil;
 
@@ -100,7 +106,6 @@ public class RnrFormRepository {
   private final Context context;
   protected String programCode;
 
-  private List<RnRForm> rnRForms;
   private List<RnrFormItem> rnrFormItemListWrapper;
 
   @Inject
@@ -164,9 +169,9 @@ public class RnrFormRepository {
   public boolean isPeriodUnique(final RnRForm form) {
     try {
       return null == dbUtil.withDao(RnRForm.class,
-          dao -> dao.queryBuilder().where().eq("program_id", form.getProgram().getId())
-              .and().eq("status", Status.AUTHORIZED)
-              .and().eq("periodBegin", form.getPeriodBegin())
+          dao -> dao.queryBuilder().where().eq(PROGRAM_ID, form.getProgram().getId())
+              .and().eq(STATUS, Status.AUTHORIZED)
+              .and().eq(PERIOD_BEGIN, form.getPeriodBegin())
               .and().eq("periodEnd", form.getPeriodEnd())
               .queryForFirst());
 
@@ -206,9 +211,9 @@ public class RnrFormRepository {
       throw e;
     }
     RnRForm rnRForm = dbUtil
-        .withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("program_id", program.getId())
-            .and().between("periodBegin", reportTypeForm.getStartTime(), DateUtil.getCurrentDate())
-            .and().ne("status", Status.AUTHORIZED)
+        .withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq(PROGRAM_ID, program.getId())
+            .and().between(PERIOD_BEGIN, reportTypeForm.getStartTime(), DateUtil.getCurrentDate())
+            .and().ne(STATUS, Status.AUTHORIZED)
             .queryForFirst());
     assignCategoryForRnrItems(rnRForm);
     return rnRForm;
@@ -225,20 +230,12 @@ public class RnrFormRepository {
   protected void deleteDeactivatedAndUnsupportedProductItems(List<RnRForm> rnRForms)
       throws LMISException {
     for (RnRForm rnRForm : rnRForms) {
-      String programCode = rnRForm.getProgram().getProgramCode();
       List<String> programCodes = programRepository
-          .queryProgramCodesByProgramCodeOrParentCode(programCode);
+          .queryProgramCodesByProgramCodeOrParentCode(rnRForm.getProgram().getProgramCode());
       List<String> supportedProductCodes = FluentIterable
           .from(productProgramRepository.listActiveProductProgramsByProgramCodes(programCodes))
-          .transform(new Function<ProductProgram, String>() {
-            @Override
-            public String apply(ProductProgram productProgram) {
-              return productProgram.getProductCode();
-            }
-          }).toList();
-
-      rnrFormItemRepository
-          .deleteFormItems(rnRForm.getDeactivatedAndUnsupportedProductItems(supportedProductCodes));
+          .transform(ProductProgram::getProductCode).toList();
+      rnrFormItemRepository.deleteFormItems(rnRForm.getDeactivatedAndUnsupportedProductItems(supportedProductCodes));
     }
   }
 
@@ -248,7 +245,7 @@ public class RnrFormRepository {
     List<String> programCodes = programRepository
         .queryProgramCodesByProgramCodeOrParentCode(form.getProgram().getProgramCode());
     //为避免超时，在进入循环之前对以下两个变量赋值
-    rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
+    List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
     //避免出现越界异常，需要条件判断
     if (rnRForms.size() > 1) {
       rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
@@ -312,7 +309,7 @@ public class RnrFormRepository {
 
   protected List<RnRForm> listUnsynced() throws LMISException {
     return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("synced", false).and()
-        .eq("status", Status.AUTHORIZED).query());
+        .eq(STATUS, Status.AUTHORIZED).query());
   }
 
   protected List<RnRForm> listNotSynchronizedFromStarTime() throws LMISException {
@@ -372,18 +369,15 @@ public class RnrFormRepository {
                 create(rnrForm);
                 List<StockCard> stockCardWithMovement;
                 if (Constants.VIA_PROGRAM_CODE.equals(rnrForm.getProgram().getProgramCode())) {
-                  stockCardWithMovement = stockRepository
-                      .getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
+                  stockCardWithMovement = stockRepository.getStockCardsBelongToProgram(Constants.VIA_PROGRAM_CODE);
                 } else {
                   stockCardWithMovement = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
                 }
-                rnrFormItemRepository
-                    .batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCardWithMovement));
+                rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCardWithMovement));
                 regimenItemRepository.batchCreateOrUpdate(generateRegimeItems(rnrForm));
-                regimenItemThreeLineRepository
-                    .batchCreateOrUpdate(generateRegimeThreeLineItems(rnrForm));
-                baseInfoItemRepository.batchCreateOrUpdate(
-                    generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW));
+                regimenItemThreeLineRepository.batchCreateOrUpdate(generateRegimeThreeLineItems(rnrForm));
+                baseInfoItemRepository
+                    .batchCreateOrUpdate(generateBaseInfoItems(rnrForm, MMIARepository.ReportType.NEW));
                 genericDao.refresh(rnrForm);
                 return null;
               });
@@ -483,9 +477,9 @@ public class RnrFormRepository {
     final long programId = programRepository.queryByCode(programCode).getId();
 
     return dbUtil.withDao(RnRForm.class, dao -> {
-      Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
-      where.in("program_id", programId).and()
-          .between("periodBegin", typeForm.getStartTime(), DateUtil.getCurrentDate());
+      Where<RnRForm, String> where = dao.queryBuilder().orderBy(PERIOD_BEGIN, true).where();
+      where.in(PROGRAM_ID, programId).and()
+          .between(PERIOD_BEGIN, typeForm.getStartTime(), DateUtil.getCurrentDate());
 
       if (!isWithEmergency) {
         where.and().eq("emergency", false);
@@ -508,13 +502,12 @@ public class RnrFormRepository {
     if (reportTypeForm == null) {
       return new ArrayList<>();
     }
-
     return dbUtil.withDao(RnRForm.class, dao -> {
       Where<RnRForm, String> where = dao.queryBuilder().where()
-          .eq("program_id", programId).and()
+          .eq(PROGRAM_ID, programId).and()
           .eq("synced", false).and()
-          .eq("status", Status.AUTHORIZED).and()
-          .between("periodBegin", reportTypeForm.getStartTime(), DateUtil.getCurrentDate());
+          .eq(STATUS, Status.AUTHORIZED).and()
+          .between(PERIOD_BEGIN, reportTypeForm.getStartTime(), DateUtil.getCurrentDate());
       return where.query();
     });
   }
@@ -539,19 +532,15 @@ public class RnrFormRepository {
         DateUtil.DB_DATE_FORMAT);
 
     String rawSqlDeleteRnrFormItems = "DELETE FROM rnr_form_items "
-        + "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '"
-        + dueDateShouldDataLivedInDB + "' );";
+        + WHERE_PERIOD_END
+        + dueDateShouldDataLivedInDB + END_STRING;
     String rawSqlDeleteSignature = "DELETE FROM rnr_form_signature "
-        + "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '"
-        + dueDateShouldDataLivedInDB + "' );";
+        + WHERE_PERIOD_END + dueDateShouldDataLivedInDB + END_STRING;
     String rawSqlDeleteRegimeItems = "DELETE FROM regime_items "
-        + "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '"
-        + dueDateShouldDataLivedInDB + "' );";
+        + WHERE_PERIOD_END + dueDateShouldDataLivedInDB + END_STRING;
     String rawSqlDeleteBaseInfoItems = "DELETE FROM rnr_baseInfo_items "
-        + "WHERE rnRForm_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '"
-        + dueDateShouldDataLivedInDB + "' );";
-    String rawSqlDeleteRnrForms = "DELETE FROM rnr_forms "
-        + "WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "'; ";
+        + "WHERE rnRForm_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + END_STRING;
+    String rawSqlDeleteRnrForms = "DELETE FROM rnr_forms " + "WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "'; ";
 
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
         .execSQL(rawSqlDeleteRnrFormItems);
@@ -577,45 +566,45 @@ public class RnrFormRepository {
         String getParentCode =
             "SELECT count(parentCode) AS 'result' FROM programs WHERE programCode='"
                 + getProgramCodeCursor
-                .getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode")) + "'";
+                .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE)) + "'";
         getParentCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
             .getWritableDatabase().rawQuery(getParentCode, null);
         getParentCodeCursor.moveToFirst();
         if (getParentCodeCursor.getInt(getParentCodeCursor.getColumnIndexOrThrow("result")) == 0
             && !getProgramCodeCursor
-            .getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode"))
+            .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
             .equals(Constants.RAPID_TEST_OLD_CODE)) {
           if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode"))
+              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
               .equals(Constants.MMIA_PROGRAM_CODE)) {
             regimenRepository.deleteRegimeDirtyData(Constants.MMIA_PROGRAM_CODE);
             deleteRnrData(Constants.MMIA_PROGRAM_CODE);
           }
           if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode"))
+              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
               .equals(Constants.VIA_PROGRAM_CODE)) {
             deleteRnrData(Constants.VIA_PROGRAM_CODE);
           }
         } else {
           if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode"))
+              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
               .equals(Constants.PTV_PROGRAM_CODE)) {
             regimenRepository.deleteRegimeDirtyData(Constants.MMIA_PROGRAM_CODE);
             deleteRnrData(Constants.PTV_PROGRAM_CODE);
             deleteRnrData(Constants.MMIA_PROGRAM_CODE);
           } else if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode"))
+              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
               .equals(Constants.AL_PROGRAM_CODE)) {
             deleteRnrData(Constants.AL_PROGRAM_CODE);
             deleteRnrData(Constants.VIA_PROGRAM_CODE);
           } else if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode"))
+              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
               .equals(Constants.VIA_PROGRAM_CHILD_CODE_TARV)) {
             regimenRepository.deleteRegimeDirtyData(Constants.MMIA_PROGRAM_CODE);
             deleteRnrData(Constants.MMIA_PROGRAM_CODE);
           } else {
             if (!getProgramCodeCursor
-                .getString(getProgramCodeCursor.getColumnIndexOrThrow("programCode"))
+                .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
                 .equals(Constants.RAPID_TEST_OLD_CODE)) {
               deleteRnrData(Constants.VIA_PROGRAM_CODE);
             }
@@ -635,17 +624,17 @@ public class RnrFormRepository {
     String deleteRnrFormItem = "DELETE FROM rnr_form_items "
         + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
         + "programs "
-        + "WHERE programCode='" + programCode + "'));";
+        + WHERE_PROGRAM_CODE + programCode + "'));";
     String deleteRnrFormSignature = "DELETE FROM rnr_form_signature "
         + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
         + "programs WHERE programCode='" + programCode + "'));";
     String deleteRnrBaseInfoItems = "DELETE FROM rnr_baseInfo_items "
         + "WHERE rnRForm_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id IN (SELECT id "
         + "FROM programs "
-        + "WHERE programCode='" + programCode + "'));";
+        + WHERE_PROGRAM_CODE + programCode + "'));";
     String deleteRnrForm =
         "DELETE FROM rnr_forms WHERE synced=0 AND program_id = (SELECT id FROM programs "
-            + "WHERE programCode='" + programCode + "');";
+            + WHERE_PROGRAM_CODE + programCode + "');";
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
         .execSQL(deleteRnrFormItem);
     LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()

@@ -29,13 +29,13 @@ import roboguice.inject.InjectView;
 public class KitStockCardViewHolder extends StockCardViewHolder {
 
   @InjectView(R.id.tv_product_name)
-  TextView tvProductName;
+  TextView kitTvProductName;
 
   @InjectView(R.id.tv_product_unit)
-  TextView tvProductUnit;
+  TextView kitTvProductUnit;
 
   @InjectView(R.id.tv_stock_on_hand)
-  TextView tvStockOnHand;
+  TextView kitTvStockOnHand;
   //above field are present in base class, but injection does not penetrate sub class
 
   public KitStockCardViewHolder(View itemView, OnItemViewClickListener listener) {
@@ -44,9 +44,9 @@ public class KitStockCardViewHolder extends StockCardViewHolder {
 
   @Override
   protected void inflateData(InventoryViewModel inventoryViewModel, String queryKeyWord) {
-    tvStockOnHand.setText(String.valueOf(inventoryViewModel.getStockOnHand()));
-    tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,
+    kitTvStockOnHand.setText(String.valueOf(inventoryViewModel.getStockOnHand()));
+    kitTvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,
         new SpannableStringBuilder(inventoryViewModel.getProduct().getPrimaryName())));
-    tvProductUnit.setVisibility(View.INVISIBLE);
+    kitTvProductUnit.setVisibility(View.INVISIBLE);
   }
 }

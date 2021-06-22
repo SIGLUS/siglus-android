@@ -46,17 +46,13 @@ import rx.schedulers.Schedulers;
 public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
   MMIARequisitionView view;
-  private MMIARepository mmiaRepository;
 
   @Inject
   private RegimenItemRepository regimenItemRepository;
-  @Inject
-  private RnrFormRepository rnrFormRepository;
 
   @Override
   protected RnrFormRepository initRnrFormRepository() {
-    mmiaRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(MMIARepository.class);
-    return mmiaRepository;
+    return RoboGuice.getInjector(LMISApp.getContext()).getInstance(MMIARepository.class);
   }
 
   @Override

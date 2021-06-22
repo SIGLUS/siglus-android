@@ -37,7 +37,7 @@ import rx.Subscription;
 public class InitialInventoryActivity extends InventoryActivity {
 
   @InjectView(R.id.btn_save)
-  private View btnSave;
+  private View initialBtnSave;
 
   @InjectPresenter(InitialInventoryPresenter.class)
   InitialInventoryPresenter presenter;
@@ -71,7 +71,7 @@ public class InitialInventoryActivity extends InventoryActivity {
   }
 
   private void initButtonPanel() {
-    btnSave.setVisibility(View.GONE);
+    initialBtnSave.setVisibility(View.GONE);
     btnDone.setOnClickListener((v) -> {
       btnDone.setEnabled(false);
       if (validateInventory()) {
