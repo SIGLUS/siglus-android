@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -18,7 +19,6 @@ import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class StockMovementEntryTest {
 
   @Test
@@ -36,15 +36,9 @@ public class StockMovementEntryTest {
         .build();
     stockMovementItem.setStockCard(stockCard);
 
-    Lot lot = new Lot();
-    lot.setProduct(stockCard.getProduct());
-    lot.setLotNumber("ABC");
-    lot.setExpirationDate(DateUtil.parseString("2020-10-31", DateUtil.DB_DATE_FORMAT));
+    Lot lot = getMockLot(stockCard, "lot-1", "2020-10-31");
 
-    Lot lot2 = new Lot();
-    lot2.setProduct(stockCard.getProduct());
-    lot2.setLotNumber("DEF");
-    lot2.setExpirationDate(DateUtil.parseString("2020-11-31", DateUtil.DB_DATE_FORMAT));
+    Lot lot2 = getMockLot(stockCard, "DEF", "2020-11-31");
 
     LotMovementItem lotMovementItem1 = new LotMovementItemBuilder()
         .setStockMovementItem(stockMovementItem)
@@ -73,11 +67,60 @@ public class StockMovementEntryTest {
     assertEquals(entry.getOccurred(), "2016-01-01");
     assertEquals(entry.getDocumentationNo(), "123");
     assertEquals(entry.getLotEventList().size(), 2);
-    assertEquals(entry.getLotEventList().get(0).getLotNumber(), "ABC");
+    assertEquals(entry.getLotEventList().get(0).getLotNumber(), "lot-1");
     assertEquals(entry.getLotEventList().get(0).getExpirationDate(), "2020-10-31");
     assertEquals(entry.getLotEventList().get(0).getQuantity(), 30L);
     assertEquals(entry.getLotEventList().get(0).getSoh(), 50);
     assertEquals(entry, entry1);
     assertNotEquals(entry.getLotEventList().get(0), entry.getLotEventList().get(1));
+  }
+
+  @Test
+  public void shouldCreateStockMovementEntryForInventory() {
+    // given
+    StockCard stockCard = StockCardBuilder.buildStockCard();
+    StockMovementItem stockMovementItem = new StockMovementItemBuilder()
+        .withMovementDate("2016-1-1")
+        .withMovementReason("DAMAGED")
+        .withMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST)
+        .withStockOnHand(100)
+        .withQuantity(50)
+        .build();
+    stockMovementItem.setStockCard(stockCard);
+    Lot lot = getMockLot(stockCard, "ABC", "2020-10-11");
+
+    LotMovementItem lotMovementItem = new LotMovementItemBuilder()
+        .setStockMovementItem(stockMovementItem)
+        .setLot(lot)
+        .setStockOnHand(50L)
+        .setReason("INVENTORY_POSITIVE")
+        .setMovementQuantity(30L)
+        .build();
+
+    stockMovementItem
+        .setLotMovementItemListWrapper(newArrayList(lotMovementItem));
+
+    // when
+    StockMovementEntry entry = new StockMovementEntry(stockMovementItem);
+
+    // then
+    assertEquals(entry.getProductCode(), "productCode");
+    assertEquals(entry.getQuantity(), 50);
+    assertEquals(entry.getOccurred(), "2016-01-01");
+    assertEquals(entry.getType(), "ADJUSTMENT");
+    assertEquals(entry.getLotEventList().size(), 1);
+    assertEquals(entry.getLotEventList().get(0).getLotNumber(), "ABC");
+    assertEquals(entry.getLotEventList().get(0).getExpirationDate(), "2020-10-11");
+    assertEquals(entry.getLotEventList().get(0).getQuantity(), 30L);
+    assertEquals(entry.getLotEventList().get(0).getSoh(), 50);
+  }
+
+  @NotNull
+  private Lot getMockLot(StockCard stockCard, String lotNumber, String expireDate) {
+    Lot lot = new Lot();
+    lot.setProduct(stockCard.getProduct());
+    lot.setLotNumber(lotNumber);
+    lot.setExpirationDate(DateUtil.parseString(expireDate, DateUtil.DB_DATE_FORMAT));
+    return lot;
   }
 }

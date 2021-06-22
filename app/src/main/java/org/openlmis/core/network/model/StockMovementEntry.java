@@ -18,6 +18,15 @@
 
 package org.openlmis.core.network.model;
 
+import static org.openlmis.core.manager.MovementReasonManager.INVENTORY_NEGATIVE;
+import static org.openlmis.core.manager.MovementReasonManager.INVENTORY_POSITIVE;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.ADJUSTMENT;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.NEGATIVE_ADJUST;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.POSITIVE_ADJUST;
+import static org.openlmis.core.manager.MovementReasonManager.UNPACK_KIT;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -49,12 +58,35 @@ public class StockMovementEntry {
     this.setOccurred(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
     this.setDocumentationNo(stockMovementItem.getDocumentNumber());
     this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
-    this.setType(stockMovementItem.getMovementType().toString());
+    this.setType(getMovementType(stockMovementItem));
     this.setSoh(stockMovementItem.getStockOnHand());
     this.setQuantity(stockMovementItem.getMovementQuantity());
     if (stockMovementItem.getLotMovementItemListWrapper() != null) {
       lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper())
           .transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());
     }
+  }
+
+  private String getMovementType(StockMovementItem stockMovementItem) {
+    if (isPhysicalInventory(stockMovementItem)) {
+      return PHYSICAL_INVENTORY.toString();
+    } else if (stockMovementItem.getMovementType() == NEGATIVE_ADJUST
+        || stockMovementItem.getMovementType() == POSITIVE_ADJUST) {
+      return ADJUSTMENT.toString();
+    } else if (isUnpack(stockMovementItem)) {
+      return UNPACK_KIT;
+    }
+    return stockMovementItem.getMovementType().toString();
+  }
+
+  private boolean isPhysicalInventory(StockMovementItem stockMovementItem) {
+    return stockMovementItem.getMovementType() == PHYSICAL_INVENTORY
+        || stockMovementItem.getReason().equalsIgnoreCase(INVENTORY_POSITIVE)
+        || stockMovementItem.getReason().equalsIgnoreCase(INVENTORY_NEGATIVE);
+  }
+
+  private boolean isUnpack(StockMovementItem stockMovementItem) {
+    return stockMovementItem.getMovementType() == ISSUE
+        && stockMovementItem.getReason() == UNPACK_KIT;
   }
 }

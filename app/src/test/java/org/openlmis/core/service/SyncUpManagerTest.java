@@ -33,6 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
+import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.inject.AbstractModule;
 import java.sql.SQLException;
@@ -40,6 +41,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,7 +90,6 @@ import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.schedulers.Schedulers;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class SyncUpManagerTest {
 
   private RnrFormRepository mockedRnrFormRepository;
@@ -101,6 +102,8 @@ public class SyncUpManagerTest {
   private SyncUpManager syncUpManager;
   private ProgramDataFormRepository mockedProgramDataFormRepository;
   private DirtyDataRepository mockedDirtyDataRepository;
+  private String  facilityID = UUID.randomUUID().toString();
+  private String productCode =  "08N04Z";
 
   @Before
   public void setup() throws LMISException {
@@ -124,7 +127,7 @@ public class SyncUpManagerTest {
 
     User user = new User("user", "123");
     user.setFacilityCode("FC1");
-    user.setFacilityId("123");
+    user.setFacilityId(facilityID);
     UserInfoMgr.getInstance().setUser(user);
 
     RxAndroidPlugins.getInstance().reset();
@@ -233,6 +236,7 @@ public class SyncUpManagerTest {
     try {
       syncUpManager.syncStockCards();
     } catch (RuntimeException e) {
+      Log.i("test", String.valueOf(e));
     }
     stockRepository.refresh(stockCard);
     List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
@@ -262,6 +266,7 @@ public class SyncUpManagerTest {
     item.setStockOnHand(-1);
     item.setMovementDate(DateUtil.today());
     item.setMovementType(MovementReasonManager.MovementType.RECEIVE);
+    item.setReason("DISTRICT_DDM");
     item.setStockCard(stockCard);
     item.setSynced(false);
 
@@ -354,7 +359,7 @@ public class SyncUpManagerTest {
       throws Exception {
     when(mockedSharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
     syncUpManager.syncUpUnSyncedStockCardCodes();
-    verify(mockedLmisRestApi).syncUpUnSyncedStockCards("123", new ArrayList<String>());
+    verify(mockedLmisRestApi).syncUpUnSyncedStockCards(facilityID, new ArrayList<String>());
     verify(mockedSharedPreferenceMgr).setLastMovementHandShakeDateToToday();
   }
 
@@ -362,7 +367,7 @@ public class SyncUpManagerTest {
   public void shouldRefreshLastSyncStockCardDateWhenHasNoUnSyncedStockCard() throws Exception {
     when(mockedSharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
     syncUpManager.syncUpUnSyncedStockCardCodes();
-    verify(mockedLmisRestApi).syncUpUnSyncedStockCards("123", new ArrayList<String>());
+    verify(mockedLmisRestApi).syncUpUnSyncedStockCards(facilityID, new ArrayList<String>());
     verify(mockedSharedPreferenceMgr).setStockLastSyncTime();
   }
 
@@ -370,7 +375,7 @@ public class SyncUpManagerTest {
   public void shouldNotSyncUpWhenHasSyncedUpLastDay() throws LMISException {
     when(mockedSharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(true);
     syncUpManager.syncUpUnSyncedStockCardCodes();
-    verify(mockedLmisRestApi, never()).syncUpUnSyncedStockCards("123", new ArrayList<String>());
+    verify(mockedLmisRestApi, never()).syncUpUnSyncedStockCards(facilityID, new ArrayList<String>());
     verify(mockedSharedPreferenceMgr, never()).setLastMovementHandShakeDateToToday();
   }
 
@@ -429,11 +434,11 @@ public class SyncUpManagerTest {
 
   @Test
   public void shouldSyncDeletedProductToWeb() throws Exception {
-    String unSyncedProductCode = "08N04Z";
+    String unSyncedProductCode = productCode;
     SyncUpDeletedMovementResponse response = new SyncUpDeletedMovementResponse();
     response.setErrorCodes(newArrayList(unSyncedProductCode));
 
-    String unSyncedProductCode1 = "08N04Z";
+    String unSyncedProductCode1 = productCode;
     SyncUpDeletedMovementResponse response1 = new SyncUpDeletedMovementResponse();
     response1.setErrorCodes(newArrayList(unSyncedProductCode1));
 
@@ -455,11 +460,11 @@ public class SyncUpManagerTest {
 
   @Test
   public void shouldKeepNotSyncedWhenSyncDeletedProductToWebError() throws Exception {
-    String unSyncedProductCode = "08N04Z";
+    String unSyncedProductCode = productCode;
     SyncUpDeletedMovementResponse response = new SyncUpDeletedMovementResponse();
     response.setErrorCodes(newArrayList(unSyncedProductCode));
 
-    String unSyncedProductCode1 = "08N04Z";
+    String unSyncedProductCode1 = productCode;
     SyncUpDeletedMovementResponse response1 = new SyncUpDeletedMovementResponse();
     response1.setErrorCodes(newArrayList(unSyncedProductCode1));
 
@@ -484,7 +489,7 @@ public class SyncUpManagerTest {
     List<DirtyDataItemInfo> list = new ArrayList<>();
     DirtyDataItemInfo dirtyDataItemInfo = new DirtyDataItemInfo();
     dirtyDataItemInfo.setSynced(false);
-    dirtyDataItemInfo.setProductCode("08N04Z");
+    dirtyDataItemInfo.setProductCode(productCode);
     String json08N04Z = JsonFileReader.readString(getClass(), "delete_08N04Z.json");
     dirtyDataItemInfo.setJsonData(json08N04Z);
     list.add(dirtyDataItemInfo);

@@ -31,6 +31,11 @@ public class LotMovementItemBuilder {
     return this;
   }
 
+  public LotMovementItemBuilder setReason(String reason) {
+    lotMovementItem.setReason(reason);
+    return this;
+  }
+
   public LotMovementItemBuilder setStockMovementItem(StockMovementItem stockMovementItem) {
     lotMovementItem.setStockMovementItem(stockMovementItem);
     return this;
