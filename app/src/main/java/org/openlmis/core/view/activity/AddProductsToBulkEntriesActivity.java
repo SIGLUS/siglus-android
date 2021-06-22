@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -67,7 +68,6 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    rvProducts = this.findViewById(R.id.bulk_entries_products);
     initRecyclerView();
     loading(getString(R.string.add_products_loading_message));
     previouslyProductCodes = (List<String>) getIntent()
@@ -107,6 +107,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
       }
       Intent intent = new Intent();
       intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
+      setResult(Activity.RESULT_OK,intent);
       finish();
     };
   }

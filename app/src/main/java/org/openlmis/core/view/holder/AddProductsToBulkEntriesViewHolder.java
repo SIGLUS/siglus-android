@@ -20,9 +20,12 @@ package org.openlmis.core.view.holder;
 
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.TextStyleUtil;
+import org.openlmis.core.view.viewmodel.NonBasicProductsViewModel;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
 import roboguice.inject.InjectView;
 
@@ -33,7 +36,6 @@ public class AddProductsToBulkEntriesViewHolder extends BaseViewHolder {
 
   @InjectView(R.id.tv_product_name)
   private TextView productName;
-
 
   @InjectView(R.id.tv_product_type)
   private TextView productType;
@@ -47,6 +49,16 @@ public class AddProductsToBulkEntriesViewHolder extends BaseViewHolder {
     checkBox.setChecked(viewModel.isChecked());
     productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,viewModel.getStyledProductName()));
     productType.setText(viewModel.getProduct().getType());
+  }
+
+  @NonNull
+  private CompoundButton.OnCheckedChangeListener setCheckedProductListener(
+      final ProductsToBulkEntriesViewModel viewModel) {
+    return (buttonView, isChecked) -> viewModel.setChecked(isChecked);
+  }
+
+  public void putOnChangedListener(ProductsToBulkEntriesViewModel viewModel) {
+    checkBox.setOnCheckedChangeListener(setCheckedProductListener(viewModel));
   }
 
 

@@ -18,7 +18,13 @@
 
 package org.openlmis.core.view.viewmodel;
 
-public class BulkEntriesViewModel {
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
+
+public class BulkEntriesViewModel extends InventoryViewModel{
 
 
+  public BulkEntriesViewModel(StockCard stockCard) {
+    super(stockCard);
+  }
 }

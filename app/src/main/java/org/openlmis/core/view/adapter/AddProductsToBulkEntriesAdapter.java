@@ -58,6 +58,7 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
 
   @Override
   public void onBindViewHolder(@NonNull AddProductsToBulkEntriesViewHolder holder, int position) {
+    holder.putOnChangedListener(filteredList.get(position));
     holder.populate(filteredList.get(position),keyWord);
   }
 

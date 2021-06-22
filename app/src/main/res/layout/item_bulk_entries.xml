@@ -31,7 +31,7 @@
           tools:text="@string/label_dummy_product" />
 
         <TextView
-          android:id="@+id/tv_product_unit"
+          android:id="@+id/tv_product_type"
           style="@style/Text.Gray.Normal"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -43,41 +43,22 @@
         android:id="@+id/ic_trashcan"
         android:layout_width="@dimen/px_63"
         android:layout_height="@dimen/px_63"
+        android:layout_gravity="right"
         android:padding="@dimen/px_10"
-        android:src="@drawable/ic_trashcan"
-        android:layout_gravity="right"/>
+        android:src="@drawable/ic_trashcan" />
 
     </LinearLayout>
 
-    <LinearLayout
-      android:id="@+id/ll_lot_information"
+    <org.openlmis.core.view.widget.BulkEntriesLotListView
+      android:id="@+id/rv_bulk_entries_lots"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/margin_normal"
-      android:orientation="vertical">
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hint_lot_info"
-        android:textSize="10sp" />
-
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_lots"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <View
-      android:layout_width="match_parent"
-      android:layout_height="0.1dp"
-      android:background="@color/alphabet_background_border_color" />
+      android:layout_height="wrap_content" />
 
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/margin_normal"
-      android:layout_marginTop="@dimen/margin_normal">
+      android:layout_marginTop="@dimen/margin_normal"
+      android:layout_marginBottom="@dimen/margin_normal">
 
       <TextView
         android:id="@+id/btn_add_new_lot"
@@ -86,14 +67,13 @@
         android:layout_weight="1"
         android:layout_marginLeft="@dimen/margin_larger"
         android:layout_marginRight="@dimen/margin_normal"
-        android:gravity="center"
         android:background="@drawable/border_round_blue"
+        android:gravity="center"
         android:text="@string/btn_bulk_entries_add_new_lot"
         android:textColor="@color/color_accent"
         android:textSize="16sp" />
 
       <TextView
-        android:visibility="gone"
         android:id="@+id/btn_initial_inventory_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -101,7 +81,8 @@
         android:background="@drawable/border_round_blue"
         android:text="@string/btn_edit"
         android:textColor="@color/color_accent"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:visibility="gone" />
 
       <TextView
         android:id="@+id/btn_no_stock"
@@ -110,11 +91,17 @@
         android:layout_weight="1"
         android:layout_marginLeft="@dimen/margin_normal"
         android:layout_marginRight="@dimen/margin_larger"
-        android:gravity="center"
         android:background="@drawable/border_round_blue"
+        android:gravity="center"
         android:text="@string/btn_done"
         android:textColor="@color/color_accent"
         android:textSize="16sp" />
     </LinearLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="0.1dp"
+      android:background="@color/alphabet_background_border_color" />
+
   </LinearLayout>
 </androidx.cardview.widget.CardView>

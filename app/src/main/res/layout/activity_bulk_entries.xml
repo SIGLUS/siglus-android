@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  xmlns:tools="http://schemas.android.com/tools">
 
 
   <ImageView
@@ -15,8 +15,8 @@
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintVertical_chainStyle="packed">
-
   </ImageView>
+
   <TextView
     android:id="@+id/msg_no_product"
     android:layout_width="wrap_content"
@@ -29,5 +29,22 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintTop_toTopOf="parent">
   </TextView>
+
+  <TextView
+    android:id="@+id/tv_total"
+    style="@style/Inventory.TextTotal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toTopOf="@+id/rv_bulk_entries_product"
+    tools:text="Total: 136"/>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_bulk_entries_product"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:scrollbars="vertical"
+    app:layout_constraintTop_toBottomOf="@id/tv_total"
+    app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
