@@ -88,7 +88,7 @@ public class SyncDownManagerIT {
         .getInstance(StockRepository.class);
     lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(LotRepository.class);
-      regimenRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    regimenRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(RegimenRepository.class);
     programDataFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(ProgramDataFormRepository.class);
@@ -151,13 +151,11 @@ public class SyncDownManagerIT {
     String authSuccessResponse = JsonFileReader.readJson(getClass(), "AuthSuccessResponse.json");
     String V3ProductsResponseAdapterResponse = JsonFileReader
         .readJson(getClass(), "V3ProductsResponseAdapterTest.json");
-    String regimenJson = JsonFileReader.readJson(getClass(),"fetchRegimenResponse.json");
-    String facilityInfoJson = JsonFileReader
-        .readJson(getClass(),"fetchFacilityInfoResponse.json");
+    String regimenJson = JsonFileReader.readJson(getClass(), "fetchRegimenResponse.json");
+    String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
 
     lmisRestManager.addNewMockedResponse(
-        "/api/oauth/token?grant_type=password&username=cs_gelo&password=password", 200, "OK",
-        authSuccessResponse);
+        "/api/oauth/token?grant_type=password&username=cs_gelo&password=password", 200, "OK", authSuccessResponse);
     lmisRestManager.addNewMockedResponse(
         "/rest-api/programData/facilities/" + getDefaultUser().getFacilityId(), 200, "OK",
         rapidTestsResponseJson);
@@ -185,7 +183,7 @@ public class SyncDownManagerIT {
     lmisRestManager.addNewMockedResponse("/rest-api/latest-products", 200, "OK", json);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/products", 200, "OK",
         V3ProductsResponseAdapterResponse);
-    lmisRestManager.addNewMockedResponse("/api/siglusapi/android/regimens",200,"OK",regimenJson);
+    lmisRestManager.addNewMockedResponse("/api/siglusapi/android/regimens", 200, "OK", regimenJson);
     lmisRestManager.addNewMockedResponse(
         "/api/siglusapi/android/me/facility", 200, "OK", facilityInfoJson);
   }
@@ -237,24 +235,26 @@ public class SyncDownManagerIT {
     assertEquals(4, reportTypeForms.size());
   }
 
-    @Test
-    public void shouldSyncDownRegimens() throws Exception {
-        // given
-        String regimenJson = JsonFileReader.readJson(getClass(),"fetchRegimenResponse.json");
-        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/api/siglusapi/android/regimens",200,"OK",regimenJson,RuntimeEnvironment.application);
-        mockResponse(lmisRestManager);
-        syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+  @Test
+  public void shouldSyncDownRegimens() throws Exception {
+    // given
+    String regimenJson = JsonFileReader.readJson(getClass(), "fetchRegimenResponse.json");
+    LMISRestManagerMock lmisRestManager = LMISRestManagerMock
+        .getRestManagerWithMockClient("/api/siglusapi/android/regimens", 200, "OK", regimenJson,
+            RuntimeEnvironment.application);
+    mockResponse(lmisRestManager);
+    syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
-        // when
-        SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
-        syncDownManager.syncDownServerData(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        List<Regimen> regimenList = regimenRepository.listDefaultRegime();
+    // when
+    SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+    syncDownManager.syncDownServerData(subscriber);
+    subscriber.awaitTerminalEvent();
+    subscriber.assertNoErrors();
+    List<Regimen> regimenList = regimenRepository.listDefaultRegime();
 
-        // then
-        assertEquals(93,regimenList.size());
-    }
+    // then
+    assertEquals(93, regimenList.size());
+  }
 
 
   @Ignore

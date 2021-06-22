@@ -18,7 +18,7 @@
 
 package org.openlmis.core.view.fragment;
 
-import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.ACTIVE;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -157,7 +157,7 @@ public class StockCardListFragment extends BaseFragment implements
   }
 
   protected void loadStockCards() {
-    presenter.loadStockCards(Active);
+    presenter.loadStockCards(ACTIVE);
   }
 
   @NonNull

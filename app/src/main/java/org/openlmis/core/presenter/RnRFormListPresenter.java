@@ -169,7 +169,7 @@ public class RnRFormListPresenter extends Presenter {
 
   private String getRnrFormSyncError(long rnrId) {
     List<SyncError> syncErrorList = syncErrorsRepository
-        .getBySyncTypeAndObjectId(SyncType.RnRForm, rnrId);
+        .getBySyncTypeAndObjectId(SyncType.RNR_FORM, rnrId);
     if (null == syncErrorList || syncErrorList.isEmpty()) {
       return null;
     }

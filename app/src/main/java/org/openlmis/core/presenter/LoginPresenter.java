@@ -171,7 +171,7 @@ public class LoginPresenter extends Presenter {
   }
 
   private void setDefaultReportType() {
-    if (SharedPreferenceMgr.getInstance().getReportTypesData() == null) {
+    if (SharedPreferenceMgr.getInstance().getReportTypesData().isEmpty()) {
       try {
         List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
         SharedPreferenceMgr.getInstance().setReportTypesData(reportTypeForms);

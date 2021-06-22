@@ -20,13 +20,16 @@ package org.openlmis.core.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.io.Serializable;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @DatabaseTable(tableName = "program_data_form_signatures")
-public class ProgramDataFormSignature extends Signature {
+public class ProgramDataFormSignature extends Signature implements Serializable {
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   ProgramDataForm form;

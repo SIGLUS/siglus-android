@@ -130,8 +130,8 @@ public class RnRFormListPresenterTest {
     when(rnrFormRepository.listInclude(any(RnRForm.Emergency.class), anyString(), anyObject()))
         .thenReturn(rnRForms);
     when(syncErrorsRepository.getBySyncTypeAndObjectId(any(SyncType.class), anyLong()))
-        .thenReturn(Arrays.asList(new SyncError("Error1", SyncType.RnRForm, 1),
-            new SyncError("Error2", SyncType.RnRForm, 1)));
+        .thenReturn(Arrays.asList(new SyncError("Error1", SyncType.RNR_FORM, 1),
+            new SyncError("Error2", SyncType.RNR_FORM, 1)));
 
     ReportTypeForm reportTypeForm = new ReportTypeFormBuilder().
         setActive(true).

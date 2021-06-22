@@ -40,11 +40,11 @@ public class SyncErrorsPresenter extends Presenter {
   }
 
   public boolean hasRnrSyncError() {
-    return hasSyncError(SyncType.RnRForm);
+    return hasSyncError(SyncType.RNR_FORM);
   }
 
   public boolean hasStockCardSyncError() {
-    return hasSyncError(SyncType.StockCards);
+    return hasSyncError(SyncType.STOCK_CARDS);
   }
 
   private boolean hasSyncError(SyncType syncType) {

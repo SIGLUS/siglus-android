@@ -9,8 +9,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
-import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Archived;
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.ACTIVE;
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.ARCHIVED;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.inject.AbstractModule;
@@ -87,8 +87,8 @@ public class StockCardPresenterTest {
 
   @Test
   public void shouldLoadActiveOrArchivedStockCards() throws Exception {
-    testLoadStockCard(Archived);
-    testLoadStockCard(Active);
+    testLoadStockCard(ARCHIVED);
+    testLoadStockCard(ACTIVE);
   }
 
   @Test
@@ -106,7 +106,7 @@ public class StockCardPresenterTest {
     presenter.afterLoadHandler = afterLoadHandler;
 
     // when
-    presenter.loadStockCards(StockCardPresenter.ArchiveStatus.Active);
+    presenter.loadStockCards(StockCardPresenter.ArchiveStatus.ACTIVE);
     afterLoadHandler.awaitTerminalEvent();
 
     //then
@@ -122,7 +122,7 @@ public class StockCardPresenterTest {
     TestSubscriber<List<StockCard>> afterLoadHandler = new TestSubscriber<>();
     presenter.afterLoadHandler = afterLoadHandler;
 
-    presenter.loadStockCards(StockCardPresenter.ArchiveStatus.Active);
+    presenter.loadStockCards(StockCardPresenter.ArchiveStatus.ACTIVE);
     afterLoadHandler.awaitTerminalEvent();
 
     assertEquals(2, afterLoadHandler.getOnNextEvents().get(0).size());
@@ -138,7 +138,7 @@ public class StockCardPresenterTest {
 
     ArrayList<Product> kits = new ArrayList<>();
     kits.add(kit);
-    when(productRepository.listActiveProducts(IsKit.Yes)).thenReturn(kits);
+    when(productRepository.listActiveProducts(IsKit.YES)).thenReturn(kits);
     when(stockRepository.queryStockCardByProductId(123)).thenReturn(null);
 
     //when

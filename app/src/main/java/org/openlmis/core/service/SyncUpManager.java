@@ -178,13 +178,13 @@ public class SyncUpManager {
 
     Observable.from(forms).filter(rnRForm -> {
       try {
-        syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
+        syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, rnRForm.getId());
         Log.d(TAG, "===> SyncRnr : synced ->");
         return true;
       } catch (Exception e) {
         Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
         new LMISException(e, "SyncUpManager:fakeSyncRnr,sync failed").reportToFabric();
-        syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RnRForm, rnRForm.getId()));
+        syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RNR_FORM, rnRForm.getId()));
         return false;
       }
     }).subscribe(this::markRnrFormSynced);
@@ -221,9 +221,9 @@ public class SyncUpManager {
       }
 
       markStockDataSynced(shouldMarkSyncedItems);
-      syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
+      syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.STOCK_CARDS, 0L);
       if (!response.getErrorProductCodes().isEmpty()) {
-        syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.SyncMovement, 2L);
+        syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.SYNC_MOVEMENT, 2L);
         saveStockMovementErrors(response);
         return false;
       }
@@ -232,7 +232,7 @@ public class SyncUpManager {
       return true;
     } catch (LMISException exception) {
       new LMISException(exception, "SyncUpManager.syncStockCards").reportToFabric();
-      syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.StockCards, 0L));
+      syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.STOCK_CARDS, 0L));
       Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
       return false;
     }
@@ -244,7 +244,7 @@ public class SyncUpManager {
     EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, syncErrorProduct.toString()));
     sharedPreferenceMgr.setStockMovementSyncError(syncErrorProduct.toString());
     syncErrorsRepository
-        .save(new SyncError(response.getErrorProductCodes().toString(), SyncType.SyncMovement, 2L));
+        .save(new SyncError(response.getErrorProductCodes().toString(), SyncType.SYNC_MOVEMENT, 2L));
   }
 
   public boolean fakeSyncStockCards() {
@@ -254,12 +254,12 @@ public class SyncUpManager {
         return false;
       }
       markStockDataSynced(stockMovementItems);
-      syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
+      syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.STOCK_CARDS, 0L);
       Log.d(TAG, "===> SyncStockMovement : synced");
       return true;
     } catch (LMISException exception) {
       new LMISException(exception, "SyncUpManager.fakeSyncStockCards").reportToFabric();
-      syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.StockCards, 0L));
+      syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.STOCK_CARDS, 0L));
       Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
       return false;
     }
@@ -414,13 +414,13 @@ public class SyncUpManager {
       } else {
         lmisRestApi.submitRequisition(rnRForm);
       }
-      syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
+      syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, rnRForm.getId());
       Log.d(TAG, "===> SyncRnr : synced ->");
       return true;
     } catch (LMISException e) {
       new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
       Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
-      syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RnRForm, rnRForm.getId()));
+      syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RNR_FORM, rnRForm.getId()));
       return false;
     }
   }

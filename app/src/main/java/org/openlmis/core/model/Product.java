@@ -77,7 +77,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
   private ForeignCollection<Lot> lotList;
 
 
-  List<KitProduct> kitProductList = new ArrayList<>();
+  transient List<KitProduct> kitProductList = new ArrayList<>();
 
   @Override
   public boolean equals(Object o) {
@@ -98,8 +98,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
   }
 
   public String getProductNameWithoutStrengthAndType() {
-    String primaryName = getPrimaryName();
-    return primaryName.replace(getStrength() + getType(), "");
+    return getPrimaryName().replace(getStrength() + getType(), "");
   }
 
   public String getProductFullName() {
@@ -125,17 +124,17 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
   }
 
   public enum IsKit {
-    Yes(true),
-    No(false);
+    YES(true),
+    NO(false);
 
     public boolean isKit() {
-      return isKit;
+      return kit;
     }
 
-    private final boolean isKit;
+    private final boolean kit;
 
-    IsKit(boolean isKit) {
-      this.isKit = isKit;
+    IsKit(boolean kit) {
+      this.kit = kit;
     }
   }
 

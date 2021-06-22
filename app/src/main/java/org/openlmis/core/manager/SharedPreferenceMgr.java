@@ -27,10 +27,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -94,7 +96,7 @@ public class SharedPreferenceMgr {
   public static final String KEY_DELETED_PRODUCT_TIME = "deleted_product_time";
   public static final String KEY_KEEP_MOVEMENT_LINE = "keep_movement_line";
 
-  final int monthOffset = 13;
+  static final int MONTH_OFFSET = 13;
   protected StockRepository stockRepository;
 
   @Inject
@@ -202,10 +204,10 @@ public class SharedPreferenceMgr {
       try {
         return gson.fromJson(json, type);
       } catch (Exception exception) {
-        return null;
+        return Collections.emptyList();
       }
     }
-    return null;
+    return Collections.emptyList();
 
   }
 
@@ -278,20 +280,20 @@ public class SharedPreferenceMgr {
 
   public void removeShowUpdateBannerTextWhenReactiveProduct(String primaryName) {
     Set<String> stringSet = sharedPreferences
-        .getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
+        .getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<>());
     stringSet.remove(primaryName);
-    if (stringSet.size() == 0) {
+    if (stringSet.isEmpty()) {
       sharedPreferences.edit().putBoolean(KEY_SHOW_PRODUCT_UPDATE_BANNER, false).apply();
     }
   }
 
   public Set<String> getShowUpdateBannerTexts() {
-    return sharedPreferences.getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
+    return sharedPreferences.getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<>());
   }
 
   public void addShowUpdateBannerText(String productName) {
     Set<String> stringSet = sharedPreferences
-        .getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
+        .getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<>());
     stringSet.add(productName);
     sharedPreferences.edit().putStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, stringSet).apply();
   }
@@ -320,7 +322,7 @@ public class SharedPreferenceMgr {
   }
 
   public int getMonthOffsetThatDefinedOldData() {
-    return sharedPreferences.getInt(MONTH_OFFSET_DEFINED_OLD_DATA, monthOffset);
+    return sharedPreferences.getInt(MONTH_OFFSET_DEFINED_OLD_DATA, MONTH_OFFSET);
   }
 
   public void setStockLastSyncTime() {
@@ -504,7 +506,7 @@ public class SharedPreferenceMgr {
   }
 
   public void setKeepMovementItemsMap(
-      HashMap<String, List<StockMovementItem>> keepStockMovementItemsMap) {
+      Map<String, List<StockMovementItem>> keepStockMovementItemsMap) {
     HashMap<String, List<StockMovementItem>> keepMovementMap = new HashMap<>();
     if (!keepStockMovementItemsMap.isEmpty()) {
       keepMovementMap.putAll(getKeepMovementItemsMap());
@@ -515,7 +517,7 @@ public class SharedPreferenceMgr {
     sharedPreferences.edit().putString(KEY_KEEP_MOVEMENT_LINE, json).apply();
   }
 
-  public HashMap<String, List<StockMovementItem>> getKeepMovementItemsMap() {
+  public Map<String, List<StockMovementItem>> getKeepMovementItemsMap() {
     String json = sharedPreferences.getString(KEY_KEEP_MOVEMENT_LINE, null);
     if (json != null) {
       Gson gson = new GsonBuilder().create();

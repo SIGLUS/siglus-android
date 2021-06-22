@@ -109,7 +109,7 @@ public class ALRequisitionPresenterTest {
   public void shouldInitALViewModel() throws LMISException {
     RnRForm rnRForm = mock(RnRForm.class);
     when(mockALRepository.queryRnRForm(1L)).thenReturn(rnRForm);
-    when(rnRForm.getRnrItems(Product.IsKit.No)).thenReturn(new ArrayList<RnrFormItem>());
+    when(rnRForm.getRnrItems(Product.IsKit.NO)).thenReturn(new ArrayList<RnrFormItem>());
 
     RnrFormItem rnrKitItem1 = new RnrFormItemBuilder()
         .setProduct(new ProductBuilder().setCode("26A01").build())
@@ -122,7 +122,7 @@ public class ALRequisitionPresenterTest {
         .setIssued((long) 110)
         .build();
     List<RnrFormItem> rnrFormItems = Lists.newArrayList(rnrKitItem1, rnrKitItem2);
-    when(rnRForm.getRnrItems(Product.IsKit.Yes)).thenReturn(rnrFormItems);
+    when(rnRForm.getRnrItems(Product.IsKit.YES)).thenReturn(rnrFormItems);
     TestSubscriber<RnRForm> testSubscriber = new TestSubscriber<>();
     alRequisitionPresenter.getRnrFormObservable(1L).subscribe(testSubscriber);
     testSubscriber.awaitTerminalEvent();

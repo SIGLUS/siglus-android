@@ -18,7 +18,7 @@
 
 package org.openlmis.core.presenter;
 
-import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.ACTIVE;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.util.Log;
@@ -175,7 +175,7 @@ public class StockCardPresenter extends Presenter {
     view.loading();
     Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
       refreshStockCardViewModelsSOH(stockCardId);
-      checkDataAndEmitter(subscriber, Active);
+      checkDataAndEmitter(subscriber, ACTIVE);
     }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Subscriber<List<StockCard>>() {
@@ -303,7 +303,7 @@ public class StockCardPresenter extends Presenter {
   private Observable<List<StockCard>> createOrGetKitStockCardsObservable() {
     return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
       try {
-        final List<Product> kits = productRepository.listActiveProducts(IsKit.Yes);
+        final List<Product> kits = productRepository.listActiveProducts(IsKit.YES);
         subscriber.onNext(createStockCardsIfNotExist(kits));
         subscriber.onCompleted();
       } catch (LMISException e) {
@@ -330,8 +330,8 @@ public class StockCardPresenter extends Presenter {
   }
 
   public enum ArchiveStatus {
-    Archived(true),
-    Active(false);
+    ARCHIVED(true),
+    ACTIVE(false);
 
     private final boolean isArchived;
 

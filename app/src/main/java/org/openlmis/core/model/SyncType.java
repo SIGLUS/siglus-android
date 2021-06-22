@@ -19,5 +19,5 @@
 package org.openlmis.core.model;
 
 public enum SyncType {
-  StockCards, RnRForm, SyncMovement,
+  STOCK_CARDS, RNR_FORM, SYNC_MOVEMENT,
 }

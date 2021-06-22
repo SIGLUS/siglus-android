@@ -23,11 +23,13 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.openlmis.core.utils.HashUtil;
 
 @Builder
 @Data
+@EqualsAndHashCode(callSuper = false)
 @DatabaseTable(tableName = "users")
 @NoArgsConstructor
 @AllArgsConstructor

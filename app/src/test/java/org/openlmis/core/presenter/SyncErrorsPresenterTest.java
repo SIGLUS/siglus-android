@@ -32,8 +32,8 @@ public class SyncErrorsPresenterTest {
 
   @Test
   public void shouldGetSyncErrorsWhenHaveSyncFailed() throws Exception {
-    when(errorsRepository.hasSyncErrorOf(SyncType.RnRForm)).thenReturn(true);
-    when(errorsRepository.hasSyncErrorOf(SyncType.StockCards)).thenReturn(false);
+    when(errorsRepository.hasSyncErrorOf(SyncType.RNR_FORM)).thenReturn(true);
+    when(errorsRepository.hasSyncErrorOf(SyncType.STOCK_CARDS)).thenReturn(false);
     boolean hasRnrSyncError = presenter.hasRnrSyncError();
     boolean hasStockCardsSyncError = presenter.hasStockCardSyncError();
     assertTrue(hasRnrSyncError);

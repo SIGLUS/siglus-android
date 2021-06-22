@@ -88,14 +88,14 @@ public class HomeActivityTest {
         bind(SharedPreferenceMgr.class).toInstance(mockSharedPreferenceMgr);
       }
     });
-    when(mockSharedPreferenceMgr.getReportTypesData()).
-        thenReturn(newArrayList(new ReportTypeBuilder().getMMIAReportTypeForm()));
+    when(mockSharedPreferenceMgr.getReportTypesData())
+        .thenReturn(newArrayList(new ReportTypeBuilder().getMMIAReportTypeForm()));
     activityController = Robolectric.buildActivity(HomeActivity.class);
     homeActivity = activityController.create().get();
   }
 
   @After
-  public void tearDown(){
+  public void tearDown() {
     activityController.pause().stop().destroy();
     RoboGuice.Util.reset();
   }

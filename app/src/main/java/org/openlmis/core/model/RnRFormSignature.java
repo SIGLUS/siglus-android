@@ -21,11 +21,11 @@ package org.openlmis.core.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Data;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@Getter
+@EqualsAndHashCode(callSuper = false)
 @DatabaseTable(tableName = "rnr_form_signature")
 @NoArgsConstructor
 public class RnRFormSignature extends Signature {

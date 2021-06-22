@@ -18,7 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
-import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Archived;
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.ARCHIVED;
 import static org.openlmis.core.view.holder.ArchivedDrugsViewHolder.ArchiveStockCardListener;
 
 import android.content.Context;
@@ -73,7 +73,7 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements
         archiveStockCardListener);
     archivedList.setAdapter(mAdapter);
 
-    presenter.loadStockCards(Archived);
+    presenter.loadStockCards(ARCHIVED);
   }
 
   @Override
@@ -95,7 +95,7 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements
     @Override
     public void archiveStockCardBack(StockCard stockCard) {
       presenter.archiveBackStockCard(stockCard);
-      presenter.loadStockCards(Archived);
+      presenter.loadStockCards(ARCHIVED);
 
       setResult(RESULT_OK);
     }

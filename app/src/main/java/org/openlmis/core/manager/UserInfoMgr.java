@@ -43,7 +43,7 @@ public final class UserInfoMgr {
 
   public void setUser(User user) {
     AppCenter.isEnabled().thenAccept(enable -> {
-      if (enable) {
+      if (Boolean.TRUE.equals(enable)) {
         AppCenter.setUserId(user.getFacilityName());
       }
     });

@@ -69,7 +69,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
     //then
     assertThat(programRepository.list().size(), is(size + 1)); // 1 new TB
-    assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(1));
+    assertThat(productRepository.listActiveProducts(IsKit.NO).size(), is(1));
 
     //when add product to existing program
     Product newProduct = new Product();
@@ -81,8 +81,8 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
     //then
     assertThat(programRepository.list().size(), is(size + 1)); //  1 new TB
-    assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
-    assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(),
+    assertThat(productRepository.listActiveProducts(IsKit.NO).size(), is(2));
+    assertThat(productRepository.listActiveProducts(IsKit.NO).get(1).getPrimaryName(),
         is("Test Product2"));
 
     //when createOrUpdateWithItems existing product
@@ -91,8 +91,8 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
     //then
     assertThat(programRepository.list().size(), is(size + 1)); //  1 new TB
-    assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
-    assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(),
+    assertThat(productRepository.listActiveProducts(IsKit.NO).size(), is(2));
+    assertThat(productRepository.listActiveProducts(IsKit.NO).get(1).getPrimaryName(),
         is("Test Product2 Updated"));
   }
 

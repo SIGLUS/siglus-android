@@ -67,11 +67,11 @@ public class RnRFormTest {
 
     rnRForm.setRnrFormItemListWrapper(newArrayList(rnrProduct, kitRnrProduct));
 
-    List<RnrFormItem> rnrNonKitItems = rnRForm.getRnrItems(IsKit.No);
+    List<RnrFormItem> rnrNonKitItems = rnRForm.getRnrItems(IsKit.NO);
     assertEquals(1, rnrNonKitItems.size());
     assertFalse(rnrNonKitItems.get(0).getProduct().isKit());
 
-    List<RnrFormItem> rnrKitItems = rnRForm.getRnrItems(IsKit.Yes);
+    List<RnrFormItem> rnrKitItems = rnRForm.getRnrItems(IsKit.YES);
     assertEquals(1, rnrKitItems.size());
     assertTrue(rnrKitItems.get(0).getProduct().isKit());
 

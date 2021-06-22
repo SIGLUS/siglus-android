@@ -149,7 +149,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     if (requisitionFormItemViewModels.size() > 0) {
       return requisitionFormItemViewModels;
     }
-    return from(form.getRnrItems(IsKit.No)).transform(item -> {
+    return from(form.getRnrItems(IsKit.NO)).transform(item -> {
       RequisitionFormItemViewModel requisitionFormItemViewModel = new RequisitionFormItemViewModel(
           item);
       if (!isHistoryForm()) {
@@ -223,7 +223,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
   private void convertRnrToViewModel(RnRForm rnrForm) throws LMISException {
     requisitionFormItemViewModels.clear();
     requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
-    viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
+    viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.YES));
   }
 
   public void populateAdditionalDrugsViewModels(List<RnrFormItem> addedDrugInVIAs,

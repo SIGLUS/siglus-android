@@ -28,10 +28,10 @@ public class SyncErrorsRepositoryTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldSaveSyncError() throws Exception {
-    SyncError expectSyncError = new SyncError("errorMessage", SyncType.RnRForm, 1l);
+    SyncError expectSyncError = new SyncError("errorMessage", SyncType.RNR_FORM, 1l);
     syncErrorsRepository.save(expectSyncError);
 
-    SyncError actualSyncError = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.RnRForm, 1l)
+    SyncError actualSyncError = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.RNR_FORM, 1l)
         .get(0);
 
     assertThat(expectSyncError.getErrorMessage(), is(actualSyncError.getErrorMessage()));
@@ -41,28 +41,28 @@ public class SyncErrorsRepositoryTest extends LMISRepositoryUnitTest {
   public void shouldDeleteSyncError() throws Exception {
     saveRnRFormError();
 
-    Integer deletedSize = syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, 1l);
+    Integer deletedSize = syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, 1l);
 
     assertThat(deletedSize, is(2));
   }
 
   @Test
   public void shouldGetRnrHasSyncErrorIsFalse() throws Exception {
-    boolean hasRnrSyncError = syncErrorsRepository.hasSyncErrorOf(SyncType.RnRForm);
+    boolean hasRnrSyncError = syncErrorsRepository.hasSyncErrorOf(SyncType.RNR_FORM);
     assertFalse(hasRnrSyncError);
   }
 
   @Test
   public void shouldGetRnrHasSyncErrorIsTrueWhenHaveSyncFailed() throws Exception {
     saveRnRFormError();
-    boolean hasRnrSyncError = syncErrorsRepository.hasSyncErrorOf(SyncType.RnRForm);
+    boolean hasRnrSyncError = syncErrorsRepository.hasSyncErrorOf(SyncType.RNR_FORM);
     assertTrue(hasRnrSyncError);
   }
 
   private void saveRnRFormError() {
-    SyncError syncError1 = new SyncError("errorMessage1", SyncType.RnRForm, 1l);
-    SyncError syncError2 = new SyncError("errorMessage2", SyncType.RnRForm, 1l);
-    SyncError syncError3 = new SyncError("errorMessage3", SyncType.RnRForm, 2l);
+    SyncError syncError1 = new SyncError("errorMessage1", SyncType.RNR_FORM, 1l);
+    SyncError syncError2 = new SyncError("errorMessage2", SyncType.RNR_FORM, 1l);
+    SyncError syncError3 = new SyncError("errorMessage3", SyncType.RNR_FORM, 2l);
     syncErrorsRepository.save(syncError1);
     syncErrorsRepository.save(syncError2);
     syncErrorsRepository.save(syncError3);
