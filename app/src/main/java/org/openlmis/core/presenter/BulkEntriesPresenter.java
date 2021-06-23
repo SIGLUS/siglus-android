@@ -18,7 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import com.google.inject.Inject;
@@ -29,7 +28,6 @@ import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
@@ -37,7 +35,6 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -92,17 +89,8 @@ public class BulkEntriesPresenter extends Presenter {
   }
 
   public List<Long> getAddedProductIds() {
-    //    return from(models)
-//        .filter(viewModel -> {
-//          assert viewModel != null;
-//          return viewModel.getIsAdded();
-//        })
-//        .transform(viewModel -> {
-//          assert viewModel != null;
-//          return viewModel.getProduct().getCode();
-//        })
-//        .toList();
-    return new ArrayList<>();
+    return from(bulkEntriesViewModels).transform(viewModel -> viewModel.getProduct().getId())
+        .toList();
   }
 
   public void addNewProductsToBulkEntriesViewModels(List<Product> addedProducts) {
@@ -120,15 +108,15 @@ public class BulkEntriesPresenter extends Presenter {
                 DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
             lotOnHand.getQuantityOnHand().toString(),
             MovementReasonManager.MovementType.RECEIVE)).toSortedList((lot1, lot2) -> {
-          Date localDate = DateUtil
-              .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-          if (localDate != null) {
-            return localDate.compareTo(DateUtil
+              Date localDate = DateUtil
+                  .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+              if (localDate != null) {
+                return localDate.compareTo(DateUtil
                 .parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-          } else {
-            return 0;
-          }
-        });
+              } else {
+                return 0;
+              }
+            });
     inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
   }
 

@@ -23,7 +23,6 @@ import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.S
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -88,8 +87,6 @@ public class BulkEntriesActivity extends BaseActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     if (item.getItemId() == R.id.action_add_product) {
-//      Intent intent = new Intent(this, AddProductsToBulkEntriesActivity.class);
-//      startActivity(intent);
       openAddProductsActivityForResult();
       return true;
     } else {
@@ -108,7 +105,6 @@ public class BulkEntriesActivity extends BaseActivity {
       new StartActivityForResult(),
       result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
-          Intent data = result.getData();
           addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
           bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
           adapter.refresh();

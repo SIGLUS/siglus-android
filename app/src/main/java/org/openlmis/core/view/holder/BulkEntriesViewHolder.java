@@ -25,7 +25,7 @@ import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.widget.BulkEntriesLotListView;
 import roboguice.inject.InjectView;
 
-public class BulkEntriesViewHolder extends BaseViewHolder{
+public class BulkEntriesViewHolder extends BaseViewHolder {
 
 
   @InjectView(R.id.tv_product_name)

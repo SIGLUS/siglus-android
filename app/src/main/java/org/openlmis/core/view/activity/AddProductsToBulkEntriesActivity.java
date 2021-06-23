@@ -49,7 +49,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
 
   public static final String EMPTY_STRING = "";
   public static final String SELECTED_PRODUCTS = "SELECTED_PRODUCTS";
-  private List<String> previouslyProductCodes;
+  List<String> previouslyProductCodes;
 
   AddProductsToBulkEntriesAdapter adapter;
 

@@ -25,7 +25,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.TextStyleUtil;
-import org.openlmis.core.view.viewmodel.NonBasicProductsViewModel;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
 import roboguice.inject.InjectView;
 
