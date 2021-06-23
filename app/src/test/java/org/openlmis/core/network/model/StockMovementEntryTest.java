@@ -63,7 +63,7 @@ public class StockMovementEntryTest {
 
     // then
     assertEquals(entry.getProductCode(), "productCode");
-    assertEquals(entry.getQuantity(), 50);
+    assertEquals(entry.getQuantity(), -50);
     assertEquals(entry.getOccurred(), "2016-01-01");
     assertEquals(entry.getDocumentationNo(), "123");
     assertEquals(entry.getLotEventList().size(), 2);

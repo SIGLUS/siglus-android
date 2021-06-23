@@ -60,11 +60,18 @@ public class StockMovementEntry {
     this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
     this.setType(getMovementType(stockMovementItem));
     this.setSoh(stockMovementItem.getStockOnHand());
-    this.setQuantity(stockMovementItem.getMovementQuantity());
+    this.setQuantity(getQuantityWithSign(stockMovementItem));
     if (stockMovementItem.getLotMovementItemListWrapper() != null) {
       lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper())
           .transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());
     }
+  }
+
+  private long getQuantityWithSign(StockMovementItem stockMovementItem) {
+    if (stockMovementItem.isNegativeMovement()) {
+      return  - stockMovementItem.getMovementQuantity();
+    }
+    return stockMovementItem.getMovementQuantity();
   }
 
   private String getMovementType(StockMovementItem stockMovementItem) {
