@@ -77,7 +77,6 @@ import rx.schedulers.Schedulers;
 public class SyncDownManager {
 
   private static final int DAYS_OF_MONTH = 30;
-  private static final int MONTHS_OF_YEAR = 12;
   private static final String TAG = SyncDownManager.class.getSimpleName();
 
   public static volatile boolean isSyncing = false;
@@ -182,9 +181,9 @@ public class SyncDownManager {
   private void syncDownFacilityInfo(Subscriber<? super SyncProgress> subscriber)
       throws LMISException {
     try {
-      subscriber.onNext(SyncProgress.SyncingFacilityInfo);
+      subscriber.onNext(SyncProgress.SYNCING_FACILITY_INFO);
       fetchAndSaveFacilityInfo();
-      subscriber.onNext(SyncProgress.FacilityInfoSynced);
+      subscriber.onNext(SyncProgress.FACILITY_INFO_SYNCED);
     } catch (LMISException e) {
       LMISException e1 = new LMISException(
           errorMessage(R.string.msg_fetching_facility_info_failed));
@@ -195,9 +194,9 @@ public class SyncDownManager {
 
   private void syncDownRegimens(Subscriber<? super SyncProgress> subscriber) throws LMISException {
     try {
-      subscriber.onNext(SyncProgress.SyncingRegimens);
+      subscriber.onNext(SyncProgress.SYNCING_REGIMENS);
       fetchAndSaveRegimens();
-      subscriber.onNext(SyncProgress.RegimensSynced);
+      subscriber.onNext(SyncProgress.REGIMENS_SYNCED);
     } catch (LMISException e) {
       LMISException e1 = new LMISException(errorMessage(R.string.msg_fetching_regimens_failed));
       e1.reportToFabric();
@@ -208,9 +207,9 @@ public class SyncDownManager {
 
   private void syncDownService(Subscriber<? super SyncProgress> subscriber) throws LMISException {
     try {
-      subscriber.onNext(SyncProgress.SyncingServiceList);
+      subscriber.onNext(SyncProgress.SYNCING_SERVICE_LIST);
       fetchAndSaveService();
-      subscriber.onNext(SyncProgress.ServiceSynced);
+      subscriber.onNext(SyncProgress.SERVICE_SYNCED);
     } catch (LMISException e) {
       LMISException e1 = new LMISException(errorMessage(R.string.msg_service_lists));
       e1.reportToFabric();
@@ -229,10 +228,10 @@ public class SyncDownManager {
       throws LMISException {
     if (!sharedPreferenceMgr.isRapidTestDataSynced()) {
       try {
-        subscriber.onNext(SyncProgress.SyncingRapidTests);
+        subscriber.onNext(SyncProgress.SYNCING_RAPID_TESTS);
         fetchAndSaveRapidTests();
         sharedPreferenceMgr.setRapidTestsDataSynced(true);
-        subscriber.onNext(SyncProgress.RapidTestsSynced);
+        subscriber.onNext(SyncProgress.RAPID_TESTS_SYNCED);
       } catch (LMISException e) {
         sharedPreferenceMgr.setRapidTestsDataSynced(false);
         LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_rapid_tests_failed));
@@ -260,7 +259,7 @@ public class SyncDownManager {
     return new Subscriber<List<StockCard>>() {
       @Override
       public void onCompleted() {
-
+        // do nothing
       }
 
       @Override
@@ -319,10 +318,10 @@ public class SyncDownManager {
       throws LMISException {
     if (!sharedPreferenceMgr.isRequisitionDataSynced()) {
       try {
-        subscriber.onNext(SyncProgress.SyncingRequisition);
+        subscriber.onNext(SyncProgress.SYNCING_REQUISITION);
         fetchAndSaveRequisition();
         sharedPreferenceMgr.setRequisitionDataSynced(true);
-        subscriber.onNext(SyncProgress.RequisitionSynced);
+        subscriber.onNext(SyncProgress.REQUISITION_SYNCED);
       } catch (LMISException e) {
         sharedPreferenceMgr.setRequisitionDataSynced(false);
         LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_requisition_failed));
@@ -339,7 +338,7 @@ public class SyncDownManager {
       try {
         // 1 re-sync && if(stockRepository.list()!=null) do not goto initial inventory
         // 2 initial inventory
-        subscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
+        subscriber.onNext(SyncProgress.SYNCING_STOCK_CARDS_LAST_MONTH);
         fetchLatestOneMonthMovements();
         sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
@@ -353,14 +352,14 @@ public class SyncDownManager {
     } else {
       dirtyDataManager.initialDirtyDataCheck();
     }
-    subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
+    subscriber.onNext(SyncProgress.STOCK_CARDS_LAST_MONTH_SYNCED);
   }
 
   private void syncDownProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
     try {
-      subscriber.onNext(SyncProgress.SyncingProduct);
+      subscriber.onNext(SyncProgress.SYNCING_PRODUCT);
       fetchAndSaveProductsWithProgramsAndKits();
-      subscriber.onNext(SyncProgress.ProductSynced);
+      subscriber.onNext(SyncProgress.PRODUCT_SYNCED);
     } catch (LMISException e) {
       LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_products_list_failed));
       e1.reportToFabric();
@@ -578,30 +577,30 @@ public class SyncDownManager {
   }
 
   public enum SyncLocalUserProgress {
-    SyncLastSyncProductFail,
-    SyncLastMonthStockDataFail,
-    SyncRequisitionDataFail,
-    SyncLastDataSuccess
+    SYNC_LAST_SYNC_PRODUCT_FAIL,
+    SYNC_LAST_MONTH_STOCK_DATA_FAIL,
+    SYNC_REQUISITION_DATA_FAIL,
+    SYNC_LAST_DATA_SUCCESS
   }
 
   public enum SyncProgress {
-    SyncingFacilityInfo(R.string.msg_fetching_facility_info),
-    SyncingRegimens(R.string.msg_fetching_regimens),
-    SyncingServiceList(R.string.msg_service_lists),
-    SyncingProduct(R.string.msg_fetching_products),
-    SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
-    SyncingRequisition(R.string.msg_sync_requisition_data),
-    SyncingRapidTests,
+    SYNCING_FACILITY_INFO(R.string.msg_fetching_facility_info),
+    SYNCING_REGIMENS(R.string.msg_fetching_regimens),
+    SYNCING_SERVICE_LIST(R.string.msg_service_lists),
+    SYNCING_PRODUCT(R.string.msg_fetching_products),
+    SYNCING_STOCK_CARDS_LAST_MONTH(R.string.msg_sync_stock_movements_data),
+    SYNCING_REQUISITION(R.string.msg_sync_requisition_data),
+    SYNCING_RAPID_TESTS,
 
-    ProductSynced,
-    ServiceSynced,
-    FacilityInfoSynced,
-    RegimensSynced,
-    StockCardsLastMonthSynced,
-    RequisitionSynced,
-    StockCardsLastYearSynced,
-    RapidTestsSynced,
-    ShouldGoToInitialInventory;
+    PRODUCT_SYNCED,
+    SERVICE_SYNCED,
+    FACILITY_INFO_SYNCED,
+    REGIMENS_SYNCED,
+    STOCK_CARDS_LAST_MONTH_SYNCED,
+    REQUISITION_SYNCED,
+    STOCK_CARDS_LAST_YEAR_SYNCED,
+    RAPID_TESTS_SYNCED,
+    SHOULD_GO_TO_INITIAL_INVENTORY;
 
     private int messageCode;
 

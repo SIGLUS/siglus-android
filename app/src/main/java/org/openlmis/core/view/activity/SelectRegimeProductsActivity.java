@@ -140,6 +140,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
   Subscriber<Regimen> saveSubscriber = new Subscriber<Regimen>() {
     @Override
     public void onCompleted() {
+      // do nothing
     }
 
     @Override

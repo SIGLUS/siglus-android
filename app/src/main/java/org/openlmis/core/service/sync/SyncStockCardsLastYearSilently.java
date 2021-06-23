@@ -47,10 +47,6 @@ public class SyncStockCardsLastYearSilently {
   private String facilityId;
   private Scheduler scheduler;
 
-  @Inject
-  public SyncStockCardsLastYearSilently() {
-  }
-
   public Observable<List<StockCard>> performSync() {
     final int monthsInAYear = 12;
     lmisRestApi = LMISApp.getInstance().getRestApi();

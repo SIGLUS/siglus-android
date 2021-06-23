@@ -73,6 +73,7 @@ public abstract class InventoryActivity extends SearchBarActivity implements
     return new Subscriber<List<InventoryViewModel>>() {
       @Override
       public void onCompleted() {
+        // do nothing
       }
 
       @Override

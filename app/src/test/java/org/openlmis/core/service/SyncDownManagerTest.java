@@ -14,13 +14,13 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.FacilityInfoSynced;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.RegimensSynced;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastMonthSynced;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastYearSynced;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingFacilityInfo;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRegimens;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.FACILITY_INFO_SYNCED;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.REGIMENS_SYNCED;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.REQUISITION_SYNCED;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.STOCK_CARDS_LAST_MONTH_SYNCED;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.STOCK_CARDS_LAST_YEAR_SYNCED;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SYNCING_FACILITY_INFO;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SYNCING_REGIMENS;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import android.content.Context;
@@ -162,10 +162,10 @@ public class SyncDownManagerTest {
     subscriber.assertNoErrors();
 
     // then
-    assertThat(subscriber.syncProgresses.get(0), is(SyncingFacilityInfo));
-    assertThat(subscriber.syncProgresses.get(1), is(FacilityInfoSynced));
-    assertThat(subscriber.syncProgresses.get(2),is(SyncingRegimens));
-    assertThat(subscriber.syncProgresses.get(3),is(RegimensSynced));
+    assertThat(subscriber.syncProgresses.get(0), is(SYNCING_FACILITY_INFO));
+    assertThat(subscriber.syncProgresses.get(1), is(FACILITY_INFO_SYNCED));
+    assertThat(subscriber.syncProgresses.get(2),is(SYNCING_REGIMENS));
+    assertThat(subscriber.syncProgresses.get(3),is(REGIMENS_SYNCED));
     // To Do when the following interface was developed
 //        assertThat(subscriber.syncProgresses.get(2), is(SyncingProduct));
 //        assertThat(subscriber.syncProgresses.get(3), is(SyncingStockCardsLastMonth));
@@ -348,16 +348,16 @@ public class SyncDownManagerTest {
 
   private void testSyncProgress(SyncProgress progress) throws SQLException {
     try {
-      if (progress == StockCardsLastMonthSynced) {
+      if (progress == STOCK_CARDS_LAST_MONTH_SYNCED) {
         verifyLastMonthStockCardsSynced();
         verify(sharedPreferenceMgr).setLastMonthStockCardDataSynced(true);
 
       }
-      if (progress == RequisitionSynced) {
+      if (progress == REQUISITION_SYNCED) {
         verify(rnrFormRepository, times(1)).createRnRsWithItems(any(ArrayList.class));
         verify(sharedPreferenceMgr).setRequisitionDataSynced(true);
       }
-      if (progress == StockCardsLastYearSynced) {
+      if (progress == STOCK_CARDS_LAST_YEAR_SYNCED) {
         verify(lmisRestApi, times(13))
             .fetchStockMovementData(anyString(), anyString(), anyString());
         verify(sharedPreferenceMgr).setShouldSyncLastYearStockCardData(false);

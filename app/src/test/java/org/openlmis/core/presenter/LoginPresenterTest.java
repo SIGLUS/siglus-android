@@ -26,7 +26,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.ShouldGoToInitialInventory;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SHOULD_GO_TO_INITIAL_INVENTORY;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.inject.AbstractModule;
@@ -300,7 +300,7 @@ public class LoginPresenterTest {
 
   @Test
   public void shouldShowSyncingStockCardsMessage() {
-    syncSubscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
+    syncSubscriber.onNext(SyncProgress.SYNCING_STOCK_CARDS_LAST_MONTH);
     verify(mockActivity)
         .loading(RuntimeEnvironment.application.getString(R.string.msg_sync_stock_movements_data));
   }
@@ -308,7 +308,7 @@ public class LoginPresenterTest {
   @Test
   public void shouldGoToInitInventoryWhenRequisitionDataSynced() {
     when(mockActivity.needInitInventory()).thenReturn(true);
-    syncSubscriber.onNext(ShouldGoToInitialInventory);
+    syncSubscriber.onNext(SHOULD_GO_TO_INITIAL_INVENTORY);
 
     verify(mockActivity).loaded();
     verify(mockActivity).goToInitInventory();

@@ -62,9 +62,6 @@ public class StockMovementsPresenter extends Presenter {
   @Inject
   private StockMovementRepository stockMovementRepository;
 
-  public StockMovementsPresenter() {
-  }
-
   @Override
   public void attachView(BaseView v) {
     this.view = (StockMovementView) v;
@@ -88,6 +85,7 @@ public class StockMovementsPresenter extends Presenter {
     return new Observer<List<StockMovementViewModel>>() {
       @Override
       public void onCompleted() {
+        // do nothing
       }
 
       @Override
@@ -105,12 +103,13 @@ public class StockMovementsPresenter extends Presenter {
     };
   }
 
+  @SuppressWarnings("squid:S1905")
   protected Observable<List<StockMovementViewModel>> loadStockMovementViewModelsObserver() {
     return Observable.create((Observable.OnSubscribe<List<StockMovementViewModel>>) subscriber -> {
       try {
         List<StockMovementViewModel> list = from(
             stockMovementRepository.listLastFiveStockMovements(stockCard.getId()))
-            .transform(stockMovementItem -> new StockMovementViewModel(stockMovementItem)).toList();
+            .transform(StockMovementViewModel::new).toList();
 
         subscriber.onNext(list);
         subscriber.onCompleted();
@@ -127,7 +126,7 @@ public class StockMovementsPresenter extends Presenter {
     try {
       String code = stockCard.getProduct().getCode();
       List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(code);
-      boolean isUnpackable = stockCard.getProduct().isKit() && kitProducts.size() > 0
+      boolean isUnpackable = stockCard.getProduct().isKit() && !kitProducts.isEmpty()
           && stockCard.getStockOnHand() != 0;
       view.updateUnpackKitMenu(isUnpackable);
     } catch (LMISException e) {

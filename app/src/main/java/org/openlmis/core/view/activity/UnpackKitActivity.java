@@ -65,8 +65,6 @@ public class UnpackKitActivity extends BaseActivity {
   @InjectPresenter(UnpackKitPresenter.class)
   private UnpackKitPresenter presenter;
 
-  private String kitCode;
-
   protected UnpackKitAdapter mAdapter;
   private int kitNum;
 
@@ -85,7 +83,6 @@ public class UnpackKitActivity extends BaseActivity {
     super.onCreate(savedInstanceState);
 
     Intent intent = getIntent();
-    kitCode = intent.getStringExtra(Constants.PARAM_KIT_CODE);
     kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, 0);
 
     String kitName = intent.getStringExtra(Constants.PARAM_KIT_NAME);
@@ -93,6 +90,7 @@ public class UnpackKitActivity extends BaseActivity {
 
     initRecyclerView();
 
+    String kitCode = intent.getStringExtra(Constants.PARAM_KIT_CODE);
     Subscription subscription = presenter.getKitProductsObservable(kitCode, kitNum)
         .subscribe(loadViewModelSubscriber);
     subscriptions.add(subscription);
@@ -111,6 +109,7 @@ public class UnpackKitActivity extends BaseActivity {
   Subscriber<List<InventoryViewModel>> loadViewModelSubscriber = new Subscriber<List<InventoryViewModel>>() {
     @Override
     public void onCompleted() {
+      // do nothing
     }
 
     @Override
@@ -159,6 +158,7 @@ public class UnpackKitActivity extends BaseActivity {
   Subscriber<Void> saveKitSubscriber = new Subscriber<Void>() {
     @Override
     public void onCompleted() {
+      // do nothing
     }
 
     @Override

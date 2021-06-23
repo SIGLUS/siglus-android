@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openlmis.core.LMISApp;
@@ -87,23 +88,21 @@ public class AutoUpdateApk {
 
   private Context context = null;
   private SharedPreferenceMgr preferences;
-  private static long last_update = 0;
+  private long lastUpdate = 0;
   private NotificationManager notificationManager;
   private NotificationCompat.Builder mNotificationOAndHigherBuilder;
   private NotificationCompat.Builder mNotificationBetweenLOLLIPOPAndroidOBuilder;
   private NotificationCompat.Builder mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder;
 
-  private static int versionCode = 0; // as low as it gets
-  private static String packageName;
-  private static int device_id;
+  private int versionCode = 0; // as low as it gets
+  private String packageName;
+  private int deviceId;
   private String mDownloadApkDirectory;
 
   private static final long MINUTES = 60 * 1000L;
   private static final long HOURS = 60 * MINUTES;
 
-  // 3-4 hours in dev.mode, 1-2 days for stable releases
-  private final long updateInterval = 3 * HOURS; // how often to check
-  private static int NOTIFICATION_ID = 12;
+  private int notificationId = 12;
   private static final String CHANNEL_ID = "upgrade_channel_id";
   private static final String CHANNEL_NAME = "upgrade_channel_name";
   private static final String CHANNEL_DESCRIPTION = "default channel";
@@ -114,9 +113,9 @@ public class AutoUpdateApk {
 
     packageName = context.getPackageName();
     preferences = SharedPreferenceMgr.getInstance();
-    device_id = crc32(Secure.getString(context.getContentResolver(), Secure.ANDROID_ID));
-    last_update = preferences.getLastUpdate();
-    NOTIFICATION_ID += crc32(packageName);
+    deviceId = crc32(Secure.getString(context.getContentResolver(), Secure.ANDROID_ID));
+    lastUpdate = preferences.getLastUpdate();
+    notificationId += crc32(packageName);
     mDownloadApkDirectory = context.getFilesDir().getAbsolutePath();
 
     ApplicationInfo appInfo = context.getApplicationInfo();
@@ -130,8 +129,7 @@ public class AutoUpdateApk {
 
       String updateFile = preferences.getUpdateFile();
       if (updateFile.length() > 0) {
-        boolean isDeletedSuccess = new File(mDownloadApkDirectory + File.separator + updateFile)
-            .delete();
+        boolean isDeletedSuccess = new File(mDownloadApkDirectory + File.separator + updateFile).delete();
         if (isDeletedSuccess) {
           preferences.removeDownloadInfo();
         }
@@ -156,7 +154,7 @@ public class AutoUpdateApk {
         postdata.put("pkgname", packageName);
         postdata.put("version", versionCode);
         postdata.put("md5", preferences.getMd5Key());
-        postdata.put("id", String.format("%08x", device_id));
+        postdata.put("id", String.format("%08x", deviceId));
       } catch (JSONException e) {
         Log.w(TAG, e);
       }
@@ -180,7 +178,7 @@ public class AutoUpdateApk {
         Log.w(TAG, e);
       }
       if (resultGetApkInfo == null) {
-        return null;
+        return ArrayUtils.EMPTY_STRING_ARRAY;
       }
       //step 2 download the apk file ..
       return doDownloadApk(resultGetApkInfo);
@@ -210,7 +208,7 @@ public class AutoUpdateApk {
           }
         }
       }
-      return null;
+      return ArrayUtils.EMPTY_STRING_ARRAY;
     }
 
     private boolean isValidResponse(String[] info) {
@@ -263,7 +261,7 @@ public class AutoUpdateApk {
       } else {
         Log.e(TAG, "response !=200 = " + response.code());
       }
-      return null;
+      return ArrayUtils.EMPTY_STRING_ARRAY;
     }
 
     private void updateVersionCode(String versionFromServer) {
@@ -284,19 +282,19 @@ public class AutoUpdateApk {
         mNotificationBetweenLOLLIPOPAndroidOBuilder
             .setContentText(getString(R.string.upgrade_download_msg, progressAmount));
         notificationManager
-            .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
+            .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
       } else if (isBetweenJellyBeanAndLollipop()) {
         mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder
             .setProgress(maxAmount, progressAmount, false);
         mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder
             .setContentText(getString(R.string.upgrade_download_msg, progressAmount));
         notificationManager
-            .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.build());
+            .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.build());
       } else if (isOAndHigher()) {
         mNotificationOAndHigherBuilder.setProgress(maxAmount, progressAmount, false);
         mNotificationOAndHigherBuilder
             .setContentText(getString(R.string.upgrade_download_msg, progressAmount));
-        notificationManager.notify(NOTIFICATION_ID, mNotificationOAndHigherBuilder.build());
+        notificationManager.notify(notificationId, mNotificationOAndHigherBuilder.build());
       }
     }
 
@@ -364,18 +362,18 @@ public class AutoUpdateApk {
           .setContentText(getString(R.string.upgrade_download_click_install))
           .setContentTitle(getString(R.string.upgrade_download_complete));
       notificationManager
-          .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
+          .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidOBuilder.build());
     } else if (isBetweenJellyBeanAndLollipop()) {
       mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.setContentIntent(mPendingIntent)
           .setContentText(getString(R.string.upgrade_download_click_install))
           .setContentTitle(getString(R.string.upgrade_download_complete));
       notificationManager
-          .notify(NOTIFICATION_ID, mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.build());
+          .notify(notificationId, mNotificationBetweenLOLLIPOPAndroidJELLYBEANBuilder.build());
     } else if (isOAndHigher()) {
       mNotificationOAndHigherBuilder.setContentIntent(mPendingIntent)
           .setContentText(getString(R.string.upgrade_download_click_install))
           .setContentTitle(getString(R.string.upgrade_download_complete));
-      notificationManager.notify(NOTIFICATION_ID, mNotificationOAndHigherBuilder.build());
+      notificationManager.notify(notificationId, mNotificationOAndHigherBuilder.build());
     }
   }
 
@@ -389,7 +387,10 @@ public class AutoUpdateApk {
 
   private void checkUpdates(boolean forced) {
     long now = LMISApp.getInstance().getCurrentTimeMillis();
-    if (forced || (last_update + updateInterval) < now) {
+    // 3-4 hours in dev.mode, 1-2 days for stable releases
+    // how often to check
+    long updateInterval = 3 * HOURS;
+    if (forced || (lastUpdate + updateInterval) < now) {
       try {
         PackageInfo packageInfo = context.getPackageManager()
             .getPackageInfo(context.getPackageName(), 0);
@@ -398,8 +399,8 @@ public class AutoUpdateApk {
         Log.w(TAG, e);
       }
       new CheckUpdateTask().execute();
-      last_update = LMISApp.getInstance().getCurrentTimeMillis();
-      preferences.setLastUpdate(last_update);
+      lastUpdate = LMISApp.getInstance().getCurrentTimeMillis();
+      preferences.setLastUpdate(lastUpdate);
     }
   }
 

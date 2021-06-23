@@ -120,6 +120,7 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
     return new Subscriber<List<NonBasicProductsViewModel>>() {
       @Override
       public void onCompleted() {
+        // do nothing
       }
 
       @Override

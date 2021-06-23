@@ -59,7 +59,7 @@ public class ReportListPresenter extends Presenter {
   Subscriber<List<Program>> getSupportProgramsSubscriber = new Subscriber<List<Program>>() {
     @Override
     public void onCompleted() {
-
+      // do nothing
     }
 
     @Override

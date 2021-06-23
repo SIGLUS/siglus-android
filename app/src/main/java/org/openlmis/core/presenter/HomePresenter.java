@@ -46,12 +46,12 @@ public class HomePresenter extends Presenter {
   Observer<Map<String, Integer>> queryStockCountObserver = new Observer<Map<String, Integer>>() {
     @Override
     public void onCompleted() {
-
+      // do nothing
     }
 
     @Override
     public void onError(Throwable e) {
-
+      // do nothing
     }
 
     @Override
@@ -76,17 +76,16 @@ public class HomePresenter extends Presenter {
     }
   };
 
+  @SuppressWarnings("squid:S1905")
   public void getDashboardData() {
     if (previousSubscribe != null && !previousSubscribe.isUnsubscribed()) {
       previousSubscribe.unsubscribe();
       subscriptions.remove(previousSubscribe);
     }
-    previousSubscribe = Observable
-        .create((Observable.OnSubscribe<Map<String, Integer>>) subscriber -> {
-          subscriber.onNext(stockRepository.queryStockCountGroupByStockOnHandStatus());
-          subscriber.onCompleted();
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-        .subscribe(queryStockCountObserver);
+    previousSubscribe = Observable.create((Observable.OnSubscribe<Map<String, Integer>>) subscriber -> {
+      subscriber.onNext(stockRepository.queryStockCountGroupByStockOnHandStatus());
+      subscriber.onCompleted();
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(queryStockCountObserver);
     subscriptions.add(previousSubscribe);
   }
 

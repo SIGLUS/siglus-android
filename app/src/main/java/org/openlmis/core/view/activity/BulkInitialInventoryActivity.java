@@ -86,6 +86,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     return new Subscriber<List<InventoryViewModel>>() {
       @Override
       public void onCompleted() {
+        // do nothing
       }
 
       @Override
@@ -127,8 +128,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     return new Subscriber() {
       @Override
       public void onCompleted() {
-        Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG)
-            .show();
+        Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG).show();
         loaded();
         btnSave.setEnabled(true);
       }

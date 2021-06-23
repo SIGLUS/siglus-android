@@ -62,6 +62,7 @@ public class SelectPeriodPresenter extends Presenter {
     view = (SelectPeriodView) v;
   }
 
+  @SuppressWarnings("squid:S1905")
   public Observable<Constants.Program> correctDirtyObservable(Constants.Program from) {
     return Observable.create((Observable.OnSubscribe<Constants.Program>) subscriber -> {
       List<StockCard> deletedStockCards = dirtyDataManager.correctData();
@@ -73,6 +74,7 @@ public class SelectPeriodPresenter extends Presenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
+  @SuppressWarnings("squid:S1905")
   public void loadData(final String programCode, Period period) {
     view.loading();
     Subscription subscription = Observable
@@ -122,6 +124,7 @@ public class SelectPeriodPresenter extends Presenter {
     }
   }
 
+  @SuppressWarnings("squid:S135")
   private List<SelectInventoryViewModel> generateSelectInventoryViewModels(
       final List<Inventory> inventories, final boolean isDefaultInventoryDate) {
     return from(inventories).transform(inventory -> {

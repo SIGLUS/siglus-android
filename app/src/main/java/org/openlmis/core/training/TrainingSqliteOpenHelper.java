@@ -62,13 +62,13 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
   @Override
   public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-
+    // do nothing
   }
 
   @Override
   public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion,
       int newVersion) {
-
+    // do nothing
   }
 
   @Override

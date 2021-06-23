@@ -242,10 +242,11 @@ public class LoginPresenter extends Presenter {
         }
       }).subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(System.out::println, Throwable::printStackTrace);
+          .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
     }
   }
 
+  @SuppressWarnings("squid:S1905")
   private void archiveOldData() {
     if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_old_data)) {
       return;
@@ -268,7 +269,7 @@ public class LoginPresenter extends Presenter {
       }
     }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(System.out::println, Throwable::printStackTrace);
+        .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
 
   }
 
@@ -295,21 +296,21 @@ public class LoginPresenter extends Presenter {
       @Override
       public void onNext(SyncProgress progress) {
         switch (progress) {
-          case SyncingFacilityInfo:
-          case SyncingServiceList:
-          case SyncingProduct:
-          case SyncingStockCardsLastMonth:
-          case SyncingRequisition:
+          case SYNCING_FACILITY_INFO:
+          case SYNCING_SERVICE_LIST:
+          case SYNCING_PRODUCT:
+          case SYNCING_STOCK_CARDS_LAST_MONTH:
+          case SYNCING_REQUISITION:
             view.loading(LMISApp.getInstance().getString(progress.getMessageCode()));
             break;
 
-          case ProductSynced:
+          case PRODUCT_SYNCED:
             break;
-          case StockCardsLastMonthSynced:
+          case STOCK_CARDS_LAST_MONTH_SYNCED:
             syncStockCards();
             break;
 
-          case ShouldGoToInitialInventory:
+          case SHOULD_GO_TO_INITIAL_INVENTORY:
             if (!view.needInitInventory()) {
               ToastUtil.showForLongTime(R.string.msg_initial_sync_success);
             }
@@ -364,12 +365,12 @@ public class LoginPresenter extends Presenter {
   public void syncLocalUserData(Subscriber<SyncLocalUserProgress> subscriber) {
     Observable.create((Observable.OnSubscribe<SyncLocalUserProgress>) subscriber1 -> {
       if (SharedPreferenceMgr.getInstance().getLastSyncProductTime() == null) {
-        subscriber1.onNext(SyncLocalUserProgress.SyncLastSyncProductFail);
+        subscriber1.onNext(SyncLocalUserProgress.SYNC_LAST_SYNC_PRODUCT_FAIL);
         return;
       }
 
       if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced()) {
-        subscriber1.onNext(SyncLocalUserProgress.SyncLastMonthStockDataFail);
+        subscriber1.onNext(SyncLocalUserProgress.SYNC_LAST_MONTH_STOCK_DATA_FAIL);
         return;
       }
       // TODO: change back to the original check after end the development of sync down requisitions
@@ -377,7 +378,7 @@ public class LoginPresenter extends Presenter {
       //   subscriber1.onNext(SyncLocalUserProgress.SyncRequisitionDataFail);
       //   return;
       // }
-      subscriber1.onNext(SyncLocalUserProgress.SyncLastDataSuccess);
+      subscriber1.onNext(SyncLocalUserProgress.SYNC_LAST_DATA_SUCCESS);
     }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(subscriber);
@@ -389,6 +390,7 @@ public class LoginPresenter extends Presenter {
     return new Subscriber<SyncLocalUserProgress>() {
       @Override
       public void onCompleted() {
+        // do nothing
       }
 
       @Override
@@ -399,19 +401,19 @@ public class LoginPresenter extends Presenter {
       @Override
       public void onNext(SyncLocalUserProgress progress) {
         switch (progress) {
-          case SyncLastSyncProductFail:
+          case SYNC_LAST_SYNC_PRODUCT_FAIL:
             view.loaded();
             ToastUtil.show(R.string.msg_sync_products_list_failed);
             break;
-          case SyncLastMonthStockDataFail:
+          case SYNC_LAST_MONTH_STOCK_DATA_FAIL:
             view.loaded();
             ToastUtil.show(R.string.msg_sync_stock_movement_failed);
             break;
-          case SyncRequisitionDataFail:
+          case SYNC_REQUISITION_DATA_FAIL:
             view.loaded();
             ToastUtil.show(R.string.msg_sync_requisition_failed);
             break;
-          case SyncLastDataSuccess:
+          case SYNC_LAST_DATA_SUCCESS:
             dirtyDataManager.initialDirtyDataCheck();
             goToNextPage();
             break;
@@ -445,7 +447,7 @@ public class LoginPresenter extends Presenter {
 
       @Override
       public void onNext(Void aVoid) {
-
+        // do nothing
       }
     };
   }

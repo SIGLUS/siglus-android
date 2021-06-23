@@ -43,6 +43,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+@SuppressWarnings("squid:S1905")
 public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
   MMIARequisitionView view;
@@ -181,7 +182,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         .equals(regimenExist.getType());
   }
 
-  private RegimenItem createRegimenItem(Regimen regimen) throws LMISException {
+  private RegimenItem createRegimenItem(Regimen regimen) {
     RegimenItem regimenItem = new RegimenItem();
     regimenItem.setRegimen(regimen);
     regimenItem.setForm(rnRForm);

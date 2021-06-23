@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
@@ -39,13 +38,12 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-@SuppressWarnings("PMD")
+@SuppressWarnings("squid:S1905")
 public class UnpackKitPresenter extends Presenter {
 
   @Inject
@@ -60,10 +58,8 @@ public class UnpackKitPresenter extends Presenter {
   protected final List<InventoryViewModel> inventoryViewModels = new ArrayList<>();
 
   @Override
-  public void attachView(BaseView v) throws ViewNotMatchException {
-  }
-
-  public UnpackKitPresenter() {
+  public void attachView(BaseView v) {
+    // do nothing
   }
 
   public Observable<List<InventoryViewModel>> getKitProductsObservable(final String kitCode,
@@ -167,12 +163,7 @@ public class UnpackKitPresenter extends Presenter {
     List<LotMovementViewModel> totalLotMovementViewModelList = new ArrayList<>();
     totalLotMovementViewModelList.addAll(
         FluentIterable.from(inventoryViewModel.getExistingLotMovementViewModelList())
-            .filter(new Predicate<LotMovementViewModel>() {
-              @Override
-              public boolean apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.quantityGreaterThanZero();
-              }
-            }).toList());
+            .filter(LotMovementViewModel::quantityGreaterThanZero).toList());
     totalLotMovementViewModelList.addAll(inventoryViewModel.getNewLotMovementViewModelList());
 
     stockMovementItems.add(

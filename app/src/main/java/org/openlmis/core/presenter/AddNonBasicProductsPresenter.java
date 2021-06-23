@@ -22,7 +22,6 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.BaseView;
@@ -44,8 +43,8 @@ public class AddNonBasicProductsPresenter extends Presenter {
   }
 
   @Override
-  public void attachView(BaseView v) throws ViewNotMatchException {
-
+  public void attachView(BaseView v) {
+    // do nothing
   }
 
   public Observable<List<NonBasicProductsViewModel>> getAllNonBasicProductsViewModels(

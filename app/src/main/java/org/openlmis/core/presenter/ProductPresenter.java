@@ -24,7 +24,6 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.repository.RegimenRepository;
@@ -46,9 +45,11 @@ public class ProductPresenter extends Presenter {
   private StockRepository stockRepository;
 
   @Override
-  public void attachView(BaseView v) throws ViewNotMatchException {
+  public void attachView(BaseView v) {
+    // do nothing
   }
 
+  @SuppressWarnings("squid:S1905")
   public Observable<List<RegimeProductViewModel>> loadRegimeProducts(Regimen.RegimeType type) {
     return Observable.create((Observable.OnSubscribe<List<RegimeProductViewModel>>) subscriber -> {
       try {
@@ -68,6 +69,7 @@ public class ProductPresenter extends Presenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
+  @SuppressWarnings("squid:S1905")
   public Observable<Regimen> saveRegimes(RegimeProductViewModel viewModel,
       final Regimen.RegimeType regimeType) {
     final String regimenName = viewModel.getShortCode();
@@ -93,12 +95,12 @@ public class ProductPresenter extends Presenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
+  @SuppressWarnings("squid:S1905")
   public Observable<List<InventoryViewModel>> loadEmergencyProducts() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
       try {
         ImmutableList<InventoryViewModel> inventoryViewModels = from(
-            stockRepository.listEmergencyStockCards())
-            .transform(stockCard -> InventoryViewModel.buildEmergencyModel(stockCard)).toList();
+            stockRepository.listEmergencyStockCards()).transform(InventoryViewModel::buildEmergencyModel).toList();
         subscriber.onNext(inventoryViewModels);
         subscriber.onCompleted();
       } catch (LMISException e) {

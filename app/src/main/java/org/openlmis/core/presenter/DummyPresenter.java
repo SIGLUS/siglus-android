@@ -18,13 +18,12 @@
 
 package org.openlmis.core.presenter;
 
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.view.BaseView;
 
 public class DummyPresenter extends Presenter {
 
   @Override
-  public void attachView(BaseView v) throws ViewNotMatchException {
-
+  public void attachView(BaseView v) {
+    // do nothing
   }
 }

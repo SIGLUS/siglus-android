@@ -65,7 +65,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
   @Inject
   InternetCheck internetCheck;
 
-  public BaseRequisitionPresenter() {
+  protected BaseRequisitionPresenter() {
     rnrFormRepository = initRnrFormRepository();
   }
 
@@ -133,7 +133,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     return new Subscriber<Void>() {
       @Override
       public void onCompleted() {
-
+        // do nothing
       }
 
       @Override
@@ -165,6 +165,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
       @Override
       public void onCompleted() {
+        // do nothing
       }
 
       @Override
@@ -188,7 +189,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
   private InternetCheck.Callback checkInternetListener() {
 
     return internet -> {
-      if (internet) {
+      if (Boolean.TRUE.equals(internet)) {
         syncService.requestSyncImmediatelyByTask();
       } else {
         Log.d("Internet", "No hay conexion");
@@ -196,6 +197,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
     };
   }
 
+  @SuppressWarnings("squid:S1905")
   protected Observable<Void> createOrUpdateRnrForm() {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {

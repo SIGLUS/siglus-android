@@ -49,7 +49,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-@SuppressWarnings("PMD")
 public class RnRFormListPresenter extends Presenter {
 
   @Inject
@@ -78,8 +77,10 @@ public class RnRFormListPresenter extends Presenter {
 
   @Override
   public void attachView(BaseView v) {
+    // do nothing
   }
 
+  @SuppressWarnings("squid:S1905")
   public Observable<List<RnRFormViewModel>> loadRnRFormList() {
     return Observable.create((Observable.OnSubscribe<List<RnRFormViewModel>>) subscriber -> {
       try {
@@ -105,8 +106,7 @@ public class RnRFormListPresenter extends Presenter {
 
     populateSyncErrorsOnViewModels(rnRFormViewModels);
 
-    Collections.sort(rnRFormViewModels,
-        (lhs, rhs) -> rhs.getPeriodEndMonth().compareTo(lhs.getPeriodEndMonth()));
+    Collections.sort(rnRFormViewModels, (lhs, rhs) -> rhs.getPeriodEndMonth().compareTo(lhs.getPeriodEndMonth()));
 
     generateInactiveFormListViewModels(rnRFormViewModels, typeForm);
 
@@ -136,19 +136,16 @@ public class RnRFormListPresenter extends Presenter {
   private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod)
       throws LMISException {
     if (isCanNotCreateRnr(currentPeriod)) {
-      return new RnRFormViewModel(currentPeriod, programCode,
-          RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+      return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
     }
 
-    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      if (stockMovementRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
-        return new RnRFormViewModel(currentPeriod, programCode,
-            RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
-      }
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)
+        && stockMovementRepository.queryStockMovementDatesByProgram(programCode).isEmpty()) {
+      return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
     }
 
     List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
-    if (physicalInventories == null || physicalInventories.size() == 0) {
+    if (physicalInventories == null || physicalInventories.isEmpty()) {
       return new RnRFormViewModel(currentPeriod, programCode,
           RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
     } else {
@@ -185,9 +182,7 @@ public class RnRFormListPresenter extends Presenter {
 
   protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels,
       ReportTypeForm typeForm) throws LMISException {
-    int offsetMonth = requisitionPeriodService
-        .getMissedPeriodOffsetMonth(this.programCode, typeForm);
-
+    int offsetMonth = requisitionPeriodService.getMissedPeriodOffsetMonth(this.programCode, typeForm);
     DateTime inventoryBeginDate = requisitionPeriodService.getCurrentMonthInventoryBeginDate();
 
     for (int i = 0; i < offsetMonth; i++) {
@@ -195,11 +190,11 @@ public class RnRFormListPresenter extends Presenter {
           inventoryBeginDate.plusMonths(1).toDate()));
       inventoryBeginDate = inventoryBeginDate.minusMonths(1);
     }
-    generateFirstMissedRnrFormViewModel(viewModels, offsetMonth, inventoryBeginDate, typeForm);
+    generateFirstMissedRnrFormViewModel(viewModels, inventoryBeginDate, typeForm);
   }
 
   private void generateFirstMissedRnrFormViewModel(List<RnRFormViewModel> viewModels,
-      int offsetMonth, DateTime inventoryBeginDate, ReportTypeForm typeForm) throws LMISException {
+      DateTime inventoryBeginDate, ReportTypeForm typeForm) throws LMISException {
     if (isAllRnrFormInDBCompletedOrNoRnrFormInDB(typeForm)) {
       addFirstMissedAndNotPendingRnrForm(viewModels);
     } else {
@@ -236,6 +231,7 @@ public class RnRFormListPresenter extends Presenter {
         || rnRForms.get(rnRForms.size() - 1).getStatus() == Status.AUTHORIZED;
   }
 
+  @SuppressWarnings("squid:S1905")
   public Observable<Boolean> hasMissedPeriod() {
     return Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
       try {

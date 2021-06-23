@@ -6,5 +6,6 @@ public class UpdateReportType extends Migration {
 
   @Override
   public void up() {
+    // do nothing
   }
 }

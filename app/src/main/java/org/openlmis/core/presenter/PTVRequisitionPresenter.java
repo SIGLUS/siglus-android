@@ -37,13 +37,11 @@ import rx.schedulers.Schedulers;
 public class PTVRequisitionPresenter extends BaseRequisitionPresenter {
 
   PTVRequisitionView view;
-  private PTVRepository ptvRepository;
   public PTVReportViewModel ptvReportViewModel;
 
   @Override
   protected RnrFormRepository initRnrFormRepository() {
-    ptvRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(PTVRepository.class);
-    return ptvRepository;
+    return RoboGuice.getInjector(LMISApp.getContext()).getInstance(PTVRepository.class);
   }
 
   @Override
@@ -82,6 +80,7 @@ public class PTVRequisitionPresenter extends BaseRequisitionPresenter {
     }
   }
 
+  @SuppressWarnings("squid:S1905")
   @Override
   protected Observable<RnRForm> getRnrFormObservable(long formId) {
     return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
@@ -96,6 +95,7 @@ public class PTVRequisitionPresenter extends BaseRequisitionPresenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
+  @SuppressWarnings("squid:S1905")
   public Observable<Void> getSaveFormObservable() {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {

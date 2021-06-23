@@ -47,30 +47,27 @@ public abstract class Migration {
 
   protected void execSQL(String sql) {
     if (db != null) {
-      Log.d("Migration", "exec sql :" + sql);
+      Log.d(TAG, "exec sql :" + sql);
       db.execSQL(sql);
     }
   }
 
   protected void execSQLScript(String filename) {
     AssetManager manager = LMISApp.getContext().getResources().getAssets();
-
     String path = DIR_MIGRATION + File.separator + filename;
     db.beginTransaction();
     try {
       InputStream io = manager.open(path);
-      BufferedReader reader = new BufferedReader(new InputStreamReader(io, StandardCharsets.UTF_8));
-
-      String line = reader.readLine();
-      while (line != null) {
-        String cmd = line.trim();
-        if (!StringUtils.isEmpty(cmd)) {
-          execSQL(cmd);
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(io, StandardCharsets.UTF_8))) {
+        String line = reader.readLine();
+        while (line != null) {
+          String cmd = line.trim();
+          if (!StringUtils.isEmpty(cmd)) {
+            execSQL(cmd);
+          }
+          line = reader.readLine();
         }
-        line = reader.readLine();
       }
-      reader.close();
-
       db.setTransactionSuccessful();
     } catch (IOException e) {
       new LMISException(e, "execSQLScript").reportToFabric();

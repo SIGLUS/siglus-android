@@ -57,7 +57,7 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
 
   @Override
   public void attachView(BaseView v) {
-
+    // do nothing
   }
 
   public Observable<RapidTestReportViewModel> loadViewModel(final long formId,

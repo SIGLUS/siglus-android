@@ -33,5 +33,6 @@ public class CreateDummyRegimes extends Migration {
 
   @Override
   public void up() {
+    // do nothing
   }
 }
