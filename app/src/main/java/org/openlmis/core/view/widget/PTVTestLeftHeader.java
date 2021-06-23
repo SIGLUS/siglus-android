@@ -86,10 +86,10 @@ public class PTVTestLeftHeader extends FrameLayout {
 
   private List<EditText> addService(ViewGroup service) {
     List<EditText> etServices = new ArrayList<>();
-    for (Service serviceItem : viewModel.services) {
+    for (Service serviceItem : viewModel.getServices()) {
       ViewGroup inflate = (ViewGroup) layoutInflater.inflate(R.layout.item_service, this, false);
       EditText etService = inflate.findViewById(R.id.et_service);
-      etService.setId(viewModel.services.indexOf(serviceItem));
+      etService.setId(viewModel.getServices().indexOf(serviceItem));
       service.addView(inflate);
       etServices.add(etService);
     }

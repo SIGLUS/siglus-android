@@ -144,8 +144,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     containerView = inflater.inflate(R.layout.fragment_mmia_requisition, container, false);
     return containerView;
   }
@@ -269,12 +268,10 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
       @Override
       public void onSingleClick(View v) {
         loading();
-        Subscription subscription = presenter.getSaveFormObservable(rnrFormList.itemFormList,
-            regimeWrap.getDataList(),
-            combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(),
-                mmiaDispensedInfoList.getDataList()),
-            mmiaRegimeThreeLineListView.getDataList(),
-            etComment.getText().toString())
+        Subscription subscription = presenter
+            .getSaveFormObservable(rnrFormList.getItemFormList(), regimeWrap.getDataList(),
+                combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
+                mmiaRegimeThreeLineListView.getDataList(), etComment.getText().toString())
             .subscribe(getOnSavedSubscriber());
         subscriptions.add(subscription);
       }
@@ -298,7 +295,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
       @Override
       public void onNext(Void aVoid) {
-
+        // do nothing
       }
     };
   }
@@ -313,12 +310,9 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
             && mmiaPatientInfoListView.isCompleted()
             && mmiaDispensedInfoList.isCompleted()
             && mmiaRegimeThreeLineListView.isCompleted()) {
-          presenter.setViewModels(rnrFormList.itemFormList,
-              regimeWrap.getDataList(),
-              combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(),
-                  mmiaDispensedInfoList.getDataList()),
-              mmiaRegimeThreeLineListView.getDataList(),
-              etComment.getText().toString());
+          presenter.setViewModels(rnrFormList.getItemFormList(), regimeWrap.getDataList(),
+              combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
+              mmiaRegimeThreeLineListView.getDataList(), etComment.getText().toString());
           if (presenter.viewModelHasNull()) {
             ToastUtil.show(R.string.msg_requisition_field_exist_null);
           } else if (!presenter.validateFormPeriod()) {

@@ -25,6 +25,7 @@ public class WarningDialogFragmentBuilder {
 
   @Inject
   public WarningDialogFragmentBuilder() {
+    // do nothing
   }
 
   public WarningDialogFragment build(WarningDialogFragment.DialogDelegate delegate,

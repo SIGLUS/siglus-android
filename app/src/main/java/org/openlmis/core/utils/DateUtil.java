@@ -85,11 +85,11 @@ public final class DateUtil {
   public static Calendar getCurrentCalendar() {
     if (LMISApp.getInstance() != null && LMISApp.getInstance()
         .getFeatureToggleFor(R.bool.feature_training)) {
-      Calendar calendar = GregorianCalendar.getInstance();
+      Calendar calendar = Calendar.getInstance();
       calendar.set(2021, 0, 18);
       return calendar;
     }
-    return GregorianCalendar.getInstance();
+    return Calendar.getInstance();
 
   }
 
@@ -158,8 +158,7 @@ public final class DateUtil {
     }
   }
 
-  public static String convertDate(String date, String currentFormat, String expectFormat)
-      throws ParseException {
+  public static String convertDate(String date, String currentFormat, String expectFormat) {
     return formatDate(parseString(date, currentFormat), expectFormat);
   }
 

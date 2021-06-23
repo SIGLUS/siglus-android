@@ -84,8 +84,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
   private static final String UNKNOWN_STRING = "Unknown";
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.dialog_add_lot, container, false);
   }
 

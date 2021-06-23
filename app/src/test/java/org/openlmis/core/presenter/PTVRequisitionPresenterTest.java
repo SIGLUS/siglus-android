@@ -42,7 +42,7 @@ public class PTVRequisitionPresenterTest {
     ptvRequisitionPresenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
     ptvRequisitionPresenter.updateFormUI();
 
-    assertThat(ptvRequisitionPresenter.ptvReportViewModel.services.size(), is(0));
+    assertThat(ptvRequisitionPresenter.ptvReportViewModel.getServices().size(), is(0));
     assertThat(ptvRequisitionPresenter.getCompleteErrorMessage(),
         is(R.string.hint_ptv_complete_failed));
   }

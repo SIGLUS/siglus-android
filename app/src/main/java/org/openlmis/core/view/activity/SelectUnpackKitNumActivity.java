@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.activity;
 
+import static android.widget.AdapterView.INVALID_POSITION;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,8 +48,6 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
   @InjectView(R.id.tv_select_num_warning)
   protected View tvSelectNumWarning;
 
-  private UnpackNumAdapter adapter;
-
   private static final int MAX_UNPACK_QUANTITY = 100;
 
   private static final String PARAM_KIT_SOH = "param_kit_soh";
@@ -70,14 +70,14 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
 
     final String productCode = intent.getStringExtra(Constants.PARAM_KIT_CODE);
     long kitSOH = Math.min(intent.getLongExtra(PARAM_KIT_SOH, 0L), MAX_UNPACK_QUANTITY);
-    adapter = new UnpackNumAdapter(this, kitSOH, kitName);
+    UnpackNumAdapter adapter = new UnpackNumAdapter(this, kitSOH, kitName);
     gridView.setAdapter(adapter);
 
     gridView.setOnItemClickListener(
         (parent, view, position, id) -> tvSelectNumWarning.setVisibility(View.INVISIBLE));
 
-    btnNext.setOnClickListener((v) -> {
-      if (gridView.getCheckedItemPosition() == GridView.INVALID_POSITION) {
+    btnNext.setOnClickListener(v -> {
+      if (gridView.getCheckedItemPosition() == INVALID_POSITION) {
         tvSelectNumWarning.setVisibility(View.VISIBLE);
         return;
       }

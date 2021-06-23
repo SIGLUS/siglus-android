@@ -76,8 +76,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
   @ForeignCollectionField()
   private ForeignCollection<Lot> lotList;
 
-
-  transient List<KitProduct> kitProductList = new ArrayList<>();
+  List<KitProduct> kitProductList = new ArrayList<>();
 
   @Override
   public boolean equals(Object o) {

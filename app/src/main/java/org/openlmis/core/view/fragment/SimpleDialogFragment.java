@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.fragment;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -118,21 +120,15 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
         .setTitle(title)
         .setMessage(message)
-        .setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            if (mListener != null) {
-              mListener.positiveClick(tag);
-            }
+        .setPositiveButton(positiveText, (dialog, which) -> {
+          if (mListener != null) {
+            mListener.positiveClick(tag);
           }
         });
     if (hasNegativeButton()) {
-      builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          if (mListener != null) {
-            mListener.negativeClick(tag);
-          }
+      builder.setNegativeButton(negativeText, (dialog, which) -> {
+        if (mListener != null) {
+          mListener.negativeClick(tag);
         }
       });
     }
@@ -146,8 +142,7 @@ public class SimpleDialogFragment extends RoboMigrationAndroidXDialogFragment {
     alertDialog.setOnShowListener(dialog -> {
       Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
       positiveButton.setTypeface(null, Typeface.BOLD);
-      LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-          LinearLayout.LayoutParams.WRAP_CONTENT,
+      LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(WRAP_CONTENT,
           (int) getResources().getDimension(R.dimen.button_height_default));
       positiveButton.setLayoutParams(layoutParams);
       positiveButton.setTextColor(getResources().getColor(R.color.color_accent));

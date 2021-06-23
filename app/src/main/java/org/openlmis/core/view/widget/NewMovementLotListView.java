@@ -113,12 +113,12 @@ public class NewMovementLotListView extends MovementChangeLotListView {
   private void updateSoonestToExpireNotIssuedBanner() {
     if (MovementReasonManager.MovementType.ISSUE == viewModel.getMovementType()) {
       LotStatus lotStatus = ((StockMovementViewModel) viewModel).getSoonestToExpireLotsIssued();
-      if (lotStatus == LotStatus.defaultStatus) {
+      if (lotStatus == LotStatus.DEFAULT_STATUS) {
         alertSoonestExpire.setVisibility(View.GONE);
-      } else if (lotStatus == LotStatus.containExpiredLots) {
+      } else if (lotStatus == LotStatus.CONTAIN_EXPIRED_LOTS) {
         alertSoonestExpire.setVisibility(View.VISIBLE);
         textViewAlertSoonestAndExpired.setText(R.string.alert_issue_with_expired);
-      } else if (lotStatus == LotStatus.notSoonestToExpireLotsIssued) {
+      } else if (lotStatus == LotStatus.NOT_SOONEST_TO_EXPIRE_LOTS_ISSUED) {
         alertSoonestExpire.setVisibility(View.VISIBLE);
         textViewAlertSoonestAndExpired.setText(R.string.alert_soonest_expire);
       }
@@ -187,8 +187,8 @@ public class NewMovementLotListView extends MovementChangeLotListView {
   }
 
   public enum LotStatus {
-    notSoonestToExpireLotsIssued,
-    containExpiredLots,
-    defaultStatus,
+    NOT_SOONEST_TO_EXPIRE_LOTS_ISSUED,
+    CONTAIN_EXPIRED_LOTS,
+    DEFAULT_STATUS,
   }
 }

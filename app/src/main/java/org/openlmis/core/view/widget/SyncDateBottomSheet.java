@@ -69,8 +69,7 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     final View inflate = inflater.inflate(R.layout.dialog_sync_date_bottom_sheet, container, false);
     return inflate;
   }

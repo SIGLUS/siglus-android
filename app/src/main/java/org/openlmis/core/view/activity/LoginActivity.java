@@ -50,6 +50,7 @@ import org.openlmis.core.utils.ToastUtil;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
+@SuppressWarnings({"squid:S1874", "squid:S110"})
 @ContentView(R.layout.activity_login)
 public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView,
     View.OnClickListener {
@@ -81,7 +82,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   @InjectPresenter(LoginPresenter.class)
   LoginPresenter presenter;
 
-  Boolean isPwdVisible = false;
+  boolean isPwdVisible = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -242,11 +243,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   }
 
   @Override
-  public void loaded() {
-    super.loaded();
-  }
-
-  @Override
   public void onBackPressed() {
     moveTaskToBack(true);
   }
@@ -265,23 +261,20 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   }
 
   // This code is purely for enable some hacker ways for tester
-  private static int clickTimes;
+  private int clickTimes;
 
   private void setDeveloperMode() {
     clickTimes = 0;
     final int developerTimes = 7;
-    ivLogo.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (clickTimes == developerTimes) {
-          return;
-        }
-        if (++clickTimes == developerTimes) {
-          SharedPreferenceMgr.getInstance().setEnableQaDebug(true);
-          ToastUtil.show("Woohoo! You are Cong or Wei now, please test me");
-        } else if (clickTimes > 3) {
-          ToastUtil.show("Tap it " + (developerTimes - clickTimes) + " times to be Cong or Wei");
-        }
+    ivLogo.setOnClickListener(v -> {
+      if (clickTimes == developerTimes) {
+        return;
+      }
+      if (++clickTimes == developerTimes) {
+        SharedPreferenceMgr.getInstance().setEnableQaDebug(true);
+        ToastUtil.show("Woohoo! You are Cong or Wei now, please test me");
+      } else if (clickTimes > 3) {
+        ToastUtil.show("Tap it " + (developerTimes - clickTimes) + " times to be Cong or Wei");
       }
     });
   }

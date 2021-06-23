@@ -58,8 +58,7 @@ public class RapidTestReportListFragment extends BaseReportListFragment {
   private RapidTestReportAdapter rapidTestReportAdapter;
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_rapid_test_report_list, container, false);
   }
 

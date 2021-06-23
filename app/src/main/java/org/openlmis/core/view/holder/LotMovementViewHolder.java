@@ -168,6 +168,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
     }
   }
 
+  @SuppressWarnings("squid:S1874")
   @NonNull
   private View.OnClickListener getOnClickListenerForDeleteIcon(final LotMovementViewModel viewModel,
       final LotMovementAdapter lotMovementAdapter) {
@@ -231,6 +232,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
       }
     }
 
+    @SuppressWarnings("squid:S3776")
     private void updateVgLotSOHAndError(Context context) {
       if (context instanceof NewStockMovementActivity) {
         if (viewModel.isNewAdded()) {
@@ -261,15 +263,11 @@ public class LotMovementViewHolder extends BaseViewHolder {
         }
       }
 
-      if (context instanceof InitialInventoryActivity) {
-        if (!viewModel.validateLotWithPositiveQuantity()) {
-          setQuantityError(getString(R.string.msg_empty_quantity));
-        }
+      if (context instanceof InitialInventoryActivity && !viewModel.validateLotWithPositiveQuantity()) {
+        setQuantityError(getString(R.string.msg_empty_quantity));
       }
-      if (context instanceof BulkInitialInventoryActivity) {
-        if (!viewModel.validateLotWithPositiveQuantity()) {
-          setQuantityError(getString(R.string.msg_empty_quantity));
-        }
+      if (context instanceof BulkInitialInventoryActivity && !viewModel.validateLotWithPositiveQuantity()) {
+        setQuantityError(getString(R.string.msg_empty_quantity));
       }
     }
   }

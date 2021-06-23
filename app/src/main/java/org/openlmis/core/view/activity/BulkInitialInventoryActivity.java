@@ -135,7 +135,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
       @Override
       public void onError(Throwable e) {
-
+        // do nothing
       }
 
       @Override

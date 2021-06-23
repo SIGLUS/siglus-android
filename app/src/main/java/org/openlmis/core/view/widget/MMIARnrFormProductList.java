@@ -33,7 +33,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -50,7 +49,8 @@ public class MMIARnrFormProductList extends LinearLayout {
   private Context context;
   private ViewGroup leftViewGroup;
 
-  public List<RnrFormItem> itemFormList;
+  @Getter
+  private List<RnrFormItem> itemFormList;
 
   @Getter
   private ViewGroup rightViewGroup;
@@ -58,7 +58,7 @@ public class MMIARnrFormProductList extends LinearLayout {
 
   @Getter
   private RnrFormHorizontalScrollView rnrItemsHorizontalScrollView;
-  private final List<Pair<EditText, EditTextWatcher>> editTexts = new ArrayList<Pair<EditText, EditTextWatcher>>();
+  private final List<Pair<EditText, EditTextWatcher>> editTexts = new ArrayList<>();
 
   @Getter
   private View leftHeaderView;
@@ -77,6 +77,7 @@ public class MMIARnrFormProductList extends LinearLayout {
     init(context);
   }
 
+  @Override
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
   }
@@ -306,13 +307,14 @@ public class MMIARnrFormProductList extends LinearLayout {
           tvValidate.setText(DateUtil.convertDate(item.getValidate(), DateUtil.SIMPLE_DATE_FORMAT,
               DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         }
-      } catch (ParseException e) {
+      } catch (Exception e) {
         new LMISException(e, "MMIARnrForm.addRightView").reportToFabric();
       }
     }
     return inflate;
   }
 
+  @SuppressWarnings("squid:S107")
   private void setHeaderView(ViewGroup inflate,
       TextView tvIssuedUnit,
       TextView tvInitialAmount,
@@ -321,14 +323,11 @@ public class MMIARnrFormProductList extends LinearLayout {
       EditText etAdjustment,
       EditText etInventory,
       TextView tvValidate) {
-    tvIssuedUnit
-        .setText(dataWithOldFormat ? R.string.label_issued_unit_old : R.string.label_issued_unit);
-    tvInitialAmount.setText(
-        dataWithOldFormat ? R.string.label_initial_amount_old : R.string.label_initial_amount);
+    tvIssuedUnit.setText(dataWithOldFormat ? R.string.label_issued_unit_old : R.string.label_issued_unit);
+    tvInitialAmount.setText(dataWithOldFormat ? R.string.label_initial_amount_old : R.string.label_initial_amount);
     tvReceived.setText(R.string.label_received_mmia);
     etIssued.setText(R.string.label_issued_mmia);
-    etAdjustment
-        .setText(dataWithOldFormat ? R.string.label_adjustment_old : R.string.label_adjustment);
+    etAdjustment.setText(dataWithOldFormat ? R.string.label_adjustment_old : R.string.label_adjustment);
     etInventory.setText(R.string.label_inventory);
     tvValidate.setText(dataWithOldFormat ? R.string.label_validate_old : R.string.label_validate);
     enableEditText(false, etIssued, etAdjustment, etInventory);
@@ -354,7 +353,7 @@ public class MMIARnrFormProductList extends LinearLayout {
   }
 
 
-  private String getValue(Boolean isArchived, Long value) {
+  private String getValue(boolean isArchived, Long value) {
     if (isArchived) {
       return String.valueOf(0);
     }
@@ -416,13 +415,13 @@ public class MMIARnrFormProductList extends LinearLayout {
     }
 
     private Long getEditValue(Editable etText) {
-      Long editText;
+      Long editTextValue;
       try {
-        editText = Long.valueOf(etText.toString());
+        editTextValue = Long.valueOf(etText.toString());
       } catch (NumberFormatException e) {
-        editText = null;
+        editTextValue = null;
       }
-      return editText;
+      return editTextValue;
     }
   }
 

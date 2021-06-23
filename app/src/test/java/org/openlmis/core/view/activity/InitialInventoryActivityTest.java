@@ -37,7 +37,6 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
-import rx.functions.Action1;
 
 @RunWith(LMISTestRunner.class)
 public class InitialInventoryActivityTest {
@@ -107,8 +106,7 @@ public class InitialInventoryActivityTest {
 
     initialInventoryActivity.onBackPressed();
 
-    assertEquals(ShadowToast.getTextOfLatestToast(),
-        initialInventoryActivity.getString(R.string.msg_save_before_exit));
+    assertEquals(ShadowToast.getTextOfLatestToast(), initialInventoryActivity.getString(R.string.msg_save_before_exit));
 
     initialInventoryActivity.onBackPressed();
 
@@ -136,12 +134,7 @@ public class InitialInventoryActivityTest {
     SingleClickButtonListener.isViewClicked = false;
 
     when(initialInventoryActivity.mAdapter.validateAll()).thenReturn(-1);
-    initialInventoryActivity.onNextMainPageAction = new Action1<Object>() {
-      @Override
-      public void call(Object o) {
-        return;
-      }
-    };
+    initialInventoryActivity.onNextMainPageAction = o -> { };
 
     when(mockedPresenter.initStockCardObservable()).thenReturn(Observable.empty());
     initialInventoryActivity.btnDone.performClick();

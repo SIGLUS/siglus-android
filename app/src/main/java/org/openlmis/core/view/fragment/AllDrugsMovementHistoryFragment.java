@@ -67,8 +67,7 @@ public class AllDrugsMovementHistoryFragment extends BaseFragment implements
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_all_drugs_movement_history, container, true);
   }
 
@@ -98,7 +97,7 @@ public class AllDrugsMovementHistoryFragment extends BaseFragment implements
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
-
+        // do nothing
       }
     });
   }

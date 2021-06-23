@@ -18,12 +18,13 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import java.io.Serializable;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.model.RegimenItem;
 
 @Data
-public class ALGridViewModel {
+public class ALGridViewModel implements Serializable {
 
   public enum ALColumnCode {
     ONE_COLUMN("1x6"),

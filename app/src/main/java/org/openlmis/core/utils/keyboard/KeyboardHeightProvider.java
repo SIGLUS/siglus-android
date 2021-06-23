@@ -18,6 +18,9 @@
 
 package org.openlmis.core.utils.keyboard;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import android.app.Activity;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -43,15 +46,14 @@ public class KeyboardHeightProvider extends PopupWindow {
   public KeyboardHeightProvider(Activity activity) {
     super(activity);
     this.activity = activity;
-    this.popupView = ((LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE))
+    this.popupView = ((LayoutInflater) activity.getSystemService(LAYOUT_INFLATER_SERVICE))
         .inflate(R.layout.popupwindow, null, false);
     setContentView(popupView);
-    setSoftInputMode(
-        LayoutParams.SOFT_INPUT_ADJUST_RESIZE | LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+    setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_RESIZE | LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
     parentView = activity.findViewById(android.R.id.content);
     setWidth(0);
-    setHeight(LayoutParams.MATCH_PARENT);
+    setHeight(MATCH_PARENT);
     setFocusable(false);
     popupView.getViewTreeObserver().addOnGlobalLayoutListener(this::handleOnGlobalLayout);
   }

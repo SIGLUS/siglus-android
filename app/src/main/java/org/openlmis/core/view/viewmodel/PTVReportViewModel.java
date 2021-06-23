@@ -29,8 +29,8 @@ import org.openlmis.core.model.ServiceItem;
 @Data
 public class PTVReportViewModel implements Serializable {
 
-  public RnRForm form;
-  public List<Service> services = new ArrayList<>();
+  private RnRForm form;
+  private List<Service> services = new ArrayList<>();
 
   public PTVReportViewModel(RnRForm form) {
     this.form = form;

@@ -218,7 +218,7 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
       if (!StringUtils.isEmpty(lotMovementViewModel.getQuantity())
           && Long.parseLong(lotMovementViewModel.getQuantity()) > 0) {
         if (!soonestToExpireLotsIssued) {
-          return LotStatus.notSoonestToExpireLotsIssued;
+          return LotStatus.NOT_SOONEST_TO_EXPIRE_LOTS_ISSUED;
         }
         if (Long.parseLong(lotMovementViewModel.getQuantity()) < Long
             .parseLong(lotMovementViewModel.getLotSoh())) {
@@ -226,12 +226,12 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
         }
       } else {
         if (containExpiredLot) {
-          return LotStatus.containExpiredLots;
+          return LotStatus.CONTAIN_EXPIRED_LOTS;
         }
         soonestToExpireLotsIssued = false;
       }
     }
-    return LotStatus.defaultStatus;
+    return LotStatus.DEFAULT_STATUS;
   }
 
   public boolean hasLotDataChanged() {

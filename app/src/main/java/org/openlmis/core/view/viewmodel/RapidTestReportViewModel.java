@@ -49,22 +49,17 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 @Data
 public class RapidTestReportViewModel implements Serializable {
 
-  Period period;
-  String observation;
+  private Period period;
+  private String observation;
   private Status status;
   private Date syncedTime;
-
-  transient MovementReasonManager movementReasonManager;
-
-  transient RapidTestFormItemViewModel itemTotal;
-  transient RapidTestFormItemViewModel itemRealTotal;
-  transient RapidTestFormItemViewModel itemAPEs;
-
-  transient List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
-  transient Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
-
-  List<ProgramDataFormBasicItem> basicItems = new ArrayList<>();
-
+  private MovementReasonManager movementReasonManager;
+  private RapidTestFormItemViewModel itemTotal;
+  private RapidTestFormItemViewModel itemRealTotal;
+  private RapidTestFormItemViewModel itemAPEs;
+  private List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
+  private Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
+  private List<ProgramDataFormBasicItem> basicItems = new ArrayList<>();
   private ProgramDataForm rapidTestForm = new ProgramDataForm();
 
   public static final long DEFAULT_FORM_ID = 0;
@@ -401,5 +396,3 @@ public class RapidTestReportViewModel implements Serializable {
   }
 
 }
-
-

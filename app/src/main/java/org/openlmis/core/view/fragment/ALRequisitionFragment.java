@@ -101,8 +101,7 @@ public class ALRequisitionFragment extends BaseReportFragment implements
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     containerView = inflater.inflate(R.layout.fragment_al_requisition, container, false);
     return containerView;
   }

@@ -94,8 +94,7 @@ public class ReportListFragment extends BaseReportListFragment {
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_requisition_list, container, false);
   }
 
@@ -247,8 +246,8 @@ public class ReportListFragment extends BaseReportListFragment {
         warningDialog.dismissAllowingStateLoss();
       }
       warningDialog = new WarningDialogFragmentBuilder()
-          .build(buildWarningDialogFragmentDelegate(form), R.string.msg_del_requisition,
-              R.string.btn_del, R.string.dialog_cancel);
+          .build(buildWarningDialogFragmentDelegate(form), R.string.msg_del_requisition, R.string.btn_del,
+              R.string.dialog_cancel);
       warningDialog.show(getParentFragmentManager(), "WarningDialogFragment");
     }
 

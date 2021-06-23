@@ -76,8 +76,7 @@ public class WarningDialogFragment extends DialogFragment {
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View contentView = inflater.inflate(R.layout.dialog_warning, container, false);
     initUI(contentView);
     return contentView;

@@ -103,8 +103,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     containerView = inflater.inflate(R.layout.fragment_ptv_requisition, container, false);
     return containerView;
   }
@@ -190,7 +189,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements
 
       @Override
       public void onNext(Void aVoid) {
-
+        // do nothing
       }
     };
   }

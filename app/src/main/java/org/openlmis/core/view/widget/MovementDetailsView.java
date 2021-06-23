@@ -22,6 +22,7 @@ import static android.graphics.Color.TRANSPARENT;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
@@ -41,6 +42,7 @@ import org.openlmis.core.view.listener.MovementDateListener;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
+@SuppressWarnings("squid:S1874")
 public class MovementDetailsView extends LinearLayout {
 
   protected Context context;
@@ -153,13 +155,13 @@ public class MovementDetailsView extends LinearLayout {
         new MovementDateListener(presenter.getViewModel(), presenter.getLastMovementDate(),
             etMovementDate),
         today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
-    dialog.setButton(DatePickerDialog.BUTTON_POSITIVE, "Done", dialog);
+    dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Done", dialog);
     dialog.setOnDismissListener(dialog1 -> etMovementDate.setEnabled(true));
     if (dialog.getWindow() != null) {
       dialog.getWindow().setBackgroundDrawable(new ColorDrawable(TRANSPARENT));
     }
     dialog.show();
-    dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setVisibility(GONE);
+    dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setVisibility(GONE);
   }
 
   public void setMovementQuantityVisibility(int movementQuantityVisibility) {
@@ -186,8 +188,7 @@ public class MovementDetailsView extends LinearLayout {
 
   public void showMovementDateEmptyError() {
     lyMovementDate.setError(getResources().getString(R.string.msg_empty_movement_date));
-    etMovementDate.getBackground()
-        .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    etMovementDate.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     requestFocus(etMovementDate);
   }
 

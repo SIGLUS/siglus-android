@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.fragment;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -62,7 +64,6 @@ public class StockMovementHistoryFragment extends BaseFragment implements
 
   private BaseView baseView;
   private BaseAdapter adapter;
-  private View containerView;
 
   @Override
   public void onAttach(Activity activity) {
@@ -88,10 +89,9 @@ public class StockMovementHistoryFragment extends BaseFragment implements
     return presenter;
   }
 
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    containerView = inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
-    return containerView;
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
   }
 
   @Override
@@ -174,7 +174,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements
 
   private void addFooterView() {
     TextView view = new TextView(getActivity());
-    view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, 150));
+    view.setLayoutParams(new AbsListView.LayoutParams(MATCH_PARENT, 150));
     if (historyListView.getFooterViewsCount() == 0) {
       historyListView.addFooterView(view);
     }

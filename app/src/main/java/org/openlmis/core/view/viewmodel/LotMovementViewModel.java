@@ -19,7 +19,6 @@
 package org.openlmis.core.view.viewmodel;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import lombok.Data;
@@ -157,9 +156,8 @@ public class LotMovementViewModel implements Serializable {
       return "SEM-LOTE-" + productCode.toUpperCase() + "-" + DateUtil
           .convertDate(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR,
               DateUtil.DATE_DIGIT_FORMAT_ONLY_MONTH_AND_YEAR);
-    } catch (ParseException e) {
-      new LMISException(e, "LotMovementViewModel.generateLotNumberForProductWithoutLot")
-          .reportToFabric();
+    } catch (Exception e) {
+      new LMISException(e, "LotMovementViewModel.generateLotNumberForProductWithoutLot").reportToFabric();
     }
     return null;
   }

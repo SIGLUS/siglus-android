@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.widget;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -54,8 +56,7 @@ public class RapidTestProductInfoView extends ScrollView {
   private void initView() {
     uniqueChild = new LinearLayout(getContext());
     uniqueChild.setOrientation(LinearLayout.VERTICAL);
-    final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+    final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
     uniqueChild.setLayoutParams(layoutParams);
     addView(uniqueChild);
   }

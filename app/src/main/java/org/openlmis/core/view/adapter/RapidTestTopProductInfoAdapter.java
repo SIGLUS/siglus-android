@@ -24,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.LMISApp;
@@ -117,10 +116,9 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     inventoryEditTexts.add(etInventory);
     try {
       if (!(TextUtils.isEmpty(formBasicItem.getValidate()))) {
-        tvValidate
-            .setText(DateUtil.convertDate(formBasicItem.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
+        tvValidate.setText(DateUtil.convertDate(formBasicItem.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
       }
-    } catch (ParseException e) {
+    } catch (Exception e) {
       new LMISException(e, "RapidTestRnrForm.addView").reportToFabric();
     }
   }
