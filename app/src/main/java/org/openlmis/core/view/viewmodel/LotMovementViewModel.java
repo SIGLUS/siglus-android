@@ -21,6 +21,8 @@ package org.openlmis.core.view.viewmodel;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +34,9 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class LotMovementViewModel implements Serializable {
 
   private String lotNumber;

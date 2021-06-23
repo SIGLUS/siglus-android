@@ -33,10 +33,13 @@ public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntr
   @Getter
   protected final List<LotMovementViewModel> lotList;
 
+  private String[] movementReasons;
+
 
   public BulkEntriesLotMovementAdapter(
-      List<LotMovementViewModel> lotList) {
+      List<LotMovementViewModel> lotList, String[] reasonDescriptionList) {
     this.lotList = lotList;
+    this.movementReasons = reasonDescriptionList;
   }
 
   @NonNull
@@ -44,7 +47,7 @@ public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntr
   public BulkEntriesLotMovementViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
       int viewType) {
     return new BulkEntriesLotMovementViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-        R.layout.item_bulk_entries_lots_info,parent,false));
+        R.layout.item_bulk_entries_lots_info,parent,false),movementReasons);
   }
 
   @Override

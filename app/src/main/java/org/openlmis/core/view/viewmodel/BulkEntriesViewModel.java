@@ -18,12 +18,40 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import java.util.List;
+import lombok.Data;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 
+@Data
 public class BulkEntriesViewModel extends InventoryViewModel {
 
+  private boolean done;
+
+  private Product product;
+
+  private Long quantity;
+
+  private List<LotMovementViewModel> lotMovementViewModels;
+
+
+  public BulkEntriesViewModel(Product product) {
+    super(product);
+    this.product = product;
+  }
 
   public BulkEntriesViewModel(StockCard stockCard) {
     super(stockCard);
+    this.product = stockCard.getProduct();
+  }
+
+  public BulkEntriesViewModel(Product product, boolean done,
+      Long quantity,
+      List<LotMovementViewModel> lotMovementViewModels) {
+    super(product);
+    this.done = done;
+    this.product = product;
+    this.quantity = quantity;
+    this.lotMovementViewModels = lotMovementViewModels;
   }
 }

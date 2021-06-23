@@ -11,6 +11,7 @@
     android:layout_width="@dimen/px_73"
     android:layout_height="@dimen/px_73"
     android:src="@drawable/ic_no_product"
+    android:visibility="invisible"
     app:layout_constraintBottom_toTopOf="@id/msg_no_product"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
@@ -24,6 +25,7 @@
     android:text="@string/msg_no_product_in_bulk_entries"
     android:textSize="@dimen/px_22"
     android:textColor="@color/color_black"
+    android:visibility="invisible"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -45,6 +47,14 @@
     android:layout_height="0dp"
     android:scrollbars="vertical"
     app:layout_constraintTop_toBottomOf="@id/tv_total"
-    app:layout_constraintBottom_toBottomOf="parent"/>
+    app:layout_constraintBottom_toBottomOf="@+id/action_panel"/>
+
+  <include
+    android:id="@+id/action_panel"
+    layout="@layout/view_action_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

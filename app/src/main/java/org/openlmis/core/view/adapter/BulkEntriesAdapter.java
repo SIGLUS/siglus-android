@@ -34,9 +34,9 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
   @Getter
   private final List<BulkEntriesViewModel> models;
 
+
   public BulkEntriesAdapter(List<BulkEntriesViewModel> allAddedBulkEntriesViewModels) {
     this.models = allAddedBulkEntriesViewModels;
-
   }
 
   @NonNull
@@ -48,7 +48,7 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
 
   @Override
   public void onBindViewHolder(@NonNull BulkEntriesViewHolder holder, int position) {
-    holder.populate(models.get(position));
+    holder.populate(models.get(position),this);
   }
 
   @Override
@@ -57,6 +57,11 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
   }
 
   public void refresh() {
+    this.notifyDataSetChanged();
+  }
+
+  public void remove(BulkEntriesViewModel bulkEntriesViewModel) {
+    models.remove(bulkEntriesViewModel);
     this.notifyDataSetChanged();
   }
 }

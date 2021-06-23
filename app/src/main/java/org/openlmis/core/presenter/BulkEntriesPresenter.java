@@ -20,6 +20,7 @@ package org.openlmis.core.presenter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
+import android.util.Log;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,12 +29,16 @@ import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.DraftBulkEntriesProduct;
+import org.openlmis.core.model.DraftBulkEntriesProductLotItem;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.repository.BulkEntriesRepository;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
@@ -42,12 +47,15 @@ import rx.schedulers.Schedulers;
 
 public class BulkEntriesPresenter extends Presenter {
 
+  private static final String TAG = BulkEntriesPresenter.class.getSimpleName();
   @Inject
   StockRepository stockRepository;
-
+  @Inject
+  ProductRepository productRepository;
+  @Inject
+  BulkEntriesRepository bulkEntriesRepository;
   @Getter
   private List<BulkEntriesViewModel> bulkEntriesViewModels;
-
 
   public BulkEntriesPresenter() {
     this.bulkEntriesViewModels = new ArrayList<>();
@@ -60,6 +68,11 @@ public class BulkEntriesPresenter extends Presenter {
 
   public Observable<List<BulkEntriesViewModel>> getAllAddedBulkEntriesViewModels(
       List<Product> addedProducts) {
+    try {
+      restoreDraftInventory();
+    } catch (Exception exception) {
+      Log.w(TAG,exception);
+    }
     return Observable
         .create((Observable.OnSubscribe<List<BulkEntriesViewModel>>) subscriber -> {
           try {
@@ -73,23 +86,8 @@ public class BulkEntriesPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-  private BulkEntriesViewModel convertProductToBulkEntriesViewModel(Product product) {
-    try {
-      BulkEntriesViewModel viewModel;
-      viewModel = new BulkEntriesViewModel(
-          stockRepository.queryStockCardByProductId(product.getId()));
-      viewModel.setChecked(false);
-      setExistingLotViewModels(viewModel);
-      return viewModel;
-    } catch (LMISException e) {
-      new LMISException(e, "BulkEntriesPresenter.convertProductToBulkEntriesViewModel")
-          .reportToFabric();
-    }
-    return null;
-  }
-
-  public List<Long> getAddedProductIds() {
-    return from(bulkEntriesViewModels).transform(viewModel -> viewModel.getProduct().getId())
+  public List<String> getAddedProductCodes() {
+    return from(bulkEntriesViewModels).transform(viewModel -> viewModel.getProduct().getCode())
         .toList();
   }
 
@@ -100,24 +98,87 @@ public class BulkEntriesPresenter extends Presenter {
 
   }
 
-  private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) {
+  public Observable<Object> saveDraftBulkEntriesObservable() {
+    return Observable.create(subscriber -> {
+      try {
+        bulkEntriesRepository.clearBulkEntriesDraft();
+        for (BulkEntriesViewModel bulkEntriesViewModel : bulkEntriesViewModels) {
+          bulkEntriesRepository.createBulkEntriesProductDraft(
+              new DraftBulkEntriesProduct(bulkEntriesViewModel));
+        }
+        subscriber.onNext(null);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        Log.w(TAG, e);
+      }
+    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+  }
+
+  protected void restoreDraftInventory() throws LMISException {
+    List<DraftBulkEntriesProduct> draftBulkEntriesProducts = bulkEntriesRepository
+        .queryAllBulkEntriesDraft();
+
+    bulkEntriesViewModels.addAll(FluentIterable.from(draftBulkEntriesProducts).transform(
+        draftBulkEntriesProduct -> new BulkEntriesViewModel(draftBulkEntriesProduct.getProduct(),
+            draftBulkEntriesProduct.isDone(), draftBulkEntriesProduct.getQuantity(),
+            convertDraftLotMovementToLotMovement(
+                draftBulkEntriesProduct.getDraftLotItemListWrapper()))).toList());
+
+  }
+
+  private BulkEntriesViewModel convertProductToBulkEntriesViewModel(Product product) {
+    try {
+      BulkEntriesViewModel viewModel;
+      StockCard stockCard = stockRepository.queryStockCardByProductId(product.getId());
+      if (stockCard != null) {
+        viewModel = new BulkEntriesViewModel(stockCard);
+      } else {
+        viewModel = new BulkEntriesViewModel(product);
+      }
+      viewModel.setChecked(false);
+      setExistingLotViewModels(viewModel);
+      return viewModel;
+    } catch (LMISException e) {
+      new LMISException(e, "BulkEntriesPresenter.convertProductToBulkEntriesViewModel")
+          .reportToFabric();
+    }
+    return null;
+  }
+
+  private List<LotMovementViewModel> convertDraftLotMovementToLotMovement(
+      List<DraftBulkEntriesProductLotItem> draftBulkEntriesProductLotItems) {
+    return FluentIterable.from(draftBulkEntriesProductLotItems)
+        .transform(draftBulkEntriesProductLotItem -> LotMovementViewModel.builder()
+            .documentNumber(draftBulkEntriesProductLotItem.getDocumentNumber())
+            .lotNumber(draftBulkEntriesProductLotItem.getLotNumber())
+            .expiryDate(draftBulkEntriesProductLotItem.getExpirationDate().toString())
+            .movementReason(draftBulkEntriesProductLotItem.getReason())
+            .lotSoh(draftBulkEntriesProductLotItem.getQuantity().toString())
+            .build()).toList();
+  }
+
+  private void setExistingLotViewModels(BulkEntriesViewModel bulkEntriesViewModel) {
+    if (bulkEntriesViewModel.getStockCard() == null) {
+      return;
+    }
     List<LotMovementViewModel> lotMovementViewModels = FluentIterable
-        .from(inventoryViewModel.getStockCard().getNonEmptyLotOnHandList())
+        .from(bulkEntriesViewModel.getStockCard().getNonEmptyLotOnHandList())
         .transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
             DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
                 DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
             lotOnHand.getQuantityOnHand().toString(),
             MovementReasonManager.MovementType.RECEIVE)).toSortedList((lot1, lot2) -> {
-              Date localDate = DateUtil
-                  .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-              if (localDate != null) {
-                return localDate.compareTo(DateUtil
+          Date localDate = DateUtil
+              .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+          if (localDate != null) {
+            return localDate.compareTo(DateUtil
                 .parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-              } else {
-                return 0;
-              }
-            });
-    inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
+          } else {
+            return 0;
+          }
+        });
+    bulkEntriesViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
   }
+
 
 }

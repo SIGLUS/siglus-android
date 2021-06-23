@@ -22,10 +22,15 @@ import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.S
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
@@ -41,6 +46,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -57,6 +63,18 @@ public class BulkEntriesActivity extends BaseActivity {
 
   @InjectView(R.id.tv_total)
   TextView tvTotal;
+
+  @InjectView(R.id.btn_save)
+  View btnSave;
+
+  @InjectView(R.id.action_panel)
+  View actionPanel;
+
+  @InjectView(R.id.msg_no_product)
+  TextView msgNoProduct;
+
+  @InjectView(R.id.iv_no_product)
+  ImageView ivNoProduct;
 
   BulkEntriesAdapter adapter;
 
@@ -75,6 +93,8 @@ public class BulkEntriesActivity extends BaseActivity {
     Subscription subscription = bulkEntriesPresenter.getAllAddedBulkEntriesViewModels(addedProducts)
         .subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
+    btnSave.setOnClickListener(getSaveListener());
+    setViewGoneWhenNoProduct(bulkEntriesPresenter.getBulkEntriesViewModels());
   }
 
   @Override
@@ -97,8 +117,17 @@ public class BulkEntriesActivity extends BaseActivity {
   public void openAddProductsActivityForResult() {
     Intent intent = new Intent(getApplicationContext(),AddProductsToBulkEntriesActivity.class);
     intent.putExtra(SELECTED_PRODUCTS,
-        (Serializable)bulkEntriesPresenter.getAddedProductIds());
+        (Serializable)bulkEntriesPresenter.getAddedProductCodes());
     addProductsActivityResultLauncher.launch(intent);
+  }
+
+  private void setViewGoneWhenNoProduct(List<BulkEntriesViewModel> bulkEntriesViewModels) {
+    if (bulkEntriesViewModels.isEmpty()) {
+      actionPanel.setVisibility(View.GONE);
+      ivNoProduct.setVisibility(View.VISIBLE);
+      msgNoProduct.setVisibility(View.VISIBLE);
+    }
+
   }
 
   private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
@@ -143,4 +172,40 @@ public class BulkEntriesActivity extends BaseActivity {
       }
     };
   }
+
+  @NonNull
+  private SingleClickButtonListener getSaveListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        btnSave.setEnabled(false);
+        loading();
+        Subscription subscription = bulkEntriesPresenter.saveDraftBulkEntriesObservable()
+            .subscribe(getReloadSubscriber());
+        subscriptions.add(subscription);
+      }
+    };
+  }
+
+  private Subscriber getReloadSubscriber() {
+    return new Subscriber() {
+      @Override
+      public void onCompleted() {
+        Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG).show();
+        loaded();
+        btnSave.setEnabled(true);
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        // do nothing
+      }
+
+      @Override
+      public void onNext(Object o) {
+        // do nothing
+      }
+    };
+  }
+
 }

@@ -34,61 +34,43 @@ import org.openlmis.core.utils.ListUtil;
 @DatabaseTable(tableName = "program_data_forms")
 public class ProgramDataForm extends BaseModel {
 
-  public enum Status {
-    DRAFT,
-    SUBMITTED,
-    AUTHORIZED
-  }
-
-  @Getter
-  @DatabaseField(defaultValue = "DRAFT")
-  private Status status;
-
-  @Getter
-  @DatabaseField(foreign = true, foreignAutoRefresh = true)
-  private Program program;
-
-  @Getter
-  @DatabaseField
-  private boolean synced = false;
-
   @Getter
   @Expose
   @DatabaseField
   public Date periodBegin;
-
   @Getter
   @Expose
   @DatabaseField
   public Date periodEnd;
-
+  @Getter
+  @DatabaseField(defaultValue = "DRAFT")
+  private Status status;
+  @Getter
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private Program program;
+  @Getter
+  @DatabaseField
+  private boolean synced = false;
   @Getter
   @Expose
   @DatabaseField
   private Date submittedTime;
-
   @Getter
   @Expose
   @DatabaseField(defaultValue = "")
   private String observation;
-
   @ForeignCollectionField
   private ForeignCollection<ProgramDataFormItem> programDataFormItemList;
-
   @Expose
   @SerializedName("programDataFormItems")
   private List<ProgramDataFormItem> programDataFormItemListWrapper;
-
   @ForeignCollectionField()
   private ForeignCollection<ProgramDataFormBasicItem> formBasicItemList;
-
   @Expose
   @SerializedName("programDataFormBasicItems")
   private List<ProgramDataFormBasicItem> formBasicItemListWrapper;
-
   @ForeignCollectionField()
   private ForeignCollection<ProgramDataFormSignature> signatures;
-
   @Expose
   @SerializedName("programDataFormSignatures")
   private List<ProgramDataFormSignature> signaturesWrapper;
@@ -107,6 +89,12 @@ public class ProgramDataForm extends BaseModel {
   public List<ProgramDataFormBasicItem> getFormBasicItemListWrapper() {
     formBasicItemListWrapper = ListUtil.wrapOrEmpty(formBasicItemList, formBasicItemListWrapper);
     return formBasicItemListWrapper;
+  }
+
+  public enum Status {
+    DRAFT,
+    SUBMITTED,
+    AUTHORIZED
   }
 
 }

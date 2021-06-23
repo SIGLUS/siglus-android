@@ -37,10 +37,13 @@ import org.openlmis.core.utils.TextStyleUtil;
 public class InventoryViewModel extends BaseStockMovementViewModel {
 
   long productId;
+
   String productName;
+
   String fnm;
 
   String strength;
+
   String type;
 
   boolean isDataChanged;
@@ -50,6 +53,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
   long stockOnHand;
 
   long kitExpectQuantity;
+
   SpannableStringBuilder styledName;
 
   SpannableStringBuilder styledUnit;
@@ -66,6 +70,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
   private int viewType;
 
   private String signature;
+
   StockCard stockCard;
 
 
@@ -81,6 +86,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
   public InventoryViewModel(StockCard stockCard) {
     this(stockCard.getProduct());
 
+    this.product = stockCard.getProduct();
     this.stockCard = stockCard;
     this.stockCardId = stockCard.getId();
     this.stockOnHand = stockCard.calculateSOHFromLots();

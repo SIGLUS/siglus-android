@@ -69,11 +69,11 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     initRecyclerView();
-    loading(getString(R.string.add_products_loading_message));
+    loading(getString(R.string.add_all_products_loading_message));
     previouslyProductCodes = (List<String>) getIntent()
         .getSerializableExtra(SELECTED_PRODUCTS);
     btnAddProducts.setOnClickListener(addProductsListener());
-    Subscription subscription = addProductsToBulkEntriesPresenter.getAllProducts(new ArrayList<>())
+    Subscription subscription = addProductsToBulkEntriesPresenter.getAllProducts(previouslyProductCodes)
         .subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
   }
