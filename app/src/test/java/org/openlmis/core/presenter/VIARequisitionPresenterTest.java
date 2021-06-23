@@ -249,7 +249,7 @@ public class VIARequisitionPresenterTest {
   @NonNull
   private RnRForm createRnrForm(RnRForm.Emergency emergency) {
     RnRForm rnRForm = new RnRForm();
-    rnRForm.setEmergency(emergency.emergency());
+    rnRForm.setEmergency(emergency.isEmergency());
     return rnRForm;
   }
 

@@ -193,7 +193,7 @@ public class RnrFormRepository {
 
   public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode,
       ReportTypeForm reportTypeForm) throws LMISException {
-    return listForm(programCode, includeEmergency.emergency(), reportTypeForm);
+    return listForm(programCode, includeEmergency.isEmergency(), reportTypeForm);
   }
 
   public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
@@ -358,7 +358,7 @@ public class RnrFormRepository {
     }
 
     Period period = requisitionPeriodService.generateNextPeriod(programCode, periodEndDate);
-    return RnRForm.init(program, period, emergency.emergency());
+    return RnRForm.init(program, period, emergency.isEmergency());
   }
 
   private RnRForm createInitRnrForm(final RnRForm rnrForm) throws LMISException {
