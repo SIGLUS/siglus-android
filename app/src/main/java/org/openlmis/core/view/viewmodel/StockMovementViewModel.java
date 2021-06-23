@@ -206,6 +206,7 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
     return newLotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty();
   }
 
+  @SuppressWarnings("squid:S3776")
   public LotStatus getSoonestToExpireLotsIssued() {
     boolean soonestToExpireLotsIssued = true;
     boolean containExpiredLot = false;

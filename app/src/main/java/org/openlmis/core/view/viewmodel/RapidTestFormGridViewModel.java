@@ -30,9 +30,9 @@ import org.openlmis.core.model.ProgramDataFormItem;
 public class RapidTestFormGridViewModel {
 
   public enum RapidTestGridColumnCode {
-    consumption,
-    positive,
-    unjustified
+    CONSUMPTION,
+    POSITIVE,
+    UNJUSTIFIED
   }
 
   public enum ColumnCode {
@@ -105,13 +105,13 @@ public class RapidTestFormGridViewModel {
 
   public void setValue(RapidTestGridColumnCode column, String value) {
     switch (column) {
-      case positive:
+      case POSITIVE:
         positiveValue = value;
         break;
-      case consumption:
+      case CONSUMPTION:
         consumptionValue = value;
         break;
-      case unjustified:
+      case UNJUSTIFIED:
         unjustifiedValue = value;
         break;
       default:
@@ -130,13 +130,13 @@ public class RapidTestFormGridViewModel {
 
   public void clear(RapidTestGridColumnCode column) {
     switch (column) {
-      case positive:
+      case POSITIVE:
         positiveValue = StringUtils.EMPTY;
         break;
-      case consumption:
+      case CONSUMPTION:
         consumptionValue = StringUtils.EMPTY;
         break;
-      case unjustified:
+      case UNJUSTIFIED:
         unjustifiedValue = StringUtils.EMPTY;
         break;
       default:

@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.consumption;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.CONSUMPTION;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -217,11 +217,11 @@ public class RapidTestReportViewModelTest {
     viewModel = new RapidTestReportViewModel(
         Period.of(DateUtil.parseString(PERIOD, DateUtil.DB_DATE_FORMAT)));
     viewModel.getItemViewModelList().get(0).getGridHIVDetermine().setConsumptionValue("100");
-    viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDETERMINE, consumption);
+    viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDETERMINE, CONSUMPTION);
     assertEquals("100", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
 
     viewModel.getItemViewModelList().get(1).getGridHIVDetermine().setConsumptionValue("2333");
-    viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDETERMINE, consumption);
+    viewModel.updateTotal(RapidTestFormGridViewModel.ColumnCode.HIVDETERMINE, CONSUMPTION);
     assertEquals("2433", viewModel.getItemTotal().getGridHIVDetermine().getConsumptionValue());
   }
 }

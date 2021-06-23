@@ -40,39 +40,39 @@ import org.openlmis.core.model.BaseInfoItem;
 
 public class MMIAPatientInfoList extends LinearLayout {
 
-  private static String ATTR_TABLE_TRAV;
-  private static String ATTR_TABLE_TRAV_KEY;
-  private static String ATTR_TABLE_TRAV_NEW;
-  private static String ATTR_TABLE_TRAV_NEW_KEY;
-  private static String ATTR_TABLE_TRAV_MAINTENANCE;
-  private static String ATTR_TABLE_TRAV_MAINTENANCE_KEY;
-  private static String ATTR_TABLE_TRAV_ALTERATION;
-  private static String ATTR_TABLE_TRAV_ALTERATION_KEY;
-  private static String ATTR_TABLE_TRAV_TRANSIT;
-  private static String ATTR_TABLE_TRAV_TRANSIT_KEY;
-  private static String ATTR_TABLE_TRAV_TRANSFER;
-  private static String ATTR_TABLE_TRAV_TRANSFER_KEY;
-  private static String ATTR_TABLE_PATIENTS;
-  private static String ATTR_TABLE_PATIENTS_KEY;
-  private static String ATTR_TABLE_PATIENTS_ADULTS;
-  private static String ATTR_TABLE_PATIENTS_ADULTS_KEY;
-  private static String ATTR_TABLE_PATIENTS_0TO4;
-  private static String ATTR_TABLE_PATIENTS_0TO4_KEY;
-  private static String ATTR_TABLE_PATIENTS_5TO9;
-  private static String ATTR_TABLE_PATIENTS_5TO9_KEY;
-  private static String ATTR_TABLE_PATIENTS_10TO14;
-  private static String ATTR_TABLE_PATIENTS_10TO14_KEY;
-  private static String ATTR_TABLE_PROPHYLAXIS;
-  private static String ATTR_TABLE_PROPHYLAXIS_KEY;
-  private static String ATTR_TABLE_PROPHYLAXIS_PPE;
-  private static String ATTR_TABLE_PROPHYLAXIS_PPE_KEY;
-  private static String ATTR_TABLE_PROPHYLAXIS_PREP;
-  private static String ATTR_TABLE_PROPHYLAXIS_PREP_KEY;
-  private static String ATTR_TABLE_PROPHYLAXIS_CHILD;
-  private static String ATTR_TABLE_PROPHYLAXIS_CHILD_KEY;
-  private static String ATTR_TABLE_PROPHYLAXIS_TOTAL;
-  private static String ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY;
-  private static String ATTR_TABLE_ORIGIN;
+  private String attrTableTrav;
+  private String attrTableTravKey;
+  private String attrTableTravNew;
+  private String attrTableTravNewKey;
+  private String attrTableTravMaintenance;
+  private String attrTableTravMaintenanceKey;
+  private String attrTableTravAlteration;
+  private String attrTableTravAlterationKey;
+  private String attrTableTravTransit;
+  private String attrTableTravTransitKey;
+  private String attrTableTravTransfer;
+  private String attrTableTravTransferKey;
+  private String attrTablePatients;
+  private String attrTablePatientsKey;
+  private String attrTablePatientsAdults;
+  private String attrTablePatientsAdultsKey;
+  private String attrTablePatients0To4;
+  private String attrTablePatients0To4Key;
+  private String attrTablePatients5To9;
+  private String attrTablePatients5To9Key;
+  private String attrTablePatients10To14;
+  private String attrTablePatients10To14Key;
+  private String attrTableProphylaxis;
+  private String attrTableProphylaxisKey;
+  private String attrTableProphylaxisPpe;
+  private String attrTableProphylaxisPpeKey;
+  private String attrTableProphylaxisPrep;
+  private String attrTableProphylaxisPrepKey;
+  private String attrTableProphylaxisChild;
+  private String attrTableProphylaxisChildKey;
+  private String attrTableProphylaxisTotal;
+  private String attrTableProphylaxisTotalKey;
+  private String attrTableOrigin;
 
   private Context context;
   private final List<EditText> editTexts = new ArrayList<>();
@@ -101,45 +101,45 @@ public class MMIAPatientInfoList extends LinearLayout {
   }
 
   private void initTableName() {
-    ATTR_TABLE_TRAV = getString(R.string.table_trav);
-    ATTR_TABLE_PATIENTS = getString(R.string.table_patients);
-    ATTR_TABLE_PROPHYLAXIS = getString(R.string.table_prophylaxis);
-    ATTR_TABLE_ORIGIN = getString(R.string.label_mmia_speed_info_header);
+    attrTableTrav = getString(R.string.table_trav);
+    attrTablePatients = getString(R.string.table_patients);
+    attrTableProphylaxis = getString(R.string.table_prophylaxis);
+    attrTableOrigin = getString(R.string.label_mmia_speed_info_header);
   }
 
   private void initTableKey() {
-    ATTR_TABLE_TRAV_KEY = getString(R.string.table_arvt_key);
-    ATTR_TABLE_PATIENTS_KEY = getString(R.string.table_patients_key);
-    ATTR_TABLE_PROPHYLAXIS_KEY = getString(R.string.table_prophylaxy_key);
+    attrTableTravKey = getString(R.string.table_arvt_key);
+    attrTablePatientsKey = getString(R.string.table_patients_key);
+    attrTableProphylaxisKey = getString(R.string.table_prophylaxy_key);
   }
 
   private void initItem() {
-    ATTR_TABLE_TRAV_NEW = getString(R.string.table_trav_label_new);
-    ATTR_TABLE_TRAV_NEW_KEY = getString(R.string.table_trav_label_new_key);
-    ATTR_TABLE_TRAV_MAINTENANCE = getString(R.string.table_trav_label_maintenance);
-    ATTR_TABLE_TRAV_MAINTENANCE_KEY = getString(R.string.table_trav_label_maintenance_key);
-    ATTR_TABLE_TRAV_ALTERATION = getString(R.string.table_trav_label_alteration);
-    ATTR_TABLE_TRAV_ALTERATION_KEY = getString(R.string.table_trav_label_alteration_key);
-    ATTR_TABLE_TRAV_TRANSIT = getString(R.string.table_trav_label_transit);
-    ATTR_TABLE_TRAV_TRANSIT_KEY = getString(R.string.table_trav_label_transit_key);
-    ATTR_TABLE_TRAV_TRANSFER = getString(R.string.table_trav_label_transfers);
-    ATTR_TABLE_TRAV_TRANSFER_KEY = getString(R.string.table_trav_label_transfers_key);
-    ATTR_TABLE_PATIENTS_ADULTS = getString(R.string.table_patients_adults);
-    ATTR_TABLE_PATIENTS_ADULTS_KEY = getString(R.string.table_patients_adults_key);
-    ATTR_TABLE_PATIENTS_0TO4 = getString(R.string.table_patients_0to4);
-    ATTR_TABLE_PATIENTS_0TO4_KEY = getString(R.string.table_patients_0to4_key);
-    ATTR_TABLE_PATIENTS_5TO9 = getString(R.string.table_patients_5to9);
-    ATTR_TABLE_PATIENTS_5TO9_KEY = getString(R.string.table_patients_5to9_key);
-    ATTR_TABLE_PATIENTS_10TO14 = getString(R.string.table_patients_10to14);
-    ATTR_TABLE_PATIENTS_10TO14_KEY = getString(R.string.table_patients_10to14_key);
-    ATTR_TABLE_PROPHYLAXIS_PPE = getString(R.string.table_prophylaxis_ppe);
-    ATTR_TABLE_PROPHYLAXIS_PPE_KEY = getString(R.string.table_prophylaxis_ppe_key);
-    ATTR_TABLE_PROPHYLAXIS_PREP = getString(R.string.table_prophylaxis_prep);
-    ATTR_TABLE_PROPHYLAXIS_PREP_KEY = getString(R.string.table_prophylaxis_prep_key);
-    ATTR_TABLE_PROPHYLAXIS_CHILD = getString(R.string.table_prophylaxis_child);
-    ATTR_TABLE_PROPHYLAXIS_CHILD_KEY = getString(R.string.table_prophylaxis_child_key);
-    ATTR_TABLE_PROPHYLAXIS_TOTAL = getString(R.string.table_prophylaxis_total);
-    ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY = getString(R.string.table_prophylaxis_total_key);
+    attrTableTravNew = getString(R.string.table_trav_label_new);
+    attrTableTravNewKey = getString(R.string.table_trav_label_new_key);
+    attrTableTravMaintenance = getString(R.string.table_trav_label_maintenance);
+    attrTableTravMaintenanceKey = getString(R.string.table_trav_label_maintenance_key);
+    attrTableTravAlteration = getString(R.string.table_trav_label_alteration);
+    attrTableTravAlterationKey = getString(R.string.table_trav_label_alteration_key);
+    attrTableTravTransit = getString(R.string.table_trav_label_transit);
+    attrTableTravTransitKey = getString(R.string.table_trav_label_transit_key);
+    attrTableTravTransfer = getString(R.string.table_trav_label_transfers);
+    attrTableTravTransferKey = getString(R.string.table_trav_label_transfers_key);
+    attrTablePatientsAdults = getString(R.string.table_patients_adults);
+    attrTablePatientsAdultsKey = getString(R.string.table_patients_adults_key);
+    attrTablePatients0To4 = getString(R.string.table_patients_0to4);
+    attrTablePatients0To4Key = getString(R.string.table_patients_0to4_key);
+    attrTablePatients5To9 = getString(R.string.table_patients_5to9);
+    attrTablePatients5To9Key = getString(R.string.table_patients_5to9_key);
+    attrTablePatients10To14 = getString(R.string.table_patients_10to14);
+    attrTablePatients10To14Key = getString(R.string.table_patients_10to14_key);
+    attrTableProphylaxisPpe = getString(R.string.table_prophylaxis_ppe);
+    attrTableProphylaxisPpeKey = getString(R.string.table_prophylaxis_ppe_key);
+    attrTableProphylaxisPrep = getString(R.string.table_prophylaxis_prep);
+    attrTableProphylaxisPrepKey = getString(R.string.table_prophylaxis_prep_key);
+    attrTableProphylaxisChild = getString(R.string.table_prophylaxis_child);
+    attrTableProphylaxisChildKey = getString(R.string.table_prophylaxis_child_key);
+    attrTableProphylaxisTotal = getString(R.string.table_prophylaxis_total);
+    attrTableProphylaxisTotalKey = getString(R.string.table_prophylaxis_total_key);
 
   }
 
@@ -162,12 +162,12 @@ public class MMIAPatientInfoList extends LinearLayout {
 
   private void addItemView() {
     if (tableMap.size() != 1) {
-      addTableView(tableMap.get(ATTR_TABLE_TRAV_KEY), ATTR_TABLE_TRAV);
-      addTableView(tableMap.get(ATTR_TABLE_PATIENTS_KEY), ATTR_TABLE_PATIENTS);
-      addTableView(tableMap.get(ATTR_TABLE_PROPHYLAXIS_KEY), ATTR_TABLE_PROPHYLAXIS);
+      addTableView(tableMap.get(attrTableTravKey), attrTableTrav);
+      addTableView(tableMap.get(attrTablePatientsKey), attrTablePatients);
+      addTableView(tableMap.get(attrTableProphylaxisKey), attrTableProphylaxis);
     } else {
       this.dataWithOldFormat = true;
-      addTableView(dataList, ATTR_TABLE_ORIGIN);
+      addTableView(dataList, attrTableOrigin);
     }
   }
 
@@ -193,12 +193,12 @@ public class MMIAPatientInfoList extends LinearLayout {
   }
 
   private int getPosition(int i, String tableName) {
-    if (ATTR_TABLE_TRAV.equals(tableName)) {
+    if (attrTableTrav.equals(tableName)) {
       return i;
-    } else if (ATTR_TABLE_PATIENTS.equals(tableName)) {
-      return i + tableMap.get(ATTR_TABLE_TRAV_KEY).size();
-    } else if (ATTR_TABLE_PROPHYLAXIS.equals(tableName)) {
-      return i + tableMap.get(ATTR_TABLE_TRAV_KEY).size() + tableMap.get(ATTR_TABLE_PATIENTS_KEY)
+    } else if (attrTablePatients.equals(tableName)) {
+      return i + tableMap.get(attrTableTravKey).size();
+    } else if (attrTableProphylaxis.equals(tableName)) {
+      return i + tableMap.get(attrTableTravKey).size() + tableMap.get(attrTablePatientsKey)
           .size();
     } else {
       return i;
@@ -211,19 +211,19 @@ public class MMIAPatientInfoList extends LinearLayout {
 
   private Map<String, String> nameMap() {
     Map<String, String> nameMap = new HashMap<>();
-    nameMap.put(ATTR_TABLE_TRAV_NEW_KEY, ATTR_TABLE_TRAV_NEW);
-    nameMap.put(ATTR_TABLE_TRAV_MAINTENANCE_KEY, ATTR_TABLE_TRAV_MAINTENANCE);
-    nameMap.put(ATTR_TABLE_TRAV_ALTERATION_KEY, ATTR_TABLE_TRAV_ALTERATION);
-    nameMap.put(ATTR_TABLE_TRAV_TRANSIT_KEY, ATTR_TABLE_TRAV_TRANSIT);
-    nameMap.put(ATTR_TABLE_TRAV_TRANSFER_KEY, ATTR_TABLE_TRAV_TRANSFER);
-    nameMap.put(ATTR_TABLE_PATIENTS_ADULTS_KEY, ATTR_TABLE_PATIENTS_ADULTS);
-    nameMap.put(ATTR_TABLE_PATIENTS_0TO4_KEY, ATTR_TABLE_PATIENTS_0TO4);
-    nameMap.put(ATTR_TABLE_PATIENTS_5TO9_KEY, ATTR_TABLE_PATIENTS_5TO9);
-    nameMap.put(ATTR_TABLE_PATIENTS_10TO14_KEY, ATTR_TABLE_PATIENTS_10TO14);
-    nameMap.put(ATTR_TABLE_PROPHYLAXIS_PPE_KEY, ATTR_TABLE_PROPHYLAXIS_PPE);
-    nameMap.put(ATTR_TABLE_PROPHYLAXIS_PREP_KEY, ATTR_TABLE_PROPHYLAXIS_PREP);
-    nameMap.put(ATTR_TABLE_PROPHYLAXIS_CHILD_KEY, ATTR_TABLE_PROPHYLAXIS_CHILD);
-    nameMap.put(ATTR_TABLE_PROPHYLAXIS_TOTAL_KEY, ATTR_TABLE_PROPHYLAXIS_TOTAL);
+    nameMap.put(attrTableTravNewKey, attrTableTravNew);
+    nameMap.put(attrTableTravMaintenanceKey, attrTableTravMaintenance);
+    nameMap.put(attrTableTravAlterationKey, attrTableTravAlteration);
+    nameMap.put(attrTableTravTransitKey, attrTableTravTransit);
+    nameMap.put(attrTableTravTransferKey, attrTableTravTransfer);
+    nameMap.put(attrTablePatientsAdultsKey, attrTablePatientsAdults);
+    nameMap.put(attrTablePatients0To4Key, attrTablePatients0To4);
+    nameMap.put(attrTablePatients5To9Key, attrTablePatients5To9);
+    nameMap.put(attrTablePatients10To14Key, attrTablePatients10To14);
+    nameMap.put(attrTableProphylaxisPpeKey, attrTableProphylaxisPpe);
+    nameMap.put(attrTableProphylaxisPrepKey, attrTableProphylaxisPrep);
+    nameMap.put(attrTableProphylaxisChildKey, attrTableProphylaxisChild);
+    nameMap.put(attrTableProphylaxisTotalKey, attrTableProphylaxisTotal);
     return nameMap;
   }
 
@@ -285,12 +285,12 @@ public class MMIAPatientInfoList extends LinearLayout {
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+      // do nothing
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+      // do nothing
     }
 
     @Override

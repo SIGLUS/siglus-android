@@ -118,10 +118,10 @@ public class MMIARegimeList extends LinearLayout {
     totalView.setText(String.valueOf(getTotal(COUNTTYPE.AMOUNT)));
     totalPharmacy.setText(String.valueOf(getTotal(COUNTTYPE.PHARMACY)));
     editTotalTexts.get(editTotalTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
-    if (editPharmacyTexts.size() > 0) {
+    if (!editPharmacyTexts.isEmpty()) {
       editPharmacyTexts.get(editPharmacyTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
-    post(() -> initAdultAndChildrenHeaderHeight());
+    post(this::initAdultAndChildrenHeaderHeight);
   }
 
   public void initAdultAndChildrenHeaderHeight() {
@@ -132,13 +132,11 @@ public class MMIARegimeList extends LinearLayout {
     int[] lastItemLocations = new int[2];
 
     getChildAt(0).getLocationOnScreen(firstItemLocations);
-    getChildAt(isCustomEnable() ? adults.size() + 1 : adults.size())
-        .getLocationOnScreen(theDividerLocations);
+    getChildAt(isCustomEnable() ? adults.size() + 1 : adults.size()).getLocationOnScreen(theDividerLocations);
     getChildAt(childSize - 1).getLocationOnScreen(lastItemLocations);
 
     adultHeight = theDividerLocations[1] - firstItemLocations[1];
-    childrenHeight =
-        lastItemLocations[1] + getChildAt(childSize - 1).getHeight() - theDividerLocations[1];
+    childrenHeight = lastItemLocations[1] + getChildAt(childSize - 1).getHeight() - theDividerLocations[1];
     ((MMIARegimeListWrap) getParent()).updateLeftHeader();
   }
 
@@ -169,8 +167,7 @@ public class MMIARegimeList extends LinearLayout {
   }
 
   private Fragment getFragment() {
-    return ((Activity) getContext()).getFragmentManager()
-        .findFragmentById(R.id.fragment_requisition);
+    return ((Activity) getContext()).getFragmentManager().findFragmentById(R.id.fragment_requisition);
   }
 
   private void initCategoryList(List<RegimenItem> regimenItems) {
@@ -295,12 +292,14 @@ public class MMIARegimeList extends LinearLayout {
 
           @Override
           public void onNext(Void aVoid) {
+            // do nothing
           }
         });
       }
 
       @Override
       public void negativeClick(String tag) {
+        // do nothing
       }
     });
   }
@@ -360,6 +359,7 @@ public class MMIARegimeList extends LinearLayout {
 
       @Override
       public void onNext(Void data) {
+        // do nothing
       }
     };
   }
@@ -376,12 +376,12 @@ public class MMIARegimeList extends LinearLayout {
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+      // do nothing
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+      // do nothing
     }
 
     @Override

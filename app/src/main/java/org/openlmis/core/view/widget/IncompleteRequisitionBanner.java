@@ -71,6 +71,7 @@ public class IncompleteRequisitionBanner extends LinearLayout {
     setIncompleteRequisitionBanner();
   }
 
+  @SuppressWarnings("squid:S3776")
   public void setIncompleteRequisitionBanner() {
     try {
       ReportTypeForm mmiaReportTypeForm = reportTypeFormRepository

@@ -304,6 +304,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
       @Override
       public void onNext(RnRForm rnRForm) {
+        // do nothing
       }
     };
   }

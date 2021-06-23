@@ -25,17 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 import rx.Observable;
-import rx.Subscriber;
+import rx.Observable.OnSubscribe;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class StockMovementHistoryPresenter extends Presenter {
@@ -61,37 +58,25 @@ public class StockMovementHistoryPresenter extends Presenter {
 
   public void loadStockMovementViewModels(final long startIndex) {
     Subscription subscription = Observable
-        .create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
-          @Override
-          public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
-            try {
-              List<StockMovementViewModel> list = from(stockMovementRepository
-                  .queryStockMovementHistory(stockCardId, startIndex, MAXROWS))
-                  .transform(new Function<StockMovementItem, StockMovementViewModel>() {
-                    @Override
-                    public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
-                      return new StockMovementViewModel(stockMovementItem);
-                    }
-                  }).toList();
-
-              subscriber.onNext(list);
-            } catch (LMISException e) {
-              subscriber.onError(e);
-            }
+        .create((OnSubscribe<List<StockMovementViewModel>>) subscriber -> {
+          try {
+            List<StockMovementViewModel> list = from(stockMovementRepository
+                .queryStockMovementHistory(stockCardId, startIndex, MAXROWS))
+                .transform(StockMovementViewModel::new).toList();
+            subscriber.onNext(list);
+          } catch (LMISException e) {
+            subscriber.onError(e);
           }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-        .subscribe(new Action1<List<StockMovementViewModel>>() {
-          @Override
-          public void call(List<StockMovementViewModel> stockMovementViewModels) {
-            if (stockMovementViewModels.size() == 0) {
-              view.refreshStockMovement(false);
-            } else {
-              stockMovementModelList.addAll(stockMovementModelList.size(), stockMovementViewModels);
+        .subscribe(stockMovementViewModels -> {
+          if (stockMovementViewModels.size() == 0) {
+            view.refreshStockMovement(false);
+          } else {
+            stockMovementModelList.addAll(stockMovementModelList.size(), stockMovementViewModels);
 
-              view.refreshStockMovement(true);
-            }
-            view.loaded();
+            view.refreshStockMovement(true);
           }
+          view.loaded();
         });
     subscriptions.add(subscription);
   }

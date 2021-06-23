@@ -20,9 +20,9 @@ package org.openlmis.core.view.viewmodel;
 
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.consumption;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.positive;
-import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.unjustified;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.CONSUMPTION;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE;
+import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.UNJUSTIFIED;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -68,7 +68,6 @@ public class RapidTestReportViewModel implements Serializable {
   private ProgramDataForm rapidTestForm = new ProgramDataForm();
 
   public static final long DEFAULT_FORM_ID = 0;
-  public static final String DEFAULT_TOTAl_NULL = "";
 
   public RapidTestReportViewModel(Period period) {
     this.period = period;
@@ -89,8 +88,7 @@ public class RapidTestReportViewModel implements Serializable {
   private void setupCategories() {
     movementReasonManager = MovementReasonManager.getInstance();
     List<MovementReasonManager.MovementReason> issueReasons = FluentIterable.from(
-        movementReasonManager
-            .buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
+        movementReasonManager.buildReasonListForMovementType(MovementReasonManager.MovementType.ISSUE))
         .filter(movementReason -> !movementReason.getCode().equals("PUB_PHARMACY")).toList();
 
     for (MovementReasonManager.MovementReason movementReason : issueReasons) {
@@ -99,14 +97,11 @@ public class RapidTestReportViewModel implements Serializable {
     }
 
     MovementReasonManager.MovementReason totalCategory = new MovementReasonManager.MovementReason(
-        MovementReasonManager.MovementType.ISSUE, "TOTAL",
-        LMISApp.getInstance().getString(R.string.total));
+        MovementReasonManager.MovementType.ISSUE, "TOTAL", LMISApp.getInstance().getString(R.string.total));
     MovementReasonManager.MovementReason realTotalCategory = new MovementReasonManager.MovementReason(
-        MovementReasonManager.MovementType.ISSUE, "realTotalCategory",
-        LMISApp.getInstance().getString(R.string.total));
+        MovementReasonManager.MovementType.ISSUE, "realTotalCategory", LMISApp.getInstance().getString(R.string.total));
     MovementReasonManager.MovementReason totalAPES = new MovementReasonManager.MovementReason(
-        MovementReasonManager.MovementType.ISSUE, "APES",
-        LMISApp.getInstance().getString(R.string.ape));
+        MovementReasonManager.MovementType.ISSUE, "APES", LMISApp.getInstance().getString(R.string.ape));
 
     itemTotal = new RapidTestFormItemViewModel(totalCategory);
     itemRealTotal = new RapidTestFormItemViewModel(realTotalCategory);
@@ -147,9 +142,9 @@ public class RapidTestReportViewModel implements Serializable {
     addCompatibleWithNotSubmitUnjustified();
     addCompatibleWithNotSubmitAPE();
     for (ColumnCode columnCode : ColumnCode.values()) {
-      updateTotal(columnCode, consumption);
-      updateTotal(columnCode, positive);
-      updateTotal(columnCode, unjustified);
+      updateTotal(columnCode, CONSUMPTION);
+      updateTotal(columnCode, POSITIVE);
+      updateTotal(columnCode, UNJUSTIFIED);
     }
     updateAPEWaring();
   }
@@ -309,14 +304,13 @@ public class RapidTestReportViewModel implements Serializable {
     itemRealTotal.clearValue(columnCode, gridColumnCode);
     Total total = new Total();
     total.longTotal = 0;
-    total.stringTotal = DEFAULT_TOTAl_NULL;
+    total.stringTotal = "";
     for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
       if (itemViewModel == itemAPEs) {
         continue;
       }
-      RapidTestFormGridViewModel gridViewModel = itemViewModel.getRapidTestFormGridViewModelMap()
-          .get(columnCode);
-      total = calculateTotalLogic(total, gridViewModel, gridColumnCode);
+      RapidTestFormGridViewModel gridViewModel = itemViewModel.getRapidTestFormGridViewModelMap().get(columnCode);
+      calculateTotalLogic(total, gridViewModel, gridColumnCode);
     }
     setTotalRowValue(itemTotal, columnCode, gridColumnCode, String.valueOf(total.longTotal));
     setTotalRowValue(itemRealTotal, columnCode, gridColumnCode, total.stringTotal);
@@ -330,22 +324,22 @@ public class RapidTestReportViewModel implements Serializable {
     }
   }
 
-  private Total calculateTotalLogic(Total total, RapidTestFormGridViewModel gridViewModel,
+  private void calculateTotalLogic(Total total, RapidTestFormGridViewModel gridViewModel,
       RapidTestGridColumnCode gridColumnCode) {
     switch (gridColumnCode) {
-      case consumption:
+      case CONSUMPTION:
         if (!gridViewModel.getConsumptionValue().equals("")) {
           total.longTotal += Long.parseLong(gridViewModel.getConsumptionValue());
           total.stringTotal = String.valueOf(total.longTotal);
         }
         break;
-      case positive:
+      case POSITIVE:
         if (!gridViewModel.getPositiveValue().equals("")) {
           total.longTotal += Long.parseLong(gridViewModel.getPositiveValue());
           total.stringTotal = String.valueOf(total.longTotal);
         }
         break;
-      case unjustified:
+      case UNJUSTIFIED:
         if (!gridViewModel.getUnjustifiedValue().equals("")) {
           total.longTotal += Long.parseLong(gridViewModel.getUnjustifiedValue());
           total.stringTotal = String.valueOf(total.longTotal);
@@ -354,20 +348,18 @@ public class RapidTestReportViewModel implements Serializable {
       default:
         // do nothing
     }
-
-    return total;
   }
 
   private void setTotalRowValue(RapidTestFormItemViewModel totalItem, ColumnCode columnCode,
       RapidTestGridColumnCode gridColumnCode, String total) {
     switch (gridColumnCode) {
-      case consumption:
+      case CONSUMPTION:
         totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setConsumptionValue(total);
         break;
-      case positive:
+      case POSITIVE:
         totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setPositiveValue(total);
         break;
-      case unjustified:
+      case UNJUSTIFIED:
         totalItem.getRapidTestFormGridViewModelMap().get(columnCode).setUnjustifiedValue(total);
         break;
       default:

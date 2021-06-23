@@ -33,7 +33,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
-@SuppressWarnings("PMD")
 public class PhysicalInventoryViewModel extends InventoryViewModel {
 
   private DraftInventory draftInventory;
@@ -63,20 +62,21 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
     return !draftInventory.getDraftLotItemListWrapper().isEmpty() && isDifferentFromDraft();
   }
 
+  @SuppressWarnings("squid:S3776")
   private boolean isDifferentFromDraft() {
     List<DraftLotItem> newAddedDraftLotItems = FluentIterable
         .from(draftInventory.getDraftLotItemListWrapper())
-        .filter(draftLotItem -> draftLotItem.isNewAdded()).toList();
+        .filter(DraftLotItem::isNewAdded).toList();
     List<DraftLotItem> existingDraftLotItems = FluentIterable
         .from(draftInventory.getDraftLotItemListWrapper())
         .filter(draftLotItem -> !draftLotItem.isNewAdded()).toList();
     for (DraftLotItem draftLotItem : existingDraftLotItems) {
       for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
-        if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
-          if (!String.valueOf(draftLotItem.getQuantity() == null ? "" : draftLotItem.getQuantity())
-              .equals(existingLotMovementViewModel.getQuantity())) {
-            return true;
-          }
+        boolean isLotNumberSame = draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber());
+        boolean isLotQuantitySame = !String.valueOf(draftLotItem.getQuantity() == null
+            ? "" : draftLotItem.getQuantity()).equals(existingLotMovementViewModel.getQuantity());
+        if (isLotNumberSame && isLotQuantitySame) {
+          return true;
         }
       }
     }
@@ -85,11 +85,11 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
         return true;
       }
       for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
-        if (draftLotItem.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
-          if (!String.valueOf(draftLotItem.getQuantity() == null ? "" : draftLotItem.getQuantity())
-              .equals(lotMovementViewModel.getQuantity())) {
-            return true;
-          }
+        boolean isLotNumberSame = draftLotItem.getLotNumber().equals(lotMovementViewModel.getLotNumber());
+        boolean isLotQuantitySame = !String.valueOf(draftLotItem.getQuantity() == null
+            ? "" : draftLotItem.getQuantity()).equals(lotMovementViewModel.getQuantity());
+        if (isLotNumberSame && isLotQuantitySame) {
+          return true;
         }
       }
     }
@@ -178,15 +178,13 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
 
   private boolean isNotInExistingLots(DraftLotItem draftLotItem) {
     for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-      if (draftLotItem.getLotNumber().toUpperCase()
-          .equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
+      if (draftLotItem.getLotNumber().equalsIgnoreCase(lotMovementViewModel.getLotNumber())) {
         return false;
       }
     }
 
     for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
-      if (draftLotItem.getLotNumber().toUpperCase()
-          .equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
+      if (draftLotItem.getLotNumber().equalsIgnoreCase(lotMovementViewModel.getLotNumber())) {
         return false;
       }
     }

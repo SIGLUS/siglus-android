@@ -42,6 +42,7 @@ public class ViaKitsViewModel {
 
   public static final String APE_KIT = "26A02";
 
+  @SuppressWarnings("squid:S3776")
   public void convertRnrKitItemsToViaKit(List<RnrFormItem> rnrKitItems) {
     kitItems = rnrKitItems;
 

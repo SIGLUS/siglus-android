@@ -79,6 +79,7 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     btnEdit.setOnClickListener(v -> markDone(false));
   }
 
+  @SuppressWarnings("squid:S3776")
   public void initLotListView(BulkInitialInventoryViewModel viewModel,
       BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener statusChangeListener,
       View.OnClickListener removeProductListener) {
@@ -138,13 +139,11 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     newLotListView.setAdapter(newLotMovementAdapter);
   }
 
-  LotMovementAdapter.MovementChangedListenerWithStatus movementChangedListenerWithStatus = (amount) -> {
-    if (BulkInitialInventoryAdapter.ITEM_BASIC == ((BulkInitialInventoryViewModel) viewModel)
-        .getViewType()) {
+  LotMovementAdapter.MovementChangedListenerWithStatus movementChangedListenerWithStatus = amount -> {
+    if (BulkInitialInventoryAdapter.ITEM_BASIC == ((BulkInitialInventoryViewModel) viewModel).getViewType()) {
       btnVerify.setVisibility(TextUtils.isEmpty(amount) ? GONE : VISIBLE);
       btnNoStockDone.setVisibility(TextUtils.isEmpty(amount) ? VISIBLE : GONE);
-    } else if (BulkInitialInventoryAdapter.ITEM_NO_BASIC
-        == ((BulkInitialInventoryViewModel) viewModel).getViewType()) {
+    } else if (BulkInitialInventoryAdapter.ITEM_NO_BASIC == ((BulkInitialInventoryViewModel) viewModel).getViewType()) {
       btnVerify.setVisibility(TextUtils.isEmpty(amount) ? GONE : VISIBLE);
       btnNoStockDone.setVisibility(GONE);
       btnRemoveProduct.setVisibility(TextUtils.isEmpty(amount) ? VISIBLE : GONE);

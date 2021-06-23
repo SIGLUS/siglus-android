@@ -138,16 +138,16 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
     }
 
     private RapidTestGridColumnCode switchEditIdToGridColumn(EditText editText) {
-      RapidTestGridColumnCode column = RapidTestGridColumnCode.unjustified;
+      RapidTestGridColumnCode column = RapidTestGridColumnCode.UNJUSTIFIED;
       switch (editText.getId()) {
         case R.id.et_consume_rapid_test_report_grid:
-          column = RapidTestGridColumnCode.consumption;
+          column = RapidTestGridColumnCode.CONSUMPTION;
           break;
         case R.id.et_positive_rapid_test_report_grid:
-          column = RapidTestGridColumnCode.positive;
+          column = RapidTestGridColumnCode.POSITIVE;
           break;
         case R.id.et_unjustified_rapid_test_report_grid:
-          column = RapidTestGridColumnCode.unjustified;
+          column = RapidTestGridColumnCode.UNJUSTIFIED;
           break;
         default:
           // do nothing
