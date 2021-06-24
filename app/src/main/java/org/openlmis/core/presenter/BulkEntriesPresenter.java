@@ -168,15 +168,15 @@ public class BulkEntriesPresenter extends Presenter {
                 DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
             lotOnHand.getQuantityOnHand().toString(),
             MovementReasonManager.MovementType.RECEIVE)).toSortedList((lot1, lot2) -> {
-          Date localDate = DateUtil
-              .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-          if (localDate != null) {
-            return localDate.compareTo(DateUtil
+              Date localDate = DateUtil
+                  .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+              if (localDate != null) {
+                return localDate.compareTo(DateUtil
                 .parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-          } else {
-            return 0;
-          }
-        });
+              } else {
+                return 0;
+              }
+            });
     bulkEntriesViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
   }
 

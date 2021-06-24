@@ -18,13 +18,10 @@
 
 package org.openlmis.core.view.holder;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,10 +29,6 @@ import androidx.annotation.NonNull;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BulkEntriesActivity;
-import org.openlmis.core.view.activity.BulkInitialInventoryActivity;
-import org.openlmis.core.view.activity.InitialInventoryActivity;
-import org.openlmis.core.view.activity.NewStockMovementActivity;
-import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
