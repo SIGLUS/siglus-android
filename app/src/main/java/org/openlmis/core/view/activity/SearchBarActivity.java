@@ -20,9 +20,11 @@ package org.openlmis.core.view.activity;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import androidx.appcompat.widget.SearchView;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,7 @@ import org.openlmis.core.utils.DisplayUtil;
 public abstract class SearchBarActivity extends BaseActivity {
 
   protected SearchView searchView;
+  private ImageView closeButton;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -42,7 +45,9 @@ public abstract class SearchBarActivity extends BaseActivity {
     searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
     searchView.setQueryHint(getResources().getString(R.string.search_hint));
     searchView.setMaxWidth(DisplayUtil.getScreenWidth());
-
+    closeButton = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
+    closeButton.setImageResource(R.drawable.icon_search_view_close_white);
+    closeButton.setAlpha(0.7F);
     changeSearchButtonUI();
 
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -53,6 +58,7 @@ public abstract class SearchBarActivity extends BaseActivity {
 
       @Override
       public boolean onQueryTextChange(String newText) {
+        closeButton.setAlpha(TextUtils.isEmpty(newText) ? 0.7F : 1F);
         return onSearchStart(newText);
       }
     });
