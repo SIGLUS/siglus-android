@@ -21,7 +21,6 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
@@ -100,26 +99,23 @@ public class ReportListPresenter extends Presenter {
     return hasVCProgram;
   }
 
-  public Observable<Boolean> hasMissedPeriod() {
+  public Observable<Boolean> hasMissedViaProgramPeriod() {
     return Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
       try {
         subscriber.onNext(requisitionPeriodService.hasMissedPeriod(Program.VIA_CODE));
         subscriber.onCompleted();
       } catch (LMISException e) {
-        new LMISException(e, "hasMissedPeriod").reportToFabric();
+        new LMISException(e, "hasMissedViaProgramPeriod").reportToFabric();
         subscriber.onError(e);
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
   private void sortPrograms(List<Program> programs) {
-    Collections.sort(programs, new Comparator<Program>() {
-      @Override
-      public int compare(Program o1, Program o2) {
-        final Integer o1Order = PROGRAM_CODE_ORDER.get(o1.getProgramCode());
-        final Integer o2Order = PROGRAM_CODE_ORDER.get(o2.getProgramCode());
-        return Integer.compare(o1Order == null ? 0 : o1Order, o2Order == null ? 0 : o2Order);
-      }
+    Collections.sort(programs, (o1, o2) -> {
+      final Integer o1Order = PROGRAM_CODE_ORDER.get(o1.getProgramCode());
+      final Integer o2Order = PROGRAM_CODE_ORDER.get(o2.getProgramCode());
+      return Integer.compare(o1Order == null ? 0 : o1Order, o2Order == null ? 0 : o2Order);
     });
   }
 

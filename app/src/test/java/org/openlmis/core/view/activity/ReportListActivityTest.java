@@ -139,7 +139,7 @@ public class ReportListActivityTest {
         DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
     Observable<Boolean> value = Observable.create(subscriber -> subscriber.onNext(true));
     when(mockedPresenter.isHasVCProgram()).thenReturn(true);
-    when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
+    when(mockedPresenter.hasMissedViaProgramPeriod()).thenReturn(value);
 
     // when
     reportListActivity.checkAndGotoEmergencyPage();
@@ -155,7 +155,7 @@ public class ReportListActivityTest {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
     Observable<Boolean> value = Observable.create(subscriber -> subscriber.onNext(false));
-    when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
+    when(mockedPresenter.hasMissedViaProgramPeriod()).thenReturn(value);
     when(mockedPresenter.isHasVCProgram()).thenReturn(true);
 
     // when

@@ -117,7 +117,7 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
     }
 
     loading();
-    reportListPresenter.hasMissedPeriod().subscribe(new Subscriber<Boolean>() {
+    reportListPresenter.hasMissedViaProgramPeriod().subscribe(new Subscriber<Boolean>() {
       @Override
       public void onCompleted() {
         loaded();
