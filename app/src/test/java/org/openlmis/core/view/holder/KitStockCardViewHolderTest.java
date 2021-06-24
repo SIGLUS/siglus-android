@@ -42,7 +42,6 @@ public class KitStockCardViewHolderTest {
     viewHolder.populate(new InventoryViewModel(stockCard), "");
 
     assertThat(viewHolder.kitTvProductName.getText().toString()).isEqualTo("product");
-    assertThat(viewHolder.kitTvProductUnit.getVisibility()).isEqualTo(View.INVISIBLE);
     assertThat(viewHolder.kitTvStockOnHand.getText().toString()).isEqualTo("200");
 
   }

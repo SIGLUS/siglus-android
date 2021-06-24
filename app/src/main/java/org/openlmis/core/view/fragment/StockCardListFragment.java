@@ -86,11 +86,6 @@ public class StockCardListFragment extends BaseFragment implements
     return presenter;
   }
 
-  @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-  }
-
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -100,10 +95,8 @@ public class StockCardListFragment extends BaseFragment implements
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-
     initRecycleView();
     initSortSpinner();
-
     loadStockCards();
   }
 
@@ -164,8 +157,8 @@ public class StockCardListFragment extends BaseFragment implements
     return () -> {
       dirtyDataManager.deleteAndReset();
       Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
-      getActivity().startActivity(intent);
-      getActivity().finish();
+      requireActivity().startActivity(intent);
+      requireActivity().finish();
     };
   }
 
@@ -176,19 +169,18 @@ public class StockCardListFragment extends BaseFragment implements
 
   @Override
   public void showWarning() {
-    ((BaseActivity) getActivity()).showDeletedWarningDialog(buildWarningDialogFragmentDelegate());
+    ((BaseActivity) requireActivity()).showDeletedWarningDialog(buildWarningDialogFragmentDelegate());
   }
 
   private void initRecycleView() {
     createAdapter();
-
     stockCardRecycleView.setHasFixedSize(true);
     stockCardRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
     stockCardRecycleView.setAdapter(mAdapter);
   }
 
-  protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = inventoryViewModel -> {
-    Intent intent = getStockMovementIntent(inventoryViewModel);
+  protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = stockCardListViewModel -> {
+    Intent intent = getStockMovementIntent(stockCardListViewModel);
     startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
   };
 
@@ -207,7 +199,6 @@ public class StockCardListFragment extends BaseFragment implements
   @Override
   public void refresh(List<InventoryViewModel> data) {
     mAdapter.refreshList(data);
-
     tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
     onItemSelected(sortSpinner, null, currentPosition, 0L);
   }

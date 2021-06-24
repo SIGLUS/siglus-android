@@ -33,23 +33,14 @@ import roboguice.inject.InjectView;
 
 public class KitStockCardListFragment extends StockCardListFragment {
 
-  @Override
-  protected void loadStockCards() {
-    presenter.loadKits();
-  }
-
-  protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
-    return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
-  }
+  @InjectView(R.id.product_update_banner)
+  ProductsUpdateBanner kitProductsUpdateBanner;
 
   protected StockCardViewHolder.OnItemViewClickListener viewClickListener =
       inventoryViewModel -> {
         Intent intent = getStockMovementIntent(inventoryViewModel);
         startActivityForResult(intent, Constants.REQUEST_UNPACK_KIT);
       };
-
-  @InjectView(R.id.product_update_banner)
-  ProductsUpdateBanner kitProductsUpdateBanner;
 
   @Override
   protected void createAdapter() {
@@ -66,5 +57,14 @@ public class KitStockCardListFragment extends StockCardListFragment {
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     kitProductsUpdateBanner.setVisibility(View.GONE);
+  }
+
+  @Override
+  protected void loadStockCards() {
+    presenter.loadKits();
+  }
+
+  protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
+    return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
   }
 }

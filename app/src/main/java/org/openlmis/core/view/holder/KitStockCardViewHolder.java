@@ -31,13 +31,10 @@ public class KitStockCardViewHolder extends StockCardViewHolder {
   @InjectView(R.id.tv_product_name)
   TextView kitTvProductName;
 
-  @InjectView(R.id.tv_product_unit)
-  TextView kitTvProductUnit;
-
   @InjectView(R.id.tv_stock_on_hand)
   TextView kitTvStockOnHand;
-  //above field are present in base class, but injection does not penetrate sub class
 
+  //above field are present in base class, but injection does not penetrate sub class
   public KitStockCardViewHolder(View itemView, OnItemViewClickListener listener) {
     super(itemView, listener);
   }
@@ -47,6 +44,5 @@ public class KitStockCardViewHolder extends StockCardViewHolder {
     kitTvStockOnHand.setText(String.valueOf(inventoryViewModel.getStockOnHand()));
     kitTvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,
         new SpannableStringBuilder(inventoryViewModel.getProduct().getPrimaryName())));
-    kitTvProductUnit.setVisibility(View.INVISIBLE);
   }
 }

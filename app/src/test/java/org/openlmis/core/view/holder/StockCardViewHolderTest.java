@@ -61,7 +61,7 @@ public class StockCardViewHolderTest {
 
     viewHolder.populate(inventoryViewModel, "");
 
-    assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.VISIBLE);
+    assertThat(viewHolder.tvExpiryDateMsg.getVisibility()).isEqualTo(View.VISIBLE);
   }
 
   @Test
@@ -77,7 +77,7 @@ public class StockCardViewHolderTest {
 
     viewHolder.populate(inventoryViewModel, "");
 
-    assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.VISIBLE);
+    assertThat(viewHolder.tvExpiryDateMsg.getVisibility()).isEqualTo(View.VISIBLE);
   }
 
   @Test
@@ -93,7 +93,7 @@ public class StockCardViewHolderTest {
 
     viewHolder.populate(inventoryViewModel, "");
 
-    assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
+    assertThat(viewHolder.tvExpiryDateMsg.getVisibility()).isEqualTo(View.GONE);
   }
 
   @Test
@@ -110,7 +110,7 @@ public class StockCardViewHolderTest {
     InventoryViewModel secondInventoryViewModel = new InventoryViewModel(stockCard);
     viewHolder.populate(secondInventoryViewModel, "");
 
-    assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
+    assertThat(viewHolder.tvExpiryDateMsg.getVisibility()).isEqualTo(View.GONE);
   }
 
   @Test
@@ -123,6 +123,6 @@ public class StockCardViewHolderTest {
 
     viewHolder.inflateData(inventoryViewModel, "");
 
-    assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
+    assertThat(viewHolder.tvExpiryDateMsg.getVisibility()).isEqualTo(View.GONE);
   }
 }

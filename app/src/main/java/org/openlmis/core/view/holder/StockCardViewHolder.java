@@ -18,20 +18,23 @@
 
 package org.openlmis.core.view.holder;
 
-import android.graphics.Typeface;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enums.StockOnHandStatus;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.TextStyleUtil;
+import org.openlmis.core.view.adapter.StockcardListLotAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -40,21 +43,18 @@ public class StockCardViewHolder extends BaseViewHolder {
 
   @InjectView(R.id.tv_product_name)
   TextView tvProductName;
-  @InjectView(R.id.tv_product_unit)
-  TextView tvProductUnit;
+
   @InjectView(R.id.tv_stock_on_hand)
   TextView tvStockOnHand;
-  @InjectView(R.id.vg_stock_on_hand_bg)
-  View stockOnHandBg;
-
-  @InjectView(R.id.ly_expiry_date_warning)
-  LinearLayout lyExpiryDateWarning;
 
   @InjectView(R.id.tv_expiry_date_msg)
   TextView tvExpiryDateMsg;
 
   @InjectView(R.id.tv_stock_status)
   TextView tvStockStatus;
+
+  @InjectView(R.id.rv_lot_container)
+  RecyclerView rvLotList;
 
   protected StockService stockService;
   private final OnItemViewClickListener listener;
@@ -68,14 +68,13 @@ public class StockCardViewHolder extends BaseViewHolder {
   public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord) {
     setListener(inventoryViewModel);
     inflateData(inventoryViewModel, queryKeyWord);
+    inflateLotLayout(inventoryViewModel.getStockCard().getLotOnHandListWrapper());
   }
 
   protected void inflateData(InventoryViewModel inventoryViewModel, String queryKeyWord) {
-    tvStockOnHand.setText(inventoryViewModel.getStockOnHand() + "");
-    tvProductName.setText(
-        TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
-    tvProductUnit.setText(
-        TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
+    tvStockOnHand.setText(String.valueOf(inventoryViewModel.getStockOnHand()));
+    tvProductName
+        .setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getProductStyledName()));
 
     initExpiryDateWarning(inventoryViewModel);
     initStockOnHandWarning(inventoryViewModel);
@@ -102,62 +101,36 @@ public class StockCardViewHolder extends BaseViewHolder {
     hideExpiryDate();
   }
 
-
   private void showExpiryDateWithMessage(int expiryMsg, Date earliestExpiryDate) {
-    if (lyExpiryDateWarning != null) {
-      lyExpiryDateWarning.setVisibility(View.VISIBLE);
-      tvExpiryDateMsg.setText(context.getResources()
-          .getString(expiryMsg, DateUtil.formatDateWithShortMonthAndYear(earliestExpiryDate)));
-    }
+    tvExpiryDateMsg.setVisibility(View.VISIBLE);
+    tvExpiryDateMsg.setText(context.getResources()
+        .getString(expiryMsg, DateUtil.formatDateWithShortMonthAndYear(earliestExpiryDate)));
   }
 
   private void hideExpiryDate() {
-    if (lyExpiryDateWarning != null) {
-      lyExpiryDateWarning.setVisibility(View.GONE);
-    }
+    tvExpiryDateMsg.setVisibility(View.GONE);
   }
 
   private void setListener(final InventoryViewModel inventoryViewModel) {
-    itemView.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (listener != null) {
-          LMISApp.getInstance()
-              .trackEvent(TrackerCategories.STOCK_MOVEMENT, TrackerActions.SELECT_STOCK_CARD);
-          listener.onItemViewClick(inventoryViewModel);
-        }
+    itemView.setOnClickListener(v -> {
+      if (listener != null) {
+        LMISApp.getInstance()
+            .trackEvent(TrackerCategories.STOCK_MOVEMENT, TrackerActions.SELECT_STOCK_CARD);
+        listener.onItemViewClick(inventoryViewModel);
       }
     });
   }
 
   private void initStockOnHandWarning(final InventoryViewModel viewModel) {
-
     StockOnHandStatus stockOnHandStatus = StockOnHandStatus
-        .calculateStockOnHandLevel(viewModel.getStockCard());
+        .calculateStockOnHandLevel(viewModel.getStockCard(), viewModel.getStockOnHand());
     tvStockStatus.setText(context.getResources().getString(stockOnHandStatus.getDescription()));
-    tvStockStatus.setTextColor(context.getResources().getColor(stockOnHandStatus.getColor()));
-    tvStockStatus
-        .setBackgroundColor(context.getResources().getColor(stockOnHandStatus.getBgColor()));
+    tvStockStatus.setBackgroundColor(context.getResources().getColor(stockOnHandStatus.getBgColor()));
+  }
 
-    switch (stockOnHandStatus) {
-      case OVER_STOCK:
-        tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_over_stock));
-        tvStockOnHand.setTypeface(null, Typeface.NORMAL);
-        break;
-      case LOW_STOCK:
-        tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_low_stock));
-        tvStockOnHand.setTypeface(null, Typeface.NORMAL);
-        break;
-      case STOCK_OUT:
-        tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_stock_out));
-        tvStockOnHand.setTypeface(null, Typeface.BOLD);
-        break;
-      default:
-        stockOnHandBg.setBackgroundResource(R.color.color_white);
-        tvStockOnHand.setTextAppearance(context, R.style.Text_Black_Normal);
-        tvStockOnHand.setTypeface(null, Typeface.NORMAL);
-        break;
-    }
+  private void inflateLotLayout(List<LotOnHand> lotOnHandList) {
+    rvLotList.setLayoutManager(new LinearLayoutManager(context));
+    rvLotList.setAdapter(new StockcardListLotAdapter(lotOnHandList));
   }
 
   public interface OnItemViewClickListener {

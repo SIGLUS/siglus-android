@@ -1,95 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  style="@style/ItemStock.Container"
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:baselineAligned="false">
+  android:layout_height="wrap_content">
 
-  <LinearLayout
-    style="@style/ItemStock.ProductContainer"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_gravity="center_vertical"
-    android:layout_weight="1">
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/cl_product_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:background="@color/color_73d8d8d8">
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/gl_vertical_one"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.67" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/gl_vertical_two"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.85" />
 
     <TextView
       android:id="@+id/tv_product_name"
-      style="@style/Text.Black.Normal.Bold"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintLeft_toLeftOf="parent"
+      android:layout_marginStart="@dimen/px_8"
+      android:layout_marginEnd="@dimen/px_90"
+      android:paddingTop="@dimen/px_12"
+      android:paddingBottom="@dimen/px_7"
+      app:layout_constraintTop_toTopOf="parent"
+      android:gravity="center_vertical"
+      android:textStyle="bold"
+      app:layout_constraintRight_toRightOf="@id/gl_vertical_one"
+      tools:text="ABACAVIR+LAMIVUDIN; 300mg 60Cps [08S01Z] Each"
+      android:textSize="@dimen/px_20"
+      android:textColor="@color/color_222222" />
 
     <TextView
-      android:id="@+id/tv_product_unit"
-      style="@style/Text.Black.Normal"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
-  </LinearLayout>
-
-  <RelativeLayout
-    android:layout_width="140dp"
-    android:layout_height="match_parent"
-    android:background="@color/color_white"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
-
-    <LinearLayout
-      android:id="@+id/ly_expiry_date_warning"
+      android:id="@+id/tv_expiry_date_msg"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
+      android:background="@drawable/border_bg_light_red"
+      android:paddingLeft="@dimen/px_6"
+      android:paddingRight="@dimen/px_6"
+      android:text="@string/msg_expiring_date"
+      android:textColor="@color/color_box_text_red"
+      android:textSize="@dimen/px_10"
       android:gravity="center"
-      android:paddingBottom="@dimen/padding_small"
-      android:paddingLeft="@dimen/padding_small"
-      android:visibility="gone">
+      app:layout_constraintRight_toRightOf="@id/tv_stock_status"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_chainStyle="packed"
+      app:layout_constraintBottom_toTopOf="@id/tv_stock_status"
+      android:visibility="gone" />
 
-      <TextView
-        android:id="@+id/tv_expiry_date_msg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border_bg_light_red"
-        android:paddingLeft="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_small"
-        android:text="@string/msg_expiring_date"
-        android:textColor="@color/color_box_text_red"
-        android:textSize="@dimen/font_size_small" />
-    </LinearLayout>
-
-    <LinearLayout
-      android:id="@+id/ly_stock_status"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_below="@+id/ly_expiry_date_warning"
-      android:radius="2dp"
+    <TextView
+      android:id="@+id/tv_stock_status"
+      android:layout_width="@dimen/px_88"
+      android:layout_height="@dimen/px_16"
+      android:textSize="@dimen/px_10"
+      android:textColor="@color/color_white"
       android:gravity="center"
-      android:paddingLeft="@dimen/padding_small">
-
-      <TextView
-        android:id="@+id/tv_stock_status"
-        android:layout_width="wrap_content"
-        android:minWidth="90dp"
-        android:layout_height="match_parent"
-        android:paddingHorizontal="@dimen/padding_small"
-        android:text="@string/msg_regular_stock"
-        android:gravity="center"
-        android:textSize="@dimen/font_size_small"
-        android:textStyle="bold" />
-    </LinearLayout>
-
-  </RelativeLayout>
-
-  <RelativeLayout
-    android:id="@+id/vg_stock_on_hand_bg"
-    android:layout_width="100dp"
-    android:layout_height="match_parent"
-    android:background="@color/color_white">
+      android:layout_marginTop="@dimen/px_8"
+      app:layout_constraintLeft_toLeftOf="@id/gl_vertical_one"
+      app:layout_constraintRight_toRightOf="@id/gl_vertical_two"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintVertical_chainStyle="packed"
+      app:layout_constraintTop_toBottomOf="@id/tv_expiry_date_msg" />
 
     <TextView
       android:id="@+id/tv_stock_on_hand"
-      style="@style/ItemStock.TextSOH"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      android:layout_marginRight="@dimen/px_8"
+      android:textColor="@color/color_030303"
+      tools:text="100"
+      android:textSize="@dimen/px_20" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
-  </RelativeLayout>
-
-</LinearLayout>
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_lot_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/cl_product_container" />
+</androidx.constraintlayout.widget.ConstraintLayout>

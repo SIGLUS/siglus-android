@@ -85,4 +85,11 @@
 
   <color name="color_requisition_background">#80aa19b6</color>
 
+  <color name="color_222222">#222222</color>
+  <color name="color_030303">#030303</color>
+  <color name="color_f1f1f1">#f1f1f1</color>
+  <color name="color_73d8d8d8">#73d8d8d8</color>
+  <color name="color_727272">#727272</color>
+  <color name="color_606162">#606162</color>
+
 </resources>

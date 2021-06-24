@@ -40,9 +40,7 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
 
   @Override
   public StockCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.item_stockcard, parent, false);
-
+    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stockcard, parent, false);
     return createViewHolder(view);
   }
 
@@ -53,7 +51,6 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
   }
 
   public void sortBySOH(final boolean asc) {
-
     Comparator<InventoryViewModel> stockCardComparator = (lhs, rhs) -> {
       if (asc) {
         return (int) (lhs.getStockOnHand() - rhs.getStockOnHand());

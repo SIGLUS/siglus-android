@@ -60,7 +60,11 @@ public enum StockOnHandStatus {
   }
 
   public static StockOnHandStatus calculateStockOnHandLevel(StockCard stockCard) {
-    if (stockCard.getStockOnHand() == 0) {
+    return calculateStockOnHandLevel(stockCard,stockCard.getStockOnHand());
+  }
+
+  public static StockOnHandStatus calculateStockOnHandLevel(StockCard stockCard,long stockOnHand) {
+    if (stockOnHand == 0) {
       return StockOnHandStatus.STOCK_OUT;
     }
     if (stockCard.getCMM() < 0) {

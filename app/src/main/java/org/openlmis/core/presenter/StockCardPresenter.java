@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -77,9 +76,6 @@ public class StockCardPresenter extends Presenter {
 
   final Map<String, String> lotsOnHands = new HashMap<>();
 
-  private static final String KEY_DELETED_STOCKCARDS = "deleted_stockcard";
-  private static final String KEY_ALL_STOCKCARDS = "all_stockcard";
-
   public StockCardPresenter() {
     inventoryViewModels = new ArrayList<>();
   }
@@ -89,29 +85,17 @@ public class StockCardPresenter extends Presenter {
   }
 
   public Observable<List<StockCard>> correctDirtyObservable(ArchiveStatus status) {
-
     return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber ->
         checkDataAndEmitter(subscriber, status))
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread());
   }
 
-  private void checkDataAndEmitter(Subscriber<? super List<StockCard>> subscriber,
-      ArchiveStatus status) {
-    Map<String, List<StockCard>> stockCardMap = new HashMap<>();
+  private void checkDataAndEmitter(Subscriber<? super List<StockCard>> subscriber, ArchiveStatus status) {
     List<StockCard> allStockCards = stockRepository.list();
-    List<StockCard> deletedStockCards = new ArrayList<>();
-
     if (shouldStartDataCheck()) {
-      Log.d("overview", "1");
-      deletedStockCards = dirtyDataManager
-          .correctDataForStockCardOverView(allStockCards, lotsOnHands);
-      Log.d("overview", "2");
+      dirtyDataManager.correctDataForStockCardOverView(allStockCards, lotsOnHands);
     }
-
-    stockCardMap.put(KEY_ALL_STOCKCARDS, allStockCards);
-    stockCardMap.put(KEY_DELETED_STOCKCARDS, deletedStockCards);
-
     stockService.monthlyUpdateAvgMonthlyConsumption();
     subscriber.onNext(from(allStockCards).filter(stockCard -> {
       if (status.isArchived()) {
@@ -132,7 +116,7 @@ public class StockCardPresenter extends Presenter {
     loadStockCards(status, true);
   }
 
-  public void loadStockCards(ArchiveStatus status, Boolean showLoading) {
+  public void loadStockCards(ArchiveStatus status, boolean showLoading) {
     if (showLoading) {
       view.loading();
     }
@@ -148,7 +132,6 @@ public class StockCardPresenter extends Presenter {
     } else {
       loadStockCardsInner(status);
     }
-
   }
 
   private boolean shouldStartDataCheck() {
@@ -171,7 +154,6 @@ public class StockCardPresenter extends Presenter {
   }
 
   public void refreshStockCardsObservable(long stockCardId) {
-    DateTime dateTime = new DateTime(DateUtil.getCurrentDate());
     view.loading();
     Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
       refreshStockCardViewModelsSOH(stockCardId);
@@ -182,8 +164,6 @@ public class StockCardPresenter extends Presenter {
           @Override
           public void onCompleted() {
             view.loaded();
-            Log.d(TAG, "refreshStockCardsObservable onCompleted: " + (new DateTime(
-                DateUtil.getCurrentDate()).getMillis() - dateTime.getMillis()));
           }
 
           @Override
@@ -195,8 +175,6 @@ public class StockCardPresenter extends Presenter {
           @Override
           public void onNext(List<StockCard> stockCards) {
             view.loaded();
-            Log.d(TAG, "refreshStockCardsObservable onNext: " + (new DateTime(
-                DateUtil.getCurrentDate()).getMillis() - dateTime.getMillis()));
             refreshViewModels(stockCards);
             view.refreshBannerText();
             view.refresh(inventoryViewModels);
@@ -214,8 +192,8 @@ public class StockCardPresenter extends Presenter {
   }
 
   private void refreshStockCardViewModelsSOH(long stockCardId) {
-    for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
-      final StockCard stockCard = inventoryViewModel.getStockCard();
+    for (InventoryViewModel inventoryViewModels : inventoryViewModels) {
+      final StockCard stockCard = inventoryViewModels.getStockCard();
       if (stockCardId == stockCard.getId()) {
         stockRepository.refresh(stockCard);
         try {
@@ -226,7 +204,7 @@ public class StockCardPresenter extends Presenter {
         } catch (LMISException e) {
           Log.w(TAG, e);
         }
-        inventoryViewModel.setStockOnHand(stockCard.calculateSOHFromLots(lotsOnHands));
+        inventoryViewModels.setStockOnHand(stockCard.calculateSOHFromLots(lotsOnHands));
         break;
       }
     }
@@ -239,7 +217,6 @@ public class StockCardPresenter extends Presenter {
 
   public void archiveBackStockCard(StockCard stockCard) {
     stockCard.getProduct().setArchived(false);
-
     stockCard.setExpireDates("");
     try {
       stockRepository.updateStockCardWithProduct(stockCard);
@@ -251,7 +228,10 @@ public class StockCardPresenter extends Presenter {
   private Observable<List<StockCard>> getLoadStockCardsObservable(final ArchiveStatus status) {
     return Observable.create((Observable.OnSubscribe<List<StockCard>>) subscriber -> {
       stockService.monthlyUpdateAvgMonthlyConsumption();
-      subscriber.onNext(from(stockRepository.list()).filter((stockCard) -> {
+      subscriber.onNext(from(stockRepository.list()).filter(stockCard -> {
+        if (stockCard == null) {
+          return false;
+        }
         if (status.isArchived()) {
           return showInArchiveView(stockCard);
         }
@@ -281,11 +261,10 @@ public class StockCardPresenter extends Presenter {
 
       @Override
       public void onError(Throwable e) {
+        Log.w(TAG, e);
         if (SHOULD_SHOW_ALERT_MSG.equals(e.getMessage())) {
-          Log.d("dirty", "showWarning");
           view.showWarning();
         } else {
-          Log.w(TAG, e);
           ToastUtil.show(e.getMessage());
         }
         view.loaded();
@@ -295,7 +274,6 @@ public class StockCardPresenter extends Presenter {
       public void onNext(List<StockCard> stockCards) {
         refreshViewModels(stockCards);
         view.refresh(inventoryViewModels);
-
       }
     };
   }

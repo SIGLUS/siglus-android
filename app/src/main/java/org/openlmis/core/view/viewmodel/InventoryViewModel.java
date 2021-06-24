@@ -19,10 +19,15 @@
 package org.openlmis.core.view.viewmodel;
 
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import androidx.core.content.ContextCompat;
 import java.util.Map;
 import lombok.Data;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
@@ -94,6 +99,16 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
       styledName = TextStyleUtil.formatStyledProductName(product);
     }
     return styledName;
+  }
+
+  public SpannableStringBuilder getProductStyledName() {
+    final Product product = stockCard.getProduct();
+    final String productCode = " [" + product.getCode() + "] ";
+    final StringBuilder displayText = new StringBuilder(productName).append(productCode);
+    SpannableStringBuilder span = new SpannableStringBuilder(displayText);
+    span.setSpan(new ForegroundColorSpan(ContextCompat.getColor(LMISApp.getContext(), R.color.color_727272)),
+        productName.length(), displayText.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+    return span;
   }
 
   public SpannableStringBuilder getStyleType() {
