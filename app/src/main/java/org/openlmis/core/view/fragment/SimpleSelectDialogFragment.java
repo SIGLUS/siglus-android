@@ -23,8 +23,8 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import androidx.annotation.NonNull;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.R;
 
 public class SimpleSelectDialogFragment extends BaseDialogFragment {
@@ -52,9 +52,9 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment {
     this.mySelections = mySelections;
   }
 
-  @NotNull
-  @Override
   @SuppressWarnings("squid:S3740")
+  @NonNull
+  @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
 
     AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
