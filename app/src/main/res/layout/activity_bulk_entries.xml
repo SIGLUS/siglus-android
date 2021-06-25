@@ -41,12 +41,21 @@
     app:layout_constraintBottom_toTopOf="@+id/rv_bulk_entries_product"
     tools:text="Total: 136"/>
 
+  <View
+    android:id="@+id/v_total_divider"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_1"
+    android:layout_marginBottom="@dimen/margin_small"
+    style="@style/StockList.HorizontalDivider"
+    app:layout_constraintTop_toBottomOf="@id/tv_total"
+    app:layout_constraintBottom_toTopOf="@id/rv_bulk_entries_product"/>
+
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv_bulk_entries_product"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:scrollbars="vertical"
-    app:layout_constraintTop_toBottomOf="@id/tv_total"
+    app:layout_constraintTop_toBottomOf="@id/v_total_divider"
     app:layout_constraintBottom_toBottomOf="@+id/action_panel"/>
 
   <include
@@ -55,6 +64,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/rv_bulk_entries_product"
     />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

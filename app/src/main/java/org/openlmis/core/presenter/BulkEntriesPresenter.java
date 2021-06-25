@@ -27,14 +27,12 @@ import java.util.Date;
 import java.util.List;
 import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftBulkEntriesProduct;
 import org.openlmis.core.model.DraftBulkEntriesProductLotItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.BulkEntriesRepository;
-import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
@@ -51,8 +49,6 @@ public class BulkEntriesPresenter extends Presenter {
   @Inject
   StockRepository stockRepository;
   @Inject
-  ProductRepository productRepository;
-  @Inject
   BulkEntriesRepository bulkEntriesRepository;
   @Getter
   private List<BulkEntriesViewModel> bulkEntriesViewModels;
@@ -62,22 +58,15 @@ public class BulkEntriesPresenter extends Presenter {
   }
 
   @Override
-  public void attachView(BaseView v) throws ViewNotMatchException {
-
+  public void attachView(BaseView v) {
+    // do nothing
   }
 
-  public Observable<List<BulkEntriesViewModel>> getAllAddedBulkEntriesViewModels(
-      List<Product> addedProducts) {
-    try {
-      restoreDraftInventory();
-    } catch (Exception exception) {
-      Log.w(TAG,exception);
-    }
+  public Observable<List<BulkEntriesViewModel>> getBulkEntriesViewModelsFromDraft() {
     return Observable
         .create((Observable.OnSubscribe<List<BulkEntriesViewModel>>) subscriber -> {
           try {
-            bulkEntriesViewModels.addAll(from(addedProducts)
-                .transform(product -> convertProductToBulkEntriesViewModel(product)).toList());
+            restoreDraftInventory();
             subscriber.onNext(bulkEntriesViewModels);
             subscriber.onCompleted();
           } catch (Exception e) {
@@ -93,9 +82,8 @@ public class BulkEntriesPresenter extends Presenter {
 
   public void addNewProductsToBulkEntriesViewModels(List<Product> addedProducts) {
     bulkEntriesViewModels.addAll(
-        from(addedProducts).transform(product -> convertProductToBulkEntriesViewModel(product))
+        from(addedProducts).transform(this::convertProductToBulkEntriesViewModel)
             .toList());
-
   }
 
   public Observable<Object> saveDraftBulkEntriesObservable() {
@@ -151,9 +139,11 @@ public class BulkEntriesPresenter extends Presenter {
         .transform(draftBulkEntriesProductLotItem -> LotMovementViewModel.builder()
             .documentNumber(draftBulkEntriesProductLotItem.getDocumentNumber())
             .lotNumber(draftBulkEntriesProductLotItem.getLotNumber())
-            .expiryDate(draftBulkEntriesProductLotItem.getExpirationDate().toString())
+            .expiryDate(DateUtil.formatDate(draftBulkEntriesProductLotItem.getExpirationDate(),
+                DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
             .movementReason(draftBulkEntriesProductLotItem.getReason())
-            .lotSoh(draftBulkEntriesProductLotItem.getQuantity().toString())
+            .quantity(draftBulkEntriesProductLotItem.getQuantity().toString())
+            .lotSoh(draftBulkEntriesProductLotItem.getLotSoh().toString())
             .build()).toList();
   }
 

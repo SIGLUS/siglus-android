@@ -51,13 +51,9 @@ public class ProductRepository {
   private static final String TYPE = "type";
   private static final String SELECT_PRODUCTS = "SELECT * FROM products WHERE isactive = '1' ";
   private static final String ARCHIVED = "AND (isarchived = '1' OR id NOT IN (SELECT product_id from stock_cards));";
-
-  GenericDao<Product> genericDao;
-
-  GenericDao<KitProduct> kitProductGenericDao;
-
   private final Context context;
-
+  GenericDao<Product> genericDao;
+  GenericDao<KitProduct> kitProductGenericDao;
   @Inject
   DbUtil dbUtil;
 
@@ -141,8 +137,9 @@ public class ProductRepository {
     return activeProducts;
   }
 
-  public List<Product> listAllProducts() throws LMISException {
-    return dbUtil.withDao(Product.class,dao -> dao.queryBuilder().query());
+  public List<Product> listAllProductsWithoutKit() throws LMISException {
+    return dbUtil
+        .withDao(Product.class, dao -> dao.queryBuilder().where().eq("isKit", false).query());
   }
 
 

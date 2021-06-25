@@ -53,5 +53,6 @@ public class BulkEntriesViewModel extends InventoryViewModel {
     this.product = product;
     this.quantity = quantity;
     this.lotMovementViewModels = lotMovementViewModels;
+    this.existingLotMovementViewModelList = lotMovementViewModels;
   }
 }

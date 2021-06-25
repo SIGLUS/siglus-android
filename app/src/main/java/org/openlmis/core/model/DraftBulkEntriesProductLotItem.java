@@ -39,6 +39,9 @@ public class DraftBulkEntriesProductLotItem extends BaseModel {
   @DatabaseField
   Long quantity;
 
+  @DatabaseField
+  Long lotSoh;
+
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   Product product;
 
@@ -67,11 +70,14 @@ public class DraftBulkEntriesProductLotItem extends BaseModel {
     } catch (Exception e) {
       quantity = null;
     }
+    setLotSoh(Long.valueOf(lotMovementViewModel.getLotSoh()));
     setExpirationDate(DateUtil.getActualMaximumDate(DateUtil
         .parseString(lotMovementViewModel.getExpiryDate(),
             DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
     setLotNumber(lotMovementViewModel.getLotNumber());
     setProduct(product);
+    setReason(lotMovementViewModel.getMovementReason());
+    setDocumentNumber(lotMovementViewModel.getDocumentNumber());
     newAdded = isNewAdded;
   }
 }

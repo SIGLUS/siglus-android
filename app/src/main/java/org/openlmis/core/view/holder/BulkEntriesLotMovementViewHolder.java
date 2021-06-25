@@ -62,9 +62,11 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   }
 
   public void populate(final LotMovementViewModel viewModel) {
-    lotNumber.setText(viewModel.getLotNumber());
+    lotNumber.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
     lotAmount.setText(viewModel.getQuantity());
     lotStockOnHand.setText(viewModel.getLotSoh());
+    movementReason.setText(viewModel.getMovementReason());
+    documentNumber.setText(viewModel.getDocumentNumber());
     setUpViewListener(viewModel);
   }
 
@@ -83,8 +85,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
       @Override
       public void onSingleClick(View view) {
         Bundle bundle = new Bundle();
-        bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS,
-            movementReasons);
+        bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, movementReasons);
         SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
         reasonsDialog.setArguments(bundle);
         reasonsDialog

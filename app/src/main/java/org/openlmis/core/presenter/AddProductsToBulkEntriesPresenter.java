@@ -53,7 +53,7 @@ public class AddProductsToBulkEntriesPresenter extends Presenter {
     return Observable
         .create((Observable.OnSubscribe<List<ProductsToBulkEntriesViewModel>>) subscriber -> {
           try {
-            List<Product> products = productRepository.listAllProducts();
+            List<Product> products = productRepository.listAllProductsWithoutKit();
             for (Product product : products) {
               if (addedProducts.contains(product.getCode())) {
                 continue;

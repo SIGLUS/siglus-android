@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -105,10 +106,14 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
           selectedProducts.add(model.getProduct());
         }
       }
-      Intent intent = new Intent();
-      intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
-      setResult(Activity.RESULT_OK,intent);
-      finish();
+      if (selectedProducts.isEmpty()) {
+        Toast.makeText(getApplicationContext(),R.string.msg_no_product_added,Toast.LENGTH_LONG).show();
+      } else {
+        Intent intent = new Intent();
+        intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
+        setResult(Activity.RESULT_OK,intent);
+        finish();
+      }
     };
   }
 

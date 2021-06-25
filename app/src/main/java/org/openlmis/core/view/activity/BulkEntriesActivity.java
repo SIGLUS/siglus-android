@@ -36,7 +36,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.Serializable;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
+import org.openlmis.core.event.RefreshBulkEntriesBackgroundEvent;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkEntriesPresenter;
@@ -74,10 +78,12 @@ public class BulkEntriesActivity extends BaseActivity {
   @InjectView(R.id.iv_no_product)
   ImageView ivNoProduct;
 
+  @InjectView(R.id.v_total_divider)
+  View totalDivider;
+
   BulkEntriesAdapter adapter;
 
   List<Product> addedProducts;
-
 
   @Override
   protected ScreenName getScreenName() {
@@ -88,11 +94,24 @@ public class BulkEntriesActivity extends BaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     initRecyclerView();
-    Subscription subscription = bulkEntriesPresenter.getAllAddedBulkEntriesViewModels(addedProducts)
+    Subscription subscription = bulkEntriesPresenter.getBulkEntriesViewModelsFromDraft()
         .subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
     btnSave.setOnClickListener(getSaveListener());
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
     setViewGoneWhenNoProduct(bulkEntriesPresenter.getBulkEntriesViewModels());
+    setTotal(adapter.getItemCount());
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    EventBus.getDefault().unregister(this);
   }
 
   @Override
@@ -113,31 +132,27 @@ public class BulkEntriesActivity extends BaseActivity {
   }
 
   public void openAddProductsActivityForResult() {
-    Intent intent = new Intent(getApplicationContext(),AddProductsToBulkEntriesActivity.class);
+    Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(SELECTED_PRODUCTS,
-        (Serializable)bulkEntriesPresenter.getAddedProductCodes());
+        (Serializable) bulkEntriesPresenter.getAddedProductCodes());
     addProductsActivityResultLauncher.launch(intent);
   }
 
-  private void setViewGoneWhenNoProduct(List<BulkEntriesViewModel> bulkEntriesViewModels) {
-    if (bulkEntriesViewModels.isEmpty()) {
-      actionPanel.setVisibility(View.GONE);
-      ivNoProduct.setVisibility(View.VISIBLE);
-      msgNoProduct.setVisibility(View.VISIBLE);
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveRefreshStatus(RefreshBulkEntriesBackgroundEvent event) {
+    if (event.isShouldRefresh()) {
+      setViewGoneWhenNoProduct(bulkEntriesPresenter.getBulkEntriesViewModels());
+      setTotal(adapter.getItemCount());
     }
-
   }
 
-  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
-      new StartActivityForResult(),
-      result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
-          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
-          adapter.refresh();
-          adapter.notifyDataSetChanged();
-        }
-      });
+  private void setViewGoneWhenNoProduct(List<BulkEntriesViewModel> bulkEntriesViewModels) {
+    actionPanel.setVisibility(bulkEntriesViewModels.isEmpty() ? View.GONE : View.VISIBLE);
+    ivNoProduct.setVisibility(bulkEntriesViewModels.isEmpty() ? View.VISIBLE : View.GONE);
+    msgNoProduct.setVisibility(bulkEntriesViewModels.isEmpty() ? View.VISIBLE : View.GONE);
+    tvTotal.setVisibility(bulkEntriesViewModels.isEmpty() ? View.GONE : View.VISIBLE);
+    totalDivider.setVisibility(bulkEntriesViewModels.isEmpty() ? View.GONE : View.VISIBLE);
+  }
 
   protected void setTotal(int total) {
     tvTotal.setText(getString(R.string.label_total, total));
@@ -166,6 +181,7 @@ public class BulkEntriesActivity extends BaseActivity {
       public void onNext(List<BulkEntriesViewModel> productsToBulkEntriesViewModels) {
         loaded();
         setTotal(adapter.getItemCount());
+        setViewGoneWhenNoProduct(bulkEntriesPresenter.getBulkEntriesViewModels());
         adapter.notifyDataSetChanged();
       }
     };
@@ -176,7 +192,6 @@ public class BulkEntriesActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        btnSave.setEnabled(false);
         loading();
         Subscription subscription = bulkEntriesPresenter.saveDraftBulkEntriesObservable()
             .subscribe(getReloadSubscriber());
@@ -189,9 +204,9 @@ public class BulkEntriesActivity extends BaseActivity {
     return new Subscriber() {
       @Override
       public void onCompleted() {
-        Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG).show();
-        loaded();
-        btnSave.setEnabled(true);
+        Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG)
+            .show();
+        finish();
       }
 
       @Override
@@ -205,5 +220,16 @@ public class BulkEntriesActivity extends BaseActivity {
       }
     };
   }
+
+  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
+          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
+          adapter.refresh();
+          adapter.notifyDataSetChanged();
+        }
+      });
 
 }

@@ -19,10 +19,11 @@
 package org.openlmis.core.view.holder;
 
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.R;
+import org.openlmis.core.event.RefreshBulkEntriesBackgroundEvent;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.widget.BulkEntriesLotListView;
@@ -33,9 +34,6 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
 
   @InjectView(R.id.tv_product_name)
   TextView productName;
-
-  @InjectView(R.id.tv_product_type)
-  TextView productType;
 
   @InjectView(R.id.ic_trashcan)
   ImageView icTrashcan;
@@ -50,16 +48,13 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
   public void populate(final BulkEntriesViewModel bulkEntriesViewModel,
       final BulkEntriesAdapter bulkEntriesAdapter) {
     productName.setText(bulkEntriesViewModel.getFormattedProductName());
-    productType.setText(bulkEntriesViewModel.getStyleType());
     if (bulkEntriesLotListView == null) {
       return;
     }
     bulkEntriesLotListView.initLotListView(bulkEntriesViewModel);
-    icTrashcan.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        bulkEntriesAdapter.remove(bulkEntriesViewModel);
-      }
+    icTrashcan.setOnClickListener(v -> {
+      bulkEntriesAdapter.remove(bulkEntriesViewModel);
+      EventBus.getDefault().post(new RefreshBulkEntriesBackgroundEvent(true));
     });
   }
 

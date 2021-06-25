@@ -610,4 +610,5 @@
   <string name="btn_add">ADD</string>
   <string name="btn_bulk_entries_add_new_lot">ADD NEW LOT</string>
   <string name="add_all_products_loading_message">Loading products</string>
+  <string name="msg_no_product_added">No product added</string>
 </resources>
