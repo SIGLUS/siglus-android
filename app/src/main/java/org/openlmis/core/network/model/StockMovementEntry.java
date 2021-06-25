@@ -43,12 +43,12 @@ public class StockMovementEntry {
 
   String processedDate;
   String signature;
-  String occurred;
+  String occurredDate;
   String documentationNo;
   String productCode;
   String type;
   Long requested;
-  long soh;
+  long stockOnHand;
   long quantity;
   List<LotMovementEntry> lotEventList = new ArrayList<>();
 
@@ -56,11 +56,11 @@ public class StockMovementEntry {
     this.setProcessedDate(new DateTime(stockMovementItem.getCreatedTime())
             .toString(ISODateTimeFormat.dateTime()));
     this.setSignature(stockMovementItem.getSignature());
-    this.setOccurred(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
+    this.setOccurredDate(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
     this.setDocumentationNo(stockMovementItem.getDocumentNumber());
     this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
     this.setType(getMovementType(stockMovementItem));
-    this.setSoh(stockMovementItem.getStockOnHand());
+    this.setStockOnHand(stockMovementItem.getStockOnHand());
     this.setQuantity(getQuantityWithSign(stockMovementItem));
     this.setRequested(stockMovementItem.getRequested());
     if (stockMovementItem.getLotMovementItemListWrapper() != null) {

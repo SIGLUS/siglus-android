@@ -64,13 +64,13 @@ public class StockMovementEntryTest {
     // then
     assertEquals(entry.getProductCode(), "productCode");
     assertEquals(entry.getQuantity(), -50);
-    assertEquals(entry.getOccurred(), "2016-01-01");
+    assertEquals(entry.getOccurredDate(), "2016-01-01");
     assertEquals(entry.getDocumentationNo(), "123");
     assertEquals(entry.getLotEventList().size(), 2);
     assertEquals(entry.getLotEventList().get(0).getLotNumber(), "lot-1");
     assertEquals(entry.getLotEventList().get(0).getExpirationDate(), "2020-10-31");
     assertEquals(entry.getLotEventList().get(0).getQuantity(), 30L);
-    assertEquals(entry.getLotEventList().get(0).getSoh(), 50);
+    assertEquals(entry.getLotEventList().get(0).getStockOnHand(), 50);
     assertEquals(entry, entry1);
     assertNotEquals(entry.getLotEventList().get(0), entry.getLotEventList().get(1));
   }
@@ -106,13 +106,13 @@ public class StockMovementEntryTest {
     // then
     assertEquals(entry.getProductCode(), "productCode");
     assertEquals(entry.getQuantity(), 50);
-    assertEquals(entry.getOccurred(), "2016-01-01");
+    assertEquals(entry.getOccurredDate(), "2016-01-01");
     assertEquals(entry.getType(), "ADJUSTMENT");
     assertEquals(entry.getLotEventList().size(), 1);
     assertEquals(entry.getLotEventList().get(0).getLotNumber(), "ABC");
     assertEquals(entry.getLotEventList().get(0).getExpirationDate(), "2020-10-11");
     assertEquals(entry.getLotEventList().get(0).getQuantity(), 30L);
-    assertEquals(entry.getLotEventList().get(0).getSoh(), 50);
+    assertEquals(entry.getLotEventList().get(0).getStockOnHand(), 50);
   }
 
   @NotNull

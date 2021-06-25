@@ -32,7 +32,7 @@ public class LotMovementEntry {
   private String reasonName;
   String documentationNo;
   private long quantity;
-  private long soh;
+  private long stockOnHand;
 
   public LotMovementEntry(LotMovementItem lotMovementItem) {
     this.lotNumber = lotMovementItem.getLot().getLotNumber();
@@ -41,6 +41,6 @@ public class LotMovementEntry {
     this.reasonName = lotMovementItem.getReason();
     this.documentationNo = lotMovementItem.getDocumentNumber();
     this.quantity = lotMovementItem.getMovementQuantity();
-    this.soh = lotMovementItem.getStockOnHand();
+    this.stockOnHand = lotMovementItem.getStockOnHand();
   }
 }
