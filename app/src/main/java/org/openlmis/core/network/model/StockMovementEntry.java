@@ -47,6 +47,7 @@ public class StockMovementEntry {
   String documentationNo;
   String productCode;
   String type;
+  Long requested;
   long soh;
   long quantity;
   List<LotMovementEntry> lotEventList = new ArrayList<>();
@@ -61,6 +62,7 @@ public class StockMovementEntry {
     this.setType(getMovementType(stockMovementItem));
     this.setSoh(stockMovementItem.getStockOnHand());
     this.setQuantity(getQuantityWithSign(stockMovementItem));
+    this.setRequested(stockMovementItem.getRequested());
     if (stockMovementItem.getLotMovementItemListWrapper() != null) {
       lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper())
           .transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());
