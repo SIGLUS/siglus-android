@@ -96,7 +96,7 @@ public class StockcardListLotAdapterTest {
     adapter.onBindViewHolder(lotInfoHolder, 0);
 
     // then
-    Mockito.verify(mockLotCodeTextView, Mockito.times(1)).setText(String.format("[%s]", LotNumber));
+    Mockito.verify(mockLotCodeTextView, Mockito.times(1)).setText(LotNumber);
     Mockito.verify(mockExpiryDateTextView, Mockito.times(1)).setText("21/05/2021");
     Mockito.verify(mockLotOnHandTextView, Mockito.times(1)).setText(String.valueOf(quantity));
   }

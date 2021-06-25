@@ -60,7 +60,7 @@ public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
   @Override
   public void onBindViewHolder(@NonNull LotInfoHolder holder, int position) {
     final LotOnHand lotOnHand = lotInfoList.get(position);
-    holder.lotCode.setText(String.format("[%s]", lotOnHand.getLot().getLotNumber()));
+    holder.lotCode.setText(lotOnHand.getLot().getLotNumber());
     holder.expiryDate.setText(DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.SIMPLE_DATE_FORMAT));
     holder.lotOnHand.setText(String.valueOf(lotOnHand.getQuantityOnHand()));
   }
