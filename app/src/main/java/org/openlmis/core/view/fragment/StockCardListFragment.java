@@ -37,8 +37,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
@@ -98,6 +102,13 @@ public class StockCardListFragment extends BaseFragment implements
     initRecycleView();
     initSortSpinner();
     loadStockCards();
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    EventBus.getDefault().unregister(this);
   }
 
   @Override
@@ -128,38 +139,15 @@ public class StockCardListFragment extends BaseFragment implements
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (resultCode == Activity.RESULT_OK) {
-      if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
-        long stockCardId = data.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
-        presenter.refreshStockCardsObservable(stockCardId);
+      long[] stockCardIds = data.getLongArrayExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY);
+      if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE && stockCardIds != null) {
+        presenter.refreshStockCardsObservable(stockCardIds);
       } else if (requestCode == Constants.REQUEST_UNPACK_KIT) {
         presenter.loadKits();
       } else if (requestCode == Constants.REQUEST_ARCHIVED_LIST_PAGE) {
         loadStockCards();
       }
     }
-  }
-
-  public void onSearch(String query) {
-    mAdapter.filter(query);
-    tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
-  }
-
-  protected void createAdapter() {
-    mAdapter = new StockCardListAdapter(new ArrayList<>(), onItemViewClickListener);
-  }
-
-  protected void loadStockCards() {
-    presenter.loadStockCards(ACTIVE);
-  }
-
-  @NonNull
-  private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate() {
-    return () -> {
-      dirtyDataManager.deleteAndReset();
-      Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
-      requireActivity().startActivity(intent);
-      requireActivity().finish();
-    };
   }
 
   @Override
@@ -172,20 +160,58 @@ public class StockCardListFragment extends BaseFragment implements
     ((BaseActivity) requireActivity()).showDeletedWarningDialog(buildWarningDialogFragmentDelegate());
   }
 
-  private void initRecycleView() {
-    createAdapter();
-    stockCardRecycleView.setHasFixedSize(true);
-    stockCardRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    stockCardRecycleView.setAdapter(mAdapter);
+  @Override
+  public void refresh(List<InventoryViewModel> data) {
+    mAdapter.refreshList(data);
+    tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
+    onItemSelected(sortSpinner, null, currentPosition, 0L);
   }
 
-  protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = stockCardListViewModel -> {
-    Intent intent = getStockMovementIntent(stockCardListViewModel);
+  public void onSearch(String query) {
+    mAdapter.filter(query);
+    tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveCmmCalculateEvent(CmmCalculateEvent event) {
+    if (event.isStart()) {
+      return;
+    }
+    loadStockCards();
+  }
+
+  protected void createAdapter() {
+    mAdapter = new StockCardListAdapter(new ArrayList<>(), onItemViewClickListener);
+  }
+
+  protected void loadStockCards() {
+    presenter.loadStockCards(ACTIVE);
+  }
+
+  protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = inventoryViewModel -> {
+    Intent intent = getStockMovementIntent(inventoryViewModel);
     startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
   };
 
   protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
     return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
+  }
+
+  @NonNull
+  private WarningDialogFragment.DialogDelegate buildWarningDialogFragmentDelegate() {
+    return () -> {
+      dirtyDataManager.deleteAndReset();
+      Intent intent = HomeActivity.getIntentToMe(LMISApp.getContext());
+      requireActivity().startActivity(intent);
+      requireActivity().finish();
+    };
+  }
+
+  private void initRecycleView() {
+    createAdapter();
+    stockCardRecycleView.setHasFixedSize(true);
+    stockCardRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    stockCardRecycleView.setAdapter(mAdapter);
   }
 
   private void initSortSpinner() {
@@ -195,12 +221,4 @@ public class StockCardListFragment extends BaseFragment implements
     sortSpinner.setAdapter(adapter);
     sortSpinner.setOnItemSelectedListener(this);
   }
-
-  @Override
-  public void refresh(List<InventoryViewModel> data) {
-    mAdapter.refreshList(data);
-    tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
-    onItemSelected(sortSpinner, null, currentPosition, 0L);
-  }
-
 }

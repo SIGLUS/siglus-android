@@ -193,7 +193,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   @Override
   public void onBackPressed() {
     Intent intent = new Intent();
-    intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockId);
+    intent.putExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY, new long[]{stockId});
     setResult(Activity.RESULT_OK, intent);
     finish();
   }

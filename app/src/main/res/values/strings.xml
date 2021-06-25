@@ -605,5 +605,4 @@
   <string name="msg_cannot_create_emergency_requisition">Cannot create emergency requisition</string>
   <string name="label_stockcard_lot_code">Lot Code</string>
   <string name="label_stockcard_lot_expire_date">Expiry Date</string>
-  <string name="label_stockcard_lot_last_update">Last Update</string>
 </resources>

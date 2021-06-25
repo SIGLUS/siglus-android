@@ -60,9 +60,8 @@ public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
   @Override
   public void onBindViewHolder(@NonNull LotInfoHolder holder, int position) {
     final LotOnHand lotOnHand = lotInfoList.get(position);
-    holder.lotCode.setText(lotOnHand.getLot().getLotNumber());
+    holder.lotCode.setText(String.format("[%s]", lotOnHand.getLot().getLotNumber()));
     holder.expiryDate.setText(DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.SIMPLE_DATE_FORMAT));
-    holder.lastUpdateDate.setText(DateUtil.formatDate(lotOnHand.getLot().getUpdatedAt(), DateUtil.SIMPLE_DATE_FORMAT));
     holder.lotOnHand.setText(String.valueOf(lotOnHand.getQuantityOnHand()));
   }
 
@@ -77,15 +76,12 @@ public class StockcardListLotAdapter extends Adapter<LotInfoHolder> {
 
     TextView expiryDate;
 
-    TextView lastUpdateDate;
-
     TextView lotOnHand;
 
     public LotInfoHolder(@NonNull View itemView) {
       super(itemView);
       lotCode = itemView.findViewById(R.id.tv_lot_code);
       expiryDate = itemView.findViewById(R.id.tv_expiry_date);
-      lastUpdateDate = itemView.findViewById(R.id.tv_last_update_date);
       lotOnHand = itemView.findViewById(R.id.tv_lot_on_hand);
     }
   }

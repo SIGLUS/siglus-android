@@ -87,6 +87,7 @@ public final class Constants {
 
   // Intent Params
   public static final String PARAM_STOCK_CARD_ID = "stockCardId";
+  public static final String PARAM_STOCK_CARD_ID_ARRAY = "stockCardIdArray";
   public static final String PARAM_STOCK_NAME = "stockName";
   public static final String PARAM_IS_ACTIVATED = "productIsActivated";
   public static final String PARAM_IS_PHYSICAL_INVENTORY = "isPhysicalInventory";

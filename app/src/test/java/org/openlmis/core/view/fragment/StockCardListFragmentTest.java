@@ -21,12 +21,12 @@ package org.openlmis.core.view.fragment;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -113,23 +113,29 @@ public class StockCardListFragmentTest {
   }
 
   @Test
-  public void shouldRefreshBannerText() {
-    fragment.productsUpdateBanner = productUpdateBanner;
+  public void shouldRefreshStockcard() {
+    // given
     when(sharedPreferenceMgr.isNeedShowProductsUpdateBanner()).thenReturn(true);
-    when(productUpdateBanner.getVisibility()).thenReturn(View.VISIBLE);
+    final long[] stockcardIds = {0};
+    final Intent data = new Intent();
+    data.putExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY, stockcardIds);
 
-    fragment
-        .onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
+    // when
+    fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, data);
 
-    verify(fragment.presenter).refreshStockCardsObservable(0);
+    // then
+    verify(fragment.presenter).refreshStockCardsObservable(stockcardIds);
   }
 
   @Test
   public void shouldRefreshAndShowBannerWhenNeedShowBanner() {
+    // given
     fragment.productsUpdateBanner = productUpdateBanner;
-    fragment
-        .onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
-    verify(fragment.presenter).refreshStockCardsObservable(0);
+    // when
+    fragment.refreshBannerText();
+
+    // then
+    verify(productUpdateBanner,times(1)).refreshBannerText();
   }
 }

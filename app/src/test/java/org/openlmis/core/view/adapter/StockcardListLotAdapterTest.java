@@ -86,19 +86,17 @@ public class StockcardListLotAdapterTest {
     final LotInfoHolder lotInfoHolder = new LotInfoHolder(Mockito.mock(View.class));
     final TextView mockLotCodeTextView = Mockito.mock(TextView.class);
     final TextView mockExpiryDateTextView = Mockito.mock(TextView.class);
-    final TextView mockLastUpdateDateTextView = Mockito.mock(TextView.class);
     final TextView mockLotOnHandTextView = Mockito.mock(TextView.class);
     lotInfoHolder.lotCode = mockLotCodeTextView;
     lotInfoHolder.expiryDate = mockExpiryDateTextView;
-    lotInfoHolder.lastUpdateDate = mockLastUpdateDateTextView;
     lotInfoHolder.lotOnHand = mockLotOnHandTextView;
     final StockcardListLotAdapter adapter = new StockcardListLotAdapter(lotOnHands);
 
     // when
-    adapter.bindViewHolder(lotInfoHolder, 0);
+    adapter.onBindViewHolder(lotInfoHolder, 0);
 
     // then
-    Mockito.verify(mockLotCodeTextView, Mockito.times(1)).setText(LotNumber);
+    Mockito.verify(mockLotCodeTextView, Mockito.times(1)).setText(String.format("[%s]", LotNumber));
     Mockito.verify(mockExpiryDateTextView, Mockito.times(1)).setText("21/05/2021");
     Mockito.verify(mockLotOnHandTextView, Mockito.times(1)).setText(String.valueOf(quantity));
   }
@@ -128,18 +126,17 @@ public class StockcardListLotAdapterTest {
   }
 
   @Test
-  public void shouldCorrectlyCreateHolder(){
+  public void shouldCorrectlyCreateHolder() {
     // given
     final StockcardListLotAdapter adapter = new StockcardListLotAdapter(lotOnHands);
     final LinearLayout recyclerView = new LinearLayout(LMISTestApp.getContext());
 
     // when
-    final LotInfoHolder viewHolder = adapter.createViewHolder(recyclerView, 0);
+    final LotInfoHolder viewHolder = adapter.onCreateViewHolder(recyclerView, 0);
 
     // then
     Assertions.assertThat(viewHolder.lotCode).isNotNull();
     Assertions.assertThat(viewHolder.expiryDate).isNotNull();
-    Assertions.assertThat(viewHolder.lastUpdateDate).isNotNull();
     Assertions.assertThat(viewHolder.lotOnHand).isNotNull();
   }
 

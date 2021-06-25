@@ -125,7 +125,7 @@ public class StockCardPresenterTest {
     presenter.loadStockCards(StockCardPresenter.ArchiveStatus.ACTIVE);
     afterLoadHandler.awaitTerminalEvent();
 
-    assertEquals(2, afterLoadHandler.getOnNextEvents().get(0).size());
+    assertEquals(1, afterLoadHandler.getOnNextEvents().get(0).size());
   }
 
   @Test
