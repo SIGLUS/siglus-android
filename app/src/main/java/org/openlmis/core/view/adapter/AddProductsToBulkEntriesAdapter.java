@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.viethoa.RecyclerViewFastScroller;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -32,11 +33,13 @@ import org.openlmis.core.R;
 import org.openlmis.core.view.holder.AddProductsToBulkEntriesViewHolder;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
 
-public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddProductsToBulkEntriesViewHolder> {
+public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddProductsToBulkEntriesViewHolder> implements
+    RecyclerViewFastScroller.BubbleTextGetter {
 
   @Getter
   private final List<ProductsToBulkEntriesViewModel> models;
 
+  @Getter
   private final List<ProductsToBulkEntriesViewModel> filteredList;
 
   private String keyWord;
@@ -86,4 +89,19 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
     filteredList.addAll(filteredViewModels);
     this.notifyDataSetChanged();
   }
+
+  @Override
+  public String getTextToShowInBubble(int position) {
+    if (position < 0 || position >= models.size()) {
+      return null;
+    }
+
+    String name = models.get(position).getProduct().getPrimaryName();
+    if (name == null || name.length() < 1) {
+      return null;
+    }
+
+    return models.get(position).getProduct().getPrimaryName().substring(0, 1);
+  }
+
 }

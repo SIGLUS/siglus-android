@@ -22,7 +22,9 @@ import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.S
 
 import android.app.Activity;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,20 +36,26 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.viethoa.RecyclerViewFastScroller;
+import com.viethoa.models.AlphabetItem;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
 import org.openlmis.core.event.RefreshBulkEntriesBackgroundEvent;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkEntriesPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -84,6 +92,16 @@ public class BulkEntriesActivity extends BaseActivity {
   BulkEntriesAdapter adapter;
 
   List<Product> addedProducts;
+  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
+          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
+          adapter.refresh();
+          adapter.notifyDataSetChanged();
+        }
+      });
 
   @Override
   protected ScreenName getScreenName() {
@@ -131,6 +149,15 @@ public class BulkEntriesActivity extends BaseActivity {
     }
   }
 
+  @Override
+  public void onBackPressed() {
+    if (bulkEntriesPresenter.isDraftExisted()) {
+      showConfirmDialog();
+    } else {
+      super.onBackPressed();
+    }
+  }
+
   public void openAddProductsActivityForResult() {
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(SELECTED_PRODUCTS,
@@ -144,6 +171,27 @@ public class BulkEntriesActivity extends BaseActivity {
       setViewGoneWhenNoProduct(bulkEntriesPresenter.getBulkEntriesViewModels());
       setTotal(adapter.getItemCount());
     }
+  }
+
+  private void showConfirmDialog() {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        null,
+        getString(R.string.msg_back_confirm),
+        getString(R.string.btn_positive),
+        getString(R.string.btn_negative),
+        "back_confirm_dialog");
+    dialogFragment.show(getSupportFragmentManager(), "back_confirm_dialog");
+    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        bulkEntriesPresenter.deleteDraft();
+        finish();
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+      }
+    });
   }
 
   private void setViewGoneWhenNoProduct(List<BulkEntriesViewModel> bulkEntriesViewModels) {
@@ -196,6 +244,7 @@ public class BulkEntriesActivity extends BaseActivity {
         Subscription subscription = bulkEntriesPresenter.saveDraftBulkEntriesObservable()
             .subscribe(getReloadSubscriber());
         subscriptions.add(subscription);
+        finish();
       }
     };
   }
@@ -204,14 +253,15 @@ public class BulkEntriesActivity extends BaseActivity {
     return new Subscriber() {
       @Override
       public void onCompleted() {
+        finish();
         Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG)
             .show();
-        finish();
       }
 
       @Override
       public void onError(Throwable e) {
-        // do nothing
+        ToastUtil.show(e.getMessage());
+        loaded();
       }
 
       @Override
@@ -220,16 +270,5 @@ public class BulkEntriesActivity extends BaseActivity {
       }
     };
   }
-
-  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
-      new StartActivityForResult(),
-      result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
-          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
-          adapter.refresh();
-          adapter.notifyDataSetChanged();
-        }
-      });
 
 }

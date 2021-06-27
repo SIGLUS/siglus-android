@@ -29,6 +29,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.viethoa.RecyclerViewFastScroller;
+import com.viethoa.models.AlphabetItem;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ import org.openlmis.core.presenter.AddProductsToBulkEntriesPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddProductsToBulkEntriesAdapter;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -63,6 +66,9 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   @InjectView(R.id.bulk_entries_products)
   RecyclerView rvProducts;
 
+  @InjectView(R.id.fast_scroller)
+  RecyclerViewFastScroller fastScroller;
+
   @InjectView(R.id.btn_add_products)
   Button btnAddProducts;
 
@@ -83,6 +89,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   public boolean onSearchStart(String query) {
     adapter.filter(query);
     setTotal(adapter.getItemCount());
+    setUpFastScroller(adapter.getFilteredList());
     return false;
   }
 
@@ -138,10 +145,36 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
       @Override
       public void onNext(List<ProductsToBulkEntriesViewModel> productsToBulkEntriesViewModels) {
         loaded();
+        setUpFastScroller(productsToBulkEntriesViewModels);
         adapter.filter(EMPTY_STRING);
         setTotal(adapter.getItemCount());
         adapter.notifyDataSetChanged();
       }
     };
   }
+
+  public void setUpFastScroller(List<ProductsToBulkEntriesViewModel> viewModels) {
+    fastScroller.setVisibility(View.VISIBLE);
+    if (viewModels.isEmpty()) {
+      fastScroller.setVisibility(View.GONE);
+    }
+    List<AlphabetItem> mAlphabetItems = new ArrayList<>();
+    List<String> strAlphabets = new ArrayList<>();
+    for (int i = 0; i < viewModels.size(); i++) {
+      String name = viewModels.get(i).getProduct().getPrimaryName();
+      if (name == null || name.trim().isEmpty()) {
+        continue;
+      }
+
+      String word = name.substring(0, 1);
+      if (!strAlphabets.contains(word)) {
+        strAlphabets.add(word);
+        mAlphabetItems.add(new AlphabetItem(i, word, false));
+      }
+    }
+    fastScroller.setRecyclerView(rvProducts);
+    fastScroller.setUpAlphabet(mAlphabetItems);
+  }
+
+
 }

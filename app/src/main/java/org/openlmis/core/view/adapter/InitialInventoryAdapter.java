@@ -20,12 +20,14 @@ package org.openlmis.core.view.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import com.viethoa.RecyclerViewFastScroller;
 import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-public class InitialInventoryAdapter extends InventoryListAdapter<InitialInventoryViewHolder> {
+public class InitialInventoryAdapter extends InventoryListAdapter<InitialInventoryViewHolder> implements
+    RecyclerViewFastScroller.BubbleTextGetter  {
 
   private final InitialInventoryViewHolder.ViewHistoryListener listener;
 
@@ -46,5 +48,19 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
   public InitialInventoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     return new InitialInventoryViewHolder(LayoutInflater.from(parent.getContext())
         .inflate(R.layout.item_initial_inventory, parent, false));
+  }
+
+  @Override
+  public String getTextToShowInBubble(int position) {
+    if (position < 0 || position >= data.size()) {
+      return null;
+    }
+
+    String name = data.get(position).getProduct().getPrimaryName();
+    if (name == null || name.length() < 1) {
+      return null;
+    }
+
+    return data.get(position).getProduct().getPrimaryName().substring(0, 1);
   }
 }

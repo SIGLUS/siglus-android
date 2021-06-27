@@ -30,8 +30,7 @@
       android:id="@+id/fast_scroller"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:layout_alignParentEnd="true"
-      android:visibility="invisible" />
+      android:layout_alignParentEnd="true" />
   </RelativeLayout>
 
   <include

@@ -25,6 +25,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.viethoa.RecyclerViewFastScroller;
+import com.viethoa.models.AlphabetItem;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddNonBasicProductsAdapter;
 import org.openlmis.core.view.viewmodel.NonBasicProductsViewModel;
+import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -47,8 +50,11 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
   public static final String EMPTY_STRING = "";
   public static final int RESULT_CODE = 2000;
   public static final String SELECTED_NON_BASIC_PRODUCTS = "SELECTED_PRODUCTS";
-  @InjectView(R.id.non_basic_products)
+  @InjectView(R.id.products_list)
   RecyclerView rvNonBasicProducts;
+
+  @InjectView(R.id.fast_scroller)
+  RecyclerViewFastScroller fastScroller;
 
   @InjectView(R.id.btn_cancel)
   Button btnCancel;
@@ -107,6 +113,7 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
   @Override
   public boolean onSearchStart(String query) {
     adapter.filter(query);
+    setUpFastScroller(adapter.getFilteredList());
     return false;
   }
 
@@ -133,9 +140,35 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
       public void onNext(List<NonBasicProductsViewModel> inventoryViewModels) {
         loaded();
         adapter.filter(EMPTY_STRING);
+        setUpFastScroller(inventoryViewModels);
         adapter.notifyDataSetChanged();
       }
     };
   }
+
+  public void setUpFastScroller(List<NonBasicProductsViewModel> viewModels) {
+    if (viewModels.isEmpty()) {
+      fastScroller.setVisibility(View.GONE);
+    } else {
+      fastScroller.setVisibility(View.VISIBLE);
+    }
+    List<AlphabetItem> mAlphabetItems = new ArrayList<>();
+    List<String> strAlphabets = new ArrayList<>();
+    for (int i = 0; i < viewModels.size(); i++) {
+      String name = viewModels.get(i).getProduct().getPrimaryName();
+      if (name == null || name.trim().isEmpty()) {
+        continue;
+      }
+
+      String word = name.substring(0, 1);
+      if (!strAlphabets.contains(word)) {
+        strAlphabets.add(word);
+        mAlphabetItems.add(new AlphabetItem(i, word, false));
+      }
+    }
+    fastScroller.setRecyclerView(rvNonBasicProducts);
+    fastScroller.setUpAlphabet(mAlphabetItems);
+  }
+
 
 }

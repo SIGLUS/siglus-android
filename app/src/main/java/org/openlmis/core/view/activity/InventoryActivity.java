@@ -172,6 +172,10 @@ public abstract class InventoryActivity extends SearchBarActivity implements
   }
 
   public void setUpFastScroller(List<InventoryViewModel> viewModels) {
+    fastScroller.setVisibility(View.VISIBLE);
+    if (viewModels.isEmpty()) {
+      fastScroller.setVisibility(View.GONE);
+    }
     List<AlphabetItem> mAlphabetItems = new ArrayList<>();
     List<String> strAlphabets = new ArrayList<>();
     for (int i = 0; i < viewModels.size(); i++) {

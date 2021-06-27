@@ -20,6 +20,7 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import org.openlmis.core.model.Product;
@@ -54,6 +55,7 @@ public class AddProductsToBulkEntriesPresenter extends Presenter {
         .create((Observable.OnSubscribe<List<ProductsToBulkEntriesViewModel>>) subscriber -> {
           try {
             List<Product> products = productRepository.listAllProductsWithoutKit();
+            Collections.sort(products);
             for (Product product : products) {
               if (addedProducts.contains(product.getCode())) {
                 continue;

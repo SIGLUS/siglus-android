@@ -3,12 +3,25 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/non_basic_products"
+  <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="vertical"
-    android:layout_above="@+id/vg_action_panel" />
+    android:layout_height="wrap_content"
+    android:layout_above="@+id/vg_action_panel">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/products_list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_toStartOf="@+id/fast_scroller"
+      android:scrollbars="vertical" />
+
+    <com.viethoa.RecyclerViewFastScroller
+      android:id="@+id/fast_scroller"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_alignParentEnd="true"
+      android:visibility="invisible" />
+  </RelativeLayout>
 
   <LinearLayout
     android:id="@+id/vg_action_panel"
