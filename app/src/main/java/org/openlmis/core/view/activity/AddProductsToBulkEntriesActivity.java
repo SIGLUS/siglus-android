@@ -41,7 +41,6 @@ import org.openlmis.core.presenter.AddProductsToBulkEntriesPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddProductsToBulkEntriesAdapter;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -162,7 +161,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
     List<String> strAlphabets = new ArrayList<>();
     for (int i = 0; i < viewModels.size(); i++) {
       String name = viewModels.get(i).getProduct().getPrimaryName();
-      if (name == null || name.trim().isEmpty()) {
+      if (name == null || name.isEmpty()) {
         continue;
       }
 

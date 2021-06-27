@@ -46,8 +46,6 @@ public class LotMovementViewModel implements Serializable {
   private MovementReasonManager.MovementType movementType;
   private String movementReason;
   private String documentNumber;
-
-
   boolean valid = true;
   boolean quantityLessThanSoh = true;
   boolean isDataChanged = false;
@@ -130,8 +128,7 @@ public class LotMovementViewModel implements Serializable {
     return valid || (getMovementType() == MovementReasonManager.MovementType.ISSUE
         && !isExpiredLot());
   }
-
-
+  
   public boolean isExpiredLot() {
     if (getExpiryDate() == null) {
       return true;

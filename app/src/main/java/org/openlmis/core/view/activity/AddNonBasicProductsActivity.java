@@ -38,7 +38,6 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddNonBasicProductsAdapter;
 import org.openlmis.core.view.viewmodel.NonBasicProductsViewModel;
-import org.openlmis.core.view.viewmodel.ProductsToBulkEntriesViewModel;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
@@ -156,7 +155,7 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
     List<String> strAlphabets = new ArrayList<>();
     for (int i = 0; i < viewModels.size(); i++) {
       String name = viewModels.get(i).getProduct().getPrimaryName();
-      if (name == null || name.trim().isEmpty()) {
+      if (name == null || name.isEmpty()) {
         continue;
       }
 
