@@ -24,6 +24,8 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +34,8 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @DatabaseTable(tableName = "draft_bulk_entries_product_lot_item")
 public class DraftBulkEntriesProductLotItem extends BaseModel {

@@ -31,13 +31,13 @@ import roboguice.inject.InjectView;
 public class AddProductsToBulkEntriesViewHolder extends BaseViewHolder {
 
   @InjectView(R.id.checkbox)
-  private CheckBox checkBox;
+  CheckBox checkBox;
 
   @InjectView(R.id.tv_product_name)
-  private TextView productName;
+  TextView productName;
 
   @InjectView(R.id.tv_product_type)
-  private TextView productType;
+  TextView productType;
 
   public AddProductsToBulkEntriesViewHolder(View itemView) {
     super(itemView);

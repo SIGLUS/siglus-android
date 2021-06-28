@@ -79,7 +79,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
     previouslyProductCodes = (List<String>) getIntent()
         .getSerializableExtra(SELECTED_PRODUCTS);
     btnAddProducts.setOnClickListener(addProductsListener());
-    Subscription subscription = addProductsToBulkEntriesPresenter.getAllProducts(previouslyProductCodes)
+    Subscription subscription = addProductsToBulkEntriesPresenter.getAllProductsWithoutKit(previouslyProductCodes)
         .subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
   }
@@ -94,35 +94,8 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
 
   @Override
   protected ScreenName getScreenName() {
-    return null;
+    return ScreenName.ADD_PRODUCT_TO_BULK_ENTRIES_SCREEN;
   }
-
-  private void initRecyclerView() {
-    adapter = new AddProductsToBulkEntriesAdapter(addProductsToBulkEntriesPresenter.getModels());
-    rvProducts.setLayoutManager(new LinearLayoutManager(this));
-    rvProducts.setAdapter(adapter);
-  }
-
-  @NonNull
-  private View.OnClickListener addProductsListener() {
-    return v -> {
-      List<Product> selectedProducts = new ArrayList<>();
-      for (ProductsToBulkEntriesViewModel model : adapter.getModels()) {
-        if (model.isChecked()) {
-          selectedProducts.add(model.getProduct());
-        }
-      }
-      if (selectedProducts.isEmpty()) {
-        Toast.makeText(getApplicationContext(),R.string.msg_no_product_added,Toast.LENGTH_LONG).show();
-      } else {
-        Intent intent = new Intent();
-        intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
-        setResult(Activity.RESULT_OK,intent);
-        finish();
-      }
-    };
-  }
-
 
   protected void setTotal(int total) {
     tvTotal.setText(getString(R.string.label_total, total));
@@ -152,7 +125,33 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
     };
   }
 
-  public void setUpFastScroller(List<ProductsToBulkEntriesViewModel> viewModels) {
+  private void initRecyclerView() {
+    adapter = new AddProductsToBulkEntriesAdapter(addProductsToBulkEntriesPresenter.getModels());
+    rvProducts.setLayoutManager(new LinearLayoutManager(this));
+    rvProducts.setAdapter(adapter);
+  }
+
+  @NonNull
+  private View.OnClickListener addProductsListener() {
+    return v -> {
+      List<Product> selectedProducts = new ArrayList<>();
+      for (ProductsToBulkEntriesViewModel model : adapter.getModels()) {
+        if (model.isChecked()) {
+          selectedProducts.add(model.getProduct());
+        }
+      }
+      if (selectedProducts.isEmpty()) {
+        Toast.makeText(getApplicationContext(),R.string.msg_no_product_added,Toast.LENGTH_LONG).show();
+      } else {
+        Intent intent = new Intent();
+        intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
+        setResult(Activity.RESULT_OK,intent);
+        finish();
+      }
+    };
+  }
+
+  private void setUpFastScroller(List<ProductsToBulkEntriesViewModel> viewModels) {
     fastScroller.setVisibility(View.VISIBLE);
     if (viewModels.isEmpty()) {
       fastScroller.setVisibility(View.GONE);

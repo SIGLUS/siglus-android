@@ -128,11 +128,11 @@
       android:name=".view.activity.IssueVoucherActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:label="Multiple Entries"
+      android:label="@string/title_bulk_entries"
       android:name=".view.activity.BulkEntriesActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:label="Add products"
+      android:label="@string/title_add_product_to_bulk_entries"
       android:name=".view.activity.AddProductsToBulkEntriesActivity"
       android:screenOrientation="portrait" />
     <activity

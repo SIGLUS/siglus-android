@@ -27,11 +27,17 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @DatabaseTable(tableName = "products")
 public class Product extends BaseModel implements Comparable<Product>, Serializable {
 

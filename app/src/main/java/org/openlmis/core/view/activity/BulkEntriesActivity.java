@@ -85,16 +85,40 @@ public class BulkEntriesActivity extends BaseActivity {
   BulkEntriesAdapter adapter;
 
   List<Product> addedProducts;
-  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
-      new StartActivityForResult(),
-      result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
-          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
-          adapter.refresh();
-          adapter.notifyDataSetChanged();
-        }
-      });
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    super.onCreateOptionsMenu(menu);
+    getMenuInflater().inflate(R.menu.menu_bulk_entries, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.action_add_product) {
+      openAddProductsActivityForResult();
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
+    }
+  }
+
+  @Override
+  public void onBackPressed() {
+    if (bulkEntriesPresenter.isDraftExisted()) {
+      showConfirmDialog();
+    } else {
+      super.onBackPressed();
+    }
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveRefreshStatus(RefreshBulkEntriesBackgroundEvent event) {
+    if (event.isShouldRefresh()) {
+      setViewGoneWhenNoProduct(bulkEntriesPresenter.getBulkEntriesViewModels());
+      setTotal(adapter.getItemCount());
+    }
+  }
 
   @Override
   protected ScreenName getScreenName() {
@@ -123,47 +147,6 @@ public class BulkEntriesActivity extends BaseActivity {
   protected void onDestroy() {
     super.onDestroy();
     EventBus.getDefault().unregister(this);
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    super.onCreateOptionsMenu(menu);
-    getMenuInflater().inflate(R.menu.menu_bulk_entries, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == R.id.action_add_product) {
-      openAddProductsActivityForResult();
-      return true;
-    } else {
-      return super.onOptionsItemSelected(item);
-    }
-  }
-
-  @Override
-  public void onBackPressed() {
-    if (bulkEntriesPresenter.isDraftExisted()) {
-      showConfirmDialog();
-    } else {
-      super.onBackPressed();
-    }
-  }
-
-  public void openAddProductsActivityForResult() {
-    Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
-    intent.putExtra(SELECTED_PRODUCTS,
-        (Serializable) bulkEntriesPresenter.getAddedProductCodes());
-    addProductsActivityResultLauncher.launch(intent);
-  }
-
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveRefreshStatus(RefreshBulkEntriesBackgroundEvent event) {
-    if (event.isShouldRefresh()) {
-      setViewGoneWhenNoProduct(bulkEntriesPresenter.getBulkEntriesViewModels());
-      setTotal(adapter.getItemCount());
-    }
   }
 
   private void showConfirmDialog() {
@@ -263,5 +246,23 @@ public class BulkEntriesActivity extends BaseActivity {
       }
     };
   }
+
+  private void openAddProductsActivityForResult() {
+    Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
+    intent.putExtra(SELECTED_PRODUCTS,
+        (Serializable) bulkEntriesPresenter.getAddedProductCodes());
+    addProductsActivityResultLauncher.launch(intent);
+  }
+
+  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
+          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
+          adapter.refresh();
+          adapter.notifyDataSetChanged();
+        }
+      });
 
 }

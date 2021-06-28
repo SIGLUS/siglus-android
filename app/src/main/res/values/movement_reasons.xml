@@ -3,6 +3,7 @@
   <string-array name="reason_data">
     <item>RECEIVE|DISTRICT_DDM|District( DDM)</item>
     <item>RECEIVE|PROVINCE_DPM|Province ( DPM)</item>
+    <item>RECEIVE|INTERMEDIATE_WAREHOUSE|Intermediate Warehouse ( AI)</item>
 
     <item>ISSUE|PUB_PHARMACY|Public pharmacy</item>
     <item>ISSUE|MATERNITY|Maternity</item>

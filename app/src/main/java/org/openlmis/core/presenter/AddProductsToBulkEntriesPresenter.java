@@ -49,7 +49,7 @@ public class AddProductsToBulkEntriesPresenter extends Presenter {
 
   }
 
-  public Observable<List<ProductsToBulkEntriesViewModel>> getAllProducts(
+  public Observable<List<ProductsToBulkEntriesViewModel>> getAllProductsWithoutKit(
       final List<String> addedProducts) {
     return Observable
         .create((Observable.OnSubscribe<List<ProductsToBulkEntriesViewModel>>) subscriber -> {
