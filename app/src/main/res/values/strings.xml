@@ -613,4 +613,5 @@
   <string name="msg_no_product_added">No product added</string>
   <string name="title_bulk_entries">Multiple Entries</string>
   <string name="title_add_product_to_bulk_entries">Add products</string>
+  <string name="msg_is_archived">[Archived]</string>
 </resources>

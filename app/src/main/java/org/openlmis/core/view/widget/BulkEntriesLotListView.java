@@ -20,6 +20,7 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.List;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -55,6 +56,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
     existingBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
         viewModel.getExistingLotMovementViewModelList(),getMovementReasonDescriptionList());
     existingLotListView.setAdapter(existingBulkEntriesLotMovementAdapter);
+    existingLotListView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
   }
 
   @Override

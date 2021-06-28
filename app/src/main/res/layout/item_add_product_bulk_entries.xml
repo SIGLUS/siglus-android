@@ -41,13 +41,6 @@
           android:layout_height="wrap_content"
           tools:text="@string/label_dummy_product" />
 
-        <TextView
-          android:id="@+id/tv_product_type"
-          style="@style/Text.Gray.Normal"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="@string/label_dummy_unit" />
-
       </LinearLayout>
 
     </LinearLayout>

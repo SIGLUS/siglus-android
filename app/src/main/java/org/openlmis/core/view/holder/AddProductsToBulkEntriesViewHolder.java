@@ -36,8 +36,6 @@ public class AddProductsToBulkEntriesViewHolder extends BaseViewHolder {
   @InjectView(R.id.tv_product_name)
   TextView productName;
 
-  @InjectView(R.id.tv_product_type)
-  TextView productType;
 
   public AddProductsToBulkEntriesViewHolder(View itemView) {
     super(itemView);
@@ -47,7 +45,6 @@ public class AddProductsToBulkEntriesViewHolder extends BaseViewHolder {
   public void populate(final ProductsToBulkEntriesViewModel viewModel, String queryKeyWord) {
     checkBox.setChecked(viewModel.isChecked());
     productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,viewModel.getStyledProductName()));
-    productType.setText(viewModel.getProduct().getType());
   }
 
   @NonNull
