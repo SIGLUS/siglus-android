@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.adapter;
 
+import static org.junit.Assert.assertEquals;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
@@ -105,19 +107,19 @@ public class StockCardListAdapterTest {
     adapter.sortBySOH(true);
 
     // then
-    Assertions.assertThat(viewModels.get(0).getStockOnHand()).isEqualTo(1);
-    Assertions.assertThat(viewModels.get(1).getStockOnHand()).isEqualTo(2);
-    Assertions.assertThat(viewModels.get(2).getStockOnHand()).isEqualTo(3);
-    Assertions.assertThat(viewModels.get(3).getStockOnHand()).isEqualTo(4);
+    assertEquals(1, viewModels.get(0).getStockOnHand());
+    assertEquals(2, viewModels.get(1).getStockOnHand());
+    assertEquals(3, viewModels.get(2).getStockOnHand());
+    assertEquals(4, viewModels.get(3).getStockOnHand());
 
     // when
     adapter.sortBySOH(false);
 
     // then
-    Assertions.assertThat(viewModels.get(0).getStockOnHand()).isEqualTo(4);
-    Assertions.assertThat(viewModels.get(1).getStockOnHand()).isEqualTo(3);
-    Assertions.assertThat(viewModels.get(2).getStockOnHand()).isEqualTo(2);
-    Assertions.assertThat(viewModels.get(3).getStockOnHand()).isEqualTo(1);
+    assertEquals(4, viewModels.get(0).getStockOnHand());
+    assertEquals(3, viewModels.get(1).getStockOnHand());
+    assertEquals(2, viewModels.get(2).getStockOnHand());
+    assertEquals(1, viewModels.get(3).getStockOnHand());
   }
 
   @Test
@@ -140,19 +142,19 @@ public class StockCardListAdapterTest {
     adapter.sortByName(true);
 
     // then
-    Assertions.assertThat(viewModels.get(0).getProductName()).isEqualTo("b");
-    Assertions.assertThat(viewModels.get(1).getProductName()).isEqualTo("c");
-    Assertions.assertThat(viewModels.get(2).getProductName()).isEqualTo("d");
-    Assertions.assertThat(viewModels.get(3).getProductName()).isEqualTo("q");
+    assertEquals("b", viewModels.get(0).getProductName());
+    assertEquals("c", viewModels.get(1).getProductName());
+    assertEquals("d", viewModels.get(2).getProductName());
+    assertEquals("q", viewModels.get(3).getProductName());
 
     // when
     adapter.sortByName(false);
 
     // then
-    Assertions.assertThat(viewModels.get(0).getProductName()).isEqualTo("q");
-    Assertions.assertThat(viewModels.get(1).getProductName()).isEqualTo("d");
-    Assertions.assertThat(viewModels.get(2).getProductName()).isEqualTo("c");
-    Assertions.assertThat(viewModels.get(3).getProductName()).isEqualTo("b");
+    assertEquals("q", viewModels.get(0).getProductName());
+    assertEquals("d", viewModels.get(1).getProductName());
+    assertEquals("c", viewModels.get(2).getProductName());
+    assertEquals("b", viewModels.get(3).getProductName());
   }
 
   private InventoryViewModel generateInventoryViewModel(String productName, long stockOnHand) {

@@ -18,12 +18,15 @@
 
 package org.openlmis.core.view.adapter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,9 +69,9 @@ public class StockcardListLotAdapterTest {
     final StockcardListLotAdapter adapter = new StockcardListLotAdapter(lotOnHands);
 
     // then
-    Assertions.assertThat(adapter.lotInfoList.get(0)).isEqualTo(lotOnHands.get(1));
-    Assertions.assertThat(adapter.lotInfoList.get(1)).isEqualTo(lotOnHands.get(0));
-    Assertions.assertThat(adapter.lotInfoList.get(2)).isEqualTo(lotOnHands.get(2));
+    assertEquals(adapter.lotInfoList.get(0), lotOnHands.get(1));
+    assertEquals(adapter.lotInfoList.get(1), lotOnHands.get(0));
+    assertEquals(adapter.lotInfoList.get(2), lotOnHands.get(2));
   }
 
   @Test
@@ -77,7 +80,7 @@ public class StockcardListLotAdapterTest {
     final StockcardListLotAdapter adapter = new StockcardListLotAdapter(null);
 
     // then
-    Assertions.assertThat(adapter.lotInfoList).isNull();
+    assertNull(adapter.lotInfoList);
   }
 
   @Test
@@ -110,7 +113,7 @@ public class StockcardListLotAdapterTest {
     final int itemCount = adapter.getItemCount();
 
     // then
-    Assertions.assertThat(itemCount).isZero();
+    assertEquals(0, itemCount);
   }
 
   @Test
@@ -122,7 +125,7 @@ public class StockcardListLotAdapterTest {
     final int itemCount = adapter.getItemCount();
 
     // then
-    Assertions.assertThat(itemCount).isEqualTo(3);
+    assertEquals(3, itemCount);
   }
 
   @Test
@@ -135,9 +138,9 @@ public class StockcardListLotAdapterTest {
     final LotInfoHolder viewHolder = adapter.onCreateViewHolder(recyclerView, 0);
 
     // then
-    Assertions.assertThat(viewHolder.lotCode).isNotNull();
-    Assertions.assertThat(viewHolder.expiryDate).isNotNull();
-    Assertions.assertThat(viewHolder.lotOnHand).isNotNull();
+    assertNotNull(viewHolder.lotCode);
+    assertNotNull(viewHolder.expiryDate);
+    assertNotNull(viewHolder.lotOnHand);
   }
 
   private LotOnHand generateLotOnHandByExpireDate(Date expireDate) {

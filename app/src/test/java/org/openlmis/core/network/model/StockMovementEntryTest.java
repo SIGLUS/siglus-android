@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -115,7 +114,6 @@ public class StockMovementEntryTest {
     assertEquals(entry.getLotEventList().get(0).getStockOnHand(), 50);
   }
 
-  @NotNull
   private Lot getMockLot(StockCard stockCard, String lotNumber, String expireDate) {
     Lot lot = new Lot();
     lot.setProduct(stockCard.getProduct());

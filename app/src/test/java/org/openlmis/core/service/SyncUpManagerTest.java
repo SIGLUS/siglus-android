@@ -101,8 +101,8 @@ public class SyncUpManagerTest {
   private SyncUpManager syncUpManager;
   private ProgramDataFormRepository mockedProgramDataFormRepository;
   private DirtyDataRepository mockedDirtyDataRepository;
-  private final String  facilityID = "1";
-  private final String productCode =  "08N04Z";
+  private final String facilityID = "1";
+  private final String productCode = "08N04Z";
 
   @Before
   public void setup() throws LMISException {
