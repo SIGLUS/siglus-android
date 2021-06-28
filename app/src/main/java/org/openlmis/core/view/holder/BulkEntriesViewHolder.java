@@ -24,6 +24,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.R;
 import org.openlmis.core.event.RefreshBulkEntriesBackgroundEvent;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.widget.BulkEntriesLotListView;
@@ -47,7 +48,7 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
 
   public void populate(final BulkEntriesViewModel bulkEntriesViewModel,
       final BulkEntriesAdapter bulkEntriesAdapter) {
-    productName.setText(bulkEntriesViewModel.getFormattedProductName());
+    productName.setText(TextStyleUtil.formatStyledProductName(bulkEntriesViewModel.getProduct()));
     if (bulkEntriesLotListView == null) {
       return;
     }

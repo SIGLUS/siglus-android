@@ -116,7 +116,7 @@ public class BulkEntriesPresenter extends Presenter {
       draftBulkEntriesProducts = bulkEntriesRepository
           .queryAllBulkEntriesDraft();
     } catch (LMISException e) {
-      Log.w(TAG,e);
+      Log.w(TAG, e);
     }
     return !(draftBulkEntriesProducts.isEmpty() && bulkEntriesViewModels.isEmpty());
 
@@ -162,7 +162,8 @@ public class BulkEntriesPresenter extends Presenter {
             .expiryDate(DateUtil.formatDate(draftBulkEntriesProductLotItem.getExpirationDate(),
                 DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
             .movementReason(draftBulkEntriesProductLotItem.getReason())
-            .quantity(draftBulkEntriesProductLotItem.getQuantity().toString())
+            .quantity(draftBulkEntriesProductLotItem.getQuantity() == null ? ""
+                : draftBulkEntriesProductLotItem.getQuantity().toString())
             .lotSoh(draftBulkEntriesProductLotItem.getLotSoh().toString())
             .build()).toList();
   }

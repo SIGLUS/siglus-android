@@ -3,13 +3,15 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  android:layout_margin="@dimen/px_20">
 
   <EditText
     android:id="@+id/et_amount"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:hint="@string/hint_lot_amount"
+    android:textSize="@dimen/px_20"
     app:layout_constraintRight_toLeftOf="@id/gl_lots_info"
     app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
     app:layout_constraintTop_toBottomOf="@id/tv_lot_number"
@@ -25,10 +27,11 @@
     android:drawablePadding="5dp"
     android:focusableInTouchMode="false"
     android:inputType="text"
+    android:autoSizeMaxTextSize="@dimen/px_20"
     android:hint="@string/hint_movement_reason_receive"
-    app:layout_constraintLeft_toRightOf="@id/gl_lots_info"
+    app:layout_constraintStart_toEndOf="@id/gl_lots_info"
     app:layout_constraintTop_toTopOf="@id/tv_lot_number"
-    app:layout_constraintRight_toRightOf="parent"/>
+    app:layout_constraintEnd_toEndOf="parent"/>
 
 
   <EditText
@@ -38,6 +41,7 @@
     android:layout_marginTop="@dimen/margin_small"
     android:drawableLeft="@drawable/ic_document"
     android:drawablePadding="5dp"
+    android:textSize="@dimen/px_20"
     android:hint="@string/hint_document_number"
     app:layout_constraintStart_toStartOf="@id/et_movement_reason"
     app:layout_constraintTop_toBottomOf="@id/et_movement_reason"
@@ -59,7 +63,8 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:padding="@dimen/padding_small"
-    app:layout_constraintRight_toLeftOf="@id/gl_lots_info"
+    android:layout_marginBottom="@dimen/px_33"
+    app:layout_constraintEnd_toEndOf="@id/gl_lots_info"
     app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
     app:layout_constraintTop_toBottomOf="@id/et_amount">
 
@@ -88,6 +93,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_normal"
+    android:textSize="@dimen/px_20"
+    android:textColor="@color/color_black"
     app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
     app:layout_constraintTop_toBottomOf="@id/tv_hint_lot_info"
     tools:text="23A02 - 05/2021" />

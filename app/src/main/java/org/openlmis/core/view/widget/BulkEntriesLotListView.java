@@ -46,7 +46,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
   @Override
   protected void init(Context context) {
     super.init(context);
-    btnAddNewLot.setVisibility(GONE);
+    actionPanel.setVisibility(GONE);
   }
 
   @Override
