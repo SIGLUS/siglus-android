@@ -16,7 +16,7 @@ pipeline {
         stage('Unit Test') {
             steps {
                 sh '''
-                    ./gradlew testLocalDebug
+                    ./gradlew testLocalDebug --info
                 '''
             }
         }
