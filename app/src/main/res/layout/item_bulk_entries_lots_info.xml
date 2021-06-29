@@ -90,24 +90,27 @@
 
   <TextView
     android:id="@+id/tv_lot_number"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_normal"
     android:textSize="@dimen/px_20"
+    android:layout_marginRight="@dimen/margin_normal"
     android:textColor="@color/color_black"
     app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
+    app:layout_constraintEnd_toStartOf="@+id/gl_lots_info"
     app:layout_constraintTop_toBottomOf="@id/tv_hint_lot_info"
     tools:text="23A02 - 05/2021" />
 
   <TextView
     android:id="@+id/tv_hint_lot_info"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_normal"
     android:text="@string/hint_lot_info"
     android:textColor="@color/color_accent"
     app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toTopOf="@+id/tv_lot_number"/>
 
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/gl_lots_info"

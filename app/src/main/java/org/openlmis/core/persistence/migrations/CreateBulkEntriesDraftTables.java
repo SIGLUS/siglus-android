@@ -17,7 +17,7 @@ public class CreateBulkEntriesDraftTables extends Migration {
         "`newAdded` BOOLEAN DEFAULT 0, " +
         "`lotNumber` VARCHAR NOT NULL, " +
         "`documentNumber` VARCHAR , " +
-        "`reason` VARCHAR NOT NULL , " +
+        "`reason` VARCHAR , " +
         "`expirationDate` VARCHAR NOT NULL) ");
     execSQL(
         "CREATE UNIQUE INDEX `draft_bulk_entries_product_lot_item_idx` ON `draft_bulk_entries_product_lot_item` ( `id` )");
