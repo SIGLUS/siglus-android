@@ -598,7 +598,7 @@
   <string name="msg_calculating_cmm">Calculating CMM...</string>
   <string name="action_bulk_entries">Multiple Entries</string>
   <string name="action_bulk_issues">Multiple Issues</string>
-  <string name="msg_no_product_in_bulk_entries">There is no Product, please add</string>
+  <string name="msg_no_product_in_bulk_entries">There is no product, please add</string>
   <string name="vc_program_name">Requisition</string>
   <string name="ml_program_name">Malaria</string>
   <string name="tarv_program_name">MMIA</string>
