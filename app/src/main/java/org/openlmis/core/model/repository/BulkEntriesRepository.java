@@ -32,16 +32,17 @@ import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
 public class BulkEntriesRepository {
 
-  GenericDao<DraftBulkEntriesProduct> productGenericDao;
-  GenericDao<DraftBulkEntriesProductLotItem> productLotItemGenericDao;
+  private final GenericDao<DraftBulkEntriesProduct> productGenericDao;
+  private final GenericDao<DraftBulkEntriesProductLotItem> productLotItemGenericDao;
 
   @Inject
-  DbUtil dbUtil;
+  private final DbUtil dbUtil;
 
   @Inject
-  public BulkEntriesRepository(Context context) {
-    productGenericDao = new GenericDao<>(DraftBulkEntriesProduct.class, context);
-    productLotItemGenericDao = new GenericDao<>(DraftBulkEntriesProductLotItem.class, context);
+  public BulkEntriesRepository(Context context, DbUtil dbUtil) {
+    this.productGenericDao = new GenericDao<>(DraftBulkEntriesProduct.class, context);
+    this.productLotItemGenericDao = new GenericDao<>(DraftBulkEntriesProductLotItem.class, context);
+    this.dbUtil = dbUtil;
   }
 
   public void createBulkEntriesProductDraft(final DraftBulkEntriesProduct draftBulkEntriesProduct)

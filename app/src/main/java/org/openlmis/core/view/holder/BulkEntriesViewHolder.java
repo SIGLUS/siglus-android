@@ -49,14 +49,16 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
   public void populate(final BulkEntriesViewModel bulkEntriesViewModel,
       final BulkEntriesAdapter bulkEntriesAdapter) {
     productName.setText(TextStyleUtil.formatStyledProductName(bulkEntriesViewModel.getProduct()));
-    if (bulkEntriesLotListView == null) {
-      return;
-    }
     bulkEntriesLotListView.initLotListView(bulkEntriesViewModel);
-    icTrashcan.setOnClickListener(v -> {
+    icTrashcan.setOnClickListener(getRemoveProductListener(bulkEntriesViewModel,bulkEntriesAdapter));
+  }
+
+  private View.OnClickListener getRemoveProductListener(BulkEntriesViewModel bulkEntriesViewModel,
+      BulkEntriesAdapter bulkEntriesAdapter) {
+    return v -> {
       bulkEntriesAdapter.remove(bulkEntriesViewModel);
       EventBus.getDefault().post(new RefreshBulkEntriesBackgroundEvent(true));
-    });
+    };
   }
 
 

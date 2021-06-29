@@ -47,13 +47,17 @@ public class BulkEntriesPresenter extends Presenter {
 
   private static final String TAG = BulkEntriesPresenter.class.getSimpleName();
   @Inject
-  StockRepository stockRepository;
+  private final StockRepository stockRepository;
   @Inject
-  BulkEntriesRepository bulkEntriesRepository;
+  private final BulkEntriesRepository bulkEntriesRepository;
   @Getter
-  private List<BulkEntriesViewModel> bulkEntriesViewModels;
+  private final List<BulkEntriesViewModel> bulkEntriesViewModels;
 
-  public BulkEntriesPresenter() {
+  @Inject
+  public BulkEntriesPresenter(StockRepository stockRepository,
+      BulkEntriesRepository bulkEntriesRepository) {
+    this.stockRepository = stockRepository;
+    this.bulkEntriesRepository = bulkEntriesRepository;
     this.bulkEntriesViewModels = new ArrayList<>();
   }
 
