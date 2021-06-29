@@ -50,7 +50,7 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
       final BulkEntriesAdapter bulkEntriesAdapter) {
     productName.setText(TextStyleUtil.formatStyledProductName(bulkEntriesViewModel.getProduct()));
     bulkEntriesLotListView.initLotListView(bulkEntriesViewModel);
-    icTrashcan.setOnClickListener(getRemoveProductListener(bulkEntriesViewModel,bulkEntriesAdapter));
+    icTrashcan.setOnClickListener(getRemoveProductListener(bulkEntriesViewModel, bulkEntriesAdapter));
   }
 
   private View.OnClickListener getRemoveProductListener(BulkEntriesViewModel bulkEntriesViewModel,
