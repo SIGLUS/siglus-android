@@ -91,7 +91,7 @@ public class RequisitionPeriodService {
     if (physicalInventoryDate == null) {
       Calendar date = Calendar.getInstance();
       date.set(periodBeginDate.getYear(), periodBeginDate.getMonthOfYear(), Period.END_DAY,
-          periodBeginDate.getHourOfDay(), periodBeginDate.getMinuteOfHour());// The Nex Month
+          periodBeginDate.getHourOfDay(), periodBeginDate.getMinuteOfHour()); // The Nex Month
       periodEndDate = DateUtil.cutTimeStamp(new DateTime(date));
     } else {
       periodEndDate = new DateTime(physicalInventoryDate);

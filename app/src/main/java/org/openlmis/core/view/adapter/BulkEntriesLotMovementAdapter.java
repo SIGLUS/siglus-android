@@ -47,7 +47,7 @@ public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntr
   public BulkEntriesLotMovementViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
       int viewType) {
     return new BulkEntriesLotMovementViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-        R.layout.item_bulk_entries_lots_info,parent,false),movementReasons);
+        R.layout.item_bulk_entries_lots_info, parent, false), movementReasons);
   }
 
   @Override

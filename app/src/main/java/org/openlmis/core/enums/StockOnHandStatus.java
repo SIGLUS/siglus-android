@@ -60,10 +60,10 @@ public enum StockOnHandStatus {
   }
 
   public static StockOnHandStatus calculateStockOnHandLevel(StockCard stockCard) {
-    return calculateStockOnHandLevel(stockCard,stockCard.getStockOnHand());
+    return calculateStockOnHandLevel(stockCard, stockCard.getStockOnHand());
   }
 
-  public static StockOnHandStatus calculateStockOnHandLevel(StockCard stockCard,long stockOnHand) {
+  public static StockOnHandStatus calculateStockOnHandLevel(StockCard stockCard, long stockOnHand) {
     if (stockOnHand == 0) {
       return StockOnHandStatus.STOCK_OUT;
     }

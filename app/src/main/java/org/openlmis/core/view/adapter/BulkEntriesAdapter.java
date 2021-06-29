@@ -43,12 +43,12 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
   @Override
   public BulkEntriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     return new BulkEntriesViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-        (R.layout.item_bulk_entries),parent,false));
+        (R.layout.item_bulk_entries), parent, false));
   }
 
   @Override
   public void onBindViewHolder(@NonNull BulkEntriesViewHolder holder, int position) {
-    holder.populate(models.get(position),this);
+    holder.populate(models.get(position), this);
   }
 
   @Override

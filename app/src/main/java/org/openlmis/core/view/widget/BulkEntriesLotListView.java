@@ -29,11 +29,7 @@ import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.view.adapter.BulkEntriesLotMovementAdapter;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-
 public class BulkEntriesLotListView extends BaseLotListView {
-
-  private BulkEntriesLotMovementAdapter existingBulkEntriesLotMovementAdapter;
-
 
   public BulkEntriesLotListView(Context context) {
     super(context);
@@ -53,10 +49,10 @@ public class BulkEntriesLotListView extends BaseLotListView {
   public void initExistingLotListView() {
     super.initExistingLotListView();
     existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
-    existingBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
-        viewModel.getExistingLotMovementViewModelList(),getMovementReasonDescriptionList());
+    BulkEntriesLotMovementAdapter existingBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
+        viewModel.getExistingLotMovementViewModelList(), getMovementReasonDescriptionList());
     existingLotListView.setAdapter(existingBulkEntriesLotMovementAdapter);
-    existingLotListView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+    existingLotListView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
   }
 
   @Override
@@ -69,7 +65,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
     List<MovementReason> movementReasons = MovementReasonManager
         .getInstance().buildReasonListForMovementType(MovementType.RECEIVE);
     reasonDescriptionList = FluentIterable.from(movementReasons)
-          .transform(movementReason -> movementReason.getDescription()).toArray(String.class);
+        .transform(MovementReason::getDescription).toArray(String.class);
     return reasonDescriptionList;
   }
 

@@ -141,11 +141,11 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
         }
       }
       if (selectedProducts.isEmpty()) {
-        Toast.makeText(getApplicationContext(),R.string.msg_no_product_added,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), R.string.msg_no_product_added, Toast.LENGTH_LONG).show();
       } else {
         Intent intent = new Intent();
         intent.putExtra(SELECTED_PRODUCTS, (Serializable) selectedProducts);
-        setResult(Activity.RESULT_OK,intent);
+        setResult(Activity.RESULT_OK, intent);
         finish();
       }
     };

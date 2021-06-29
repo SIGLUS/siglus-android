@@ -72,11 +72,9 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
   private void setUpViewListener(LotMovementViewModel viewModel) {
     movementReason.setOnClickListener(getMovementReasonOnClickListener(viewModel));
-    lotAmount.addTextChangedListener(new EditTextWatcher(lotAmount,viewModel));
-    documentNumber.addTextChangedListener(new EditTextWatcher(documentNumber,viewModel));
+    lotAmount.addTextChangedListener(new EditTextWatcher(lotAmount, viewModel));
+    documentNumber.addTextChangedListener(new EditTextWatcher(documentNumber, viewModel));
   }
-
-
 
 
   @NonNull
@@ -88,8 +86,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, movementReasons);
         SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
         reasonsDialog.setArguments(bundle);
-        reasonsDialog
-            .setMovementTypeOnClickListener(new MovementTypeOnClickListener(reasonsDialog,viewModel));
+        reasonsDialog.setMovementTypeOnClickListener(new MovementTypeOnClickListener(reasonsDialog, viewModel));
         reasonsDialog.show(((BulkEntriesActivity) view.getContext()).getSupportFragmentManager(), "SELECT_REASONS");
       }
     };
@@ -100,7 +97,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     private final SimpleSelectDialogFragment reasonsDialog;
     private LotMovementViewModel viewModel;
 
-    public MovementTypeOnClickListener(SimpleSelectDialogFragment reasonsDialog,LotMovementViewModel viewModel) {
+    public MovementTypeOnClickListener(SimpleSelectDialogFragment reasonsDialog, LotMovementViewModel viewModel) {
       this.reasonsDialog = reasonsDialog;
       this.viewModel = viewModel;
     }

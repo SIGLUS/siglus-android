@@ -44,7 +44,7 @@ public class AddProductsToBulkEntriesViewHolder extends BaseViewHolder {
 
   public void populate(final ProductsToBulkEntriesViewModel viewModel, String queryKeyWord) {
     checkBox.setChecked(viewModel.isChecked());
-    productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,viewModel.getStyledProductName()));
+    productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledProductName()));
   }
 
   @NonNull

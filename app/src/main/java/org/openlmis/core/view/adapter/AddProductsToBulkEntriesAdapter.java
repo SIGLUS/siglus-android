@@ -56,13 +56,13 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
   public AddProductsToBulkEntriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
       int viewType) {
     return new AddProductsToBulkEntriesViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-        R.layout.item_add_product_bulk_entries,parent,false));
+        R.layout.item_add_product_bulk_entries, parent, false));
   }
 
   @Override
   public void onBindViewHolder(@NonNull AddProductsToBulkEntriesViewHolder holder, int position) {
     holder.putOnChangedListener(filteredList.get(position));
-    holder.populate(filteredList.get(position),keyWord);
+    holder.populate(filteredList.get(position), keyWord);
   }
 
   @Override
