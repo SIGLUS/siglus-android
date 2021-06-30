@@ -150,7 +150,7 @@ public class SyncDownManagerIT {
     String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
     String authSuccessResponse = JsonFileReader.readJson(getClass(), "AuthSuccessResponse.json");
     String V3ProductsResponseAdapterResponse = JsonFileReader
-        .readJson(getClass(), "V3ProductsResponseAdapterTest.json");
+        .readJson(getClass(), "SyncDownLatestProductResponse.json");
     String regimenJson = JsonFileReader.readJson(getClass(), "fetchRegimenResponse.json");
     String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
 
@@ -174,12 +174,11 @@ public class SyncDownManagerIT {
         "/rest-api/programData/facilities/" + getDefaultUser().getFacilityId(), 200, "OK",
         fetchProgramDataFacilities);
     lmisRestManager.addNewMockedResponse(
-        "/rest-api/facilities/" + getDefaultUser().getFacilityId() + "/stockCards?" + "startTime="
+        "/api/siglusapi/android/me/facility/stockCards?" + "startTime="
             + startDateStr + "&endTime=" + endDateStr, 200, "OK", fetchMovementDate);
     lmisRestManager.addNewMockedResponse(
         "/rest-api/temp86-notice-kit-change?afterUpdatedTime=" + sharedPreferenceMgr
             .getLastSyncProductTime(), 200, "OK", syncDownKitChagneResponseJson);
-    lmisRestManager.addNewMockedResponse("/rest-api/latest-products", 200, "OK", json);
     lmisRestManager.addNewMockedResponse("/rest-api/latest-products", 200, "OK", json);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/products", 200, "OK",
         V3ProductsResponseAdapterResponse);

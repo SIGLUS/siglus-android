@@ -170,6 +170,7 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
           lot.setProduct(product);
           lot.setLotNumber(lotMovementItemResponse.getLotCode());
           lotMovementItem.setLot(lot);
+          lotMovementItem.setStockMovementItem(stockMovementItem);
           lotMovementItem.setMovementQuantity((long) lotMovementItemResponse.getQuantity());
           lotMovementItem
               .setReason(mapToLocalReason(stockMovementItemResponse.getType(), lotMovementItemResponse.getReason()));
@@ -189,6 +190,9 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     }
     final List<LotOnHand> lotOnHandListWrapper = stockCard.getLotOnHandListWrapper();
     for (LotOnHandResponse lotOnHandItemResponse : lotsOnHandsResponse) {
+      if (lotOnHandItemResponse.getLot() == null) {
+        continue;
+      }
       final LotResponse lotResponse = lotOnHandItemResponse.getLot();
       // set lot
       final Lot lot = new Lot();

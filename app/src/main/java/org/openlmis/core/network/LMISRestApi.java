@@ -57,10 +57,9 @@ public interface LMISRestApi {
   @GET("/api/siglusapi/android/me/facility")
   FacilityInfoResponse fetchFacilityInfo() throws LMISException;
 
-  @GET("/rest-api/facilities/{facilityId}/stockCards")
-  StockCardsLocalResponse fetchStockMovementData(@Path("facilityId") String facilityId,
-      @Query("startTime") String startDate,
-      @Query("endTime") String endDate) throws LMISException;
+  @GET("/api/siglusapi/android/me/facility/stockCards")
+  StockCardsLocalResponse fetchStockMovementData(@Query("startTime") String startDate, @Query("endTime") String endDate)
+      throws LMISException;
 
   @POST("/api/oauth/token")
   void login(@Query("grant_type") String grantType, @Query("username") String username,

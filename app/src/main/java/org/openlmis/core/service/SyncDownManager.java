@@ -18,6 +18,7 @@
 
 package org.openlmis.core.service;
 
+import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
@@ -129,7 +130,7 @@ public class SyncDownManager {
         syncDownRegimens(subscriber1);
         // syncDownService(subscriber1);
         syncDownProducts(subscriber1);
-        // syncDownLastMonthStockCards(subscriber1);
+        syncDownLastMonthStockCards(subscriber1);
         // syncDownRequisition(subscriber1);
         // syncDownRapidTests(subscriber1);
         isSyncing = false;
@@ -145,26 +146,20 @@ public class SyncDownManager {
     syncDownServerData(new Subscriber<SyncProgress>() {
       @Override
       public void onCompleted() {
-        // TODO: Remove the comment when developing to the corresponding api
-        sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
-        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        sharedPreferenceMgr.setStockLastSyncTime();
-        sendSyncFinishedBroadcast();
-        // if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
-        //     .isSyncingLastYearStockCards()) {
-        //   sendSyncStartBroadcast();
-        // sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
-        // syncStockCardsLastYearSilently.performSync()
-        // .subscribe(getSyncLastYearStockCardSubscriber());
-        // } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
-        //     .isSyncingLastYearStockCards()) {
-        //   if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-        //     sendSyncFinishedBroadcast();
-        //   }
-        // } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr
-        //     .isSyncingLastYearStockCards()) {
-        //   sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        // }
+        if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+          EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.START));
+          sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
+          syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
+        } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData()
+            && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+          if (TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+            EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));
+            sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+          }
+        } else if (!sharedPreferenceMgr.shouldSyncLastYearStockData()
+            && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
+          sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+        }
       }
 
       @Override
@@ -286,8 +281,9 @@ public class SyncDownManager {
       public void onCompleted() {
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
         sharedPreferenceMgr.setStockCardLastYearSyncError(false);
+        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
         sharedPreferenceMgr.setStockLastSyncTime();
-        sendSyncFinishedBroadcast();
+        EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));
       }
 
       @Override
@@ -307,11 +303,6 @@ public class SyncDownManager {
 
   private void sendSyncErrorBroadcast() {
     EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR));
-  }
-
-  private void sendSyncFinishedBroadcast() {
-    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));
-    sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
   }
 
   private void syncDownRequisition(Subscriber<? super SyncProgress> subscriber)
@@ -419,8 +410,7 @@ public class SyncDownManager {
   }
 
   private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {
-    final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-    StockCardsLocalResponse adaptedResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
+    StockCardsLocalResponse adaptedResponse = lmisRestApi.fetchStockMovementData(startDate, endDate);
     try {
       stockRepository.batchCreateSyncDownStockCardsAndMovements(adaptedResponse.getStockCards());
     } catch (SQLException e) {

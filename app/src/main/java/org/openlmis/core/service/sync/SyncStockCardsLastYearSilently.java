@@ -27,7 +27,6 @@ import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
@@ -43,22 +42,17 @@ public class SyncStockCardsLastYearSilently {
   @Inject
   private SharedPreferenceMgr sharedPreferenceMgr;
   private LMISRestApi lmisRestApi;
-  private String facilityId;
   private Scheduler scheduler;
 
   public Observable<List<StockCard>> performSync() {
     final int monthsInAYear = 12;
     lmisRestApi = LMISApp.getInstance().getRestApi();
-    facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
     List<Observable<StockCardsLocalResponse>> tasks = new ArrayList<>();
     scheduler = SchedulerBuilder.createScheduler();
-    int startMonth = sharedPreferenceMgr.getPreference()
-        .getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
+    int startMonth = sharedPreferenceMgr.getPreference().getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
     Date now = getActualDate();
-
     for (int month = startMonth; month <= monthsInAYear; month++) {
-      Observable<StockCardsLocalResponse> objectObservable =
-          createObservableToFetchStockMovements(month, now);
+      Observable<StockCardsLocalResponse> objectObservable = createObservableToFetchStockMovements(month, now);
       tasks.add(objectObservable);
     }
     return zipObservables(tasks);
@@ -80,8 +74,7 @@ public class SyncStockCardsLastYearSilently {
     final String endDateStr = getEndDate(now, month);
     return Observable.create((Observable.OnSubscribe<StockCardsLocalResponse>) subscriber -> {
       try {
-        StockCardsLocalResponse adaptedResponse = lmisRestApi
-            .fetchStockMovementData(facilityId, startDateStr, endDateStr);
+        StockCardsLocalResponse adaptedResponse = lmisRestApi.fetchStockMovementData(startDateStr, endDateStr);
         subscriber.onNext(adaptedResponse);
         subscriber.onCompleted();
       } catch (LMISException e) {

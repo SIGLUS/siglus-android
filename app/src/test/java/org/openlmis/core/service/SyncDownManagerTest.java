@@ -203,7 +203,7 @@ public class SyncDownManagerTest {
     laterEnterSubscriber.assertNoTerminalEvent();
 
     // then
-    assertThat(firstEnterSubscriber.syncProgresses.size(), is(6));
+    assertThat(firstEnterSubscriber.syncProgresses.size(), is(8));
     assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
   }
 
@@ -358,7 +358,7 @@ public class SyncDownManagerTest {
         verify(sharedPreferenceMgr).setRequisitionDataSynced(true);
       }
       if (progress == STOCK_CARDS_LAST_YEAR_SYNCED) {
-        verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());
+        verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString());
         verify(sharedPreferenceMgr).setShouldSyncLastYearStockCardData(false);
       }
     } catch (LMISException e) {
@@ -401,7 +401,7 @@ public class SyncDownManagerTest {
         .getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
     when(sharedPreferenceMgr.shouldSyncLastYearStockData()).thenReturn(true);
     when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
-    when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
+    when(lmisRestApi.fetchStockMovementData(anyString(), anyString())).thenReturn(getStockCardResponse());
     when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
   }
 
@@ -525,7 +525,7 @@ public class SyncDownManagerTest {
   }
 
   private void verifyLastMonthStockCardsSynced() throws LMISException, SQLException {
-    verify(lmisRestApi).fetchStockMovementData(anyString(), anyString(), anyString());
+    verify(lmisRestApi).fetchStockMovementData(anyString(), anyString());
 
     verify(sharedPreferenceMgr).setIsNeedsInventory(false);
     verify(stockRepository).batchCreateSyncDownStockCardsAndMovements(any(List.class));
