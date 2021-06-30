@@ -74,7 +74,7 @@ import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
-import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.utils.Constants;
@@ -164,19 +164,19 @@ public class SyncDownManagerTest {
     // then
     assertThat(subscriber.syncProgresses.get(0), is(SYNCING_FACILITY_INFO));
     assertThat(subscriber.syncProgresses.get(1), is(FACILITY_INFO_SYNCED));
-    assertThat(subscriber.syncProgresses.get(2),is(SYNCING_REGIMENS));
-    assertThat(subscriber.syncProgresses.get(3),is(REGIMENS_SYNCED));
+    assertThat(subscriber.syncProgresses.get(2), is(SYNCING_REGIMENS));
+    assertThat(subscriber.syncProgresses.get(3), is(REGIMENS_SYNCED));
     // To Do when the following interface was developed
-//        assertThat(subscriber.syncProgresses.get(2), is(SyncingProduct));
-//        assertThat(subscriber.syncProgresses.get(3), is(SyncingStockCardsLastMonth));
-//        assertThat(subscriber.syncProgresses.get(6), is(SyncingProduct));
-//        assertThat(subscriber.syncProgresses.get(7), is(ProductSynced));
-//        assertThat(subscriber.syncProgresses.get(8), is(SyncingStockCardsLastMonth));
-//        assertThat(subscriber.syncProgresses.get(9), is(StockCardsLastMonthSynced));
-//        assertThat(subscriber.syncProgresses.get(10), is(SyncingRequisition));
-//        assertThat(subscriber.syncProgresses.get(11), is(RequisitionSynced));
-//        assertThat(subscriber.syncProgresses.get(12), is(SyncingRapidTests));
-//        assertThat(subscriber.syncProgresses.get(13), is(RapidTestsSynced));
+    //        assertThat(subscriber.syncProgresses.get(2), is(SyncingProduct));
+    //        assertThat(subscriber.syncProgresses.get(3), is(SyncingStockCardsLastMonth));
+    //        assertThat(subscriber.syncProgresses.get(6), is(SyncingProduct));
+    //        assertThat(subscriber.syncProgresses.get(7), is(ProductSynced));
+    //        assertThat(subscriber.syncProgresses.get(8), is(SyncingStockCardsLastMonth));
+    //        assertThat(subscriber.syncProgresses.get(9), is(StockCardsLastMonthSynced));
+    //        assertThat(subscriber.syncProgresses.get(10), is(SyncingRequisition));
+    //        assertThat(subscriber.syncProgresses.get(11), is(RequisitionSynced));
+    //        assertThat(subscriber.syncProgresses.get(12), is(SyncingRapidTests));
+    //        assertThat(subscriber.syncProgresses.get(13), is(RapidTestsSynced));
   }
 
   @Test
@@ -342,7 +342,7 @@ public class SyncDownManagerTest {
     response.setLatestProducts(productsAndSupportedPrograms);
     response1.setLatestProducts(productsAndSupportedPrograms);
     assertEquals(response1, response);
-//        assertEquals(productAndSupportedPrograms, productAndSupportedPrograms1);
+    //        assertEquals(productAndSupportedPrograms, productAndSupportedPrograms1);
 
   }
 
@@ -358,8 +358,7 @@ public class SyncDownManagerTest {
         verify(sharedPreferenceMgr).setRequisitionDataSynced(true);
       }
       if (progress == STOCK_CARDS_LAST_YEAR_SYNCED) {
-        verify(lmisRestApi, times(13))
-            .fetchStockMovementData(anyString(), anyString(), anyString());
+        verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());
         verify(sharedPreferenceMgr).setShouldSyncLastYearStockCardData(false);
       }
     } catch (LMISException e) {
@@ -402,10 +401,7 @@ public class SyncDownManagerTest {
         .getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
     when(sharedPreferenceMgr.shouldSyncLastYearStockData()).thenReturn(true);
     when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
-
-    when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString()))
-        .thenReturn(getStockCardResponse());
-
+    when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
     when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
   }
 
@@ -431,8 +427,8 @@ public class SyncDownManagerTest {
   }
 
   private void mockRegimenResponse() throws LMISException {
-     SyncDownRegimensResponse syncDownRegimensResponse = getRegimenResponse();
-     when(lmisRestApi.fetchRegimens()).thenReturn(syncDownRegimensResponse);
+    SyncDownRegimensResponse syncDownRegimensResponse = getRegimenResponse();
+    when(lmisRestApi.fetchRegimens()).thenReturn(syncDownRegimensResponse);
   }
 
   private void mockFetchProgramsResponse() throws LMISException, ParseException {
@@ -493,7 +489,7 @@ public class SyncDownManagerTest {
     List<Regimen> regimenList = new ArrayList<>();
     syncDownRegimensResponse.setRegimenList(regimenList);
     return syncDownRegimensResponse;
-    }
+  }
 
   private SyncUpProgramResponse getFetchProgramsResponse() throws ParseException, LMISException {
     SyncUpProgramResponse syncUpProgramResponse = new SyncUpProgramResponse();
@@ -535,7 +531,7 @@ public class SyncDownManagerTest {
     verify(stockRepository).batchCreateSyncDownStockCardsAndMovements(any(List.class));
   }
 
-  private SyncDownStockCardResponse getStockCardResponse() throws ParseException {
+  private StockCardsLocalResponse getStockCardResponse() throws ParseException {
     StockCard stockCard1 = StockCardBuilder.buildStockCard();
     StockCard stockCard2 = StockCardBuilder.buildStockCard();
 
@@ -552,9 +548,9 @@ public class SyncDownManagerTest {
         stockMovementItem);
     stockCard2.setStockMovementItemsWrapper(stockMovementItems2);
 
-    SyncDownStockCardResponse syncDownStockCardResponse = new SyncDownStockCardResponse();
-    syncDownStockCardResponse.setStockCards(newArrayList(stockCard1, stockCard2));
-    return syncDownStockCardResponse;
+    StockCardsLocalResponse stockcardLocalResponse = new StockCardsLocalResponse();
+    stockcardLocalResponse.setStockCards(newArrayList(stockCard1, stockCard2));
+    return stockcardLocalResponse;
   }
 
   private class SyncServerDataSubscriber extends CountOnNextSubscriber {

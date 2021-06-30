@@ -26,6 +26,7 @@ import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.FacilityInfoResponse;
+import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
@@ -33,7 +34,6 @@ import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownReportTypeResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
-import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.network.model.SyncUpDeletedMovementResponse;
 import org.openlmis.core.network.model.SyncUpProgramResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
@@ -50,10 +50,6 @@ import retrofit.http.Query;
 @SuppressWarnings("PMD")
 public interface LMISRestApi {
 
-  @POST("/api/oauth/token")
-  void login(@Query("grant_type") String grantType, @Query("username") String username,
-      @Query("password") String password, Callback<UserResponse> callback);
-
   @GET("/api/siglusapi/android/me/facility/products")
   SyncDownLatestProductsResponse fetchLatestProducts(@Query("lastSyncTime") String afterUpdatedTime)
       throws LMISException;
@@ -61,7 +57,16 @@ public interface LMISRestApi {
   @GET("/api/siglusapi/android/me/facility")
   FacilityInfoResponse fetchFacilityInfo() throws LMISException;
 
-  @POST("/api/siglusapi/android/me/facility/archivedProducts")
+  @GET("/rest-api/facilities/{facilityId}/stockCards")
+  StockCardsLocalResponse fetchStockMovementData(@Path("facilityId") String facilityId,
+      @Query("startTime") String startDate,
+      @Query("endTime") String endDate) throws LMISException;
+
+  @POST("/api/oauth/token")
+  void login(@Query("grant_type") String grantType, @Query("username") String username,
+      @Query("password") String password, Callback<UserResponse> callback);
+
+  @POST("api/siglusapi/android/me/facility/archivedProducts")
   Void syncUpArchivedProducts(@Body List<String> archivedProductsCodes) throws LMISException;
 
   @POST("/api/siglusapi/android/me/app-info")
@@ -99,11 +104,6 @@ public interface LMISRestApi {
   @GET("/rest-api/requisitions")
   SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode,
       @Query("startDate") String startDate) throws LMISException;
-
-  @GET("/rest-api/facilities/{facilityId}/stockCards")
-  SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId,
-      @Query("startTime") String startDate,
-      @Query("endTime") String endDate) throws LMISException;
 
   @GET("/rest-api/programData/facilities/{facilityId}")
   SyncDownProgramDataResponse fetchProgramDataForms(@Path("facilityId") Long facilityId)

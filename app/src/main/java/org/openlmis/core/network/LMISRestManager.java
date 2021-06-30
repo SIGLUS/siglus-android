@@ -54,7 +54,6 @@ import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.Service;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.ProductsResponseAdapter;
 import org.openlmis.core.network.adapter.ProgramAdapter;
@@ -63,8 +62,9 @@ import org.openlmis.core.network.adapter.RegimenAdapter;
 import org.openlmis.core.network.adapter.ReportTypeAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.ServiceAdapter;
-import org.openlmis.core.network.adapter.StockCardAdapter;
+import org.openlmis.core.network.adapter.StockCardsResponseAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
+import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.UserResponse;
@@ -187,7 +187,7 @@ public class LMISRestManager {
   private GsonConverter registerTypeAdapter() {
     return new GsonConverter(new GsonBuilder()
         .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
-        .registerTypeAdapter(StockCard.class, new StockCardAdapter())
+        .registerTypeAdapter(StockCardsLocalResponse.class, new StockCardsResponseAdapter())
         .registerTypeAdapter(ProgramDataForm.class, new ProgramDataFormAdapter())
         .registerTypeAdapter(ReportTypeForm.class, new ReportTypeAdapter())
         .registerTypeAdapter(Service.class, new ServiceAdapter())

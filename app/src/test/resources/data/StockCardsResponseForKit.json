@@ -1,0 +1,21 @@
+{
+  "productMovements": [
+    {
+      "productCode": "08A07",
+      "stockOnHand": 100,
+      "stockMovementItems": [
+        {
+          "movementQuantity": 200,
+          "type": "ADJUSTMENT",
+          "documentNumber": "123",
+          "reason": "CUSTOMER_RETURN",
+          "stockOnHand": 300,
+          "signature": "hui",
+          "requested": 100,
+          "processedDate": 1624251667402,
+          "occurredDate": "2021-06-21"
+        }
+      ]
+    }
+  ]
+}

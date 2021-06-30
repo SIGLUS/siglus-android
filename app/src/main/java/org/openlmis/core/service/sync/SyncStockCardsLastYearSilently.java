@@ -30,7 +30,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.network.LMISRestApi;
-import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.utils.DateUtil;
 import rx.Observable;
 import rx.Scheduler;
@@ -42,7 +42,6 @@ public class SyncStockCardsLastYearSilently {
 
   @Inject
   private SharedPreferenceMgr sharedPreferenceMgr;
-
   private LMISRestApi lmisRestApi;
   private String facilityId;
   private Scheduler scheduler;
@@ -51,44 +50,39 @@ public class SyncStockCardsLastYearSilently {
     final int monthsInAYear = 12;
     lmisRestApi = LMISApp.getInstance().getRestApi();
     facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-    List<Observable<SyncDownStockCardResponse>> tasks = new ArrayList<>();
+    List<Observable<StockCardsLocalResponse>> tasks = new ArrayList<>();
     scheduler = SchedulerBuilder.createScheduler();
     int startMonth = sharedPreferenceMgr.getPreference()
         .getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
     Date now = getActualDate();
 
     for (int month = startMonth; month <= monthsInAYear; month++) {
-      Observable<SyncDownStockCardResponse> objectObservable =
+      Observable<StockCardsLocalResponse> objectObservable =
           createObservableToFetchStockMovements(month, now);
       tasks.add(objectObservable);
     }
-
     return zipObservables(tasks);
   }
 
   @NonNull
-  private Observable<List<StockCard>> zipObservables(
-      List<Observable<SyncDownStockCardResponse>> tasks) {
+  private Observable<List<StockCard>> zipObservables(List<Observable<StockCardsLocalResponse>> tasks) {
     return Observable.zip(tasks, args -> {
       List<StockCard> stockCards = new ArrayList<>();
       for (Object object : args) {
-        stockCards.addAll(((SyncDownStockCardResponse) object).getStockCards());
+        stockCards.addAll(((StockCardsLocalResponse) object).getStockCards());
       }
-
       return stockCards;
     });
   }
 
-  private Observable<SyncDownStockCardResponse> createObservableToFetchStockMovements(int month,
-      Date now) {
+  private Observable<StockCardsLocalResponse> createObservableToFetchStockMovements(int month, Date now) {
     final String startDateStr = getStartDate(now, month);
     final String endDateStr = getEndDate(now, month);
-
-    return Observable.create((Observable.OnSubscribe<SyncDownStockCardResponse>) subscriber -> {
+    return Observable.create((Observable.OnSubscribe<StockCardsLocalResponse>) subscriber -> {
       try {
-        SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi
+        StockCardsLocalResponse adaptedResponse = lmisRestApi
             .fetchStockMovementData(facilityId, startDateStr, endDateStr);
-        subscriber.onNext(syncDownStockCardResponse);
+        subscriber.onNext(adaptedResponse);
         subscriber.onCompleted();
       } catch (LMISException e) {
         Log.w("SyncStockCardLastYear", e);

@@ -23,7 +23,7 @@ import lombok.Data;
 import org.openlmis.core.model.StockCard;
 
 @Data
-public class SyncDownStockCardResponse {
+public class StockCardsLocalResponse {
 
   List<StockCard> stockCards;
 }

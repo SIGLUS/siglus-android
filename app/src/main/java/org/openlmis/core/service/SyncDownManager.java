@@ -55,13 +55,13 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.FacilityInfoResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
+import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
-import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.utils.Constants;
@@ -420,13 +420,9 @@ public class SyncDownManager {
 
   private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {
     final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-
-    SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi
-        .fetchStockMovementData(facilityId, startDate, endDate);
-
+    StockCardsLocalResponse adaptedResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
     try {
-      stockRepository
-          .batchCreateSyncDownStockCardsAndMovements(syncDownStockCardResponse.getStockCards());
+      stockRepository.batchCreateSyncDownStockCardsAndMovements(adaptedResponse.getStockCards());
     } catch (SQLException e) {
       new LMISException(e, "fetchAndSaveStockCards exception").reportToFabric();
     }
