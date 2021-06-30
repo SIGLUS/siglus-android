@@ -47,6 +47,7 @@ public class StockMovementEntry {
   String documentationNo;
   String productCode;
   String type;
+  String reasonName;
   Long requested;
   long stockOnHand;
   long quantity;
@@ -63,7 +64,9 @@ public class StockMovementEntry {
     this.setStockOnHand(stockMovementItem.getStockOnHand());
     this.setQuantity(getQuantityWithSign(stockMovementItem));
     this.setRequested(stockMovementItem.getRequested());
-    if (stockMovementItem.getLotMovementItemListWrapper() != null) {
+    if (stockMovementItem.getLotMovementItemListWrapper().isEmpty()) {
+      this.setReasonName(this.type.equals(UNPACK_KIT) ? "" : stockMovementItem.getReason());
+    } else {
       lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper())
           .transform(lotMovementItem -> new LotMovementEntry(lotMovementItem)).toList());
     }
