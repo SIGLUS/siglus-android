@@ -166,9 +166,8 @@ public class BulkEntriesPresenter extends Presenter {
             .expiryDate(DateUtil.formatDate(draftBulkEntriesProductLotItem.getExpirationDate(),
                 DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
             .movementReason(draftBulkEntriesProductLotItem.getReason())
-            .quantity(draftBulkEntriesProductLotItem.getQuantity() == null ? ""
-                : draftBulkEntriesProductLotItem.getQuantity().toString())
-            .lotSoh(draftBulkEntriesProductLotItem.getLotSoh().toString())
+            .quantity(getString(draftBulkEntriesProductLotItem.getQuantity()))
+            .lotSoh(getString(draftBulkEntriesProductLotItem.getLotSoh()))
             .build()).toList();
   }
 
@@ -193,5 +192,9 @@ public class BulkEntriesPresenter extends Presenter {
               }
             });
     bulkEntriesViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
+  }
+
+  private String getString(Long number) {
+    return number == null ? null : number.toString();
   }
 }

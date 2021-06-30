@@ -20,6 +20,7 @@ package org.openlmis.core.view.holder;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -28,7 +29,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
+import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.BulkEntriesActivity;
+import org.openlmis.core.view.adapter.BulkEntriesLotMovementAdapter;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -36,24 +40,22 @@ import roboguice.inject.InjectView;
 
 public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
-  @InjectView(R.id.tv_lot_number)
-  private TextView lotNumber;
-
-  @InjectView(R.id.et_amount)
-  private EditText lotAmount;
-
-  @InjectView(R.id.tv_lot_soh)
-  private TextView lotStockOnHand;
-
   @InjectView(R.id.et_movement_reason)
   EditText movementReason;
-
+  @InjectView(R.id.tv_lot_soh_tip)
+  TextView lotSohTip;
   @InjectView(R.id.et_movement_document_number)
   EditText documentNumber;
-
   @InjectView(R.id.ic_required)
   ImageView icRequired;
-
+  @InjectView(R.id.btn_delete_lot)
+  ImageView btnDelLot;
+  @InjectView(R.id.tv_lot_number)
+  private TextView lotNumber;
+  @InjectView(R.id.et_amount)
+  private EditText lotAmount;
+  @InjectView(R.id.tv_lot_soh)
+  private TextView lotStockOnHand;
   private String[] movementReasons;
 
   public BulkEntriesLotMovementViewHolder(View itemView, String[] movementReasons) {
@@ -61,21 +63,27 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     this.movementReasons = movementReasons;
   }
 
-  public void populate(final LotMovementViewModel viewModel) {
+  public void populate(final LotMovementViewModel viewModel,
+      BulkEntriesLotMovementAdapter bulkEntriesLotMovementAdapter) {
     lotNumber.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
     lotAmount.setText(viewModel.getQuantity());
     lotStockOnHand.setText(viewModel.getLotSoh());
     movementReason.setText(viewModel.getMovementReason());
     documentNumber.setText(viewModel.getDocumentNumber());
-    setUpViewListener(viewModel);
+    if (viewModel.isNewAdded()) {
+      lotSohTip.setText(getString(R.string.label_new_added_lot));
+      btnDelLot.setVisibility(View.VISIBLE);
+    }
+    setUpViewListener(viewModel, bulkEntriesLotMovementAdapter);
   }
 
-  private void setUpViewListener(LotMovementViewModel viewModel) {
+  private void setUpViewListener(LotMovementViewModel viewModel,
+      BulkEntriesLotMovementAdapter adapter) {
     movementReason.setOnClickListener(getMovementReasonOnClickListener(viewModel));
     lotAmount.addTextChangedListener(new EditTextWatcher(lotAmount, viewModel));
     documentNumber.addTextChangedListener(new EditTextWatcher(documentNumber, viewModel));
+    btnDelLot.setOnClickListener(getOnClickListenerForDeleteIcon(viewModel, adapter));
   }
-
 
   @NonNull
   private View.OnClickListener getMovementReasonOnClickListener(LotMovementViewModel viewModel) {
@@ -86,9 +94,41 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, movementReasons);
         SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
         reasonsDialog.setArguments(bundle);
-        reasonsDialog.setMovementTypeOnClickListener(new MovementTypeOnClickListener(reasonsDialog, viewModel));
-        reasonsDialog.show(((BulkEntriesActivity) view.getContext()).getSupportFragmentManager(), "SELECT_REASONS");
+        reasonsDialog.setMovementTypeOnClickListener(
+            new MovementTypeOnClickListener(reasonsDialog, viewModel));
+        reasonsDialog.show(((BulkEntriesActivity) view.getContext()).getSupportFragmentManager(),
+            "SELECT_REASONS");
       }
+    };
+  }
+
+  private String getString(int id) {
+    return context.getResources().getString(id);
+  }
+
+  @NonNull
+  private View.OnClickListener getOnClickListenerForDeleteIcon(final LotMovementViewModel viewModel,
+      final BulkEntriesLotMovementAdapter bulkEntriesLotMovementAdapter) {
+    return v -> {
+      final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+          Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
+          Html.fromHtml(context.getResources()
+              .getString(R.string.msg_remove_new_lot, viewModel.getLotNumber(),
+                  viewModel.getExpiryDate(), bulkEntriesLotMovementAdapter.getProductName())),
+          getString(R.string.btn_remove_lot),
+          getString(R.string.btn_cancel), "confirm_dialog");
+      dialogFragment.show(((BaseActivity) context).getSupportFragmentManager(), "confirm_dialog");
+      dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+        @Override
+        public void positiveClick(String tag) {
+          bulkEntriesLotMovementAdapter.remove(viewModel);
+        }
+
+        @Override
+        public void negativeClick(String tag) {
+          dialogFragment.dismiss();
+        }
+      });
     };
   }
 
@@ -97,7 +137,8 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     private final SimpleSelectDialogFragment reasonsDialog;
     private LotMovementViewModel viewModel;
 
-    public MovementTypeOnClickListener(SimpleSelectDialogFragment reasonsDialog, LotMovementViewModel viewModel) {
+    public MovementTypeOnClickListener(SimpleSelectDialogFragment reasonsDialog,
+        LotMovementViewModel viewModel) {
       this.reasonsDialog = reasonsDialog;
       this.viewModel = viewModel;
     }

@@ -181,6 +181,10 @@ public final class Constants {
   public static final String VERSION_CODE = "VersionCode";
   public static final String ANDROID_SDK_VERSION = "AndroidSDKVersion";
 
+  // event
+  public static final String SHOW_DONE_STATUS_EVENT = "show done status event";
+  public static final String REFRESH_BACKGROUND_EVENT = "refresh background event";
+
 
   private Constants() {
 

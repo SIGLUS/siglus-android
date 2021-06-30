@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.event.RefreshBulkEntriesBackgroundEvent;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.presenter.BulkEntriesPresenter;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;

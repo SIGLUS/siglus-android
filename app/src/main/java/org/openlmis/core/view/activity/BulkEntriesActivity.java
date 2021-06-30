@@ -40,10 +40,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
-import org.openlmis.core.event.RefreshBulkEntriesBackgroundEvent;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkEntriesPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
@@ -113,8 +113,8 @@ public class BulkEntriesActivity extends BaseActivity {
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveRefreshStatus(RefreshBulkEntriesBackgroundEvent event) {
-    if (event.isShouldRefresh()) {
+  public void onReceiveRefreshStatus(String event) {
+    if (event.equals(Constants.REFRESH_BACKGROUND_EVENT)) {
       setViewGoneWhenNoProduct(bulkEntriesPresenter.getBulkEntriesViewModels());
       setTotal(adapter.getItemCount());
     }
@@ -178,7 +178,7 @@ public class BulkEntriesActivity extends BaseActivity {
     totalDivider.setVisibility(bulkEntriesViewModels.isEmpty() ? View.GONE : View.VISIBLE);
   }
 
-  protected void setTotal(int total) {
+  private void setTotal(int total) {
     tvTotal.setText(getString(R.string.label_total, total));
   }
 
@@ -216,7 +216,6 @@ public class BulkEntriesActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        loading();
         Subscription subscription = bulkEntriesPresenter.saveDraftBulkEntriesObservable()
             .subscribe(getReloadSubscriber());
         subscriptions.add(subscription);

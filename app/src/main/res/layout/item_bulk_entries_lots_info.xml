@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_margin="@dimen/px_20">
+  android:layout_margin="@dimen/px_15">
 
   <EditText
     android:id="@+id/et_amount"
@@ -71,10 +71,11 @@
       android:id="@+id/tv_lot_soh_tip"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:paddingLeft="@dimen/padding_small"
-      android:gravity="right"
-      android:text="@string/label_existing_soh_of_lot" />
+      android:inputType="textMultiLine"
+      android:paddingLeft="@dimen/padding_large"
+      android:paddingTop="@dimen/padding_small"
+      android:text="@string/label_existing_soh_of_lot"
+      />
 
     <TextView
       android:id="@+id/tv_lot_soh"
@@ -83,6 +84,7 @@
       android:layout_height="wrap_content"
       android:layout_marginLeft="@dimen/margin_normal"
       android:layout_marginRight="@dimen/margin_normal"
+      android:paddingTop="@dimen/padding_small"
       android:textColor="@color/color_text_secondary"
       tools:text="100"/>
   </LinearLayout>
@@ -117,6 +119,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_constraintGuide_percent="0.55" />
+
+  <ImageButton
+    android:id="@+id/btn_delete_lot"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_marginRight="@dimen/margin_tiny_tiny"
+    android:layout_weight="1"
+    android:background="@color/white_transparent_color"
+    android:src="@drawable/ic_clear"
+    android:visibility="gone"
+    app:tint="@color/color_red"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintRight_toRightOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

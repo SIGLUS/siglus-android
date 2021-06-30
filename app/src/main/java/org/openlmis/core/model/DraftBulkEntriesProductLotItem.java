@@ -74,7 +74,7 @@ public class DraftBulkEntriesProductLotItem extends BaseModel {
     } catch (Exception e) {
       quantity = null;
     }
-    setLotSoh(Long.valueOf(lotMovementViewModel.getLotSoh()));
+    setLotSoh(lotMovementViewModel.getLotSoh() == null ? null : Long.valueOf(lotMovementViewModel.getLotSoh()));
     setExpirationDate(DateUtil.getActualMaximumDate(DateUtil
         .parseString(lotMovementViewModel.getExpiryDate(),
             DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));

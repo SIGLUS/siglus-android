@@ -22,8 +22,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.R;
-import org.openlmis.core.event.RefreshBulkEntriesBackgroundEvent;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
@@ -33,13 +35,16 @@ import roboguice.inject.InjectView;
 public class BulkEntriesViewHolder extends BaseViewHolder {
 
 
+  @InjectView(R.id.ic_done)
+  ImageView icDone;
+
   @InjectView(R.id.tv_product_name)
   TextView productName;
 
   @InjectView(R.id.ic_trashcan)
   ImageView icTrashcan;
 
-  @InjectView(R.id.rv_bulk_entries_lots)
+  @InjectView(R.id.view_lot_list)
   BulkEntriesLotListView bulkEntriesLotListView;
 
   public BulkEntriesViewHolder(View itemView) {
@@ -48,18 +53,21 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
 
   public void populate(final BulkEntriesViewModel bulkEntriesViewModel,
       final BulkEntriesAdapter bulkEntriesAdapter) {
-    productName.setText(TextStyleUtil.formatStyledProductName(bulkEntriesViewModel.getProduct()));
-    bulkEntriesLotListView.initLotListView(bulkEntriesViewModel);
+    bulkEntriesLotListView.initLotListView(bulkEntriesViewModel, bulkEntriesAdapter);
     icTrashcan.setOnClickListener(getRemoveProductListener(bulkEntriesViewModel, bulkEntriesAdapter));
+    if (bulkEntriesViewModel.isDone()) {
+      icDone.setVisibility(View.VISIBLE);
+      productName.setText(bulkEntriesViewModel.getGreenName());
+    } else {
+      productName.setText(TextStyleUtil.formatStyledProductName(bulkEntriesViewModel.getProduct()));
+    }
   }
 
   private View.OnClickListener getRemoveProductListener(BulkEntriesViewModel bulkEntriesViewModel,
       BulkEntriesAdapter bulkEntriesAdapter) {
     return v -> {
       bulkEntriesAdapter.remove(bulkEntriesViewModel);
-      EventBus.getDefault().post(new RefreshBulkEntriesBackgroundEvent(true));
+      EventBus.getDefault().post(Constants.REFRESH_BACKGROUND_EVENT);
     };
   }
-
-
 }

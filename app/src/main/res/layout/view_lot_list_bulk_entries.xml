@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <LinearLayout
+    android:id="@+id/rv_lots"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toTopOf="@+id/action_panel"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rv_existing_lot_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:overScrollMode="never"
+      android:scrollbars="none" />
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rv_new_lot_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:overScrollMode="never"
+      android:scrollbars="none" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/ly_action_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/px_20"
+    android:layout_marginBottom="@dimen/px_20"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/rv_lots">
+
+    <TextView
+      android:id="@+id/btn_add_new_lot"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_marginLeft="@dimen/margin_larger"
+      android:layout_marginRight="@dimen/margin_normal"
+      android:background="@drawable/border_round_blue"
+      android:gravity="center"
+      android:text="@string/btn_bulk_entries_add_new_lot"
+      android:textColor="@color/color_accent"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/btn_verify"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_marginLeft="@dimen/margin_normal"
+      android:layout_marginRight="@dimen/margin_larger"
+      android:background="@drawable/border_round_blue"
+      android:gravity="center"
+      android:text="@string/btn_done"
+      android:textColor="@color/color_accent"
+      android:textSize="16sp" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/vg_lot_info_review"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_normal"
+    android:paddingBottom="@dimen/font_size_small"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:visibility="gone">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rv_lot_info_review"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingBottom="@dimen/padding_small" />
+
+    <TextView
+      android:id="@+id/btn_edit"
+      android:layout_width="80dp"
+      android:layout_height="wrap_content"
+      android:background="@drawable/border_round_blue"
+      android:gravity="center"
+      android:text="@string/btn_edit"
+      android:textColor="@color/color_accent"
+      android:textSize="@dimen/font_size_regular" />
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
