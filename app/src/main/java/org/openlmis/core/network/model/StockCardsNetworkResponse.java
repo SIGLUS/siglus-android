@@ -42,7 +42,7 @@ public class StockCardsNetworkResponse {
   public static class StockMovementItemResponse {
 
     private int movementQuantity;
-    private int requested;
+    private Long requested;
     private long processedDate;
     private String type;
     private String stockOnHand;

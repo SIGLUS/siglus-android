@@ -30,6 +30,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
@@ -107,6 +108,14 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     }
   }
 
+  String mapToLocalReason(String networkType, String networkReason) throws LMISException {
+    final NetworkMovementType convertedType = NetworkMovementType.convertValue(networkType);
+    if (convertedType == NetworkMovementType.UNPACK_KIT) {
+      return MovementReasonManager.UNPACK_KIT;
+    }
+    return networkReason;
+  }
+
   private StockCard fitForStockCard(ProductMovementResponse productMovement) throws LMISException {
     final StockCard newStockCard = new StockCard();
     // setup stock card
@@ -143,14 +152,15 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
       stockMovementItem.setStockOnHand(Long.parseLong(stockMovementItemResponse.getStockOnHand()));
       stockMovementItem.setSignature(stockMovementItemResponse.getSignature());
       stockMovementItem.setCreatedTime(new Date(stockMovementItemResponse.getProcessedDate()));
-      stockMovementItem.setRequested((long) stockMovementItemResponse.getRequested());
+      stockMovementItem.setRequested(stockMovementItemResponse.getRequested());
       stockMovementItem
           .setMovementDate(DateUtil.parseString(stockMovementItemResponse.getOccurredDate(), DateUtil.DB_DATE_FORMAT));
       final MovementType stockCardMovementType = mapToLocalMovementType(stockMovementItemResponse.getType(),
           stockMovementItemResponse.getMovementQuantity());
       stockMovementItem.setMovementType(stockCardMovementType);
       if (CollectionUtils.isEmpty(stockMovementItemResponse.getLotMovementItems())) {
-        stockMovementItem.setReason(stockMovementItemResponse.getReason());
+        stockMovementItem
+            .setReason(mapToLocalReason(stockMovementItemResponse.getType(), stockMovementItemResponse.getReason()));
         stockMovementItem.setDocumentNumber(stockMovementItemResponse.getDocumentNumber());
       } else {
         final List<LotMovementItem> lotMovementItemListWrapper = stockMovementItem.getLotMovementItemListWrapper();
@@ -161,7 +171,8 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
           lot.setLotNumber(lotMovementItemResponse.getLotCode());
           lotMovementItem.setLot(lot);
           lotMovementItem.setMovementQuantity((long) lotMovementItemResponse.getQuantity());
-          lotMovementItem.setReason(lotMovementItemResponse.getReason());
+          lotMovementItem
+              .setReason(mapToLocalReason(stockMovementItemResponse.getType(), lotMovementItemResponse.getReason()));
           lotMovementItem.setStockOnHand((long) lotMovementItemResponse.getStockOnHand());
           lotMovementItem.setDocumentNumber(lotMovementItemResponse.getDocumentNumber());
           lotMovementItemListWrapper.add(lotMovementItem);

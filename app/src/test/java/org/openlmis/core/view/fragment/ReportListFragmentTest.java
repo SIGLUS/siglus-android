@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.view.View;
 import com.google.inject.AbstractModule;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,6 +73,7 @@ public class ReportListFragmentTest {
     fragmentController.create().start().resume().get();
   }
 
+  @After
   public void teardown() {
     fragmentController.pause().stop().destroy();
   }

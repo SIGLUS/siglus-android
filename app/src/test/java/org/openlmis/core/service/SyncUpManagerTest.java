@@ -212,11 +212,9 @@ public class SyncUpManagerTest {
   }
 
   @Test
-  public void shouldSaveSyncErrorWhenUnSyncedStockMovementDataFail()
-      throws LMISException, SQLException, ParseException {
+  public void shouldSaveSyncErrorWhenUnSyncedStockMovementDataFail() throws LMISException, ParseException {
     createTestStockCardData();
-    doThrow(new LMISException("mocked exception")).when(mockedLmisRestApi)
-        .syncUpStockMovementDataSplit(anyList());
+    doThrow(new LMISException("mocked exception")).when(mockedLmisRestApi).syncUpStockMovementDataSplit(anyList());
 
     syncUpManager.syncStockCards();
 

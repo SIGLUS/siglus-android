@@ -156,6 +156,17 @@ public class StockCardsResponseAdapterTest {
   }
 
   @Test
+  public void testMapToLocalReason() throws LMISException{
+    // when
+    final String unpackKitReason = adapter.mapToLocalReason(NetworkMovementType.UNPACK_KIT.name(), null);
+    final String testReason = adapter.mapToLocalReason(NetworkMovementType.ADJUSTMENT.name(), "test");
+
+    // then
+    assertEquals("UNPACK_KIT", unpackKitReason);
+    assertEquals("test", testReason);
+  }
+
+  @Test
   public void shouldConvertCorrectNetworkMovementType() throws LMISException {
     // given
     String physicalInventoryString = "PHYSICAL_INVENTORY";
