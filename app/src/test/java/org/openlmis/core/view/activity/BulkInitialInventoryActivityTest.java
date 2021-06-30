@@ -28,11 +28,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import roboguice.RoboGuice;
 import rx.Observable;
-import rx.Scheduler;
-import rx.android.plugins.RxAndroidPlugins;
-import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
-import rx.schedulers.Schedulers;
 
 @RunWith(LMISTestRunner.class)
 public class BulkInitialInventoryActivityTest {
@@ -47,8 +43,7 @@ public class BulkInitialInventoryActivityTest {
 
   @Before
   public void setUp() throws LMISException {
-    bulkInventoryActivity = Robolectric.buildActivity(BulkInitialInventoryActivity.class).create()
-        .get();
+    bulkInventoryActivity = Robolectric.buildActivity(BulkInitialInventoryActivity.class).create().get();
 
     mockedAdapter = mock(BulkInitialInventoryAdapter.class);
     productRepositoryMock = mock(ProductRepository.class);
@@ -62,15 +57,6 @@ public class BulkInitialInventoryActivityTest {
 
     activityController = Robolectric.buildActivity(BulkInitialInventoryActivity.class);
     bulkInventoryActivity = activityController.create().get();
-
-    RxAndroidPlugins.getInstance().reset();
-    RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-      @Override
-      public Scheduler getMainThreadScheduler() {
-        return Schedulers.immediate();
-      }
-    });
-
     noBasicProducts = new LongSparseArray<>();
     basicProducts = new LongSparseArray<>();
     getNoBasicProductList();
