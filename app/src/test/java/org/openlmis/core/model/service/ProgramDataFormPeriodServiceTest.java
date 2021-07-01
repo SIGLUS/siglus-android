@@ -65,11 +65,11 @@ public class ProgramDataFormPeriodServiceTest {
     final DateTime currentDate = new DateTime();
     String beginDateBuilder = (currentDate.year().get() - 1)
         + "-"
-        + currentDate.monthOfYear().get()
+        + "06"
         + "-21 12:00:00";
     String endDateBuilder = (currentDate.year().get() - 1)
         + "-"
-        + (currentDate.monthOfYear().get() + 1)
+        + "07"
         + "-20 12:00:00";
     final DateTime expectBeginTime = new DateTime(DateUtil.parseString(beginDateBuilder, DateUtil.DB_DATE_FORMAT));
     assertThat(period.getBegin(), is(expectBeginTime));
