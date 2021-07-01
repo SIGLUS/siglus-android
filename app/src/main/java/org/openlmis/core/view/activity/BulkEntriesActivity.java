@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +70,9 @@ public class BulkEntriesActivity extends BaseActivity {
 
   @InjectView(R.id.btn_save)
   View btnSave;
+
+  @InjectView(R.id.btn_complete)
+  Button btnComplete;
 
   @InjectView(R.id.action_panel)
   View actionPanel;
@@ -133,6 +137,7 @@ public class BulkEntriesActivity extends BaseActivity {
         .subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
     btnSave.setOnClickListener(getSaveListener());
+    btnComplete.setOnClickListener(getCompleteListener());
     EventBus.getDefault().register(this);
   }
 
@@ -220,6 +225,22 @@ public class BulkEntriesActivity extends BaseActivity {
             .subscribe(getReloadSubscriber());
         subscriptions.add(subscription);
         finish();
+      }
+    };
+  }
+
+  @NonNull
+  private SingleClickButtonListener getCompleteListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        int position = adapter.validateAllForCompletedClick();
+        if (position >= 0) {
+          rvBulkEntriesProducts.scrollToPosition(position);
+          LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvBulkEntriesProducts.getLayoutManager();
+          linearLayoutManager.scrollToPositionWithOffset(position, 0);
+        }
+        adapter.notifyDataSetChanged();
       }
     };
   }

@@ -7,17 +7,6 @@
   android:layout_margin="@dimen/px_15">
 
   <EditText
-    android:id="@+id/et_amount"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:hint="@string/hint_lot_amount"
-    android:textSize="@dimen/px_20"
-    app:layout_constraintRight_toLeftOf="@id/gl_lots_info"
-    app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
-    app:layout_constraintTop_toBottomOf="@id/tv_lot_number"
-    app:layout_constraintWidth_percent="0.5" />
-
-  <EditText
     android:id="@+id/et_movement_reason"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
@@ -26,12 +15,11 @@
     android:drawableLeft="@drawable/ic_movement_origin"
     android:drawablePadding="5dp"
     android:focusableInTouchMode="false"
-    android:inputType="textMultiLine"
     android:hint="@string/hint_movement_reason_receive"
+    android:inputType="textMultiLine"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toEndOf="@id/gl_lots_info"
-    app:layout_constraintTop_toTopOf="@id/tv_lot_number"
-    app:layout_constraintEnd_toEndOf="parent"/>
-
+    app:layout_constraintTop_toTopOf="@id/tv_lot_number" />
 
   <EditText
     android:id="@+id/et_movement_document_number"
@@ -40,20 +28,35 @@
     android:layout_marginTop="@dimen/margin_small"
     android:drawableLeft="@drawable/ic_document"
     android:drawablePadding="5dp"
-    android:textSize="@dimen/px_20"
     android:hint="@string/hint_document_number"
+    android:textSize="@dimen/px_20"
+    app:layout_constraintEnd_toEndOf="@id/et_movement_reason"
     app:layout_constraintStart_toStartOf="@id/et_movement_reason"
-    app:layout_constraintTop_toBottomOf="@id/et_movement_reason"
-    app:layout_constraintEnd_toEndOf="@id/et_movement_reason"/>
+    app:layout_constraintTop_toTopOf="@id/ly_lot_amount"/>
+
+
+  <ImageButton
+    android:id="@+id/btn_delete_lot"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:layout_marginRight="@dimen/margin_tiny_tiny"
+    android:background="@color/white_transparent_color"
+    android:src="@drawable/ic_clear"
+    android:visibility="gone"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:tint="@color/color_red" />
 
   <ImageView
     android:id="@+id/ic_required"
     android:layout_width="@dimen/px_10"
     android:layout_height="@dimen/px_10"
     android:src="@drawable/ic_required"
-    app:layout_constraintRight_toLeftOf="@id/et_movement_reason"
-    app:layout_constraintTop_toTopOf="@id/tv_lot_number"
-    app:layout_constraintBottom_toBottomOf="@id/et_movement_reason"/>
+    android:visibility="gone"
+    app:layout_constraintBottom_toBottomOf="@id/et_movement_document_number"
+    app:layout_constraintRight_toLeftOf="@id/et_movement_document_number"
+    app:layout_constraintTop_toTopOf="@id/et_movement_document_number" />
 
 
   <LinearLayout
@@ -61,46 +64,32 @@
     style="@style/ItemPhysical.SOHText"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding_small"
     android:layout_marginBottom="@dimen/px_33"
+    android:padding="@dimen/padding_small"
     app:layout_constraintEnd_toEndOf="@id/gl_lots_info"
     app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
-    app:layout_constraintTop_toBottomOf="@id/et_amount">
+    app:layout_constraintTop_toBottomOf="@id/ly_lot_amount">
 
     <TextView
       android:id="@+id/tv_lot_soh_tip"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:inputType="textMultiLine"
-      android:paddingLeft="@dimen/padding_large"
       android:paddingTop="@dimen/padding_small"
-      android:text="@string/label_existing_soh_of_lot"
-      />
+      android:paddingLeft="@dimen/padding_normal"
+      android:inputType="textMultiLine"
+      android:text="@string/label_existing_soh_of_lot" />
 
     <TextView
       android:id="@+id/tv_lot_soh"
       android:textStyle="bold"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/margin_normal"
+      android:layout_marginLeft="@dimen/margin_small"
       android:layout_marginRight="@dimen/margin_normal"
       android:paddingTop="@dimen/padding_small"
       android:textColor="@color/color_text_secondary"
-      tools:text="100"/>
+      tools:text="100" />
   </LinearLayout>
-
-  <TextView
-    android:id="@+id/tv_lot_number"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_normal"
-    android:textSize="@dimen/px_20"
-    android:layout_marginRight="@dimen/margin_normal"
-    android:textColor="@color/color_black"
-    app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
-    app:layout_constraintEnd_toStartOf="@+id/gl_lots_info"
-    app:layout_constraintTop_toBottomOf="@id/tv_hint_lot_info"
-    tools:text="23A02 - 05/2021" />
 
   <TextView
     android:id="@+id/tv_hint_lot_info"
@@ -109,9 +98,22 @@
     android:layout_margin="@dimen/margin_normal"
     android:text="@string/hint_lot_info"
     android:textColor="@color/color_accent"
+    app:layout_constraintBottom_toTopOf="@+id/tv_lot_number"
     app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toTopOf="@+id/tv_lot_number"/>
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+    android:id="@+id/tv_lot_number"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_normal"
+    android:layout_marginRight="@dimen/margin_normal"
+    android:textColor="@color/color_black"
+    android:textSize="@dimen/px_20"
+    app:layout_constraintEnd_toStartOf="@+id/gl_lots_info"
+    app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
+    app:layout_constraintTop_toBottomOf="@id/tv_hint_lot_info"
+    tools:text="23A02 - 05/2021" />
 
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/gl_lots_info"
@@ -120,18 +122,24 @@
     android:orientation="vertical"
     app:layout_constraintGuide_percent="0.55" />
 
-  <ImageButton
-    android:id="@+id/btn_delete_lot"
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/ly_lot_amount"
     android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_marginRight="@dimen/margin_tiny_tiny"
-    android:layout_weight="1"
-    android:background="@color/white_transparent_color"
-    android:src="@drawable/ic_clear"
-    android:visibility="gone"
-    app:tint="@color/color_red"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintRight_toRightOf="parent"/>
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_normal"
+    app:layout_constraintRight_toLeftOf="@id/gl_lots_info"
+    app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
+    app:layout_constraintTop_toBottomOf="@id/tv_lot_number"
+    app:layout_constraintWidth_percent="0.5">
+
+    <EditText
+      android:id="@+id/et_lot_amount"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:imeOptions="actionDone"
+      android:inputType="number"
+      android:maxLength="@integer/edit_amount_length" />
+  </com.google.android.material.textfield.TextInputLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,14 +19,17 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
-import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
@@ -34,7 +37,10 @@ import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.adapter.BulkEntriesLotMovementAdapter;
 import org.openlmis.core.view.adapter.BulkLotInfoReviewListAdapter;
+import org.openlmis.core.view.holder.BulkEntriesLotMovementViewHolder;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
+import org.openlmis.core.view.viewmodel.BulkEntriesViewModel.InvalidType;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.InjectView;
 
@@ -42,26 +48,38 @@ import roboguice.inject.InjectView;
 public class BulkEntriesLotListView extends BaseLotListView {
 
   @InjectView(R.id.rv_lots)
-  ViewGroup rvLots;
+  private ViewGroup rvLots;
 
   @InjectView(R.id.ly_action_panel)
-  ViewGroup actionPanel;
+  private ViewGroup actionPanel;
 
   @InjectView(R.id.vg_lot_info_review)
-  ViewGroup vgLotInfoReview;
+  private ViewGroup vgLotInfoReview;
+
+  @InjectView(R.id.alert_add_positive_lot_amount)
+  private ViewGroup alertAddPositiveLotAmount;
 
   @InjectView(R.id.rv_lot_info_review)
-  RecyclerView rvLotInfoReview;
+  private RecyclerView rvLotInfoReview;
 
   @InjectView(R.id.btn_verify)
-  TextView btnVerify;
+  private TextView btnVerify;
 
   @InjectView(R.id.btn_edit)
-  TextView btnEdit;
+  private TextView btnEdit;
 
   private BulkEntriesLotMovementAdapter newBulkEntriesLotMovementAdapter;
 
   private BulkEntriesAdapter bulkEntriesAdapter;
+
+  private BulkEntriesViewModel bulkEntriesViewModel;
+
+  private BulkEntriesLotMovementViewHolder.AmountChangeListener amountChangeListenerFromAlert;
+
+  private AmountChangeListener amountChangeListenerFromTrashcan;
+
+  private MovementStatusListener movementStatusListener;
+
 
   public BulkEntriesLotListView(Context context) {
     super(context);
@@ -71,52 +89,115 @@ public class BulkEntriesLotListView extends BaseLotListView {
     super(context, attrs);
   }
 
-  @Override
-  protected void init(Context context) {
-    super.init(context);
-    btnVerify.setOnClickListener(v -> {
-      markDone(true);
-    });
-    btnEdit.setOnClickListener(v -> {
-      markDone(false);
-    });
-  }
-
-  public void initLotListView(BulkEntriesViewModel bulkEntriesViewModel, BulkEntriesAdapter bulkEntriesAdapter) {
-    super.initLotListView(bulkEntriesViewModel);
+  public void initLotListView(BulkEntriesViewModel bulkEntriesViewModel,
+      BulkEntriesAdapter bulkEntriesAdapter,
+      AmountChangeListener amountChangeListenerFromTrashcan,
+      MovementStatusListener movementStatusListener) {
     this.bulkEntriesAdapter = bulkEntriesAdapter;
+    this.bulkEntriesViewModel = bulkEntriesViewModel;
+    this.amountChangeListenerFromAlert = getAmountChangedListener();
+    this.amountChangeListenerFromTrashcan = amountChangeListenerFromTrashcan;
+    this.movementStatusListener = movementStatusListener;
+    super.initLotListView(bulkEntriesViewModel);
+
+    setRvLotInfoReviewWhenItemIsDone();
+    setViewStatus();
   }
 
   @Override
   public void initExistingLotListView() {
-    existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+    existingLotListView.setLayoutManager(getEnScrollLinearLayoutManager());
+    existingLotListView.setHasFixedSize(true);
     BulkEntriesLotMovementAdapter existingBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
         viewModel.getExistingLotMovementViewModelList(), getMovementReasonDescriptionList(),
-        viewModel.getProduct().getPrimaryName());
+        bulkEntriesViewModel, bulkEntriesAdapter);
     existingLotListView.setAdapter(existingBulkEntriesLotMovementAdapter);
     existingLotListView
         .addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+    existingBulkEntriesLotMovementAdapter.setMovementChangeListener(amountChangeListenerFromAlert);
   }
 
   @Override
   public void initNewLotListView() {
-    newLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
+    newLotListView.setLayoutManager(getEnScrollLinearLayoutManager());
+    newLotListView.setHasFixedSize(true);
     newBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
         viewModel.getNewLotMovementViewModelList(), getMovementReasonDescriptionList(),
-        viewModel.getProduct().getPrimaryName());
+        bulkEntriesViewModel, bulkEntriesAdapter);
     newLotListView.setAdapter(newBulkEntriesLotMovementAdapter);
     newLotListView
         .addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
   }
 
   @Override
-  public void refreshNewLotList() {
-    newBulkEntriesLotMovementAdapter.notifyDataSetChanged();
+  public void addNewLot(LotMovementViewModel lotMovementViewModel) {
+    bulkEntriesViewModel.setInvalidType(InvalidType.DEFAULT);
+    bulkEntriesViewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
+    bulkEntriesAdapter.notifyDataSetChanged();
+  }
+
+  @Override
+  protected void init(Context context) {
+    super.init(context);
+    btnVerify.setOnClickListener(v -> markDone(true));
+    btnEdit.setOnClickListener(v -> markDone(false));
   }
 
   @Override
   protected void inflateLayout(Context context) {
     inflate(context, R.layout.view_lot_list_bulk_entries, this);
+  }
+
+  @NonNull
+  protected BulkEntriesLotMovementViewHolder.AmountChangeListener getAmountChangedListener() {
+    return this::updateAddPositiveLotAmountAlert;
+  }
+
+  private LinearLayoutManager getEnScrollLinearLayoutManager() {
+    return new LinearLayoutManager(getContext()) {
+      @Override
+      public boolean canScrollVertically() {
+        return false;
+      }
+    };
+  }
+
+  private void setViewStatus() {
+    if (bulkEntriesViewModel.getInvalidType() == InvalidType.NO_LOT) {
+      btnAddNewLot.setBackground(getDrawable(R.drawable.border_round_red));
+      btnAddNewLot.setTextColor(getColor(R.color.color_red));
+      alertAddPositiveLotAmount.setVisibility(VISIBLE);
+    } else if (bulkEntriesViewModel.getInvalidType() == InvalidType.EXISTING_LOT_ALL_BLANK) {
+      alertAddPositiveLotAmount.setVisibility(VISIBLE);
+      btnAddNewLot
+          .setBackground(getDrawable(R.drawable.border_round_blue));
+      btnAddNewLot.setTextColor(getColor(R.color.color_accent));
+    } else if (bulkEntriesViewModel.getInvalidType() == InvalidType.NEW_LOT_BLANK
+        || bulkEntriesViewModel.getInvalidType() == InvalidType.DEFAULT) {
+      alertAddPositiveLotAmount.setVisibility(GONE);
+      btnAddNewLot
+          .setBackground(getDrawable(R.drawable.border_round_blue));
+      btnAddNewLot.setTextColor(getColor(R.color.color_accent));
+    }
+  }
+
+  private void setRvLotInfoReviewWhenItemIsDone() {
+    if (bulkEntriesViewModel.isDone()) {
+      rvLots.setVisibility(GONE);
+      actionPanel.setVisibility(GONE);
+      vgLotInfoReview.setVisibility(VISIBLE);
+      initLotInfoReviewList();
+    }
+  }
+
+  private void updateAddPositiveLotAmountAlert() {
+    bulkEntriesViewModel.validate();
+    if (bulkEntriesViewModel.getInvalidType() == InvalidType.EXISTING_LOT_ALL_BLANK) {
+      alertAddPositiveLotAmount.setVisibility(View.VISIBLE);
+    } else {
+      alertAddPositiveLotAmount.setVisibility(View.GONE);
+    }
+    amountChangeListenerFromTrashcan.amountChange();
   }
 
   private String[] getMovementReasonDescriptionList() {
@@ -128,12 +209,12 @@ public class BulkEntriesLotListView extends BaseLotListView {
     return reasonDescriptionList;
   }
 
-  public void markDone(boolean done) {
-    ((BulkEntriesViewModel) viewModel).setDone(true);
+  private void markDone(boolean done) {
+    ((BulkEntriesViewModel) viewModel).setDone(done);
     rvLots.setVisibility(done ? GONE : VISIBLE);
     actionPanel.setVisibility(done ? GONE : VISIBLE);
     vgLotInfoReview.setVisibility(done ? VISIBLE : GONE);
-    bulkEntriesAdapter.notifyDataSetChanged();
+    movementStatusListener.movementStatusChange();
     if (done) {
       initLotInfoReviewList();
     }
@@ -143,5 +224,23 @@ public class BulkEntriesLotListView extends BaseLotListView {
     BulkLotInfoReviewListAdapter adapter = new BulkLotInfoReviewListAdapter(viewModel);
     rvLotInfoReview.setLayoutManager(new LinearLayoutManager(context));
     rvLotInfoReview.setAdapter(adapter);
+  }
+
+  private Drawable getDrawable(int id) {
+    return ResourcesCompat.getDrawable(getResources(), id, null);
+  }
+
+  private int getColor(int id) {
+    return context.getResources().getColor(id);
+  }
+
+  public interface AmountChangeListener {
+
+    void amountChange();
+  }
+
+  public interface MovementStatusListener {
+
+    void movementStatusChange();
   }
 }

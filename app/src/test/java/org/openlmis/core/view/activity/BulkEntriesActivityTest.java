@@ -3,8 +3,6 @@ package org.openlmis.core.view.activity;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.inject.AbstractModule;
@@ -59,16 +57,6 @@ public class BulkEntriesActivityTest {
   public void shouldGetScreenNameSuccess() {
     // then
     assertEquals(bulkEntriesActivity.getScreenName(), ScreenName.BULK_ENTRIES_SCREEN);
-  }
-
-  @Test
-  public void shouldRefreshStatus() {
-    // given
-    RefreshBulkEntriesBackgroundEvent event = new RefreshBulkEntriesBackgroundEvent(true);
-    // when
-    bulkEntriesActivity.onReceiveRefreshStatus(event);
-    // then
-    verify(mockedPresenter,times(2)).getBulkEntriesViewModels();
   }
 
 }

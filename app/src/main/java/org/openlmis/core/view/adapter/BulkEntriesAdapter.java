@@ -64,4 +64,20 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
     models.remove(bulkEntriesViewModel);
     this.notifyDataSetChanged();
   }
+
+  public int validateAllForCompletedClick() {
+    int position = -1;
+    for (int i = 0; i < models.size(); i++) {
+      if (!models.get(i).validate()) {
+        if (position == -1 || position > i) {
+          position = i;
+        }
+        models.get(i).setValid(false);
+      } else {
+        models.get(i).setValid(true);
+      }
+    }
+    this.notifyDataSetChanged();
+    return position;
+  }
 }

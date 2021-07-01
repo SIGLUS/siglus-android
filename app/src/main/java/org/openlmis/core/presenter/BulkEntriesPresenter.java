@@ -134,8 +134,66 @@ public class BulkEntriesPresenter extends Presenter {
         draftBulkEntriesProduct -> new BulkEntriesViewModel(draftBulkEntriesProduct.getProduct(),
             draftBulkEntriesProduct.isDone(), draftBulkEntriesProduct.getQuantity(),
             convertDraftLotMovementToLotMovement(
-                draftBulkEntriesProduct.getDraftLotItemListWrapper()))).toList());
+                draftBulkEntriesProduct.getDraftLotItemListWrapper())))
+        .transform(this::setLotViewModels).toList());
 
+  }
+
+  private BulkEntriesViewModel setLotViewModels(BulkEntriesViewModel bulkEntriesViewModel) {
+    StockCard stockCard = null;
+    try {
+      stockCard = stockRepository.queryStockCardByProductId(bulkEntriesViewModel.getProductId());
+    } catch (LMISException e) {
+      Log.d(TAG, e.toString());
+    }
+    if (stockCard == null) {
+      bulkEntriesViewModel.setNewLotMovementViewModelList(
+          new ArrayList<>(bulkEntriesViewModel.getLotMovementViewModels()));
+    } else {
+      getLotFromLotOnHand(bulkEntriesViewModel, stockCard);
+    }
+    return bulkEntriesViewModel;
+  }
+
+  private void getLotFromLotOnHand(BulkEntriesViewModel bulkEntriesViewModel, StockCard stockCard) {
+    bulkEntriesViewModel.setStockCard(stockCard);
+    List<LotMovementViewModel> lotMovementViewModels = getExistingLotMovementViewModels(
+        bulkEntriesViewModel);
+    List<String> lotNumbers = FluentIterable.from(lotMovementViewModels)
+        .transform(LotMovementViewModel::getLotNumber)
+        .toList();
+    bulkEntriesViewModel.setExistingLotMovementViewModelList(getExistingLotMovementViewModels(
+        bulkEntriesViewModel));
+    setDraftToLotList(bulkEntriesViewModel, lotNumbers);
+  }
+
+  private void setDraftToLotList(BulkEntriesViewModel bulkEntriesViewModel,
+      List<String> lotNumbers) {
+    for (LotMovementViewModel draftLotMovementViewModel : bulkEntriesViewModel
+        .getLotMovementViewModels()) {
+      if (draftLotMovementViewModel.isNewAdded() && !lotNumbers
+          .contains(draftLotMovementViewModel.getLotNumber())) {
+        bulkEntriesViewModel.getNewLotMovementViewModelList().add(draftLotMovementViewModel);
+      }
+      if (lotNumbers.contains(draftLotMovementViewModel.getLotNumber())) {
+        setDraftToExistingLotWhenHasTheSameLot(bulkEntriesViewModel, draftLotMovementViewModel);
+      }
+    }
+  }
+
+  private void setDraftToExistingLotWhenHasTheSameLot(BulkEntriesViewModel bulkEntriesViewModel,
+      LotMovementViewModel draftLotMovementViewModel) {
+    for (LotMovementViewModel existingMovementViewModel : bulkEntriesViewModel
+        .getExistingLotMovementViewModelList()) {
+      if (existingMovementViewModel.getLotNumber()
+          .equals(draftLotMovementViewModel.getLotNumber())) {
+        existingMovementViewModel.setQuantity(draftLotMovementViewModel.getQuantity());
+        existingMovementViewModel
+            .setDocumentNumber(draftLotMovementViewModel.getDocumentNumber());
+        existingMovementViewModel
+            .setMovementReason(draftLotMovementViewModel.getMovementReason());
+      }
+    }
   }
 
   private BulkEntriesViewModel convertProductToBulkEntriesViewModel(Product product) {
@@ -168,6 +226,7 @@ public class BulkEntriesPresenter extends Presenter {
             .movementReason(draftBulkEntriesProductLotItem.getReason())
             .quantity(getString(draftBulkEntriesProductLotItem.getQuantity()))
             .lotSoh(getString(draftBulkEntriesProductLotItem.getLotSoh()))
+            .valid(true)
             .build()).toList();
   }
 
@@ -175,7 +234,13 @@ public class BulkEntriesPresenter extends Presenter {
     if (bulkEntriesViewModel.getStockCard() == null) {
       return;
     }
-    List<LotMovementViewModel> lotMovementViewModels = FluentIterable
+    bulkEntriesViewModel.setExistingLotMovementViewModelList(
+        getExistingLotMovementViewModels(bulkEntriesViewModel));
+  }
+
+  private List<LotMovementViewModel> getExistingLotMovementViewModels(
+      BulkEntriesViewModel bulkEntriesViewModel) {
+    return FluentIterable
         .from(bulkEntriesViewModel.getStockCard().getNonEmptyLotOnHandList())
         .transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
             DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
@@ -191,7 +256,6 @@ public class BulkEntriesPresenter extends Presenter {
                 return 0;
               }
             });
-    bulkEntriesViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
   }
 
   private String getString(Long number) {

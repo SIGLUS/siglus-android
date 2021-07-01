@@ -37,7 +37,7 @@ public class BulkLotInfoReviewViewHolder extends BaseViewHolder {
   public void populate(LotMovementViewModel viewModel) {
     long adjustmentQuantity = viewModel.getAdjustmentQuantity();
     tvLotInfoReview.setText(Html.fromHtml(context
-        .getString(R.string.msg_initial_inventory_lot_review_add, viewModel.getLotNumber(),
+        .getString(R.string.msg_bulk_entries_lot_review, viewModel.getLotNumber() + " - " + viewModel.getExpiryDate(),
             adjustmentQuantity)));
   }
 }

@@ -22,11 +22,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import com.google.android.material.textfield.TextInputLayout;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -41,22 +43,26 @@ import roboguice.inject.InjectView;
 public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
   @InjectView(R.id.et_movement_reason)
-  EditText movementReason;
+  private EditText movementReason;
   @InjectView(R.id.tv_lot_soh_tip)
-  TextView lotSohTip;
+  private TextView lotSohTip;
   @InjectView(R.id.et_movement_document_number)
-  EditText documentNumber;
-  @InjectView(R.id.ic_required)
-  ImageView icRequired;
+  private EditText documentNumber;
   @InjectView(R.id.btn_delete_lot)
-  ImageView btnDelLot;
+  private ImageView btnDelLot;
   @InjectView(R.id.tv_lot_number)
   private TextView lotNumber;
-  @InjectView(R.id.et_amount)
-  private EditText lotAmount;
+  @InjectView(R.id.et_lot_amount)
+  private EditText etLotAmount;
+  @InjectView(R.id.ly_lot_amount)
+  private TextInputLayout lyLotAmount;
   @InjectView(R.id.tv_lot_soh)
   private TextView lotStockOnHand;
+  @InjectView(R.id.vg_lot_soh)
+  private ViewGroup vgLotSOH;
   private String[] movementReasons;
+
+  private AmountChangeListener amountChangeListener;
 
   public BulkEntriesLotMovementViewHolder(View itemView, String[] movementReasons) {
     super(itemView);
@@ -66,21 +72,30 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   public void populate(final LotMovementViewModel viewModel,
       BulkEntriesLotMovementAdapter bulkEntriesLotMovementAdapter) {
     lotNumber.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
-    lotAmount.setText(viewModel.getQuantity());
+    etLotAmount.setText(viewModel.getQuantity());
     lotStockOnHand.setText(viewModel.getLotSoh());
     movementReason.setText(viewModel.getMovementReason());
     documentNumber.setText(viewModel.getDocumentNumber());
+    lyLotAmount.setErrorEnabled(false);
     if (viewModel.isNewAdded()) {
       lotSohTip.setText(getString(R.string.label_new_added_lot));
       btnDelLot.setVisibility(View.VISIBLE);
+      if (!viewModel.isValid()) {
+        lyLotAmount.setError(getString(R.string.msg_empty_quantity));
+      }
     }
     setUpViewListener(viewModel, bulkEntriesLotMovementAdapter);
+  }
+
+  public void setMovementChangeListener(
+      BulkEntriesLotMovementViewHolder.AmountChangeListener amountChangeListener) {
+    this.amountChangeListener = amountChangeListener;
   }
 
   private void setUpViewListener(LotMovementViewModel viewModel,
       BulkEntriesLotMovementAdapter adapter) {
     movementReason.setOnClickListener(getMovementReasonOnClickListener(viewModel));
-    lotAmount.addTextChangedListener(new EditTextWatcher(lotAmount, viewModel));
+    etLotAmount.addTextChangedListener(new EditTextWatcher(etLotAmount, viewModel));
     documentNumber.addTextChangedListener(new EditTextWatcher(documentNumber, viewModel));
     btnDelLot.setOnClickListener(getOnClickListenerForDeleteIcon(viewModel, adapter));
   }
@@ -104,6 +119,11 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
   private String getString(int id) {
     return context.getResources().getString(id);
+  }
+
+  private void setQuantityError(String string) {
+    etLotAmount.requestFocus();
+    lyLotAmount.setError(string);
   }
 
   @NonNull
@@ -164,12 +184,33 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
     @Override
     public void afterTextChanged(Editable editable) {
-      if (itemView.getId() == R.id.et_amount) {
+      if (itemView.getId() == R.id.et_lot_amount) {
         viewModel.setQuantity(editable.toString());
+        lyLotAmount.setErrorEnabled(false);
+        updateVgLotSOHAndError();
+        if (!viewModel.isNewAdded()) {
+          amountChangeListener.amountChange();
+        }
+
       } else {
         viewModel.setDocumentNumber(editable.toString());
       }
     }
 
+    private void updateVgLotSOHAndError() {
+      if (viewModel.isNewAdded()) {
+        if (viewModel.validateLotWithPositiveQuantity()) {
+          vgLotSOH.setVisibility(View.GONE);
+        } else {
+          vgLotSOH.setVisibility(View.VISIBLE);
+          setQuantityError(getString(R.string.msg_empty_quantity));
+        }
+      }
+    }
+  }
+
+  public interface AmountChangeListener {
+
+    void amountChange();
   }
 }

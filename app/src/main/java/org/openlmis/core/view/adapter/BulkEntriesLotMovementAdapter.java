@@ -26,9 +26,11 @@ import java.util.List;
 import lombok.Getter;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.BulkEntriesLotMovementViewHolder;
+import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
-public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntriesLotMovementViewHolder> {
+public class BulkEntriesLotMovementAdapter extends
+    RecyclerView.Adapter<BulkEntriesLotMovementViewHolder> {
 
   @Getter
   protected final List<LotMovementViewModel> lotList;
@@ -36,14 +38,23 @@ public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntr
   @Getter
   private final String productName;
 
-  private String[] movementReasons;
+  private final BulkEntriesViewModel bulkEntriesViewModel;
+
+  private final BulkEntriesAdapter bulkEntriesAdapter;
+
+  private final String[] movementReasons;
+
+  private BulkEntriesLotMovementViewHolder.AmountChangeListener amountChangeListener;
 
 
   public BulkEntriesLotMovementAdapter(
-      List<LotMovementViewModel> lotList, String[] reasonDescriptionList, String productName) {
+      List<LotMovementViewModel> lotList, String[] reasonDescriptionList,
+      BulkEntriesViewModel bulkEntriesViewModel, BulkEntriesAdapter bulkEntriesAdapter) {
     this.lotList = lotList;
     this.movementReasons = reasonDescriptionList;
-    this.productName = productName;
+    this.productName = bulkEntriesViewModel.getProduct().getPrimaryName();
+    this.bulkEntriesViewModel = bulkEntriesViewModel;
+    this.bulkEntriesAdapter = bulkEntriesAdapter;
   }
 
   @NonNull
@@ -57,6 +68,7 @@ public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntr
   @Override
   public void onBindViewHolder(@NonNull BulkEntriesLotMovementViewHolder holder, int position) {
     holder.populate(lotList.get(position), this);
+    holder.setMovementChangeListener(amountChangeListener);
   }
 
   @Override
@@ -64,8 +76,17 @@ public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntr
     return lotList.size();
   }
 
+  public void setMovementChangeListener(
+      BulkEntriesLotMovementViewHolder.AmountChangeListener amountChangedListener) {
+    this.amountChangeListener = amountChangedListener;
+  }
+
   public void remove(LotMovementViewModel viewModel) {
     lotList.remove(viewModel);
+    if (lotList.isEmpty()) {
+      bulkEntriesViewModel.setValid(bulkEntriesViewModel.validate());
+      bulkEntriesAdapter.notifyDataSetChanged();
+    }
     this.notifyDataSetChanged();
   }
 }

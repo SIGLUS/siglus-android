@@ -21,10 +21,8 @@ package org.openlmis.core.view.viewmodel;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
-import lombok.Setter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -32,6 +30,13 @@ import org.openlmis.core.model.StockCard;
 
 @Data
 public class BulkEntriesViewModel extends InventoryViewModel {
+
+  public enum InvalidType {
+    NO_LOT,
+    EXISTING_LOT_ALL_BLANK,
+    NEW_LOT_BLANK,
+    DEFAULT
+  }
 
   private boolean done;
 
@@ -41,6 +46,7 @@ public class BulkEntriesViewModel extends InventoryViewModel {
 
   private List<LotMovementViewModel> lotMovementViewModels;
 
+  private InvalidType invalidType;
 
   public BulkEntriesViewModel(Product product) {
     super(product);
@@ -52,15 +58,13 @@ public class BulkEntriesViewModel extends InventoryViewModel {
     this.product = stockCard.getProduct();
   }
 
-  public BulkEntriesViewModel(Product product, boolean done,
-      Long quantity,
+  public BulkEntriesViewModel(Product product, boolean done, Long quantity,
       List<LotMovementViewModel> lotMovementViewModels) {
     super(product);
     this.done = done;
     this.product = product;
     this.quantity = quantity;
     this.lotMovementViewModels = lotMovementViewModels;
-    this.existingLotMovementViewModelList = new ArrayList<>(lotMovementViewModels);
   }
 
   public SpannableStringBuilder getGreenName() {
@@ -70,5 +74,43 @@ public class BulkEntriesViewModel extends InventoryViewModel {
             LMISApp.getInstance().getResources().getColor(R.color.color_primary)), 0,
         getFormattedProductName().length(), Spanned.SPAN_POINT_MARK);
     return spannableStringBuilder;
+  }
+
+  @Override
+  public boolean validate() {
+    if (newLotMovementViewModelList.isEmpty()) {
+      return validExistingLotMovementViewModelList();
+    } else {
+      return validNewLotMovementViewModelList();
+    }
+  }
+
+  private boolean validExistingLotMovementViewModelList() {
+    if (existingLotMovementViewModelList.isEmpty()) {
+      invalidType = InvalidType.NO_LOT;
+      return false;
+    } else {
+      for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
+        if (lotMovementViewModel.getQuantity() != null && !lotMovementViewModel.getQuantity().equals("")) {
+          invalidType = InvalidType.DEFAULT;
+          return true;
+        }
+      }
+    }
+    invalidType = InvalidType.EXISTING_LOT_ALL_BLANK;
+    return false;
+  }
+
+
+  private boolean validNewLotMovementViewModelList() {
+    for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
+      if (lotMovementViewModel.getQuantity() == null || lotMovementViewModel.getQuantity().isEmpty()) {
+        lotMovementViewModel.setValid(false);
+        invalidType = InvalidType.NEW_LOT_BLANK;
+        return false;
+      }
+    }
+    invalidType = InvalidType.DEFAULT;
+    return true;
   }
 }

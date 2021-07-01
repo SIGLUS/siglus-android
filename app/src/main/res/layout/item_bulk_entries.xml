@@ -54,15 +54,15 @@
 
     </LinearLayout>
 
-    <org.openlmis.core.view.widget.BulkEntriesLotListView
-      android:id="@+id/view_lot_list"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
-
     <View
       android:layout_width="match_parent"
       android:layout_height="0.1dp"
       android:background="@color/alphabet_background_border_color" />
+
+    <org.openlmis.core.view.widget.BulkEntriesLotListView
+      android:id="@+id/view_lot_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
   </LinearLayout>
 </androidx.cardview.widget.CardView>
