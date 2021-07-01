@@ -72,7 +72,7 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
   public StockCardsLocalResponse deserialize(JsonElement json, java.lang.reflect.Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {
     final StockCardsNetworkResponse stockcardNetworkResponse = gson.fromJson(json, StockCardsNetworkResponse.class);
-    final StockCardsLocalResponse adaptedResponse = new StockCardsLocalResponse();
+    final StockCardsLocalResponse localResponse = new StockCardsLocalResponse();
     final ArrayList<StockCard> stockCards = new ArrayList<>();
     for (ProductMovementResponse productMovementModel : stockcardNetworkResponse.getProductMovements()) {
       try {
@@ -82,8 +82,8 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
         throw new JsonParseException("stock cards deserialize fail", e);
       }
     }
-    adaptedResponse.setStockCards(stockCards);
-    return adaptedResponse;
+    localResponse.setStockCards(stockCards);
+    return localResponse;
   }
 
   MovementType mapToLocalMovementType(String networkType, int movementQuantity) throws LMISException {
@@ -118,15 +118,14 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
 
   private StockCard fitForStockCard(ProductMovementResponse productMovement) throws LMISException {
     final StockCard newStockCard = new StockCard();
-    // setup stock card
     final Product product = productRepository.getByCode(productMovement.getProductCode());
-    setupStockCard(productMovement, newStockCard, product);
-    setStockMovementItemsAndLotMovementItems(newStockCard, product, productMovement);
+    setupProductAndSoh(productMovement, newStockCard, product);
+    setupStockMovementItemsAndLotMovementItems(newStockCard, productMovement);
     setupLotOnHandList(newStockCard, productMovement);
     return newStockCard;
   }
 
-  private void setupStockCard(ProductMovementResponse productMovement, StockCard newStockCard, Product product)
+  private void setupProductAndSoh(ProductMovementResponse productMovement, StockCard newStockCard, Product product)
       throws LMISException {
     newStockCard.setProduct(product);
     newStockCard.setStockOnHand(productMovement.getStockOnHand());
@@ -136,8 +135,8 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     }
   }
 
-  private void setStockMovementItemsAndLotMovementItems(StockCard stockCard, Product product,
-      ProductMovementResponse productMovement) throws LMISException {
+  private void setupStockMovementItemsAndLotMovementItems(StockCard stockCard, ProductMovementResponse productMovement)
+      throws LMISException {
     final List<StockMovementItemResponse> stockMovementItemsResponse = productMovement.getStockMovementItems();
     if (CollectionUtils.isEmpty(stockMovementItemsResponse)) {
       return;
@@ -167,7 +166,7 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
         for (LotMovementItemResponse lotMovementItemResponse : stockMovementItemResponse.getLotMovementItems()) {
           final LotMovementItem lotMovementItem = new LotMovementItem();
           final Lot lot = new Lot();
-          lot.setProduct(product);
+          lot.setProduct(stockCard.getProduct());
           lot.setLotNumber(lotMovementItemResponse.getLotCode());
           lotMovementItem.setLot(lot);
           lotMovementItem.setStockMovementItem(stockMovementItem);
@@ -194,29 +193,21 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
         continue;
       }
       final LotResponse lotResponse = lotOnHandItemResponse.getLot();
-      // set lot
-      final Lot lot = new Lot();
-      lot.setLotNumber(lotResponse.getLotCode());
+      // set lot info
+      Lot lot = lotRepository
+          .getLotByLotNumberAndProductId(lotResponse.getLotCode(), stockCard.getProduct().getId());
+      if (lot == null){
+        lot = new Lot();
+        lot.setLotNumber(lotResponse.getLotCode());
+        lot.setProduct(stockCard.getProduct());
+      }
       lot.setExpirationDate(DateUtil.parseString(lotResponse.getExpirationDate(), DateUtil.DB_DATE_FORMAT));
-      lot.setProduct(stockCard.getProduct());
       // set lot on hand
       final LotOnHand lotOnHand = new LotOnHand();
       lotOnHand.setLot(lot);
       lotOnHand.setQuantityOnHand((long) lotOnHandItemResponse.getQuantityOnHand());
       lotOnHand.setStockCard(stockCard);
       lotOnHandListWrapper.add(lotOnHand);
-      // set exist lot on hand info
-      updateLotOnHandIdAndLotIfLotAlreadyExist(lotOnHand);
-    }
-  }
-
-  private void updateLotOnHandIdAndLotIfLotAlreadyExist(LotOnHand lotOnHand) throws LMISException {
-    Product product = lotOnHand.getLot().getProduct();
-    Lot existingLot = lotRepository
-        .getLotByLotNumberAndProductId(lotOnHand.getLot().getLotNumber(), product.getId());
-    if (existingLot != null) {
-      lotOnHand.setId(lotRepository.getLotOnHandByLot(existingLot).getId());
-      lotOnHand.setLot(existingLot);
     }
   }
 
