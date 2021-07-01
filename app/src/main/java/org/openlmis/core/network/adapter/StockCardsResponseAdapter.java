@@ -18,6 +18,7 @@
 
 package org.openlmis.core.network.adapter;
 
+import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -41,13 +42,13 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.network.model.LotMovementItemResponse;
+import org.openlmis.core.network.model.LotOnHandResponse;
+import org.openlmis.core.network.model.LotResponse;
+import org.openlmis.core.network.model.ProductMovementResponse;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
-import org.openlmis.core.network.model.StockCardsNetworkResponse;
-import org.openlmis.core.network.model.StockCardsNetworkResponse.LotMovementItemResponse;
-import org.openlmis.core.network.model.StockCardsNetworkResponse.LotOnHandResponse;
-import org.openlmis.core.network.model.StockCardsNetworkResponse.LotResponse;
-import org.openlmis.core.network.model.StockCardsNetworkResponse.ProductMovementResponse;
-import org.openlmis.core.network.model.StockCardsNetworkResponse.StockMovementItemResponse;
+import org.openlmis.core.network.model.StockCardsRemoteResponse;
+import org.openlmis.core.network.model.StockMovementItemResponse;
 import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
@@ -71,7 +72,7 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
   @Override
   public StockCardsLocalResponse deserialize(JsonElement json, java.lang.reflect.Type typeOfT,
       JsonDeserializationContext context) throws JsonParseException {
-    final StockCardsNetworkResponse stockcardNetworkResponse = gson.fromJson(json, StockCardsNetworkResponse.class);
+    final StockCardsRemoteResponse stockcardNetworkResponse = gson.fromJson(json, StockCardsRemoteResponse.class);
     final StockCardsLocalResponse localResponse = new StockCardsLocalResponse();
     final ArrayList<StockCard> stockCards = new ArrayList<>();
     for (ProductMovementResponse productMovementModel : stockcardNetworkResponse.getProductMovements()) {
@@ -86,28 +87,6 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     return localResponse;
   }
 
-  MovementType mapToLocalMovementType(String networkType, int movementQuantity) throws LMISException {
-    final NetworkMovementType convertedType = NetworkMovementType.convertValue(networkType);
-    if (convertedType == NetworkMovementType.PHYSICAL_INVENTORY && movementQuantity == 0) {
-      return MovementType.PHYSICAL_INVENTORY;
-    } else if (convertedType == NetworkMovementType.PHYSICAL_INVENTORY && movementQuantity > 0) {
-      return MovementType.POSITIVE_ADJUST;
-    } else if (convertedType == NetworkMovementType.PHYSICAL_INVENTORY) {
-      return MovementType.NEGATIVE_ADJUST;
-    } else if (convertedType == NetworkMovementType.RECEIVE) {
-      return MovementType.RECEIVE;
-    } else if (convertedType == NetworkMovementType.ISSUE || convertedType == NetworkMovementType.UNPACK_KIT) {
-      return MovementType.ISSUE;
-    } else if (convertedType == NetworkMovementType.ADJUSTMENT && movementQuantity > 0) {
-      return MovementType.POSITIVE_ADJUST;
-    } else if (convertedType == NetworkMovementType.ADJUSTMENT && movementQuantity < 0) {
-      return MovementType.NEGATIVE_ADJUST;
-    } else {
-      throw new LMISException(
-          String.format("Illegal arguments: networkType = %s, movementQuantity = %s", networkType, movementQuantity));
-    }
-  }
-
   String mapToLocalReason(String networkType, String networkReason) throws LMISException {
     final NetworkMovementType convertedType = NetworkMovementType.convertValue(networkType);
     if (convertedType == NetworkMovementType.UNPACK_KIT) {
@@ -119,13 +98,13 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
   private StockCard fitForStockCard(ProductMovementResponse productMovement) throws LMISException {
     final StockCard newStockCard = new StockCard();
     final Product product = productRepository.getByCode(productMovement.getProductCode());
-    setupProductAndSoh(productMovement, newStockCard, product);
-    setupStockMovementItemsAndLotMovementItems(newStockCard, productMovement);
-    setupLotOnHandList(newStockCard, productMovement);
+    buildProductAndSoh(productMovement, newStockCard, product);
+    buildStockMovementItemsAndLotMovementItems(newStockCard, productMovement);
+    buildLotOnHandList(newStockCard, productMovement);
     return newStockCard;
   }
 
-  private void setupProductAndSoh(ProductMovementResponse productMovement, StockCard newStockCard, Product product)
+  private void buildProductAndSoh(ProductMovementResponse productMovement, StockCard newStockCard, Product product)
       throws LMISException {
     newStockCard.setProduct(product);
     newStockCard.setStockOnHand(productMovement.getStockOnHand());
@@ -135,46 +114,23 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     }
   }
 
-  private void setupStockMovementItemsAndLotMovementItems(StockCard stockCard, ProductMovementResponse productMovement)
+  private void buildStockMovementItemsAndLotMovementItems(StockCard stockCard, ProductMovementResponse productMovement)
       throws LMISException {
     final List<StockMovementItemResponse> stockMovementItemsResponse = productMovement.getStockMovementItems();
     if (CollectionUtils.isEmpty(stockMovementItemsResponse)) {
       return;
     }
     final List<StockMovementItem> stockMovementItemsWrapper = stockCard.getStockMovementItemsWrapper();
-    for (StockMovementItemResponse stockMovementItemResponse : stockMovementItemsResponse) {
-      final StockMovementItem stockMovementItem = new StockMovementItem();
-      // set movement item property
-      stockMovementItem.setStockCard(stockCard);
-      stockMovementItem.setSynced(true);
-      stockMovementItem.setMovementQuantity(stockMovementItemResponse.getMovementQuantity());
-      stockMovementItem.setStockOnHand(Long.parseLong(stockMovementItemResponse.getStockOnHand()));
-      stockMovementItem.setSignature(stockMovementItemResponse.getSignature());
-      stockMovementItem.setCreatedTime(new Date(stockMovementItemResponse.getProcessedDate()));
-      stockMovementItem.setRequested(stockMovementItemResponse.getRequested());
-      stockMovementItem
-          .setMovementDate(DateUtil.parseString(stockMovementItemResponse.getOccurredDate(), DateUtil.DB_DATE_FORMAT));
-      final MovementType stockCardMovementType = mapToLocalMovementType(stockMovementItemResponse.getType(),
-          stockMovementItemResponse.getMovementQuantity());
-      stockMovementItem.setMovementType(stockCardMovementType);
-      if (CollectionUtils.isEmpty(stockMovementItemResponse.getLotMovementItems())) {
-        stockMovementItem
-            .setReason(mapToLocalReason(stockMovementItemResponse.getType(), stockMovementItemResponse.getReason()));
-        stockMovementItem.setDocumentNumber(stockMovementItemResponse.getDocumentNumber());
+    for (StockMovementItemResponse movementItemResponse : stockMovementItemsResponse) {
+      final StockMovementItem stockMovementItem = buildStockMovementItem(stockCard, movementItemResponse);
+      if (CollectionUtils.isEmpty(movementItemResponse.getLotMovementItems())) {
+        stockMovementItem.setReason(mapToLocalReason(movementItemResponse.getType(), movementItemResponse.getReason()));
+        stockMovementItem.setDocumentNumber(movementItemResponse.getDocumentNumber());
       } else {
         final List<LotMovementItem> lotMovementItemListWrapper = stockMovementItem.getLotMovementItemListWrapper();
-        for (LotMovementItemResponse lotMovementItemResponse : stockMovementItemResponse.getLotMovementItems()) {
-          final LotMovementItem lotMovementItem = new LotMovementItem();
-          final Lot lot = new Lot();
-          lot.setProduct(stockCard.getProduct());
-          lot.setLotNumber(lotMovementItemResponse.getLotCode());
-          lotMovementItem.setLot(lot);
-          lotMovementItem.setStockMovementItem(stockMovementItem);
-          lotMovementItem.setMovementQuantity((long) lotMovementItemResponse.getQuantity());
-          lotMovementItem
-              .setReason(mapToLocalReason(stockMovementItemResponse.getType(), lotMovementItemResponse.getReason()));
-          lotMovementItem.setStockOnHand((long) lotMovementItemResponse.getStockOnHand());
-          lotMovementItem.setDocumentNumber(lotMovementItemResponse.getDocumentNumber());
+        for (LotMovementItemResponse lotMovementItemResponse : movementItemResponse.getLotMovementItems()) {
+          final LotMovementItem lotMovementItem = buildLotMovementItem(stockCard, movementItemResponse,
+              stockMovementItem, lotMovementItemResponse);
           lotMovementItemListWrapper.add(lotMovementItem);
         }
       }
@@ -182,7 +138,44 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     }
   }
 
-  private void setupLotOnHandList(StockCard stockCard, ProductMovementResponse productMovement) throws LMISException {
+  @NonNull
+  private StockMovementItem buildStockMovementItem(StockCard stockCard, StockMovementItemResponse movementItemResponse)
+      throws LMISException {
+    final StockMovementItem stockMovementItem = new StockMovementItem();
+    // set movement item property
+    stockMovementItem.setStockCard(stockCard);
+    stockMovementItem.setSynced(true);
+    stockMovementItem.setMovementQuantity(movementItemResponse.getMovementQuantity());
+    stockMovementItem.setStockOnHand(Long.parseLong(movementItemResponse.getStockOnHand()));
+    stockMovementItem.setSignature(movementItemResponse.getSignature());
+    stockMovementItem.setCreatedTime(new Date(movementItemResponse.getProcessedDate()));
+    stockMovementItem.setRequested(movementItemResponse.getRequested());
+    stockMovementItem
+        .setMovementDate(DateUtil.parseString(movementItemResponse.getOccurredDate(), DateUtil.DB_DATE_FORMAT));
+    final MovementType stockCardMovementType = NetworkMovementType
+        .mapToLocalMovementType(movementItemResponse.getType(), movementItemResponse.getMovementQuantity());
+    stockMovementItem.setMovementType(stockCardMovementType);
+    return stockMovementItem;
+  }
+
+  @NonNull
+  private LotMovementItem buildLotMovementItem(StockCard stockCard, StockMovementItemResponse movementItemResponse,
+      StockMovementItem stockMovementItem, LotMovementItemResponse lotMovementItemResponse) throws LMISException {
+    final LotMovementItem lotMovementItem = new LotMovementItem();
+    final Lot lot = new Lot();
+    lot.setProduct(stockCard.getProduct());
+    lot.setLotNumber(lotMovementItemResponse.getLotCode());
+    lotMovementItem.setLot(lot);
+    lotMovementItem.setStockMovementItem(stockMovementItem);
+    lotMovementItem.setMovementQuantity((long) lotMovementItemResponse.getQuantity());
+    lotMovementItem
+        .setReason(mapToLocalReason(movementItemResponse.getType(), lotMovementItemResponse.getReason()));
+    lotMovementItem.setStockOnHand((long) lotMovementItemResponse.getStockOnHand());
+    lotMovementItem.setDocumentNumber(lotMovementItemResponse.getDocumentNumber());
+    return lotMovementItem;
+  }
+
+  private void buildLotOnHandList(StockCard stockCard, ProductMovementResponse productMovement) throws LMISException {
     final List<LotOnHandResponse> lotsOnHandsResponse = productMovement.getLotsOnHand();
     if (CollectionUtils.isEmpty(lotsOnHandsResponse)) {
       return;
@@ -221,6 +214,28 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
         }
       }
       throw new LMISException("Illegal network movement type: " + type);
+    }
+
+    public static MovementType mapToLocalMovementType(String networkType, int movementQuantity) throws LMISException {
+      final NetworkMovementType convertedType = convertValue(networkType);
+      if (convertedType == NetworkMovementType.PHYSICAL_INVENTORY && movementQuantity == 0) {
+        return MovementType.PHYSICAL_INVENTORY;
+      } else if (convertedType == NetworkMovementType.PHYSICAL_INVENTORY && movementQuantity > 0) {
+        return MovementType.POSITIVE_ADJUST;
+      } else if (convertedType == NetworkMovementType.PHYSICAL_INVENTORY) {
+        return MovementType.NEGATIVE_ADJUST;
+      } else if (convertedType == NetworkMovementType.RECEIVE) {
+        return MovementType.RECEIVE;
+      } else if (convertedType == NetworkMovementType.ISSUE || convertedType == NetworkMovementType.UNPACK_KIT) {
+        return MovementType.ISSUE;
+      } else if (convertedType == NetworkMovementType.ADJUSTMENT && movementQuantity > 0) {
+        return MovementType.POSITIVE_ADJUST;
+      } else if (convertedType == NetworkMovementType.ADJUSTMENT && movementQuantity < 0) {
+        return MovementType.NEGATIVE_ADJUST;
+      } else {
+        throw new LMISException(
+            String.format("Illegal arguments: networkType = %s, movementQuantity = %s", networkType, movementQuantity));
+      }
     }
   }
 }

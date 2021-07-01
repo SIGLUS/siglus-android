@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.network.adapter.StockCardsResponseAdapter.NetworkMovementType.mapToLocalMovementType;
 
 import com.google.gson.JsonParser;
 import com.google.inject.AbstractModule;
@@ -123,23 +124,22 @@ public class StockCardsResponseAdapterTest {
   @Test
   public void testMapToLocalMovementType() throws LMISException {
     // when
-    final MovementType physicalInventory = adapter
-        .mapToLocalMovementType(NetworkMovementType.PHYSICAL_INVENTORY.name(), 0);
-    final MovementType positiveAdjustWithInventory = adapter
-        .mapToLocalMovementType(NetworkMovementType.PHYSICAL_INVENTORY.name(), 100);
-    final MovementType negativeAdjustWithInventory = adapter
-        .mapToLocalMovementType(NetworkMovementType.PHYSICAL_INVENTORY.name(), -100);
-    final MovementType receive = adapter.mapToLocalMovementType(NetworkMovementType.RECEIVE.name(), 100);
-    final MovementType issueWithIssue = adapter.mapToLocalMovementType(NetworkMovementType.ISSUE.name(), -100);
-    final MovementType issueWithUnpackKit = adapter.mapToLocalMovementType(NetworkMovementType.UNPACK_KIT.name(), -100);
-    final MovementType positiveAdjustWithAdjustment = adapter
-        .mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), 100);
-    final MovementType negativeAdjustWithAdjustment = adapter
-        .mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), -100);
+    final MovementType physicalInventory = mapToLocalMovementType(NetworkMovementType.PHYSICAL_INVENTORY.name(), 0);
+    final MovementType positiveAdjustWithInventory = mapToLocalMovementType(
+        NetworkMovementType.PHYSICAL_INVENTORY.name(), 100);
+    final MovementType negativeAdjustWithInventory = mapToLocalMovementType(
+        NetworkMovementType.PHYSICAL_INVENTORY.name(), -100);
+    final MovementType receive = mapToLocalMovementType(NetworkMovementType.RECEIVE.name(), 100);
+    final MovementType issueWithIssue = mapToLocalMovementType(NetworkMovementType.ISSUE.name(), -100);
+    final MovementType issueWithUnpackKit = mapToLocalMovementType(NetworkMovementType.UNPACK_KIT.name(), -100);
+    final MovementType positiveAdjustWithAdjustment = mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(),
+        100);
+    final MovementType negativeAdjustWithAdjustment = mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(),
+        -100);
     final LMISException adjustmentIllegalException = assertThrows(LMISException.class,
-        () -> adapter.mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), 0));
+        () -> mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), 0));
     final LMISException errorTypeException = assertThrows(LMISException.class,
-        () -> adapter.mapToLocalMovementType("ERROR_TYPE", 0));
+        () -> mapToLocalMovementType("ERROR_TYPE", 0));
 
     // then
     assertEquals(MovementType.PHYSICAL_INVENTORY, physicalInventory);
@@ -156,7 +156,7 @@ public class StockCardsResponseAdapterTest {
   }
 
   @Test
-  public void testMapToLocalReason() throws LMISException{
+  public void testMapToLocalReason() throws LMISException {
     // when
     final String unpackKitReason = adapter.mapToLocalReason(NetworkMovementType.UNPACK_KIT.name(), null);
     final String testReason = adapter.mapToLocalReason(NetworkMovementType.ADJUSTMENT.name(), "test");
