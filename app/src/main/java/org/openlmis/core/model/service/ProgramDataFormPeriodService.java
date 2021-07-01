@@ -51,18 +51,14 @@ public class ProgramDataFormPeriodService {
     DateTime initializeDateTime;
     Period period = null;
     DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-    ReportTypeForm reportTypeForm = reportTypeFormRepository
-        .queryByCode(Program.RAPID_TEST_CODE);
-
+    ReportTypeForm reportTypeForm = reportTypeFormRepository.queryByCode(Program.RAPID_TEST_CODE);
     if (reportTypeForm.lastReportEndTime != null) {
-      DateTime lastReportEndTime = dateTimeFormatter
-          .parseDateTime(reportTypeForm.lastReportEndTime);
+      DateTime lastReportEndTime = dateTimeFormatter.parseDateTime(reportTypeForm.lastReportEndTime);
       if (Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12) {
         initializeDateTime = new DateTime().plusMonths(-12).toDateTime();
         period = new Period(initializeDateTime);
       } else {
-        List<ProgramDataForm> forms = programDataFormRepository
-            .listByProgramCode(Program.RAPID_TEST_CODE);
+        List<ProgramDataForm> forms = programDataFormRepository.listByProgramCode(Program.RAPID_TEST_CODE);
         if (forms != null && !forms.isEmpty()) {
           period = new Period(new DateTime(forms.get(0).getPeriodBegin()));
         } else {

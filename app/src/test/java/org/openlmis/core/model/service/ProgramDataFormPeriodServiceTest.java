@@ -29,8 +29,9 @@ import roboguice.RoboGuice;
 @RunWith(LMISTestRunner.class)
 public class ProgramDataFormPeriodServiceTest {
 
-  private StockRepository mockStockRepository;
+  private static final String TIME_FORMAT = "%s-%02d-%s 12:00:00";
 
+  private StockRepository mockStockRepository;
   ProgramDataFormPeriodService periodService;
   private StockMovementRepository mockStockMovementRepository;
   private ReportTypeFormRepository mockReportTypeFormRepository;
@@ -55,26 +56,28 @@ public class ProgramDataFormPeriodServiceTest {
         .setActive(true)
         .setCode(Program.RAPID_TEST_CODE)
         .setName(Constants.RAPID_TEST_OLD_CODE)
-        .setStartTime(
-            new DateTime(DateUtil.parseString("2015-01-01", DateUtil.DB_DATE_FORMAT)).toDate())
+        .setStartTime(new DateTime(DateUtil.parseString("2015-01-01", DateUtil.DB_DATE_FORMAT)).toDate())
         .setLastReportEndTime("2020-01-20 23:59:59")
         .build();
     when(mockReportTypeFormRepository.queryByCode(Program.RAPID_TEST_CODE)).thenReturn(reportTypeForm);
     when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
     Period period = periodService.getFirstStandardPeriod().get();
     final DateTime currentDate = new DateTime();
-    String beginDateBuilder = (currentDate.year().get() - 1)
-        + "-"
-        + "06"
-        + "-21 12:00:00";
-    String endDateBuilder = (currentDate.year().get() - 1)
-        + "-"
-        + "07"
-        + "-20 12:00:00";
-    final DateTime expectBeginTime = new DateTime(DateUtil.parseString(beginDateBuilder, DateUtil.DB_DATE_FORMAT));
-    assertThat(period.getBegin(), is(expectBeginTime));
-    final DateTime expectEndTime = new DateTime(DateUtil.parseString(endDateBuilder, DateUtil.DB_DATE_FORMAT));
-    assertThat(period.getEnd(), is(expectEndTime));
+    final int dayOfMonth = currentDate.dayOfMonth().get();
+    final int year = currentDate.year().get() - 1;
+    String beginDate;
+    String endDate;
+    if (dayOfMonth >= Period.BEGIN_DAY) {
+      beginDate = String.format(TIME_FORMAT, year, currentDate.monthOfYear().get(), Period.BEGIN_DAY);
+      endDate = String.format(TIME_FORMAT, year, (currentDate.monthOfYear().get() + 1), Period.END_DAY);
+    } else {
+      beginDate = String.format(TIME_FORMAT, year, (currentDate.monthOfYear().get() - 1), Period.BEGIN_DAY);
+      endDate = String.format(TIME_FORMAT, year, currentDate.monthOfYear().get(), Period.END_DAY);
+    }
+    final DateTime expectBeginTime = new DateTime(DateUtil.parseString(beginDate, DateUtil.DB_DATE_FORMAT));
+    assertThat(expectBeginTime, is(period.getBegin()));
+    final DateTime expectEndTime = new DateTime(DateUtil.parseString(endDate, DateUtil.DB_DATE_FORMAT));
+    assertThat(expectEndTime, is(period.getEnd()));
   }
 
   @Test
