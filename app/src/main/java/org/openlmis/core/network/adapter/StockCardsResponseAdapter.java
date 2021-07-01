@@ -196,7 +196,7 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
       // set lot info
       Lot lot = lotRepository
           .getLotByLotNumberAndProductId(lotResponse.getLotCode(), stockCard.getProduct().getId());
-      if (lot == null){
+      if (lot == null) {
         lot = new Lot();
         lot.setLotNumber(lotResponse.getLotCode());
         lot.setProduct(stockCard.getProduct());
