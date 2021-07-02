@@ -26,14 +26,13 @@
       android:layout="@layout/image_view_del"
       tools:layout="@layout/image_view_del" />
   </LinearLayout>
-
   <EditText
     android:id="@+id/regime_amount"
     style="@style/ItemRegime.EditText"
     android:layout_width="0dp"
     android:layout_height="match_parent"
     android:layout_weight="2"
-    android:inputType="numberSigned"
+    android:inputType="number"
     tools:hint="Total patients" />
 
   <EditText
@@ -42,6 +41,6 @@
     android:layout_width="0dp"
     android:layout_height="match_parent"
     android:layout_weight="2"
-    android:inputType="numberSigned"
+    android:inputType="number"
     tools:hint="Community pharmacy" />
 </LinearLayout>
