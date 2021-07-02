@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:enabled="false"
-        android:inputType="numberSigned"
+        android:inputType="number"
         android:maxLength="@integer/max_length_rapid_test_no_total" />
 
     <TextView
