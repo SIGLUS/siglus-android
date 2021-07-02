@@ -136,7 +136,7 @@ public class StockCardsResponseAdapterTest {
         100);
     final MovementType negativeAdjustWithAdjustment = mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(),
         -100);
-    final LMISException adjustmentIllegalException = assertThrows(LMISException.class,
+    final IllegalArgumentException adjustmentIllegalException = assertThrows(IllegalArgumentException.class,
         () -> mapToLocalMovementType(NetworkMovementType.ADJUSTMENT.name(), 0));
     final LMISException errorTypeException = assertThrows(LMISException.class,
         () -> mapToLocalMovementType("ERROR_TYPE", 0));
@@ -150,8 +150,7 @@ public class StockCardsResponseAdapterTest {
     assertEquals(MovementType.ISSUE, issueWithUnpackKit);
     assertEquals(MovementType.POSITIVE_ADJUST, positiveAdjustWithAdjustment);
     assertEquals(MovementType.NEGATIVE_ADJUST, negativeAdjustWithAdjustment);
-    assertEquals("Illegal arguments: networkType = ADJUSTMENT, movementQuantity = 0",
-        adjustmentIllegalException.getMsg());
+    assertEquals("Adjustment quantity cannot be 0", adjustmentIllegalException.getMessage());
     assertEquals("Illegal network movement type: ERROR_TYPE", errorTypeException.getMsg());
   }
 

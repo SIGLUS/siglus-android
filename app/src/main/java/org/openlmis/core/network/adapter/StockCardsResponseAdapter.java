@@ -205,7 +205,52 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
   }
 
   public enum NetworkMovementType {
-    PHYSICAL_INVENTORY, RECEIVE, ISSUE, ADJUSTMENT, UNPACK_KIT;
+    PHYSICAL_INVENTORY() {
+      @Override
+      public MovementType toMovementType(int movementQuantity) {
+        if (movementQuantity == 0) {
+          return MovementType.PHYSICAL_INVENTORY;
+        } else if (movementQuantity > 0) {
+          return MovementType.POSITIVE_ADJUST;
+        } else {
+          return MovementType.NEGATIVE_ADJUST;
+        }
+      }
+    },
+    RECEIVE() {
+      @Override
+      public MovementType toMovementType(int movementQuantity) {
+        return MovementType.RECEIVE;
+      }
+    },
+    ISSUE() {
+      @Override
+      public MovementType toMovementType(int movementQuantity) {
+        return MovementType.ISSUE;
+      }
+    },
+    ADJUSTMENT() {
+      @Override
+      public MovementType toMovementType(int movementQuantity) {
+        if (movementQuantity > 0) {
+          return MovementType.POSITIVE_ADJUST;
+        } else if (movementQuantity < 0) {
+          return MovementType.NEGATIVE_ADJUST;
+        } else {
+          throw new IllegalArgumentException("Adjustment quantity cannot be 0");
+        }
+      }
+    },
+    UNPACK_KIT() {
+      @Override
+      public MovementType toMovementType(int movementQuantity) {
+        return MovementType.ISSUE;
+      }
+    };
+
+    public MovementType toMovementType(int movementQuantity) {
+      throw new UnsupportedOperationException("Please override this method for " + this.name());
+    }
 
     public static NetworkMovementType convertValue(String type) throws LMISException {
       for (NetworkMovementType movementType : NetworkMovementType.values()) {
@@ -217,25 +262,7 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     }
 
     public static MovementType mapToLocalMovementType(String networkType, int movementQuantity) throws LMISException {
-      final NetworkMovementType convertedType = convertValue(networkType);
-      if (convertedType == NetworkMovementType.PHYSICAL_INVENTORY && movementQuantity == 0) {
-        return MovementType.PHYSICAL_INVENTORY;
-      } else if (convertedType == NetworkMovementType.PHYSICAL_INVENTORY && movementQuantity > 0) {
-        return MovementType.POSITIVE_ADJUST;
-      } else if (convertedType == NetworkMovementType.PHYSICAL_INVENTORY) {
-        return MovementType.NEGATIVE_ADJUST;
-      } else if (convertedType == NetworkMovementType.RECEIVE) {
-        return MovementType.RECEIVE;
-      } else if (convertedType == NetworkMovementType.ISSUE || convertedType == NetworkMovementType.UNPACK_KIT) {
-        return MovementType.ISSUE;
-      } else if (convertedType == NetworkMovementType.ADJUSTMENT && movementQuantity > 0) {
-        return MovementType.POSITIVE_ADJUST;
-      } else if (convertedType == NetworkMovementType.ADJUSTMENT && movementQuantity < 0) {
-        return MovementType.NEGATIVE_ADJUST;
-      } else {
-        throw new LMISException(
-            String.format("Illegal arguments: networkType = %s, movementQuantity = %s", networkType, movementQuantity));
-      }
+      return convertValue(networkType).toMovementType(movementQuantity);
     }
   }
 }
