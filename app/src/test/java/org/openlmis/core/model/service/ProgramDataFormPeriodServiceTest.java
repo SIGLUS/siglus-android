@@ -1,7 +1,13 @@
 package org.openlmis.core.model.service;
 
-import com.google.inject.AbstractModule;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.google.inject.AbstractModule;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,15 +28,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 import roboguice.RoboGuice;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class ProgramDataFormPeriodServiceTest {
@@ -69,8 +67,8 @@ public class ProgramDataFormPeriodServiceTest {
         when(mockReportTypeFormRepository.queryByCode("TEST_KIT")).thenReturn(reportTypeForm);
         when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
         Period period = periodService.getFirstStandardPeriod().get();
-        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2020-05-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
-        assertThat(period.getEnd(), is(new DateTime(DateUtil.parseString("2020-06-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2020-06-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
+        assertThat(period.getEnd(), is(new DateTime(DateUtil.parseString("2020-07-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
     }
 
     @Test

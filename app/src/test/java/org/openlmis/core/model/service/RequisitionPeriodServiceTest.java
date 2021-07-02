@@ -1,7 +1,19 @@
 package org.openlmis.core.model.service;
 
-import com.google.inject.AbstractModule;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
+import com.google.inject.AbstractModule;
+import java.util.ArrayList;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,7 +26,6 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -25,24 +36,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
-
-import java.util.ArrayList;
-import java.util.Date;
-
 import roboguice.RoboGuice;
-
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class RequisitionPeriodServiceTest {
@@ -123,8 +117,8 @@ public class RequisitionPeriodServiceTest {
         when(mockReportTypeFormRepository.queryByCode(programMMIA.getProgramCode())).thenReturn(reportTypeForm);
         when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
         Period period = requisitionPeriodService.generateNextPeriod(new ArrayList<>(), programMMIA.getProgramCode(),null);
-        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2020-04-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
-        assertThat(period.getEnd(), is(new DateTime(DateUtil.parseString("2020-05-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2020-05-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
+        assertThat(period.getEnd(), is(new DateTime(DateUtil.parseString("2020-06-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
     }
 
     @Test
