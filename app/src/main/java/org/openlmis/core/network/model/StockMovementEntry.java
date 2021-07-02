@@ -32,7 +32,6 @@ import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -41,7 +40,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 @NoArgsConstructor
 public class StockMovementEntry {
 
-  String processedDate;
+  long processedDate;
   String signature;
   String occurredDate;
   String documentationNo;
@@ -54,8 +53,8 @@ public class StockMovementEntry {
   List<LotMovementEntry> lotEventList = new ArrayList<>();
 
   public StockMovementEntry(StockMovementItem stockMovementItem) {
-    this.setProcessedDate(new DateTime(stockMovementItem.getCreatedTime())
-            .toString(ISODateTimeFormat.dateTime()));
+    DateTime dateTime = new DateTime(stockMovementItem.getCreatedTime());
+    this.setProcessedDate(dateTime.toInstant().getMillis());
     this.setSignature(stockMovementItem.getSignature());
     this.setOccurredDate(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
     this.setDocumentationNo(stockMovementItem.getDocumentNumber());
