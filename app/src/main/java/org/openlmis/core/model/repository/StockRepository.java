@@ -414,7 +414,7 @@ public class StockRepository {
 
     for (String productCode : productCodeList) {
       String resetStockCardSohAndAvgMonthlyConsumption =
-          "UPDATE stock_cards SET stockOnHand=0,avgMonthlyConsumption=-1.0 "
+          "UPDATE stock_cards SET stockOnHand=0, avgMonthlyConsumption=-1.0, stockOnHandStatus='STOCK_OUT' "
               + "WHERE product_id=(SELECT id FROM products WHERE code='" + productCode + "' );";
       LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
           .execSQL(resetStockCardSohAndAvgMonthlyConsumption);
