@@ -176,11 +176,19 @@ public class BulkEntriesActivity extends BaseActivity {
   }
 
   private void setViewGoneWhenNoProduct(List<BulkEntriesViewModel> bulkEntriesViewModels) {
-    actionPanel.setVisibility(bulkEntriesViewModels.isEmpty() ? View.GONE : View.VISIBLE);
-    ivNoProduct.setVisibility(bulkEntriesViewModels.isEmpty() ? View.VISIBLE : View.GONE);
-    msgNoProduct.setVisibility(bulkEntriesViewModels.isEmpty() ? View.VISIBLE : View.GONE);
-    tvTotal.setVisibility(bulkEntriesViewModels.isEmpty() ? View.GONE : View.VISIBLE);
-    totalDivider.setVisibility(bulkEntriesViewModels.isEmpty() ? View.GONE : View.VISIBLE);
+    actionPanel.setVisibility(getGoneWhenNoProduct(bulkEntriesViewModels));
+    ivNoProduct.setVisibility(getVisibleWhenNoProduct(bulkEntriesViewModels));
+    msgNoProduct.setVisibility(getVisibleWhenNoProduct(bulkEntriesViewModels));
+    tvTotal.setVisibility(getGoneWhenNoProduct(bulkEntriesViewModels));
+    totalDivider.setVisibility(getGoneWhenNoProduct(bulkEntriesViewModels));
+  }
+
+  private int getGoneWhenNoProduct(List<BulkEntriesViewModel> bulkEntriesViewModels) {
+    return bulkEntriesViewModels.isEmpty() ? View.GONE : View.VISIBLE;
+  }
+
+  private int getVisibleWhenNoProduct(List<BulkEntriesViewModel> bulkEntriesViewModels) {
+    return bulkEntriesViewModels.isEmpty() ? View.VISIBLE : View.GONE;
   }
 
   private void setTotal(int total) {
