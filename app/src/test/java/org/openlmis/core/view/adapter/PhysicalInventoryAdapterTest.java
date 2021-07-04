@@ -41,7 +41,7 @@ public class PhysicalInventoryAdapterTest {
 
   @Before
   public void setup() {
-    adapter = new PhysicalInventoryAdapter(new ArrayList<InventoryViewModel>(), null, null, null);
+    adapter = new PhysicalInventoryAdapter(new ArrayList<>(), null);
 
     product = new Product();
     product.setPrimaryName("Test Product");
@@ -65,9 +65,9 @@ public class PhysicalInventoryAdapterTest {
     adapter.refreshList(list);
 
     //+1 for footer view (Done Btn)
-    assertThat(adapter.getItemCount(), is(10 + 1));
+    assertThat(adapter.getItemCount(), is(10));
     adapter.filter("1");
-    assertThat(adapter.getItemCount(), is(1 + 1));
+    assertThat(adapter.getItemCount(), is(1));
   }
 
 }

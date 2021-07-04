@@ -19,9 +19,8 @@
 package org.openlmis.core.view.adapter;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull;
 import com.viethoa.RecyclerViewFastScroller;
 import java.util.List;
 import org.openlmis.core.R;
@@ -30,47 +29,29 @@ import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder;
 import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 @SuppressWarnings("PMD")
-public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn implements
+public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInventoryWithLotViewHolder> implements
     FilterableAdapter, RecyclerViewFastScroller.BubbleTextGetter {
 
-  private final SingleClickButtonListener saveClickListener;
-  private final SingleClickButtonListener completeClickListener;
   private final InventoryItemStatusChangeListener refreshCompleteCountListener;
 
-  public PhysicalInventoryAdapter(List<InventoryViewModel> data,
-      SingleClickButtonListener saveClickListener, SingleClickButtonListener completeClickListener,
-      InventoryItemStatusChangeListener refreshCompleteCountListener) {
+  public PhysicalInventoryAdapter(List<InventoryViewModel> data, InventoryItemStatusChangeListener refreshListener) {
     super(data);
-    this.saveClickListener = saveClickListener;
-    this.completeClickListener = completeClickListener;
-    this.refreshCompleteCountListener = refreshCompleteCountListener;
+    this.refreshCompleteCountListener = refreshListener;
+  }
+
+  @NonNull
+  @Override
+  public PhysicalInventoryWithLotViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    return new PhysicalInventoryWithLotViewHolder(
+        LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false));
   }
 
   @Override
-  public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent) {
-    View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.item_physical_inventory, parent, false);
-    return new PhysicalInventoryWithLotViewHolder(view);
-  }
-
-  @Override
-  protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
+  public void onBindViewHolder(@NonNull PhysicalInventoryWithLotViewHolder holder, int position) {
     final InventoryViewModel viewModel = filteredList.get(position);
-    PhysicalInventoryWithLotViewHolder holder = (PhysicalInventoryWithLotViewHolder) viewHolder;
-    holder.populate((PhysicalInventoryViewModel) viewModel, queryKeyWord,
-        refreshCompleteCountListener);
-  }
-
-  @Override
-  protected RecyclerView.ViewHolder onCreateFooterView(ViewGroup parent) {
-    VHFooter vhFooter = new VHFooter(LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.view_action_panel, parent, false));
-    vhFooter.itemView.findViewById(R.id.btn_save).setOnClickListener(saveClickListener);
-    vhFooter.itemView.findViewById(R.id.btn_complete).setOnClickListener(completeClickListener);
-    return vhFooter;
+    holder.populate((PhysicalInventoryViewModel) viewModel, queryKeyWord, refreshCompleteCountListener);
   }
 
   @Override

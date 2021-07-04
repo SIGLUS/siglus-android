@@ -45,13 +45,12 @@ public class PhysicalInventoryActivity extends InventoryActivity {
   @Override
   public void initUI() {
     super.initUI();
-    bottomBtn.setVisibility(View.GONE);
+    btnSave.setOnClickListener(getSaveOnClickListener());
     btnDone.setOnClickListener(completeClickListener);
 
     initPresenter();
     initRecyclerView();
-    Subscription subscription = presenter.loadInventory()
-        .subscribe(getOnViewModelsLoadedSubscriber());
+    Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
   }
 
@@ -61,8 +60,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
   @Override
   protected void initRecyclerView() {
-    mAdapter = new PhysicalInventoryAdapter(presenter.getInventoryViewModelList(),
-        getSaveOnClickListener(), completeClickListener, getRefreshCompleteCountListener());
+    mAdapter = new PhysicalInventoryAdapter(presenter.getInventoryViewModelList(), getRefreshCompleteCountListener());
     productListRecycleView.setAdapter(mAdapter);
   }
 
@@ -151,8 +149,8 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
   public void showSignDialog() {
     SignatureDialog signatureDialog = new SignatureDialog();
-    signatureDialog.setArguments(SignatureDialog
-        .getBundleToMe(getString(R.string.label_physical_inventory_signature_title)));
+    signatureDialog
+        .setArguments(SignatureDialog.getBundleToMe(getString(R.string.label_physical_inventory_signature_title)));
     signatureDialog.setDelegate(signatureDialogDelegate);
     signatureDialog.show(getSupportFragmentManager());
   }

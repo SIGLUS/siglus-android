@@ -20,7 +20,6 @@ package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -56,9 +55,6 @@ public abstract class InventoryActivity extends SearchBarActivity implements
 
   @InjectView(R.id.tv_total)
   public TextView tvTotal;
-
-  @InjectView(R.id.action_panel)
-  public ViewGroup bottomBtn;
 
   @InjectView(R.id.btn_complete)
   public Button btnDone;
