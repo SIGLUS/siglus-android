@@ -101,8 +101,15 @@ public class StockMovementRepository {
           for (StockMovementItem stockMovementItem : stockMovementItems) {
             updateDateTimeIfEmpty(stockMovementItem);
             dao.createOrUpdate(stockMovementItem);
+            List<LotMovementItem> lotMovementItems = FluentIterable.from(
+                stockMovementItem.getLotMovementItemListWrapper())
+                .transform(lotMovementItem -> {
+                  lotMovementItem.setReason(stockMovementItem.getReason());
+                  lotMovementItem.setDocumentNumber(stockMovementItem.getDocumentNumber());
+                  return lotMovementItem;
+                }).toList();
             lotRepository
-                .batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
+                .batchCreateLotsAndLotMovements(lotMovementItems);
           }
           return null;
         });
