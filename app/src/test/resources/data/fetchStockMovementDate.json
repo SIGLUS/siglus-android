@@ -9,7 +9,7 @@
           "type": "PHYSICAL_INVENTORY",
           "stockOnHand": 100,
           "signature": "ql",
-          "processedDate": 1623210419714,
+          "processedDate": "2016-06-09T10:10:10Z",
           "occurredDate": "2021-06-09",
           "documentNumber": null,
           "reason": null,
