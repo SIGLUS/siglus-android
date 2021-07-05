@@ -27,4 +27,5 @@ public class FacilityInfoResponse {
   private String code;
   private String name;
   private List<SupportedProgram> supportedPrograms;
+  private boolean isAndroid;
 }

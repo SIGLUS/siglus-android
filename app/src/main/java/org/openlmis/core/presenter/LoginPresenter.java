@@ -139,227 +139,10 @@ public class LoginPresenter extends Presenter {
     }
   }
 
-  private boolean isRoboUniTest() {
-    return "robolectric".equals(Build.FINGERPRINT);
-  }
-
-  private InternetCheck.Callback checkNetworkConnected(User user, boolean fromReSync) {
-    return internet -> {
-      if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-        loginRemote(user, fromReSync);
-      } else {
-        loginLocal(user);
-      }
-    };
-  }
-
-
-  private void loginLocal(User user) {
-    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      TrainingEnvironmentHelper.getInstance().setUpData();
-    }
-    setDefaultReportType();
-    User localUser = userRepository.mapUserFromLocal(user);
-
-    if (localUser == null) {
-      onLoginFailed();
-      return;
-    }
-
-    UserInfoMgr.getInstance().setUser(localUser);
-    syncLocalUserData(getSyncLocalUserDataSubscriber());
-  }
-
-  private void setDefaultReportType() {
-    if (SharedPreferenceMgr.getInstance().getReportTypesData().isEmpty()) {
-      try {
-        List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
-        SharedPreferenceMgr.getInstance().setReportTypesData(reportTypeForms);
-      } catch (LMISException e) {
-        new LMISException(e, "setDefaultReportType").reportToFabric();
-      }
-    }
-  }
-
-  private void loginRemote(final User user, final boolean fromReSync) {
-    if (UserInfoMgr.getInstance().getUser() != null) {
-      UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
-    }
-    LMISApp.getInstance().getRestApi()
-        .login(GRANT_TYPE, user.getUsername(), user.getPassword(), new Callback<UserResponse>() {
-          @Override
-          public void success(UserResponse userResponse, Response response) {
-            if (userResponse == null || userResponse.getAccessToken() == null) {
-              onLoginFailed();
-            } else {
-              user.setAccessToken(userResponse.getAccessToken());
-              user.setTokenType(userResponse.getTokenType());
-              user.setReferenceDataUserId(userResponse.getReferenceDataUserId());
-              user.setIsTokenExpired(false);
-              onLoginSuccess(user, fromReSync);
-            }
-          }
-
-          @Override
-          public void failure(RetrofitError error) {
-            if (error.getCause() instanceof NetWorkException) {
-              loginLocal(user);
-            } else {
-              onLoginFailed();
-            }
-          }
-        });
-  }
-
-  protected void saveUserDataToLocalDatabase(final User user) throws LMISException {
-    userRepository.createOrUpdate(user);
-  }
-
-  private void onLoginSuccess(final User user, final boolean fromReSync) {
-    Log.d(TAG, "Log in successful, setting up sync account");
-    syncService.createSyncAccount(user);
-
-    UserInfoMgr.getInstance().setUser(user);
-    view.clearErrorAlerts();
-
-    syncDownManager.syncDownServerData(getSyncSubscriber());
-
-    view.sendScreenToGoogleAnalyticsAfterLogin();
-    archiveOldData();
-
-    try {
-      saveUserDataToLocalDatabase(user);
-    } catch (LMISException e) {
-      Log.w(TAG, e);
-    }
-
-    if (fromReSync) {
-      Observable.create(subscriber -> {
-        try {
-          LMISApp.getInstance().getRestApi().recordReSyncAction();
-        } catch (LMISException e) {
-          Log.w(TAG, e);
-        }
-      }).subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
-    }
-  }
-
-  @SuppressWarnings("squid:S1905")
-  private void archiveOldData() {
-    if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_old_data)) {
-      return;
-    }
-
-    Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
-      if (stockRepository.hasOldDate()) {
-        stockRepository.deleteOldData();
-        SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
-      }
-      if (rnrFormRepository.hasOldDate()) {
-        rnrFormRepository.deleteOldData();
-        SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
-      }
-      if (dirtyDataRepository.hasOldDate()) {
-        dirtyDataRepository.deleteOldData();
-      }
-      if (programDataFormRepository.hasOldDate()) {
-        programDataFormRepository.deleteOldData();
-      }
-    }).subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
-
-  }
-
   public void onLoginFailed() {
     view.loaded();
     view.showInvalidAlert();
     view.clearPassword();
-  }
-
-  protected Subscriber<SyncProgress> getSyncSubscriber() {
-    return new Subscriber<SyncProgress>() {
-      @Override
-      public void onCompleted() {
-        syncService.kickOff();
-        tryGoToNextPage();
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        ToastUtil.show(e.getMessage());
-        view.loaded();
-      }
-
-      @Override
-      public void onNext(SyncProgress progress) {
-        switch (progress) {
-          case SYNCING_FACILITY_INFO:
-          case SYNCING_SERVICE_LIST:
-          case SYNCING_PRODUCT:
-          case SYNCING_STOCK_CARDS_LAST_MONTH:
-          case SYNCING_REQUISITION:
-            view.loading(LMISApp.getInstance().getString(progress.getMessageCode()));
-            break;
-
-          case PRODUCT_SYNCED:
-            break;
-          case STOCK_CARDS_LAST_MONTH_SYNCED:
-            syncStockCards();
-            break;
-
-          case SHOULD_GO_TO_INITIAL_INVENTORY:
-            if (!view.needInitInventory()) {
-              ToastUtil.showForLongTime(R.string.msg_initial_sync_success);
-            }
-            goToNextPage();
-            break;
-
-          default:
-            // do nothing
-        }
-      }
-    };
-  }
-
-  private void syncStockCards() {
-    if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
-        .isSyncingLastYearStockCards()) {
-      sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
-      view.sendSyncStartBroadcast();
-      syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
-    } else {
-      view.sendSyncFinishedBroadcast();
-      sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-    }
-  }
-
-  @NonNull
-  private Subscriber<List<StockCard>> getSyncLastYearStockCardSubscriber() {
-    return new Subscriber<List<StockCard>>() {
-      @Override
-      public void onCompleted() {
-        Log.d(TAG, "getSyncLastYearStockCardSubscriber onCompleted");
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        Log.w(TAG, e);
-        sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
-        sharedPreferenceMgr.setStockCardLastYearSyncError(true);
-        view.sendSyncErrorBroadcast();
-        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        new LMISException(e).reportToFabric();
-      }
-
-      @Override
-      public void onNext(List<StockCard> stockCards) {
-        syncDownManager.saveStockCardsFromLastYear(stockCards)
-            .subscribe(getSaveStockCardsSubscriber());
-      }
-    };
   }
 
   public void syncLocalUserData(Subscriber<SyncLocalUserProgress> subscriber) {
@@ -420,6 +203,222 @@ public class LoginPresenter extends Presenter {
           default:
             // do nothing
         }
+      }
+    };
+  }
+
+  protected Subscriber<SyncProgress> getSyncSubscriber() {
+    return new Subscriber<SyncProgress>() {
+      @Override
+      public void onCompleted() {
+        syncService.kickOff();
+        tryGoToNextPage();
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        ToastUtil.showForLongTime(e.getMessage());
+        view.loaded();
+      }
+
+      @Override
+      public void onNext(SyncProgress progress) {
+        switch (progress) {
+          case SYNCING_FACILITY_INFO:
+          case SYNCING_SERVICE_LIST:
+          case SYNCING_PRODUCT:
+          case SYNCING_STOCK_CARDS_LAST_MONTH:
+          case SYNCING_REQUISITION:
+            view.loading(LMISApp.getInstance().getString(progress.getMessageCode()));
+            break;
+
+          case PRODUCT_SYNCED:
+            break;
+          case STOCK_CARDS_LAST_MONTH_SYNCED:
+            syncStockCards();
+            break;
+
+          case SHOULD_GO_TO_INITIAL_INVENTORY:
+            if (!view.needInitInventory()) {
+              ToastUtil.showForLongTime(R.string.msg_initial_sync_success);
+            }
+            goToNextPage();
+            break;
+
+          default:
+            // do nothing
+        }
+      }
+    };
+  }
+
+  protected void saveUserDataToLocalDatabase(final User user) throws LMISException {
+    userRepository.createOrUpdate(user);
+  }
+
+  private boolean isRoboUniTest() {
+    return "robolectric".equals(Build.FINGERPRINT);
+  }
+
+  private InternetCheck.Callback checkNetworkConnected(User user, boolean fromReSync) {
+    return internet -> {
+      if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+        loginRemote(user, fromReSync);
+      } else {
+        loginLocal(user);
+      }
+    };
+  }
+
+  private void loginLocal(User user) {
+    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      TrainingEnvironmentHelper.getInstance().setUpData();
+    }
+    setDefaultReportType();
+    User localUser = userRepository.mapUserFromLocal(user);
+
+    if (localUser == null) {
+      onLoginFailed();
+      return;
+    }
+
+    UserInfoMgr.getInstance().setUser(localUser);
+    syncLocalUserData(getSyncLocalUserDataSubscriber());
+  }
+
+  private void setDefaultReportType() {
+    if (SharedPreferenceMgr.getInstance().getReportTypesData().isEmpty()) {
+      try {
+        List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
+        SharedPreferenceMgr.getInstance().setReportTypesData(reportTypeForms);
+      } catch (LMISException e) {
+        new LMISException(e, "setDefaultReportType").reportToFabric();
+      }
+    }
+  }
+
+  private void loginRemote(final User user, final boolean fromReSync) {
+    if (UserInfoMgr.getInstance().getUser() != null) {
+      UserInfoMgr.getInstance().getUser().setIsTokenExpired(true);
+    }
+    LMISApp.getInstance().getRestApi()
+        .login(GRANT_TYPE, user.getUsername(), user.getPassword(), new Callback<UserResponse>() {
+          @Override
+          public void success(UserResponse userResponse, Response response) {
+            if (userResponse == null || userResponse.getAccessToken() == null) {
+              onLoginFailed();
+            } else {
+              user.setAccessToken(userResponse.getAccessToken());
+              user.setTokenType(userResponse.getTokenType());
+              user.setReferenceDataUserId(userResponse.getReferenceDataUserId());
+              user.setIsTokenExpired(false);
+              onLoginSuccess(user, fromReSync);
+            }
+          }
+
+          @Override
+          public void failure(RetrofitError error) {
+            if (error.getCause() instanceof NetWorkException) {
+              loginLocal(user);
+            } else {
+              onLoginFailed();
+            }
+          }
+        });
+  }
+
+  private void onLoginSuccess(final User user, final boolean fromReSync) {
+    Log.d(TAG, "Log in successful, setting up sync account");
+    syncService.createSyncAccount(user);
+
+    UserInfoMgr.getInstance().setUser(user);
+    view.clearErrorAlerts();
+
+    syncDownManager.syncDownServerData(getSyncSubscriber());
+
+    view.sendScreenToGoogleAnalyticsAfterLogin();
+    archiveOldData();
+
+    try {
+      saveUserDataToLocalDatabase(user);
+    } catch (LMISException e) {
+      Log.w(TAG, e);
+    }
+
+    if (fromReSync) {
+      Observable.create(subscriber -> {
+        try {
+          LMISApp.getInstance().getRestApi().recordReSyncAction();
+        } catch (LMISException e) {
+          Log.w(TAG, e);
+        }
+      }).subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
+    }
+  }
+
+  @SuppressWarnings("squid:S1905")
+  private void archiveOldData() {
+    if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_old_data)) {
+      return;
+    }
+
+    Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+      if (stockRepository.hasOldDate()) {
+        stockRepository.deleteOldData();
+        SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
+      }
+      if (rnrFormRepository.hasOldDate()) {
+        rnrFormRepository.deleteOldData();
+        SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
+      }
+      if (dirtyDataRepository.hasOldDate()) {
+        dirtyDataRepository.deleteOldData();
+      }
+      if (programDataFormRepository.hasOldDate()) {
+        programDataFormRepository.deleteOldData();
+      }
+    }).subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
+
+  }
+
+  private void syncStockCards() {
+    if (sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr
+        .isSyncingLastYearStockCards()) {
+      sharedPreferenceMgr.setIsSyncingLastYearStockCards(true);
+      view.sendSyncStartBroadcast();
+      syncStockCardsLastYearSilently.performSync().subscribe(getSyncLastYearStockCardSubscriber());
+    } else {
+      view.sendSyncFinishedBroadcast();
+      sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+    }
+  }
+
+  @NonNull
+  private Subscriber<List<StockCard>> getSyncLastYearStockCardSubscriber() {
+    return new Subscriber<List<StockCard>>() {
+      @Override
+      public void onCompleted() {
+        Log.d(TAG, "getSyncLastYearStockCardSubscriber onCompleted");
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        Log.w(TAG, e);
+        sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
+        sharedPreferenceMgr.setStockCardLastYearSyncError(true);
+        view.sendSyncErrorBroadcast();
+        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+        new LMISException(e).reportToFabric();
+      }
+
+      @Override
+      public void onNext(List<StockCard> stockCards) {
+        syncDownManager.saveStockCardsFromLastYear(stockCards)
+            .subscribe(getSaveStockCardsSubscriber());
       }
     };
   }

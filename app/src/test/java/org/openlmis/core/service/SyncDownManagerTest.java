@@ -481,6 +481,7 @@ public class SyncDownManagerTest {
     facilityInfoResponse.setCode("");
     facilityInfoResponse.setName("");
     facilityInfoResponse.setSupportedPrograms(supportedPrograms);
+    facilityInfoResponse.setAndroid(true);
     return facilityInfoResponse;
   }
 

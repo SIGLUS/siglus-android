@@ -475,6 +475,9 @@ public class SyncDownManager {
       e.reportToFabric();
       throw e;
     }
+    if (!facilityInfoResponse.isAndroid()) {
+      throw new LMISException(errorMessage(R.string.msg_isAndroid_False));
+    }
     User user = UserInfoMgr.getInstance().getUser();
     user.setFacilityCode(facilityInfoResponse.getCode());
     user.setFacilityName(facilityInfoResponse.getName());

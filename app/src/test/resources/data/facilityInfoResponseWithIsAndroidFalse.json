@@ -1,6 +1,6 @@
 {
-  "code": "01100122",
-  "name": "Centro de Saúde Bedene",
+  "code": "01050119",
+  "name": "Centro de Saúde de Degue",
   "supportedPrograms": [
     {
       "code": "ML",
@@ -27,5 +27,5 @@
       "supportStartDate": "2019-09-24"
     }
   ],
-  "isAndroid": true
+  "isAndroid": false
 }

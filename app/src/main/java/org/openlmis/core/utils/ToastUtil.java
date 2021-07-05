@@ -41,6 +41,13 @@ public final class ToastUtil {
     show(LMISApp.getContext().getString(resId));
   }
 
+  public static void showForLongTime(CharSequence text) {
+    if (TextUtils.isEmpty(text)) {
+      return;
+    }
+    Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG).show();
+  }
+
   public static void showForLongTime(@StringRes int resId) {
     Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_LONG).show();
   }

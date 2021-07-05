@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
@@ -436,5 +437,9 @@ public class SyncDownManagerIT {
 
   private User getDefaultUser() {
     return UserInfoMgr.getInstance().getUser();
+  }
+
+  private String errorMessage(int code) {
+    return LMISApp.getContext().getResources().getString(code);
   }
 }
