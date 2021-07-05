@@ -62,9 +62,10 @@ public class LotRepository {
     dbUtil.withDaoAsBatch(LotMovementItem.class, dao -> {
       for (final LotMovementItem lotMovementItem : lotMovementItemListWrapper) {
         createOrUpdateLotAndLotOnHand(lotMovementItem);
-        if (null != lotMovementItem.getMovementQuantity()) {
-          createLotMovementItem(lotMovementItem);
+        if (null == lotMovementItem.getMovementQuantity()) {
+          lotMovementItem.setMovementQuantity(Long.valueOf(0));
         }
+        createLotMovementItem(lotMovementItem);
       }
       return null;
     });
@@ -106,6 +107,7 @@ public class LotRepository {
       if (existingLot == null) {
         lotMovementItem.setStockOnHand(0L);
       } else {
+        lotMovementItem.setLot(existingLot);
         lotOnHand = getLotOnHandByLot(existingLot);
         lotMovementItem.setStockOnHand(lotOnHand.getQuantityOnHand());
       }
