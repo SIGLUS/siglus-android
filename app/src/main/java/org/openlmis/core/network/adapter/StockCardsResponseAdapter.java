@@ -26,9 +26,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.inject.Inject;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.Instant;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -148,7 +148,7 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     stockMovementItem.setMovementQuantity(movementItemResponse.getMovementQuantity());
     stockMovementItem.setStockOnHand(Long.parseLong(movementItemResponse.getStockOnHand()));
     stockMovementItem.setSignature(movementItemResponse.getSignature());
-    stockMovementItem.setCreatedTime(new Date(movementItemResponse.getProcessedDate()));
+    stockMovementItem.setCreatedTime(Instant.parse(movementItemResponse.getProcessedDate()).toDate());
     stockMovementItem.setRequested(movementItemResponse.getRequested());
     stockMovementItem
         .setMovementDate(DateUtil.parseString(movementItemResponse.getOccurredDate(), DateUtil.DB_DATE_FORMAT));
