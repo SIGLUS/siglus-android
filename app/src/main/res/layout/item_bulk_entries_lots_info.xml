@@ -6,34 +6,47 @@
   android:layout_height="wrap_content"
   android:layout_margin="@dimen/px_15">
 
-  <EditText
-    android:id="@+id/et_movement_reason"
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/ly_movement_reason"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/px_20"
     android:layout_marginRight="@dimen/margin_normal"
-    android:drawableLeft="@drawable/ic_movement_origin"
-    android:drawablePadding="5dp"
-    android:focusableInTouchMode="false"
-    android:hint="@string/hint_movement_reason_receive"
-    android:inputType="textMultiLine"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toEndOf="@id/gl_lots_info"
-    app:layout_constraintTop_toTopOf="@id/tv_lot_number" />
+    app:layout_constraintTop_toTopOf="@id/tv_lot_number">
 
-  <EditText
-    android:id="@+id/et_movement_document_number"
+    <EditText
+      android:id="@+id/et_movement_reason"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:drawableLeft="@drawable/ic_movement_origin"
+      android:drawablePadding="5dp"
+      android:focusableInTouchMode="false"
+      android:hint="@string/hint_movement_reason_receive"
+      android:inputType="textMultiLine" />
+
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/ly_document_number"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_small"
-    android:drawableLeft="@drawable/ic_document"
-    android:drawablePadding="5dp"
-    android:hint="@string/hint_document_number"
-    android:textSize="@dimen/px_20"
-    app:layout_constraintEnd_toEndOf="@id/et_movement_reason"
-    app:layout_constraintStart_toStartOf="@id/et_movement_reason"
-    app:layout_constraintTop_toTopOf="@id/ly_lot_amount"/>
+    app:layout_constraintEnd_toEndOf="@id/ly_movement_reason"
+    app:layout_constraintStart_toStartOf="@id/ly_movement_reason"
+    app:layout_constraintTop_toBottomOf="@id/ly_lot_amount">
 
+    <EditText
+      android:id="@+id/et_movement_document_number"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:drawableLeft="@drawable/ic_document"
+      android:drawablePadding="5dp"
+      android:hint="@string/hint_document_number"
+      android:textSize="@dimen/px_20"
+      android:maxLength="@integer/edit_amount_length" />
+
+  </com.google.android.material.textfield.TextInputLayout>
 
   <ImageButton
     android:id="@+id/btn_delete_lot"
@@ -47,17 +60,6 @@
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:tint="@color/color_red" />
-
-  <ImageView
-    android:id="@+id/ic_required"
-    android:layout_width="@dimen/px_10"
-    android:layout_height="@dimen/px_10"
-    android:src="@drawable/ic_required"
-    android:visibility="gone"
-    app:layout_constraintBottom_toBottomOf="@id/et_movement_document_number"
-    app:layout_constraintRight_toLeftOf="@id/et_movement_document_number"
-    app:layout_constraintTop_toTopOf="@id/et_movement_document_number" />
-
 
   <LinearLayout
     android:id="@+id/vg_lot_soh"

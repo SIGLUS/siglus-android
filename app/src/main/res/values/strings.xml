@@ -619,4 +619,5 @@
   <string name="msg_isAndroid_False">Login failed, the current user is not an Android user, please contact the administrator</string>
   <string name="label_inventory_options_all_product">All products</string>
   <string name="msg_validate_failed_tips">Please complete inventory for %s program</string>
+  <string name="msg_empty_document_number">Document number cannot be blank</string>
 </resources>

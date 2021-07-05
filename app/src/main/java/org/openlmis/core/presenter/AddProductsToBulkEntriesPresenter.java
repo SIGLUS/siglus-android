@@ -46,7 +46,7 @@ public class AddProductsToBulkEntriesPresenter extends Presenter {
 
   @Override
   public void attachView(BaseView v) {
-
+    // do nothing
   }
 
   public Observable<List<ProductsToBulkEntriesViewModel>> getAllProductsWithoutKit(

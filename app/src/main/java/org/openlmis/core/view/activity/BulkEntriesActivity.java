@@ -21,11 +21,13 @@ package org.openlmis.core.view.activity;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -170,6 +172,7 @@ public class BulkEntriesActivity extends BaseActivity {
 
       @Override
       public void negativeClick(String tag) {
+        // do nothing
       }
     });
   }
@@ -205,6 +208,7 @@ public class BulkEntriesActivity extends BaseActivity {
     return new Subscriber<List<BulkEntriesViewModel>>() {
       @Override
       public void onCompleted() {
+        // no thing
       }
 
       @Override
@@ -228,6 +232,7 @@ public class BulkEntriesActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
+        hideKeyboard(btnSave);
         Subscription subscription = bulkEntriesPresenter.saveDraftBulkEntriesObservable()
             .subscribe(getReloadSubscriber());
         subscriptions.add(subscription);
@@ -241,11 +246,12 @@ public class BulkEntriesActivity extends BaseActivity {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        int position = adapter.validateAllForCompletedClick();
-        if (position >= 0) {
-          rvBulkEntriesProducts.scrollToPosition(position);
+        hideKeyboard(btnComplete);
+        int firstInvalidPosition = adapter.validateAllForCompletedClick();
+        if (firstInvalidPosition >= 0) {
+          rvBulkEntriesProducts.scrollToPosition(firstInvalidPosition);
           LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvBulkEntriesProducts.getLayoutManager();
-          linearLayoutManager.scrollToPositionWithOffset(position, 0);
+          linearLayoutManager.scrollToPositionWithOffset(firstInvalidPosition, 0);
         }
         adapter.notifyDataSetChanged();
       }
@@ -290,5 +296,13 @@ public class BulkEntriesActivity extends BaseActivity {
           adapter.notifyDataSetChanged();
         }
       });
+
+  private void hideKeyboard(View view) {
+    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
+        Context.INPUT_METHOD_SERVICE);
+    if (inputMethodManager != null) {
+      inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+  }
 
 }

@@ -43,7 +43,7 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
   @Override
   public BulkEntriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     return new BulkEntriesViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-        (R.layout.item_bulk_entries), parent, false));
+        (R.layout.item_bulk_entries), parent, false), new VerifyPositionListener(this));
   }
 
   @Override
@@ -56,6 +56,16 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
     return models.size();
   }
 
+  @Override
+  public long getItemId(int position) {
+    return position;
+  }
+
+  @Override
+  public int getItemViewType(int position) {
+    return position;
+  }
+
   public void refresh() {
     this.notifyDataSetChanged();
   }
@@ -66,11 +76,11 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
   }
 
   public int validateAllForCompletedClick() {
-    int position = -1;
+    int firstInvalidPosition = -1;
     for (int i = 0; i < models.size(); i++) {
       if (!models.get(i).validate()) {
-        if (position == -1 || position > i) {
-          position = i;
+        if (firstInvalidPosition == -1) {
+          firstInvalidPosition = i;
         }
         models.get(i).setValid(false);
       } else {
@@ -78,6 +88,21 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
       }
     }
     this.notifyDataSetChanged();
-    return position;
+    return firstInvalidPosition;
   }
+
+  class VerifyPositionListener implements BulkEntriesViewHolder.VerifyPositionListener {
+
+    private BulkEntriesAdapter bulkEntriesAdapter;
+
+    public VerifyPositionListener(BulkEntriesAdapter bulkEntriesAdapter) {
+      this.bulkEntriesAdapter = bulkEntriesAdapter;
+    }
+
+    @Override
+    public void onVerifyPositionListener(int position) {
+      bulkEntriesAdapter.notifyItemChanged(position);
+    }
+  }
+
 }

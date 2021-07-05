@@ -35,7 +35,7 @@ public class BulkLotInfoReviewViewHolder extends BaseViewHolder {
   TextView tvLotInfoReview;
 
   public void populate(LotMovementViewModel viewModel) {
-    long adjustmentQuantity = viewModel.getAdjustmentQuantity();
+    long adjustmentQuantity = Long.parseLong(viewModel.getQuantity());
     tvLotInfoReview.setText(Html.fromHtml(context
         .getString(R.string.msg_bulk_entries_lot_review, viewModel.getLotNumber() + " - " + viewModel.getExpiryDate(),
             adjustmentQuantity)));

@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.holder;
 
+
+import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -29,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputLayout;
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -56,6 +59,10 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   private EditText etLotAmount;
   @InjectView(R.id.ly_lot_amount)
   private TextInputLayout lyLotAmount;
+  @InjectView(R.id.ly_movement_reason)
+  private TextInputLayout lyMovementReason;
+  @InjectView(R.id.ly_document_number)
+  private TextInputLayout lyDocumentNumber;
   @InjectView(R.id.tv_lot_soh)
   private TextView lotStockOnHand;
   @InjectView(R.id.vg_lot_soh)
@@ -76,13 +83,13 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     lotStockOnHand.setText(viewModel.getLotSoh());
     movementReason.setText(viewModel.getMovementReason());
     documentNumber.setText(viewModel.getDocumentNumber());
-    lyLotAmount.setErrorEnabled(false);
+    setErrorEnable();
     if (viewModel.isNewAdded()) {
       lotSohTip.setText(getString(R.string.label_new_added_lot));
       btnDelLot.setVisibility(View.VISIBLE);
-      if (!viewModel.isValid()) {
-        lyLotAmount.setError(getString(R.string.msg_empty_quantity));
-      }
+    }
+    if (!viewModel.isValid()) {
+      setLotInfoError(viewModel);
     }
     setUpViewListener(viewModel, bulkEntriesLotMovementAdapter);
   }
@@ -111,7 +118,9 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         reasonsDialog.setArguments(bundle);
         reasonsDialog.setMovementTypeOnClickListener(
             new MovementTypeOnClickListener(reasonsDialog, viewModel));
-        reasonsDialog.show(((BulkEntriesActivity) view.getContext()).getSupportFragmentManager(),
+        reasonsDialog.show(
+            ((BulkEntriesActivity) (((ContextWrapper) view.getContext()).getBaseContext()))
+                .getSupportFragmentManager(),
             "SELECT_REASONS");
       }
     };
@@ -121,9 +130,27 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     return context.getResources().getString(id);
   }
 
+  private void setErrorEnable() {
+    lyLotAmount.setErrorEnabled(false);
+    lyDocumentNumber.setErrorEnabled(false);
+    lyMovementReason.setErrorEnabled(false);
+  }
+
   private void setQuantityError(String string) {
     etLotAmount.requestFocus();
     lyLotAmount.setError(string);
+  }
+
+  private void setLotInfoError(LotMovementViewModel lotMovementViewModel) {
+    if (StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+      lyLotAmount.setError(getString(R.string.msg_empty_quantity));
+    }
+    if (StringUtils.isBlank(lotMovementViewModel.getDocumentNumber())) {
+      lyDocumentNumber.setError(getString(R.string.msg_empty_document_number));
+    }
+    if (StringUtils.isBlank(lotMovementViewModel.getMovementReason())) {
+      lyMovementReason.setError(getString(R.string.msg_empty_movement_reason));
+    }
   }
 
   @NonNull
@@ -150,6 +177,11 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         }
       });
     };
+  }
+
+  public interface AmountChangeListener {
+
+    void onAmountChange();
   }
 
   class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
@@ -189,12 +221,17 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         lyLotAmount.setErrorEnabled(false);
         updateVgLotSOHAndError();
         if (!viewModel.isNewAdded()) {
-          amountChangeListener.amountChange();
+          amountChangeListener.onAmountChange();
         }
-
-      } else {
+      } else if (itemView.getId() == R.id.et_movement_document_number) {
         viewModel.setDocumentNumber(editable.toString());
+        lyDocumentNumber.setErrorEnabled(false);
+        updateVgDocumentNumberError();
       }
+    }
+
+    private void updateVgDocumentNumberError() {
+        setLotInfoError(viewModel);
     }
 
     private void updateVgLotSOHAndError() {
@@ -207,10 +244,5 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         }
       }
     }
-  }
-
-  public interface AmountChangeListener {
-
-    void amountChange();
   }
 }

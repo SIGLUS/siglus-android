@@ -22,13 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import lombok.Getter;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
-import org.openlmis.core.view.viewmodel.BulkEntriesViewModel.InvalidType;
+import org.openlmis.core.view.viewmodel.BulkEntriesViewModel.ValidationType;
 import org.openlmis.core.view.widget.BulkEntriesLotListView;
 import roboguice.inject.InjectView;
 
@@ -51,8 +52,11 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
 
   private BulkEntriesViewModel bulkEntriesViewModel;
 
-  public BulkEntriesViewHolder(View itemView) {
+  private VerifyPositionListener verifyPositionListener;
+
+  public BulkEntriesViewHolder(View itemView, VerifyPositionListener verifyPositionListener) {
     super(itemView);
+    this.verifyPositionListener = verifyPositionListener;
   }
 
   public void populate(BulkEntriesViewModel bulkEntriesViewModel,
@@ -63,17 +67,21 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
     setMovementDone();
     setInvalidStatus();
     bulkEntriesLotListView
-        .initLotListView(bulkEntriesViewModel, bulkEntriesAdapter, getAmountChangeListener(),
-            getMovementStatusListener());
+        .initLotListView(bulkEntriesViewModel, bulkEntriesAdapter, getAmountChangeListenerFromTrashcan(),
+            getMovementStatusListener(), getVerifyListener());
   }
 
   private void setInvalidStatus() {
-    if (bulkEntriesViewModel.getInvalidType() == InvalidType.EXISTING_LOT_ALL_BLANK
-        || bulkEntriesViewModel.getInvalidType() == InvalidType.NO_LOT) {
+    if (bulkEntriesViewModel.getValidationType() == ValidationType.EXISTING_LOT_ALL_BLANK
+        || bulkEntriesViewModel.getValidationType() == ValidationType.NO_LOT) {
       icTrashcan.setImageResource(R.drawable.ic_trashcan_red);
     } else {
       icTrashcan.setImageResource(R.drawable.ic_trashcan);
     }
+  }
+
+  private void setBindingAdapterPosition() {
+    verifyPositionListener.onVerifyPositionListener(this.getBindingAdapterPosition());
   }
 
   private void setMovementDone() {
@@ -96,11 +104,20 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
     };
   }
 
-  private BulkEntriesLotListView.AmountChangeListener getAmountChangeListener() {
+  private BulkEntriesLotMovementViewHolder.AmountChangeListener getAmountChangeListenerFromTrashcan() {
     return this::setInvalidStatus;
   }
 
   private BulkEntriesLotListView.MovementStatusListener getMovementStatusListener() {
     return this::setMovementDone;
+  }
+
+  private BulkEntriesLotListView.VerifyListener getVerifyListener() {
+    return this::setBindingAdapterPosition;
+  }
+
+  public interface VerifyPositionListener {
+
+    void onVerifyPositionListener(int position);
   }
 }

@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.BulkEntriesLotMovementViewHolder;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
@@ -89,4 +90,31 @@ public class BulkEntriesLotMovementAdapter extends
     }
     this.notifyDataSetChanged();
   }
+
+  public boolean validateExistingLots() {
+    boolean valid = true;
+    for (LotMovementViewModel lotMovementViewModel : bulkEntriesViewModel.getExistingLotMovementViewModelList()) {
+      if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+        boolean flag = lotMovementViewModel.validateLot();
+        if (!flag) {
+          valid = false;
+        }
+      }
+    }
+    this.notifyDataSetChanged();
+    return valid;
+  }
+
+  public int validateNewAddedLots() {
+    List<LotMovementViewModel> newLots = bulkEntriesViewModel.getNewLotMovementViewModelList();
+    int position = -1;
+    for (int i = 0; i < newLots.size(); i++) {
+      if (!newLots.get(i).validateLot() && position < 0) {
+        position = i;
+      }
+    }
+    this.notifyDataSetChanged();
+    return position;
+  }
+
 }

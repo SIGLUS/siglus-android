@@ -25,7 +25,7 @@
         android:id="@+id/ic_done"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingEnd="@dimen/padding_small"
+        android:layout_marginRight="@dimen/margin_normal"
         android:src="@drawable/ic_done_green"
         android:visibility="gone"/>
 

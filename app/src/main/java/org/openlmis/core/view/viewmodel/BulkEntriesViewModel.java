@@ -24,6 +24,7 @@ import android.text.style.ForegroundColorSpan;
 import androidx.core.content.ContextCompat;
 import java.util.List;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -32,22 +33,20 @@ import org.openlmis.core.model.StockCard;
 @Data
 public class BulkEntriesViewModel extends InventoryViewModel {
 
-  public enum InvalidType {
+  public enum ValidationType {
     NO_LOT,
     EXISTING_LOT_ALL_BLANK,
     NEW_LOT_BLANK,
-    DEFAULT
+    VALID
   }
 
   private boolean done;
-
-  private Product product;
 
   private Long quantity;
 
   private List<LotMovementViewModel> lotMovementViewModels;
 
-  private InvalidType invalidType;
+  private ValidationType validationType;
 
   public BulkEntriesViewModel(Product product) {
     super(product);
@@ -78,39 +77,57 @@ public class BulkEntriesViewModel extends InventoryViewModel {
 
   @Override
   public boolean validate() {
-    if (newLotMovementViewModelList.isEmpty()) {
-      return validExistingLotMovementViewModelList();
-    } else {
-      return validNewLotMovementViewModelList();
-    }
+    boolean existingLotsValidation = validExistingLotMovementViewModelList();
+    boolean newLotsValidation = validNewLotMovementViewModelList();
+    return existingLotsValidation && newLotsValidation;
   }
 
   private boolean validExistingLotMovementViewModelList() {
-    if (existingLotMovementViewModelList.isEmpty()) {
-      invalidType = InvalidType.NO_LOT;
+    if (newLotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty()) {
+      validationType = ValidationType.NO_LOT;
       return false;
+    } else if (!newLotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty()) {
+      return true;
     } else {
+      boolean productFlag = false;
+      boolean lotFlag = true;
       for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-        if (lotMovementViewModel.getQuantity() != null && !lotMovementViewModel.getQuantity().equals("")) {
-          invalidType = InvalidType.DEFAULT;
-          return true;
+        if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+          productFlag = true;
+          if(!lotMovementViewModel.validateLot()) {
+            lotFlag = false;
+            lotMovementViewModel.setValid(false);
+          }
         }
       }
+      if (productFlag && lotFlag) {
+        validationType = ValidationType.VALID;
+        return true;
+      } else if (!productFlag && newLotMovementViewModelList.isEmpty()) {
+        validationType = ValidationType.EXISTING_LOT_ALL_BLANK;
+        return false;
+      }
     }
-    invalidType = InvalidType.EXISTING_LOT_ALL_BLANK;
     return false;
   }
 
 
   private boolean validNewLotMovementViewModelList() {
+    if (newLotMovementViewModelList.isEmpty()) {
+      return true;
+    }
+    boolean flag = true;
     for (LotMovementViewModel lotMovementViewModel : newLotMovementViewModelList) {
-      if (lotMovementViewModel.getQuantity() == null || lotMovementViewModel.getQuantity().isEmpty()) {
+      if (!lotMovementViewModel.validateLot()) {
         lotMovementViewModel.setValid(false);
-        invalidType = InvalidType.NEW_LOT_BLANK;
-        return false;
+        flag = false;
+        validationType = ValidationType.NEW_LOT_BLANK;
       }
     }
-    invalidType = InvalidType.DEFAULT;
+    if (!flag) {
+      return false;
+    }
+    validationType = ValidationType.VALID;
     return true;
   }
 }

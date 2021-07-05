@@ -28,7 +28,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:layout_constraintBottom_toTopOf="@+id/action_panel"
+    app:layout_constraintBottom_toTopOf="@+id/ly_action_panel"
     app:layout_constraintTop_toBottomOf="@+id/alert_add_positive_lot_amount">
 
     <androidx.recyclerview.widget.RecyclerView
