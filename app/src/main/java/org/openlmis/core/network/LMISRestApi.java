@@ -65,7 +65,7 @@ public interface LMISRestApi {
   void login(@Query("grant_type") String grantType, @Query("username") String username,
       @Query("password") String password, Callback<UserResponse> callback);
 
-  @POST("api/siglusapi/android/me/facility/archivedProducts")
+  @POST("/api/siglusapi/android/me/facility/archivedProducts")
   Void syncUpArchivedProducts(@Body List<String> archivedProductsCodes) throws LMISException;
 
   @POST("/api/siglusapi/android/me/app-info")

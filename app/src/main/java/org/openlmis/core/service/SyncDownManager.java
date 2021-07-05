@@ -130,7 +130,7 @@ public class SyncDownManager {
         syncDownRegimens(subscriber1);
         // syncDownService(subscriber1);
         syncDownProducts(subscriber1);
-//        syncDownLastMonthStockCards(subscriber1);
+        syncDownLastMonthStockCards(subscriber1);
         // syncDownRequisition(subscriber1);
         // syncDownRapidTests(subscriber1);
         isSyncing = false;
