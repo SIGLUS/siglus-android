@@ -230,6 +230,7 @@ public class SyncUpManager {
       return true;
     } catch (LMISException exception) {
       new LMISException(exception, "SyncUpManager.syncStockCards").reportToFabric();
+      EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, exception.getMessage()));
       syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.STOCK_CARDS, 0L));
       Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
       return false;
