@@ -39,8 +39,7 @@ public class StockHistoryMovementItemViewModel {
 
   public StockHistoryMovementItemViewModel(StockMovementItem stockMovementItem) {
     this.stockMovementItem = stockMovementItem;
-    typeQuantityMap.put(stockMovementItem.getMovementType(),
-        String.valueOf(stockMovementItem.getMovementQuantity()));
+    typeQuantityMap.put(stockMovementItem.getMovementType(), String.valueOf(stockMovementItem.getMovementQuantity()));
     try {
       reason = MovementReasonManager.getInstance().queryByCode(stockMovementItem.getReason());
     } catch (MovementReasonNotFoundException e) {

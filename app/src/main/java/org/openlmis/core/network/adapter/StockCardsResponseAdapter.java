@@ -168,8 +168,10 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     lotMovementItem.setLot(lot);
     lotMovementItem.setStockMovementItem(stockMovementItem);
     lotMovementItem.setMovementQuantity((long) lotMovementItemResponse.getQuantity());
-    lotMovementItem
-        .setReason(mapToLocalReason(movementItemResponse.getType(), lotMovementItemResponse.getReason()));
+    final String reason = mapToLocalReason(movementItemResponse.getType(), lotMovementItemResponse.getReason());
+    // TODO stockMovement should not set reason and detail page should not use stockMovement reason
+    stockMovementItem.setReason(reason);
+    lotMovementItem.setReason(reason);
     lotMovementItem.setStockOnHand((long) lotMovementItemResponse.getStockOnHand());
     lotMovementItem.setDocumentNumber(lotMovementItemResponse.getDocumentNumber());
     return lotMovementItem;
