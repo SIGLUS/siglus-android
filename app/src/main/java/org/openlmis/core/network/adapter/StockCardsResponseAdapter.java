@@ -145,7 +145,7 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     // set movement item property
     stockMovementItem.setStockCard(stockCard);
     stockMovementItem.setSynced(true);
-    stockMovementItem.setMovementQuantity(movementItemResponse.getMovementQuantity());
+    stockMovementItem.setMovementQuantity(Math.abs(movementItemResponse.getMovementQuantity()));
     stockMovementItem.setStockOnHand(Long.parseLong(movementItemResponse.getStockOnHand()));
     stockMovementItem.setSignature(movementItemResponse.getSignature());
     stockMovementItem.setCreatedTime(Instant.parse(movementItemResponse.getProcessedDate()).toDate());
