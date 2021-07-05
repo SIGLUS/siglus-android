@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import java.io.Serializable;
@@ -128,7 +127,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     return new Subscriber() {
       @Override
       public void onCompleted() {
-        Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG).show();
+        ToastUtil.showForLongTime(R.string.successfully_saved);
         loaded();
         btnSave.setEnabled(true);
       }

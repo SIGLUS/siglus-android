@@ -18,11 +18,16 @@
 
 package org.openlmis.core.utils;
 
+import static android.widget.Toast.makeText;
+
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.StringRes;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 
 public final class ToastUtil {
 
@@ -34,7 +39,9 @@ public final class ToastUtil {
     if (TextUtils.isEmpty(text)) {
       return;
     }
-    Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT).show();
+    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
+    setToastLayout(toast);
+    toast.show();
   }
 
   public static void show(int resId) {
@@ -45,17 +52,32 @@ public final class ToastUtil {
     if (TextUtils.isEmpty(text)) {
       return;
     }
-    Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG).show();
+    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_LONG);
+    setToastLayout(toast);
+    toast.show();
   }
 
   public static void showForLongTime(@StringRes int resId) {
-    Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_LONG).show();
+    Toast toast = makeText(LMISApp.getContext(), resId, Toast.LENGTH_LONG);
+    setToastLayout(toast);
+    toast.show();
   }
 
   public static void showInCenter(int text) {
-    Toast toast = Toast
-        .makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
+    Toast toast = makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
+    setToastLayout(toast);
     toast.setGravity(Gravity.CENTER, 0, 0);
     toast.show();
+  }
+
+  private static void setToastLayout(Toast toast) {
+    toast.setGravity(Gravity.BOTTOM, 0, 50);
+    View view = toast.getView();
+    if (view != null) {
+      view.setBackgroundResource(R.drawable.toast_bg);
+      TextView textView = view.findViewById(android.R.id.message);
+      textView.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_white));
+      textView.setTextSize(18);
+    }
   }
 }

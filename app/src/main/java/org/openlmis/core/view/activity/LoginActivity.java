@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
@@ -29,6 +30,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -223,16 +225,12 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
   }
 
-  private void startLogin(boolean fromReSync) {
-    presenter
-        .startLogin(etUsername.getText().toString(), etPassword.getText().toString(), fromReSync);
-  }
-
   @Override
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btn_login:
         startLogin(false);
+        hideKeyboard(btnLogin);
         break;
       case R.id.iv_visibility_pwd:
         setPwdVisibility();
@@ -245,6 +243,19 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   @Override
   public void onBackPressed() {
     moveTaskToBack(true);
+  }
+
+  private void hideKeyboard(View view) {
+    InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
+        Context.INPUT_METHOD_SERVICE);
+    if (inputMethodManager != null) {
+      inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+  }
+
+  private void startLogin(boolean fromReSync) {
+    presenter
+        .startLogin(etUsername.getText().toString(), etPassword.getText().toString(), fromReSync);
   }
 
   private void setPwdVisibility() {

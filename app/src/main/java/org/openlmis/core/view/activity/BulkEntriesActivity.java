@@ -29,7 +29,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
@@ -258,8 +257,7 @@ public class BulkEntriesActivity extends BaseActivity {
       @Override
       public void onCompleted() {
         finish();
-        Toast.makeText(getApplicationContext(), R.string.succesfully_saved, Toast.LENGTH_LONG)
-            .show();
+        ToastUtil.showForLongTime(R.string.successfully_saved);
       }
 
       @Override

@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -184,8 +185,6 @@ public class SyncDownManagerIT {
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/products", 200, "OK",
         V3ProductsResponseAdapterResponse);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/regimens", 200, "OK", regimenJson);
-    lmisRestManager.addNewMockedResponse(
-        "/api/siglusapi/android/me/facility", 200, "OK", facilityInfoJson);
   }
 
   // TODO: fix the test later as a teach card
@@ -239,9 +238,12 @@ public class SyncDownManagerIT {
   public void shouldSyncDownRegimens() throws Exception {
     // given
     String regimenJson = JsonFileReader.readJson(getClass(), "fetchRegimenResponse.json");
+    String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
     LMISRestManagerMock lmisRestManager = LMISRestManagerMock
         .getRestManagerWithMockClient("/api/siglusapi/android/regimens", 200, "OK", regimenJson,
             RuntimeEnvironment.application);
+    lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility", 200, "OK",
+        facilityInfoJson);
     mockResponse(lmisRestManager);
     syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
@@ -254,6 +256,27 @@ public class SyncDownManagerIT {
 
     // then
     assertEquals(93, regimenList.size());
+  }
+
+  @Test
+  public void shouldLoginFailedWhenUserIsAndroidFalse() {
+    // given
+    String facilityInfoJsonWithIsAndroidFalse = JsonFileReader.readJson(getClass(), "facilityInfoResponseWithIsAndroidFalse.json");
+    LMISRestManagerMock lmisRestManager = LMISRestManagerMock
+        .getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 200, "OK",
+            facilityInfoJsonWithIsAndroidFalse, RuntimeEnvironment.application);
+    mockResponse(lmisRestManager);
+    syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+    LMISException exception = new LMISException(errorMessage(R.string.msg_isAndroid_False));
+
+    // when
+    SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+    syncDownManager.syncDownServerData(subscriber);
+    subscriber.awaitTerminalEvent();
+
+    // then
+    subscriber.assertError(exception);
+
   }
 
 
