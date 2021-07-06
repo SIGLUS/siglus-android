@@ -323,7 +323,8 @@ public class StockMovementRepository {
       do {
         StockMovementItem item = new StockMovementItem();
         Date createTime = DateUtil
-            .parseString(cursor.getString(cursor.getColumnIndexOrThrow(CREATED_TIME)), DateUtil.DATE_TIME_FORMAT);
+            .parseString(cursor.getString(cursor.getColumnIndexOrThrow(CREATED_TIME)),
+                DateUtil.DATE_TIME_FORMAT_WITH_MS);
         item.setCreatedTime(createTime);
         Date movementDate = DateUtil
             .parseString(cursor.getString(cursor.getColumnIndexOrThrow(MOVEMENT_DATE)), DB_DATE_FORMAT);
@@ -397,7 +398,8 @@ public class StockMovementRepository {
       do {
         StockMovementItem item = new StockMovementItem();
         Date createTime = DateUtil
-            .parseString(cursor.getString(cursor.getColumnIndexOrThrow(CREATED_TIME)), DateUtil.DATE_TIME_FORMAT);
+            .parseString(cursor.getString(cursor.getColumnIndexOrThrow(CREATED_TIME)),
+                DateUtil.DATE_TIME_FORMAT_WITH_MS);
         item.setCreatedTime(createTime);
         item.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
         item.setStockOnHand(cursor.getInt(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
@@ -561,7 +563,7 @@ public class StockMovementRepository {
       movementItem.setStockOnHand(Long.parseLong(listMovementItem[3]));
       Date movementDate = DateUtil.parseString(listMovementItem[4], DateUtil.DB_DATE_FORMAT);
       movementItem.setMovementDate(movementDate);
-      Date createTime = DateUtil.parseString(listMovementItem[5], DateUtil.DATE_TIME_FORMAT);
+      Date createTime = DateUtil.parseString(listMovementItem[5], DateUtil.DATE_TIME_FORMAT_WITH_MS);
       movementItem.setCreatedTime(createTime);
       movementItem.setReason(listMovementItem[6]);
       stockMovementItems.add(movementItem);

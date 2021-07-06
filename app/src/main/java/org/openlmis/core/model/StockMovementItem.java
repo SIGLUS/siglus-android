@@ -18,7 +18,7 @@
 
 package org.openlmis.core.model;
 
-import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
+import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT_WITH_MS;
 import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 
 import com.google.gson.annotations.Expose;
@@ -84,7 +84,7 @@ public class StockMovementItem extends BaseModel {
   @DatabaseField
   private boolean synced = false;
 
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
+  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT_WITH_MS)
   private java.util.Date createdTime;
 
   @ForeignCollectionField()

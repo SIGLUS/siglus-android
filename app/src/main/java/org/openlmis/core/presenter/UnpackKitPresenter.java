@@ -149,23 +149,22 @@ public class UnpackKitPresenter extends Presenter {
       String documentNumber, String signature) throws LMISException {
     List<StockMovementItem> stockMovementItems = new ArrayList<>();
 
-    StockCard stockCard = stockRepository
-        .queryStockCardByProductId(inventoryViewModel.getProductId());
+    StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
     if (stockCard == null) {
       stockCard = new StockCard();
       stockCard.setProduct(inventoryViewModel.getProduct());
-
       stockMovementItems.add(stockCard.generateInitialStockMovementItem());
     }
-
     stockCard.getProduct().setArchived(false);
-
     List<LotMovementViewModel> totalLotMovementViewModelList = new ArrayList<>();
-    totalLotMovementViewModelList.addAll(
-        FluentIterable.from(inventoryViewModel.getExistingLotMovementViewModelList())
-            .filter(LotMovementViewModel::quantityGreaterThanZero).toList());
+    for (LotMovementViewModel lotMovementViewModel : inventoryViewModel.getExistingLotMovementViewModelList()) {
+      final String quantity = lotMovementViewModel.getQuantity();
+      if (quantity == null) {
+        lotMovementViewModel.setQuantity("0");
+      }
+      totalLotMovementViewModelList.add(lotMovementViewModel);
+    }
     totalLotMovementViewModelList.addAll(inventoryViewModel.getNewLotMovementViewModelList());
-
     stockMovementItems.add(
         createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature,
             totalLotMovementViewModelList));

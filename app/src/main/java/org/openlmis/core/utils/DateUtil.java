@@ -53,7 +53,7 @@ public final class DateUtil {
   public static final String DATE_DIGIT_FORMAT_ONLY_MONTH_AND_YEAR = "MMyyyy";
   public static final String ISO_BASIC_DATE_TIME_FORMAT = "yyyyMMdd'T'HHmmss.SSSZ";
   public static final int DAY_PERIOD_END = 20;
-  public static final String MOZ_TIME_ZONE = "Africa/Maputo";
+  public static final String DATE_TIME_FORMAT_WITH_MS = "yyyy-MM-dd HH:mm:ss:SSS";
 
   public static final long MILLISECONDS_MINUTE = 60000;
   public static final long MILLISECONDS_HOUR = 3600000;
