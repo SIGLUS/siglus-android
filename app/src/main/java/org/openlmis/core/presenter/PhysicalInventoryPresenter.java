@@ -36,12 +36,10 @@ import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
-import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -50,19 +48,14 @@ import rx.schedulers.Schedulers;
 public class PhysicalInventoryPresenter extends InventoryPresenter {
 
   @Inject
-  StockService stockService;
-
-  @Inject
   StockMovementRepository movementRepository;
 
   @Override
   public Observable<List<InventoryViewModel>> loadInventory() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
       try {
-        List<StockCard> validStockCardsForPhysicalInventory =
-            getValidStockCardsForPhysicalInventory();
-        inventoryViewModelList
-            .addAll(convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory));
+        List<StockCard> validStockCardsForPhysicalInventory = getValidStockCardsForPhysicalInventory();
+        inventoryViewModelList.addAll(convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory));
         restoreDraftInventory();
         subscriber.onNext(inventoryViewModelList);
         subscriber.onCompleted();
@@ -105,12 +98,13 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     stockCard.setLotOnHandListWrapper(lotOnHands);
   }
 
-  protected List<StockCard> getValidStockCardsForPhysicalInventory() throws LMISException {
-    return from(stockRepository.list()).filter(stockCard -> {
-      //TODO the result of filter will apply to inventory list
-      return !stockCard.getProduct().isKit() && stockCard.getProduct().isActive() && !stockCard
-          .getProduct().isArchived();
-    }).toList();
+  protected List<StockCard> getValidStockCardsForPhysicalInventory() {
+    //TODO the result of filter will apply to inventory list
+    return from(stockRepository.list())
+        .filter(stockCard -> !stockCard.getProduct().isKit()
+            && stockCard.getProduct().isActive()
+            && !stockCard.getProduct().isArchived())
+        .toList();
   }
 
   protected void restoreDraftInventory() throws LMISException {
@@ -175,8 +169,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         final Date latestStockMovementCreatedTime = movementRepository
             .getLatestStockMovementCreatedTime();
         if (DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
-          throw new LMISException(
-              LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
+          throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
         }
         for (InventoryViewModel viewModel : inventoryViewModelList) {
           viewModel.setSignature(sign);
@@ -209,16 +202,11 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) {
     List<LotMovementViewModel> lotMovementViewModels = FluentIterable
         .from(inventoryViewModel.getStockCard().getNonEmptyLotOnHandList())
-        .transform(new Function<LotOnHand, LotMovementViewModel>() {
-          @Override
-          public LotMovementViewModel apply(LotOnHand lotOnHand) {
-            return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
-                DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
-                    DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                lotOnHand.getQuantityOnHand().toString(),
-                MovementReasonManager.MovementType.RECEIVE);
-          }
-        }).toSortedList((lot1, lot2) -> {
+        .transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
+                DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+            lotOnHand.getQuantityOnHand().toString(),
+            MovementReasonManager.MovementType.RECEIVE)).toSortedList((lot1, lot2) -> {
           Date localDate = DateUtil
               .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
           if (localDate != null) {

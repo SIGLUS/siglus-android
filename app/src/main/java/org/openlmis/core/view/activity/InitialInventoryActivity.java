@@ -20,28 +20,20 @@ package org.openlmis.core.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.InitialInventoryPresenter;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder;
+import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_initial_inventory)
-public class InitialInventoryActivity extends InventoryActivity {
-
-  @InjectView(R.id.btn_save)
-  private View initialBtnSave;
-
-  @InjectPresenter(InitialInventoryPresenter.class)
-  InitialInventoryPresenter presenter;
+public class InitialInventoryActivity extends InventoryActivity<InitialInventoryPresenter> {
 
   protected boolean isAddNewDrug;
 
@@ -77,18 +69,20 @@ public class InitialInventoryActivity extends InventoryActivity {
   }
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    isAddNewDrug = getIntent().getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false);
-    super.onCreate(savedInstanceState);
+  protected InitialInventoryPresenter initPresenter() {
+    return RoboGuice.getInjector(this).getInstance(InitialInventoryPresenter.class);
   }
 
   @Override
   protected void initUI() {
     super.initUI();
-    initButtonPanel();
-    initTitle();
-    Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
-    subscriptions.add(subscription);
+    isAddNewDrug = getIntent().getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false);
+    btnSave.setVisibility(View.GONE);
+    if (isAddNewDrug) {
+      setTitle(getResources().getString(R.string.title_add_new_drug));
+    } else if (getSupportActionBar() != null) {
+      getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
   }
 
   @Override
@@ -103,25 +97,16 @@ public class InitialInventoryActivity extends InventoryActivity {
     tvTotal.setText(getString(R.string.label_total, presenter.getInventoryViewModelList().size()));
   }
 
-  private void initTitle() {
-    if (isAddNewDrug) {
-      setTitle(getResources().getString(R.string.title_add_new_drug));
-    } else if (getSupportActionBar() != null) {
-      getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+  @Override
+  protected void onCompleteClick() {
+    super.onCompleteClick();
+    btnDone.setEnabled(false);
+    if (validateInventory()) {
+      loading();
+      Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
+      subscriptions.add(subscription);
+    } else {
+      btnDone.setEnabled(true);
     }
-  }
-
-  private void initButtonPanel() {
-    initialBtnSave.setVisibility(View.GONE);
-    btnDone.setOnClickListener(v -> {
-      btnDone.setEnabled(false);
-      if (validateInventory()) {
-        loading();
-        Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
-        subscriptions.add(subscription);
-      } else {
-        btnDone.setEnabled(true);
-      }
-    });
   }
 }

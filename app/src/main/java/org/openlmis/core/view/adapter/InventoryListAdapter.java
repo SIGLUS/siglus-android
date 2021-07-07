@@ -20,14 +20,17 @@ package org.openlmis.core.view.adapter;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-import android.text.TextUtils;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import com.viethoa.RecyclerViewFastScroller;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> extends
     RecyclerView.Adapter<T> implements FilterableAdapter,
@@ -42,6 +45,9 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
 
   String queryKeyWord;
 
+  @Nullable
+  private Program filterProgram = null;
+
   protected InventoryListAdapter(List<InventoryViewModel> data) {
     this.data = data;
     filteredList = new ArrayList<>();
@@ -52,27 +58,49 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
     return filteredList.size();
   }
 
+
   @Override
   public void filter(final String keyword) {
     this.queryKeyWord = keyword;
-
-    List<InventoryViewModel> filteredViewModels;
-
-    if (TextUtils.isEmpty(keyword)) {
-      filteredViewModels = data;
-    } else {
-      filteredViewModels = from(data)
-          .filter(inventoryViewModel ->
-              inventoryViewModel.getProduct().getProductFullName().toLowerCase()
-                  .contains(keyword.toLowerCase())).toList();
+    FluentIterable<InventoryViewModel> filteredViewModels = from(data);
+    if (filterProgram != null) {
+      filteredViewModels = filteredViewModels.filter(inventoryViewModel -> {
+        if (inventoryViewModel == null) {
+          return false;
+        }
+        if (inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
+            || inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER) {
+          return true;
+        }
+        final Program program = inventoryViewModel.getProgram();
+        if (program == null) {
+          return false;
+        }
+        final String filterProgramProgramCode = filterProgram.getProgramCode();
+        final String programCode = program.getProgramCode();
+        return StringUtils.equals(filterProgramProgramCode, programCode);
+      });
+    }
+    if (!StringUtils.isEmpty(keyword)) {
+      filteredViewModels = filteredViewModels.filter(inventoryViewModel -> {
+        if (inventoryViewModel == null) {
+          return false;
+        }
+        return inventoryViewModel.getProduct().getProductFullName().toLowerCase().contains(keyword.toLowerCase());
+      });
     }
     filteredList.clear();
-    filteredList.addAll(filteredViewModels);
+    filteredList.addAll(filteredViewModels.toList());
     this.notifyDataSetChanged();
   }
 
   public void refreshList(List<InventoryViewModel> data) {
     this.data = data;
+    filter(queryKeyWord);
+  }
+
+  public void setFilterProgram(Program filterProgram) {
+    this.filterProgram = filterProgram;
     filter(queryKeyWord);
   }
 

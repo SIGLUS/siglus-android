@@ -28,19 +28,18 @@ import java.util.ArrayList;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkInitialInventoryPresenter;
-import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
+import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_bulk_initial_inventory)
-public class BulkInitialInventoryActivity extends InventoryActivity {
+public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialInventoryPresenter> {
 
   public static final String KEY_FROM_INITIAL_COMPLETED = "Initial-Completed";
 
@@ -48,9 +47,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
 
   @InjectView(R.id.btn_add_products)
   private TextView btnAddProducts;
-
-  @InjectPresenter(BulkInitialInventoryPresenter.class)
-  BulkInitialInventoryPresenter presenter;
 
   @Override
   public boolean validateInventory() {
@@ -87,22 +83,23 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
   }
 
   @Override
+  protected BulkInitialInventoryPresenter initPresenter() {
+    return RoboGuice.getInjector(this).getInstance(BulkInitialInventoryPresenter.class);
+  }
+
+  @Override
+  protected void initUI() {
+    super.initUI();
+    btnAddProducts.setOnClickListener(goToAddNonBasicProductsLister());
+  }
+
+  @Override
   protected void initRecyclerView() {
     mAdapter = new BulkInitialInventoryAdapter(presenter.getInventoryViewModelList(),
         removeNonBasicProductListener(),
         done -> setTotal());
     productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
     productListRecycleView.setAdapter(mAdapter);
-  }
-
-  @Override
-  protected void initUI() {
-    super.initUI();
-    Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
-    subscriptions.add(subscription);
-    btnDone.setOnClickListener(getDoneListener());
-    btnSave.setOnClickListener(getSaveListener());
-    btnAddProducts.setOnClickListener(goToAddNonBasicProductsLister());
   }
 
   @Override
@@ -138,33 +135,27 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     tvTotal.setText(getString(R.string.label_total, total));
   }
 
-  private SingleClickButtonListener getSaveListener() {
-    return new SingleClickButtonListener() {
-      @Override
-      public void onSingleClick(View v) {
-        btnSave.setEnabled(false);
-        loading();
-        Subscription subscription = presenter.saveDraftInventoryObservable().subscribe(getReloadSubscriber());
-        subscriptions.add(subscription);
-      }
-    };
+  @Override
+  protected void onSaveClick() {
+    super.onSaveClick();
+    btnSave.setEnabled(false);
+    loading();
+    Subscription subscription = presenter.saveDraftInventoryObservable().subscribe(getReloadSubscriber());
+    subscriptions.add(subscription);
   }
 
-  private SingleClickButtonListener getDoneListener() {
-    return new SingleClickButtonListener() {
-      @Override
-      public void onSingleClick(View v) {
-        btnDone.setEnabled(false);
-        if (validateInventory()) {
-          loading();
-          Subscription subscription = presenter.doInventory().subscribe(onNextMainPageAction);
-          subscriptions.add(subscription);
-        } else {
-          btnDone.setEnabled(true);
-          ToastUtil.show(getResources().getString(R.string.msg_error_basic_products));
-        }
-      }
-    };
+  @Override
+  protected void onCompleteClick() {
+    super.onCompleteClick();
+    btnDone.setEnabled(false);
+    if (validateInventory()) {
+      loading();
+      Subscription subscription = presenter.doInventory().subscribe(onNextMainPageAction);
+      subscriptions.add(subscription);
+    } else {
+      btnDone.setEnabled(true);
+      ToastUtil.show(getResources().getString(R.string.msg_error_basic_products));
+    }
   }
 
   private Subscriber<Object> getReloadSubscriber() {

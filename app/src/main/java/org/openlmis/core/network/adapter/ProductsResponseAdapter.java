@@ -29,7 +29,6 @@ import java.util.List;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
-import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 
@@ -77,7 +76,6 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
     final Product product = new Product();
     product.setCode(jsonProduct.get("productCode").getAsString());
     product.setPrimaryName(jsonProduct.get("fullProductName").getAsString());
-    product.setProgram(ProgramCacheManager.getPrograms(product.getCode()));
     product.setStrength("");
     product.setType("");
     product.setArchived(getBoolean(jsonProduct, "archived", false));

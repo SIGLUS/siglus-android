@@ -20,6 +20,7 @@ package org.openlmis.core.view.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import org.openlmis.core.R;
@@ -49,8 +50,7 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
 
   protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
     final InventoryViewModel viewModel = filteredList.get(position);
-    BulkInitialInventoryWithLotViewHolder holder =
-        (BulkInitialInventoryWithLotViewHolder) viewHolder;
+    BulkInitialInventoryWithLotViewHolder holder = (BulkInitialInventoryWithLotViewHolder) viewHolder;
     holder.populate((BulkInitialInventoryViewModel) viewModel, queryKeyWord,
         refreshCompleteCountListener, removeNonBasicProductListener);
   }
@@ -58,20 +58,20 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
   @Override
   public String getTextToShowInBubble(int position) {
 
-    if (position < 0 || position >= data.size()) {
+    if (position < 0 || position >= filteredList.size()) {
       return null;
     }
 
-    String name = data.get(position).getProductName();
+    String name = filteredList.get(position).getProductName();
     if (name == null || name.length() < 1) {
       return null;
     }
-    return data.get(position).getProductName().substring(0, 1);
+    return filteredList.get(position).getProductName().substring(0, 1);
   }
 
   @Override
   public int getItemViewType(int position) {
-    return data.get(position).getViewType();
+    return filteredList.get(position).getViewType();
   }
 
   public boolean isHasDataChanged() {
@@ -101,7 +101,8 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
   }
 
   @Override
-  public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  @NonNull
+  public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     if (viewType == ITEM_BASIC_HEADER) {
       return new BulkInitialInventoryWithLotViewHolder(LayoutInflater.from(parent.getContext())
           .inflate(R.layout.item_bulk_initial_inventory_header, parent, false));
@@ -115,7 +116,7 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
   }
 
   @Override
-  public void onBindViewHolder(BaseViewHolder holder, int position) {
+  public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
     if (position >= filteredList.size()) {
       return;
     }

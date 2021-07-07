@@ -21,6 +21,7 @@ package org.openlmis.core.view.viewmodel;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import androidx.core.content.ContextCompat;
 import java.util.List;
 import lombok.Data;
 import org.openlmis.core.LMISApp;
@@ -68,11 +69,10 @@ public class BulkEntriesViewModel extends InventoryViewModel {
   }
 
   public SpannableStringBuilder getGreenName() {
-    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(
-        getFormattedProductName());
+    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(getFormattedProductName());
     spannableStringBuilder.setSpan(new ForegroundColorSpan(
-            LMISApp.getInstance().getResources().getColor(R.color.color_primary)), 0,
-        getFormattedProductName().length(), Spanned.SPAN_POINT_MARK);
+            ContextCompat.getColor(LMISApp.getInstance(), R.color.color_primary)),
+        0, getFormattedProductName().length(), Spanned.SPAN_POINT_MARK);
     return spannableStringBuilder;
   }
 

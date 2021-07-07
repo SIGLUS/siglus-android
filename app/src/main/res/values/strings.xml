@@ -617,4 +617,5 @@
   <string name="msg_bulk_entries_lot_review"><![CDATA[<Strong><big><font color="#606162">Lot %1$s</font></Strong> Received amount: <Strong><font color="#606162">%2$d</font></big></Strong>]]></string>
   <string name="alert_for_fill_in_lot_or_remove_product">Enter an amount greater than 0 on at least one lot or remove the product</string>
   <string name="msg_isAndroid_False">Login failed, the current user is not an Android user, please contact the administrator</string>
+  <string name="label_inventory_options_all_product">All products</string>
 </resources>

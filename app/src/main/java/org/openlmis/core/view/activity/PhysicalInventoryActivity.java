@@ -21,25 +21,20 @@ package org.openlmis.core.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.view.View;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
-import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.widget.SignatureDialog;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
+import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_physical_inventory)
-public class PhysicalInventoryActivity extends InventoryActivity {
-
-  @InjectPresenter(PhysicalInventoryPresenter.class)
-  PhysicalInventoryPresenter presenter;
+public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInventoryPresenter> {
 
   public static final String KEY_FROM_PHYSICAL_COMPLETED = "Physical-Completed";
 
@@ -75,12 +70,8 @@ public class PhysicalInventoryActivity extends InventoryActivity {
   }
 
   @Override
-  protected void initUI() {
-    super.initUI();
-    btnSave.setOnClickListener(getSaveOnClickListener());
-    btnDone.setOnClickListener(getCompleteClickListener());
-    Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
-    subscriptions.add(subscription);
+  protected PhysicalInventoryPresenter initPresenter() {
+    return RoboGuice.getInjector(this).getInstance(PhysicalInventoryPresenter.class);
   }
 
   @Override
@@ -90,16 +81,21 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     productListRecycleView.setAdapter(mAdapter);
   }
 
-  protected SingleClickButtonListener getSaveOnClickListener() {
-    return new SingleClickButtonListener() {
-      @Override
-      public void onSingleClick(View v) {
-        loading();
-        Subscription subscription = presenter.saveDraftInventoryObservable()
-            .subscribe(onNextMainPageAction, errorAction);
-        subscriptions.add(subscription);
-      }
-    };
+  @Override
+  protected void onSaveClick() {
+    super.onSaveClick();
+    loading();
+    Subscription subscription = presenter.saveDraftInventoryObservable().subscribe(onNextMainPageAction, errorAction);
+    subscriptions.add(subscription);
+  }
+
+  @Override
+  protected void onCompleteClick() {
+    super.onCompleteClick();
+    if (validateInventoryFromCompleted()) {
+      showSignDialog();
+    }
+    trackInventoryEvent(TrackerActions.COMPLETE_INVENTORY);
   }
 
   @Override
@@ -122,18 +118,6 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         getString(R.string.btn_negative),
         "onBackPressed");
     dialogFragment.show(getSupportFragmentManager(), "");
-  }
-
-  private SingleClickButtonListener getCompleteClickListener() {
-    return new SingleClickButtonListener() {
-      @Override
-      public void onSingleClick(View v) {
-        if (validateInventoryFromCompleted()) {
-          showSignDialog();
-        }
-        trackInventoryEvent(TrackerActions.COMPLETE_INVENTORY);
-      }
-    };
   }
 
   private boolean validateInventoryFromCompleted() {

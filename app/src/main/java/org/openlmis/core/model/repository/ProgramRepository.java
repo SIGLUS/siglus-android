@@ -20,6 +20,8 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.util.Log;
+import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
@@ -27,7 +29,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.persistence.DbUtil;
@@ -37,13 +41,12 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class ProgramRepository {
 
+  private static final String TAG = ProgramRepository.class.getSimpleName();
+
   GenericDao<Program> genericDao;
 
   @Inject
   ProductRepository productRepository;
-
-  @Inject
-  RegimenRepository regimenRepository;
 
   @Inject
   DbUtil dbUtil;
@@ -124,19 +127,14 @@ public class ProgramRepository {
       throws LMISException {
     List<Program> programs = queryProgramsByProgramCodeOrParentCode(programCode);
 
-    List<Long> programIds = FluentIterable.from(programs).transform(program -> program.getId())
-        .toList();
-    return programIds;
+    return FluentIterable.from(programs).transform(BaseModel::getId).toList();
   }
 
   public List<String> queryProgramCodesByProgramCodeOrParentCode(final String programCode)
       throws LMISException {
     List<Program> programs = queryProgramsByProgramCodeOrParentCode(programCode);
 
-    List<String> programCodes = FluentIterable.from(programs)
-        .transform(program -> program.getProgramCode()).toList();
-
-    return programCodes;
+    return  FluentIterable.from(programs).transform(Program::getProgramCode).toList();
   }
 
   public List<Program> queryProgramsByProgramCodeOrParentCode(final String programCode)
@@ -158,5 +156,39 @@ public class ProgramRepository {
       }
       return false;
     }).toList();
+  }
+
+  public List<Program> queryActiveProgramWithoutML() throws LMISException {
+    final List<Program> programs = genericDao.queryForAll();
+    final List<ReportTypeForm> reportTypes = dbUtil.withDao(ReportTypeForm.class, Dao::queryForAll);
+    return FluentIterable.from(programs).filter(program -> {
+      for (ReportTypeForm reportTypeForm : reportTypes) {
+        if (reportTypeForm.getCode().equals(Objects.requireNonNull(program).getProgramCode())
+            && reportTypeForm.active
+            && !Program.MALARIA_CODE.equalsIgnoreCase(program.getProgramCode())) {
+          return true;
+        }
+      }
+      return false;
+    }).toList();
+  }
+
+  @Nullable
+  public Program queryProgramByProductCode(String productCode) {
+    try {
+      return dbUtil.withDaoAsBatch(ProductProgram.class, dao -> {
+        final ProductProgram productProgram = dao.queryBuilder()
+            .where()
+            .eq("productCode", productCode)
+            .queryForFirst();
+        if (productProgram == null) {
+          return null;
+        }
+        return queryByCode(productProgram.getProgramCode());
+      });
+    } catch (LMISException e) {
+      Log.w(TAG, e);
+      return null;
+    }
   }
 }

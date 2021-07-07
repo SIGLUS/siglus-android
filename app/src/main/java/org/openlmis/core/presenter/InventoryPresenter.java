@@ -23,18 +23,28 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import rx.Observable;
+import rx.Observable.OnSubscribe;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public abstract class InventoryPresenter extends Presenter {
 
   @Inject
   ProductRepository productRepository;
+
+  @Inject
+  ProgramRepository programRepository;
 
   @Inject
   StockRepository stockRepository;
@@ -56,6 +66,30 @@ public abstract class InventoryPresenter extends Presenter {
   }
 
   public abstract Observable<List<InventoryViewModel>> loadInventory();
+
+  public Observable<List<Program>> loadActivePrograms() {
+    return Observable.create((OnSubscribe<List<Program>>) subscriber -> {
+      try {
+        final List<Program> queryActiveProgram = programRepository.queryActiveProgramWithoutML();
+        subscriber.onNext(queryActiveProgram);
+      } catch (LMISException exception) {
+        subscriber.onError(exception);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  public Observable<List<InventoryViewModel>> getInflatedInventory() {
+    return loadInventory().doOnNext(inventoryViewModels -> {
+      for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
+        if (inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
+            || inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER) {
+          continue;
+        }
+        final Program program = programRepository.queryProgramByProductCode(inventoryViewModel.getProduct().getCode());
+        inventoryViewModel.setProgram(program);
+      }
+    });
+  }
 
   public interface InventoryView extends BaseView {
 

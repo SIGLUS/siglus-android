@@ -18,6 +18,7 @@
 
 package org.openlmis.core.presenter;
 
+import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_BASIC;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.util.Log;
@@ -58,8 +59,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         List<Product> inventoryProducts = productRepository.listBasicProducts();
         defaultViewModelList.clear();
         inventoryViewModelList.clear();
-        defaultViewModelList.addAll(convertProductToStockCardViewModel(inventoryProducts,
-            BulkInitialInventoryAdapter.ITEM_BASIC));
+        defaultViewModelList.addAll(convertProductToStockCardViewModel(inventoryProducts, ITEM_BASIC));
         addHeaderForBasicProducts();
         restoreDraftInventory();
         subscriber.onNext(inventoryViewModelList);
@@ -93,25 +93,23 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
       nonBasicLists.add(bulkInitialInventoryViewModel);
     }
 
-    if (nonBasicLists.size() >= 1) {
+    if (!nonBasicLists.isEmpty()) {
       buildNonBasicProductModels(nonBasicLists);
     }
   }
 
   @Nullable
-  private List<BulkInitialInventoryViewModel> convertProductToStockCardViewModel(
-      List<Product> products, int viewType) {
+  private List<BulkInitialInventoryViewModel> convertProductToStockCardViewModel(List<Product> products, int viewType) {
     return from(products).transform(product -> {
       try {
         BulkInitialInventoryViewModel viewModel;
         if (product.isArchived()) {
-          viewModel = new BulkInitialInventoryViewModel(
-              stockRepository.queryStockCardByProductId(product.getId()));
+          viewModel = new BulkInitialInventoryViewModel(stockRepository.queryStockCardByProductId(product.getId()));
           viewModel.setMovementType(MovementReasonManager.MovementType.INITIAL_INVENTORY);
           viewModel.setBasic(product.isBasic());
         } else {
           viewModel = new BulkInitialInventoryViewModel(product);
-          viewModel.setBasic(BulkInitialInventoryAdapter.ITEM_BASIC == viewType);
+          viewModel.setBasic(ITEM_BASIC == viewType);
           viewModel.setMovementType(MovementReasonManager.MovementType.INITIAL_INVENTORY);
         }
         viewModel.setViewType(viewType);
@@ -126,20 +124,18 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     }).toList();
   }
 
-  private void setExistingLotViewModels(
-      BulkInitialInventoryViewModel bulkInitialInventoryViewModel) {
+  private void setExistingLotViewModels(BulkInitialInventoryViewModel bulkInitialInventoryViewModel) {
     if (bulkInitialInventoryViewModel.getStockCard() == null) {
       return;
     }
     List<LotMovementViewModel> lotMovementViewModels = FluentIterable
         .from(bulkInitialInventoryViewModel.getStockCard().getNonEmptyLotOnHandList())
         .transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
-            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
-                DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-            lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE))
+            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+            lotOnHand.getQuantityOnHand().toString(),
+            MovementReasonManager.MovementType.RECEIVE))
         .toSortedList((lot1, lot2) -> {
-          Date localDate = DateUtil
-              .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+          Date localDate = DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
           if (localDate != null) {
             return localDate.compareTo(DateUtil
                 .parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
@@ -171,6 +167,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     for (InventoryViewModel viewModel : inventoryViewModelList) {
       if (viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER) {
         hasNonBasicProductHeader = true;
+        break;
       }
     }
     if (!hasNonBasicProductHeader) {
@@ -189,8 +186,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     inventoryViewModelList.addAll(defaultViewModelList);
     Product basicProductHeader = Product.dummyProduct();
     basicProductHeader.setBasic(true);
-    BulkInitialInventoryViewModel inventoryModelBasicHeader = new BulkInitialInventoryViewModel(
-        basicProductHeader);
+    BulkInitialInventoryViewModel inventoryModelBasicHeader = new BulkInitialInventoryViewModel(basicProductHeader);
     inventoryModelBasicHeader.setDummyModel(false);
     inventoryModelBasicHeader.setViewType(BulkInitialInventoryAdapter.ITEM_BASIC_HEADER);
     inventoryViewModelList.add(FIRST_ELEMENT_POSITION_OF_THE_LIST, inventoryModelBasicHeader);
@@ -201,8 +197,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
       ListIterator<InventoryViewModel> iterator = inventoryViewModelList.listIterator();
       while (iterator.hasNext()) {
         InventoryViewModel viewModel = iterator.next();
-        if (Objects
-            .equals(viewModel.getProduct().getCode(), inventoryViewModel.getProduct().getCode())) {
+        if (Objects.equals(viewModel.getProduct().getCode(), inventoryViewModel.getProduct().getCode())) {
           iterator.remove();
         }
       }

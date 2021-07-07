@@ -29,11 +29,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
 
 @Data
-@SuppressWarnings("PMD")
 public class InventoryViewModel extends BaseStockMovementViewModel {
 
   long productId;
@@ -54,10 +54,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
 
   long kitExpectQuantity;
 
-  SpannableStringBuilder styledName;
-
-  SpannableStringBuilder styledUnit;
-
   boolean valid = true;
 
   boolean checked = false;
@@ -73,10 +69,10 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
 
   StockCard stockCard;
 
+  Program program;
 
   public InventoryViewModel(StockCard stockCard, Map<String, String> lotsOnHands) {
     this(stockCard.getProduct());
-
     this.stockCard = stockCard;
     this.stockCardId = stockCard.getId();
     this.stockOnHand = stockCard.calculateSOHFromLots(lotsOnHands);
@@ -101,10 +97,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
   }
 
   public SpannableStringBuilder getStyledName() {
-    if (styledName == null) {
-      styledName = TextStyleUtil.formatStyledProductName(product);
-    }
-    return styledName;
+    return TextStyleUtil.formatStyledProductName(product);
   }
 
   public SpannableStringBuilder getProductStyledName() {
@@ -127,10 +120,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
   }
 
   public SpannableStringBuilder getStyledUnit() {
-    if (styledUnit == null) {
-      styledUnit = TextStyleUtil.formatStyledProductUnit(product);
-    }
-    return styledUnit;
+    return TextStyleUtil.formatStyledProductUnit(product);
   }
 
   private void setProductAttributes(Product product) {
@@ -213,8 +203,6 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
         + ", stockCardId=" + stockCardId
         + ", stockOnHand=" + stockOnHand
         + ", kitExpectQuantity=" + kitExpectQuantity
-        + ", styledName=" + styledName
-        + ", styledUnit=" + styledUnit
         + ", valid=" + valid
         + ", checked=" + checked
         + ", signature='" + signature + '\''
@@ -226,7 +214,7 @@ public class InventoryViewModel extends BaseStockMovementViewModel {
   private String getNewMovementString() {
     StringBuilder list = new StringBuilder();
     for (LotMovementViewModel model : newLotMovementViewModelList) {
-      list.append(" ").append(model.toString());
+      list.append(' ').append(model.toString());
     }
     return list.toString();
   }

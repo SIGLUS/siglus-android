@@ -20,20 +20,19 @@ package org.openlmis.core.utils;
 
 import static android.text.Spanned.SPAN_POINT_MARK;
 
-import android.content.res.Resources;
 import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import androidx.core.content.ContextCompat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 
-@SuppressWarnings("squid:S1874")
 public final class TextStyleUtil {
 
   private TextStyleUtil() {
@@ -45,20 +44,19 @@ public final class TextStyleUtil {
         .contains(queryKeyWord.toLowerCase())) {
       return spannableStringBuilder;
     }
-
-    final int startIndex = spannableStringBuilder.toString().toLowerCase()
-        .indexOf(queryKeyWord.toLowerCase());
-
-    spannableStringBuilder
-        .setSpan(new ForegroundColorSpan(getResources().getColor(R.color.color_accent)),
-            startIndex, startIndex + queryKeyWord.length(), SPAN_POINT_MARK);
+    final int startIndex = spannableStringBuilder.toString().toLowerCase().indexOf(queryKeyWord.toLowerCase());
+    spannableStringBuilder.setSpan(
+        new ForegroundColorSpan(ContextCompat.getColor(LMISApp.getContext(), R.color.color_accent)),
+        startIndex,
+        startIndex + queryKeyWord.length(), SPAN_POINT_MARK);
     return spannableStringBuilder;
   }
 
   public static SpannableStringBuilder formatStyledProductName(Product product) {
     String productName = product.getFormattedProductNameWithoutStrengthAndType();
     SpannableStringBuilder styledNameBuilder = new SpannableStringBuilder(productName);
-    styledNameBuilder.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.color_text_secondary)),
+    styledNameBuilder.setSpan(new ForegroundColorSpan(
+            ContextCompat.getColor(LMISApp.getContext(), R.color.color_text_secondary)),
         product.getProductNameWithoutStrengthAndType().length(), productName.length(), SPAN_POINT_MARK);
     return styledNameBuilder;
   }
@@ -71,8 +69,9 @@ public final class TextStyleUtil {
     if (product.getStrength() != null) {
       length = product.getStrength().length();
     }
-    styledUnitBuilder.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.color_text_secondary)),
-            length, unit.length(), SPAN_POINT_MARK);
+    styledUnitBuilder.setSpan(new ForegroundColorSpan(
+            ContextCompat.getColor(LMISApp.getContext(), R.color.color_text_secondary)),
+        length, unit.length(), SPAN_POINT_MARK);
     return styledUnitBuilder;
   }
 
@@ -103,11 +102,7 @@ public final class TextStyleUtil {
       }
     };
     InputFilter inputFilterMaxLength = new InputFilter.LengthFilter(
-        getResources().getInteger(R.integer.signature_length));
+        LMISApp.getContext().getResources().getInteger(R.integer.signature_length));
     return new InputFilter[]{inputFilterCharacterRange, inputFilterMaxLength};
-  }
-
-  private static Resources getResources() {
-    return LMISApp.getContext().getResources();
   }
 }

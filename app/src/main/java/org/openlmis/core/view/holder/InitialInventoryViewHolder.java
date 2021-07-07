@@ -67,14 +67,9 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     setUpLotListView();
     resetCheckBox();
     setUpCheckBox();
-
     checkBox.setChecked(viewModel.isChecked());
-
-    productName
-        .setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
-    productUnit
-        .setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyleType()));
-
+    productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
+    productUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyleType()));
     initHistoryView(listener);
   }
 

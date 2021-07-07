@@ -64,12 +64,10 @@ public class BulkInitialInventoryWithLotViewHolder extends BaseViewHolder {
     if (lotListView == null) {
       return;
     }
-    lotListView.initLotListView(viewModel, (done) -> {
-          updateTitle(done, queryKeyWord);
-          refreshCompleteCountListener.onStatusChange(done);
-        },
-        removeProductListener
-    );
+    lotListView.initLotListView(viewModel, done -> {
+      updateTitle(done, queryKeyWord);
+      refreshCompleteCountListener.onStatusChange(done);
+    }, removeProductListener);
     updateTitle(viewModel.isDone(), queryKeyWord);
   }
 
@@ -81,15 +79,11 @@ public class BulkInitialInventoryWithLotViewHolder extends BaseViewHolder {
   private void highlightQueryKeyWord(BulkInitialInventoryViewModel inventoryViewModel,
       String queryKeyWord, boolean done) {
     if (done) {
-      tvProductName.setText(
-          TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getGreenName()));
-      tvProductUnit.setText(
-          TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getGreenUnit()));
+      tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getGreenName()));
+      tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getGreenUnit()));
     } else {
-      tvProductName.setText(
-          TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
-      tvProductUnit.setText(
-          TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
+      tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
+      tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
     }
   }
 

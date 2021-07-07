@@ -19,21 +19,27 @@
 package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import com.viethoa.RecyclerViewFastScroller;
 import com.viethoa.models.AlphabetItem;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
@@ -41,9 +47,13 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
-public abstract class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView,
+public abstract class InventoryActivity<T extends InventoryPresenter> extends SearchBarActivity implements
+    InventoryPresenter.InventoryView,
     SimpleDialogFragment.MsgDialogCallBack {
 
   @InjectView(R.id.fast_scroller)
@@ -63,6 +73,8 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
   protected InventoryListAdapter<?> mAdapter;
 
+  protected T presenter;
+
   protected Action1<Object> onNextMainPageAction = o -> {
     loaded();
     goToNextPage();
@@ -73,35 +85,34 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
     showErrorMessage(throwable.getMessage());
   };
 
-  @NonNull
-  protected Subscriber<List<InventoryViewModel>> getOnViewModelsLoadedSubscriber() {
-    return new Subscriber<List<InventoryViewModel>>() {
-      @Override
-      public void onCompleted() {
-        // do nothing
-      }
+  private static final int INVENTORY_MENU_GROUP = 1;
 
-      @Override
-      public void onError(Throwable e) {
-        ToastUtil.show(e.getMessage());
-        loaded();
-      }
-
-      @Override
-      public void onNext(List<InventoryViewModel> inventoryViewModels) {
-        setUpFastScroller(inventoryViewModels);
-        mAdapter.refresh();
-        setTotal();
-        loaded();
-      }
-    };
-  }
+  private final ArrayList<OptionsItem> optionsItems = new ArrayList<>();
 
   @Override
   public boolean onSearchStart(String query) {
     mAdapter.filter(query);
     setUpFastScroller(mAdapter.getFilteredList());
     return false;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    final int order = item.getOrder();
+    if (order < 0 || order >= optionsItems.size()) {
+      return super.onOptionsItemSelected(item);
+    }
+    mAdapter.setFilterProgram(optionsItems.get(order).getProgram());
+    return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+    menu.removeGroup(INVENTORY_MENU_GROUP);
+    for (int i = 0; i < optionsItems.size(); i++) {
+      menu.add(INVENTORY_MENU_GROUP, i, i, optionsItems.get(i).getName());
+    }
+    return super.onPrepareOptionsMenu(menu);
   }
 
   @Override
@@ -136,6 +147,8 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
   protected abstract void setTotal();
 
+  protected abstract T initPresenter();
+
   @Override
   protected ScreenName getScreenName() {
     return ScreenName.INVENTORY_SCREEN;
@@ -144,13 +157,83 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    this.presenter = initPresenter();
     initUI();
+    initDate();
     trackInventoryEvent(TrackerActions.SELECT_INVENTORY);
   }
 
   protected void initUI() {
-    loading();
     initRecyclerView();
+    btnSave.setOnClickListener(v -> onSaveClick());
+    btnDone.setOnClickListener(v -> onCompleteClick());
+  }
+
+  protected void onSaveClick() {
+    // do nothing
+  }
+
+  protected void onCompleteClick() {
+    mAdapter.setFilterProgram(null);
+    mAdapter.refresh();
+  }
+
+  protected void initDate() {
+    loading();
+    final Subscription subscription = presenter.loadActivePrograms().subscribe(getOnProgramsLoadedSubscriber());
+    subscriptions.add(subscription);
+  }
+
+  @NonNull
+  protected Subscriber<List<Program>> getOnProgramsLoadedSubscriber() {
+    return new Subscriber<List<Program>>() {
+      @Override
+      public void onCompleted() {
+        // do nothing
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        ToastUtil.show(e.getMessage());
+        loaded();
+        finish();
+      }
+
+      @Override
+      public void onNext(List<Program> programs) {
+        buildOptionsItem(programs);
+        invalidateOptionsMenu();
+        Subscription subscription = presenter.getInflatedInventory()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(getOnViewModelsLoadedSubscriber());
+        subscriptions.add(subscription);
+      }
+    };
+  }
+
+  @NonNull
+  protected Subscriber<List<InventoryViewModel>> getOnViewModelsLoadedSubscriber() {
+    return new Subscriber<List<InventoryViewModel>>() {
+      @Override
+      public void onCompleted() {
+        // do nothing
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        ToastUtil.show(e.getMessage());
+        loaded();
+      }
+
+      @Override
+      public void onNext(List<InventoryViewModel> inventoryViewModels) {
+        setUpFastScroller(inventoryViewModels);
+        mAdapter.refresh();
+        setTotal();
+        loaded();
+      }
+    };
   }
 
   protected void trackInventoryEvent(TrackerActions action) {
@@ -179,5 +262,29 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
     fastScroller.setRecyclerView(productListRecycleView);
     fastScroller.setUpAlphabet(mAlphabetItems);
+  }
+
+  private void buildOptionsItem(List<Program> programs) {
+    optionsItems.clear();
+    optionsItems.add(new OptionsItem.OptionsItemBuilder()
+        .name(getString(R.string.label_inventory_options_all_product))
+        .program(null)
+        .build());
+    for (Program program : programs) {
+      optionsItems.add(new OptionsItem.OptionsItemBuilder()
+          .name(program.getProgramName())
+          .program(program)
+          .build());
+    }
+  }
+
+  @Data
+  @Builder
+  private static class OptionsItem {
+
+    private String name;
+
+    @Nullable
+    private Program program;
   }
 }

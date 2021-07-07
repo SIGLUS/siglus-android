@@ -21,6 +21,7 @@ package org.openlmis.core.view.viewmodel;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import androidx.core.content.ContextCompat;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -102,7 +103,7 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
         return true;
       }
     }
-    if (newLotMovementViewModelList.size() > 0) {
+    if (!newLotMovementViewModelList.isEmpty()) {
       return true;
     }
     for (LotMovementViewModel viewModel : getNewLotMovementViewModelList()) {
@@ -122,19 +123,11 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
     return true;
   }
 
-  public String getFormattedProductName() {
-    return product.getFormattedProductNameWithoutStrengthAndType();
-  }
-
-  public String getFormattedProductUnit() {
-    return product.getStrength() + " " + product.getType();
-  }
-
   public SpannableStringBuilder getGreenName() {
     SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(
         getFormattedProductName());
     spannableStringBuilder.setSpan(new ForegroundColorSpan(
-            LMISApp.getInstance().getResources().getColor(R.color.color_primary)), 0,
+            ContextCompat.getColor(LMISApp.getInstance(), R.color.color_primary)), 0,
         getFormattedProductName().length(), Spanned.SPAN_POINT_MARK);
     return spannableStringBuilder;
   }
@@ -143,7 +136,7 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
     SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(
         getFormattedProductUnit());
     spannableStringBuilder.setSpan(new ForegroundColorSpan(
-            LMISApp.getInstance().getResources().getColor(R.color.color_primary)), 0,
+            ContextCompat.getColor(LMISApp.getInstance(), R.color.color_primary)), 0,
         getFormattedProductUnit().length(), Spanned.SPAN_POINT_MARK);
     return spannableStringBuilder;
   }

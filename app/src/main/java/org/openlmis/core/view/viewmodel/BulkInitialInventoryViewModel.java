@@ -21,6 +21,7 @@ package org.openlmis.core.view.viewmodel;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import androidx.core.content.ContextCompat;
 import java.util.List;
 import lombok.Data;
 import org.openlmis.core.LMISApp;
@@ -32,7 +33,6 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 
 @Data
-@SuppressWarnings("PMD")
 public class BulkInitialInventoryViewModel extends InventoryViewModel {
 
   private static final String TAG = BulkInitialInventoryViewModel.class.getSimpleName();
@@ -59,21 +59,20 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
     if (draftInventory == null) {
       return hasLotInInventoryModelChanged();
     }
-
     return isDifferentFromDraft();
   }
 
   private boolean isDifferentFromDraft() {
     // 数据库中读取的和当前界面上的值是否有改动
-    List<DraftInitialInventoryLotItem> existingDraftLotItems = draftInventory
-        .getDraftLotItemListWrapper();
+    List<DraftInitialInventoryLotItem> existingDraftLotItems = draftInventory.getDraftLotItemListWrapper();
     for (DraftInitialInventoryLotItem draftLotItem : existingDraftLotItems) {
       for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
-        if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
-          if (!String.valueOf(draftLotItem.getQuantity() == null ? "" : draftLotItem.getQuantity())
-              .equals(existingLotMovementViewModel.getQuantity())) {
-            return true;
-          }
+        final String draftLotNumber = draftLotItem.getLotNumber();
+        final String draftQuantity = formatQuantity(draftLotItem.getQuantity());
+        final String existingLotNumber = existingLotMovementViewModel.getLotNumber();
+        final String existingLotQuantity = existingLotMovementViewModel.getQuantity();
+        if (draftLotNumber.equals(existingLotNumber) && !draftQuantity.equals(existingLotQuantity)) {
+          return true;
         }
       }
     }
@@ -97,29 +96,23 @@ public class BulkInitialInventoryViewModel extends InventoryViewModel {
     return false;
   }
 
-  public String getFormattedProductName() {
-    return product.getFormattedProductNameWithoutStrengthAndType();
-  }
-
-  public String getFormattedProductUnit() {
-    return product.getStrength() + " " + product.getType();
-  }
-
   public SpannableStringBuilder getGreenName() {
-    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(
-        getFormattedProductName());
-    spannableStringBuilder.setSpan(new ForegroundColorSpan(
-            LMISApp.getInstance().getResources().getColor(R.color.color_primary)), 0,
-        getFormattedProductName().length(), Spanned.SPAN_POINT_MARK);
+    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(getFormattedProductName());
+    spannableStringBuilder.setSpan(
+        new ForegroundColorSpan(ContextCompat.getColor(LMISApp.getInstance(), R.color.color_primary)),
+        0,
+        getFormattedProductName().length(),
+        Spanned.SPAN_POINT_MARK);
     return spannableStringBuilder;
   }
 
   public SpannableStringBuilder getGreenUnit() {
-    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(
-        getFormattedProductUnit());
-    spannableStringBuilder.setSpan(new ForegroundColorSpan(
-            LMISApp.getInstance().getResources().getColor(R.color.color_primary)), 0,
-        getFormattedProductUnit().length(), Spanned.SPAN_POINT_MARK);
+    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(getFormattedProductUnit());
+    spannableStringBuilder.setSpan(
+        new ForegroundColorSpan(ContextCompat.getColor(LMISApp.getInstance(), R.color.color_primary)),
+        0,
+        getFormattedProductUnit().length(),
+        Spanned.SPAN_POINT_MARK);
     return spannableStringBuilder;
   }
 
