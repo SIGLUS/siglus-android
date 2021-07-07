@@ -20,6 +20,7 @@ package org.openlmis.core.view.holder;
 
 import android.view.View;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.Calendar;
@@ -68,7 +69,7 @@ public class StockCardViewHolder extends BaseViewHolder {
   public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord) {
     setListener(inventoryViewModel);
     inflateData(inventoryViewModel, queryKeyWord);
-    inflateLotLayout(inventoryViewModel.getStockCard().getLotOnHandListWrapper());
+    inflateLotLayout(inventoryViewModel.getStockCard().getNonEmptyLotOnHandList());
   }
 
   protected void inflateData(InventoryViewModel inventoryViewModel, String queryKeyWord) {
@@ -125,7 +126,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     StockOnHandStatus stockOnHandStatus = StockOnHandStatus
         .calculateStockOnHandLevel(viewModel.getStockCard(), viewModel.getStockOnHand());
     tvStockStatus.setText(context.getResources().getString(stockOnHandStatus.getDescription()));
-    tvStockStatus.setBackgroundColor(context.getResources().getColor(stockOnHandStatus.getBgColor()));
+    tvStockStatus.setBackgroundColor(ContextCompat.getColor(context,stockOnHandStatus.getBgColor()));
   }
 
   private void inflateLotLayout(List<LotOnHand> lotOnHandList) {
