@@ -23,86 +23,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
-import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder.InventoryItemStatusChangeListener;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
-import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_physical_inventory)
 public class PhysicalInventoryActivity extends InventoryActivity {
 
+  @InjectPresenter(PhysicalInventoryPresenter.class)
   PhysicalInventoryPresenter presenter;
 
   public static final String KEY_FROM_PHYSICAL_COMPLETED = "Physical-Completed";
 
-  @Override
-  public void initUI() {
-    super.initUI();
-    btnSave.setOnClickListener(getSaveOnClickListener());
-    btnDone.setOnClickListener(completeClickListener);
-
-    initPresenter();
-    initRecyclerView();
-    Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
-    subscriptions.add(subscription);
-  }
-
-  protected void initPresenter() {
-    presenter = RoboGuice.getInjector(this).getInstance(PhysicalInventoryPresenter.class);
-  }
-
-  @Override
-  protected void initRecyclerView() {
-    mAdapter = new PhysicalInventoryAdapter(presenter.getInventoryViewModelList(), getRefreshCompleteCountListener());
-    productListRecycleView.setAdapter(mAdapter);
-  }
-
-  private InventoryItemStatusChangeListener getRefreshCompleteCountListener() {
-    return done -> setTotal(presenter.getInventoryViewModelList().size());
-  }
-
-  protected SingleClickButtonListener getSaveOnClickListener() {
-    return new SingleClickButtonListener() {
-      @Override
-      public void onSingleClick(View v) {
-        loading();
-        Subscription subscription = presenter.saveDraftInventoryObservable()
-            .subscribe(onNextMainPageAction, errorAction);
-        subscriptions.add(subscription);
-      }
-    };
-  }
-
-  private final SingleClickButtonListener completeClickListener = new SingleClickButtonListener() {
-    @Override
-    public void onSingleClick(View v) {
-      signPhysicalInventory();
-      trackInventoryEvent(TrackerActions.COMPLETE_INVENTORY);
+  private final SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+    public void onSign(String sign) {
+      loading();
+      Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
+      subscriptions.add(subscription);
+      trackInventoryEvent(TrackerActions.APPROVE_INVENTORY);
     }
   };
 
-  private boolean validateInventoryFromCompleted() {
-    int position = ((PhysicalInventoryAdapter) mAdapter).validateAllForCompletedClick(KEY_FROM_PHYSICAL_COMPLETED);
-    setTotal(presenter.getInventoryViewModelList().size());
-    if (position >= 0) {
-      clearSearch();
-      productListRecycleView.scrollToPosition(position);
-      return false;
-    }
-    return true;
-  }
-
-  public void signPhysicalInventory() {
-    if (validateInventoryFromCompleted()) {
-      showSignDialog();
-    }
+  public static Intent getIntentToMe(Context context) {
+    return new Intent(context, PhysicalInventoryActivity.class);
   }
 
   @Override
@@ -123,8 +74,44 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     return R.style.AppTheme_BLUE;
   }
 
-  private boolean isDataChange() {
-    return ((PhysicalInventoryAdapter) mAdapter).isHasDataChanged();
+  @Override
+  protected void initUI() {
+    super.initUI();
+    btnSave.setOnClickListener(getSaveOnClickListener());
+    btnDone.setOnClickListener(getCompleteClickListener());
+    Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
+    subscriptions.add(subscription);
+  }
+
+  @Override
+  protected void initRecyclerView() {
+    mAdapter = new PhysicalInventoryAdapter(presenter.getInventoryViewModelList(), done -> setTotal());
+    productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
+    productListRecycleView.setAdapter(mAdapter);
+  }
+
+  protected SingleClickButtonListener getSaveOnClickListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        loading();
+        Subscription subscription = presenter.saveDraftInventoryObservable()
+            .subscribe(onNextMainPageAction, errorAction);
+        subscriptions.add(subscription);
+      }
+    };
+  }
+
+  @Override
+  protected void goToNextPage() {
+    setResult(Activity.RESULT_OK);
+    finish();
+  }
+
+  @Override
+  protected void setTotal() {
+    tvTotal.setText(getString(R.string.label_total_complete_counts, presenter.getCompleteCount(),
+        presenter.getInventoryViewModelList().size()));
   }
 
   private void showDataChangeConfirmDialog() {
@@ -137,17 +124,30 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     dialogFragment.show(getSupportFragmentManager(), "");
   }
 
-  @Override
-  protected void goToNextPage() {
-    setResult(Activity.RESULT_OK);
-    finish();
+  private SingleClickButtonListener getCompleteClickListener() {
+    return new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        if (validateInventoryFromCompleted()) {
+          showSignDialog();
+        }
+        trackInventoryEvent(TrackerActions.COMPLETE_INVENTORY);
+      }
+    };
   }
 
-  public static Intent getIntentToMe(Context context) {
-    return new Intent(context, PhysicalInventoryActivity.class);
+  private boolean validateInventoryFromCompleted() {
+    int position = ((PhysicalInventoryAdapter) mAdapter).validateAllForCompletedClick(KEY_FROM_PHYSICAL_COMPLETED);
+    setTotal();
+    if (position >= 0) {
+      clearSearch();
+      productListRecycleView.scrollToPosition(position);
+      return false;
+    }
+    return true;
   }
 
-  public void showSignDialog() {
+  private void showSignDialog() {
     SignatureDialog signatureDialog = new SignatureDialog();
     signatureDialog
         .setArguments(SignatureDialog.getBundleToMe(getString(R.string.label_physical_inventory_signature_title)));
@@ -155,17 +155,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     signatureDialog.show(getSupportFragmentManager());
   }
 
-  protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-    public void onSign(String sign) {
-      loading();
-      Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
-      subscriptions.add(subscription);
-      trackInventoryEvent(TrackerActions.APPROVE_INVENTORY);
-    }
-  };
-
-  @Override
-  protected void setTotal(int total) {
-    tvTotal.setText(getString(R.string.label_total_complete_counts, presenter.getCompleteCount(), total));
+  private boolean isDataChange() {
+    return ((PhysicalInventoryAdapter) mAdapter).isHasDataChanged();
   }
 }

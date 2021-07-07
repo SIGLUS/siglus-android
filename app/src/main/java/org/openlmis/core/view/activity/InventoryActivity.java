@@ -23,12 +23,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.viethoa.RecyclerViewFastScroller;
 import com.viethoa.models.AlphabetItem;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
@@ -43,9 +43,8 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.functions.Action1;
 
-@SuppressWarnings("PMD")
-public abstract class InventoryActivity extends SearchBarActivity implements
-    InventoryPresenter.InventoryView, SimpleDialogFragment.MsgDialogCallBack {
+public abstract class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView,
+    SimpleDialogFragment.MsgDialogCallBack {
 
   @InjectView(R.id.fast_scroller)
   RecyclerViewFastScroller fastScroller;
@@ -62,7 +61,17 @@ public abstract class InventoryActivity extends SearchBarActivity implements
   @InjectView(R.id.btn_save)
   public View btnSave;
 
-  protected InventoryListAdapter mAdapter;
+  protected InventoryListAdapter<?> mAdapter;
+
+  protected Action1<Object> onNextMainPageAction = o -> {
+    loaded();
+    goToNextPage();
+  };
+
+  protected Action1<Throwable> errorAction = throwable -> {
+    loaded();
+    showErrorMessage(throwable.getMessage());
+  };
 
   @NonNull
   protected Subscriber<List<InventoryViewModel>> getOnViewModelsLoadedSubscriber() {
@@ -82,53 +91,11 @@ public abstract class InventoryActivity extends SearchBarActivity implements
       public void onNext(List<InventoryViewModel> inventoryViewModels) {
         setUpFastScroller(inventoryViewModels);
         mAdapter.refresh();
-        setTotal(inventoryViewModels.size());
+        setTotal();
         loaded();
       }
     };
   }
-
-  protected Action1<Object> onNextMainPageAction = getOnNextMainPageAction();
-
-  @NonNull
-  protected Action1<Object> getOnNextMainPageAction() {
-    return o -> {
-      loaded();
-      goToNextPage();
-    };
-  }
-
-  protected Action1<Throwable> errorAction = throwable -> {
-    loaded();
-    showErrorMessage(throwable.getMessage());
-  };
-
-  @Override
-  protected ScreenName getScreenName() {
-    return ScreenName.INVENTORY_SCREEN;
-  }
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-    initUI();
-
-    trackInventoryEvent(TrackerActions.SELECT_INVENTORY);
-  }
-
-  protected abstract void initRecyclerView();
-
-  public void initUI() {
-    loading();
-  }
-
-  protected void trackInventoryEvent(TrackerActions action) {
-    LMISApp.getInstance().trackEvent(TrackerCategories.INVENTORY, action);
-  }
-
-  protected abstract void goToNextPage();
 
   @Override
   public boolean onSearchStart(String query) {
@@ -153,10 +120,6 @@ public abstract class InventoryActivity extends SearchBarActivity implements
     return true;
   }
 
-  protected void setTotal(int total) {
-    tvTotal.setText(getString(R.string.label_total, total));
-  }
-
   @Override
   public void positiveClick(String tag) {
     this.finish();
@@ -164,10 +127,37 @@ public abstract class InventoryActivity extends SearchBarActivity implements
 
   @Override
   public void negativeClick(String tag) {
-
+    // do nothing
   }
 
-  public void setUpFastScroller(List<InventoryViewModel> viewModels) {
+  protected abstract void initRecyclerView();
+
+  protected abstract void goToNextPage();
+
+  protected abstract void setTotal();
+
+  @Override
+  protected ScreenName getScreenName() {
+    return ScreenName.INVENTORY_SCREEN;
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    initUI();
+    trackInventoryEvent(TrackerActions.SELECT_INVENTORY);
+  }
+
+  protected void initUI() {
+    loading();
+    initRecyclerView();
+  }
+
+  protected void trackInventoryEvent(TrackerActions action) {
+    LMISApp.getInstance().trackEvent(TrackerCategories.INVENTORY, action);
+  }
+
+  protected void setUpFastScroller(List<InventoryViewModel> viewModels) {
     fastScroller.setVisibility(View.VISIBLE);
     if (viewModels.isEmpty()) {
       fastScroller.setVisibility(View.GONE);
@@ -176,7 +166,7 @@ public abstract class InventoryActivity extends SearchBarActivity implements
     List<String> strAlphabets = new ArrayList<>();
     for (int i = 0; i < viewModels.size(); i++) {
       String name = viewModels.get(i).getProductName();
-      if (name == null || name.trim().isEmpty()) {
+      if (StringUtils.isBlank(name)) {
         continue;
       }
 

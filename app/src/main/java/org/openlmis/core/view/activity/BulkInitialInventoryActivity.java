@@ -19,14 +19,12 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkInitialInventoryPresenter;
@@ -34,7 +32,6 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
-import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
@@ -56,97 +53,103 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
   BulkInitialInventoryPresenter presenter;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  public boolean validateInventory() {
+    int position = ((BulkInitialInventoryAdapter) mAdapter).validateAllForCompletedClick(KEY_FROM_INITIAL_COMPLETED);
+    setTotal();
+    if (position >= 0) {
+      clearSearch();
+      productListRecycleView.scrollToPosition(position);
+      return false;
+    }
+    return true;
+  }
+
+  public View.OnClickListener goToAddNonBasicProductsLister() {
+    return v -> {
+      Intent intent = new Intent(getApplicationContext(), AddNonBasicProductsActivity.class);
+      intent.putExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS,
+          (Serializable) presenter.getAllAddedNonBasicProduct());
+      startActivityForResult(intent, REQUEST_CODE);
+    };
+  }
+
+  @Override
+  public void onBackPressed() {
+    if (isSearchViewActivity()) {
+      searchView.onActionViewCollapsed();
+      return;
+    }
+    if (isDataChange()) {
+      showDataChangeConfirmDialog();
+      return;
+    }
+    super.onBackPressed();
   }
 
   @Override
   protected void initRecyclerView() {
     mAdapter = new BulkInitialInventoryAdapter(presenter.getInventoryViewModelList(),
         removeNonBasicProductListener(),
-        getRefreshCompleteCountListener());
+        done -> setTotal());
+    productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
     productListRecycleView.setAdapter(mAdapter);
   }
 
   @Override
-  public void initUI() {
+  protected void initUI() {
     super.initUI();
-    initRecyclerView();
-    Subscription subscription = presenter.loadInventory()
-        .subscribe(getOnViewModelsLoadedSubscriber());
+    Subscription subscription = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
     btnDone.setOnClickListener(getDoneListener());
     btnSave.setOnClickListener(getSaveListener());
     btnAddProducts.setOnClickListener(goToAddNonBasicProductsLister());
   }
 
-  @NonNull
-  protected Subscriber<List<InventoryViewModel>> getOnViewModelsLoadedSubscriber() {
-    return new Subscriber<List<InventoryViewModel>>() {
-      @Override
-      public void onCompleted() {
-        // do nothing
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        ToastUtil.show(e.getMessage());
-        loaded();
-      }
-
-      @Override
-      public void onNext(List<InventoryViewModel> inventoryViewModels) {
-        setUpFastScroller(inventoryViewModels);
-        mAdapter.refresh();
-        mAdapter.notifyDataSetChanged();
-        setTotal();
-        loaded();
-      }
-    };
+  @Override
+  protected void goToNextPage() {
+    preferencesMgr.setIsNeedsInventory(false);
+    startActivity(HomeActivity.getIntentToMe(this));
+    this.finish();
   }
 
-  private BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener getRefreshCompleteCountListener() {
-    return done -> setTotal();
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (areThereSelectedProducts(requestCode, resultCode, data)) {
+      presenter.addNonBasicProductsToInventory((ArrayList<Product>) data
+          .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS));
+      mAdapter.refresh();
+      setUpFastScroller(presenter.getInventoryViewModelList());
+      mAdapter.notifyDataSetChanged();
+      setTotal();
+    }
   }
 
-  @NonNull
+  @Override
+  protected void setTotal() {
+    int total = 0;
+    for (InventoryViewModel model : presenter.getInventoryViewModelList()) {
+      if (model.getProductId() != 0
+          && (model.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC
+          || model.getViewType() == BulkInitialInventoryAdapter.ITEM_NO_BASIC)) {
+        total++;
+      }
+    }
+    tvTotal.setText(getString(R.string.label_total, total));
+  }
+
   private SingleClickButtonListener getSaveListener() {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
         btnSave.setEnabled(false);
         loading();
-        Subscription subscription = presenter.saveDraftInventoryObservable()
-            .subscribe(getReloadSubscriber());
+        Subscription subscription = presenter.saveDraftInventoryObservable().subscribe(getReloadSubscriber());
         subscriptions.add(subscription);
       }
     };
   }
 
-  private Subscriber getReloadSubscriber() {
-    return new Subscriber() {
-      @Override
-      public void onCompleted() {
-        ToastUtil.showForLongTime(R.string.successfully_saved);
-        loaded();
-        btnSave.setEnabled(true);
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        // do nothing
-      }
-
-      @Override
-      public void onNext(Object o) {
-        Subscription loaded = presenter.loadInventory()
-            .subscribe(getOnViewModelsLoadedSubscriber());
-        subscriptions.add(loaded);
-      }
-    };
-  }
-
-  @NonNull
   private SingleClickButtonListener getDoneListener() {
     return new SingleClickButtonListener() {
       @Override
@@ -164,59 +167,26 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
     };
   }
 
-  @Override
-  public boolean validateInventory() {
-    int position = ((BulkInitialInventoryAdapter) mAdapter)
-        .validateAllForCompletedClick(KEY_FROM_INITIAL_COMPLETED);
-    setTotal();
-    if (position >= 0) {
-      clearSearch();
-      productListRecycleView.scrollToPosition(position);
-      return false;
-    }
-    return true;
-  }
+  private Subscriber<Object> getReloadSubscriber() {
+    return new Subscriber<Object>() {
+      @Override
+      public void onCompleted() {
+        ToastUtil.showForLongTime(R.string.successfully_saved);
+        loaded();
+        btnSave.setEnabled(true);
+      }
 
-  @Override
-  protected void goToNextPage() {
-    preferencesMgr.setIsNeedsInventory(false);
-    startActivity(HomeActivity.getIntentToMe(this));
-    this.finish();
-  }
+      @Override
+      public void onError(Throwable e) {
+        // do nothing
+      }
 
-  public View.OnClickListener goToAddNonBasicProductsLister() {
-    return v -> {
-      Intent intent = new Intent(getApplicationContext(), AddNonBasicProductsActivity.class);
-      intent.putExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS,
-          (Serializable) presenter.getAllAddedNonBasicProduct());
-      startActivityForResult(intent, REQUEST_CODE);
+      @Override
+      public void onNext(Object o) {
+        Subscription loaded = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
+        subscriptions.add(loaded);
+      }
     };
-  }
-
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (areThereSelectedProducts(requestCode, resultCode, data)) {
-      presenter.addNonBasicProductsToInventory((ArrayList<Product>) data
-          .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS));
-      mAdapter.refresh();
-      setUpFastScroller(presenter.getInventoryViewModelList());
-      mAdapter.notifyDataSetChanged();
-      setTotal();
-    }
-  }
-
-
-  @Override
-  public void onBackPressed() {
-    if (isSearchViewActivity()) {
-      searchView.onActionViewCollapsed();
-      return;
-    }
-    if (isDataChange()) {
-      showDataChangeConfirmDialog();
-      return;
-    }
-    super.onBackPressed();
   }
 
   private boolean isDataChange() {
@@ -240,19 +210,6 @@ public class BulkInitialInventoryActivity extends InventoryActivity {
         && data.getExtras().containsKey(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
   }
 
-  protected void setTotal() {
-    int total = 0;
-    for (InventoryViewModel model : presenter.getInventoryViewModelList()) {
-      if (model.getProductId() != 0
-          && (model.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC
-          || model.getViewType() == BulkInitialInventoryAdapter.ITEM_NO_BASIC)) {
-        total++;
-      }
-    }
-    tvTotal.setText(getString(R.string.label_total, total));
-  }
-
-  @NonNull
   private BulkInitialInventoryAdapter.RemoveNonBasicProduct removeNonBasicProductListener() {
     return viewModel -> {
       presenter.removeNonBasicProductElement(viewModel);

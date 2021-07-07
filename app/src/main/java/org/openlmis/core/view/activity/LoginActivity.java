@@ -171,7 +171,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
       startActivity(new Intent(this, BulkInitialInventoryActivity.class));
       finish();
     } else {
-      launchActivity(InitialInventoryActivity.getIntentToMe(this));
+      launchActivity(InitialInventoryActivity.getIntentToMe(this, false));
     }
   }
 

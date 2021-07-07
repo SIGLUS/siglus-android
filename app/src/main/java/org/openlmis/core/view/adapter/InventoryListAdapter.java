@@ -38,10 +38,11 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
 
   @Getter
   @Setter
-  List<InventoryViewModel> filteredList = new ArrayList<>();
+  List<InventoryViewModel> filteredList;
+
   String queryKeyWord;
 
-  public InventoryListAdapter(List<InventoryViewModel> data) {
+  protected InventoryListAdapter(List<InventoryViewModel> data) {
     this.data = data;
     filteredList = new ArrayList<>();
   }
