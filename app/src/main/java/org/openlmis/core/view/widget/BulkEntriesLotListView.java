@@ -112,9 +112,8 @@ public class BulkEntriesLotListView extends BaseLotListView {
         viewModel.getExistingLotMovementViewModelList(), getMovementReasonDescriptionList(),
         bulkEntriesViewModel, bulkEntriesAdapter);
     existingLotListView.setAdapter(existingBulkEntriesLotMovementAdapter);
-    existingLotListView
-        .addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
     existingBulkEntriesLotMovementAdapter.setMovementChangeListener(amountChangeListenerFromAlert);
+    setItemDecoration(existingLotListView);
   }
 
   @Override
@@ -125,8 +124,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
         viewModel.getNewLotMovementViewModelList(), getMovementReasonDescriptionList(),
         bulkEntriesViewModel, bulkEntriesAdapter);
     newLotListView.setAdapter(newBulkEntriesLotMovementAdapter);
-    newLotListView
-        .addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+    setItemDecoration(newLotListView);
   }
 
   @Override
@@ -162,6 +160,12 @@ public class BulkEntriesLotListView extends BaseLotListView {
     };
   }
 
+  private void setItemDecoration(RecyclerView recyclerView) {
+    if (recyclerView.getItemDecorationCount() == 0) {
+      recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+    }
+  }
+
   private void setViewStatus() {
     if (bulkEntriesViewModel.getInvalidType() == InvalidType.NO_LOT) {
       btnAddNewLot.setBackground(getDrawable(R.drawable.border_round_red));
@@ -169,14 +173,11 @@ public class BulkEntriesLotListView extends BaseLotListView {
       alertAddPositiveLotAmount.setVisibility(VISIBLE);
     } else if (bulkEntriesViewModel.getInvalidType() == InvalidType.EXISTING_LOT_ALL_BLANK) {
       alertAddPositiveLotAmount.setVisibility(VISIBLE);
-      btnAddNewLot
-          .setBackground(getDrawable(R.drawable.border_round_blue));
+      btnAddNewLot.setBackground(getDrawable(R.drawable.border_round_blue));
       btnAddNewLot.setTextColor(getColor(R.color.color_accent));
-    } else if (bulkEntriesViewModel.getInvalidType() == InvalidType.NEW_LOT_BLANK
-        || bulkEntriesViewModel.getInvalidType() == InvalidType.DEFAULT) {
+    } else {
       alertAddPositiveLotAmount.setVisibility(GONE);
-      btnAddNewLot
-          .setBackground(getDrawable(R.drawable.border_round_blue));
+      btnAddNewLot.setBackground(getDrawable(R.drawable.border_round_blue));
       btnAddNewLot.setTextColor(getColor(R.color.color_accent));
     }
   }
