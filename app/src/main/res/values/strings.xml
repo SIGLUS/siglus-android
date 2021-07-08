@@ -620,4 +620,5 @@
   <string name="label_inventory_options_all_product">All products</string>
   <string name="msg_validate_failed_tips">Please complete inventory for %s program</string>
   <string name="msg_empty_document_number">Document number cannot be blank</string>
+  <string name="msg_remove_confirm">Are you sure you want to remove the product? If you click \'yes\', the product will be removed.</string>
 </resources>

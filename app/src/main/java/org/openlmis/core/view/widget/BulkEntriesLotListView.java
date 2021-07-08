@@ -66,10 +66,6 @@ public class BulkEntriesLotListView extends BaseLotListView {
   @InjectView(R.id.btn_edit)
   private TextView btnEdit;
 
-  private BulkEntriesLotMovementAdapter newBulkEntriesLotMovementAdapter;
-
-  private BulkEntriesLotMovementAdapter existingBulkEntriesLotMovementAdapter;
-
   private BulkEntriesAdapter bulkEntriesAdapter;
 
   private BulkEntriesViewModel bulkEntriesViewModel;
@@ -111,7 +107,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
   public void initExistingLotListView() {
     existingLotListView.setLayoutManager(getEnScrollLinearLayoutManager());
     existingLotListView.setHasFixedSize(true);
-    existingBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
+    BulkEntriesLotMovementAdapter existingBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
         viewModel.getExistingLotMovementViewModelList(), getMovementReasonDescriptionList(),
         bulkEntriesViewModel, bulkEntriesAdapter);
     existingLotListView.setAdapter(existingBulkEntriesLotMovementAdapter);
@@ -123,7 +119,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
   public void initNewLotListView() {
     newLotListView.setLayoutManager(getEnScrollLinearLayoutManager());
     newLotListView.setHasFixedSize(true);
-    newBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
+    BulkEntriesLotMovementAdapter newBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
         viewModel.getNewLotMovementViewModelList(), getMovementReasonDescriptionList(),
         bulkEntriesViewModel, bulkEntriesAdapter);
     newLotListView.setAdapter(newBulkEntriesLotMovementAdapter);
@@ -195,6 +191,10 @@ public class BulkEntriesLotListView extends BaseLotListView {
       actionPanel.setVisibility(GONE);
       vgLotInfoReview.setVisibility(VISIBLE);
       initLotInfoReviewList();
+    } else {
+      rvLots.setVisibility(VISIBLE);
+      actionPanel.setVisibility(VISIBLE);
+      vgLotInfoReview.setVisibility(GONE);
     }
   }
 

@@ -22,12 +22,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import lombok.Getter;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.TextStyleUtil;
+import org.openlmis.core.view.activity.BulkEntriesActivity;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel.ValidationType;
 import org.openlmis.core.view.widget.BulkEntriesLotListView;
@@ -35,35 +36,34 @@ import roboguice.inject.InjectView;
 
 public class BulkEntriesViewHolder extends BaseViewHolder {
 
+  private final VerifyPositionListener verifyPositionListener;
+
+  private final TrashcanRemoveListener trashcanRemoveListener;
+
   @InjectView(R.id.bulk_entries_header)
   private ViewGroup itemHeader;
-
   @InjectView(R.id.ic_done)
   private ImageView icDone;
-
   @InjectView(R.id.tv_product_name)
   private TextView productName;
-
   @InjectView(R.id.ic_trashcan)
   private ImageView icTrashcan;
-
   @InjectView(R.id.view_lot_list)
   private BulkEntriesLotListView bulkEntriesLotListView;
 
   private BulkEntriesViewModel bulkEntriesViewModel;
 
-  private VerifyPositionListener verifyPositionListener;
-
-  public BulkEntriesViewHolder(View itemView, VerifyPositionListener verifyPositionListener) {
+  public BulkEntriesViewHolder(View itemView, VerifyPositionListener verifyPositionListener,
+      TrashcanRemoveListener trashcanRemoveListener) {
     super(itemView);
     this.verifyPositionListener = verifyPositionListener;
+    this.trashcanRemoveListener = trashcanRemoveListener;
   }
 
   public void populate(BulkEntriesViewModel bulkEntriesViewModel,
       final BulkEntriesAdapter bulkEntriesAdapter) {
     this.bulkEntriesViewModel = bulkEntriesViewModel;
-    icTrashcan
-        .setOnClickListener(getRemoveProductListener(bulkEntriesViewModel, bulkEntriesAdapter));
+    icTrashcan.setOnClickListener(getRemoveProductListener());
     setMovementDone();
     setInvalidStatus();
     bulkEntriesLotListView
@@ -96,12 +96,34 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
     }
   }
 
-  private View.OnClickListener getRemoveProductListener(BulkEntriesViewModel bulkEntriesViewModel,
-      BulkEntriesAdapter bulkEntriesAdapter) {
-    return v -> {
-      bulkEntriesAdapter.remove(bulkEntriesViewModel);
-      EventBus.getDefault().post(Constants.REFRESH_BACKGROUND_EVENT);
-    };
+  private View.OnClickListener getRemoveProductListener() {
+    return v -> showConfirmDialog();
+  }
+
+  private void showConfirmDialog() {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        null,
+        getString(R.string.msg_remove_confirm),
+        getString(R.string.btn_positive),
+        getString(R.string.btn_negative),
+        "back_confirm_dialog");
+    dialogFragment.show(((BulkEntriesActivity) context).getSupportFragmentManager(), "back_confirm_dialog");
+    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        trashcanRemoveListener.onTrashcanRemoveListener(bulkEntriesViewModel, getBindingAdapterPosition());
+        EventBus.getDefault().post(Constants.REFRESH_BACKGROUND_EVENT);
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+        // do nothing
+      }
+    });
+  }
+
+  private String getString(int id) {
+    return context.getResources().getString(id);
   }
 
   private BulkEntriesLotMovementViewHolder.AmountChangeListener getAmountChangeListenerFromTrashcan() {
@@ -119,5 +141,10 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
   public interface VerifyPositionListener {
 
     void onVerifyPositionListener(int position);
+  }
+
+  public interface TrashcanRemoveListener {
+
+    void onTrashcanRemoveListener(BulkEntriesViewModel bulkEntriesViewModel, int position);
   }
 }
