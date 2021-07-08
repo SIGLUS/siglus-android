@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.holder;
 
-
 import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.text.Editable;

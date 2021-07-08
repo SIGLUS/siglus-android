@@ -48,7 +48,7 @@ public class BulkLotInfoReviewListAdapter extends
   @Override
   public BulkLotInfoReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     return new BulkLotInfoReviewViewHolder(LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.item_lot_info_review, parent, false),fromWhichPage);
+        .inflate(R.layout.item_lot_info_review, parent, false), fromWhichPage);
   }
 
   @Override

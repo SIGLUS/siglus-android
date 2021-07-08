@@ -58,7 +58,17 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
   ViewGroup btnVerify;
   @InjectView(R.id.ll_btn_remove_product)
   ViewGroup btnRemoveProduct;
+  LotMovementAdapter.MovementChangedListenerWithStatus movementChangedListenerWithStatus = amount -> {
+    if (BulkInitialInventoryAdapter.ITEM_BASIC == ((BulkInitialInventoryViewModel) viewModel).getViewType()) {
+      btnVerify.setVisibility(TextUtils.isEmpty(amount) ? GONE : VISIBLE);
+      btnNoStockDone.setVisibility(TextUtils.isEmpty(amount) ? VISIBLE : GONE);
+    } else if (BulkInitialInventoryAdapter.ITEM_NO_BASIC == ((BulkInitialInventoryViewModel) viewModel).getViewType()) {
+      btnVerify.setVisibility(TextUtils.isEmpty(amount) ? GONE : VISIBLE);
+      btnNoStockDone.setVisibility(GONE);
+      btnRemoveProduct.setVisibility(TextUtils.isEmpty(amount) ? VISIBLE : GONE);
+    }
 
+  };
   private BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener statusChangeListener;
 
   public BulkInitialInventoryLotListView(Context context) {
@@ -140,20 +150,9 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
     newLotListView.setAdapter(newLotMovementAdapter);
   }
 
-  LotMovementAdapter.MovementChangedListenerWithStatus movementChangedListenerWithStatus = amount -> {
-    if (BulkInitialInventoryAdapter.ITEM_BASIC == ((BulkInitialInventoryViewModel) viewModel).getViewType()) {
-      btnVerify.setVisibility(TextUtils.isEmpty(amount) ? GONE : VISIBLE);
-      btnNoStockDone.setVisibility(TextUtils.isEmpty(amount) ? VISIBLE : GONE);
-    } else if (BulkInitialInventoryAdapter.ITEM_NO_BASIC == ((BulkInitialInventoryViewModel) viewModel).getViewType()) {
-      btnVerify.setVisibility(TextUtils.isEmpty(amount) ? GONE : VISIBLE);
-      btnNoStockDone.setVisibility(GONE);
-      btnRemoveProduct.setVisibility(TextUtils.isEmpty(amount) ? VISIBLE : GONE);
-    }
-
-  };
-
   private void initLotInfoReviewList() {
-    BulkLotInfoReviewListAdapter adapter = new BulkLotInfoReviewListAdapter(viewModel, Constants.FROM_BULK_INITIAL_PAGE);
+    BulkLotInfoReviewListAdapter adapter = new BulkLotInfoReviewListAdapter(viewModel,
+        Constants.FROM_BULK_INITIAL_PAGE);
     rvLotInfoReview.setLayoutManager(new LinearLayoutManager(context));
     rvLotInfoReview.setAdapter(adapter);
   }

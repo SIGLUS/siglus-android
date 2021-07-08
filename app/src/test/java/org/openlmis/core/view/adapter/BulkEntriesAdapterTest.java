@@ -1,6 +1,7 @@
 package org.openlmis.core.view.adapter;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -78,7 +79,7 @@ public class BulkEntriesAdapterTest {
     viewModels.add(viewModel);
     final BulkEntriesAdapter adapter = new BulkEntriesAdapter(viewModels);
     // when
-    adapter.remove(viewModel);
+    adapter.remove(viewModel,anyInt());
     // then
     assertEquals(viewModels.size(),0);
 

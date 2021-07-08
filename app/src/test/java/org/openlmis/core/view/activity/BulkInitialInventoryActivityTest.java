@@ -180,7 +180,7 @@ public class BulkInitialInventoryActivityTest {
   }
 
   @Test
-  public void shouldCloseSearchWhenBackPressed(){
+  public void shouldCloseSearchWhenBackPressed() {
     // given
     when(mockSearchView.isIconified()).thenReturn(false);
 

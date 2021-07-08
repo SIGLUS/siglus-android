@@ -94,7 +94,7 @@ public class BulkEntriesViewModel extends InventoryViewModel {
       for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
         if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
           productFlag = true;
-          if(!lotMovementViewModel.validateLot()) {
+          if (!lotMovementViewModel.validateLot()) {
             lotFlag = false;
             lotMovementViewModel.setValid(false);
           }
@@ -106,8 +106,9 @@ public class BulkEntriesViewModel extends InventoryViewModel {
       } else if (!productFlag && newLotMovementViewModelList.isEmpty()) {
         validationType = ValidationType.EXISTING_LOT_ALL_BLANK;
         return false;
-      } else
+      } else {
         return !productFlag;
+      }
     }
   }
 
