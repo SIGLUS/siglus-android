@@ -143,7 +143,8 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
 
   public void setDraftInventory(DraftInventory draftInventory) {
     this.draftInventory = draftInventory;
-    done = draftInventory.isDone();
+    done = draftInventory.isDone() && draftInventory.getDraftLotItemListWrapper().size()
+        == (existingLotMovementViewModelList.size() + newLotMovementViewModelList.size());
     populateLotMovementModelWithDraftLotItem();
   }
 

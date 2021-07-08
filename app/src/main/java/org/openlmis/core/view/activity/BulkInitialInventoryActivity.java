@@ -41,8 +41,6 @@ import rx.Subscription;
 @ContentView(R.layout.activity_bulk_initial_inventory)
 public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialInventoryPresenter> {
 
-  public static final String KEY_FROM_INITIAL_COMPLETED = "Initial-Completed";
-
   public static final int REQUEST_CODE = 1050;
 
   @InjectView(R.id.btn_add_products)
@@ -50,7 +48,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
 
   @Override
   public boolean validateInventory() {
-    int position = ((BulkInitialInventoryAdapter) mAdapter).validateAllForCompletedClick(KEY_FROM_INITIAL_COMPLETED);
+    int position = ((BulkInitialInventoryAdapter) mAdapter).validateAllForCompletedClick();
     setTotal();
     if (position >= 0) {
       clearSearch();
@@ -154,7 +152,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
       subscriptions.add(subscription);
     } else {
       btnDone.setEnabled(true);
-      ToastUtil.show(getResources().getString(R.string.msg_error_basic_products));
+      ToastUtil.show(getValidateFailedTips());
     }
   }
 

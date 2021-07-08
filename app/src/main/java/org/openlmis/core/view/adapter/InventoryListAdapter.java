@@ -48,6 +48,9 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
   @Nullable
   private Program filterProgram = null;
 
+  @Getter
+  protected final List<Program> validateFailedProgram = new ArrayList<>();
+
   protected InventoryListAdapter(List<InventoryViewModel> data) {
     this.data = data;
     filteredList = new ArrayList<>();
@@ -106,11 +109,19 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
 
   @Override
   public int validateAll() {
+    validateFailedProgram.clear();
     int position = -1;
     for (int i = 0; i < data.size(); i++) {
-      if (!data.get(i).validate()) {
+      final InventoryViewModel viewModel = data.get(i);
+      if (viewModel.validate()) {
+        continue;
+      }
+      final Program program = viewModel.getProgram();
+      if (program != null && !validateFailedProgram.contains(program)) {
+        validateFailedProgram.add(program);
+      }
+      if (position == -1) {
         position = i;
-        break;
       }
     }
 

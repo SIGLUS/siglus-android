@@ -126,7 +126,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     StockOnHandStatus stockOnHandStatus = StockOnHandStatus
         .calculateStockOnHandLevel(viewModel.getStockCard(), viewModel.getStockOnHand());
     tvStockStatus.setText(context.getResources().getString(stockOnHandStatus.getDescription()));
-    tvStockStatus.setBackgroundColor(ContextCompat.getColor(context,stockOnHandStatus.getBgColor()));
+    tvStockStatus.setBackgroundColor(ContextCompat.getColor(context, stockOnHandStatus.getBgColor()));
   }
 
   private void inflateLotLayout(List<LotOnHand> lotOnHandList) {

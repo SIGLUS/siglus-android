@@ -203,15 +203,14 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     List<LotMovementViewModel> lotMovementViewModels = FluentIterable
         .from(inventoryViewModel.getStockCard().getNonEmptyLotOnHandList())
         .transform(lotOnHand -> new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
-            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
-                DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-            lotOnHand.getQuantityOnHand().toString(),
-            MovementReasonManager.MovementType.RECEIVE)).toSortedList((lot1, lot2) -> {
+            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+            lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE))
+        .toSortedList((lot1, lot2) -> {
           Date localDate = DateUtil
               .parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
           if (localDate != null) {
-            return localDate.compareTo(DateUtil
-                .parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+            return localDate
+                .compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
           } else {
             return 0;
           }

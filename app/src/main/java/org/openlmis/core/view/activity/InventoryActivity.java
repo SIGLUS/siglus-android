@@ -123,6 +123,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
   @Override
   public boolean validateInventory() {
     int position = mAdapter.validateAll();
+    setTotal();
     if (position >= 0) {
       clearSearch();
       productListRecycleView.scrollToPosition(position);
@@ -262,6 +263,19 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
 
     fastScroller.setRecyclerView(productListRecycleView);
     fastScroller.setUpAlphabet(mAlphabetItems);
+  }
+
+  protected String getValidateFailedTips() {
+    final StringBuilder tips = new StringBuilder();
+    final List<Program> validateFailedProgram = mAdapter.getValidateFailedProgram();
+    for (int i = 0; i < validateFailedProgram.size(); i++) {
+      final Program program = validateFailedProgram.get(i);
+      if (i > 0 && i == validateFailedProgram.size() - 1) {
+        tips.append("and ");
+      }
+      tips.append(program.getProgramName()).append(' ');
+    }
+    return getString(R.string.msg_validate_failed_tips, tips.toString());
   }
 
   private void buildOptionsItem(List<Program> programs) {

@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.widget.SignatureDialog;
@@ -92,8 +93,10 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
   @Override
   protected void onCompleteClick() {
     super.onCompleteClick();
-    if (validateInventoryFromCompleted()) {
+    if (validateInventory()) {
       showSignDialog();
+    } else {
+      ToastUtil.show(getValidateFailedTips());
     }
     trackInventoryEvent(TrackerActions.COMPLETE_INVENTORY);
   }
@@ -118,17 +121,6 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
         getString(R.string.btn_negative),
         "onBackPressed");
     dialogFragment.show(getSupportFragmentManager(), "");
-  }
-
-  private boolean validateInventoryFromCompleted() {
-    int position = ((PhysicalInventoryAdapter) mAdapter).validateAllForCompletedClick(KEY_FROM_PHYSICAL_COMPLETED);
-    setTotal();
-    if (position >= 0) {
-      clearSearch();
-      productListRecycleView.scrollToPosition(position);
-      return false;
-    }
-    return true;
   }
 
   private void showSignDialog() {

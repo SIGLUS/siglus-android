@@ -30,7 +30,6 @@ import org.openlmis.core.view.holder.PhysicalInventoryWithLotViewHolder.Inventor
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 
-@SuppressWarnings("PMD")
 public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInventoryWithLotViewHolder> implements
     FilterableAdapter, RecyclerViewFastScroller.BubbleTextGetter {
 
@@ -78,35 +77,11 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInven
     return false;
   }
 
-  public int validateAllForCompletedClick(String from) {
-    int position = -1;
-    for (int i = 0; i < data.size(); i++) {
-      ((PhysicalInventoryViewModel) data.get(i)).setFrom(from);
-      if (!data.get(i).validate()) {
-        if (position == -1 || i < position) {
-          position = i;
-        }
-      }
-    }
-
-    this.notifyDataSetChanged();
-    return position;
-  }
-
   @Override
   public int validateAll() {
-    int position = -1;
-    for (int i = 0; i < data.size(); i++) {
-      ((PhysicalInventoryViewModel) data.get(i))
-          .setFrom(PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED);
-      if (!data.get(i).validate()) {
-        if (position == -1 || i < position) {
-          position = i;
-        }
-      }
+    for (InventoryViewModel viewModel : data) {
+      ((PhysicalInventoryViewModel) viewModel).setFrom(PhysicalInventoryActivity.KEY_FROM_PHYSICAL_COMPLETED);
     }
-
-    this.notifyDataSetChanged();
-    return position;
+    return super.validateAll();
   }
 }

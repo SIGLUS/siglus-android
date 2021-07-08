@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.view.holder.BaseViewHolder;
 import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder;
 import org.openlmis.core.view.holder.BulkInitialInventoryWithLotViewHolder.InventoryItemStatusChangeListener;
@@ -84,16 +85,22 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
     return false;
   }
 
-  public int validateAllForCompletedClick(String from) {
+  public int validateAllForCompletedClick() {
+    validateFailedProgram.clear();
     int position = -1;
     for (int i = 0; i < data.size(); i++) {
-      if (!data.get(i).validate()
-          && !(data.get(i).getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
-          || data.get(i).getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER)) {
-        ((BulkInitialInventoryViewModel) data.get(i)).setFrom(from);
-        if (position == -1 || i < position) {
-          position = i;
-        }
+      final InventoryViewModel viewModel = data.get(i);
+      if (viewModel.validate()
+          || !(viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
+          || viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER)) {
+        continue;
+      }
+      final Program program = viewModel.getProgram();
+      if (program != null && !validateFailedProgram.contains(program)) {
+        validateFailedProgram.add(program);
+      }
+      if (position == -1) {
+        position = i;
       }
     }
     this.notifyDataSetChanged();

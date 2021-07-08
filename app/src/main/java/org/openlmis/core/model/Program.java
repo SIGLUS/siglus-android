@@ -25,6 +25,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,6 +35,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"programCode", "programName"}, callSuper = true)
 @DatabaseTable(tableName = "programs")
 public class Program extends BaseModel {
 
