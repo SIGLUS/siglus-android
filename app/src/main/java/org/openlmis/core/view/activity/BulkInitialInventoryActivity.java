@@ -111,12 +111,16 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (areThereSelectedProducts(requestCode, resultCode, data)) {
-      presenter.addNonBasicProductsToInventory((ArrayList<Product>) data
-          .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS));
-      mAdapter.refresh();
-      setUpFastScroller(presenter.getInventoryViewModelList());
-      mAdapter.notifyDataSetChanged();
-      setTotal();
+      final ArrayList<Product> nonBasicProducts = (ArrayList<Product>) data
+          .getSerializableExtra(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
+      presenter.addNonBasicProductsToInventory(nonBasicProducts).subscribe(
+          bulkInitialInventoryViewModels -> {
+            mAdapter.refresh();
+            setUpFastScroller(mAdapter.getFilteredList());
+            mAdapter.notifyDataSetChanged();
+            setTotal();
+          });
+
     }
   }
 

@@ -103,6 +103,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
       return super.onOptionsItemSelected(item);
     }
     mAdapter.setFilterProgram(optionsItems.get(order).getProgram());
+    setUpFastScroller(mAdapter.getFilteredList());
     return super.onOptionsItemSelected(item);
   }
 

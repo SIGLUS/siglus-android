@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.util.Lists.newArrayList;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -214,14 +215,13 @@ public class BulkInitialInventoryActivityTest {
     newAddedProduct.add(product);
     final Intent intent = new Intent();
     intent.putExtra(SELECTED_NON_BASIC_PRODUCTS, (Serializable) newAddedProduct);
+    when(mockedPresenter.addNonBasicProductsToInventory(any())).thenReturn(Observable.empty());
 
     // when
     bulkInventoryActivity.onActivityResult(REQUEST_CODE,RESULT_CODE,intent);
 
     // then
     verify(mockedPresenter,times(1)).addNonBasicProductsToInventory(newAddedProduct);
-    verify(mockedAdapter,times(1)).refresh();
-    verify(mockedAdapter,times(1)).notifyDataSetChanged();
   }
 
   @Test

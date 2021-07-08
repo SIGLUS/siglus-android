@@ -33,6 +33,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInitialInventory;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
@@ -42,6 +43,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import rx.Observable;
+import rx.Observable.OnSubscribe;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -145,11 +147,20 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     bulkInitialInventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
   }
 
-  public void addNonBasicProductsToInventory(List<Product> nonBasicProducts) {
-    List<BulkInitialInventoryViewModel> nonBasicProductsModels = convertProductToStockCardViewModel(
-        nonBasicProducts,
-        BulkInitialInventoryAdapter.ITEM_NO_BASIC);
-    buildNonBasicProductModels(nonBasicProductsModels);
+  public Observable<List<BulkInitialInventoryViewModel>> addNonBasicProductsToInventory(
+      List<Product> nonBasicProducts) {
+    return Observable.create((OnSubscribe<List<BulkInitialInventoryViewModel>>) subscriber -> {
+      List<BulkInitialInventoryViewModel> nonBasicProductsModels = convertProductToStockCardViewModel(
+          nonBasicProducts,
+          BulkInitialInventoryAdapter.ITEM_NO_BASIC);
+      buildNonBasicProductModels(nonBasicProductsModels);
+      subscriber.onNext(nonBasicProductsModels);
+    }).doOnNext(bulkInitialInventoryViewModels -> {
+      for (BulkInitialInventoryViewModel inventoryViewModel : bulkInitialInventoryViewModels) {
+        final Program program = programRepository.queryProgramByProductCode(inventoryViewModel.getProduct().getCode());
+        inventoryViewModel.setProgram(program);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
   public List<String> getAllAddedNonBasicProduct() {

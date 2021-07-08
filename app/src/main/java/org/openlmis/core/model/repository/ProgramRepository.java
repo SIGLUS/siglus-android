@@ -134,7 +134,7 @@ public class ProgramRepository {
       throws LMISException {
     List<Program> programs = queryProgramsByProgramCodeOrParentCode(programCode);
 
-    return  FluentIterable.from(programs).transform(Program::getProgramCode).toList();
+    return FluentIterable.from(programs).transform(Program::getProgramCode).toList();
   }
 
   public List<Program> queryProgramsByProgramCodeOrParentCode(final String programCode)
@@ -164,7 +164,6 @@ public class ProgramRepository {
     return FluentIterable.from(programs).filter(program -> {
       for (ReportTypeForm reportTypeForm : reportTypes) {
         if (reportTypeForm.getCode().equals(Objects.requireNonNull(program).getProgramCode())
-            && reportTypeForm.active
             && !Program.MALARIA_CODE.equalsIgnoreCase(program.getProgramCode())) {
           return true;
         }

@@ -77,8 +77,8 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
     for (int i = 0; i < data.size(); i++) {
       final InventoryViewModel viewModel = data.get(i);
       if (viewModel.validate()
-          || !(viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
-          || viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER)) {
+          || viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
+          || viewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER) {
         continue;
       }
       final Program program = viewModel.getProgram();
