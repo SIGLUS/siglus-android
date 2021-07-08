@@ -24,6 +24,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.NonBasicProductsViewModel;
 import roboguice.inject.InjectView;
 
@@ -42,21 +43,17 @@ public class NonBasicProductViewHolder extends BaseViewHolder {
     super(itemView);
   }
 
-  public void populate(final NonBasicProductsViewModel viewModel) {
+  public void populate(final NonBasicProductsViewModel viewModel, String queryKeyword) {
     cbIsChecked.setChecked(viewModel.isChecked());
     tvProductName.setText(viewModel.getStyledProductName());
     tvProductUnit.setText(viewModel.getProductType());
+    tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyword, viewModel.getStyledProductName()));
   }
 
   @NonNull
   private CompoundButton.OnCheckedChangeListener setCheckedProductListener(
       final NonBasicProductsViewModel viewModel) {
-    return new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        viewModel.setChecked(isChecked);
-      }
-    };
+    return (buttonView, isChecked) -> viewModel.setChecked(isChecked);
   }
 
   public void putOnChangedListener(NonBasicProductsViewModel viewModel) {

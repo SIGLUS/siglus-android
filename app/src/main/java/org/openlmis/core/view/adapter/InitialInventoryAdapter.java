@@ -20,6 +20,7 @@ package org.openlmis.core.view.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import com.viethoa.RecyclerViewFastScroller;
 import java.util.List;
 import org.openlmis.core.R;
@@ -43,9 +44,9 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
     holder.populate(viewModel, queryKeyWord, listener);
   }
 
-
   @Override
-  public InitialInventoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  @NonNull
+  public InitialInventoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     return new InitialInventoryViewHolder(LayoutInflater.from(parent.getContext())
         .inflate(R.layout.item_initial_inventory, parent, false));
   }

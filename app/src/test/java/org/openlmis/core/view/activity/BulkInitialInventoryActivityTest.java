@@ -175,7 +175,7 @@ public class BulkInitialInventoryActivityTest {
     bulkInventoryActivity.onSaveClick();
 
     // then
-    Mockito.verify(mockedPresenter, times(1)).loadActivePrograms();
+    Mockito.verify(mockedPresenter, times(1)).saveDraftInventoryObservable();
   }
 
   @Test

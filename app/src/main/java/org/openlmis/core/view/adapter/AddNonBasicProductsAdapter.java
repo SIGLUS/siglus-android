@@ -23,6 +23,7 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.viethoa.RecyclerViewFastScroller;
 import java.util.ArrayList;
@@ -41,13 +42,16 @@ public class AddNonBasicProductsAdapter extends RecyclerView.Adapter<NonBasicPro
   @Getter
   private final List<NonBasicProductsViewModel> filteredList;
 
+  private String queryKeyword = "";
+
   public AddNonBasicProductsAdapter(List<NonBasicProductsViewModel> models) {
     filteredList = new ArrayList<>();
     this.models = models;
   }
 
   @Override
-  public NonBasicProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  @NonNull
+  public NonBasicProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     return new NonBasicProductViewHolder(LayoutInflater.from(parent.getContext())
         .inflate(R.layout.item_non_basic_product, parent, false));
   }
@@ -55,7 +59,7 @@ public class AddNonBasicProductsAdapter extends RecyclerView.Adapter<NonBasicPro
   @Override
   public void onBindViewHolder(NonBasicProductViewHolder holder, int position) {
     holder.putOnChangedListener(filteredList.get(position));
-    holder.populate(filteredList.get(position));
+    holder.populate(filteredList.get(position), queryKeyword);
   }
 
   @Override
@@ -64,8 +68,8 @@ public class AddNonBasicProductsAdapter extends RecyclerView.Adapter<NonBasicPro
   }
 
   public void filter(final String keyword) {
+    this.queryKeyword = keyword;
     List<NonBasicProductsViewModel> filteredViewModels;
-
     if (TextUtils.isEmpty(keyword)) {
       filteredViewModels = models;
     } else {

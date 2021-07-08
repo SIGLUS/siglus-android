@@ -66,47 +66,28 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
 
   AddNonBasicProductsAdapter adapter;
 
-  private List<String> previouslyProductCodes;
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    initRecyclerView();
-    loading(getString(R.string.add_products_loading_message));
-    previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_NON_BASIC_PRODUCTS);
-    btnCancel.setOnClickListener(cancelListener());
-    btnAddProducts.setOnClickListener(addProductsListener());
-    Subscription subscription = presenter.getAllNonBasicProductsViewModels(previouslyProductCodes)
-        .subscribe(getOnViewModelsLoadedSubscriber());
-    subscriptions.add(subscription);
-
-  }
-
-  @NonNull
-  private View.OnClickListener addProductsListener() {
-    return v -> {
-      List<Product> selectedProducts = new ArrayList<>();
-      for (NonBasicProductsViewModel model : adapter.getModels()) {
-        if (model.isChecked()) {
-          selectedProducts.add(model.getProduct());
-        }
+  public void setUpFastScroller(List<NonBasicProductsViewModel> viewModels) {
+    if (viewModels.isEmpty()) {
+      fastScroller.setVisibility(View.GONE);
+    } else {
+      fastScroller.setVisibility(View.VISIBLE);
+    }
+    List<AlphabetItem> mAlphabetItems = new ArrayList<>();
+    List<String> strAlphabets = new ArrayList<>();
+    for (int i = 0; i < viewModels.size(); i++) {
+      String name = viewModels.get(i).getProduct().getPrimaryName();
+      if (name == null || name.isEmpty()) {
+        continue;
       }
-      Intent intent = new Intent();
-      intent.putExtra(SELECTED_NON_BASIC_PRODUCTS, (Serializable) selectedProducts);
-      setResult(RESULT_CODE, intent);
-      finish();
-    };
-  }
 
-  @NonNull
-  private View.OnClickListener cancelListener() {
-    return v -> finish();
-  }
-
-  private void initRecyclerView() {
-    adapter = new AddNonBasicProductsAdapter(presenter.getModels());
-    rvNonBasicProducts.setLayoutManager(new LinearLayoutManager(this));
-    rvNonBasicProducts.setAdapter(adapter);
+      String word = name.substring(0, 1);
+      if (!strAlphabets.contains(word)) {
+        strAlphabets.add(word);
+        mAlphabetItems.add(new AlphabetItem(i, word, false));
+      }
+    }
+    fastScroller.setRecyclerView(rvNonBasicProducts);
+    fastScroller.setUpAlphabet(mAlphabetItems);
   }
 
   @Override
@@ -114,6 +95,19 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
     adapter.filter(query);
     setUpFastScroller(adapter.getFilteredList());
     return false;
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    initRecyclerView();
+    loading(getString(R.string.add_products_loading_message));
+    List<String> previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_NON_BASIC_PRODUCTS);
+    btnCancel.setOnClickListener(cancelListener());
+    btnAddProducts.setOnClickListener(addProductsListener());
+    Subscription subscription = presenter.getAllNonBasicProductsViewModels(previouslyProductCodes)
+        .subscribe(getOnViewModelsLoadedSubscriber());
+    subscriptions.add(subscription);
   }
 
   @Override
@@ -145,29 +139,30 @@ public class AddNonBasicProductsActivity extends SearchBarActivity {
     };
   }
 
-  public void setUpFastScroller(List<NonBasicProductsViewModel> viewModels) {
-    if (viewModels.isEmpty()) {
-      fastScroller.setVisibility(View.GONE);
-    } else {
-      fastScroller.setVisibility(View.VISIBLE);
-    }
-    List<AlphabetItem> mAlphabetItems = new ArrayList<>();
-    List<String> strAlphabets = new ArrayList<>();
-    for (int i = 0; i < viewModels.size(); i++) {
-      String name = viewModels.get(i).getProduct().getPrimaryName();
-      if (name == null || name.isEmpty()) {
-        continue;
+  @NonNull
+  private View.OnClickListener addProductsListener() {
+    return v -> {
+      List<Product> selectedProducts = new ArrayList<>();
+      for (NonBasicProductsViewModel model : adapter.getModels()) {
+        if (model.isChecked()) {
+          selectedProducts.add(model.getProduct());
+        }
       }
-
-      String word = name.substring(0, 1);
-      if (!strAlphabets.contains(word)) {
-        strAlphabets.add(word);
-        mAlphabetItems.add(new AlphabetItem(i, word, false));
-      }
-    }
-    fastScroller.setRecyclerView(rvNonBasicProducts);
-    fastScroller.setUpAlphabet(mAlphabetItems);
+      Intent intent = new Intent();
+      intent.putExtra(SELECTED_NON_BASIC_PRODUCTS, (Serializable) selectedProducts);
+      setResult(RESULT_CODE, intent);
+      finish();
+    };
   }
 
+  @NonNull
+  private View.OnClickListener cancelListener() {
+    return v -> finish();
+  }
 
+  private void initRecyclerView() {
+    adapter = new AddNonBasicProductsAdapter(presenter.getModels());
+    rvNonBasicProducts.setLayoutManager(new LinearLayoutManager(this));
+    rvNonBasicProducts.setAdapter(adapter);
+  }
 }
