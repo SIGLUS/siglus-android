@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.adapter;
 
+import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_BASIC_HEADER;
+import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import androidx.annotation.Nullable;
@@ -61,7 +63,6 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
     return filteredList.size();
   }
 
-
   @Override
   public void filter(final String keyword) {
     this.queryKeyWord = keyword;
@@ -71,16 +72,14 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
         if (inventoryViewModel == null) {
           return false;
         }
-        if (inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_BASIC_HEADER
-            || inventoryViewModel.getViewType() == BulkInitialInventoryAdapter.ITEM_NON_BASIC_HEADER) {
-          return true;
-        }
+        boolean isBasicHeader = inventoryViewModel.getViewType() == ITEM_BASIC_HEADER;
+        boolean isNonBasicHeader = inventoryViewModel.getViewType() == ITEM_NON_BASIC_HEADER;
         final Program program = inventoryViewModel.getProgram();
-        if (program == null) {
+        if (isBasicHeader || isNonBasicHeader || program == null) {
           return false;
         }
-        final String filterProgramProgramCode = filterProgram.getProgramCode();
-        final String programCode = program.getProgramCode();
+        String filterProgramProgramCode = filterProgram.getProgramCode();
+        String programCode = program.getProgramCode();
         return StringUtils.equals(filterProgramProgramCode, programCode);
       });
     }

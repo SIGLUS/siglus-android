@@ -44,7 +44,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   public static final int REQUEST_CODE = 1050;
 
   @InjectView(R.id.btn_add_products)
-  private TextView btnAddProducts;
+  TextView btnAddProducts;
 
   @Override
   public boolean validateInventory() {
@@ -156,6 +156,15 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     }
   }
 
+  protected BulkInitialInventoryAdapter.RemoveNonBasicProduct removeNonBasicProductListener() {
+    return viewModel -> {
+      presenter.removeNonBasicProductElement(viewModel);
+      mAdapter.refresh();
+      mAdapter.notifyDataSetChanged();
+      setTotal();
+    };
+  }
+
   private Subscriber<Object> getReloadSubscriber() {
     return new Subscriber<Object>() {
       @Override
@@ -172,7 +181,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
 
       @Override
       public void onNext(Object o) {
-        Subscription loaded = presenter.loadInventory().subscribe(getOnViewModelsLoadedSubscriber());
+        Subscription loaded = presenter.loadActivePrograms().subscribe(getOnProgramsLoadedSubscriber());
         subscriptions.add(loaded);
       }
     };
@@ -189,7 +198,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
         getString(R.string.btn_positive),
         getString(R.string.btn_negative),
         "onBackPressed");
-    dialogFragment.show(getSupportFragmentManager(), "");
+    dialogFragment.show(getSupportFragmentManager(), "back_confirm_dialog");
   }
 
   private boolean areThereSelectedProducts(int requestCode, int resultCode, Intent data) {
@@ -197,14 +206,5 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
         && resultCode == AddNonBasicProductsActivity.RESULT_CODE
         && data.getExtras() != null
         && data.getExtras().containsKey(AddNonBasicProductsActivity.SELECTED_NON_BASIC_PRODUCTS);
-  }
-
-  private BulkInitialInventoryAdapter.RemoveNonBasicProduct removeNonBasicProductListener() {
-    return viewModel -> {
-      presenter.removeNonBasicProductElement(viewModel);
-      mAdapter.refresh();
-      mAdapter.notifyDataSetChanged();
-      setTotal();
-    };
   }
 }

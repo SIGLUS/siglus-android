@@ -4,6 +4,7 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -18,11 +19,15 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class PhysicalInventoryViewModelTest {
 
   private PhysicalInventoryViewModel viewModel;
   private PhysicalInventoryViewModel draftViewModel;
+  private final String lotNumberOne = "lot1";
+  private final String lotNumberTwo = "lot2";
+  private final String expiryDate = "Feb 2015";
+  private final String formattedProductName = "Primary product name [productCode]";
+  private final String formattedProductUnit = "serious Adult";
 
   @Before
   public void setUp() throws Exception {
@@ -38,25 +43,28 @@ public class PhysicalInventoryViewModelTest {
 
   @Test
   public void shouldConvertToAndParseDraftInventory() {
+    // given
     prepareNewViewModel();
-
-    PhysicalInventoryViewModel newViewModel = new PhysicalInventoryViewModel(
-        viewModel.getStockCard());
+    PhysicalInventoryViewModel newViewModel = new PhysicalInventoryViewModel(viewModel.getStockCard());
     newViewModel.getExistingLotMovementViewModelList().add(
-        new LotMovementViewModelBuilder().setLotNumber("lot1").setExpiryDate("Feb 2015").build());
+        new LotMovementViewModelBuilder().setLotNumber(lotNumberOne).setExpiryDate(expiryDate).build());
+    newViewModel.getNewLotMovementViewModelList().add(
+        new LotMovementViewModelBuilder().setLotNumber(lotNumberTwo).setExpiryDate(expiryDate).build());
+
+    // when
     newViewModel.setDraftInventory(getDraftInventory());
 
+    // then
     assertTrue(newViewModel.isDone());
-    assertEquals("lot1", newViewModel.getExistingLotMovementViewModelList().get(0).getLotNumber());
-    assertEquals("lot2", newViewModel.getNewLotMovementViewModelList().get(0).getLotNumber());
-    assertEquals(newViewModel.getFormattedProductName(), "Primary product name [productCode]");
-    assertEquals(newViewModel.getFormattedProductUnit(), "serious Adult");
-    assertEquals(newViewModel.getGreenName().toString(), "Primary product name [productCode]");
-    assertEquals(newViewModel.getGreenUnit().toString(), "serious Adult");
-
+    assertEquals(lotNumberOne, newViewModel.getExistingLotMovementViewModelList().get(0).getLotNumber());
+    assertEquals(lotNumberTwo, newViewModel.getNewLotMovementViewModelList().get(0).getLotNumber());
+    assertEquals(formattedProductName, newViewModel.getFormattedProductName());
+    assertEquals(formattedProductUnit, newViewModel.getFormattedProductUnit());
+    assertEquals(formattedProductName, newViewModel.getGreenName().toString());
+    assertEquals(formattedProductUnit, newViewModel.getGreenUnit().toString());
     assertFalse(newViewModel.validateNewLotList());
     assertFalse(newViewModel.validate());
-    assertFalse(newViewModel.isDataChanged());
+    assertTrue(newViewModel.isDataChanged());
   }
 
   @Test
@@ -64,18 +72,18 @@ public class PhysicalInventoryViewModelTest {
     prepareNewViewModel();
 
     assertTrue(viewModel.isDone());
-    assertEquals("lot1", viewModel.getExistingLotMovementViewModelList().get(0).getLotNumber());
-    assertEquals("lot2", viewModel.getNewLotMovementViewModelList().get(0).getLotNumber());
-    assertEquals(viewModel.getFormattedProductName(), "Primary product name [productCode]");
-    assertEquals(viewModel.getFormattedProductUnit(), "serious Adult");
-    assertEquals(viewModel.getGreenName().toString(), "Primary product name [productCode]");
-    assertEquals(viewModel.getGreenUnit().toString(), "serious Adult");
+    assertEquals(lotNumberOne, viewModel.getExistingLotMovementViewModelList().get(0).getLotNumber());
+    assertEquals(lotNumberTwo, viewModel.getNewLotMovementViewModelList().get(0).getLotNumber());
+    assertEquals(formattedProductName, viewModel.getFormattedProductName());
+    assertEquals(formattedProductUnit, viewModel.getFormattedProductUnit());
+    assertEquals(formattedProductName, viewModel.getGreenName().toString());
+    assertEquals(formattedProductUnit, viewModel.getGreenUnit().toString());
 
     assertFalse(viewModel.validateNewLotList());
     assertFalse(viewModel.validate());
     assertTrue(viewModel.isDataChanged());
-    assertTrue(viewModel.getDraftInventory() == null);
-    assertTrue(viewModel.getFrom() == null);
+    assertNull(viewModel.getDraftInventory());
+    assertNull(viewModel.getFrom());
 
   }
 
@@ -100,18 +108,18 @@ public class PhysicalInventoryViewModelTest {
     DraftInventory draftInventory = new DraftInventory(viewModel);
     assertTrue(draftInventory.isDone());
     assertThat(draftInventory.getDraftLotItemListWrapper().get(0).isNewAdded(), is(false));
-    assertThat(draftInventory.getDraftLotItemListWrapper().get(0).getLotNumber(), is("lot1"));
+    assertThat(draftInventory.getDraftLotItemListWrapper().get(0).getLotNumber(), is(lotNumberOne));
     assertThat(draftInventory.getDraftLotItemListWrapper().get(0).getQuantity(), is(100L));
     assertThat(draftInventory.getDraftLotItemListWrapper().get(1).isNewAdded(), is(true));
-    assertThat(draftInventory.getDraftLotItemListWrapper().get(1).getLotNumber(), is("lot2"));
+    assertThat(draftInventory.getDraftLotItemListWrapper().get(1).getLotNumber(), is(lotNumberTwo));
     return draftInventory;
   }
 
   private void prepareNewViewModel() {
     LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder()
-        .setLotNumber("lot1").setQuantity("100").setExpiryDate("Feb 2015").build();
+        .setLotNumber(lotNumberOne).setQuantity("100").setExpiryDate(expiryDate).build();
     LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder()
-        .setLotNumber("lot2").setExpiryDate("Feb 2015").build();
+        .setLotNumber(lotNumberTwo).setExpiryDate(expiryDate).build();
 
     viewModel.setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
     viewModel.setNewLotMovementViewModelList(newArrayList(lotMovementViewModel2));

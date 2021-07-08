@@ -28,7 +28,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.InitialInventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.openlmis.core.view.adapter.InventoryListAdapter;
+import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
@@ -50,7 +50,7 @@ public class InitialInventoryActivityTest {
   @Before
   public void setUp() throws LMISException {
     mockedPresenter = mock(InitialInventoryPresenter.class);
-    when(mockedPresenter.loadInventory()).thenReturn(Observable.empty());
+    when(mockedPresenter.loadActivePrograms()).thenReturn(Observable.empty());
 
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
       @Override
@@ -62,7 +62,7 @@ public class InitialInventoryActivityTest {
     activityController = Robolectric.buildActivity(InitialInventoryActivity.class);
     initialInventoryActivity = activityController.create().get();
 
-    InventoryListAdapter mockedAdapter = mock(InventoryListAdapter.class);
+    InitialInventoryAdapter mockedAdapter = mock(InitialInventoryAdapter.class);
     Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name")
         .setStrength("10mg").build();
     data = newArrayList(new InventoryViewModel(product), new InventoryViewModel(product));
@@ -125,7 +125,7 @@ public class InitialInventoryActivityTest {
   @Test
   public void shouldInitUIWhenInitialInventory() {
     assertTrue(initialInventoryActivity.loadingDialog.isShowing());
-    verify(mockedPresenter).loadInventory();
+    verify(mockedPresenter).loadActivePrograms();
   }
 
   @Test

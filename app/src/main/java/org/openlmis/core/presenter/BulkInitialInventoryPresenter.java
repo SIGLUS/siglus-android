@@ -117,8 +117,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         setExistingLotViewModels(viewModel);
         return viewModel;
       } catch (LMISException e) {
-        new LMISException(e, TAG + ":" + "convertProductToInitialInventoryViewModel")
-            .reportToFabric();
+        new LMISException(e, TAG + ":" + "convertProductToInitialInventoryViewModel").reportToFabric();
       }
       return null;
     }).toList();
@@ -160,8 +159,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         .toList();
   }
 
-  private void buildNonBasicProductModels(
-      List<BulkInitialInventoryViewModel> nonBasicProductsModels) {
+  private void buildNonBasicProductModels(List<BulkInitialInventoryViewModel> nonBasicProductsModels) {
     // First Time
     boolean hasNonBasicProductHeader = false;
     for (InventoryViewModel viewModel : inventoryViewModelList) {

@@ -57,20 +57,6 @@ public class BulkInitialInventoryAdapter extends InventoryListAdapter<BaseViewHo
   }
 
   @Override
-  public String getTextToShowInBubble(int position) {
-
-    if (position < 0 || position >= filteredList.size()) {
-      return null;
-    }
-
-    String name = filteredList.get(position).getProductName();
-    if (name == null || name.length() < 1) {
-      return null;
-    }
-    return filteredList.get(position).getProductName().substring(0, 1);
-  }
-
-  @Override
   public int getItemViewType(int position) {
     return filteredList.get(position).getViewType();
   }

@@ -39,7 +39,7 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
 
   public static final String KEY_FROM_PHYSICAL_COMPLETED = "Physical-Completed";
 
-  private final SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+  final SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
     public void onSign(String sign) {
       loading();
       Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
@@ -120,7 +120,7 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
         getString(R.string.btn_positive),
         getString(R.string.btn_negative),
         "onBackPressed");
-    dialogFragment.show(getSupportFragmentManager(), "");
+    dialogFragment.show(getSupportFragmentManager(), "back_confirm_dialog");
   }
 
   private void showSignDialog() {
