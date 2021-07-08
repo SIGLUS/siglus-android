@@ -85,6 +85,7 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
         models.get(i).setValid(false);
       } else {
         models.get(i).setValid(true);
+        models.get(i).setDone(true);
       }
     }
     this.notifyDataSetChanged();

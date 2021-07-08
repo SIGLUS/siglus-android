@@ -185,6 +185,9 @@ public final class Constants {
   public static final String SHOW_DONE_STATUS_EVENT = "show done status event";
   public static final String REFRESH_BACKGROUND_EVENT = "refresh background event";
 
+  // from page
+  public static final String FROM_BULK_INITIAL_PAGE = "from bulk initial page";
+  public static final String FROM_BULK_ENTRIES_PAGE = "from bulk entries page";
 
   private Constants() {
 

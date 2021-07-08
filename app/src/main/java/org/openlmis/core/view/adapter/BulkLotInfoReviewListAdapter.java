@@ -23,25 +23,32 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.BulkLotInfoReviewViewHolder;
 import org.openlmis.core.view.viewmodel.BaseStockMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class BulkLotInfoReviewListAdapter extends
     RecyclerView.Adapter<BulkLotInfoReviewViewHolder> {
 
   List<LotMovementViewModel> viewModels = new ArrayList<>();
 
-  public BulkLotInfoReviewListAdapter(BaseStockMovementViewModel stockMovementViewModel) {
+  private final String fromWhichPage;
+
+  public BulkLotInfoReviewListAdapter(BaseStockMovementViewModel stockMovementViewModel, String fromWhichPage) {
     viewModels.addAll(stockMovementViewModel.getExistingLotMovementViewModelList());
     viewModels.addAll(stockMovementViewModel.getNewLotMovementViewModelList());
+    viewModels = FluentIterable.from(viewModels)
+        .filter(lotMovementViewModel -> !StringUtils.isBlank(lotMovementViewModel.getQuantity())).toList();
+    this.fromWhichPage = fromWhichPage;
   }
 
   @Override
   public BulkLotInfoReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     return new BulkLotInfoReviewViewHolder(LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.item_lot_info_review, parent, false));
+        .inflate(R.layout.item_lot_info_review, parent, false),fromWhichPage);
   }
 
   @Override

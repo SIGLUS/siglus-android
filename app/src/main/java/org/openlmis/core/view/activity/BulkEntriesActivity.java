@@ -249,17 +249,19 @@ public class BulkEntriesActivity extends BaseActivity {
         hideKeyboard(btnComplete);
         int firstInvalidPosition = adapter.validateAllForCompletedClick();
         if (firstInvalidPosition >= 0) {
+          rvBulkEntriesProducts.requestFocus();
           rvBulkEntriesProducts.scrollToPosition(firstInvalidPosition);
           LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvBulkEntriesProducts.getLayoutManager();
           linearLayoutManager.scrollToPositionWithOffset(firstInvalidPosition, 0);
+          rvBulkEntriesProducts.clearFocus();
         }
         adapter.notifyDataSetChanged();
       }
     };
   }
 
-  private Subscriber getReloadSubscriber() {
-    return new Subscriber() {
+  private Subscriber<Object> getReloadSubscriber() {
+    return new Subscriber<Object>() {
       @Override
       public void onCompleted() {
         finish();

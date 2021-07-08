@@ -106,9 +106,9 @@ public class BulkEntriesViewModel extends InventoryViewModel {
       } else if (!productFlag && newLotMovementViewModelList.isEmpty()) {
         validationType = ValidationType.EXISTING_LOT_ALL_BLANK;
         return false;
-      }
+      } else
+        return !productFlag;
     }
-    return false;
   }
 
 

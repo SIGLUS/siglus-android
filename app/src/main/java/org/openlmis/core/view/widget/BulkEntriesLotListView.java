@@ -34,6 +34,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.adapter.BulkEntriesLotMovementAdapter;
 import org.openlmis.core.view.adapter.BulkLotInfoReviewListAdapter;
@@ -80,7 +81,6 @@ public class BulkEntriesLotListView extends BaseLotListView {
   private MovementStatusListener movementStatusListener;
 
   private VerifyListener verifyListener;
-
 
   public BulkEntriesLotListView(Context context) {
     super(context);
@@ -235,7 +235,8 @@ public class BulkEntriesLotListView extends BaseLotListView {
   }
 
   private void initLotInfoReviewList() {
-    BulkLotInfoReviewListAdapter adapter = new BulkLotInfoReviewListAdapter(viewModel);
+    BulkLotInfoReviewListAdapter adapter = new BulkLotInfoReviewListAdapter(viewModel,
+        Constants.FROM_BULK_ENTRIES_PAGE);
     rvLotInfoReview.setLayoutManager(new LinearLayoutManager(context));
     rvLotInfoReview.setAdapter(adapter);
   }

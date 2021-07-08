@@ -27,6 +27,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.BulkInitialInventoryAdapter;
 import org.openlmis.core.view.adapter.BulkInitialInventoryLotMovementAdapter;
 import org.openlmis.core.view.adapter.BulkLotInfoReviewListAdapter;
@@ -152,7 +153,7 @@ public class BulkInitialInventoryLotListView extends BaseLotListView {
   };
 
   private void initLotInfoReviewList() {
-    BulkLotInfoReviewListAdapter adapter = new BulkLotInfoReviewListAdapter(viewModel);
+    BulkLotInfoReviewListAdapter adapter = new BulkLotInfoReviewListAdapter(viewModel, Constants.FROM_BULK_INITIAL_PAGE);
     rvLotInfoReview.setLayoutManager(new LinearLayoutManager(context));
     rvLotInfoReview.setAdapter(adapter);
   }

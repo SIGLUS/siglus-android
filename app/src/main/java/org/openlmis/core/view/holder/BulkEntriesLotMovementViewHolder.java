@@ -67,9 +67,12 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   private TextView lotStockOnHand;
   @InjectView(R.id.vg_lot_soh)
   private ViewGroup vgLotSOH;
+
   private String[] movementReasons;
 
   private AmountChangeListener amountChangeListener;
+
+  private LotMovementViewModel lotMovementViewModel;
 
   public BulkEntriesLotMovementViewHolder(View itemView, String[] movementReasons) {
     super(itemView);
@@ -78,6 +81,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
   public void populate(final LotMovementViewModel viewModel,
       BulkEntriesLotMovementAdapter bulkEntriesLotMovementAdapter) {
+    this.lotMovementViewModel = viewModel;
     lotNumber.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
     etLotAmount.setText(viewModel.getQuantity());
     lotStockOnHand.setText(viewModel.getLotSoh());
@@ -89,7 +93,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
       btnDelLot.setVisibility(View.VISIBLE);
     }
     if (!viewModel.isValid()) {
-      setLotInfoError(viewModel);
+      setLotInfoError();
     }
     setUpViewListener(viewModel, bulkEntriesLotMovementAdapter);
   }
@@ -136,22 +140,30 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     lyMovementReason.setErrorEnabled(false);
   }
 
-  private void setQuantityError(String string) {
-    etLotAmount.requestFocus();
-    lyLotAmount.setError(string);
+  private void setLotInfoError() {
+    setLyLotAmountError();
+    setLyMovementReason();
+    setLyDocumentNumberError();
   }
 
-  private void setLotInfoError(LotMovementViewModel lotMovementViewModel) {
+  private void setLyLotAmountError() {
     if (StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
       lyLotAmount.setError(getString(R.string.msg_empty_quantity));
     }
+  }
+
+  private void setLyDocumentNumberError() {
     if (StringUtils.isBlank(lotMovementViewModel.getDocumentNumber())) {
       lyDocumentNumber.setError(getString(R.string.msg_empty_document_number));
     }
+  }
+
+  private void setLyMovementReason() {
     if (StringUtils.isBlank(lotMovementViewModel.getMovementReason())) {
       lyMovementReason.setError(getString(R.string.msg_empty_movement_reason));
     }
   }
+
 
   @NonNull
   private View.OnClickListener getOnClickListenerForDeleteIcon(final LotMovementViewModel viewModel,
@@ -199,7 +211,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
       movementReason.setText(movementReasons[position]);
       viewModel.setMovementReason(movementReasons[position]);
-
+      lyMovementReason.setErrorEnabled(false);
       reasonsDialog.dismiss();
     }
   }
@@ -231,7 +243,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     }
 
     private void updateVgDocumentNumberError() {
-        setLotInfoError(viewModel);
+      setLyDocumentNumberError();
     }
 
     private void updateVgLotSOHAndError() {
@@ -240,7 +252,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
           vgLotSOH.setVisibility(View.GONE);
         } else {
           vgLotSOH.setVisibility(View.VISIBLE);
-          setQuantityError(getString(R.string.msg_empty_quantity));
+          setLyLotAmountError();
         }
       }
     }
