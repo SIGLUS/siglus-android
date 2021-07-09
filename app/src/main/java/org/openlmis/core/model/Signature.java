@@ -43,7 +43,7 @@ public class Signature implements Serializable {
   protected long id;
 
   @Expose
-  @SerializedName("text")
+  @SerializedName("name")
   @DatabaseField
   protected String signature;
 

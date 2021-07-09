@@ -219,7 +219,7 @@ public class RnrFormAdapterTest {
     // then
     JsonObject rnrSignature = rnrJson.getAsJsonObject().get("signatures").getAsJsonArray().get(0)
         .getAsJsonObject();
-    assertThat(rnrSignature.get("text").toString(), is("\"abc\""));
+    assertThat(rnrSignature.get("name").toString(), is("\"abc\""));
     assertThat(rnrSignature.get("type").toString(),
         is("\"" + RnRFormSignature.TYPE.SUBMITTER.toString() + "\""));
   }

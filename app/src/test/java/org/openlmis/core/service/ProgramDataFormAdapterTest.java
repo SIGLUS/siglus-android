@@ -125,7 +125,7 @@ public class ProgramDataFormAdapterTest {
             .getAsJsonObject().get("type").toString(), is("\"SUBMITTER\""));
     assertThat(
         jsonElement.getAsJsonObject().get("programDataFormSignatures").getAsJsonArray().get(0)
-            .getAsJsonObject().get("text").toString(), is("\"mystique\""));
+            .getAsJsonObject().get("name").toString(), is("\"mystique\""));
     assertThat(jsonElement.getAsJsonObject().get("programDataFormItems").getAsJsonArray().size(),
         is(4));
     assertThat(jsonElement.getAsJsonObject().get("programDataFormItems").getAsJsonArray().get(0)

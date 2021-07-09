@@ -7,11 +7,11 @@
   "programDataFormSignatures": [
     {
       "type": "SUBMITTER",
-      "text": "mystique"
+      "name": "mystique"
     },
     {
       "type": "APPROVER",
-      "text": "magneto"
+      "name": "magneto"
     }
   ],
   "programDataFormItems": [
