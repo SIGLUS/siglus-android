@@ -94,9 +94,12 @@ public class RapidTestReportListFragment extends BaseReportListFragment {
 
   @Override
   protected void loadForms() {
-    loading();
-    Subscription subscription = presenter.loadViewModels().subscribe(getRefreshReportListSubscriber());
-    subscriptions.add(subscription);
+    if (!isLoading) {
+      loading();
+      isLoading = true;
+      Subscription subscription = presenter.loadViewModels().subscribe(getRefreshReportListSubscriber());
+      subscriptions.add(subscription);
+    }
   }
 
   private Subscriber<List<RapidTestReportViewModel>> getRefreshReportListSubscriber() {
@@ -104,11 +107,13 @@ public class RapidTestReportListFragment extends BaseReportListFragment {
       @Override
       public void onCompleted() {
         loaded();
+        isLoading = false;
       }
 
       @Override
       public void onError(Throwable e) {
         loaded();
+        isLoading = false;
         ToastUtil.show(e.getMessage());
       }
 

@@ -26,6 +26,8 @@ import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 
 public abstract class BaseReportListFragment extends BaseFragment {
 
+  boolean isLoading = false;
+
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveSyncStatusEvent(SyncStatusEvent event) {
     if (event.getStatus() != SyncStatus.FINISH) {

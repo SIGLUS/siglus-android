@@ -83,8 +83,6 @@ public class ReportListFragment extends BaseReportListFragment {
 
   private WarningDialogFragment warningDialog;
 
-  private boolean isLoading = false;
-
   public static ReportListFragment newInstance(Program program) {
     final ReportListFragment reportListFragment = new ReportListFragment();
     final Bundle params = new Bundle();
@@ -126,15 +124,14 @@ public class ReportListFragment extends BaseReportListFragment {
   protected void loadForms() {
     if (!isLoading) {
       loading();
+      isLoading = true;
       Subscription subscription = presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
       subscriptions.add(subscription);
-      isLoading = true;
     }
   }
 
   @Override
-  public void onActivityResult(int requestCode, int resultCode,
-      @Nullable Intent data) {
+  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode != Activity.RESULT_OK) {
       return;
@@ -220,13 +217,13 @@ public class ReportListFragment extends BaseReportListFragment {
       @Override
       public void onCompleted() {
         loaded();
-        isLoading = true;
+        isLoading = false;
       }
 
       @Override
       public void onError(Throwable e) {
         loaded();
-        isLoading = true;
+        isLoading = false;
         ToastUtil.show(e.getMessage());
       }
 
