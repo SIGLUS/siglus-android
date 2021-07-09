@@ -95,7 +95,7 @@ public class DashboardView extends ConstraintLayout {
     int percent = (int) ((current * 100.0f) / total);
     tvCalculatingCMMTips.setText(String.format(Locale.getDefault(), "%d%%", percent));
     tvCalculatingCMMTips
-        .setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.px_25));
+        .setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.px_36));
   }
 
   private void changeState(ShowState showState) {
