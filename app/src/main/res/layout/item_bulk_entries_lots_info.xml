@@ -44,7 +44,8 @@
       android:drawablePadding="5dp"
       android:hint="@string/hint_document_number"
       android:textSize="@dimen/px_20"
-      android:maxLength="@integer/edit_amount_length" />
+      android:maxLength="@integer/edit_amount_length"
+      android:singleLine="true"/>
 
   </com.google.android.material.textfield.TextInputLayout>
 
