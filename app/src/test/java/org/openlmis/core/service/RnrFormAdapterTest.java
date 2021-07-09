@@ -34,9 +34,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.inject.AbstractModule;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -106,13 +108,15 @@ public class RnrFormAdapterTest {
   @Test
   public void shouldSerializeRnrFormWithSubmittedTime() throws Exception {
     // given
-    rnRForm.setSubmittedTime(DateUtil.parseString("2015-10-14 01:01:11", DATE_TIME_FORMAT));
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    dateFormat.setTimeZone(TimeZone.getTimeZone("Etc/GMT-8"));
+    rnRForm.setSubmittedTime(dateFormat.parse("2010-01-31T14:32:19Z"));
 
     // when
     JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
 
     // then
-    assertEquals("\"2015-10-13T17:01:11.000Z\"",
+    assertEquals("\"2010-01-31T06:32:19.000Z\"",
         rnrJson.getAsJsonObject().get("clientSubmittedTime").toString());
   }
 
