@@ -48,12 +48,12 @@ public class RnrFormItem extends BaseModel {
   private Long initialAmount;
 
   @Expose
-  @SerializedName("quantityReceived")
+  @SerializedName("totalReceivedQuantity")
   @DatabaseField
   private long received;
 
   @Expose
-  @SerializedName("quantityDispensed")
+  @SerializedName("totalConsumedQuantity")
   @DatabaseField
   private Long issued;
 
@@ -63,7 +63,7 @@ public class RnrFormItem extends BaseModel {
   private Long adjustment;
 
   @Expose
-  @SerializedName("stockInHand")
+  @SerializedName("stockOnHand")
   @DatabaseField
   private Long inventory;
 
@@ -73,17 +73,16 @@ public class RnrFormItem extends BaseModel {
   private String validate;
 
   @Expose
-  @SerializedName("quantityRequested")
+  @SerializedName("requestedQuantity")
   @DatabaseField
   private Long requestAmount;
 
   @Expose
-  @SerializedName("quantityApproved")
+  @SerializedName("authorizedQuantity")
   @DatabaseField
   private Long approvedAmount;
 
   @Expose
-  @SerializedName("calculatedOrderQuantity")
   @DatabaseField
   private Long calculatedOrderQuantity;
 

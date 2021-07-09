@@ -71,10 +71,10 @@ public interface LMISRestApi {
   @POST("/api/siglusapi/android/me/app-info")
   Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
 
-  // below are v2 apis
-  @POST("/rest-api/requisitions")
+  @POST("/api/siglusapi/android/me/facility/requisitions")
   SyncUpRequisitionResponse submitRequisition(@Body RnRForm rnRForm) throws LMISException;
 
+  // below are v2 apis
   @POST("/rest-api/sdp-requisitions")
   SyncUpRequisitionResponse submitEmergencyRequisition(@Body RnRForm rnRForm) throws LMISException;
 

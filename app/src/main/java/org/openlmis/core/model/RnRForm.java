@@ -77,7 +77,6 @@ public class RnRForm extends BaseModel {
   private ForeignCollection<BaseInfoItem> baseInfoItemList;
 
   @Expose
-  @SerializedName("patientQuantifications")
   private List<BaseInfoItem> baseInfoItemListWrapper;
 
   @ForeignCollectionField()
@@ -99,18 +98,12 @@ public class RnRForm extends BaseModel {
   @DatabaseField
   private boolean synced = false;
 
-  @Expose
-  @SerializedName("actualPeriodStartDate")
   @DatabaseField
   private Date periodBegin;
 
-  @Expose
-  @SerializedName("actualPeriodEndDate")
   @DatabaseField
   private Date periodEnd;
 
-  @Expose
-  @SerializedName("clientSubmittedTime")
   @DatabaseField
   private Date submittedTime;
 
