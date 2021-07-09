@@ -72,13 +72,15 @@ public class StockService {
         .getLatestUpdateLowStockAvgTime();
     Period period = Period.of(today());
     if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
+      EventBus.getDefault().post(new CmmCalculateEvent(true));
       immediatelyUpdateAvgMonthlyConsumption();
+      EventBus.getDefault().post(new CmmCalculateEvent(false));
     }
   }
 
   public void immediatelyUpdateAvgMonthlyConsumption() {
     try {
-      EventBus.getDefault().post(new CmmCalculateEvent(true));
+
       List<StockCard> stockCards = stockRepository.list();
       for (StockCard stockCard : stockCards) {
         stockCard.setAvgMonthlyConsumption(calculateAverageMonthlyConsumption(stockCard));
@@ -88,8 +90,6 @@ public class StockService {
       SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
     } catch (LMISException e) {
       new LMISException(e, "StockService:immediatelyUpdate").reportToFabric();
-    } finally {
-      EventBus.getDefault().post(new CmmCalculateEvent(false));
     }
   }
 

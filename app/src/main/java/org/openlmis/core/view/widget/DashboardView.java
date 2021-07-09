@@ -20,6 +20,7 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -34,6 +35,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import org.openlmis.core.R;
 
 public class DashboardView extends ConstraintLayout {
@@ -55,6 +57,8 @@ public class DashboardView extends ConstraintLayout {
   TextView tvOutAmount;
   TextView tvLowAmount;
   TextView tvOverAmount;
+
+  private ShowState currentShowState;
 
   public DashboardView(@NonNull Context context) {
     this(context, null);
@@ -81,22 +85,33 @@ public class DashboardView extends ConstraintLayout {
 
   public void showCalculating() {
     changeState(ShowState.CALCULATING);
+    tvCalculatingCMMTips.setText(getContext().getString(R.string.msg_calculating_cmm));
+    tvCalculatingCMMTips
+        .setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.px_18));
   }
 
-  public void showLoading() {
+  public void showLoading(int current, int total) {
     changeState(ShowState.LOADING);
+    int percent = (int) ((current * 100.0f) / total);
+    tvCalculatingCMMTips.setText(String.format(Locale.getDefault(), "%d%%", percent));
+    tvCalculatingCMMTips
+        .setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.px_25));
   }
 
   private void changeState(ShowState showState) {
+    if (currentShowState == showState) {
+      return;
+    }
+    this.currentShowState = showState;
     if (showState == ShowState.FINISHED) {
       ivLoading.clearAnimation();
     } else {
       startLoading();
     }
-    tvCalculatingCMMTips.setVisibility(showState == ShowState.CALCULATING ? View.VISIBLE : View.INVISIBLE);
-    ivLoading.setVisibility(showState == ShowState.FINISHED ? View.INVISIBLE : View.VISIBLE);
-    llTotalProducts.setVisibility(showState == ShowState.CALCULATING ? View.INVISIBLE : View.VISIBLE);
-    circleView.setVisibility(showState == ShowState.FINISHED ? View.VISIBLE : View.INVISIBLE);
+    tvCalculatingCMMTips.setVisibility(showState != ShowState.FINISHED ? View.VISIBLE : View.INVISIBLE);
+    ivLoading.setVisibility(showState != ShowState.FINISHED ? View.VISIBLE : View.INVISIBLE);
+    llTotalProducts.setVisibility(showState != ShowState.FINISHED ? View.INVISIBLE : View.VISIBLE);
+    circleView.setVisibility(showState != ShowState.FINISHED ? View.INVISIBLE : View.VISIBLE);
   }
 
   protected List<DashboardCircleView.Item> createNewData(int regularAmount, int outAmount,

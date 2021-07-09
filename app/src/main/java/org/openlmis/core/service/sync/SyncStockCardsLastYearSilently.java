@@ -18,15 +18,18 @@
 
 package org.openlmis.core.service.sync;
 
+import static org.openlmis.core.utils.Constants.STOCK_CARD_MAX_SYNC_MONTH;
+
 import android.util.Log;
 import androidx.annotation.NonNull;
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.event.SyncPercentEvent;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
@@ -36,22 +39,21 @@ import rx.Scheduler;
 
 public class SyncStockCardsLastYearSilently {
 
-
   private static final int DAYS_OF_REGULAR_MONTH = 30;
 
-  @Inject
-  private SharedPreferenceMgr sharedPreferenceMgr;
   private LMISRestApi lmisRestApi;
   private Scheduler scheduler;
+  private final AtomicInteger finishedCount = new AtomicInteger(0);
+  private final SyncPercentEvent syncPercentEvent = new SyncPercentEvent(0);
 
   public Observable<List<StockCard>> performSync() {
-    final int monthsInAYear = 12;
     lmisRestApi = LMISApp.getInstance().getRestApi();
     List<Observable<StockCardsLocalResponse>> tasks = new ArrayList<>();
     scheduler = SchedulerBuilder.createScheduler();
-    int startMonth = sharedPreferenceMgr.getPreference().getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
-    Date now = getActualDate();
-    for (int month = startMonth; month <= monthsInAYear; month++) {
+    finishedCount.set(0);
+    int startMonth = 1;
+    Date now = DateUtil.getCurrentDate();
+    for (int month = startMonth; month <= STOCK_CARD_MAX_SYNC_MONTH; month++) {
       Observable<StockCardsLocalResponse> objectObservable = createObservableToFetchStockMovements(month, now);
       tasks.add(objectObservable);
     }
@@ -75,6 +77,8 @@ public class SyncStockCardsLastYearSilently {
     return Observable.create((Observable.OnSubscribe<StockCardsLocalResponse>) subscriber -> {
       try {
         StockCardsLocalResponse adaptedResponse = lmisRestApi.fetchStockMovementData(startDateStr, endDateStr);
+        syncPercentEvent.setSyncedCount(finishedCount.incrementAndGet());
+        EventBus.getDefault().post(syncPercentEvent);
         subscriber.onNext(adaptedResponse);
         subscriber.onCompleted();
       } catch (LMISException e) {
@@ -85,20 +89,12 @@ public class SyncStockCardsLastYearSilently {
   }
 
   private String getStartDate(Date now, int month) {
-    final int oneMonth = 1;
-    Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_REGULAR_MONTH * (month + oneMonth));
+    Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_REGULAR_MONTH * (month + 1));
     return DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
   }
 
   private String getEndDate(Date now, int month) {
     Date endDate = DateUtil.minusDayOfMonth(now, DAYS_OF_REGULAR_MONTH * month);
     return DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
-  }
-
-  @NonNull
-  private Date getActualDate() {
-    long syncEndTimeMillions = sharedPreferenceMgr.getPreference()
-        .getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, DateUtil.getCurrentDate().getTime());
-    return new Date(syncEndTimeMillions);
   }
 }

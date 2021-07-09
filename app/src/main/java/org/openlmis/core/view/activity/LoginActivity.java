@@ -299,7 +299,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   }
 
   @Override
-  public void sendSyncErrorBroadcast() {
-    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR));
+  public void sendSyncErrorBroadcast(String errorMsg) {
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, errorMsg));
   }
 }

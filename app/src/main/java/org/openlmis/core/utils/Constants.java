@@ -189,6 +189,8 @@ public final class Constants {
   public static final String FROM_BULK_INITIAL_PAGE = "from bulk initial page";
   public static final String FROM_BULK_ENTRIES_PAGE = "from bulk entries page";
 
+  public static final int STOCK_CARD_MAX_SYNC_MONTH = 12;
+
   private Constants() {
 
   }

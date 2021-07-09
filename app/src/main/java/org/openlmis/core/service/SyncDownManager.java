@@ -31,6 +31,7 @@ import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
@@ -264,7 +265,7 @@ public class SyncDownManager {
         sharedPreferenceMgr.setStockCardLastYearSyncError(true);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
         new LMISException(e, "getSyncLastYearStockCardSubscriber:onError").reportToFabric();
-        sendSyncErrorBroadcast();
+        sendSyncErrorBroadcast(e.getMessage());
       }
 
       @Override
@@ -291,7 +292,7 @@ public class SyncDownManager {
         sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
         sharedPreferenceMgr.setStockCardLastYearSyncError(true);
         sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
-        sendSyncErrorBroadcast();
+        sendSyncErrorBroadcast("Save one year stock failed");
       }
 
       @Override
@@ -301,8 +302,8 @@ public class SyncDownManager {
     };
   }
 
-  private void sendSyncErrorBroadcast() {
-    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR));
+  private void sendSyncErrorBroadcast(String errorMsg) {
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, errorMsg));
   }
 
   private void syncDownRequisition(Subscriber<? super SyncProgress> subscriber)
@@ -437,7 +438,8 @@ public class SyncDownManager {
       observables.add(saveStockCards(stockCards.subList(startPosition, endPosition), scheduler));
       startPosition = endPosition;
     }
-    return zipObservables(observables);
+    EventBus.getDefault().post(new CmmCalculateEvent(true));
+    return zipObservables(observables).doOnCompleted(() -> EventBus.getDefault().post(new CmmCalculateEvent(false)));
   }
 
   private Observable<Void> zipObservables(List<Observable<Void>> tasks) {

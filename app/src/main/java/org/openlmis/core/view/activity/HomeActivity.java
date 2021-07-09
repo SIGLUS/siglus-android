@@ -20,15 +20,12 @@ package org.openlmis.core.view.activity;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -51,6 +48,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.event.CmmCalculateEvent;
+import org.openlmis.core.event.SyncPercentEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
@@ -105,6 +103,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   private static final int PERMISSION_REQUEST_CODE = 200;
 
   private boolean isCmmCalculating = false;
+
+  private int syncedCount = 0;
 
   public void onClickStockCard(View view) {
     if (!isHaveDirtyData()) {
@@ -168,6 +168,13 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveCmmCalculateEvent(CmmCalculateEvent event) {
     isCmmCalculating = event.isStart();
+    Log.d("dashboard", "onReceiveCmmCalculateEvent: isCmmCalculating = " + isCmmCalculating);
+    refreshDashboard();
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveSyncPercentEvent(SyncPercentEvent event) {
+    this.syncedCount = event.getSyncedCount();
     refreshDashboard();
   }
 
@@ -321,13 +328,8 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
         alertBuilder.setCancelable(true);
         alertBuilder.setTitle("get permssion");
         alertBuilder.setMessage("storage permssion");
-        alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-          @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-          public void onClick(DialogInterface dialog, int which) {
-            ActivityCompat
-                .requestPermissions(HomeActivity.this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-          }
-        });
+        alertBuilder.setPositiveButton(android.R.string.yes, (dialog, which) -> ActivityCompat
+            .requestPermissions(HomeActivity.this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE));
         AlertDialog alert = alertBuilder.create();
         alert.show();
         Log.e("", "permission denied, show dialog");
@@ -423,8 +425,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private void refreshDashboard() {
     if (sharedPreferenceMgr.shouldSyncLastYearStockData() && sharedPreferenceMgr.isSyncingLastYearStockCards()) {
-      // TODO set real percent
-      dvProductDashboard.showLoading();
+      dvProductDashboard.showLoading(syncedCount, Constants.STOCK_CARD_MAX_SYNC_MONTH);
     } else if (isCmmCalculating) {
       dvProductDashboard.showCalculating();
     } else {

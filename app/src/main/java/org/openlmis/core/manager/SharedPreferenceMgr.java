@@ -64,7 +64,6 @@ public class SharedPreferenceMgr {
   private static final String KEY_IS_SYNCING_LAST_YEAR = "is_syncing_last_year";
   private static final String KEY_IS_REQUISITION_DATA_SYNCED = "is_requisition_data_synced";
   public static final String KEY_STOCK_SYNC_END_TIME = "sync_stock_end_time";
-  public static final String KEY_STOCK_SYNC_CURRENT_INDEX = "sync_stock_current_index";
   public static final String KEY_LAST_SYNC_PRODUCT_TIME = "last_sync_product_time";
   public static final String KEY_IS_FIRST_LOGIN_VERSION87 = "is_first_login_version87";
   public static final String KEY_LAST_SYNC_SERVICE_TIME = "last_sync_service_time";
