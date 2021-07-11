@@ -37,6 +37,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -46,11 +47,14 @@ import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkEntriesPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
+import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
+import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -247,17 +251,32 @@ public class BulkEntriesActivity extends BaseActivity {
       @Override
       public void onSingleClick(View v) {
         hideKeyboard(btnComplete);
-        int firstInvalidPosition = adapter.validateAllForCompletedClick();
-        if (firstInvalidPosition >= 0) {
-          rvBulkEntriesProducts.requestFocus();
-          rvBulkEntriesProducts.scrollToPosition(firstInvalidPosition);
-          LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvBulkEntriesProducts.getLayoutManager();
-          linearLayoutManager.scrollToPositionWithOffset(firstInvalidPosition, 0);
-          rvBulkEntriesProducts.clearFocus();
+        if (doValidation()) {
+          showSignDialog();
         }
-        adapter.notifyDataSetChanged();
       }
     };
+  }
+
+  private void showSignDialog() {
+    BulkEntriesSignatureDialog signatureDialog = new BulkEntriesSignatureDialog();
+    signatureDialog.setArguments(BulkEntriesSignatureDialog.getBundleToMe(DateUtil.formatDate(new Date())));
+    signatureDialog.setDelegate(getSignatureDialogDelegate());
+    signatureDialog.show(getSupportFragmentManager());
+  }
+
+  private boolean doValidation() {
+    int firstInvalidPosition = adapter.validateAllForCompletedClick();
+    adapter.notifyDataSetChanged();
+    if (firstInvalidPosition >= 0) {
+      rvBulkEntriesProducts.requestFocus();
+      rvBulkEntriesProducts.scrollToPosition(firstInvalidPosition);
+      LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvBulkEntriesProducts.getLayoutManager();
+      linearLayoutManager.scrollToPositionWithOffset(firstInvalidPosition, 0);
+      rvBulkEntriesProducts.clearFocus();
+      return false;
+    }
+    return true;
   }
 
   private Subscriber<Object> getReloadSubscriber() {
@@ -304,6 +323,16 @@ public class BulkEntriesActivity extends BaseActivity {
     if (inputMethodManager != null) {
       inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+  }
+
+  private SignatureDialog.DialogDelegate getSignatureDialogDelegate(){
+    return new SignatureDialog.DialogDelegate() {
+
+      @Override
+      public void onSign(String sign) {
+        loading();
+      }
+    };
   }
 
 }
