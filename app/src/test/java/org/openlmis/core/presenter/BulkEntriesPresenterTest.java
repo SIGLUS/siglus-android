@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.inject.AbstractModule;
@@ -26,6 +28,8 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
+import rx.Observable;
+import rx.observers.TestSubscriber;
 
 
 @RunWith(LMISTestRunner.class)
@@ -194,7 +198,56 @@ public class BulkEntriesPresenterTest {
 
     // then
     assertFalse(flag);
+  }
 
+  @Test
+  public void shouldGetBulkEntriesFromDraft() throws LMISException {
+    // given
+    Product product = Product.builder()
+        .code(productCode)
+        .primaryName("test")
+        .build();
+    BulkEntriesViewModel bulkEntriesViewModel = new BulkEntriesViewModel(product);
+    bulkEntriesPresenter.getBulkEntriesViewModels().add(bulkEntriesViewModel);
+
+    // when
+    TestSubscriber<List<BulkEntriesViewModel>> subscriber = new TestSubscriber<>();
+    Observable<List<BulkEntriesViewModel>> observable = bulkEntriesPresenter.getBulkEntriesViewModelsFromDraft();
+    observable.subscribe(subscriber);
+    subscriber.awaitTerminalEvent();
+
+    // when
+    subscriber.assertNoErrors();
+    List<BulkEntriesViewModel> bulkEntriesViewModels = subscriber.getOnNextEvents().get(0);
+    assertEquals(productCode,bulkEntriesViewModels.get(0).getProduct().getCode());
+  }
+
+  @Test
+  public void shouldSaveDraftBulkEntriesObservable() {
+    // given
+    Product product = Product.builder()
+        .code(productCode)
+        .primaryName("test")
+        .build();
+    BulkEntriesViewModel bulkEntriesViewModel = new BulkEntriesViewModel(product);
+    bulkEntriesPresenter.getBulkEntriesViewModels().add(bulkEntriesViewModel);
+
+    // when
+    TestSubscriber<Object> subscriber = new TestSubscriber<>();
+    Observable<Object> observable = bulkEntriesPresenter.saveDraftBulkEntriesObservable();
+    observable.subscribe(subscriber);
+    subscriber.awaitTerminalEvent();
+
+    // then
+    subscriber.assertNoErrors();
+  }
+
+  @Test
+  public void shouldDeleteDraft() throws LMISException {
+    // when
+    bulkEntriesPresenter.deleteDraft();
+    // then
+    verify(bulkEntriesRepository,times(1)).clearBulkEntriesDraft();
   }
 
 }
