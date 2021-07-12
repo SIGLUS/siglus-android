@@ -22,7 +22,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import org.greenrobot.eventbus.EventBus;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.TextStyleUtil;
@@ -63,12 +65,12 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
   public void populate(BulkEntriesViewModel bulkEntriesViewModel,
       final BulkEntriesAdapter bulkEntriesAdapter) {
     this.bulkEntriesViewModel = bulkEntriesViewModel;
-    icTrashcan.setOnClickListener(getRemoveProductListener());
+    icTrashcan.setOnClickListener(v -> showConfirmDialog());
     setMovementDone();
     setInvalidStatus();
     bulkEntriesLotListView
-        .initLotListView(bulkEntriesViewModel, bulkEntriesAdapter, getAmountChangeListenerFromTrashcan(),
-            getMovementStatusListener(), getVerifyListener());
+        .initLotListView(bulkEntriesViewModel, bulkEntriesAdapter, this::setInvalidStatus,
+            this::setMovementDone, () -> verifyPositionListener.onVerifyPositionListener(getBindingAdapterPosition()));
   }
 
   private void setInvalidStatus() {
@@ -80,24 +82,16 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
     }
   }
 
-  private void setBindingAdapterPosition() {
-    verifyPositionListener.onVerifyPositionListener(this.getBindingAdapterPosition());
-  }
-
   private void setMovementDone() {
     if (bulkEntriesViewModel.isDone()) {
       icDone.setVisibility(View.VISIBLE);
       productName.setText(bulkEntriesViewModel.getGreenName());
-      itemHeader.setBackgroundColor(context.getResources().getColor(R.color.color_white));
+      itemHeader.setBackgroundColor(ContextCompat.getColor(LMISApp.getContext(), R.color.color_white));
     } else {
       icDone.setVisibility(View.GONE);
-      itemHeader.setBackgroundColor(context.getResources().getColor(R.color.color_D8D8D8));
+      itemHeader.setBackgroundColor(ContextCompat.getColor(LMISApp.getContext(), R.color.color_D8D8D8));
       productName.setText(TextStyleUtil.formatStyledProductName(bulkEntriesViewModel.getProduct()));
     }
-  }
-
-  private View.OnClickListener getRemoveProductListener() {
-    return v -> showConfirmDialog();
   }
 
   private void showConfirmDialog() {
@@ -124,18 +118,6 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
 
   private String getString(int id) {
     return context.getResources().getString(id);
-  }
-
-  private BulkEntriesLotMovementViewHolder.AmountChangeListener getAmountChangeListenerFromTrashcan() {
-    return this::setInvalidStatus;
-  }
-
-  private BulkEntriesLotListView.MovementStatusListener getMovementStatusListener() {
-    return this::setMovementDone;
-  }
-
-  private BulkEntriesLotListView.VerifyListener getVerifyListener() {
-    return this::setBindingAdapterPosition;
   }
 
   public interface VerifyPositionListener {

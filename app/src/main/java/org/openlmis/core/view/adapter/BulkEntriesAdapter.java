@@ -43,8 +43,9 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
   @Override
   public BulkEntriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     return new BulkEntriesViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-        (R.layout.item_bulk_entries), parent, false), new VerifyPositionListener(this),
-        new TrashcanRemoveListener(this));
+        (R.layout.item_bulk_entries), parent, false),
+        this::notifyItemChanged,
+        this::remove);
   }
 
   @Override
@@ -94,32 +95,5 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
     return firstInvalidPosition;
   }
 
-  class VerifyPositionListener implements BulkEntriesViewHolder.VerifyPositionListener {
-
-    private BulkEntriesAdapter bulkEntriesAdapter;
-
-    public VerifyPositionListener(BulkEntriesAdapter bulkEntriesAdapter) {
-      this.bulkEntriesAdapter = bulkEntriesAdapter;
-    }
-
-    @Override
-    public void onVerifyPositionListener(int position) {
-      bulkEntriesAdapter.notifyItemChanged(position);
-    }
-  }
-
-  class TrashcanRemoveListener implements BulkEntriesViewHolder.TrashcanRemoveListener {
-
-    private BulkEntriesAdapter bulkEntriesAdapter;
-
-    public TrashcanRemoveListener(BulkEntriesAdapter bulkEntriesAdapter) {
-      this.bulkEntriesAdapter = bulkEntriesAdapter;
-    }
-
-    @Override
-    public void onTrashcanRemoveListener(BulkEntriesViewModel bulkEntriesViewModel, int position) {
-      bulkEntriesAdapter.remove(bulkEntriesViewModel, position);
-    }
-  }
 
 }

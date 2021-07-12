@@ -30,6 +30,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputLayout;
+import java.text.MessageFormat;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -69,6 +71,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
   private String[] movementReasons;
 
+  @Setter
   private AmountChangeListener amountChangeListener;
 
   private LotMovementViewModel lotMovementViewModel;
@@ -81,7 +84,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   public void populate(final LotMovementViewModel viewModel,
       BulkEntriesLotMovementAdapter bulkEntriesLotMovementAdapter) {
     this.lotMovementViewModel = viewModel;
-    lotNumber.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
+    lotNumber.setText(MessageFormat.format("{0} - {1}", viewModel.getLotNumber(), viewModel.getExpiryDate()));
     etLotAmount.setText(viewModel.getQuantity());
     lotStockOnHand.setText(viewModel.getLotSoh());
     movementReason.setText(viewModel.getMovementReason());
@@ -121,10 +124,8 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         reasonsDialog.setArguments(bundle);
         reasonsDialog.setMovementTypeOnClickListener(
             new MovementTypeOnClickListener(reasonsDialog, viewModel));
-        reasonsDialog.show(
-            ((BulkEntriesActivity) (((ContextWrapper) view.getContext()).getBaseContext()))
-                .getSupportFragmentManager(),
-            "SELECT_REASONS");
+        reasonsDialog.show(((BulkEntriesActivity) (((ContextWrapper) view.getContext()).getBaseContext()))
+                .getSupportFragmentManager(), "SELECT_REASONS");
       }
     };
   }

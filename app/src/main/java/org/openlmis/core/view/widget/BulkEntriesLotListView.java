@@ -25,11 +25,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
@@ -111,7 +113,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
         viewModel.getExistingLotMovementViewModelList(), getMovementReasonDescriptionList(),
         bulkEntriesViewModel, bulkEntriesAdapter);
     existingLotListView.setAdapter(existingBulkEntriesLotMovementAdapter);
-    existingBulkEntriesLotMovementAdapter.setMovementChangeListener(amountChangeListenerFromAlert);
+    existingBulkEntriesLotMovementAdapter.setAmountChangeListener(amountChangeListenerFromAlert);
     setItemDecoration(existingLotListView);
   }
 
@@ -246,7 +248,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
   }
 
   private int getColor(int id) {
-    return context.getResources().getColor(id);
+    return ContextCompat.getColor(LMISApp.getContext(), id);
   }
 
   public interface MovementStatusListener {

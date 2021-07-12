@@ -325,7 +325,7 @@ public class BulkEntriesActivity extends BaseActivity {
     }
   }
 
-  private SignatureDialog.DialogDelegate getSignatureDialogDelegate(){
+  private SignatureDialog.DialogDelegate getSignatureDialogDelegate() {
     return new SignatureDialog.DialogDelegate() {
 
       @Override
