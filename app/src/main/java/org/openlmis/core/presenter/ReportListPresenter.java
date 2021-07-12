@@ -19,13 +19,13 @@
 package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.model.service.RequisitionPeriodService;
 import org.openlmis.core.view.BaseView;
 import rx.Observable;
@@ -47,15 +47,15 @@ public class ReportListPresenter extends Presenter {
 
   private ReportListView view;
 
-  private boolean hasVCProgram = false;
+  private boolean hasVCReportType = false;
 
   @Inject
-  ProgramRepository programRepository;
+  ReportTypeFormRepository reportTypeFormRepository;
 
   @Inject
   RequisitionPeriodService requisitionPeriodService;
 
-  Subscriber<List<Program>> getSupportProgramsSubscriber = new Subscriber<List<Program>>() {
+  Subscriber<List<ReportTypeForm>> getSupportReportTypesSubscriber = new Subscriber<List<ReportTypeForm>>() {
     @Override
     public void onCompleted() {
       // do nothing
@@ -63,14 +63,13 @@ public class ReportListPresenter extends Presenter {
 
     @Override
     public void onError(Throwable e) {
-      view.loadProgramsError(e);
+      view.loadReportTypesError(e);
     }
 
     @Override
-    public void onNext(List<Program> programs) {
-      final ArrayList<Program> newData = new ArrayList<>(programs);
-      sortPrograms(newData);
-      view.updateSupportProgram(newData);
+    public void onNext(List<ReportTypeForm> reportTypeForms) {
+      sortReportTypes(reportTypeForms);
+      view.updateSupportReportTypes(reportTypeForms);
     }
   };
 
@@ -80,23 +79,18 @@ public class ReportListPresenter extends Presenter {
   }
 
   public void getSupportPrograms() {
-    Observable.create((OnSubscribe<List<Program>>) subscriber -> {
-      try {
-        final List<Program> programs = programRepository.queryActiveProgram();
-        setHasVCProgram(programs);
-        subscriber.onNext(programs);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        subscriber.onError(e);
-      }
-    })
-        .subscribeOn(Schedulers.io())
+    Observable.create((OnSubscribe<List<ReportTypeForm>>) subscriber -> {
+      final List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAllWithActive();
+      setHasVCReportType(reportTypeForms);
+      subscriber.onNext(reportTypeForms);
+      subscriber.onCompleted();
+    }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(getSupportProgramsSubscriber);
+        .subscribe(getSupportReportTypesSubscriber);
   }
 
-  public boolean isHasVCProgram() {
-    return hasVCProgram;
+  public boolean isHasVCReportType() {
+    return hasVCReportType;
   }
 
   public Observable<Boolean> hasMissedViaProgramPeriod() {
@@ -111,28 +105,28 @@ public class ReportListPresenter extends Presenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-  private void sortPrograms(List<Program> programs) {
+  private void sortReportTypes(List<ReportTypeForm> programs) {
     Collections.sort(programs, (o1, o2) -> {
-      final Integer o1Order = PROGRAM_CODE_ORDER.get(o1.getProgramCode());
-      final Integer o2Order = PROGRAM_CODE_ORDER.get(o2.getProgramCode());
+      final Integer o1Order = PROGRAM_CODE_ORDER.get(o1.getCode());
+      final Integer o2Order = PROGRAM_CODE_ORDER.get(o2.getCode());
       return Integer.compare(o1Order == null ? 0 : o1Order, o2Order == null ? 0 : o2Order);
     });
   }
 
-  private void setHasVCProgram(List<Program> programs) {
-    for (Program program : programs) {
-      if (Program.VIA_CODE.equals(program.getProgramCode())) {
-        hasVCProgram = true;
+  private void setHasVCReportType(List<ReportTypeForm> programs) {
+    for (ReportTypeForm program : programs) {
+      if (Program.VIA_CODE.equals(program.getCode())) {
+        hasVCReportType = true;
         return;
       }
     }
-    hasVCProgram = false;
+    hasVCReportType = false;
   }
 
   public interface ReportListView extends BaseView {
 
-    void updateSupportProgram(List<Program> programs);
+    void updateSupportReportTypes(List<ReportTypeForm> reportTypeForms);
 
-    void loadProgramsError(Throwable e);
+    void loadReportTypesError(Throwable e);
   }
 }

@@ -20,6 +20,7 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ReportTypeForm;
@@ -60,9 +61,9 @@ public class ReportTypeFormRepository {
     }
   }
 
-  public ReportTypeForm queryByCode(final String reportTypeCode) throws LMISException {
+  public ReportTypeForm queryByCode(final String code) throws LMISException {
     return dbUtil.withDao(ReportTypeForm.class,
-        dao -> dao.queryBuilder().where().eq("code", reportTypeCode).queryForFirst());
+        dao -> dao.queryBuilder().where().eq("code", code).queryForFirst());
   }
 
   public List<ReportTypeForm> listAll() throws LMISException {
@@ -71,5 +72,15 @@ public class ReportTypeFormRepository {
 
   public ReportTypeForm getReportType(final String programCode) throws LMISException {
     return queryByCode(programCode);
+  }
+
+  public List<ReportTypeForm> listAllWithActive() {
+    try {
+      return dbUtil
+          .withDao(ReportTypeForm.class, dao -> dao.queryBuilder().where().eq("active", true).query());
+    } catch (LMISException e) {
+      e.reportToFabric();
+      return Collections.emptyList();
+    }
   }
 }

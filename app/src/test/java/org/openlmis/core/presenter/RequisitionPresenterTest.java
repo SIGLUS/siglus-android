@@ -29,8 +29,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Program;
-import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.presenter.ReportListPresenter.ReportListView;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
@@ -41,32 +41,32 @@ public class RequisitionPresenterTest {
 
   ReportListView view;
   ReportListPresenter presenter;
-  ProgramRepository mockProgramRepository;
+  ReportTypeFormRepository mockReportTypeFormRepository;
 
   @Before
   public void setUp() throws Exception {
     view = Mockito.mock(ReportListView.class);
     presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ReportListPresenter.class);
-    mockProgramRepository = Mockito.mock(ProgramRepository.class);
+    mockReportTypeFormRepository = Mockito.mock(ReportTypeFormRepository.class);
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
-        binder -> binder.bind(ProgramRepository.class).toInstance(mockProgramRepository));
+        binder -> binder.bind(ReportTypeFormRepository.class).toInstance(mockReportTypeFormRepository));
     presenter.attachView(view);
   }
 
   @Test
   public void getSupportProgram() throws LMISException {
     // given
-    final ArrayList<Program> givenActivePrograms = new ArrayList<>();
-    Mockito.when(mockProgramRepository.queryActiveProgram()).thenReturn(givenActivePrograms);
-    final TestSubscriber<List<Program>> testSubscriber = new TestSubscriber<>(
-        presenter.getSupportProgramsSubscriber);
-    presenter.getSupportProgramsSubscriber = testSubscriber;
+    final ArrayList<ReportTypeForm> givenActivePrograms = new ArrayList<>();
+    Mockito.when(mockReportTypeFormRepository.listAllWithActive()).thenReturn(givenActivePrograms);
+    final TestSubscriber<List<ReportTypeForm>> testSubscriber = new TestSubscriber<>(
+        presenter.getSupportReportTypesSubscriber);
+    presenter.getSupportReportTypesSubscriber = testSubscriber;
 
     // when
     presenter.getSupportPrograms();
     testSubscriber.awaitTerminalEvent(10, TimeUnit.SECONDS);
 
     // then
-    Mockito.verify(view, Mockito.times(1)).updateSupportProgram(givenActivePrograms);
+    Mockito.verify(view, Mockito.times(1)).updateSupportReportTypes(givenActivePrograms);
   }
 }

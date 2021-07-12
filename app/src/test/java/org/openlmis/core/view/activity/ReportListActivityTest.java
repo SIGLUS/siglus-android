@@ -39,8 +39,8 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.model.Program;
-import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.model.builder.ReportTypeFormBuilder;
 import org.openlmis.core.presenter.ReportListPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
@@ -90,27 +90,27 @@ public class ReportListActivityTest {
   @Test
   public void shouldSetDataAfterLoad() {
     // given
-    final ArrayList<Program> programs = new ArrayList<>();
-    final Program program = new ProgramBuilder()
-        .setProgramCode("123")
-        .setProgramName("123")
+    final ArrayList<ReportTypeForm> reportTypeForms = new ArrayList<>();
+    final ReportTypeForm reportTypeForm = new ReportTypeFormBuilder()
+        .setCode("123")
+        .setName("123")
         .build();
-    programs.add(program);
+    reportTypeForms.add(reportTypeForm);
 
     // when
-    reportListActivity.updateSupportProgram(programs);
+    reportListActivity.updateSupportReportTypes(reportTypeForms);
 
     // then
-    Assertions.assertThat(reportListActivity.navigatorAdapter.getCount()).isEqualTo(programs.size());
-    Assertions.assertThat(reportListActivity.pageAdapter.getItemCount()).isEqualTo(programs.size());
+    Assertions.assertThat(reportListActivity.navigatorAdapter.getCount()).isEqualTo(reportTypeForms.size());
+    Assertions.assertThat(reportListActivity.pageAdapter.getItemCount()).isEqualTo(reportTypeForms.size());
   }
 
   @Test
-  public void shouldShowToastWhenDateNotInEmergencyDate() throws Exception {
+  public void shouldShowToastWhenDateNotInEmergencyDate() {
     // given
     LMISTestApp.getInstance().setCurrentTimeMillis(
         DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
-    when(mockedPresenter.isHasVCProgram()).thenReturn(true);
+    when(mockedPresenter.isHasVCReportType()).thenReturn(true);
 
     // when
     reportListActivity.checkAndGotoEmergencyPage();
@@ -123,7 +123,7 @@ public class ReportListActivityTest {
   @Test
   public void shouldShowToastWhenNoVcProgramAfterCreateEmergency(){
     // given
-    when(mockedPresenter.isHasVCProgram()).thenReturn(false);
+    when(mockedPresenter.isHasVCReportType()).thenReturn(false);
 
     // when
     reportListActivity.checkAndGotoEmergencyPage();
@@ -138,7 +138,7 @@ public class ReportListActivityTest {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
     Observable<Boolean> value = Observable.create(subscriber -> subscriber.onNext(true));
-    when(mockedPresenter.isHasVCProgram()).thenReturn(true);
+    when(mockedPresenter.isHasVCReportType()).thenReturn(true);
     when(mockedPresenter.hasMissedViaProgramPeriod()).thenReturn(value);
 
     // when
@@ -156,7 +156,7 @@ public class ReportListActivityTest {
         DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
     Observable<Boolean> value = Observable.create(subscriber -> subscriber.onNext(false));
     when(mockedPresenter.hasMissedViaProgramPeriod()).thenReturn(value);
-    when(mockedPresenter.isHasVCProgram()).thenReturn(true);
+    when(mockedPresenter.isHasVCReportType()).thenReturn(true);
 
     // when
     reportListActivity.checkAndGotoEmergencyPage();

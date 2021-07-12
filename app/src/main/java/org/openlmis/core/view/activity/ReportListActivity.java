@@ -31,7 +31,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Period;
-import org.openlmis.core.model.Program;
+import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.presenter.ReportListPresenter;
 import org.openlmis.core.presenter.ReportListPresenter.ReportListView;
 import org.openlmis.core.utils.Constants;
@@ -77,13 +77,13 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
   };
 
   @Override
-  public void updateSupportProgram(List<Program> programs) {
-    navigatorAdapter.setData(programs);
-    pageAdapter.setData(programs);
+  public void updateSupportReportTypes(List<ReportTypeForm> reportTypeForms) {
+    navigatorAdapter.setData(reportTypeForms);
+    pageAdapter.setData(reportTypeForms);
   }
 
   @Override
-  public void loadProgramsError(Throwable e) {
+  public void loadReportTypesError(Throwable e) {
     ToastUtil.show(e.getMessage());
     finish();
   }
@@ -106,7 +106,7 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
   }
 
   protected void checkAndGotoEmergencyPage() {
-    if (!reportListPresenter.isHasVCProgram()) {
+    if (!reportListPresenter.isHasVCReportType()) {
       ToastUtil.show(getString(R.string.msg_cannot_create_emergency_requisition));
       return;
     }

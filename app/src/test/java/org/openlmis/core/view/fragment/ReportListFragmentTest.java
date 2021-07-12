@@ -68,7 +68,7 @@ public class ReportListFragmentTest {
         bind(RnRFormListPresenter.class).toInstance(mockedPresenter);
       }
     });
-    reportListFragment = ReportListFragment.newInstance(generateProgram());
+    reportListFragment = ReportListFragment.newInstance(Program.VIA_CODE);
     fragmentController = SupportFragmentController.of(reportListFragment);
     fragmentController.create().start().resume().get();
   }
@@ -127,10 +127,10 @@ public class ReportListFragmentTest {
   }
 
   @Test
-  public void shouldStartMMIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
+  public void shouldStartMMIAHistoryWhenBtnClickedWithTypeHistory() {
     // given
     View view = mock(View.class);
-    reportListFragment.program.setProgramCode(Program.TARV_CODE);
+    reportListFragment.programCode = Program.TARV_CODE;
     RnRFormViewModel viewModel = generateRnRFormViewModel(Program.TARV_CODE, RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
     viewModel.setId(999L);
 
@@ -165,7 +165,7 @@ public class ReportListFragmentTest {
   public void shouldStartMMIAEditPageWhenBtnClickedWithTypeUnauthorized() throws Exception {
     // given
     View view = mock(View.class);
-    reportListFragment.program.setProgramCode(Program.TARV_CODE);
+    reportListFragment.programCode = Program.TARV_CODE;
     RnRFormViewModel viewModel = generateRnRFormViewModel(Program.TARV_CODE, RnRFormViewModel.TYPE_DRAFT);
 
     // when
@@ -179,10 +179,10 @@ public class ReportListFragmentTest {
   }
 
   @Test
-  public void shouldNotLoadSameFormIdAfterLoadedViaHistoryForm() throws Exception {
+  public void shouldNotLoadSameFormIdAfterLoadedViaHistoryForm() {
     // given
     View view = mock(View.class);
-    reportListFragment.program.setProgramCode(Program.MALARIA_CODE);
+    reportListFragment.programCode = Program.MALARIA_CODE;
     RnRFormViewModel historyViewModel = generateRnRFormViewModel(Program.TARV_CODE,
         RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
     historyViewModel.setId(1L);

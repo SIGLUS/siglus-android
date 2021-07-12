@@ -62,7 +62,7 @@ public class ReportListFragment extends BaseReportListFragment {
 
   public static final int DEFAULT_FORM_ID_OF_NOT_AUTHORIZED = 0;
 
-  static final String PARAMS_REPORT_PROGRAM = "params_report_program";
+  static final String PARAMS_PROGRAM_CODE = "params_report_program";
 
   @InjectView(R.id.rv_report_list)
   RecyclerView rvRequisitionList;
@@ -77,16 +77,16 @@ public class ReportListFragment extends BaseReportListFragment {
 
   private RnRFormListAdapter adapter;
 
-  Program program;
+  String programCode;
 
   private ArrayList<RnRFormViewModel> data;
 
   private WarningDialogFragment warningDialog;
 
-  public static ReportListFragment newInstance(Program program) {
+  public static ReportListFragment newInstance(String programCode) {
     final ReportListFragment reportListFragment = new ReportListFragment();
     final Bundle params = new Bundle();
-    params.putSerializable(PARAMS_REPORT_PROGRAM, program);
+    params.putString(PARAMS_PROGRAM_CODE, programCode);
     reportListFragment.setArguments(params);
     return reportListFragment;
   }
@@ -99,8 +99,8 @@ public class ReportListFragment extends BaseReportListFragment {
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    program = (Program) requireArguments().getSerializable(PARAMS_REPORT_PROGRAM);
-    presenter.setProgramCode(program.getProgramCode());
+    programCode = requireArguments().getString(PARAMS_PROGRAM_CODE);
+    presenter.setProgramCode(programCode);
 
     if (!SharedPreferenceMgr.getInstance().hasDeletedOldRnr()) {
       tvArchivedOldData.setVisibility(View.GONE);
@@ -162,7 +162,7 @@ public class ReportListFragment extends BaseReportListFragment {
 
   private void goToRequisitionPage(long rnrFormId) {
     Intent intent = null;
-    switch (program.getProgramCode()) {
+    switch (programCode) {
       case Program.VIA_CODE:
         intent = VIARequisitionActivity.getIntentToMe(requireContext(), rnrFormId);
         break;
@@ -180,7 +180,7 @@ public class ReportListFragment extends BaseReportListFragment {
 
   private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
     Intent intent = null;
-    switch (program.getProgramCode()) {
+    switch (programCode) {
       case Program.VIA_CODE:
         intent = VIARequisitionActivity.getIntentToMe(requireContext(), periodEndDate, isMissedPeriod);
         break;
@@ -259,7 +259,7 @@ public class ReportListFragment extends BaseReportListFragment {
           startActivityForResult(
               SelectPeriodActivity.getIntentToMe(requireContext(), model.getProgramCode()),
               Constants.REQUEST_SELECT_PERIOD_END);
-          TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, program.getProgramCode());
+          TrackRnREventUtil.trackRnRListEvent(TrackerActions.CREATE_RNR, programCode);
           break;
         case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
           rnrFormId = model.getId();
