@@ -18,6 +18,7 @@
 
 package org.openlmis.core.model;
 
+import androidx.annotation.Nullable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
@@ -28,6 +29,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 @Builder
 @Getter
@@ -38,7 +42,7 @@ import lombok.Setter;
 public class ReportTypeForm extends BaseModel {
 
   @Expose
-  @SerializedName("code")
+  @SerializedName("programCode")
   @DatabaseField
   private String code;
 
@@ -47,24 +51,30 @@ public class ReportTypeForm extends BaseModel {
   @DatabaseField
   private String name;
 
-  @Expose
-  @SerializedName("description")
   @DatabaseField
   private String description;
 
   @Expose
-  @SerializedName("active")
+  @SerializedName("supportActive")
   @DatabaseField
   public boolean active;
 
   @Expose
-  @SerializedName("startTime")
+  @SerializedName("supportStartDate")
   @DatabaseField
   public Date startTime;
 
   @Expose
-  @SerializedName("lastReportEndTime")
+  @SerializedName("lastReportDate")
   @DatabaseField
   public String lastReportEndTime;
 
+  @Nullable
+  public DateTime getLastReportEndTimeForDateTime() {
+    if (lastReportEndTime == null) {
+      return null;
+    }
+    DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+    return dateTimeFormatter.parseDateTime(lastReportEndTime);
+  }
 }

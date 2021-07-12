@@ -50,14 +50,14 @@ public class ProgramDataFormPeriodServiceTest {
   @Test
   public void shouldGenerate12MonthsAgoPeriodBasedOnLastReportEndDate() throws Exception {
     LMISTestApp.getInstance().setCurrentTimeMillis(
-        DateUtil.parseString("2021-05-24 12:00:00", DateUtil.DB_DATE_FORMAT).getTime());
+        DateUtil.parseString("2021-05-24", DateUtil.DB_DATE_FORMAT).getTime());
 
     ReportTypeForm reportTypeForm = new ReportTypeFormBuilder()
         .setActive(true)
         .setCode(Program.RAPID_TEST_CODE)
         .setName(Constants.RAPID_TEST_OLD_CODE)
         .setStartTime(new DateTime(DateUtil.parseString("2015-01-01", DateUtil.DB_DATE_FORMAT)).toDate())
-        .setLastReportEndTime("2020-01-20 23:59:59")
+        .setLastReportEndTime("2020-01-20")
         .build();
     when(mockReportTypeFormRepository.queryByCode(Program.RAPID_TEST_CODE)).thenReturn(reportTypeForm);
     when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);

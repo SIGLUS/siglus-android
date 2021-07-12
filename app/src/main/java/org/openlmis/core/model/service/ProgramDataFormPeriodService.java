@@ -22,8 +22,6 @@ import com.google.inject.Inject;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
@@ -46,28 +44,12 @@ public class ProgramDataFormPeriodService {
   @Inject
   private StockMovementRepository stockMovementRepository;
 
-  @SuppressWarnings("squid:S3776")
   public Optional<Period> getFirstStandardPeriod() throws LMISException {
-    DateTime initializeDateTime;
     Period period = null;
-    DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     ReportTypeForm reportTypeForm = reportTypeFormRepository.queryByCode(Program.RAPID_TEST_CODE);
-    if (reportTypeForm.lastReportEndTime != null) {
-      DateTime lastReportEndTime = dateTimeFormatter.parseDateTime(reportTypeForm.lastReportEndTime);
-      if (Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12) {
-        initializeDateTime = new DateTime().plusMonths(-12).toDateTime();
-        period = new Period(initializeDateTime);
-      } else {
-        List<ProgramDataForm> forms = programDataFormRepository.listByProgramCode(Program.RAPID_TEST_CODE);
-        if (forms != null && !forms.isEmpty()) {
-          period = new Period(new DateTime(forms.get(0).getPeriodBegin()));
-        } else {
-          StockMovementItem firstStockMovement = stockMovementRepository.getFirstStockMovement();
-          if (firstStockMovement != null) {
-            period = firstStockMovement.getMovementPeriod();
-          }
-        }
-      }
+    DateTime lastReportEndTime = reportTypeForm.getLastReportEndTimeForDateTime();
+    if (lastReportEndTime != null) {
+      period = getPeriodByLastReportTime(lastReportEndTime);
     } else {
       StockMovementItem firstStockMovement = stockMovementRepository.getFirstStockMovement();
       if (firstStockMovement != null) {
@@ -78,5 +60,25 @@ public class ProgramDataFormPeriodService {
       return Optional.of(period);
     }
     return Optional.absent();
+  }
+
+  private Period getPeriodByLastReportTime(DateTime lastReportEndTime) throws LMISException {
+    Period period = null;
+    DateTime initializeDateTime;
+    if (Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12) {
+      initializeDateTime = new DateTime().plusMonths(-12).toDateTime();
+      period = new Period(initializeDateTime);
+    } else {
+      List<ProgramDataForm> forms = programDataFormRepository.listByProgramCode(Program.RAPID_TEST_CODE);
+      if (forms != null && !forms.isEmpty()) {
+        period = new Period(new DateTime(forms.get(0).getPeriodBegin()));
+      } else {
+        StockMovementItem firstStockMovement = stockMovementRepository.getFirstStockMovement();
+        if (firstStockMovement != null) {
+          period = firstStockMovement.getMovementPeriod();
+        }
+      }
+    }
+    return period;
   }
 }

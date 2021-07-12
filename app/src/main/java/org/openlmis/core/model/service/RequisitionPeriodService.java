@@ -24,8 +24,6 @@ import java.util.Date;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -56,16 +54,13 @@ public class RequisitionPeriodService {
   @Inject
   private SharedPreferenceMgr sharedPreferenceMgr;
 
-  public Period generateNextPeriod(String programCode, Date physicalInventoryDate)
-      throws LMISException {
-    return generateNextPeriod(programCode, physicalInventoryDate,
-        reportTypeFormRepository.getReportType(programCode));
+  public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
+    return generateNextPeriod(programCode, physicalInventoryDate, reportTypeFormRepository.getReportType(programCode));
   }
 
   public Period generateNextPeriod(String programCode, Date physicalInventoryDate,
       ReportTypeForm typeForm) throws LMISException {
-    List<RnRForm> rnRForms = rnrFormRepository
-        .listInclude(RnRForm.Emergency.NO, programCode, typeForm);
+    List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, programCode, typeForm);
     return generateNextPeriod(rnRForms, programCode, physicalInventoryDate);
   }
 
@@ -78,8 +73,7 @@ public class RequisitionPeriodService {
     return generatePeriodBasedOnPreviousRnr(lastRnR, physicalInventoryDate);
   }
 
-  private Period generatePeriodBasedOnPreviousRnr(RnRForm lastRnR, Date physicalInventoryDate)
-      throws LMISException {
+  private Period generatePeriodBasedOnPreviousRnr(RnRForm lastRnR, Date physicalInventoryDate) {
     DateTime periodBeginDate;
     DateTime periodEndDate;
     periodBeginDate = new DateTime(lastRnR.getPeriodEnd());
@@ -116,15 +110,11 @@ public class RequisitionPeriodService {
 
   private DateTime calculatePeriodBeginDate(String programCode) throws LMISException {
     DateTime initializeDateTime = null;
-    DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     ReportTypeForm reportTypeForm = reportTypeFormRepository.queryByCode(programCode);
-    if (reportTypeForm.lastReportEndTime != null) {
-      DateTime lastReportEndTime = dateTimeFormatter
-          .parseDateTime(reportTypeForm.lastReportEndTime);
-      if (Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12) {
-        initializeDateTime = new DateTime()
-            .plusMonths(-sharedPreferenceMgr.getMonthOffsetThatDefinedOldData()).toDateTime();
-      }
+    DateTime lastReportEndTime = reportTypeForm.getLastReportEndTimeForDateTime();
+    if (lastReportEndTime != null && Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12) {
+      initializeDateTime = new DateTime()
+          .plusMonths(-sharedPreferenceMgr.getMonthOffsetThatDefinedOldData()).toDateTime();
     }
     initializeDateTime = initializeDateTime == null ? new DateTime(
         stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode))
@@ -221,7 +211,7 @@ public class RequisitionPeriodService {
 
   public int getIncompletePeriodOffsetMonth(String programCode) throws LMISException {
     List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, programCode);
-    if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
+    if (rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
       return getMissedPeriodOffsetMonth(programCode);
     } else {
       return getMissedPeriodOffsetMonth(programCode) + 1;

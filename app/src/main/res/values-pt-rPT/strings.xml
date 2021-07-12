@@ -507,7 +507,7 @@
   <string name="malaria_report_notify_dialog">Entregue o dispositivo à pessoa responsável pela aprovação e submissão do Relatório AL</string>
   <string name="last_year_stock_cards_sync">As fichas de stock do ano passado estão sincronizando</string>
   <string name="sync_stock_card_last_year_error">Erro ao baixar fichas de stock do ano passado. Por favor tente novamente</string>
-  <string name="sync_stock_movement_error">Erro na sincronização do produto %s\n %s</string>
+  <string name="sync_stock_movement_error">Erro na sincronização do produto %1$s\n %1$s</string>
   <string name="inactive_status">seu status está inativo</string>
   <string name="inactive">inativo</string>
   <string name="ifLeave">Tem certeza que deseja encerrar sem guardar seu trabalho? Se você clicar "SIM", o rascunho será APAGADO?</string>

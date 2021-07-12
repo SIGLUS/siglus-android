@@ -562,7 +562,7 @@
   <string name="malaria_report_notify_dialog">Please hand the device to the person responsible for approval and submission of Malaria Report</string>
   <string name="last_year_stock_cards_sync">Stock cards from last year are synchronizing</string>
   <string name="sync_stock_card_last_year_error">Error downloading stock cards from last year. Please retry</string>
-  <string name="sync_stock_movement_error">Sync %s error \n %s</string>
+  <string name="sync_stock_movement_error">Sync %1$s error \n %2$s</string>
   <string name="inactive_status">your status is inactive.</string>
   <string name="inactive">inactive</string>
   <string name="ifLeave">Are you sure you want to leave?</string>

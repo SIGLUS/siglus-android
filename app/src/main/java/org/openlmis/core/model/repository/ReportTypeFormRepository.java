@@ -38,8 +38,10 @@ public class ReportTypeFormRepository {
     genericDao = new GenericDao<>(ReportTypeForm.class, context);
   }
 
-  public void batchCreateOrUpdateReportTypes(final List<ReportTypeForm> reportTypeForms)
-      throws LMISException {
+  public void batchCreateOrUpdateReportTypes(final List<ReportTypeForm> reportTypeForms) throws LMISException {
+    if (reportTypeForms == null) {
+      return;
+    }
     dbUtil.withDaoAsBatch(ReportTypeForm.class, dao -> {
       for (ReportTypeForm reportTypeForm : reportTypeForms) {
         createOrUpdate(reportTypeForm);

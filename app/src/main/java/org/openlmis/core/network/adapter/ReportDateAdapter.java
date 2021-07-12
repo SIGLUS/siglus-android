@@ -18,7 +18,7 @@
 
 package org.openlmis.core.network.adapter;
 
-import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
+import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -32,7 +32,7 @@ public class ReportDateAdapter implements JsonDeserializer<Date> {
 
   public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
-    return DateUtil.parseString(json.getAsJsonPrimitive().getAsString(), DATE_TIME_FORMAT);
+    return DateUtil.parseString(json.getAsJsonPrimitive().getAsString(), DB_DATE_FORMAT);
   }
 
 }

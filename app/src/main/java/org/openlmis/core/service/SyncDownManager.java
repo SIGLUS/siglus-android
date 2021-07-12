@@ -39,7 +39,6 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductProgramRepository;
@@ -488,26 +487,8 @@ public class SyncDownManager {
     List<Program> programs = covertFacilityInfoToProgram(facilityInfoResponse);
     ProgramCacheManager.addPrograms(programs);
     programRepository.batchCreateOrUpdatePrograms(programs);
-    List<ReportTypeForm> reportTypeForms = covertFacilityInfoToReportTypeForm(facilityInfoResponse);
-    sharedPreferenceMgr.setReportTypesData(reportTypeForms);
-    reportTypeFormRepository.batchCreateOrUpdateReportTypes(reportTypeForms);
-  }
-
-  private List<ReportTypeForm> covertFacilityInfoToReportTypeForm(
-      FacilityInfoResponse facilityInfoResponse) {
-    List<ReportTypeForm> reportTypeForms = new ArrayList<>();
-    for (SupportedProgram supportedProgram : facilityInfoResponse.getSupportedPrograms()) {
-      ReportTypeForm reportTypeForm = ReportTypeForm
-          .builder()
-          .code(supportedProgram.getCode())
-          .name(supportedProgram.getName())
-          .active(supportedProgram.isSupportActive())
-          .startTime(
-              DateUtil.parseString(supportedProgram.getSupportStartDate(), DateUtil.DB_DATE_FORMAT))
-          .build();
-      reportTypeForms.add(reportTypeForm);
-    }
-    return reportTypeForms;
+    sharedPreferenceMgr.setReportTypesData(facilityInfoResponse.getSupportedReportTypes());
+    reportTypeFormRepository.batchCreateOrUpdateReportTypes(facilityInfoResponse.getSupportedReportTypes());
   }
 
   private List<Program> covertFacilityInfoToProgram(FacilityInfoResponse facilityInfoResponse) {

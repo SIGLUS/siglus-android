@@ -478,9 +478,11 @@ public class SyncDownManagerTest {
   private FacilityInfoResponse getFacilityInfoResponse() {
     FacilityInfoResponse facilityInfoResponse = new FacilityInfoResponse();
     List<SupportedProgram> supportedPrograms = new ArrayList<>();
+    List<ReportTypeForm> supportedReportTypes = new ArrayList<>();
     facilityInfoResponse.setCode("");
     facilityInfoResponse.setName("");
     facilityInfoResponse.setSupportedPrograms(supportedPrograms);
+    facilityInfoResponse.setSupportedReportTypes(supportedReportTypes);
     facilityInfoResponse.setAndroid(true);
     return facilityInfoResponse;
   }

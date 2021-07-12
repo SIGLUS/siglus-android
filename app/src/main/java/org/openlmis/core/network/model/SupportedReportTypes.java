@@ -18,16 +18,6 @@
 
 package org.openlmis.core.network.model;
 
-import java.util.List;
-import lombok.Data;
-import org.openlmis.core.model.ReportTypeForm;
+public class SupportedReportTypes {
 
-@Data
-public class FacilityInfoResponse {
-
-  private boolean isAndroid;
-  private String code;
-  private String name;
-  private List<SupportedProgram> supportedPrograms;
-  private List<ReportTypeForm> supportedReportTypes;
 }
