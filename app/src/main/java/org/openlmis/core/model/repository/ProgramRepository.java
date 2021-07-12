@@ -160,15 +160,11 @@ public class ProgramRepository {
 
   public List<Program> queryActiveProgramWithoutML() throws LMISException {
     final List<Program> programs = genericDao.queryForAll();
-    final List<ReportTypeForm> reportTypes = dbUtil.withDao(ReportTypeForm.class, Dao::queryForAll);
     return FluentIterable.from(programs).filter(program -> {
-      for (ReportTypeForm reportTypeForm : reportTypes) {
-        if (reportTypeForm.getCode().equals(Objects.requireNonNull(program).getProgramCode())
-            && !Program.MALARIA_CODE.equalsIgnoreCase(program.getProgramCode())) {
-          return true;
-        }
+      if (program == null) {
+        return false;
       }
-      return false;
+      return !Program.MALARIA_CODE.equalsIgnoreCase(program.getProgramCode());
     }).toList();
   }
 

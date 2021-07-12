@@ -19,15 +19,19 @@
 package org.openlmis.core.service;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 import android.content.Intent;
 import com.google.inject.AbstractModule;
+import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.network.InternetCheck;
+import org.openlmis.core.network.InternetListener;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
 import org.openlmis.core.service.mocks.InternetCheckMockForNetworkChangeReceiver;
 import org.robolectric.RuntimeEnvironment;
@@ -41,7 +45,6 @@ public class NetworkChangeReceiverTest {
   SyncService syncService;
   private InternetCheck internetCheck;
 
-
   @Before
   public void setup() throws LMISException {
     intent = mock(Intent.class);
@@ -49,25 +52,37 @@ public class NetworkChangeReceiverTest {
   }
 
   @Test
-  public void shouldKickOffSyncServiceWhenInternetConnectionIsAvailable() {
-    internetCheck = new InternetCheckMockForNetworkChangeReceiver(true, syncService);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
-        new NetworkChangeReceiverTest.MyTestModule());
-    listener = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(NetworkChangeReceiver.class);
+  public void shouldKickOffSyncServiceWhenInternetConnectionIsAvailable()
+      throws ExecutionException, InterruptedException {
+    // given
+    internetCheck = new InternetCheckMockForNetworkChangeReceiver(true);
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new NetworkChangeReceiverTest.MyTestModule());
+    listener = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(NetworkChangeReceiver.class);
 
+    // when
     listener.onReceive(RuntimeEnvironment.application, intent);
+    final InternetListener internetListener = internetCheck.get();
+    internetListener.launchCallback();
+
+    // then
+    Mockito.verify(syncService, times(1)).kickOff();
   }
 
   @Test
-  public void shouldShutdownSyncServiceWhenInternetConnectionIsNotAvailable() {
-    internetCheck = new InternetCheckMockForNetworkChangeReceiver(false, syncService);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
-        new NetworkChangeReceiverTest.MyTestModule());
-    listener = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(NetworkChangeReceiver.class);
+  public void shouldShutdownSyncServiceWhenInternetConnectionIsNotAvailable()
+      throws ExecutionException, InterruptedException {
+    // given
+    internetCheck = new InternetCheckMockForNetworkChangeReceiver(false);
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new NetworkChangeReceiverTest.MyTestModule());
+    listener = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(NetworkChangeReceiver.class);
 
+    // when
     listener.onReceive(RuntimeEnvironment.application, intent);
+    final InternetListener internetListener = internetCheck.get();
+    internetListener.launchCallback();
+
+    // then
+    Mockito.verify(syncService, times(1)).shutDown();
   }
 
   public class MyTestModule extends AbstractModule {

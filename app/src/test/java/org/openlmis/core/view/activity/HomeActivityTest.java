@@ -19,15 +19,16 @@
 package org.openlmis.core.view.activity;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 import static org.robolectric.Shadows.shadowOf;
@@ -35,6 +36,7 @@ import static org.robolectric.Shadows.shadowOf;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import androidx.fragment.app.Fragment;
 import com.google.inject.AbstractModule;
 import org.hamcrest.core.Is;
 import org.junit.After;
@@ -45,14 +47,17 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.event.CmmCalculateEvent;
+import org.openlmis.core.event.SyncStatusEvent;
+import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ReportTypeBuilder;
-import org.openlmis.core.network.InternetCheck;
-import org.openlmis.core.view.activity.mocks.InternetCheckMockForHomeActivity;
-import org.openlmis.core.view.fragment.WarningDialogFragment;
-import org.openlmis.core.view.fragment.builders.WarningDialogFragmentBuilder;
+import org.openlmis.core.service.SyncService;
+import org.openlmis.core.utils.RobolectricUtils;
+import org.openlmis.core.view.widget.DashboardView;
+import org.openlmis.core.view.widget.SyncTimeView;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
@@ -67,31 +72,33 @@ public class HomeActivityTest {
 
   private HomeActivity homeActivity;
   private LMISTestApp testApp;
+  private SyncService syncService;
+  private SyncTimeView syncTimeView;
+  private DashboardView dashboardView;
   private SharedPreferenceMgr mockSharedPreferenceMgr;
-  private InternetCheck internetCheck;
-  private WarningDialogFragmentBuilder warningDialogFragmentBuilder;
   private ActivityController<HomeActivity> activityController;
 
   @Before
   public void setUp() {
     testApp = (LMISTestApp) RuntimeEnvironment.application;
-    warningDialogFragmentBuilder = mock(WarningDialogFragmentBuilder.class);
-    internetCheck = new InternetCheckMockForHomeActivity(true, warningDialogFragmentBuilder);
     mockSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
-
+    syncService = mock(SyncService.class);
+    syncTimeView = mock(SyncTimeView.class);
+    dashboardView = mock(DashboardView.class);
     UserInfoMgr.getInstance().setUser(new User("user", "password"));
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
       @Override
       protected void configure() {
-        bind(InternetCheck.class).toInstance(internetCheck);
-        bind(WarningDialogFragmentBuilder.class).toInstance(warningDialogFragmentBuilder);
         bind(SharedPreferenceMgr.class).toInstance(mockSharedPreferenceMgr);
+        bind(SyncService.class).toInstance(syncService);
       }
     });
     when(mockSharedPreferenceMgr.getReportTypesData())
         .thenReturn(newArrayList(new ReportTypeBuilder().getMMIAReportTypeForm()));
     activityController = Robolectric.buildActivity(HomeActivity.class);
     homeActivity = activityController.create().get();
+    homeActivity.syncTimeView = syncTimeView;
+    homeActivity.dvProductDashboard = dashboardView;
   }
 
   @After
@@ -111,7 +118,7 @@ public class HomeActivityTest {
   }
 
   @Test
-  public void shouldGoToKitsStockCardsPage() throws Exception {
+  public void shouldGoToKitsStockCardsPage() {
     // when
     homeActivity.findViewById(R.id.btn_kits).performClick();
 
@@ -157,14 +164,14 @@ public class HomeActivityTest {
   }
 
   @Test
-  public void shouldNotLogOutOrResetTimeIfFirstTimeOperation() throws Exception {
+  public void shouldNotLogOutOrResetTimeIfFirstTimeOperation() {
     testApp.setCurrentTimeMillis(1234L);
     homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
     Assert.assertThat(homeActivity.getLastOperateTime(), Is.is(not(0L)));
   }
 
   @Test
-  public void shouldNotLogOutOrResetTimeIfNotTimeOut() throws Exception {
+  public void shouldNotLogOutOrResetTimeIfNotTimeOut() {
     UserInfoMgr.getInstance().setUser(new User("user", "password"));
     testApp.setCurrentTimeMillis(10000L);
     homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
@@ -179,7 +186,7 @@ public class HomeActivityTest {
   }
 
   @Test
-  public void shouldLogOutAndResetTimeIfTimeOut() throws Exception {
+  public void shouldLogOutAndResetTimeIfTimeOut() {
     testApp.setCurrentTimeMillis(10000L);
     homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
@@ -214,31 +221,82 @@ public class HomeActivityTest {
 
   @Test
   public void shouldShowWarningDialogWhenWipeDataWiped() {
-    WarningDialogFragment.DialogDelegate delegate = anyObject();
-    int message = anyInt();
-    int positiveMessageButton = anyInt();
-    int negativeMessageButton = anyInt();
-    when(warningDialogFragmentBuilder
-        .build(delegate, message, positiveMessageButton, negativeMessageButton))
-        .thenReturn(mock(WarningDialogFragment.class));
+    // when
+    homeActivity.validateConnectionListener.launchResponse(true);
+    RobolectricUtils.waitLooperIdle();
 
-    homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
+    // then
+    final Fragment wipeDataWarning = homeActivity.getSupportFragmentManager().findFragmentByTag("WipeDataWarning");
+    assertNotNull(wipeDataWarning);
   }
 
   @Test
   public void shouldShowToastWhenResyncWithoutNetwork() {
-    boolean isAvailableInternet = false;
-    internetCheck = new InternetCheckMockForHomeActivity(isAvailableInternet,
-        warningDialogFragmentBuilder);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
-      @Override
-      protected void configure() {
-        bind(InternetCheck.class).toInstance(internetCheck);
-        bind(SharedPreferenceMgr.class).toInstance(mockSharedPreferenceMgr);
-      }
-    });
-    homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
+    // when
+    homeActivity.validateConnectionListener.launchResponse(false);
 
-    homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
+    // then
+    String warningMessage = ShadowToast.getTextOfLatestToast();
+    assertEquals("Network is not available, please try again when you have the network.", warningMessage);
+  }
+
+  @Test
+  public void shouldSyncData(){
+    // given
+    MenuItem signoutAction = new RoboMenuItem(R.id.action_sync_data);
+
+    // when
+    homeActivity.onOptionsItemSelected(signoutAction);
+
+    // then
+    verify(syncService,times(1)).requestSyncImmediatelyFromUserTrigger();
+  }
+
+  @Test
+  public void shouldShowProgressBarWhenReceiveSyncStatusStart(){
+    // given
+    final SyncStatusEvent syncStatusEvent = new SyncStatusEvent(SyncStatus.START);
+
+    // when
+    homeActivity.onReceiveSyncStatusEvent(syncStatusEvent);
+
+    // then
+    verify(syncTimeView,times(1)).showSyncProgressBarAndHideIcon();
+  }
+
+  @Test
+  public void shouldShowErrorMsgWhenReceiveSyncStatusError(){
+    // given
+    final SyncStatusEvent errorEventWithoutMsg = new SyncStatusEvent(SyncStatus.ERROR);
+    final SyncStatusEvent errorEventWithMsg = new SyncStatusEvent(SyncStatus.ERROR,"error msg");
+
+    // when
+    homeActivity.onReceiveSyncStatusEvent(errorEventWithoutMsg);
+
+    // then
+    verify(syncTimeView,times(1)).setSyncStockCardLastYearError();
+
+    // when
+    homeActivity.onReceiveSyncStatusEvent(errorEventWithMsg);
+
+    // then
+    verify(syncTimeView,times(1)).setSyncedMovementError("error msg");
+  }
+
+  @Test
+  public void shouldRefreshDashboardWhenReceiveSyncStatusFinish(){
+    // given
+    final SyncStatusEvent finishEvent = new SyncStatusEvent(SyncStatus.FINISH);
+    final CmmCalculateEvent cmmCalculateEvent = new CmmCalculateEvent(true);
+    when(mockSharedPreferenceMgr.shouldSyncLastYearStockData()).thenReturn(false);
+    when(mockSharedPreferenceMgr.isSyncingLastYearStockCards()).thenReturn(false);
+
+    // when
+    homeActivity.onReceiveSyncStatusEvent(finishEvent);
+    homeActivity.onReceiveCmmCalculateEvent(cmmCalculateEvent);
+
+    // then
+    verify(syncTimeView,times(1)).showLastSyncTime();
+    verify(dashboardView,times(1)).showCalculating();
   }
 }

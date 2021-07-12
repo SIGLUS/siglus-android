@@ -95,6 +95,18 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   @Inject
   DirtyDataManager dirtyDataManager;
 
+  InternetCheck.Callback validateConnectionListener = internet -> {
+    if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      ToastUtil.show(R.string.message_wipe_no_connection);
+    } else {
+      WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
+          R.string.message_warning_wipe_data,
+          R.string.btn_positive,
+          R.string.btn_negative);
+      getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
+    }
+  };
+
   @InjectPresenter(HomePresenter.class)
   private HomePresenter homePresenter;
 
@@ -139,7 +151,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   }
 
   public void syncData() {
-    Log.d("HomeActivity", "requesting immediate sync");
     syncService.requestSyncImmediatelyFromUserTrigger();
   }
 
@@ -168,7 +179,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveCmmCalculateEvent(CmmCalculateEvent event) {
     isCmmCalculating = event.isStart();
-    Log.d("dashboard", "onReceiveCmmCalculateEvent: isCmmCalculating = " + isCmmCalculating);
     refreshDashboard();
   }
 
@@ -308,7 +318,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     super.onDestroy();
   }
 
-  protected void setSyncedTime() {
+  private void setSyncedTime() {
     if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
       syncTimeView.showLastSyncTime();
     } else if (!TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
@@ -375,21 +385,7 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   }
 
   private void alertWipeData() {
-    new InternetCheck().execute(validateConnectionListener());
-  }
-
-  private InternetCheck.Callback validateConnectionListener() {
-
-    return internet -> {
-      if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-        ToastUtil.show(R.string.message_wipe_no_connection);
-      } else {
-        WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder
-            .build(buildWipeDialogDelegate(), R.string.message_warning_wipe_data, R.string.btn_positive,
-                R.string.btn_negative);
-        getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
-      }
-    };
+    new InternetCheck().execute(validateConnectionListener);
   }
 
   private WarningDialogFragment.DialogDelegate buildWipeDialogDelegate() {
