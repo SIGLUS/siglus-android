@@ -26,6 +26,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.AllArgsConstructor;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,6 +35,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @DatabaseTable(tableName = "regimes")

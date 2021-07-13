@@ -250,8 +250,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         : getResources().getString(R.string.msg_approve_signature_rapid_test);
   }
 
-  protected Action1<? super Void> getOnSignedAction() {
-    return (Action1<Void>) aVoid -> {
+  protected Action1<Void> getOnSignedAction() {
+    return aVoid -> {
       if (rapidTestReportFormPresenter.getViewModel().isAuthorized()) {
         onSaveForm();
       } else {

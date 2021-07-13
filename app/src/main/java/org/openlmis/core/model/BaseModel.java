@@ -32,10 +32,9 @@ public abstract class BaseModel implements Serializable {
   @DatabaseField(uniqueIndex = true, generatedId = true, canBeNull = false)
   private long id;
 
-  public BaseModel() {
+  protected BaseModel() {
     createdAt = DateUtil
-        .parseString(DateUtil.formatDate(DateUtil.getCurrentDate(), DATE_TIME_FORMAT),
-            DATE_TIME_FORMAT);
+        .parseString(DateUtil.formatDate(DateUtil.getCurrentDate(), DATE_TIME_FORMAT), DATE_TIME_FORMAT);
     updatedAt = createdAt;
   }
 

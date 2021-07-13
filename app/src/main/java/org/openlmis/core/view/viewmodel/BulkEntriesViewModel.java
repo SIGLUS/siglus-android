@@ -88,31 +88,28 @@ public class BulkEntriesViewModel extends InventoryViewModel {
       return false;
     } else if (!newLotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty()) {
       return true;
-    } else {
-      boolean productFlag = false;
-      boolean lotFlag = true;
-      for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-        if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
-          productFlag = true;
-          if (!lotMovementViewModel.validateLot()) {
-            lotFlag = false;
-            lotMovementViewModel.setValid(false);
-          }
+    }
+    boolean productFlag = false;
+    boolean lotFlag = true;
+    for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
+      if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+        productFlag = true;
+        if (!lotMovementViewModel.validateLot()) {
+          lotFlag = false;
+          lotMovementViewModel.setValid(false);
         }
       }
-      if (productFlag && lotFlag) {
-        validationType = ValidationType.VALID;
-        return true;
-      } else if (!productFlag && newLotMovementViewModelList.isEmpty()) {
-        validationType = ValidationType.EXISTING_LOT_ALL_BLANK;
-        return false;
-      } else {
-        return !productFlag;
-      }
     }
+    if (productFlag && lotFlag) {
+      validationType = ValidationType.VALID;
+      return true;
+    } else if (!productFlag && newLotMovementViewModelList.isEmpty()) {
+      validationType = ValidationType.EXISTING_LOT_ALL_BLANK;
+      return false;
+    }
+    return !productFlag;
   }
-
-
+  
   private boolean validNewLotMovementViewModelList() {
     if (newLotMovementViewModelList.isEmpty()) {
       return true;

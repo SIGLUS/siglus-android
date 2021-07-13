@@ -1,7 +1,8 @@
 package org.openlmis.core.network.adapter;
 
-import com.google.gson.JsonParser;
+import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.google.gson.JsonParser;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,8 +10,6 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Regimen.RegimeType;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.utils.JsonFileReader;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(LMISTestRunner.class)
 public class RegimenAdapterTest {

@@ -35,7 +35,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"programCode", "programName"}, callSuper = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @DatabaseTable(tableName = "programs")
 public class Program extends BaseModel {
 
@@ -44,10 +44,12 @@ public class Program extends BaseModel {
   public static final String TARV_CODE = "T";
   public static final String VIA_CODE = "VC";
 
+  @EqualsAndHashCode.Include
   @SerializedName("code")
   @DatabaseField
   String programCode;
 
+  @EqualsAndHashCode.Include
   @SerializedName("name")
   @DatabaseField
   String programName;

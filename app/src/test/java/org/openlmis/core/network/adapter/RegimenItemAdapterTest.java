@@ -60,8 +60,7 @@ public class RegimenItemAdapterTest {
 
     RegimenItemAdapter regimenItemAdapter = new RegimenItemAdapter();
 
-    RegimenItem deserialize = regimenItemAdapter
-        .deserialize(new JsonParser().parse(json), null, null);
+    RegimenItem deserialize = regimenItemAdapter.deserialize(new JsonParser().parse(json), null, null);
 
     Regimen regimen = deserialize.getRegimen();
     assertThat(regimen.getType(), is(Regimen.RegimeType.Adults));

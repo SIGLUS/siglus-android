@@ -123,7 +123,7 @@ public class SelectPeriodActivityTest {
   public void shouldInVisibleWarningWhenUserChoseTheInventory() throws Exception {
     // given
     LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.isViewClicked = false;
+    SingleClickButtonListener.setIsViewClicked(false);
     when(stockMovementRepository.listLastFiveStockMovements(anyLong()))
         .thenReturn(newArrayList(new StockMovementItem()));
     when(stockMovementRepository.queryFirstStockMovementByStockCardId(anyLong()))

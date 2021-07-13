@@ -97,7 +97,7 @@ public class UnpackKitActivityTest {
   @Test
   public void shouldShowSignatureDialogIfIsValid() throws Exception {
     LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.isViewClicked = false;
+    SingleClickButtonListener.setIsViewClicked(false);
 
     viewModel.getNewLotMovementViewModelList().add(
         new LotMovementViewModelBuilder().setExpiryDate("Jan 2033").setQuantity("100")

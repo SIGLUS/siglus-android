@@ -434,8 +434,8 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
         : getResources().getString(R.string.msg_approve_signature_mmia);
   }
 
-  protected Action1<? super Void> getOnSignedAction() {
-    return (Action1<Void>) aVoid -> {
+  protected Action1<Void> getOnSignedAction() {
+    return aVoid -> {
       if (presenter.getRnRForm().isSubmitted()) {
         presenter.submitRequisition();
         showMessageNotifyDialog();

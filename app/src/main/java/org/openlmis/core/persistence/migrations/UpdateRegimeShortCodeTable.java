@@ -8,8 +8,9 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.persistence.Migration;
 import org.openlmis.core.utils.DateUtil;
 
-@SuppressWarnings("PMD")
 public class UpdateRegimeShortCodeTable extends Migration {
+
+  private static final String END = "')";
 
   @Override
   public void up() {
@@ -19,47 +20,48 @@ public class UpdateRegimeShortCodeTable extends Migration {
 
     String formatDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()),
         DateUtil.DATE_TIME_FORMAT);
+    final String createAtAndUpdateAt = formatDate + "' , '" + formatDate + "','";
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus01', 'ABC+3TC+EFV', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus02', 'ABC+3TC+NVP', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus03', 'ABC+3TC+RAL', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus04', 'ABC+3TC+RAL+DRV+RTV', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus05', 'AZT+3TC+ABC', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus06', 'AZT+3TC+RAL+DRV+RTV', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus07', 'TDF+3TC+RAL+DRV+RTV', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus08', 'TDF+FTC PreEP', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus09', '2as Optimizadas ATV/r', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus10', '2as Optimizadas ATV/r+RAL', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus11', '2as Optimizadas DRV+RTV', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus12', '3a Linha adaptada DRV+RAL+RTV', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus13', '3TC+RAL+DRV+RTV', '"
-            + formatDate + "' , '" + formatDate + "','" + Adults + "')");
+            + createAtAndUpdateAt + Adults + END);
     execSQL(
         "INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('ChildrenPlus01', 'AZT+3TC+ABC (2FDC+ABC Baby)', '"
-            + formatDate + "' , '" + formatDate + "','" + Paediatrics + "')");
+            + createAtAndUpdateAt + Paediatrics + END);
   }
 }

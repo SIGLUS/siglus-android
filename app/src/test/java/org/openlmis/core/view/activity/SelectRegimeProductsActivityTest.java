@@ -68,7 +68,7 @@ public class SelectRegimeProductsActivityTest {
   @Test
   public void shouldShowToastWhenHasNotChecked() {
     LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.isViewClicked = false;
+    SingleClickButtonListener.setIsViewClicked(false);
 
     selectProductsActivity.viewModels = getInventoryViewModels();
     selectProductsActivity.btnNext.performClick();
@@ -79,7 +79,7 @@ public class SelectRegimeProductsActivityTest {
   @Test
   public void shouldShowToastWhenMoreThanLimitChecked() throws Exception {
     LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.isViewClicked = false;
+    SingleClickButtonListener.setIsViewClicked(false);
 
     selectProductsActivity.viewModels = getInventoryViewModels();
     for (RegimeProductViewModel model : selectProductsActivity.viewModels) {
@@ -93,7 +93,7 @@ public class SelectRegimeProductsActivityTest {
   @Test
   public void shouldSaveRegimeWhenOneProductHasChecked() {
     LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.isViewClicked = false;
+    SingleClickButtonListener.setIsViewClicked(false);
 
     Observable<Regimen> value = Observable.create(subscriber -> {
     });

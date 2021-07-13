@@ -86,7 +86,7 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
     return product;
   }
 
-  private List<KitProduct> generateKitProduct(String productCode, JsonObject jsonProduct) {
+  private ArrayList<KitProduct> generateKitProduct(String productCode, JsonObject jsonProduct) {
     final ArrayList<KitProduct> kitProducts = new ArrayList<>();
     if (jsonProduct.has("children")) {
       for (JsonElement children : jsonProduct.getAsJsonArray("children")) {

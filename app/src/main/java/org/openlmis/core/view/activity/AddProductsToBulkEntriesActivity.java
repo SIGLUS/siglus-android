@@ -106,6 +106,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
     return new Subscriber<List<ProductsToBulkEntriesViewModel>>() {
       @Override
       public void onCompleted() {
+        // do nothing
       }
 
       @Override

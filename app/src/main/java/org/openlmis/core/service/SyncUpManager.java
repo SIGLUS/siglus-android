@@ -68,6 +68,16 @@ import rx.Observable;
 @SuppressWarnings("PMD")
 public class SyncUpManager {
 
+  private static volatile boolean syncing = false;
+
+  public static synchronized boolean isSyncing() {
+    return SyncUpManager.syncing;
+  }
+
+  public static synchronized void setSyncing(boolean syncing) {
+    SyncUpManager.syncing = syncing;
+  }
+
   private static final String TAG = "SyncUpManager";
 
   @Inject
@@ -99,18 +109,16 @@ public class SyncUpManager {
 
   protected LMISRestApi lmisRestApi;
 
-  public static volatile boolean isSyncing = false;
-
   public SyncUpManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
   }
 
   public void syncUpData(Context context) {
     Log.d(TAG, "sync Up Data start");
-    if (isSyncing) {
+    if (isSyncing()) {
       return;
     }
-    isSyncing = true;
+    setSyncing(true);
     boolean isSyncDeleted = syncDeleteMovement();
     if (isSyncDeleted) {
       boolean isSyncRnrSuccessful = syncRnr();
@@ -131,7 +139,7 @@ public class SyncUpManager {
       syncUpCmms();
     }
     Log.d(TAG, "sync Up Data end");
-    isSyncing = false;
+    setSyncing(false);
     if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && TextUtils
         .isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
       EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));

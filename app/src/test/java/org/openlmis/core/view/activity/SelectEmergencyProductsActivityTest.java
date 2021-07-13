@@ -71,7 +71,7 @@ public class SelectEmergencyProductsActivityTest {
   @Test
   public void shouldShowToastWhenHasNotChecked() throws Exception {
     LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.isViewClicked = false;
+    SingleClickButtonListener.setIsViewClicked(false);
 
     activity.mAdapter.refreshList(getInventoryViewModels());
     activity.btnNext.performClick();

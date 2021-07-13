@@ -77,10 +77,19 @@ import rx.schedulers.Schedulers;
 @SuppressWarnings("PMD")
 public class SyncDownManager {
 
-  private static final int DAYS_OF_MONTH = 30;
-  private static final String TAG = SyncDownManager.class.getSimpleName();
+  private static volatile boolean syncing = false;
 
-  public static volatile boolean isSyncing = false;
+  public static synchronized boolean isSyncing() {
+    return SyncDownManager.syncing;
+  }
+
+  public static synchronized void setSyncing(boolean syncing) {
+    SyncDownManager.syncing = syncing;
+  }
+
+  private static final int DAYS_OF_MONTH = 30;
+
+  private static final String TAG = SyncDownManager.class.getSimpleName();
 
   protected LMISRestApi lmisRestApi;
 
@@ -118,11 +127,11 @@ public class SyncDownManager {
   }
 
   public void syncDownServerData(Subscriber<SyncProgress> subscriber) {
-    if (isSyncing) {
+    if (isSyncing()) {
       return;
     }
 
-    isSyncing = true;
+    setSyncing(true);
     Observable.create((Observable.OnSubscribe<SyncProgress>) subscriber1 -> {
       try {
         // TODO: Remove the comment when developing to the corresponding api
@@ -133,10 +142,10 @@ public class SyncDownManager {
         syncDownLastMonthStockCards(subscriber1);
         // syncDownRequisition(subscriber1);
         // syncDownRapidTests(subscriber1);
-        isSyncing = false;
+        setSyncing(false);
         subscriber1.onCompleted();
       } catch (LMISException e) {
-        isSyncing = false;
+        setSyncing(false);
         subscriber1.onError(e);
       }
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
@@ -169,6 +178,7 @@ public class SyncDownManager {
 
       @Override
       public void onNext(SyncProgress syncProgress) {
+        // do nothing
       }
     });
   }
@@ -322,8 +332,7 @@ public class SyncDownManager {
     }
   }
 
-  private void syncDownLastMonthStockCards(Subscriber<? super SyncProgress> subscriber)
-      throws LMISException {
+  private void syncDownLastMonthStockCards(Subscriber<? super SyncProgress> subscriber) throws LMISException {
 
     if (!sharedPreferenceMgr.isLastMonthStockDataSynced()) {
       try {

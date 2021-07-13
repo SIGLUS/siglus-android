@@ -20,12 +20,14 @@ package org.openlmis.core.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @DatabaseTable(tableName = "kit_products")
 public class KitProduct extends BaseModel {

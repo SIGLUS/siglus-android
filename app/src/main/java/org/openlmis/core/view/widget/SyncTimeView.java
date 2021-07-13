@@ -85,7 +85,7 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
   }
 
   public void showLastSyncTime() {
-    if (SyncUpManager.isSyncing || SyncDownManager.isSyncing) {
+    if (SyncUpManager.isSyncing() || SyncDownManager.isSyncing()) {
       showSyncProgressBarAndHideIcon();
     } else {
       hideSyncProgressBarAndShowIcon();
@@ -133,9 +133,7 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
           .getQuantityString(R.plurals.day_unit, quantity, quantity);
       ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
     }
-
-    String msg = getResources().getString(R.string.label_last_synced_ago, syncTimeIntervalWithUnit);
-    return msg;
+    return getResources().getString(R.string.label_last_synced_ago, syncTimeIntervalWithUnit);
   }
 
   private boolean isNeverSyncSuccessful() {
@@ -197,8 +195,7 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     rnrLastSyncTime = sharedPreferenceMgr.getRnrLastSyncTime();
     stockLastSyncTime = sharedPreferenceMgr.getStockLastSyncTime();
     hideSyncProgressBarAndShowIcon();
-    String msg = context
-        .getString(R.string.sync_stock_movement_error, error, updateSyncTimeViewUI());
+    String msg = context.getString(R.string.sync_stock_movement_error, error, updateSyncTimeViewUI());
     txSyncTime.setText(msg);
     ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
   }

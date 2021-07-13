@@ -49,6 +49,7 @@ public class ProductRepository {
   private static final String KIT_CODE = "kitCode";
   private static final String CODE = "code";
   private static final String TYPE = "type";
+  private static final String IS_KIT = "isKit";
   private static final String SELECT_PRODUCTS = "SELECT * FROM products WHERE isactive = '1' ";
   private static final String ARCHIVED = "AND (isarchived = '1' OR id NOT IN (SELECT product_id from stock_cards));";
   private final Context context;
@@ -72,7 +73,7 @@ public class ProductRepository {
 
   public List<Product> listActiveProducts(final Product.IsKit isKit) throws LMISException {
     List<Product> activeProducts = dbUtil.withDao(Product.class,
-        dao -> dao.queryBuilder().where().eq("isActive", true).and().eq("isKit", isKit.isKit())
+        dao -> dao.queryBuilder().where().eq("isActive", true).and().eq(IS_KIT, isKit.isKit())
             .query());
     Collections.sort(activeProducts);
     return activeProducts;
@@ -139,7 +140,7 @@ public class ProductRepository {
 
   public List<Product> listAllProductsWithoutKit() throws LMISException {
     return dbUtil
-        .withDao(Product.class, dao -> dao.queryBuilder().where().eq("isKit", false).query());
+        .withDao(Product.class, dao -> dao.queryBuilder().where().eq(IS_KIT, false).query());
   }
 
 
@@ -277,7 +278,7 @@ public class ProductRepository {
           .and().eq("isActive", true)
           .and().eq(IS_ARCHIVED, false);
       if (!isWithKit) {
-        queryBuilder.and().eq("isKit", false);
+        queryBuilder.and().eq(IS_KIT, false);
       }
       return queryBuilder.query();
     });

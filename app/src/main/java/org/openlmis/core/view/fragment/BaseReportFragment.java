@@ -77,6 +77,7 @@ public abstract class BaseReportFragment extends BaseFragment {
 
       @Override
       public void negativeClick(String tag) {
+        // do nothing
       }
     });
   }
@@ -94,13 +95,12 @@ public abstract class BaseReportFragment extends BaseFragment {
 
   protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
     public void onSign(String sign) {
-      Subscription subscription = baseReportFragmentPresenter.getOnSignObservable(sign)
-          .subscribe(getOnSignedAction());
+      Subscription subscription = baseReportFragmentPresenter.getOnSignObservable(sign).subscribe(getOnSignedAction());
       subscriptions.add(subscription);
     }
   };
 
-  protected abstract Action1<? super Void> getOnSignedAction();
+  protected abstract Action1<Void> getOnSignedAction();
 
   public void showMessageNotifyDialog() {
     SimpleDialogFragment notifyDialog = SimpleDialogFragment.newInstance(null,

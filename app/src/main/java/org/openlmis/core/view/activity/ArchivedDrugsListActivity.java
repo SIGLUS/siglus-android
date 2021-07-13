@@ -39,8 +39,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_archived_drugs)
-public class ArchivedDrugsListActivity extends SearchBarActivity implements
-    StockCardPresenter.StockCardListView {
+public class ArchivedDrugsListActivity extends SearchBarActivity implements StockCardPresenter.StockCardListView {
 
   @InjectView(R.id.archived_list)
   protected RecyclerView archivedList;
@@ -69,7 +68,7 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements
   private void initUI() {
     archivedList.setLayoutManager(new LinearLayoutManager(this));
 
-    mAdapter = new ArchivedListAdapter(new ArrayList<InventoryViewModel>(),
+    mAdapter = new ArchivedListAdapter(new ArrayList<>(),
         archiveStockCardListener);
     archivedList.setAdapter(mAdapter);
 
@@ -108,10 +107,11 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements
 
   @Override
   public void refreshBannerText() {
+    // do nothing
   }
 
   @Override
   public void showWarning() {
-
+    // do noting
   }
 }

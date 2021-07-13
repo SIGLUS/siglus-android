@@ -19,8 +19,10 @@
 package org.openlmis.core.view.holder;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -50,7 +52,6 @@ import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.MovementTypeDialog;
 import roboguice.inject.InjectView;
 
-@SuppressWarnings("PMD")
 public class StockMovementViewHolder extends BaseViewHolder {
 
   @InjectView(R.id.tx_date)
@@ -83,7 +84,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
   @InjectView(R.id.tx_signature)
   TextView txSignature;
 
-  private Map<MovementReasonManager.MovementType, List> movementViewMap;
+  private Map<MovementReasonManager.MovementType, List<EditText>> movementViewMap;
 
   public StockMovementViewHolder(View itemView) {
     super(itemView);
@@ -100,11 +101,9 @@ public class StockMovementViewHolder extends BaseViewHolder {
   private void initStockViewMap() {
     movementViewMap = new HashMap<>();
     movementViewMap.put(MovementReasonManager.MovementType.ISSUE, asList(etIssued, etRequested));
-    movementViewMap.put(MovementReasonManager.MovementType.RECEIVE, asList(etReceived));
-    movementViewMap
-        .put(MovementReasonManager.MovementType.NEGATIVE_ADJUST, asList(etNegativeAdjustment));
-    movementViewMap
-        .put(MovementReasonManager.MovementType.POSITIVE_ADJUST, asList(etPositiveAdjustment));
+    movementViewMap.put(MovementReasonManager.MovementType.RECEIVE, singletonList(etReceived));
+    movementViewMap.put(MovementReasonManager.MovementType.NEGATIVE_ADJUST, singletonList(etNegativeAdjustment));
+    movementViewMap.put(MovementReasonManager.MovementType.POSITIVE_ADJUST, singletonList(etPositiveAdjustment));
   }
 
   public void populate(final StockMovementViewModel model, StockCard stockCard) {
@@ -158,8 +157,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
   }
 
   private void resetStockEditText(MovementReasonManager.MovementType type) {
-    for (Map.Entry<MovementReasonManager.MovementType, List> movementView : movementViewMap
-        .entrySet()) {
+    for (Map.Entry<MovementReasonManager.MovementType, List<EditText>> movementView : movementViewMap.entrySet()) {
       if (movementView.getKey().equals(type)) {
         for (Object view : movementView.getValue()) {
           enableAndUnderlineEditText((EditText) view);
@@ -231,7 +229,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
       final Date previousMovementDate) {
     final Calendar today = DateUtil.getCurrentCalendar();
 
-    DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL,
+    DatePickerDialog dialog = new DatePickerDialog(context, DialogInterface.BUTTON_NEUTRAL,
         new MovementDateListener(model, previousMovementDate),
         today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
     dialog.show();
@@ -295,12 +293,10 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
   protected Date getPreviousMovementDate(StockCard stockCard) {
     List<StockMovementItem> stockMovements = stockCard.getStockMovementItemsWrapper();
-    if (stockMovements != null) {
-      if (!stockMovements.isEmpty()) {
-        Collections.sort(stockMovements,
-            (item1, item2) -> item1.getMovementDate().compareTo(item2.getMovementDate()));
-        return stockMovements.get(stockMovements.size() - 1).getMovementDate();
-      }
+    if (stockMovements != null && !stockMovements.isEmpty()) {
+      Collections.sort(stockMovements,
+          (item1, item2) -> item1.getMovementDate().compareTo(item2.getMovementDate()));
+      return stockMovements.get(stockMovements.size() - 1).getMovementDate();
     }
     return null;
   }

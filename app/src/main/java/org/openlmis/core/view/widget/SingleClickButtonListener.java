@@ -26,7 +26,15 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
 
   private long minClickInterval = 500;
 
-  public static boolean isViewClicked = false;
+  private static boolean isViewClicked = false;
+
+  public static synchronized boolean getIsViewClicked() {
+    return SingleClickButtonListener.isViewClicked;
+  }
+
+  public static synchronized void setIsViewClicked(boolean isViewClicked) {
+    SingleClickButtonListener.isViewClicked = isViewClicked;
+  }
 
   private long lastClickTime;
 
@@ -43,7 +51,7 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
       return;
     }
     if (!isViewClicked) {
-      isViewClicked = true;
+      setIsViewClicked(true);
       startTimer();
     } else {
       return;
@@ -57,6 +65,6 @@ public abstract class SingleClickButtonListener implements View.OnClickListener 
 
   private void startTimer() {
     Handler handler = new Handler();
-    handler.postDelayed(() -> isViewClicked = false, minClickInterval);
+    handler.postDelayed(() -> setIsViewClicked(false), minClickInterval);
   }
 }

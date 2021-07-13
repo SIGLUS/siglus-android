@@ -131,7 +131,7 @@ public class InitialInventoryActivityTest {
   @Test
   public void shouldDoInitialInventoryWhenBtnDoneClicked() {
     LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.isViewClicked = false;
+    SingleClickButtonListener.setIsViewClicked(false);
 
     when(initialInventoryActivity.mAdapter.validateAll()).thenReturn(-1);
     initialInventoryActivity.onNextMainPageAction = o -> { };
