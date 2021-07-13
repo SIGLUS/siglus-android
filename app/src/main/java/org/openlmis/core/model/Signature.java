@@ -21,13 +21,12 @@ package org.openlmis.core.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Signature implements Serializable {
+public class Signature {
 
   public enum TYPE {
     SUBMITTER,

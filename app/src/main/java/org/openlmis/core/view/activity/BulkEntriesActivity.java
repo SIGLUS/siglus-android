@@ -283,8 +283,7 @@ public class BulkEntriesActivity extends BaseActivity {
 
   private void openAddProductsActivityForResult() {
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
-    intent.putExtra(SELECTED_PRODUCTS,
-        (Serializable) bulkEntriesPresenter.getAddedProductCodes());
+    intent.putExtra(SELECTED_PRODUCTS, (Serializable) bulkEntriesPresenter.getAddedProductCodes());
     addProductsActivityResultLauncher.launch(intent);
   }
 

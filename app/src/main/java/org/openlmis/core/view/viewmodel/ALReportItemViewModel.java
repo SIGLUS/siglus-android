@@ -20,7 +20,6 @@ package org.openlmis.core.view.viewmodel;
 
 import static org.openlmis.core.view.viewmodel.ALGridViewModel.SUFFIX_LENGTH;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,7 @@ import lombok.Data;
 import org.openlmis.core.model.RegimenItem;
 
 @Data
-public class ALReportItemViewModel implements Serializable {
+public class ALReportItemViewModel {
 
   private ALGridViewModel gridOne = new ALGridViewModel(ALGridViewModel.ALColumnCode.ONE_COLUMN);
   private ALGridViewModel gridTwo = new ALGridViewModel(ALGridViewModel.ALColumnCode.TWO_COLUMN);

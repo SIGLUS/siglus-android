@@ -79,8 +79,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    final Regimen.RegimeType regimeType = (Regimen.RegimeType) getIntent()
-        .getSerializableExtra(PARAM_REGIME_TYPE);
+    final Regimen.RegimeType regimeType = (Regimen.RegimeType) getIntent().getSerializableExtra(PARAM_REGIME_TYPE);
 
     productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
     viewModels = new ArrayList<>();

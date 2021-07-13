@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -39,7 +38,7 @@ import org.openlmis.core.utils.DateUtil;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class LotMovementViewModel implements Serializable {
+public class LotMovementViewModel {
 
   private String lotNumber;
   private String expiryDate;

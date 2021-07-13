@@ -91,8 +91,7 @@ public class PTVRequisitionFragment extends BaseReportFragment implements
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
-    periodEndDate = ((Date) getActivity().getIntent()
-        .getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+    periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
   }
 
 

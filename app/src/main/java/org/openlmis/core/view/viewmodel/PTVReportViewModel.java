@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -27,7 +26,7 @@ import org.openlmis.core.model.Service;
 import org.openlmis.core.model.ServiceItem;
 
 @Data
-public class PTVReportViewModel implements Serializable {
+public class PTVReportViewModel {
 
   private RnRForm form;
   private List<Service> services = new ArrayList<>();

@@ -76,8 +76,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
     super.onCreate(savedInstanceState);
     initRecyclerView();
     loading(getString(R.string.add_all_products_loading_message));
-    previouslyProductCodes = (List<String>) getIntent()
-        .getSerializableExtra(SELECTED_PRODUCTS);
+    previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
     btnAddProducts.setOnClickListener(addProductsListener());
     Subscription subscription = addProductsToBulkEntriesPresenter.getAllProductsWithoutKit(previouslyProductCodes)
         .subscribe(getOnViewModelsLoadedSubscriber());

@@ -132,8 +132,7 @@ public class RnRFormListActivity extends BaseReportListActivity {
         loadForms();
         break;
       case Constants.REQUEST_SELECT_PERIOD_END:
-        Date periodEndDate = (Date) data
-            .getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
+        Date periodEndDate = (Date) data.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
         boolean isMissedPeriod = data.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
         createRequisition(periodEndDate, isMissedPeriod);
         break;

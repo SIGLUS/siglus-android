@@ -20,7 +20,6 @@ package org.openlmis.core.view.viewmodel;
 
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +36,7 @@ import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
 @Data
-public class RapidTestFormItemViewModel implements Serializable {
+public class RapidTestFormItemViewModel {
 
   MovementReasonManager.MovementReason issueReason;
 

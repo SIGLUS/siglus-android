@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +27,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 
 @Data
-public class ALReportViewModel implements Serializable {
+public class ALReportViewModel {
 
   public enum ALItemType {
     TOTAL("total"),

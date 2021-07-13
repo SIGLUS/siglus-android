@@ -27,7 +27,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +40,7 @@ import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Singleton
-public final class MovementReasonManager implements Serializable {
+public final class MovementReasonManager {
 
   public static final String INVENTORY_POSITIVE = "INVENTORY_POSITIVE";
   public static final String INVENTORY_NEGATIVE = "INVENTORY_NEGATIVE";
@@ -55,7 +54,6 @@ public final class MovementReasonManager implements Serializable {
   public static final String UNPACK_KIT = "UNPACK_KIT";
   public static final String DONATION = "DONATION";
   public static final String DDM = "DISTRICT_DDM";
-  public static final String RETURN_TO_DDM = "RETURN_TO_DDM";
 
   Context context;
   public static final String RES_DIVIDER = "[|]";
@@ -222,7 +220,7 @@ public final class MovementReasonManager implements Serializable {
 
 
   @Data
-  public static class MovementReason implements Serializable {
+  public static class MovementReason {
 
     MovementType movementType;
     String code;

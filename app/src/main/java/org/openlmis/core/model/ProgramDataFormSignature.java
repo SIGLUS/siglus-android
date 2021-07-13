@@ -20,7 +20,6 @@ package org.openlmis.core.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -29,7 +28,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @DatabaseTable(tableName = "program_data_form_signatures")
-public class ProgramDataFormSignature extends Signature implements Serializable {
+public class ProgramDataFormSignature extends Signature {
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   ProgramDataForm form;

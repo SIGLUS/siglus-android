@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -28,7 +27,7 @@ import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
 
 @Data
-public class RapidTestFormGridViewModel implements Serializable {
+public class RapidTestFormGridViewModel {
 
   public enum RapidTestGridColumnCode {
     CONSUMPTION,

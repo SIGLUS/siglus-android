@@ -24,7 +24,6 @@ import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidT
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.POSITIVE;
 import static org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode.UNJUSTIFIED;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,7 +46,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
-public class RapidTestReportViewModel implements Serializable {
+public class RapidTestReportViewModel {
 
   private Period period;
   private String observation;

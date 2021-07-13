@@ -272,8 +272,7 @@ public class RnRFormListActivityTest {
         VIARequisitionActivity.class.getName());
 
     assertTrue(nextStartedIntent.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false));
-    assertEquals(nextStartedIntent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE),
-        inventoryDate);
+    assertEquals(nextStartedIntent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE), inventoryDate);
   }
 
   @Test
