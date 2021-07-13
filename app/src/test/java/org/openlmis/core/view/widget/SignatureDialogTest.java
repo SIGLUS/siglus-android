@@ -16,35 +16,18 @@ public class SignatureDialogTest {
   }
 
   @Test
-  public void shouldReturnTrueWhenGivenValidSignature() throws Exception {
+  public void shouldReturnTrueWhenGivenValidSignature() {
     assertTrue(signatureDialog.checkSignature("sign"));
     assertTrue(signatureDialog.checkSignature(".."));
     assertTrue(signatureDialog.checkSignature("__"));
     assertTrue(signatureDialog.checkSignature("Sign"));
+    assertTrue(signatureDialog.checkSignature("abcde"));
   }
 
   @Test
-  public void shouldReturnFalseWhenGivenSignatureWithNumber() throws Exception {
-    String signaturesFalse = "123";
-    assertFalse(signatureDialog.checkSignature(signaturesFalse));
-  }
-
-
-  @Test
-  public void shouldReturnFalseWhenGivenSignatureLessThanTwo() throws Exception {
-    String signaturesFalse = "a";
-    assertFalse(signatureDialog.checkSignature(signaturesFalse));
-  }
-
-  @Test
-  public void shouldReturnFalseWhenGivenSignatureMoreThanFive() throws Exception {
-    String signaturesFalse = "abcdef";
-    assertFalse(signatureDialog.checkSignature(signaturesFalse));
-  }
-
-  @Test
-  public void shouldReturnTrueWhenGivenSignatureEqualFive() throws Exception {
-    String signaturesFalse = "abcde";
-    assertTrue(signatureDialog.checkSignature(signaturesFalse));
+  public void shouldReturnFalseWhenGivenIllegalSignature() {
+    assertFalse(signatureDialog.checkSignature("123"));
+    assertFalse(signatureDialog.checkSignature("a"));
+    assertFalse(signatureDialog.checkSignature("abcdef"));
   }
 }

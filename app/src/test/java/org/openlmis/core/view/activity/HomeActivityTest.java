@@ -57,6 +57,7 @@ import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.widget.DashboardView;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.SyncTimeView;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -109,6 +110,9 @@ public class HomeActivityTest {
 
   @Test
   public void shouldGoToStockCardsPage() {
+    // given
+    resetNextClickTime();
+
     // when
     homeActivity.findViewById(R.id.btn_stock_card).performClick();
 
@@ -119,6 +123,9 @@ public class HomeActivityTest {
 
   @Test
   public void shouldGoToKitsStockCardsPage() {
+    // given
+    resetNextClickTime();
+
     // when
     homeActivity.findViewById(R.id.btn_kits).performClick();
 
@@ -129,6 +136,9 @@ public class HomeActivityTest {
 
   @Test
   public void shouldGoToInventoryPage() {
+    // given
+    resetNextClickTime();
+
     // when
     homeActivity.findViewById(R.id.btn_inventory).performClick();
 
@@ -139,6 +149,9 @@ public class HomeActivityTest {
 
   @Test
   public void shouldGoRequisitionPage() {
+    // given
+    resetNextClickTime();
+
     // when
     homeActivity.findViewById(R.id.btn_requisitions).performClick();
 
@@ -149,10 +162,14 @@ public class HomeActivityTest {
 
   @Test
   public void shouldGoToIssueVoucherPage() {
+    // given
+    resetNextClickTime();
+
+    // when
     homeActivity.findViewById(R.id.btn_issue_voucher).performClick();
 
+    // then
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
-
     assertThat(startedIntent.getComponent().getClassName(), equalTo(IssueVoucherActivity.class.getName()));
   }
 
@@ -241,7 +258,7 @@ public class HomeActivityTest {
   }
 
   @Test
-  public void shouldSyncData(){
+  public void shouldSyncData() {
     // given
     MenuItem signoutAction = new RoboMenuItem(R.id.action_sync_data);
 
@@ -249,11 +266,11 @@ public class HomeActivityTest {
     homeActivity.onOptionsItemSelected(signoutAction);
 
     // then
-    verify(syncService,times(1)).requestSyncImmediatelyFromUserTrigger();
+    verify(syncService, times(1)).requestSyncImmediatelyFromUserTrigger();
   }
 
   @Test
-  public void shouldShowProgressBarWhenReceiveSyncStatusStart(){
+  public void shouldShowProgressBarWhenReceiveSyncStatusStart() {
     // given
     final SyncStatusEvent syncStatusEvent = new SyncStatusEvent(SyncStatus.START);
 
@@ -261,30 +278,30 @@ public class HomeActivityTest {
     homeActivity.onReceiveSyncStatusEvent(syncStatusEvent);
 
     // then
-    verify(syncTimeView,times(1)).showSyncProgressBarAndHideIcon();
+    verify(syncTimeView, times(1)).showSyncProgressBarAndHideIcon();
   }
 
   @Test
-  public void shouldShowErrorMsgWhenReceiveSyncStatusError(){
+  public void shouldShowErrorMsgWhenReceiveSyncStatusError() {
     // given
     final SyncStatusEvent errorEventWithoutMsg = new SyncStatusEvent(SyncStatus.ERROR);
-    final SyncStatusEvent errorEventWithMsg = new SyncStatusEvent(SyncStatus.ERROR,"error msg");
+    final SyncStatusEvent errorEventWithMsg = new SyncStatusEvent(SyncStatus.ERROR, "error msg");
 
     // when
     homeActivity.onReceiveSyncStatusEvent(errorEventWithoutMsg);
 
     // then
-    verify(syncTimeView,times(1)).setSyncStockCardLastYearError();
+    verify(syncTimeView, times(1)).setSyncStockCardLastYearError();
 
     // when
     homeActivity.onReceiveSyncStatusEvent(errorEventWithMsg);
 
     // then
-    verify(syncTimeView,times(1)).setSyncedMovementError("error msg");
+    verify(syncTimeView, times(1)).setSyncedMovementError("error msg");
   }
 
   @Test
-  public void shouldRefreshDashboardWhenReceiveSyncStatusFinish(){
+  public void shouldRefreshDashboardWhenReceiveSyncStatusFinish() {
     // given
     final SyncStatusEvent finishEvent = new SyncStatusEvent(SyncStatus.FINISH);
     final CmmCalculateEvent cmmCalculateEvent = new CmmCalculateEvent(true);
@@ -296,7 +313,13 @@ public class HomeActivityTest {
     homeActivity.onReceiveCmmCalculateEvent(cmmCalculateEvent);
 
     // then
-    verify(syncTimeView,times(1)).showLastSyncTime();
-    verify(dashboardView,times(1)).showCalculating();
+    verify(syncTimeView, times(1)).showLastSyncTime();
+    verify(dashboardView, times(1)).showCalculating();
+  }
+
+  private void resetNextClickTime() {
+    SingleClickButtonListener.setIsViewClicked(false);
+    final long currentTimeMillis = LMISTestApp.getInstance().getCurrentTimeMillis();
+    LMISTestApp.getInstance().setCurrentTimeMillis(currentTimeMillis + 600);
   }
 }

@@ -19,7 +19,6 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -43,7 +42,7 @@ public class PTVTestRnrForm extends LinearLayout {
 
   private Context context;
   private LayoutInflater layoutInflater;
-  public PTVReportViewModel viewModel;
+  private PTVReportViewModel viewModel;
   private ViewGroup viewGroup;
   private final List<Pair<EditText, SimpleTextWatcher>> editTextConfigures = new ArrayList<>();
   private final List<List<EditText>> editTextsLists = new ArrayList<>();
@@ -69,10 +68,6 @@ public class PTVTestRnrForm extends LinearLayout {
     this.viewModel = viewModel;
     editTextsLists.clear();
     addItemView(viewModel.getForm().getRnrFormItemListWrapper());
-  }
-
-  public void onConfigurationChanged(Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
   }
 
   private void addItemView(List<RnrFormItem> itemFormList) {
@@ -238,7 +233,7 @@ public class PTVTestRnrForm extends LinearLayout {
 
     private Long getTotal() {
       long total = 0;
-      Boolean haveValue = false;
+      boolean haveValue = false;
       for (ServiceItem serviceItem : this.item.getServiceItemListWrapper()) {
         if (serviceItem.getAmount() != null) {
           total += serviceItem.getAmount();
@@ -249,13 +244,13 @@ public class PTVTestRnrForm extends LinearLayout {
     }
 
     private Long getEditValue(Editable etText) {
-      Long editText;
+      Long editTextValue;
       try {
-        editText = Long.valueOf(etText.toString());
+        editTextValue = Long.valueOf(etText.toString());
       } catch (NumberFormatException e) {
-        editText = null;
+        editTextValue = null;
       }
-      return editText;
+      return editTextValue;
     }
   }
 }

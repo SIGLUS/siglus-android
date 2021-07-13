@@ -30,7 +30,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.network.SyncErrorsMap;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
@@ -104,7 +103,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         populateSyncedHistorical(model);
         break;
       case RnRFormViewModel.TYPE_INACTIVE:
-        populateRnrFormInActiveCreatedView(model);
+        populateRnrFormInActiveCreatedView();
         break;
       default:
         // do nothing
@@ -139,7 +138,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
     setupButtonColor();
   }
 
-  private void populateRnrFormInActiveCreatedView(RnRFormViewModel model) {
+  private void populateRnrFormInActiveCreatedView() {
     String inActive = context.getString(R.string.inactive_status);
     configHolder(context.getString(R.string.inactive),
         Html.fromHtml(inActive),
@@ -156,10 +155,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
     configHolder(model.getTitle(),
         Html.fromHtml(error),
         R.drawable.ic_error, R.color.color_red, color_white);
-  }
-
-  private boolean isOfMmia(RnRFormViewModel model) {
-    return model.getProgramCode().equals(Constants.MMIA_PROGRAM_CODE);
   }
 
   private void populateSyncedHistorical(RnRFormViewModel model) {

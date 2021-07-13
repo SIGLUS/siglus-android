@@ -20,6 +20,7 @@ package org.openlmis.core.persistence;
 
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +32,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 
-@SuppressWarnings("PMD")
 public abstract class Migration {
 
   public static final String DIR_MIGRATION = "migrations";
@@ -71,7 +71,7 @@ public abstract class Migration {
       db.setTransactionSuccessful();
     } catch (IOException e) {
       new LMISException(e, "execSQLScript").reportToFabric();
-      throw new RuntimeException("Invalid migration file :" + filename);
+      throw new SQLiteException("Invalid migration file :" + filename, e);
     } finally {
       db.endTransaction();
     }

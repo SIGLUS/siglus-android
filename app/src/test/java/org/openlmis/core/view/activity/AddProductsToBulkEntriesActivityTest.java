@@ -61,7 +61,7 @@ public class AddProductsToBulkEntriesActivityTest {
   @Test
   public void shouldGetScreenNameSuccess() {
     // then
-    assertEquals(activity.getScreenName(), ScreenName.ADD_PRODUCT_TO_BULK_ENTRIES_SCREEN);
+    assertEquals(ScreenName.ADD_PRODUCT_TO_BULK_ENTRIES_SCREEN, activity.getScreenName());
   }
 
   @Test
@@ -73,7 +73,7 @@ public class AddProductsToBulkEntriesActivityTest {
     activity.onSearchStart(null);
 
     // then
-    assertEquals(activity.tvTotal.getText().toString(),"Total:0");
+    assertEquals("Total:0", activity.tvTotal.getText().toString());
   }
 
 }

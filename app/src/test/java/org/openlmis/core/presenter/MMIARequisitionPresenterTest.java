@@ -30,6 +30,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.util.Log;
 import com.google.inject.AbstractModule;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class MMIARequisitionPresenterTest {
 
   private SyncUpManager syncUpManager;
@@ -240,7 +240,7 @@ public class MMIARequisitionPresenterTest {
     try {
       Thread.sleep(1500);
     } catch (InterruptedException e) {
-      e.printStackTrace();
+      Log.w("waitObservableToExecute", e);
     }
   }
 

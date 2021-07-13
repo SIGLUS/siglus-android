@@ -27,7 +27,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnrFormItem;
 
 @Data
-@SuppressWarnings("PMD")
 public class RequisitionFormItemViewModel {
 
   private String fmn;
@@ -56,25 +55,25 @@ public class RequisitionFormItemViewModel {
     this.fmn = (item.getProduct().getCode());
     this.productName = item.getProduct().getPrimaryName();
 
-    long issued = ignoreNullValue(item.getIssued());
+    long issuedIgnoreNullValue = ignoreNullValue(item.getIssued());
     long initialAmount = ignoreNullValue(item.getInitialAmount());
-    long inventory = ignoreNullValue(item.getInventory());
+    long inventoryIgnoreNullValue = ignoreNullValue(item.getInventory());
     long calculatedOrderQuantity = ignoreNullValue(item.getCalculatedOrderQuantity());
 
     this.item.setInitialAmount(initialAmount);
-    this.item.setIssued(issued);
-    this.item.setInventory(inventory);
+    this.item.setIssued(issuedIgnoreNullValue);
+    this.item.setInventory(inventoryIgnoreNullValue);
     this.item.setCalculatedOrderQuantity(calculatedOrderQuantity);
 
     this.initAmount = String.valueOf(initialAmount);
-    long received = item.getReceived();
-    this.received = String.valueOf(received);
-    this.issued = String.valueOf(issued);
-    long theoretical = initialAmount + received - issued;
-    this.theoretical = String.valueOf(theoretical);
+    long itemReceived = item.getReceived();
+    this.received = String.valueOf(itemReceived);
+    this.issued = String.valueOf(issuedIgnoreNullValue);
+    long theoreticalValue = initialAmount + itemReceived - issuedIgnoreNullValue;
+    this.theoretical = String.valueOf(theoreticalValue);
     this.total = "-";
-    this.inventory = String.valueOf(inventory);
-    this.different = String.valueOf(inventory - theoretical);
+    this.inventory = String.valueOf(inventoryIgnoreNullValue);
+    this.different = String.valueOf(inventoryIgnoreNullValue - theoreticalValue);
     this.totalRequest = String.valueOf(calculatedOrderQuantity);
     this.adjustedTotalRequest = totalRequest;
     inflateTotalAmount();
@@ -138,13 +137,13 @@ public class RequisitionFormItemViewModel {
     for (RnRFormItemAdjustmentViewModel adjustmentViewModel : adjustmentViewModels) {
       messageBuilder.append(adjustmentViewModel.formatAdjustmentContentForProduct(productName));
     }
-    messageBuilder.append(LMISApp.getContext()
-        .getString(R.string.label_adjustment_dialog_adjust_amount, calculateAdjustAmount(),
-            productName));
-    messageBuilder.append(LMISApp.getContext()
-        .getString(R.string.label_adjustment_dialog_initial_amount, totalRequest));
-    messageBuilder.append(LMISApp.getContext()
-        .getString(R.string.label_adjustment_dialog_adjusted_amount, adjustedTotalRequest));
+    messageBuilder
+        .append(LMISApp.getContext()
+            .getString(R.string.label_adjustment_dialog_adjust_amount, calculateAdjustAmount(),
+                productName))
+        .append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_initial_amount, totalRequest))
+        .append(LMISApp.getContext()
+            .getString(R.string.label_adjustment_dialog_adjusted_amount, adjustedTotalRequest));
     return messageBuilder.toString();
   }
 }

@@ -356,13 +356,13 @@ public class PTVRequisitionFragment extends BaseReportFragment implements
     }
 
     private Long getEditValue(Editable etText) {
-      Long editText;
+      Long valueFromEditText;
       try {
-        editText = Long.valueOf(etText.toString());
+        valueFromEditText = Long.valueOf(etText.toString());
       } catch (NumberFormatException e) {
-        editText = null;
+        valueFromEditText = null;
       }
-      return editText;
+      return valueFromEditText;
     }
   }
 

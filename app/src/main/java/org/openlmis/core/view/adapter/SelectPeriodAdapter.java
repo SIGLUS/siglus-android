@@ -30,11 +30,7 @@ import org.openlmis.core.view.widget.SelectPeriodCardView;
 
 public class SelectPeriodAdapter extends BaseAdapter {
 
-  private final List<SelectInventoryViewModel> list;
-
-  public SelectPeriodAdapter() {
-    list = new ArrayList();
-  }
+  private final List<SelectInventoryViewModel> list = new ArrayList<>();
 
   @Override
   public int getCount() {

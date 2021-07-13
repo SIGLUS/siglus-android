@@ -22,7 +22,7 @@ public class LotMovementViewModelTest {
   private final LotMovementViewModel viewModel = new LotMovementViewModel();
 
   @Test
-  public void shouldReturnTrueWhenViewModelIsValid() throws Exception {
+  public void shouldReturnTrueWhenViewModelIsValid() {
     viewModel.setLotNumber("ei-233");
     viewModel.setExpiryDate("2013-09-01");
     viewModel.setQuantity("233");
@@ -31,7 +31,7 @@ public class LotMovementViewModelTest {
   }
 
   @Test
-  public void shouldReturnFalseWhenViewModelIsInvalid() throws Exception {
+  public void shouldReturnFalseWhenViewModelIsInvalid() {
     viewModel.setLotSoh("100");
     viewModel.setQuantity("300");
     viewModel.setExpiryDate("2014-03-18");
@@ -53,7 +53,7 @@ public class LotMovementViewModelTest {
   }
 
   @Test
-  public void shouldReturnFalseWhenIssueQuantityGreaterThanSOH() throws Exception {
+  public void shouldReturnFalseWhenIssueQuantityGreaterThanSOH() {
     viewModel.setLotSoh("100");
     viewModel.setQuantity("300");
     viewModel.setExpiryDate("2014-03-18");
@@ -64,7 +64,7 @@ public class LotMovementViewModelTest {
   }
 
   @Test
-  public void shouldConvertLotMovementItemWithRightExpiryDate() throws Exception {
+  public void shouldConvertLotMovementItemWithRightExpiryDate() {
     viewModel.setQuantity("10");
     viewModel.setLotNumber("lot1");
     viewModel.setExpiryDate("Feb 2015");
@@ -75,7 +75,7 @@ public class LotMovementViewModelTest {
   }
 
   @Test
-  public void shouldConvertLotMovementItemWithRightStockOnHand() throws Exception {
+  public void shouldConvertLotMovementItemWithRightStockOnHand() {
     viewModel.setQuantity("10");
     viewModel.setLotNumber("lot1");
     viewModel.setExpiryDate("Feb 2015");
@@ -86,7 +86,7 @@ public class LotMovementViewModelTest {
   }
 
   @Test
-  public void shouldGenerateLotNumberForProductWithoutLot() throws Exception {
+  public void shouldGenerateLotNumberForProductWithoutLot() {
     String productCode = "02F49";
     String expiryDate = "Nov 2017";
 
@@ -95,7 +95,7 @@ public class LotMovementViewModelTest {
   }
 
   @Test
-  public void shouldGetAdjustmentQuantity() throws Exception {
+  public void shouldGetAdjustmentQuantity() {
     viewModel.setQuantity("1");
     viewModel.setLotSoh(null);
     assertEquals(1, viewModel.getAdjustmentQuantity());
@@ -108,19 +108,19 @@ public class LotMovementViewModelTest {
   }
 
   @Test
-  public void shouldExpiredLot() throws Exception {
+  public void shouldExpiredLot() {
     Calendar expireLot = Calendar.getInstance();
     expireLot.add(Calendar.MONTH, -2);
     DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
     viewModel.setExpiryDate(dateFormat.format(expireLot.getTime()));
-    assertEquals(viewModel.isExpiredLot(), true);
+    assertTrue(viewModel.isExpiredLot());
   }
 
   @Test
-  public void shouldNotExpiredLot() throws Exception {
+  public void shouldNotExpiredLot() {
     Calendar expireLot = Calendar.getInstance();
     DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
     viewModel.setExpiryDate(dateFormat.format(expireLot.getTime()));
-    assertEquals(viewModel.isExpiredLot(), false);
+    assertFalse(viewModel.isExpiredLot());
   }
 }

@@ -37,6 +37,9 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 @NoArgsConstructor
 public class DraftInventory extends BaseModel {
 
+  /**
+   * @deprecated expireDate move to lot field, use {@link DraftLotItem#expirationDate}
+   */
   @Deprecated
   @DatabaseField
   String expireDates;

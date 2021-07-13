@@ -18,6 +18,7 @@
 
 package org.openlmis.core.persistence.migrations;
 
+import android.database.sqlite.SQLiteException;
 import java.util.List;
 import java.util.Locale;
 import org.openlmis.core.LMISApp;
@@ -30,7 +31,6 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.Migration;
 
-@SuppressWarnings("PMD")
 public class ChangeMovementReasonToCode extends Migration {
 
   GenericDao<StockMovementItem> stockItemGenericDao;
@@ -49,7 +49,7 @@ public class ChangeMovementReasonToCode extends Migration {
   public void up() {
     try {
       List<StockMovementItem> itemList = stockItemGenericDao.queryForAll();
-      if (itemList == null || itemList.size() == 0) {
+      if (itemList == null || itemList.isEmpty()) {
         return;
       }
       for (StockMovementItem item : itemList) {
@@ -62,7 +62,7 @@ public class ChangeMovementReasonToCode extends Migration {
 
     } catch (LMISException e) {
       new LMISException(e, "ChangeMovementReasonToCode,up").reportToFabric();
-      throw new RuntimeException(e.getMessage());
+      throw new SQLiteException(e.getMessage(), e);
     }
   }
 
@@ -89,20 +89,19 @@ public class ChangeMovementReasonToCode extends Migration {
           item.setReason(MovementReasonManager.INVENTORY);
           break;
         default:
-          throw new RuntimeException("Invalid MovementType :" + item.getMovementType());
+          throw new IllegalArgumentException("Invalid MovementType :" + item.getMovementType());
       }
     }
   }
 
   private void updateStockMovementItems(final List<StockMovementItem> stockMovementItems)
       throws LMISException {
-    dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class,
-        (DbUtil.Operation<StockMovementItem, Void>) dao -> {
-          for (StockMovementItem stockMovementItem : stockMovementItems) {
-            dao.update(stockMovementItem);
-          }
-          return null;
-        });
+    dbUtil.withDaoAsBatch(LMISApp.getContext(), StockMovementItem.class, dao -> {
+      for (StockMovementItem stockMovementItem : stockMovementItems) {
+        dao.update(stockMovementItem);
+      }
+      return null;
+    });
   }
 
   private boolean trySetReason(StockMovementItem item, String lang, String country) {

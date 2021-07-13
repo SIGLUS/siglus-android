@@ -140,14 +140,12 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     super.attachView(baseView);
   }
 
-  protected List<RequisitionFormItemViewModel> getViewModelsFromRnrForm(RnRForm form)
-      throws LMISException {
-    if (requisitionFormItemViewModels.size() > 0) {
+  protected List<RequisitionFormItemViewModel> getViewModelsFromRnrForm(RnRForm form) {
+    if (!requisitionFormItemViewModels.isEmpty()) {
       return requisitionFormItemViewModels;
     }
     return from(form.getRnrItems(IsKit.NO)).transform(item -> {
-      RequisitionFormItemViewModel requisitionFormItemViewModel = new RequisitionFormItemViewModel(
-          item);
+      RequisitionFormItemViewModel requisitionFormItemViewModel = new RequisitionFormItemViewModel(item);
       if (!isHistoryForm()) {
         adjustTheoretical(requisitionFormItemViewModel);
       }
@@ -157,8 +155,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
   private List<RequisitionFormItemViewModel> transformDataItemsToViewModels(
       List<RnrFormItem> additionalItems) {
-    return from(additionalItems)
-        .transform(rnrFormItem -> new RequisitionFormItemViewModel(rnrFormItem)).toList();
+    return from(additionalItems).transform(RequisitionFormItemViewModel::new).toList();
 
   }
 
@@ -242,7 +239,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
   private List<RnrFormItem> generateRnrItemsForAdditionalProducts(List<RnrFormItem> addedDrugInVIAs,
       final Date periodBegin) {
-    List<RnrFormItem> rnrFormItemList = FluentIterable.from(addedDrugInVIAs)
+    return FluentIterable.from(addedDrugInVIAs)
         .transform(addedDrugInVIA -> {
           Product product = addedDrugInVIA.getProduct();
           RnrFormItem rnrFormItem = new RnrFormItem();
@@ -260,7 +257,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
           }
           return rnrFormItem;
         }).toList();
-    return rnrFormItemList;
   }
 
   private void populateRnrItemWithQuantities(RnrFormItem rnrFormItem, Date periodBegin,
@@ -366,7 +362,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
   private ImmutableList<RnrFormItem> convertRnrItemViewModelsToRnrItems() {
     return from(requisitionFormItemViewModels)
-        .transform(requisitionFormItemViewModel -> requisitionFormItemViewModel.toRnrFormItem())
+        .transform(RequisitionFormItemViewModel::toRnrFormItem)
         .toList();
   }
 

@@ -352,7 +352,7 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
 
   private void bindFreezeHeaderListener() {
     ViewTreeObserver verticalViewTreeObserver = scrollView.getViewTreeObserver();
-    verticalViewTreeObserver.addOnScrollChangedListener(() -> hideOrDisplayRnrItemsHeader());
+    verticalViewTreeObserver.addOnScrollChangedListener(this::hideOrDisplayRnrItemsHeader);
 
     rnrFormList.getRnrItemsHorizontalScrollView().setOnScrollChangedListener((l, t, oldl, oldt)
         -> rnrItemsHeaderFreezeRight.scrollBy(l - oldl, 0));

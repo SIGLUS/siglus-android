@@ -43,12 +43,11 @@ import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 import rx.Observable;
-import rx.Subscriber;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class RnRFormListActivityTest {
 
+  private final String programCode = "MMIA";
   private RnRFormListActivity rnRFormListActivity;
   private RnRFormListPresenter mockedPresenter;
   private Intent intent;
@@ -107,10 +106,10 @@ public class RnRFormListActivityTest {
   }
 
   @Test
-  public void shouldLoadDataWhenCalledSubscriberOnNext() throws Exception {
+  public void shouldLoadDataWhenCalledSubscriberOnNext() {
     RnRForm form = new RnRForm();
     Program program = new Program();
-    program.setProgramCode("MMIA");
+    program.setProgramCode(programCode);
     form.setProgram(program);
     form.setPeriodBegin(new Date());
     form.setPeriodEnd(new Date());
@@ -123,10 +122,10 @@ public class RnRFormListActivityTest {
   }
 
   @Test
-  public void shouldStartPhysicalInventoryWhenBtnClickedWithUncompleteInventory() throws Exception {
+  public void shouldStartPhysicalInventoryWhenBtnClickedWithUncompleteInventory() {
     View view = mock(View.class);
 
-    RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA",
+    RnRFormViewModel viewModel = generateRnRFormViewModel(programCode,
         RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
     rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
@@ -138,10 +137,10 @@ public class RnRFormListActivityTest {
   }
 
   @Test
-  public void shouldSelectPeriodWhenBtnClickedWithSelectClosePeriod() throws Exception {
+  public void shouldSelectPeriodWhenBtnClickedWithSelectClosePeriod() {
     View view = mock(View.class);
 
-    RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA",
+    RnRFormViewModel viewModel = generateRnRFormViewModel(programCode,
         RnRFormViewModel.TYPE_INVENTORY_DONE);
     rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
@@ -150,14 +149,14 @@ public class RnRFormListActivityTest {
     assertNotNull(nextStartedIntent);
     assertEquals(nextStartedIntent.getComponent().getClassName(),
         SelectPeriodActivity.class.getName());
-    assertEquals(nextStartedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), "MMIA");
+    assertEquals(programCode, nextStartedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE));
   }
 
   @Test
-  public void shouldStartSelectPeriodPageWhenBtnClickedWithTypeMissedPeriod() throws Exception {
+  public void shouldStartSelectPeriodPageWhenBtnClickedWithTypeMissedPeriod() {
     View view = mock(View.class);
 
-    RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA",
+    RnRFormViewModel viewModel = generateRnRFormViewModel(programCode,
         RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD);
     rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
@@ -166,14 +165,14 @@ public class RnRFormListActivityTest {
     assertNotNull(nextStartedIntent);
     assertEquals(nextStartedIntent.getComponent().getClassName(),
         SelectPeriodActivity.class.getName());
-    assertEquals(nextStartedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), "MMIA");
+    assertEquals(programCode, nextStartedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE));
   }
 
   @Test
-  public void shouldStartMMIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
+  public void shouldStartMMIAHistoryWhenBtnClickedWithTypeHistory() {
     View view = mock(View.class);
 
-    RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA",
+    RnRFormViewModel viewModel = generateRnRFormViewModel(programCode,
         RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
     viewModel.setId(999L);
     rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
@@ -183,11 +182,11 @@ public class RnRFormListActivityTest {
     assertNotNull(nextStartedIntent);
     assertEquals(nextStartedIntent.getComponent().getClassName(),
         MMIARequisitionActivity.class.getName());
-    assertEquals(nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0), 999L);
+    assertEquals(999L, nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0));
   }
 
   @Test
-  public void shouldStartVIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
+  public void shouldStartVIAHistoryWhenBtnClickedWithTypeHistory() {
     View view = mock(View.class);
 
     intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.Program.VIA_PROGRAM);
@@ -204,14 +203,14 @@ public class RnRFormListActivityTest {
     assertNotNull(nextStartedIntent);
     assertEquals(nextStartedIntent.getComponent().getClassName(),
         VIARequisitionActivity.class.getName());
-    assertEquals(nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0), 999L);
+    assertEquals(999L, nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0));
   }
 
   @Test
-  public void shouldStartMMIAEditPageWhenBtnClickedWithTypeUnauthorized() throws Exception {
+  public void shouldStartMMIAEditPageWhenBtnClickedWithTypeUnauthorized() {
     View view = mock(View.class);
 
-    RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_DRAFT);
+    RnRFormViewModel viewModel = generateRnRFormViewModel(programCode, RnRFormViewModel.TYPE_DRAFT);
     rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
     Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
@@ -219,14 +218,14 @@ public class RnRFormListActivityTest {
     assertNotNull(nextStartedIntent);
     assertEquals(nextStartedIntent.getComponent().getClassName(),
         MMIARequisitionActivity.class.getName());
-    assertEquals(nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0), 0L);
+    assertEquals(0L, nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0));
   }
 
   @Test
-  public void shouldNotLoadSameFormIdAfterLoadedViaHistoryForm() throws Exception {
+  public void shouldNotLoadSameFormIdAfterLoadedViaHistoryForm() {
     View view = mock(View.class);
 
-    RnRFormViewModel historyViewModel = generateRnRFormViewModel("MMIA",
+    RnRFormViewModel historyViewModel = generateRnRFormViewModel(programCode,
         RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
     historyViewModel.setId(1L);
     rnRFormListActivity.rnRFormItemClickListener.clickBtnView(historyViewModel, view);
@@ -238,7 +237,7 @@ public class RnRFormListActivityTest {
         MMIARequisitionActivity.class.getName());
     assertEquals(1L, startedIntentWhenIsHistory.getLongExtra(Constants.PARAM_FORM_ID, 0));
 
-    RnRFormViewModel defaultViewModel = generateRnRFormViewModel("MMIA",
+    RnRFormViewModel defaultViewModel = generateRnRFormViewModel(programCode,
         RnRFormViewModel.TYPE_DRAFT);
     rnRFormListActivity.rnRFormItemClickListener.clickBtnView(defaultViewModel, view);
 
@@ -251,8 +250,7 @@ public class RnRFormListActivityTest {
   }
 
   @Test
-  public void shouldGoToRequisitionPageWhenInvokeOnActivityResultWithSelectPeriodRequestCode()
-      throws Exception {
+  public void shouldGoToRequisitionPageWhenInvokeOnActivityResultWithSelectPeriodRequestCode() {
     Intent data = new Intent();
     Date inventoryDate = new Date();
     data.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventoryDate);
@@ -276,7 +274,7 @@ public class RnRFormListActivityTest {
   }
 
   @Test
-  public void shouldRefreshUIWhenInvokeOnActivityResultWithRNRListRequestCode() throws Exception {
+  public void shouldRefreshUIWhenInvokeOnActivityResultWithRNRListRequestCode() {
     rnRFormListActivity
         .onActivityResult(Constants.REQUEST_FROM_RNR_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
@@ -284,7 +282,7 @@ public class RnRFormListActivityTest {
   }
 
   @Test
-  public void shouldShowToastWhenDateNotInEmergencyDate() throws Exception {
+  public void shouldShowToastWhenDateNotInEmergencyDate() {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
     rnRFormListActivity.checkAndGotoEmergencyPage();
@@ -293,16 +291,11 @@ public class RnRFormListActivityTest {
   }
 
   @Test
-  public void shouldShowToastWhenHasMissed() throws Exception {
+  public void shouldShowToastWhenHasMissed() {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
 
-    Observable<Boolean> value = Observable.create(new Observable.OnSubscribe<Boolean>() {
-      @Override
-      public void call(Subscriber<? super Boolean> subscriber) {
-        subscriber.onNext(true);
-      }
-    });
+    Observable<Boolean> value = Observable.create(subscriber -> subscriber.onNext(true));
 
     when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
     rnRFormListActivity.checkAndGotoEmergencyPage();
@@ -311,16 +304,11 @@ public class RnRFormListActivityTest {
   }
 
   @Test
-  public void shouldGotoEmergencyPage() throws Exception {
+  public void shouldGotoEmergencyPage() {
     LMISTestApp.getInstance().setCurrentTimeMillis(
         DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
 
-    Observable<Boolean> value = Observable.create(new Observable.OnSubscribe<Boolean>() {
-      @Override
-      public void call(Subscriber<? super Boolean> subscriber) {
-        subscriber.onNext(false);
-      }
-    });
+    Observable<Boolean> value = Observable.create(subscriber -> subscriber.onNext(false));
     when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
 
     rnRFormListActivity.checkAndGotoEmergencyPage();

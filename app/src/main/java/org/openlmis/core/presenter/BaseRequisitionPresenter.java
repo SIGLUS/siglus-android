@@ -80,22 +80,16 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
 
   public abstract void loadData(final long formId, Date periodEndDate);
 
-  protected Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
-    @Override
-    public void call(RnRForm form) {
-      rnRForm = form;
-      updateFormUI();
-      loadAlertDialogIsFormStatusIsDraft();
-      view.loaded();
-    }
+  protected Action1<RnRForm> loadDataOnNextAction = form -> {
+    rnRForm = form;
+    updateFormUI();
+    loadAlertDialogIsFormStatusIsDraft();
+    view.loaded();
   };
 
-  protected Action1<Throwable> loadDataOnErrorAction = new Action1<Throwable>() {
-    @Override
-    public void call(Throwable throwable) {
-      view.loaded();
-      ToastUtil.show(throwable.getMessage());
-    }
+  protected Action1<Throwable> loadDataOnErrorAction = throwable -> {
+    view.loaded();
+    ToastUtil.show(throwable.getMessage());
   };
 
   public void loadAlertDialogIsFormStatusIsDraft() {

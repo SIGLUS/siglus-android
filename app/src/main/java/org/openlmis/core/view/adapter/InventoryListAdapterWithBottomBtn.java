@@ -31,7 +31,7 @@ public abstract class InventoryListAdapterWithBottomBtn extends
   private static final int TYPE_ITEM = 0;
   private static final int TYPE_FOOTER = 1;
 
-  public InventoryListAdapterWithBottomBtn(List<InventoryViewModel> data) {
+  protected InventoryListAdapterWithBottomBtn(List<InventoryViewModel> data) {
     super(data);
   }
 

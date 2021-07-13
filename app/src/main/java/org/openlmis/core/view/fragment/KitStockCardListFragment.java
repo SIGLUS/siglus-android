@@ -64,6 +64,7 @@ public class KitStockCardListFragment extends StockCardListFragment {
     presenter.loadKits();
   }
 
+  @Override
   protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
     return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
   }

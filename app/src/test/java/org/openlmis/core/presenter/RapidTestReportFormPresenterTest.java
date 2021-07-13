@@ -100,10 +100,8 @@ public class RapidTestReportFormPresenterTest {
     subscriber2.assertNoErrors();
     RapidTestReportViewModel viewModel2 = subscriber2.getOnNextEvents().get(0);
 
-    assertEquals(viewModel2.getItemViewModelMap().get("MOBILE_UNIT").getGridSyphillis()
-        .getConsumptionValue(), "100");
-    assertEquals(
-        viewModel2.getItemViewModelMap().get("PNCTL").getGridSyphillis().getPositiveValue(), "300");
+    assertEquals("100", viewModel2.getItemViewModelMap().get("MOBILE_UNIT").getGridSyphillis().getConsumptionValue());
+    assertEquals("300", viewModel2.getItemViewModelMap().get("PNCTL").getGridSyphillis().getPositiveValue());
     assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel2.getStatus());
   }
 

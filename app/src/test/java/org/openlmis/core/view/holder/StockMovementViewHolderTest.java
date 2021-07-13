@@ -42,21 +42,20 @@ import org.robolectric.shadows.ShadowToast;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class StockMovementViewHolderTest {
 
+  private final String movementReasonCode = "ISSUE_1";
+  private final String movementReasonDescription = "issue description";
   private StockMovementViewHolder viewHolder;
   private StockMovementViewModel viewModel;
   private StockMovementViewModel newestViewModel;
-  private ProductRepository productRepository;
   private StockCard stockCard;
   private View itemView;
   private String NEWEST_TIME_STRING = "";
 
   @Before
   public void setUp() throws LMISException, ParseException {
-    itemView = LayoutInflater.from(RuntimeEnvironment.application)
-        .inflate(R.layout.item_stock_movement, null, false);
+    itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stock_movement, null, false);
     viewHolder = new StockMovementViewHolder(itemView);
     NEWEST_TIME_STRING = (Calendar.getInstance().get(Calendar.YEAR) + 2) + "-" + 11 + "-" + 11;
 
@@ -70,8 +69,8 @@ public class StockMovementViewHolderTest {
         .withStockExistence("70")
         .withIsDraft(false)
         .withMovementReason(
-            new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE,
-                "ISSUE_1", "issue description")).build();
+            new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, movementReasonCode,
+                movementReasonDescription)).build();
     newestViewModel = new StockMovementViewModelBuilder()
         .withMovementDate(NEWEST_TIME_STRING)
         .withDocumentNo("12345")
@@ -83,11 +82,11 @@ public class StockMovementViewHolderTest {
         .withIsDraft(false)
         .withMovementReason(
             new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE,
-                "ISSUE_1", "issue description")).build();
+                movementReasonCode, movementReasonDescription)).build();
 
     StockRepository stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(StockRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+    ProductRepository productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(ProductRepository.class);
 
     stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository, productRepository);
@@ -106,7 +105,7 @@ public class StockMovementViewHolderTest {
     assertEquals("30", viewHolder.etIssued.getText().toString());
     assertEquals("70", viewHolder.txStockExistence.getText().toString());
     assertEquals("999", viewHolder.etRequested.getText().toString());
-    assertEquals("issue description", viewHolder.txReason.getText().toString());
+    assertEquals(movementReasonDescription, viewHolder.txReason.getText().toString());
   }
 
   @Test
@@ -153,7 +152,7 @@ public class StockMovementViewHolderTest {
   public void shouldSetFontColorBlackIfIssueAdjustment() {
     viewModel.setReason(
         new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE,
-            "ISSUE_1", "issue description"));
+            movementReasonCode, movementReasonDescription));
     viewHolder.populate(viewModel, stockCard);
 
     int black = RuntimeEnvironment.application.getResources().getColor(R.color.color_black);
@@ -275,7 +274,7 @@ public class StockMovementViewHolderTest {
         viewModel);
 
     MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(
-        MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "issue description");
+        MovementReasonManager.MovementType.ISSUE, movementReasonCode, movementReasonDescription);
 
     listener.onComplete(receiveReason);
 
@@ -397,13 +396,13 @@ public class StockMovementViewHolderTest {
   public void shouldResetTxReasonValueWhenReuseViewModel() {
     viewHolder.populate(viewModel, stockCard);
 
-    assertEquals(viewHolder.txReason.getText().toString(), "issue description");
+    assertEquals(movementReasonDescription, viewHolder.txReason.getText().toString());
 
     viewModel.setDraft(true);
     viewModel.setReason(null);
     viewHolder.populate(viewModel, stockCard);
 
-    assertEquals(viewHolder.txReason.getText().toString(), "");
+    assertEquals("", viewHolder.txReason.getText().toString());
   }
 
   @Test

@@ -46,7 +46,10 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
   public static final String MEDICINE_TYPE_SOLUTION = "Solution";
   public static final String MEDICINE_TYPE_OTHER = "Other";
 
-  //DEPRECATED, DO NOT USE
+  /**
+   * @deprecated deprecated filed, use {@link ProductProgram}
+   */
+  @Deprecated
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   Program program;
 

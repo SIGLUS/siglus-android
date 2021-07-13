@@ -61,15 +61,15 @@ public class StockMovementEntryTest {
     StockMovementEntry entry1 = new StockMovementEntry(stockMovementItem);
 
     // then
-    assertEquals(entry.getProductCode(), "productCode");
-    assertEquals(entry.getQuantity(), -50);
-    assertEquals(entry.getOccurredDate(), "2016-01-01");
-    assertEquals(entry.getDocumentationNo(), "123");
-    assertEquals(entry.getLotEventList().size(), 2);
-    assertEquals(entry.getLotEventList().get(0).getLotNumber(), "lot-1");
-    assertEquals(entry.getLotEventList().get(0).getExpirationDate(), "2020-10-31");
-    assertEquals(entry.getLotEventList().get(0).getQuantity(), 30L);
-    assertEquals(entry.getLotEventList().get(0).getStockOnHand(), 50);
+    assertEquals("productCode", entry.getProductCode());
+    assertEquals(-50, entry.getQuantity());
+    assertEquals("2016-01-01", entry.getOccurredDate());
+    assertEquals("123", entry.getDocumentationNo());
+    assertEquals(2, entry.getLotEventList().size());
+    assertEquals("lot-1", entry.getLotEventList().get(0).getLotNumber());
+    assertEquals("2020-10-31", entry.getLotEventList().get(0).getExpirationDate());
+    assertEquals(30L, entry.getLotEventList().get(0).getQuantity());
+    assertEquals(50, entry.getLotEventList().get(0).getStockOnHand());
     assertEquals(entry, entry1);
     assertNotEquals(entry.getLotEventList().get(0), entry.getLotEventList().get(1));
   }
@@ -103,15 +103,15 @@ public class StockMovementEntryTest {
     StockMovementEntry entry = new StockMovementEntry(stockMovementItem);
 
     // then
-    assertEquals(entry.getProductCode(), "productCode");
-    assertEquals(entry.getQuantity(), 50);
-    assertEquals(entry.getOccurredDate(), "2016-01-01");
-    assertEquals(entry.getType(), "ADJUSTMENT");
-    assertEquals(entry.getLotEventList().size(), 1);
-    assertEquals(entry.getLotEventList().get(0).getLotNumber(), "ABC");
-    assertEquals(entry.getLotEventList().get(0).getExpirationDate(), "2020-10-11");
-    assertEquals(entry.getLotEventList().get(0).getQuantity(), 30L);
-    assertEquals(entry.getLotEventList().get(0).getStockOnHand(), 50);
+    assertEquals("productCode", entry.getProductCode());
+    assertEquals(50, entry.getQuantity());
+    assertEquals("2016-01-01", entry.getOccurredDate());
+    assertEquals("ADJUSTMENT", entry.getType());
+    assertEquals(1, entry.getLotEventList().size());
+    assertEquals("ABC", entry.getLotEventList().get(0).getLotNumber());
+    assertEquals("2020-10-11", entry.getLotEventList().get(0).getExpirationDate());
+    assertEquals(30L, entry.getLotEventList().get(0).getQuantity());
+    assertEquals(50, entry.getLotEventList().get(0).getStockOnHand());
   }
 
   private Lot getMockLot(StockCard stockCard, String lotNumber, String expireDate) {

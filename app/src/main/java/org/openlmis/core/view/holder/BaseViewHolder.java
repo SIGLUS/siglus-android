@@ -56,7 +56,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
     }
   }
 
-  class ViewMembersInjector {
+  static class ViewMembersInjector {
 
     private final Field field;
 
@@ -75,9 +75,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
           field.setAccessible(true);
           field.set(holder, value);
         }
-      } catch (IllegalAccessException e) {
-        throw new RuntimeException(e);
-      } catch (IllegalArgumentException f) {
+      } catch (Exception f) {
         throw new IllegalArgumentException(String.format("Can't assign %s value %s to %s field %s",
             value != null ? value.getClass() : "(null)", value, field.getType(), field.getName()));
       }

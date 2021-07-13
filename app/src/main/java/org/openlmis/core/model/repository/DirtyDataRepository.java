@@ -22,6 +22,7 @@ import android.content.Context;
 import android.util.Log;
 import com.google.inject.Inject;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -62,21 +63,20 @@ public class DirtyDataRepository {
       for (DirtyDataItemInfo info : itemInfos) {
         productCodeMapItem.put(info.getProductCode(), info);
       }
-      dbUtil.withDaoAsBatch(DirtyDataItemInfo.class,
-          (DbUtil.Operation<DirtyDataItemInfo, Void>) dao -> {
-            for (DirtyDataItemInfo item : dirtyDataItemsInfo) {
-              if (productCodeMapItem.containsKey(item.getProductCode())) {
-                DirtyDataItemInfo dbItem = productCodeMapItem.get(item.getProductCode());
-                dbItem.setFullyDelete(item.isFullyDelete());
-                dbItem.setSynced(false);
-                dbItem.setJsonData(item.getJsonData());
-                dao.createOrUpdate(dbItem);
-              } else {
-                dao.createOrUpdate(item);
-              }
-            }
-            return null;
-          });
+      dbUtil.withDaoAsBatch(DirtyDataItemInfo.class, dao -> {
+        for (DirtyDataItemInfo item : dirtyDataItemsInfo) {
+          if (productCodeMapItem.containsKey(item.getProductCode())) {
+            DirtyDataItemInfo dbItem = productCodeMapItem.get(item.getProductCode());
+            dbItem.setFullyDelete(item.isFullyDelete());
+            dbItem.setSynced(false);
+            dbItem.setJsonData(item.getJsonData());
+            dao.createOrUpdate(dbItem);
+          } else {
+            dao.createOrUpdate(item);
+          }
+        }
+        return null;
+      });
 
     } catch (LMISException e) {
       Log.w(TAG, e);
@@ -104,17 +104,13 @@ public class DirtyDataRepository {
     }
   }
 
-  private boolean hasSavedNeedUpdate(DirtyDataItemInfo fromDB, DirtyDataItemInfo fromRule) {
-    return fromDB.getProductCode().equals(fromRule.getProductCode());
-  }
-
   private List<DirtyDataItemInfo> listAll() {
     try {
       return deleteItemInfoGenericDao.queryForAll();
     } catch (LMISException e) {
       Log.w(TAG, e);
     }
-    return null;
+    return Collections.emptyList();
   }
 
   public List<DirtyDataItemInfo> listunSyced() {
@@ -124,7 +120,7 @@ public class DirtyDataRepository {
     } catch (LMISException e) {
       Log.w(TAG, e);
     }
-    return null;
+    return Collections.emptyList();
   }
 
   private boolean hasBackedData(List<DirtyDataItemInfo> infos) {

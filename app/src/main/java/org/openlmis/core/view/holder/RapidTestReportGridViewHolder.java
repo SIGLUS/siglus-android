@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
@@ -74,16 +75,15 @@ public class RapidTestReportGridViewHolder extends BaseViewHolder {
 
   private void updateGridViewHaveValueAlert() {
     if (viewModel.isNeedAddGridViewWarning()) {
-      warningLinerLayout
-          .setBackground(context.getResources().getDrawable(R.drawable.border_bg_red));
+      warningLinerLayout.setBackground(ContextCompat.getDrawable(context, R.drawable.border_bg_red));
     }
   }
 
   public void setEditable(Boolean editable) {
-    if (editable) {
-      etConsume.setFocusable(editable);
-      etPositive.setFocusable(editable);
-      etUnjustified.setFocusable(editable);
+    if (Boolean.TRUE.equals(editable)) {
+      etConsume.setFocusable(true);
+      etPositive.setFocusable(true);
+      etUnjustified.setFocusable(true);
     }
   }
 

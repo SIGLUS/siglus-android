@@ -289,7 +289,7 @@ public class MMIADispensedInfoList extends LinearLayout {
 
   private String getTypesTotal(List<EditText> list) {
     int sum = 0;
-    if (list == null || list.size() == 0) {
+    if (list == null || list.isEmpty()) {
       return "0";
     }
     for (EditText item : list) {
@@ -301,9 +301,9 @@ public class MMIADispensedInfoList extends LinearLayout {
   private String getAdjustment() {
     DecimalFormat df = new DecimalFormat("#.##");
     int treatmentTotal = Integer.parseInt(getTreatmentTotal());
-    int withinTotal = Integer.parseInt(getTypesTotal(withinLists));
+    int withinTotalIntValue = Integer.parseInt(getTypesTotal(withinLists));
     return df.format(
-        (treatmentTotal == 0 || withinTotal == 0) ? 0 : (treatmentTotal * 1.0) / withinTotal);
+        (treatmentTotal == 0 || withinTotalIntValue == 0) ? 0 : (treatmentTotal * 1.0) / withinTotalIntValue);
   }
 
   private void updateTotalInfo() {

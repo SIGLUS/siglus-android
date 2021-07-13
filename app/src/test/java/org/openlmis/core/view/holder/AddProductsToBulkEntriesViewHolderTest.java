@@ -1,6 +1,7 @@
 package org.openlmis.core.view.holder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +37,7 @@ public class AddProductsToBulkEntriesViewHolderTest {
     // when
     viewHolder.populate(viewModel, queryKeyWord);
     // then
-    assertEquals(viewHolder.productName.getText().toString(), "Lamivudina 150mg [08S40]");
+    assertEquals("Lamivudina 150mg [08S40]", viewHolder.productName.getText().toString());
   }
 
   @Test
@@ -47,8 +48,6 @@ public class AddProductsToBulkEntriesViewHolderTest {
     viewHolder.putOnChangedListener(viewModel);
     viewHolder.checkBox.performClick();
     // then
-    assertEquals(viewModel.isChecked(),true);
+    assertTrue(viewModel.isChecked());
   }
-
-
 }

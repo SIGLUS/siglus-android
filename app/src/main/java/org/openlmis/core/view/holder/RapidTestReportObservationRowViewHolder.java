@@ -42,7 +42,7 @@ public class RapidTestReportObservationRowViewHolder extends BaseViewHolder {
 
 
   public void populate(RapidTestReportViewModel viewModel) {
-    Boolean editable = viewModel.isEditable();
+    boolean editable = viewModel.isEditable();
     observationContent.setEnabled(editable);
     observationContent.setFocusableInTouchMode(editable);
     observationContent.setText(viewModel.getObservation());
@@ -51,20 +51,12 @@ public class RapidTestReportObservationRowViewHolder extends BaseViewHolder {
       observationContent.removeTextChangedListener(textWatcher);
     }
     if (editable) {
-      textWatcher =
-          new RapidTestReportObservationRowViewHolder.EditTextWatcher(observationContent);
+      textWatcher = new RapidTestReportObservationRowViewHolder.EditTextWatcher();
       observationContent.addTextChangedListener(textWatcher);
     }
   }
 
-
   class EditTextWatcher extends SimpleTextWatcher {
-
-    private final EditText editText;
-
-    public EditTextWatcher(EditText editText) {
-      this.editText = editText;
-    }
 
     @Override
     public void afterTextChanged(Editable etText) {

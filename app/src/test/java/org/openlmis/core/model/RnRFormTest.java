@@ -25,7 +25,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class RnRFormTest {
 
   private RnRForm rnRForm;
@@ -53,11 +52,11 @@ public class RnRFormTest {
     List<RnrFormItem> rnrFormDeactivatedItemList = rnRForm
         .getDeactivatedAndUnsupportedProductItems(Arrays.asList("P1", "P2"));
     assertEquals(2, rnrFormDeactivatedItemList.size());
-    assertEquals(false, rnrFormDeactivatedItemList.get(0).getProduct().isActive());
+    assertFalse(rnrFormDeactivatedItemList.get(0).getProduct().isActive());
   }
 
   @Test
-  public void shouldGetNonKitFormItemAndKitFormItem() throws Exception {
+  public void shouldGetNonKitFormItemAndKitFormItem() {
     Product kitProduct = new ProductBuilder().setIsActive(true).setIsKit(true).setCode("kit")
         .build();
     Product product = new ProductBuilder().setIsActive(true).setIsKit(false).setCode("product")
@@ -78,7 +77,7 @@ public class RnRFormTest {
   }
 
   @Test
-  public void shouldGenerateRnRFromByLastPeriod() throws Exception {
+  public void shouldGenerateRnRFromByLastPeriod() {
     Date generateDate = DateUtil.parseString("10/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
     RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
 
@@ -106,7 +105,7 @@ public class RnRFormTest {
 
 
   @Test
-  public void shouldGenerateRnRFromByCurrentPeriod() throws Exception {
+  public void shouldGenerateRnRFromByCurrentPeriod() {
     Date generateDate = DateUtil.parseString("30/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
     RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
 
@@ -133,7 +132,7 @@ public class RnRFormTest {
   }
 
   @Test
-  public void shouldInitFormMissedStatusWhenHasMissed() throws Exception {
+  public void shouldInitFormMissedStatusWhenHasMissed() {
     Program program = new Program();
     program.setId(123);
     program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
@@ -160,7 +159,7 @@ public class RnRFormTest {
   }
 
   @Test
-  public void shouldInitEmergencyForm() throws Exception {
+  public void shouldInitEmergencyForm() {
     Program program = new Program();
     program.setId(123);
     program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
@@ -178,7 +177,7 @@ public class RnRFormTest {
   }
 
   @Test
-  public void shouldSortRnrFormItemByProductCode() throws Exception {
+  public void shouldSortRnrFormItemByProductCode() {
     List<RnrFormItem> rnrFormItems = new ArrayList<>();
     rnrFormItems.add(generateRnrFormItem("03A02", false));
     rnrFormItems.add(generateRnrFormItem("01A02", false));
@@ -193,7 +192,7 @@ public class RnRFormTest {
   }
 
   @Test
-  public void shouldSortRnrByCategoryFirst() throws Exception {
+  public void shouldSortRnrByCategoryFirst() {
     List<RnrFormItem> rnrFormItems = new ArrayList<>();
     rnrFormItems.add(generateRnrFormItem("A3", false));
     rnrFormItems.add(generateRnrFormItem("B3", true));
@@ -219,24 +218,26 @@ public class RnRFormTest {
   }
 
   @Test
-  public void shouldAddSignature() throws Exception {
+  public void shouldAddSignature() {
     rnRForm.setStatus(Status.DRAFT);
-    rnRForm.addSignature("signature1");
+    String signature1 = "signature1";
+    rnRForm.addSignature(signature1);
     assertEquals(Status.SUBMITTED, rnRForm.getStatus());
-    assertEquals(rnRForm.getSignaturesWrapper().get(0).getSignature(), "signature1");
+    assertEquals(signature1, rnRForm.getSignaturesWrapper().get(0).getSignature());
 
-    rnRForm.addSignature("signature2");
+    String signature2 = "signature2";
+    rnRForm.addSignature(signature2);
     assertEquals(Status.AUTHORIZED, rnRForm.getStatus());
-    assertEquals(rnRForm.getSignaturesWrapper().get(1).getSignature(), "signature2");
+    assertEquals(signature2, rnRForm.getSignaturesWrapper().get(1).getSignature());
 
     rnRForm = new RnRForm();
     rnRForm.setStatus(Status.DRAFT_MISSED);
-    rnRForm.addSignature("signature1");
+    rnRForm.addSignature(signature1);
     assertEquals(Status.SUBMITTED_MISSED, rnRForm.getStatus());
-    assertEquals(rnRForm.getSignaturesWrapper().get(0).getSignature(), "signature1");
+    assertEquals(signature1, rnRForm.getSignaturesWrapper().get(0).getSignature());
 
-    rnRForm.addSignature("signature2");
+    rnRForm.addSignature(signature2);
     assertEquals(Status.AUTHORIZED, rnRForm.getStatus());
-    assertEquals(rnRForm.getSignaturesWrapper().get(1).getSignature(), "signature2");
+    assertEquals(signature2, rnRForm.getSignaturesWrapper().get(1).getSignature());
   }
 }

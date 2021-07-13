@@ -272,14 +272,14 @@ public class RnRForm extends BaseModel {
     YES(true),
     NO(false);
 
+    private final boolean value;
+
     public boolean isEmergency() {
-      return emergency;
+      return value;
     }
 
-    private final boolean emergency;
-
     Emergency(boolean emergency) {
-      this.emergency = emergency;
+      this.value = emergency;
     }
   }
 

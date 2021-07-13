@@ -24,7 +24,7 @@ import org.openlmis.core.presenter.Presenter;
 
 public class RetainedFragment extends BaseFragment {
 
-  private final HashMap map = new HashMap<>();
+  private final HashMap<Object, Object> map = new HashMap<>();
 
   // this method is only called once for this fragment
   @Override

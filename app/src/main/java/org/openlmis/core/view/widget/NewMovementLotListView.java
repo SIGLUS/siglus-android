@@ -54,6 +54,7 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     super(context, attrs);
   }
 
+  @Override
   public void initLotListView(BaseStockMovementViewModel viewModel) {
     this.viewModel = viewModel;
     movementChangedListener = getMovementChangedListener();
@@ -70,6 +71,7 @@ public class NewMovementLotListView extends MovementChangeLotListView {
     initLotErrorBanner();
   }
 
+  @Override
   public void addNewLot(LotMovementViewModel lotMovementViewModel) {
     super.addNewLot(lotMovementViewModel);
     updateAddPositiveLotAmountAlert();

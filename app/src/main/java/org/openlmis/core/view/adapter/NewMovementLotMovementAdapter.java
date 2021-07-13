@@ -21,7 +21,6 @@ package org.openlmis.core.view.adapter;
 import java.util.List;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
-@SuppressWarnings("PMD")
 public class NewMovementLotMovementAdapter extends LotMovementAdapter {
 
   public NewMovementLotMovementAdapter(List<LotMovementViewModel> data) {
@@ -38,10 +37,8 @@ public class NewMovementLotMovementAdapter extends LotMovementAdapter {
       lotMovementViewModel.setQuantityLessThanSoh(true);
     }
     for (int i = 0; i < lotList.size(); i++) {
-      if (!lotList.get(i).validateQuantityNotGreaterThanSOH()) {
-        if (position == -1 || position > i) {
-          position = i;
-        }
+      if (!lotList.get(i).validateQuantityNotGreaterThanSOH() && position == -1) {
+        position = i;
       }
     }
 
@@ -56,10 +53,8 @@ public class NewMovementLotMovementAdapter extends LotMovementAdapter {
       lotMovementViewModel.setQuantityLessThanSoh(true);
     }
     for (int i = 0; i < lotList.size(); i++) {
-      if (!lotList.get(i).validateLotWithPositiveQuantity()) {
-        if (position == -1 || position > i) {
-          position = i;
-        }
+      if (!lotList.get(i).validateLotWithPositiveQuantity() && position == -1) {
+        position = i;
       }
     }
 

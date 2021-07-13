@@ -67,6 +67,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.DashboardView;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.SyncTimeView;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
@@ -84,6 +85,21 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   @InjectView(R.id.dv_product_dashboard)
   DashboardView dvProductDashboard;
+
+  @InjectView(R.id.btn_stock_card)
+  View btnStockCardOverView;
+
+  @InjectView(R.id.btn_inventory)
+  View btnPhysicalInventory;
+
+  @InjectView(R.id.btn_requisitions)
+  View btnRequisitions;
+
+  @InjectView(R.id.btn_kits)
+  View btnKits;
+
+  @InjectView(R.id.btn_issue_voucher)
+  View btnIssueVoucher;
 
   @InjectResource(R.integer.back_twice_interval)
   private int backTwiceInterval;
@@ -118,37 +134,35 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private int syncedCount = 0;
 
-  public void onClickStockCard(View view) {
-    if (!isHaveDirtyData()) {
-      startActivity(StockCardListActivity.class);
+  private final SingleClickButtonListener singleClickButtonListener = new SingleClickButtonListener() {
+    @Override
+    public void onSingleClick(View v) {
+      if (isHaveDirtyData()) {
+        return;
+      }
+      switch (v.getId()) {
+        case R.id.btn_stock_card:
+          startActivity(StockCardListActivity.class);
+          break;
+        case R.id.btn_inventory:
+          Intent inventoryIntent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
+          startActivity(inventoryIntent);
+          break;
+        case R.id.btn_requisitions:
+          Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
+          startActivity(reportIntent);
+          break;
+        case R.id.btn_kits:
+          startActivity(KitStockCardListActivity.class);
+          break;
+        case R.id.btn_issue_voucher:
+          startActivity(new Intent(HomeActivity.this, IssueVoucherActivity.class));
+          break;
+        default:
+          // do nothing
+      }
     }
-  }
-
-  public void onClickRequisitions(View view) {
-    if (!isHaveDirtyData()) {
-      Intent intent = new Intent(HomeActivity.this, ReportListActivity.class);
-      startActivity(intent);
-    }
-  }
-
-  public void onClickInventory(View view) {
-    if (!isHaveDirtyData()) {
-      Intent intent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
-      startActivity(intent);
-    }
-  }
-
-  public void onClickKits(View view) {
-    if (!isHaveDirtyData()) {
-      startActivity(KitStockCardListActivity.class);
-    }
-  }
-
-  public void onClickIssueVoucher(View view) {
-    if (!isHaveDirtyData()) {
-      startActivity(new Intent(this, IssueVoucherActivity.class));
-    }
-  }
+  };
 
   public void syncData() {
     syncService.requestSyncImmediatelyFromUserTrigger();
@@ -280,6 +294,11 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
       setTitle(UserInfoMgr.getInstance().getFacilityName());
       syncTimeView = findViewById(R.id.view_sync_time);
       incompleteRequisitionBanner = findViewById(R.id.view_incomplete_requisition_banner);
+      btnStockCardOverView.setOnClickListener(singleClickButtonListener);
+      btnPhysicalInventory.setOnClickListener(singleClickButtonListener);
+      btnRequisitions.setOnClickListener(singleClickButtonListener);
+      btnKits.setOnClickListener(singleClickButtonListener);
+      btnIssueVoucher.setOnClickListener(singleClickButtonListener);
       if (getSupportActionBar() != null) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
       }

@@ -164,12 +164,9 @@ public class DirtyDataManager {
         && !sharedPreferenceMgr.shouldSyncLastYearStockData()
         && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {
       Set<String> filterStockCardIds = new HashSet<>();
-      final String facilityId = sharedPreferenceMgr.getUserFacilityId();
-      Map<String, Object> duplicateMap = checkDuplicateDataAllWithoutSignature(facilityId,
-          filterStockCardIds);
+      Map<String, Object> duplicateMap = checkDuplicateDataAllWithoutSignature(filterStockCardIds);
       Set<String> deleteProducts = checkSoh(filterStockCardIds);
-      List<StockMovementItem> duplicatedNotAffectCalculate = checkDuplicateDataNotAffectCalculate(
-          facilityId, filterStockCardIds);
+      List<StockMovementItem> duplicatedNotAffectCalculate = checkDuplicateDataNotAffectCalculate(filterStockCardIds);
       saveToSharePreferenceMgr(duplicateMap, deleteProducts, duplicatedNotAffectCalculate);
       sharedPreferenceMgr.setIsInitialDataCheck(false);
     }
@@ -237,13 +234,9 @@ public class DirtyDataManager {
       isSyncedMonthCheck = true;
       sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
       Set<String> filterStockCardIds = new HashSet<>();
-      final String facilityId = sharedPreferenceMgr.getUserFacilityId();
-
-      Map<String, Object> duplicateMap = checkDuplicateDataAllWithoutSignature(facilityId,
-          filterStockCardIds);
+      Map<String, Object> duplicateMap = checkDuplicateDataAllWithoutSignature(filterStockCardIds);
       Set<String> deleteProducts = checkAllMovementAndLotSOHAndSaveToDB(filterStockCardIds);
-      List<StockMovementItem> duplicatedNotAffectCalculate = checkDuplicateDataNotAffectCalculate(
-          facilityId, filterStockCardIds);
+      List<StockMovementItem> duplicatedNotAffectCalculate = checkDuplicateDataNotAffectCalculate(filterStockCardIds);
       saveToSharePreferenceMgr(duplicateMap, deleteProducts, duplicatedNotAffectCalculate);
       isSyncedMonthCheck = false;
       sharedPreferenceMgr.updateLatestMonthlyCheckDirtyDataTime();
@@ -339,13 +332,10 @@ public class DirtyDataManager {
     Type type = new TypeToken<List<StockMovementEntry>>() {
     }.getType();
     gson.toJson(movementEntries, type);
-    return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type),
-        fullyDelete);
+    return new DirtyDataItemInfo(productCode, false, gson.toJson(movementEntries, type), fullyDelete);
   }
 
-
-  private Map<String, Object> checkDuplicateDataAllWithoutSignature(String facilityId,
-      Set<String> filterStockCards) {
+  private Map<String, Object> checkDuplicateDataAllWithoutSignature(Set<String> filterStockCards) {
     Map<String, List<StockMovementItem>> stockMovementItems = stockMovementRepository
         .queryNoSignatureStockCardsMovements();
     if (stockMovementItems.keySet().isEmpty()) {
@@ -382,8 +372,7 @@ public class DirtyDataManager {
     return mapToStockItems;
   }
 
-  private List<StockMovementItem> checkDuplicateDataNotAffectCalculate(String facilityId,
-      Set<String> filterStockCardIds) {
+  private List<StockMovementItem> checkDuplicateDataNotAffectCalculate(Set<String> filterStockCardIds) {
     Map<String, List<StockMovementItem>> stockMovementItems = stockMovementRepository
         .queryDirtyDataNoAffectCalculatedStockCardsMovements(filterStockCardIds);
     if (stockMovementItems.keySet().isEmpty()) {

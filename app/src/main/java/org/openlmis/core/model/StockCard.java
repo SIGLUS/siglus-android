@@ -47,6 +47,9 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
   public static final String DIVIDER = ",";
 
+  /**
+   * @deprecated deprecated filed, use {@link Lot#expirationDate}
+   */
   @Deprecated
   @DatabaseField
   String expireDates;

@@ -86,7 +86,7 @@ public class UnpackKitPresenter extends Presenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-  public Observable saveUnpackProductsObservable(final int kitUnpackQuantity,
+  public Observable<Void> saveUnpackProductsObservable(final int kitUnpackQuantity,
       final String documentNumber, final String signature) {
     return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
       try {
@@ -186,8 +186,7 @@ public class UnpackKitPresenter extends Presenter {
     unpackMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
     unpackMovementItem.setDocumentNumber(documentNumber);
     unpackMovementItem.setSignature(signature);
-    unpackMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList,
-        unpackMovementItem.getMovementType());
+    unpackMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList);
     return unpackMovementItem;
   }
 

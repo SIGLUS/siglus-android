@@ -18,7 +18,9 @@ package org.openlmis.core.view.fragment;/*
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -33,8 +35,6 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import com.google.inject.Binder;
-import com.google.inject.Module;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,6 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
@@ -79,12 +78,8 @@ public class VIARequisitionFragmentTest {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     DateTimeZone.setDefault(DateTimeZone.UTC);
     presenter = mock(VIARequisitionPresenter.class);
-    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
-      @Override
-      public void configure(Binder binder) {
-        binder.bind(VIARequisitionPresenter.class).toInstance(presenter);
-      }
-    });
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
+        binder -> binder.bind(VIARequisitionPresenter.class).toInstance(presenter));
     program = new Program();
     program.setProgramCode("ESS_MEDS");
     program.setProgramName("ESS_MEDS");
@@ -117,8 +112,7 @@ public class VIARequisitionFragmentTest {
   public void shouldShowRequisitionPeriodOnTitle() {
     viaRequisitionFragment.refreshRequisitionForm(viaRequisitionFragment.presenter.getRnRForm());
 
-    assertThat(viaRequisitionFragment.getActivity().getTitle())
-        .isEqualTo("Requisition - 21 Apr to 20 May");
+    assertEquals("Requisition - 21 Apr to 20 May", viaRequisitionFragment.getActivity().getTitle());
   }
 
   @Test
@@ -130,18 +124,15 @@ public class VIARequisitionFragmentTest {
 
     viaRequisitionFragment.refreshRequisitionForm(rnRForm);
 
-    viaRequisitionFragment.consultationView.findViewById(R.id.et_external_consultations_performed)
-        .performClick();
+    viaRequisitionFragment.consultationView.findViewById(R.id.et_external_consultations_performed).performClick();
 
-    assertThat(ShadowToast.getTextOfLatestToast())
-        .isEqualTo("This information is not used when creating an emergency requisition");
-    assertThat(((TextView) viaRequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf))
-        .getText().toString()).isEqualTo(StringUtils.EMPTY);
-    assertThat(
-        ((TextView) viaRequisitionFragment.consultationView.findViewById(R.id.via_rnr_header))
-            .getText()).isEqualTo("Emergency requisition balancete");
-    assertThat(viaRequisitionFragment.getActivity().getTitle().toString())
-        .isEqualTo("Emergency requisition - 21 Apr");
+    assertEquals("This information is not used when creating an emergency requisition",
+        ShadowToast.getTextOfLatestToast());
+    assertEquals(StringUtils.EMPTY,
+        ((TextView) viaRequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText().toString());
+    assertEquals("Emergency requisition balancete",
+        ((TextView) viaRequisitionFragment.consultationView.findViewById(R.id.via_rnr_header)).getText());
+    assertEquals("Emergency requisition - 21 Apr", viaRequisitionFragment.getActivity().getTitle().toString());
   }
 
   @Test
@@ -150,11 +141,11 @@ public class VIARequisitionFragmentTest {
     rnRForm.setStatus(Status.AUTHORIZED);
 
     viaRequisitionFragment.refreshRequisitionForm(rnRForm);
-    assertThat(View.GONE).isEqualTo(viaRequisitionFragment.actionPanelView.getVisibility());
+    assertEquals(View.GONE, viaRequisitionFragment.actionPanelView.getVisibility());
 
     rnRForm.setEmergency(true);
     viaRequisitionFragment.refreshRequisitionForm(rnRForm);
-    assertThat(View.GONE).isEqualTo(viaRequisitionFragment.actionPanelView.getVisibility());
+    assertEquals(View.GONE, viaRequisitionFragment.actionPanelView.getVisibility());
     assertFalse(
         viaRequisitionFragment.vgContainer.findViewById(R.id.et_external_consultations_performed)
             .hasOnClickListeners());
@@ -183,14 +174,11 @@ public class VIARequisitionFragmentTest {
         .findFragmentByTag("back_confirm_dialog"));
 
     assertThat(fragment).isNotNull();
-
-    AlertDialog dialog = (AlertDialog) fragment.getDialog();
-
-    assertThat(dialog).isNotNull();
+    assertNotNull(fragment.getDialog());
   }
 
   @Test
-  public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
+  public void shouldNotRemoveRnrFormWhenGoBack() {
     viaRequisitionFragment.onBackPressed();
     verify(presenter, never()).deleteDraft();
   }
@@ -213,7 +201,7 @@ public class VIARequisitionFragmentTest {
     assertThat(dialog).isNotNull();
 
     String alertMessage = viaRequisitionFragment.getString(R.string.msg_via_submit_signature);
-    assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
+    assertEquals(alertMessage, fragment.getArguments().getString("title"));
   }
 
   @Test

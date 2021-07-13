@@ -20,6 +20,7 @@ package org.openlmis.core.persistence;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Build;
 import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -112,14 +113,13 @@ import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
 
-@SuppressWarnings("PMD")
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
   private static final String TAG = LmisSqliteOpenHelper.class.getSimpleName();
 
   private static final List<Migration> MIGRATIONS;
   private static int instanceCount = 0;
-  private static LmisSqliteOpenHelper _helperInstance;
+  private static LmisSqliteOpenHelper helperInstance;
 
   static {
     MIGRATIONS = new ArrayList<>();
@@ -215,14 +215,14 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
   }
 
   public static synchronized LmisSqliteOpenHelper getInstance(Context context) {
-    if (_helperInstance == null) {
-      _helperInstance = new LmisSqliteOpenHelper(context);
+    if (helperInstance == null) {
+      helperInstance = new LmisSqliteOpenHelper(context);
     }
-    return _helperInstance;
+    return helperInstance;
   }
 
   public static void closeHelper() {
-    _helperInstance = null;
+    helperInstance = null;
     --instanceCount;
     Log.d(TAG, "Instance Destroyed : total count : " + instanceCount);
   }
@@ -252,7 +252,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
   @Override
   public void onDowngrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-    throw new RuntimeException(
+    throw new SQLiteException(
         "Unexpected downgrade happened, old=" + oldVersion + ",new=" + newVersion);
   }
 

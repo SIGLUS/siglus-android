@@ -25,7 +25,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -107,7 +106,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldSetRequestedAsNullWhenRequestedIsNull() throws Exception {
+  public void shouldSetRequestedAsNullWhenRequestedIsNull() {
     stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
     stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
     stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
@@ -119,7 +118,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldSetRequestedAsNullWhenRequestedIsEmpty() throws Exception {
+  public void shouldSetRequestedAsNullWhenRequestedIsEmpty() {
     stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
     stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
     stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
@@ -178,7 +177,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldSetRequestedCorrectlyWhenRequestedNotEmptyAndNotNull() throws Exception {
+  public void shouldSetRequestedCorrectlyWhenRequestedNotEmptyAndNotNull() {
     stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
     stockMovementViewModel.setStockExistence(STOCK_EXISTENCE);
     stockMovementViewModel.setDocumentNo(DOCUMENT_NO);
@@ -192,8 +191,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldCalculateNewLotListMovementQuantityToStockOnHandWhenConvertViewModel()
-      throws ParseException {
+  public void shouldCalculateNewLotListMovementQuantityToStockOnHandWhenConvertViewModel() {
     StockCard stockCard = new StockCard();
     stockCard.setId(1);
 
@@ -216,8 +214,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldCalculateNewAndExistingLotListMovementQuantityToStockOnHandWhenConvertViewModel()
-      throws ParseException {
+  public void shouldCalculateNewAndExistingLotListMovementQuantityToStockOnHandWhenConvertViewModel() {
     StockCard stockCard = new StockCard();
     stockCard.setId(1);
 
@@ -246,7 +243,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldValidateEarlyExpiredLotIssued() throws Exception {
+  public void shouldValidateEarlyExpiredLotIssued() {
     stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder()
         .setLotSOH(NUMBER_100)
         .setExpiryDate(DateUtil.formatDateWithoutDay(oldCalendar.getTime()))
@@ -371,7 +368,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest {
     StockMovementViewModel stockMovementViewModel2 = new StockMovementViewModel(item);
 
     assertTrue(stockMovementViewModel1.validateSignature());
-    assertEquals(stockMovementViewModel1.documentNo, "documentNumber1");
+    assertEquals("documentNumber1", stockMovementViewModel1.documentNo);
     assertFalse(stockMovementViewModel1.isDraft);
     assertEquals(stockMovementViewModel1.movementDate, DateUtil.formatDate(new Date()));
     assertTrue(stockMovementViewModel1.isLotEmpty());

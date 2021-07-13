@@ -28,6 +28,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
@@ -43,8 +44,6 @@ public class LotRepository {
 
   @Inject
   DbUtil dbUtil;
-  @Inject
-  Context context;
 
   GenericDao<Lot> lotGenericDao;
   GenericDao<LotOnHand> lotOnHandGenericDao;
@@ -63,7 +62,7 @@ public class LotRepository {
       for (final LotMovementItem lotMovementItem : lotMovementItemListWrapper) {
         createOrUpdateLotAndLotOnHand(lotMovementItem);
         if (null == lotMovementItem.getMovementQuantity()) {
-          lotMovementItem.setMovementQuantity(Long.valueOf(0));
+          lotMovementItem.setMovementQuantity(0L);
         }
         createLotMovementItem(lotMovementItem);
       }
@@ -115,7 +114,7 @@ public class LotRepository {
   }
 
   public void createOrUpdateLot(final Lot lot) throws LMISException {
-    dbUtil.withDao(Lot.class, (DbUtil.Operation<Lot, Void>) dao -> {
+    dbUtil.withDao(Lot.class, dao -> {
       lot.setLotNumber(lot.getLotNumber().toUpperCase());
       dao.createOrUpdate(lot);
       return null;
@@ -123,7 +122,7 @@ public class LotRepository {
   }
 
   private void createOrUpdateLotOnHand(final LotOnHand finalLotOnHand) throws LMISException {
-    dbUtil.withDao(LotOnHand.class, (DbUtil.Operation<LotOnHand, Void>) dao -> {
+    dbUtil.withDao(LotOnHand.class, dao -> {
       dao.createOrUpdate(finalLotOnHand);
       return null;
     });
@@ -133,7 +132,7 @@ public class LotRepository {
     lotMovementItem.setCreatedAt(DateUtil.getCurrentDate());
     lotMovementItem.setUpdatedAt(DateUtil.getCurrentDate());
 
-    dbUtil.withDao(LotMovementItem.class, (DbUtil.Operation<LotMovementItem, Void>) dao -> {
+    dbUtil.withDao(LotMovementItem.class, dao -> {
       dao.createOrUpdate(lotMovementItem);
       return null;
     });
@@ -175,7 +174,7 @@ public class LotRepository {
     List<LotOnHand> lotOnHands = dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
         .where().eq("stockCard_id", stockCard.getId())
         .query());
-    List<Long> lotIds = FluentIterable.from(lots).transform(lot -> lot.getId()).toList();
+    List<Long> lotIds = FluentIterable.from(lots).transform(BaseModel::getId).toList();
     List<LotMovementItem> lotMovementItems = dbUtil
         .withDao(LotMovementItem.class, dao -> dao.queryBuilder()
             .where().in("lot_id", lotIds)
@@ -207,8 +206,8 @@ public class LotRepository {
   public List<LotMovementItem> resetKeepLotMovementItems(
       Map<String, List<StockMovementItem>> stockMovementItemsMap) {
     Set<String> keepMovementIds = new HashSet<>();
-    for (Map.Entry map : stockMovementItemsMap.entrySet()) {
-      List<StockMovementItem> items = (List<StockMovementItem>) map.getValue();
+    for (Map.Entry<String, List<StockMovementItem>> map : stockMovementItemsMap.entrySet()) {
+      List<StockMovementItem> items = map.getValue();
       for (StockMovementItem item : items) {
         keepMovementIds.add(String.valueOf(item.getId()));
       }
@@ -219,7 +218,7 @@ public class LotRepository {
         lotMovementItem.setStockOnHand(lotMovementItem.getMovementQuantity());
       }
       dbUtil
-          .withDaoAsBatch(LotMovementItem.class, (DbUtil.Operation<LotMovementItem, Void>) dao -> {
+          .withDaoAsBatch(LotMovementItem.class, dao -> {
             for (LotMovementItem lotMovementItem : lotMovementItems) {
               dao.createOrUpdate(lotMovementItem);
             }

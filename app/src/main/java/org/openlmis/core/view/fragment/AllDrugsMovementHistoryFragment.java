@@ -56,7 +56,7 @@ public class AllDrugsMovementHistoryFragment extends BaseFragment implements
 
   @InjectView(R.id.rv_movement_history)
   RecyclerView movementHistoryListView;
-  private MovementHistoryAdapter adapter;
+  private MovementHistoryAdapter movementHistoryAdapter;
 
   private static final List<Integer> DATE_ITEMS = Arrays.asList(7, 14, 30, 90, 180, 365);
 
@@ -80,15 +80,15 @@ public class AllDrugsMovementHistoryFragment extends BaseFragment implements
 
   private void initRecyclerView() {
     movementHistoryListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    adapter = new MovementHistoryAdapter();
-    movementHistoryListView.setAdapter(adapter);
+    movementHistoryAdapter = new MovementHistoryAdapter();
+    movementHistoryListView.setAdapter(movementHistoryAdapter);
   }
 
   private void innitSpinner() {
-    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+    ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getActivity(),
         R.array.movement_date_items_array, android.R.layout.simple_spinner_item);
-    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    dateSpinner.setAdapter(adapter);
+    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    dateSpinner.setAdapter(arrayAdapter);
     dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -104,7 +104,7 @@ public class AllDrugsMovementHistoryFragment extends BaseFragment implements
 
   @Override
   public void refreshRecyclerView(List<StockHistoryViewModel> stockHistoryViewModels) {
-    adapter.refresh(stockHistoryViewModels);
+    movementHistoryAdapter.refresh(stockHistoryViewModels);
   }
 
   @Override

@@ -20,13 +20,11 @@ public class ViaRequisitionBodyViewTest {
   }
 
   @Test
-  public void shouldSetEditable() throws Exception {
+  public void shouldSetEditable() {
     view.setEditable(true);
-    assertEquals(view.requisitionFormList.getDescendantFocusability(),
-        ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+    assertEquals(ViewGroup.FOCUS_BLOCK_DESCENDANTS, view.requisitionFormList.getDescendantFocusability());
 
     view.setEditable(false);
-    assertEquals(view.requisitionFormList.getDescendantFocusability(),
-        ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+    assertEquals(ViewGroup.FOCUS_BEFORE_DESCENDANTS, view.requisitionFormList.getDescendantFocusability());
   }
 }

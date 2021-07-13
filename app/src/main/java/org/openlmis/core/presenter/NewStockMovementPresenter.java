@@ -27,6 +27,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -85,21 +86,12 @@ public class NewStockMovementPresenter extends Presenter {
     subscriptions.add(subscription);
   }
 
-  protected Action1<StockMovementViewModel> successAction = new Action1<StockMovementViewModel>() {
-    @Override
-    public void call(StockMovementViewModel viewModel) {
-      view.goToStockCard();
-    }
-  };
+  protected Action1<StockMovementViewModel> successAction = stockMovementViewModel -> view.goToStockCard();
 
-  protected Action1<Throwable> errorAction = new Action1<Throwable>() {
-    @Override
-    public void call(Throwable throwable) {
-      view.loaded();
-      ToastUtil.show(throwable.getMessage());
-    }
+  protected Action1<Throwable> errorAction = throwable -> {
+    view.loaded();
+    ToastUtil.show(throwable.getMessage());
   };
-
 
   protected Observable<StockMovementViewModel> getSaveMovementObservable() {
     return Observable.create((Observable.OnSubscribe<StockMovementViewModel>) subscriber -> {
@@ -170,7 +162,7 @@ public class NewStockMovementPresenter extends Presenter {
   public String[] getMovementReasonDescriptionList() {
     if (ArrayUtils.isEmpty(reasonDescriptionList)) {
       reasonDescriptionList = FluentIterable.from(movementReasons)
-          .transform(movementReason -> movementReason.getDescription()).toArray(String.class);
+          .transform(MovementReason::getDescription).toArray(String.class);
     }
     return reasonDescriptionList;
   }

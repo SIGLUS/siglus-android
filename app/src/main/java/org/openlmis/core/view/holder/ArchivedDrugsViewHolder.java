@@ -63,21 +63,15 @@ public class ArchivedDrugsViewHolder extends BaseViewHolder {
 
   private void setActionListeners(final InventoryViewModel inventoryViewModel,
       final ArchiveStockCardListener listener) {
-    tvViewHistory.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (listener != null) {
-          listener.viewMovementHistory(inventoryViewModel.getStockCard());
-        }
+    tvViewHistory.setOnClickListener(v -> {
+      if (listener != null) {
+        listener.viewMovementHistory(inventoryViewModel.getStockCard());
       }
     });
 
-    tvArchiveBack.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (listener != null) {
-          listener.archiveStockCardBack(inventoryViewModel.getStockCard());
-        }
+    tvArchiveBack.setOnClickListener(v -> {
+      if (listener != null) {
+        listener.archiveStockCardBack(inventoryViewModel.getStockCard());
       }
     });
   }

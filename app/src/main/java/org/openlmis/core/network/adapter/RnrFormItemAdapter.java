@@ -38,7 +38,6 @@ import org.openlmis.core.model.ServiceItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import roboguice.RoboGuice;
 
-@SuppressWarnings("PMD")
 public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
     JsonDeserializer<RnrFormItem> {
 
@@ -88,7 +87,7 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
         return productRepository.getByCode(json.getAsString());
       } catch (LMISException e) {
         new LMISException(e, "RnrFormItemAdapter.deserialize").reportToFabric();
-        throw new JsonParseException("can not find Product by code");
+        throw new JsonParseException("can not find Product by code", e);
       }
     }
 

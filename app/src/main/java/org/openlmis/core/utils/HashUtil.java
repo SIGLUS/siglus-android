@@ -34,7 +34,7 @@ public final class HashUtil {
       digest.update(s.getBytes(StandardCharsets.UTF_8));
       byte[] messageDigest = digest.digest();
 
-      StringBuffer hexString = new StringBuffer();
+      StringBuilder hexString = new StringBuilder();
       for (int i = 0; i < messageDigest.length; i++) {
         hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
       }

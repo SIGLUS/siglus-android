@@ -21,6 +21,7 @@ package org.openlmis.core.view.activity;
 
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -99,7 +100,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
     if (annotatedFiled.isPresent()) {
       InjectPresenter annotation = annotatedFiled.get().getAnnotation(InjectPresenter.class);
       if (!Presenter.class.isAssignableFrom(annotation.value())) {
-        throw new RuntimeException("Invalid InjectPresenter class :" + annotation.value());
+        throw new IllegalArgumentException("Invalid InjectPresenter class :" + annotation.value());
       }
 
       basePresenter = initPresenter(annotation.value());
@@ -107,7 +108,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
         annotatedFiled.get().setAccessible(true);
         annotatedFiled.get().set(this, basePresenter);
       } catch (IllegalAccessException e) {
-        throw new RuntimeException(
+        throw new IllegalArgumentException(
             "InjectPresenter type cast failed :" + annotation.value().getSimpleName());
       }
     }
@@ -274,7 +275,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
     preferencesMgr.getPreference().edit().putString(key, value).apply();
   }
 
-  public void startActivity(Class activityName, boolean closeThis) {
+  public void startActivity(Class<?> activityName, boolean closeThis) {
     Intent intent = new Intent();
     intent.setClass(this, activityName);
     startActivity(intent);
@@ -284,7 +285,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
     }
   }
 
-  public void startActivity(Class activityName) {
+  public void startActivity(Class<? extends Activity> activityName) {
     startActivity(activityName, false);
   }
 

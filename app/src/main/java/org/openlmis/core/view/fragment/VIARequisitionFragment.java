@@ -328,7 +328,7 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
 
   @Override
   protected Action1<Void> getOnSignedAction() {
-    return (Action1<Void>) aVoid -> {
+    return aVoid -> {
       if (presenter.getRnRForm().isSubmitted()) {
         presenter.submitRequisition();
         showMessageNotifyDialog();

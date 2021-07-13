@@ -133,7 +133,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     subscriber.assertNoErrors();
 
     List<InventoryViewModel> receivedInventoryViewModels = subscriber.getOnNextEvents().get(0);
-    assertEquals(receivedInventoryViewModels.size(), 2);
+    assertEquals(2, receivedInventoryViewModels.size());
   }
 
   @Test
@@ -217,7 +217,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     ArrayList<DraftInventory> draftInventories = new ArrayList<>();
     DraftInventory draftInventory = new DraftInventory();
-//        stockCard.setId(9);
+    //        stockCard.setId(9);
     draftInventory.setStockCard(stockCardWithIdNine);
     draftInventory.setQuantity(20L);
     LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder()

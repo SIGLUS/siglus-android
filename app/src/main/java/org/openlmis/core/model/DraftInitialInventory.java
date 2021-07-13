@@ -39,6 +39,9 @@ public class DraftInitialInventory extends BaseModel {
 
   private static final String TAG = DraftInitialInventory.class.getSimpleName();
 
+  /**
+   * @deprecated move to lot field, use {@link DraftInitialInventoryLotItem#expirationDate}
+   */
   @Deprecated
   @DatabaseField
   String expireDates;

@@ -23,7 +23,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
@@ -37,7 +36,6 @@ import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import roboguice.RoboGuice;
 
-@SuppressWarnings("PMD")
 public class ProgramDataFormBasicItemAdapter implements JsonSerializer<ProgramDataFormBasicItem>,
     JsonDeserializer<ProgramDataFormBasicItem> {
 
@@ -64,8 +62,7 @@ public class ProgramDataFormBasicItemAdapter implements JsonSerializer<ProgramDa
   @Override
   public JsonElement serialize(ProgramDataFormBasicItem src, Type typeOfSrc,
       JsonSerializationContext context) {
-    JsonObject jsonObject = gson.toJsonTree(src).getAsJsonObject();
-    return jsonObject;
+    return gson.toJsonTree(src).getAsJsonObject();
   }
 
   class ProductAdapter implements JsonDeserializer<Product>, JsonSerializer<Product> {
@@ -77,7 +74,7 @@ public class ProgramDataFormBasicItemAdapter implements JsonSerializer<ProgramDa
         return productRepository.getByCode(json.getAsString());
       } catch (LMISException e) {
         new LMISException(e, "ProductAdapter.deserialize").reportToFabric();
-        throw new JsonParseException("can not find Product by code");
+        throw new JsonParseException("can not find Product by code", e);
       }
     }
 

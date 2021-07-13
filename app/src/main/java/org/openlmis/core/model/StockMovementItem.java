@@ -98,7 +98,7 @@ public class StockMovementItem extends BaseModel {
     this.movementDate = DateUtil.getCurrentDate();
     this.reason = MovementReasonManager.INVENTORY;
     this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
-    populateLotQuantitiesAndCalculateNewSOH(model.getNewLotMovementViewModelList(), movementType);
+    populateLotQuantitiesAndCalculateNewSOH(model.getNewLotMovementViewModelList());
   }
 
   public StockMovementItem(StockCard stockCard, InventoryViewModel model,
@@ -112,8 +112,7 @@ public class StockMovementItem extends BaseModel {
     movementViewModelList.addAll(model.getExistingLotMovementViewModelList());
     movementViewModelList.addAll(model.getNewLotMovementViewModelList());
     populateLotQuantitiesAndCalculateNewSOH(
-        fromInitialInventory ? movementViewModelList : model.getNewLotMovementViewModelList(),
-        movementType);
+        fromInitialInventory ? movementViewModelList : model.getNewLotMovementViewModelList());
   }
 
   public boolean isPositiveMovement() {
@@ -158,23 +157,20 @@ public class StockMovementItem extends BaseModel {
     return newAddedLotMovementItemListWrapper;
   }
 
-  public void populateLotQuantitiesAndCalculateNewSOH(
-      List<LotMovementViewModel> lotMovementViewModelList,
-      MovementReasonManager.MovementType movementType) {
+  public void populateLotQuantitiesAndCalculateNewSOH(List<LotMovementViewModel> lotMovementViewModelList) {
     final StockMovementItem stockMovementItem = this;
     if (!lotMovementViewModelList.isEmpty()) {
-      long movementQuantity = 0;
+      long calculateMovementQuantity = 0;
       for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
         if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
-          movementQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
+          calculateMovementQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
         }
       }
-      setMovementQuantity(movementQuantity);
-
+      setMovementQuantity(calculateMovementQuantity);
       if (isNegativeMovement()) {
-        setStockOnHand(getStockOnHand() - movementQuantity);
+        setStockOnHand(getStockOnHand() - calculateMovementQuantity);
       } else {
-        setStockOnHand(getStockOnHand() + movementQuantity);
+        setStockOnHand(getStockOnHand() + calculateMovementQuantity);
       }
       setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList)
           .transform(lotMovementViewModel -> {

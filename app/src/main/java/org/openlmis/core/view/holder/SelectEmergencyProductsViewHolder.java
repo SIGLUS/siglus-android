@@ -20,7 +20,6 @@ package org.openlmis.core.view.holder;
 
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import org.openlmis.core.R;
@@ -46,30 +45,22 @@ public class SelectEmergencyProductsViewHolder extends BaseViewHolder {
 
   public SelectEmergencyProductsViewHolder(View itemView) {
     super(itemView);
-    taCheckbox.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        triggerCheckbox();
-      }
-    });
+    taCheckbox.setOnClickListener(v -> triggerCheckbox());
   }
 
   public void populate(final SelectEmergencyProductAdapter selectEmergencyProductAdapter,
       String queryKeyWord, final InventoryViewModel viewModel) {
-    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked == viewModel.isChecked()) {
-          return;
-        }
-
-        if (isChecked && selectEmergencyProductAdapter.isReachLimit()) {
-          ToastUtil.showForLongTime(R.string.msg_out_limit_of_selected_emergency_products);
-          checkBox.setChecked(false);
-          return;
-        }
-        viewModel.setChecked(isChecked);
+    checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+      if (isChecked == viewModel.isChecked()) {
+        return;
       }
+
+      if (isChecked && selectEmergencyProductAdapter.isReachLimit()) {
+        ToastUtil.showForLongTime(R.string.msg_out_limit_of_selected_emergency_products);
+        checkBox.setChecked(false);
+        return;
+      }
+      viewModel.setChecked(isChecked);
     });
     checkBox.setChecked(viewModel.isChecked());
 

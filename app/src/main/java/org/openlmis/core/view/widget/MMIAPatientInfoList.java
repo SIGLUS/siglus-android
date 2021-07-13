@@ -28,6 +28,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -181,7 +182,7 @@ public class MMIAPatientInfoList extends LinearLayout {
       TextView textView = view.findViewById(R.id.tv_name);
       EditText editText = view.findViewById(R.id.et_value);
       editText.setBackgroundResource(R.color.color_mmia_info_name);
-      editText.setTextColor(getResources().getColor(R.color.color_text_secondary));
+      editText.setTextColor(ContextCompat.getColor(getContext(), R.color.color_text_secondary));
       textView.setText(R.string.patient_column_name_left);
       editText.setText(R.string.patient_column_name_right);
       addView(view);

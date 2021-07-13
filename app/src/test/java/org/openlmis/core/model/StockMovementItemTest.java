@@ -105,8 +105,8 @@ public class StockMovementItemTest {
     StockMovementItem stockMovementItem = new StockMovementItemBuilder()
         .withMovementDate("2016-11-30").withStockOnHand(100).build();
     stockMovementItem.setStockCard(stockCard);
-    stockMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList,
-        MovementReasonManager.MovementType.ISSUE);
+    stockMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList
+    );
     assertThat(stockMovementItem.getStockOnHand(), is(70L));
     assertThat(stockMovementItem.getMovementQuantity(), is(30L));
   }
@@ -133,8 +133,8 @@ public class StockMovementItemTest {
     stockMovementItem.setStockOnHand(80L);
     stockMovementItem.setStockCard(stockCard);
 
-    stockMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList,
-        MovementReasonManager.MovementType.ISSUE);
+    stockMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList
+    );
     assertThat(stockMovementItem.getMovementQuantity(), is(30L));
     assertThat(stockMovementItem.getStockOnHand(), is(50L));
     assertThat(stockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(),

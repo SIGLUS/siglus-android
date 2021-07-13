@@ -1,7 +1,7 @@
 package org.openlmis.core.view.holder;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
@@ -30,7 +30,6 @@ import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class RnRFormViewHolderTest {
 
   private Program program;
@@ -168,8 +167,7 @@ public class RnRFormViewHolderTest {
 
     assertThat(viewHolder.tvDrugCount.getVisibility(), is(View.VISIBLE));
     assertThat(viewHolder.tvDrugCount.getText().toString(), is("1 drug ordered"));
-    assertTrue(viewHolder.tvPeriod.getText().toString()
-        .equals("Emergency Requisition – 22 Jan 2016 11:33"));
+    assertEquals("Emergency Requisition – 22 Jan 2016 11:33", viewHolder.tvPeriod.getText().toString());
     assertThat(viewHolder.tvMessage.getText().toString(),
         is(getStringResource(R.string.label_submitted_message, "Emergency requisition balancete",
             viewModel.getSyncedTime())));

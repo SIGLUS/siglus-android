@@ -38,14 +38,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.model.Product.IsKit;
 
+import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.inject.AbstractModule;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import junit.framework.Assert;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,9 +82,13 @@ import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class VIARequisitionPresenterTest {
 
+  private final String kitName = "KitName";
+  private final String baseInfoItemValue = "123";
+  private final String kitsReceivedHfValue = "100";
+  private final String kitCode = "kit";
+  private final String productCode = "code";
   private VIARequisitionPresenter presenter;
   private VIARequisitionFragment VIARequisitionFragment;
   private VIARepository mockRnrFormRepository;
@@ -114,7 +116,7 @@ public class VIARequisitionPresenterTest {
   }
 
   @Test
-  public void shouldReturnFalseWhenRequestAmountIsNull() throws Exception {
+  public void shouldReturnFalseWhenRequestAmountIsNull() {
 
     List<RequisitionFormItemViewModel> list = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
@@ -129,7 +131,7 @@ public class VIARequisitionPresenterTest {
   }
 
   @Test
-  public void shouldValidateFormReturnFalseWhenConsultationNumbersInvalid() throws Exception {
+  public void shouldValidateFormReturnFalseWhenConsultationNumbersInvalid() {
     presenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
     when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(false);
 
@@ -139,14 +141,14 @@ public class VIARequisitionPresenterTest {
   }
 
   @Test
-  public void shouldNotValidateKitAndConsultaionNumberWhenFormIsEmergency() throws Exception {
+  public void shouldNotValidateKitAndConsultaionNumberWhenFormIsEmergency() {
     presenter.rnRForm = createRnrForm(RnRForm.Emergency.YES);
 
     verify(VIARequisitionFragment, never()).validateConsultationNumber();
   }
 
   @Test
-  public void shouldValidateFormReturnTrueWhenRnrIsEmergency() throws Exception {
+  public void shouldValidateFormReturnTrueWhenRnrIsEmergency() {
     presenter = spy(presenter);
     doReturn(true).when(presenter).validateRnrFormItems();
     RnRForm rnRForm = new RnRForm();
@@ -158,7 +160,7 @@ public class VIARequisitionPresenterTest {
   }
 
   @Test
-  public void shouldReturnTrueWhenValidateFormSuccess() throws Exception {
+  public void shouldReturnTrueWhenValidateFormSuccess() {
     when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
     presenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
 
@@ -183,7 +185,7 @@ public class VIARequisitionPresenterTest {
   }
 
   @Test
-  public void shouldGetInitForm() throws LMISException, SQLException {
+  public void shouldGetInitForm() throws LMISException {
     when(mockRnrFormRepository.queryUnAuthorized()).thenReturn(null);
     presenter.getRnrForm(0);
     verify(mockRnrFormRepository).queryUnAuthorized();
@@ -231,7 +233,7 @@ public class VIARequisitionPresenterTest {
   private RnRForm getRnRFormWithStatus(Status status) {
     final RnRForm form = new RnRForm();
     form.setStatus(status);
-    form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
+    form.setRnrFormItemListWrapper(new ArrayList<>());
     form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>() {{
       add(new BaseInfoItem(VIARepository.ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form, "", 0));
     }});
@@ -242,7 +244,7 @@ public class VIARequisitionPresenterTest {
     try {
       Thread.sleep(1500);
     } catch (InterruptedException e) {
-      e.printStackTrace();
+      Log.w("waitObservableToExecute", e);
     }
   }
 
@@ -295,7 +297,7 @@ public class VIARequisitionPresenterTest {
     assertNull(presenter.getConsultationNumbers());
 
     RnRForm rnRForm = mock(RnRForm.class);
-    when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(new ArrayList<BaseInfoItem>());
+    when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(new ArrayList<>());
     presenter.rnRForm = rnRForm;
 
     assertNull(presenter.getConsultationNumbers());
@@ -304,31 +306,31 @@ public class VIARequisitionPresenterTest {
   @Test
   public void shouldGetConsultantNumber() {
     BaseInfoItem baseInfoItem = new BaseInfoItem();
-    baseInfoItem.setValue("123");
+    baseInfoItem.setValue(baseInfoItemValue);
     ArrayList<BaseInfoItem> items = newArrayList(baseInfoItem);
 
     RnRForm rnRForm = mock(RnRForm.class);
     presenter.rnRForm = rnRForm;
     when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(items);
 
-    assertThat(presenter.getConsultationNumbers(), is("123"));
+    assertThat(presenter.getConsultationNumbers(), is(baseInfoItemValue));
   }
 
   @Test
-  public void shouldShowErrorMSGWhenThereWasARequisitionInTheSamePeriod() throws Exception {
+  public void shouldShowErrorMSGWhenThereWasARequisitionInTheSamePeriod() {
     when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
     when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
     presenter.rnRForm = createRnrForm(RnRForm.Emergency.NO);
 
-    presenter.processRequisition("123");
+    presenter.processRequisition(baseInfoItemValue);
 
-    Assert.assertEquals(
+    assertEquals(
         LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique),
         ShadowToast.getTextOfLatestToast());
   }
 
   @Test
-  public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() throws Exception {
+  public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() {
     RnRForm rnRForm = new RnRForm();
     rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
     presenter.rnRForm = rnRForm;
@@ -347,11 +349,11 @@ public class VIARequisitionPresenterTest {
     when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
     when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
 
-    presenter.processRequisition("123");
+    presenter.processRequisition(baseInfoItemValue);
 
     assertNull(ShadowToast.getLatestToast());
 
-    Assert.assertEquals(5, presenter.rnRForm.getRnrFormItemListWrapper().size());
+    assertEquals(5, presenter.rnRForm.getRnrFormItemListWrapper().size());
     assertThat(
         presenter.getRnRForm().getRnrFormItemListWrapper().get(3).getCalculatedOrderQuantity(),
         is(1L));
@@ -386,7 +388,7 @@ public class VIARequisitionPresenterTest {
   public void shouldInitViaKitsViewModel() throws Exception {
     RnRForm rnRForm = mock(RnRForm.class);
     when(mockRnrFormRepository.queryRnRForm(1L)).thenReturn(rnRForm);
-    when(rnRForm.getRnrItems(IsKit.NO)).thenReturn(new ArrayList<RnrFormItem>());
+    when(rnRForm.getRnrItems(IsKit.NO)).thenReturn(new ArrayList<>());
 
     RnrFormItem rnrKitItem1 = new RnrFormItemBuilder()
         .setProduct(new ProductBuilder().setCode("26A01").build())
@@ -407,7 +409,7 @@ public class VIARequisitionPresenterTest {
     testSubscriber.assertNoErrors();
 
     assertEquals("50", presenter.getViaKitsViewModel().getKitsOpenedHF());
-    assertEquals("100", presenter.getViaKitsViewModel().getKitsReceivedHF());
+    assertEquals(kitsReceivedHfValue, presenter.getViaKitsViewModel().getKitsReceivedHF());
     assertEquals("110", presenter.getViaKitsViewModel().getKitsOpenedCHW());
     assertEquals("300", presenter.getViaKitsViewModel().getKitsReceivedCHW());
   }
@@ -429,7 +431,7 @@ public class VIARequisitionPresenterTest {
     presenter.requisitionFormItemViewModels = list;
 
     TestSubscriber<RnRForm> subscriber = new TestSubscriber<>();
-    presenter.getSaveFormObservable("100").subscribe(subscriber);
+    presenter.getSaveFormObservable(kitsReceivedHfValue).subscribe(subscriber);
     subscriber.awaitTerminalEvent();
 
     verify(mockRnrFormRepository).createOrUpdateWithItems(rnRForm);
@@ -454,13 +456,13 @@ public class VIARequisitionPresenterTest {
     ArrayList<KitProduct> kitProducts = new ArrayList<>();
     KitProduct kitProduct = new KitProduct();
     kitProduct.setQuantity(2);
-    kitProduct.setKitCode("kit");
+    kitProduct.setKitCode(kitCode);
     kitProducts.add(kitProduct);
-    when(mockProductRepository.queryKitProductByProductCode("code")).thenReturn(kitProducts);
+    when(mockProductRepository.queryKitProductByProductCode(productCode)).thenReturn(kitProducts);
 
     Product product = new Product();
-    product.setPrimaryName("KitName");
-    when(mockProductRepository.getByCode("kit")).thenReturn(product);
+    product.setPrimaryName(kitName);
+    when(mockProductRepository.getByCode(kitCode)).thenReturn(product);
 
     StockCard stockCard = new StockCard();
     stockCard.setStockOnHand(100L);
@@ -476,7 +478,7 @@ public class VIARequisitionPresenterTest {
     assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getKitStockOnHand(),
         is(100L));
     assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getKitName(),
-        is("KitName"));
+        is(kitName));
   }
 
   @Test
@@ -496,20 +498,19 @@ public class VIARequisitionPresenterTest {
     ArrayList<KitProduct> kitProducts = new ArrayList<>();
     KitProduct kitProduct = new KitProduct();
     kitProduct.setQuantity(2);
-    kitProduct.setKitCode("kit");
+    kitProduct.setKitCode(kitCode);
     kitProducts.add(kitProduct);
-    when(mockProductRepository.queryKitProductByProductCode("code")).thenReturn(kitProducts);
+    when(mockProductRepository.queryKitProductByProductCode(productCode)).thenReturn(kitProducts);
 
     Product product = new Product();
-    product.setPrimaryName("KitName");
-    when(mockProductRepository.getByCode("kit")).thenReturn(product);
+    product.setPrimaryName(kitName);
+    when(mockProductRepository.getByCode(kitCode)).thenReturn(product);
 
     StockCard stockCard = new StockCard();
     stockCard.setStockOnHand(100L);
     when(mockStockRepository.queryStockCardByProductId(product.getId())).thenReturn(stockCard);
 
-    List<RequisitionFormItemViewModel> viewModelsFromRnrForm = presenter
-        .getViewModelsFromRnrForm(rnRForm);
+    List<RequisitionFormItemViewModel> viewModelsFromRnrForm = presenter.getViewModelsFromRnrForm(rnRForm);
 
     assertThat(viewModelsFromRnrForm.size(), is(1));
     assertThat(viewModelsFromRnrForm.get(0).getAdjustedTotalRequest(), is("400"));
@@ -532,13 +533,13 @@ public class VIARequisitionPresenterTest {
     ArrayList<KitProduct> kitProducts = new ArrayList<>();
     KitProduct kitProduct = new KitProduct();
     kitProduct.setQuantity(2);
-    kitProduct.setKitCode("kit");
+    kitProduct.setKitCode(kitCode);
     kitProducts.add(kitProduct);
-    when(mockProductRepository.queryKitProductByProductCode("code")).thenReturn(kitProducts);
+    when(mockProductRepository.queryKitProductByProductCode(productCode)).thenReturn(kitProducts);
 
     Product product = new Product();
-    product.setPrimaryName("KitName");
-    when(mockProductRepository.getByCode("kit")).thenReturn(product);
+    product.setPrimaryName(kitName);
+    when(mockProductRepository.getByCode(kitCode)).thenReturn(product);
 
     when(mockStockRepository.queryStockCardByProductId(product.getId())).thenReturn(null);
 
@@ -560,13 +561,12 @@ public class VIARequisitionPresenterTest {
 
     RnRForm rnRForm1 = presenter.initEmergencyRnr(stockCards, periodEndDate);
 
-    org.junit.Assert
-        .assertThat(rnRForm1.getRnrFormItemListWrapper(), Is.is(rnrFormItems));
+    assertEquals(rnrFormItems, rnRForm1.getRnrFormItemListWrapper());
     verify(mockRnrFormRepository, never()).createRnRsWithItems(newArrayList(rnRForm));
   }
 
   @Test
-  public void shouldOnlyUpdateUIWhenProcessEmergencyAndDraftSignature() throws Exception {
+  public void shouldOnlyUpdateUIWhenProcessEmergencyAndDraftSignature() {
     presenter = spy(presenter);
     RnRForm rnRForm = new RnRForm();
     rnRForm.setStatus(Status.DRAFT);
@@ -651,9 +651,9 @@ public class VIARequisitionPresenterTest {
     assertThat(presenter.requisitionFormItemViewModels.size(), is(2));
     assertThat(presenter.requisitionFormItemViewModels.get(0).getFmn(), is("P1"));
     assertThat(presenter.requisitionFormItemViewModels.get(1).getFmn(), is("P2"));
-    assertThat(presenter.requisitionFormItemViewModels.get(0).getRequestAmount(), is("100"));
+    assertThat(presenter.requisitionFormItemViewModels.get(0).getRequestAmount(), is(kitsReceivedHfValue));
     assertThat(presenter.requisitionFormItemViewModels.get(1).getRequestAmount(), is("200"));
-    assertThat(presenter.requisitionFormItemViewModels.get(0).getApprovedAmount(), is("100"));
+    assertThat(presenter.requisitionFormItemViewModels.get(0).getApprovedAmount(), is(kitsReceivedHfValue));
     assertThat(presenter.requisitionFormItemViewModels.get(1).getApprovedAmount(), is("200"));
   }
 
@@ -678,7 +678,7 @@ public class VIARequisitionPresenterTest {
     StockCard stockCard = new StockCardBuilder().setStockOnHand(0L).setProduct(product1).build();
     StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withStockOnHand(50)
         .withQuantity(10).withMovementType(MovementReasonManager.MovementType.ISSUE)
-        .withDocumentNo("123").build();
+        .withDocumentNo(baseInfoItemValue).build();
     StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().build();
     StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().build();
 
@@ -722,7 +722,7 @@ public class VIARequisitionPresenterTest {
   private RnrFormItem createRnrFormItem(int i) {
     Product product = new Product();
     product.setId(i);
-    product.setCode("code");
+    product.setCode(productCode);
     RnrFormItem rnrFormItem = new RnrFormItem();
     rnrFormItem.setInventory((long) 1000);
     rnrFormItem.setInitialAmount((long) 1000);
