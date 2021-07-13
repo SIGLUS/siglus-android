@@ -18,6 +18,7 @@
 
 package org.openlmis.core.network.adapter;
 
+import static org.openlmis.core.model.repository.VIARepository.ATTR_CONSULTATION;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import com.google.gson.Gson;
@@ -33,11 +34,15 @@ import com.google.gson.JsonSerializer;
 import com.google.inject.Inject;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.BaseInfoItem.TYPE;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -50,6 +55,9 @@ import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
 public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer<RnRForm> {
+
+  public static final String ACTUAL_START_DATE = "actualStartDate";
+  public static final String ACTUAL_END_DATE = "actualEndDate";
 
   @Inject
   public ProgramRepository programRepository;
@@ -85,7 +93,6 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       throws JsonParseException {
     RnRForm rnRForm = gson.fromJson(json.toString(), RnRForm.class);
     RnRForm.fillFormId(rnRForm);
-
     try {
       Program program = programRepository.queryByCode(json.getAsJsonObject().get("programCode").getAsString());
       rnRForm.setProgram(program);
@@ -93,29 +100,53 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       new LMISException(e, "RnrFormAdapter.deserialize").reportToFabric();
       throw new JsonParseException("can not find Program by programCode", e);
     }
+    JsonObject jsonObject = json.getAsJsonObject();
+    setPeriodTime(rnRForm, jsonObject);
+    setBaseInfoForRnR(rnRForm, jsonObject);
     rnRForm.setStatus(Status.AUTHORIZED);
     rnRForm.setSynced(true);
 
     return rnRForm;
   }
 
+  private void setPeriodTime(RnRForm rnRForm, JsonObject jsonObject) {
+    rnRForm.setPeriodBegin(Instant.parse(jsonObject.get(ACTUAL_START_DATE).getAsString()).toDate());
+    rnRForm.setPeriodEnd(Instant.parse(jsonObject.get(ACTUAL_END_DATE).getAsString()).toDate());
+  }
+
+  private void setBaseInfoForRnR(RnRForm rnRForm, JsonObject jsonObject) {
+    if (rnRForm.getProgram().getProgramCode().equals(VIA_PROGRAM_CODE)) {
+      Long consultationNumber = jsonObject.get("consultationNumber").getAsLong();
+      BaseInfoItem baseInfoItem = new BaseInfoItem();
+      baseInfoItem.setName(ATTR_CONSULTATION);
+      baseInfoItem.setType(TYPE.STRING);
+      baseInfoItem.setValue(String.valueOf(consultationNumber));
+      baseInfoItem.setRnRForm(rnRForm);
+      rnRForm.setBaseInfoItemListWrapper(Arrays.asList(baseInfoItem));
+    }
+  }
+
   private JsonElement buildRnrFormJson(RnRForm rnRForm) throws LMISException {
     JsonObject root = gson.toJsonTree(rnRForm).getAsJsonObject();
     String programCode = rnRForm.getProgram().getProgramCode();
     root.addProperty("programCode", programCode);
-    root.addProperty("actualStartDate", DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.DB_DATE_FORMAT));
-    root.addProperty("actualEndDate", DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.DB_DATE_FORMAT));
+    root.addProperty(ACTUAL_START_DATE, DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.DB_DATE_FORMAT));
+    root.addProperty(ACTUAL_END_DATE, DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.DB_DATE_FORMAT));
     DateTime submittedTime = new DateTime(rnRForm.getSubmittedTime());
     root.addProperty("clientSubmittedTime", String.valueOf(submittedTime.toInstant()));
+    sectionInfo(rnRForm, root, programCode);
+    List<RnRFormSignature> signatureList = signatureRepository.queryByRnrFormId(rnRForm.getId());
+    root.add("signatures", jsonParser.parse(gson.toJson(signatureList)));
+    return root;
+  }
+
+  private void sectionInfo(RnRForm rnRForm, JsonObject root, String programCode) {
     root.add("products", jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
     root.add("regimens", jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
     root.add("therapeuticLines", jsonParser.parse(gson.toJson(rnRForm.getRegimenThreeLineListWrapper())));
     if (programCode.endsWith(VIA_PROGRAM_CODE)) {
       root.addProperty("consultationNumber", getConsultationNumber(rnRForm));
     }
-    List<RnRFormSignature> signatureList = signatureRepository.queryByRnrFormId(rnRForm.getId());
-    root.add("signatures", jsonParser.parse(gson.toJson(signatureList)));
-    return root;
   }
 
   private Long getConsultationNumber(RnRForm rnRForm) {

@@ -36,11 +36,9 @@ import com.google.gson.JsonParser;
 import com.google.inject.AbstractModule;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -228,37 +226,35 @@ public class RnrFormAdapterTest {
         is("\"" + RnRFormSignature.TYPE.SUBMITTER.toString() + "\""));
   }
 
-  @Ignore
   @Test
   public void shouldDeserializeRnrFormJson() throws LMISException {
+    // given
     when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
-    when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program());
+    Program viaProgram = new Program();
+    viaProgram.setProgramCode(Program.VIA_CODE);
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(viaProgram);
 
+    // when
     String json = JsonFileReader.readJson(getClass(), "RequisitionResponse.json");
-
     RnRForm rnRForm = rnrFormAdapter.deserialize(new JsonParser().parse(json), null, null);
-    assertThat(rnRForm.getComments(), is("I don't know"));
 
+    //then
+    assertEquals("I don't know", rnRForm.getComments());
     RnrFormItem rnrFormItem = rnRForm.getRnrFormItemListWrapper().get(0);
-    assertThat(rnrFormItem.getInitialAmount(), is(10L));
-    assertThat(rnrFormItem.getInventory(), is(10L));
-    assertThat(rnrFormItem.getRequestAmount(), is(20L));
-    assertThat(rnrFormItem.getApprovedAmount(), is(30L));
+    assertEquals(Long.valueOf(10), rnrFormItem.getInitialAmount());
+    assertEquals(Long.valueOf(10), rnrFormItem.getInventory());
+    assertEquals(Long.valueOf(20), rnrFormItem.getRequestAmount());
+    assertEquals(Long.valueOf(30), rnrFormItem.getApprovedAmount());
     verify(mockProductRepository).getByCode("08S17");
 
     RegimenItem regimenItem = rnRForm.getRegimenItemListWrapper().get(0);
-    assertThat(regimenItem.getAmount(), is(1L));
-    assertThat(regimenItem.getRegimen().getName(), is("ABC+3TC+EFZ"));
-    assertThat(regimenItem.getRegimen().getCode(), is("018"));
+    assertEquals(Long.valueOf(1), regimenItem.getAmount());
+    assertEquals("ABC+3TC+EFZ", regimenItem.getRegimen().getName());
+    assertEquals("018", regimenItem.getRegimen().getCode());
 
     BaseInfoItem baseInfoItem = rnRForm.getBaseInfoItemListWrapper().get(0);
-    assertThat(baseInfoItem.getName(), is("Total Patients"));
-    assertThat(baseInfoItem.getValue(), is("30"));
-
-    assertThat(rnRForm.getSubmittedTime(), is(new Date(1445937080000L)));
-
-    assertThat(rnRForm.getPeriodBegin(), is(new Date(1455937080000L)));
-    assertThat(rnRForm.getPeriodEnd(), is(new Date(1465937080000L)));
+    assertEquals("consultation", baseInfoItem.getName());
+    assertEquals("30", baseInfoItem.getValue());
   }
 
 

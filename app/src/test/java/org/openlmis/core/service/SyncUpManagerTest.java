@@ -149,7 +149,7 @@ public class SyncUpManagerTest {
 
     SyncUpRequisitionResponse response = new SyncUpRequisitionResponse();
     response.setRequisitionId("1");
-    when(mockedLmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
+    when(mockedLmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(null);
 
     syncUpManager.syncRnr();
     verify(mockedLmisRestApi, times(10)).submitRequisition(any(RnRForm.class));
@@ -317,7 +317,7 @@ public class SyncUpManagerTest {
 
     SyncUpRequisitionResponse response = new SyncUpRequisitionResponse();
     response.setRequisitionId("1");
-    when(mockedLmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
+    when(mockedLmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(null);
 
     syncUpManager.syncRnr();
     verify(mockedRnrFormRepository, times(1)).queryAllUnsyncedForms();

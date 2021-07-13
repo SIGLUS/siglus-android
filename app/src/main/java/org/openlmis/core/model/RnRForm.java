@@ -18,12 +18,14 @@
 
 package org.openlmis.core.model;
 
+import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -98,10 +100,10 @@ public class RnRForm extends BaseModel {
   @DatabaseField
   private boolean synced = false;
 
-  @DatabaseField
+  @DatabaseField(dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
   private Date periodBegin;
 
-  @DatabaseField
+  @DatabaseField(dataType = DataType.DATE_STRING, format = DATE_TIME_FORMAT)
   private Date periodEnd;
 
   @DatabaseField
