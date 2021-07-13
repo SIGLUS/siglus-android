@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
 import org.openlmis.core.presenter.ReportListPresenter.ReportListView;
@@ -54,19 +53,19 @@ public class RequisitionPresenterTest {
   }
 
   @Test
-  public void getSupportProgram() throws LMISException {
+  public void testGetSupportReportTypes() {
     // given
-    final ArrayList<ReportTypeForm> givenActivePrograms = new ArrayList<>();
-    Mockito.when(mockReportTypeFormRepository.listAllWithActive()).thenReturn(givenActivePrograms);
+    final ArrayList<ReportTypeForm> givenActiveReportTypes = new ArrayList<>();
+    Mockito.when(mockReportTypeFormRepository.listAllWithActive()).thenReturn(givenActiveReportTypes);
     final TestSubscriber<List<ReportTypeForm>> testSubscriber = new TestSubscriber<>(
         presenter.getSupportReportTypesSubscriber);
     presenter.getSupportReportTypesSubscriber = testSubscriber;
 
     // when
-    presenter.getSupportPrograms();
+    presenter.getSupportReportTypes();
     testSubscriber.awaitTerminalEvent(10, TimeUnit.SECONDS);
 
     // then
-    Mockito.verify(view, Mockito.times(1)).updateSupportReportTypes(givenActivePrograms);
+    Mockito.verify(view, Mockito.times(1)).updateSupportReportTypes(givenActiveReportTypes);
   }
 }

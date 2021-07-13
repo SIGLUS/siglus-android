@@ -170,7 +170,7 @@ public class ReportListActivity extends BaseActivity implements ReportListView {
     reportListViewpager.registerOnPageChangeCallback(pageChangeCallback);
 
     // load data
-    reportListPresenter.getSupportPrograms();
+    reportListPresenter.getSupportReportTypes();
   }
 
   @Override

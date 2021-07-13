@@ -78,7 +78,7 @@ public class ReportListPresenter extends Presenter {
     this.view = (ReportListView) v;
   }
 
-  public void getSupportPrograms() {
+  public void getSupportReportTypes() {
     Observable.create((OnSubscribe<List<ReportTypeForm>>) subscriber -> {
       final List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAllWithActive();
       setHasVCReportType(reportTypeForms);
@@ -113,9 +113,9 @@ public class ReportListPresenter extends Presenter {
     });
   }
 
-  private void setHasVCReportType(List<ReportTypeForm> programs) {
-    for (ReportTypeForm program : programs) {
-      if (Program.VIA_CODE.equals(program.getCode())) {
+  private void setHasVCReportType(List<ReportTypeForm> reportTypeForms) {
+    for (ReportTypeForm reportTypeForm : reportTypeForms) {
+      if (Program.VIA_CODE.equals(reportTypeForm.getCode())) {
         hasVCReportType = true;
         return;
       }

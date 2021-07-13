@@ -71,7 +71,7 @@ public class ReportListActivityTest {
     requisitionActivityActivityController = Robolectric.buildActivity(ReportListActivity.class);
     reportListActivity = requisitionActivityActivityController.create().get();
 
-    verify(mockedPresenter, times(1)).getSupportPrograms();
+    verify(mockedPresenter, times(1)).getSupportReportTypes();
   }
 
   @After
