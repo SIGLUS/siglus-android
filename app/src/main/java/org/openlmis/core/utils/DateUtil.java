@@ -120,6 +120,10 @@ public final class DateUtil {
     return new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault()).format(date);
   }
 
+  public static String formatDateTimeToDay(Date date) {
+    return new SimpleDateFormat(DB_DATE_FORMAT, Locale.getDefault()).format(date);
+  }
+
   public static String formatDateWithoutYear(Date date) {
     return new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH, Locale.getDefault()).format(date);
   }

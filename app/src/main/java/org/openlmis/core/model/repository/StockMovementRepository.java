@@ -287,8 +287,8 @@ public class StockMovementRepository {
     String rawSql =
         "SELECT stockOnHand, movementQuantity, movementType FROM stock_items WHERE stockCard_id='"
             + stockCardId + "'"
-            + " AND createdTime > '" + DateUtil.formatDateTime(periodBeginDate) + "'"
-            + " AND createdTime <= '" + DateUtil.formatDateTime(periodEndDate) + "'"
+            + " AND movementDate > '" + DateUtil.formatDateTimeToDay(periodBeginDate) + "'"
+            + " AND movementDate <= '" + DateUtil.formatDateTimeToDay(periodEndDate) + "'"
             + " ORDER BY movementDate, createdTime";
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
         .getWritableDatabase().rawQuery(rawSql, null);
