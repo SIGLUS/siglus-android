@@ -37,6 +37,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.activity.BulkEntriesActivity;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
 import org.openlmis.core.view.adapter.BulkEntriesLotMovementAdapter;
 import org.openlmis.core.view.adapter.BulkLotInfoReviewListAdapter;
@@ -130,6 +131,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
 
   @Override
   public void addNewLot(LotMovementViewModel lotMovementViewModel) {
+    lotMovementViewModel.setFrom(BulkEntriesActivity.KEY_FROM_BULK_ENTRIES_COMPLETE);
     bulkEntriesViewModel.setValidationType(ValidationType.VALID);
     bulkEntriesViewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
     bulkEntriesAdapter.notifyDataSetChanged();

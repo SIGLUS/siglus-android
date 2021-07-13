@@ -166,8 +166,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   public Observable<Object> doInventory(final String sign) {
     return Observable.create(subscriber -> {
       try {
-        final Date latestStockMovementCreatedTime = movementRepository
-            .getLatestStockMovementCreatedTime();
+        final Date latestStockMovementCreatedTime = movementRepository.getLatestStockMovementCreatedTime();
         if (DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
           throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
         }
@@ -178,8 +177,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
           if (stockCard.getStockOnHand() == 0) {
             stockCard.setExpireDates("");
           }
-          stockRepository
-              .addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard));
+          stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard));
         }
         inventoryRepository.clearDraft();
         sharedPreferenceMgr.setLatestPhysicInventoryTime(

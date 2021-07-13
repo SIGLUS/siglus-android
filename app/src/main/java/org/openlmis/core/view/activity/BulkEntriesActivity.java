@@ -37,8 +37,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.ArrayUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -64,36 +66,37 @@ import rx.Subscription;
 @ContentView(R.layout.activity_bulk_entries)
 public class BulkEntriesActivity extends BaseActivity {
 
+  public static final String KEY_FROM_BULK_ENTRIES_COMPLETE = "key from bulk entries complete";
   @InjectPresenter(BulkEntriesPresenter.class)
   BulkEntriesPresenter bulkEntriesPresenter;
-
   @InjectView(R.id.rv_bulk_entries_product)
   RecyclerView rvBulkEntriesProducts;
-
   @InjectView(R.id.tv_total)
   TextView tvTotal;
-
   @InjectView(R.id.btn_save)
   View btnSave;
-
   @InjectView(R.id.btn_complete)
   Button btnComplete;
-
   @InjectView(R.id.action_panel)
   View actionPanel;
-
   @InjectView(R.id.msg_no_product)
   TextView msgNoProduct;
-
   @InjectView(R.id.iv_no_product)
   ImageView ivNoProduct;
-
   @InjectView(R.id.v_total_divider)
   View totalDivider;
-
   BulkEntriesAdapter adapter;
-
   List<Product> addedProducts;
+  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
+          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
+          adapter.refresh();
+          adapter.notifyDataSetChanged();
+        }
+      });
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,7 +215,7 @@ public class BulkEntriesActivity extends BaseActivity {
     return new Subscriber<List<BulkEntriesViewModel>>() {
       @Override
       public void onCompleted() {
-        // no thing
+        // do nothing
       }
 
       @Override
@@ -273,7 +276,6 @@ public class BulkEntriesActivity extends BaseActivity {
       rvBulkEntriesProducts.scrollToPosition(firstInvalidPosition);
       LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvBulkEntriesProducts.getLayoutManager();
       linearLayoutManager.scrollToPositionWithOffset(firstInvalidPosition, 0);
-      rvBulkEntriesProducts.clearFocus();
       return false;
     }
     return true;
@@ -300,22 +302,38 @@ public class BulkEntriesActivity extends BaseActivity {
     };
   }
 
+  private Subscriber<Long> getSaveBulkEntriesProductsSubscriber() {
+    List<Long> stockCardIdList = new ArrayList<>();
+    return new Subscriber<Long>() {
+      @Override
+      public void onCompleted() {
+        bulkEntriesPresenter.deleteDraft();
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY,
+            ArrayUtils.toPrimitive(stockCardIdList.toArray(new Long[0])));
+        setResult(Activity.RESULT_OK, intent);
+        loaded();
+        finish();
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        ToastUtil.show(e.getMessage());
+        loaded();
+      }
+
+      @Override
+      public void onNext(Long id) {
+        stockCardIdList.add(id);
+      }
+    };
+  }
+
   private void openAddProductsActivityForResult() {
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
     intent.putExtra(SELECTED_PRODUCTS, (Serializable) bulkEntriesPresenter.getAddedProductCodes());
     addProductsActivityResultLauncher.launch(intent);
   }
-
-  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
-      new StartActivityForResult(),
-      result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
-          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
-          adapter.refresh();
-          adapter.notifyDataSetChanged();
-        }
-      });
 
   private void hideKeyboard(View view) {
     InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
@@ -329,8 +347,11 @@ public class BulkEntriesActivity extends BaseActivity {
     return new SignatureDialog.DialogDelegate() {
 
       @Override
-      public void onSign(String sign) {
+      public void onSign(String signature) {
         loading();
+        Subscription subscription = bulkEntriesPresenter.saveBulkEntriesProducts(signature)
+            .subscribe(getSaveBulkEntriesProductsSubscriber());
+        subscriptions.add(subscription);
       }
     };
   }

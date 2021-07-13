@@ -65,11 +65,9 @@ public class StockMovementRepository {
   DbUtil dbUtil;
   @Inject
   Context context;
-
+  GenericDao<StockMovementItem> genericDao;
   @Inject
   private LotRepository lotRepository;
-
-  GenericDao<StockMovementItem> genericDao;
 
   @Inject
   public StockMovementRepository(Context context) {
@@ -147,6 +145,21 @@ public class StockMovementRepository {
             return lotMovementItem;
           }).toList();
       lotRepository.batchCreateLotsAndLotMovements(newAddedLotMovementItems);
+    }
+  }
+
+
+  // TODO when do #116 , merge with batchCreateStockMovementItemAndLotItemsForProductOperation
+  public void batchCreateStockMovementItemAndLotItemsForProductOperationForBulkEntries(
+      final StockMovementItem stockMovementItem)
+      throws LMISException {
+    stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+    // Create Stock Movement history list
+    create(stockMovementItem);
+    if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())
+        || CollectionUtils.isNotEmpty(stockMovementItem.getNewAddedLotMovementItemListWrapper())) {
+      lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
+      lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getNewAddedLotMovementItemListWrapper());
     }
   }
 
@@ -573,6 +586,15 @@ public class StockMovementRepository {
     stockCardsMovements.put(stockCardId, stockMovementItems);
   }
 
+  public void resetKeepItemToNotSynced(Map<String, List<StockMovementItem>> stockMovementItemsMap) {
+    List<String> keepMovements = new ArrayList<>();
+    for (Map.Entry<String, List<StockMovementItem>> map : stockMovementItemsMap.entrySet()) {
+      keepMovements.add(String.valueOf(stockMovementItemsMap.get(map.getKey()).get(0).getId()));
+    }
+    String updateSql = "update stock_items set synced = 0 where id in ("
+        + StringUtils.join(keepMovements, ",") + ")";
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
+  }
 
   public static class SortClass implements Comparator<StockMovementItem> {
 
@@ -589,16 +611,6 @@ public class StockMovementRepository {
         return compareMovementDate;
       }
     }
-  }
-
-  public void resetKeepItemToNotSynced(Map<String, List<StockMovementItem>> stockMovementItemsMap) {
-    List<String> keepMovements = new ArrayList<>();
-    for (Map.Entry<String, List<StockMovementItem>> map : stockMovementItemsMap.entrySet()) {
-      keepMovements.add(String.valueOf(stockMovementItemsMap.get(map.getKey()).get(0).getId()));
-    }
-    String updateSql = "update stock_items set synced = 0 where id in ("
-        + StringUtils.join(keepMovements, ",") + ")";
-    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(updateSql);
   }
 
 }

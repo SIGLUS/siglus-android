@@ -36,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
+import org.openlmis.core.view.activity.BulkEntriesActivity;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -115,6 +116,12 @@ public class StockMovementItem extends BaseModel {
         fromInitialInventory ? movementViewModelList : model.getNewLotMovementViewModelList());
   }
 
+  public StockMovementItem(StockCard stockCard) {
+    this.stockCard = stockCard;
+    this.stockOnHand = stockCard.calculateSOHFromLots();
+    this.movementDate = DateUtil.getCurrentDate();
+  }
+
   public boolean isPositiveMovement() {
     return movementType.equals(MovementReasonManager.MovementType.RECEIVE)
         || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
@@ -137,12 +144,6 @@ public class StockMovementItem extends BaseModel {
     } else {
       return stockOnHand;
     }
-  }
-
-  public StockMovementItem(StockCard stockCard) {
-    this.stockCard = stockCard;
-    this.stockOnHand = stockCard.calculateSOHFromLots();
-    this.movementDate = DateUtil.getCurrentDate();
   }
 
   public List<LotMovementItem> getLotMovementItemListWrapper() {
@@ -174,8 +175,7 @@ public class StockMovementItem extends BaseModel {
       }
       setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList)
           .transform(lotMovementViewModel -> {
-            LotMovementItem lotItem = lotMovementViewModel
-                .convertViewToModel(getStockCard().getProduct());
+            LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
             lotItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
             return lotItem;
           }).toList());
@@ -189,8 +189,13 @@ public class StockMovementItem extends BaseModel {
     ImmutableList<LotMovementItem> existingLotMovementItemList = FluentIterable
         .from(existingLotMovementList)
         .transform(lotMovementViewModel -> {
-          LotMovementItem lotItem = lotMovementViewModel
-              .convertViewToModelAndResetSOH(getStockCard().getProduct());
+          LotMovementItem lotItem;
+          if (lotMovementViewModel.getFrom() != null && lotMovementViewModel.getFrom()
+              .equals(BulkEntriesActivity.KEY_FROM_BULK_ENTRIES_COMPLETE)) {
+            lotItem = lotMovementViewModel.convertViewToModelAndResetSOHFromBulkEntries(getStockCard().getProduct());
+          } else {
+            lotItem = lotMovementViewModel.convertViewToModelAndResetSOH(getStockCard().getProduct());
+          }
           lotItem.setStockMovementItem(stockMovementItem);
           lotItem.setStockOnHandReset(true);
           return lotItem;
@@ -199,10 +204,8 @@ public class StockMovementItem extends BaseModel {
     ImmutableList<LotMovementItem> newAddedLotMovementItemList = FluentIterable
         .from(newAddedLotMovementList)
         .transform(lotMovementViewModel -> {
-          lotMovementViewModel
-              .setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
-          LotMovementItem lotItem = lotMovementViewModel
-              .convertViewToModel(getStockCard().getProduct());
+          lotMovementViewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+          LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
           lotItem.setStockMovementItem(stockMovementItem);
           return lotItem;
         }).toList();

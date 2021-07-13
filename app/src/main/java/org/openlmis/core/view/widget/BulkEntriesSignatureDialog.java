@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import com.google.android.material.textfield.TextInputLayout;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.R;
@@ -45,7 +46,7 @@ public class BulkEntriesSignatureDialog extends BaseDialogFragment {
   SignatureDialog.DialogDelegate delegate;
 
   @InjectView(R.id.et_process_date)
-  private EditText etProcessDate;
+  private TextView etProcessDate;
 
   @InjectView(R.id.et_signature)
   private EditText etSignature;
@@ -78,7 +79,6 @@ public class BulkEntriesSignatureDialog extends BaseDialogFragment {
     Bundle arguments = getArguments();
     if (arguments != null) {
       etProcessDate.setText(arguments.getString("Date"));
-      etProcessDate.setFocusable(false);
     }
   }
 
@@ -144,12 +144,11 @@ public class BulkEntriesSignatureDialog extends BaseDialogFragment {
 
   private void setDialogAttributes() {
     WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-    Window window = getDialog().getWindow();
+    Window window = Objects.requireNonNull(getDialog()).getWindow();
     if (window != null) {
       params.copyFrom(getDialog().getWindow().getAttributes());
     }
-    params.width = (int) getResources().getDimension(R.dimen.px_471);
-    params.height = (int) getResources().getDimension(R.dimen.px_333);
+    params.width = (int) (getDialog().getContext().getResources().getDisplayMetrics().widthPixels * 0.8);
     getDialog().getWindow().setAttributes(params);
   }
 

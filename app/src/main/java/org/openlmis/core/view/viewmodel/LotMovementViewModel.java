@@ -81,6 +81,8 @@ public class LotMovementViewModel {
         DateUtil.parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
     LotMovementItem lotMovementItem = new LotMovementItem();
     lotMovementItem.setLot(lot);
+    lotMovementItem.setDocumentNumber(documentNumber);
+    lotMovementItem.setReason(movementReason);
 
     if (StringUtils.isNoneBlank(quantity)) {
       lotMovementItem.setMovementQuantity(Long.parseLong(quantity));
@@ -106,6 +108,21 @@ public class LotMovementViewModel {
     long previousStockOnHand = Long.parseLong(getLotSoh());
     lotMovementItem.setStockOnHand(currentStockOnHand);
     lotMovementItem.setMovementQuantity(currentStockOnHand - previousStockOnHand);
+    return lotMovementItem;
+  }
+
+  public LotMovementItem convertViewToModelAndResetSOHFromBulkEntries(Product product) {
+    Lot lot = new Lot();
+    lot.setProduct(product);
+    lot.setLotNumber(lotNumber);
+    lot.setExpirationDate(
+        DateUtil.getActualMaximumDate(DateUtil.parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
+    LotMovementItem lotMovementItem = new LotMovementItem();
+    lotMovementItem.setLot(lot);
+    lotMovementItem.setStockOnHand(Long.parseLong(getLotSoh()));
+    lotMovementItem.setMovementQuantity(Long.parseLong(getQuantity()));
+    lotMovementItem.setReason(movementReason);
+    lotMovementItem.setDocumentNumber(documentNumber);
     return lotMovementItem;
   }
 

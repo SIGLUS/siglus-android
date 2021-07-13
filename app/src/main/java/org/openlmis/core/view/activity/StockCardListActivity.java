@@ -40,6 +40,12 @@ public class StockCardListActivity extends SearchBarActivity {
   private static final int MENU_ID_BULK_ENTRIES = 500;
   protected StockCardListFragment stockCardFragment;
 
+  public static Intent getIntentToMe(Context context) {
+    Intent intent = new Intent(context, StockCardListActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    return intent;
+  }
+
   @Override
   protected ScreenName getScreenName() {
     return ScreenName.STOCK_CARD_OVERVIEW_SCREEN;
@@ -76,7 +82,8 @@ public class StockCardListActivity extends SearchBarActivity {
         startActivity(AllDrugsMovementHistoryActivity.getIntentToMe(this));
         return true;
       case MENU_ID_BULK_ENTRIES:
-        startActivity(BulkEntriesActivity.class);
+        startActivityForResult(new Intent(LMISApp.getContext(), BulkEntriesActivity.class),
+            Constants.REQUEST_FROM_STOCK_LIST_PAGE);
         return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -91,12 +98,6 @@ public class StockCardListActivity extends SearchBarActivity {
     } else {
       return false;
     }
-  }
-
-  public static Intent getIntentToMe(Context context) {
-    Intent intent = new Intent(context, StockCardListActivity.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    return intent;
   }
 
   @Override

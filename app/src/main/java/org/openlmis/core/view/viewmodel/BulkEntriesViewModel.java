@@ -82,6 +82,16 @@ public class BulkEntriesViewModel extends InventoryViewModel {
     return existingLotsValidation && newLotsValidation;
   }
 
+  public void setLotOnHand() {
+    for (LotMovementViewModel lotMovementViewModel : getExistingLotMovementViewModelList()) {
+      lotMovementViewModel.setLotSoh(String.valueOf(
+          Long.parseLong(lotMovementViewModel.getLotSoh()) + Long.parseLong(lotMovementViewModel.getQuantity())));
+    }
+    for (LotMovementViewModel lotMovementViewModel : getNewLotMovementViewModelList()) {
+      lotMovementViewModel.setLotSoh(lotMovementViewModel.getQuantity());
+    }
+  }
+
   private boolean validExistingLotMovementViewModelList() {
     if (newLotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty()) {
       validationType = ValidationType.NO_LOT;

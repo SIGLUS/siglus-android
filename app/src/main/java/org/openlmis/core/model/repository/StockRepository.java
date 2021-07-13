@@ -55,11 +55,11 @@ import org.openlmis.core.utils.DateUtil;
 @SuppressWarnings("PMD")
 public class StockRepository {
 
-  private static final String TAG = StockRepository.class.getSimpleName();
   public static final String PRODUCT_ID = "product_id";
   public static final String STOCK_ON_HAND = "stockOnHand";
   public static final String AVG_MONTHLY_CONSUMPTION = "avgMonthlyConsumption";
   public static final String STOCK_CARD_ID = "stockCard_id";
+  private static final String TAG = StockRepository.class.getSimpleName();
   @Inject
   DbUtil dbUtil;
   @Inject
@@ -163,17 +163,32 @@ public class StockRepository {
     }
   }
 
-  public synchronized void addStockMovementAndUpdateStockCard(
-      final StockMovementItem stockMovementItem) {
+  public synchronized void addStockMovementAndUpdateStockCard(final StockMovementItem stockMovementItem) {
     try {
-      TransactionManager
-          .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-              () -> {
-                StockCard stockcard = stockMovementItem.getStockCard();
-                createOrUpdate(stockcard);
-                stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(stockMovementItem);
-                return null;
-              });
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
+          () -> {
+            StockCard stockcard = stockMovementItem.getStockCard();
+            createOrUpdate(stockcard);
+            stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(stockMovementItem);
+            return null;
+          });
+    } catch (SQLException e) {
+      new LMISException(e, "StockRepository.addStock").reportToFabric();
+    }
+
+  }
+
+  // TODO when do #116 , merge with addStockMovementAndUpdateStockCard
+  public synchronized void addStockMovementAndUpdateStockCardForBulkEntries(final StockMovementItem stockMovementItem) {
+    try {
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
+          () -> {
+            StockCard stockcard = stockMovementItem.getStockCard();
+            createOrUpdate(stockcard);
+            stockMovementRepository
+                .batchCreateStockMovementItemAndLotItemsForProductOperationForBulkEntries(stockMovementItem);
+            return null;
+          });
     } catch (SQLException e) {
       new LMISException(e, "StockRepository.addStock").reportToFabric();
     }

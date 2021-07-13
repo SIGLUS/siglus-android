@@ -9,18 +9,16 @@
     android:id="@+id/ly_process_date"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_normal"
-    android:layout_marginLeft="@dimen/px_60"
-    android:layout_marginRight="@dimen/px_60"
+    android:layout_marginTop="@dimen/px_44"
+    android:layout_marginLeft="@dimen/px_53"
+    android:layout_marginRight="@dimen/px_53"
     app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
+    <TextView
       android:id="@+id/et_process_date"
       style="@style/Dialog.EditText"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:editable="false"
-      android:padding="@dimen/px_23"
       android:drawablePadding="@dimen/padding_normal"
       android:textSize="@dimen/font_x_large"
       app:drawableLeftCompat="@drawable/ic_process_date"
@@ -32,8 +30,8 @@
     android:id="@+id/ly_signature"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/px_60"
-    android:layout_marginRight="@dimen/px_60"
+    android:layout_marginLeft="@dimen/px_53"
+    android:layout_marginRight="@dimen/px_53"
     app:layout_constraintTop_toBottomOf="@+id/ly_process_date">
 
     <EditText
@@ -46,18 +44,18 @@
       android:hint="@string/hint_bulk_entries_signature"
       android:drawableStart="@drawable/ic_signature"
       android:drawablePadding="@dimen/padding_normal"
-      android:padding="@dimen/px_23"
+      android:paddingVertical="@dimen/px_23"
       android:textSize="@dimen/font_x_large"/>
   </com.google.android.material.textfield.TextInputLayout>
 
   <LinearLayout
     style="@style/Dialog.ActionPanel"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_medium"
-    android:layout_marginRight="@dimen/px_27"
     android:layout_marginBottom="@dimen/px_100"
-    app:layout_constraintTop_toBottomOf="@+id/ly_signature">
+    android:paddingVertical="@dimen/px_44"
+    app:layout_constraintTop_toBottomOf="@+id/ly_signature"
+    app:layout_constraintEnd_toEndOf="@+id/ly_signature">
 
     <TextView
       android:id="@+id/btn_cancel"
