@@ -51,7 +51,7 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
     mockedPresenter = mock(PhysicalInventoryPresenter.class);
     mockedAdapter = mock(PhysicalInventoryAdapter.class);
     mockSearchView = mock(SearchView.class);
-    when(mockedPresenter.loadActivePrograms()).thenReturn(Observable.empty());
+    when(mockedPresenter.loadPrograms()).thenReturn(Observable.empty());
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
       @Override
       protected void configure() {

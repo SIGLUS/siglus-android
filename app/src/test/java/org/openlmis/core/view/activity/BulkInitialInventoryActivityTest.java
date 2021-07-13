@@ -64,7 +64,7 @@ public class BulkInitialInventoryActivityTest {
     mockedPresenter = mock(BulkInitialInventoryPresenter.class);
     mockSearchView = mock(SearchView.class);
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-    when(mockedPresenter.loadActivePrograms()).thenReturn(Observable.empty());
+    when(mockedPresenter.loadPrograms()).thenReturn(Observable.empty());
     activityController = Robolectric.buildActivity(BulkInitialInventoryActivity.class);
     bulkInventoryActivity = activityController.create().start().resume().get();
     product = new ProductBuilder()

@@ -67,10 +67,10 @@ public abstract class InventoryPresenter extends Presenter {
 
   public abstract Observable<List<InventoryViewModel>> loadInventory();
 
-  public Observable<List<Program>> loadActivePrograms() {
+  public Observable<List<Program>> loadPrograms() {
     return Observable.create((OnSubscribe<List<Program>>) subscriber -> {
       try {
-        final List<Program> queryActiveProgram = programRepository.queryActiveProgramWithoutML();
+        final List<Program> queryActiveProgram = programRepository.queryProgramWithoutML();
         subscriber.onNext(queryActiveProgram);
       } catch (LMISException exception) {
         subscriber.onError(exception);

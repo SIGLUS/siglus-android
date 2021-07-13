@@ -185,7 +185,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
 
       @Override
       public void onNext(Object o) {
-        Subscription loaded = presenter.loadActivePrograms().subscribe(getOnProgramsLoadedSubscriber());
+        Subscription loaded = presenter.loadPrograms().subscribe(getOnProgramsLoadedSubscriber());
         subscriptions.add(loaded);
       }
     };

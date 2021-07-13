@@ -182,7 +182,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
 
   protected void initDate() {
     loading();
-    final Subscription subscription = presenter.loadActivePrograms().subscribe(getOnProgramsLoadedSubscriber());
+    final Subscription subscription = presenter.loadPrograms().subscribe(getOnProgramsLoadedSubscriber());
     subscriptions.add(subscription);
   }
 

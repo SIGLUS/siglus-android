@@ -158,7 +158,7 @@ public class ProgramRepository {
     }).toList();
   }
 
-  public List<Program> queryActiveProgramWithoutML() throws LMISException {
+  public List<Program> queryProgramWithoutML() throws LMISException {
     final List<Program> programs = genericDao.queryForAll();
     return FluentIterable.from(programs).filter(program -> {
       if (program == null) {
