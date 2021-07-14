@@ -280,7 +280,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
   public void shouldSetSignatureToViewModel() throws Exception {
     String signature = "signature";
     presenter.getInventoryViewModelList().addAll(getStockCardViewModels());
-    when(stockMovementRepositoryMock.getLatestStockMovementCreatedTime())
+    when(stockMovementRepositoryMock.getLatestStockMovementMovementDate())
         .thenReturn(DateTime.now().minusMinutes(1).toDate());
     TestSubscriber<Object> subscriber = new TestSubscriber<>();
     Subscription subscription = presenter.doInventory(signature).subscribe(subscriber);
@@ -296,7 +296,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
   public void shouldPreventInversionDateOrTimeInsert() throws Exception {
     String signature = "signature";
     presenter.getInventoryViewModelList().addAll(getStockCardViewModels());
-    when(stockMovementRepositoryMock.getLatestStockMovementCreatedTime())
+    when(stockMovementRepositoryMock.getLatestStockMovementMovementDate())
         .thenReturn(DateTime.now().plusMinutes(1).toDate());
     TestSubscriber<Object> subscriber = new TestSubscriber<>();
     Subscription subscription = presenter.doInventory(signature).subscribe(subscriber);
@@ -310,7 +310,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldUpdateLatestDoPhysicalInventoryTime() throws Exception {
-    when(stockMovementRepositoryMock.getLatestStockMovementCreatedTime())
+    when(stockMovementRepositoryMock.getLatestStockMovementMovementDate())
         .thenReturn(DateTime.now().minusMinutes(1).toDate());
     ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
     TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
@@ -326,7 +326,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldSaveInventoryWhenCompletePhysicalInventory() throws Exception {
-    when(stockMovementRepositoryMock.getLatestStockMovementCreatedTime())
+    when(stockMovementRepositoryMock.getLatestStockMovementMovementDate())
         .thenReturn(DateTime.now().minusMinutes(1).toDate());
     TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
     presenter.getInventoryViewModelList().clear();

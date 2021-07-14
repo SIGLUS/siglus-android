@@ -202,17 +202,19 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldCalculateAverageMonthlyConsumptionLessThanZeroWhenOnlyTwoValidPeriod()
-      throws Exception {
+  public void shouldCalculateAverageMonthlyConsumptionLessThanZeroWhenOnlyTwoValidPeriod() throws Exception {
+    // given
     StockCard stockCard = new StockCard();
     stockCard.setProduct(getRandomProduct());
     stockCard.setStockOnHand(300);
     stockService.stockRepository.createOrUpdate(stockCard);
-
-    createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
     createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
+    createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
 
+    // when
     float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
+
+    //then
     assertEquals(2,
         stockService.stockMovementRepository.listLastFiveStockMovements(stockCard.getId()).size());
     assertThat(100F, is(averageMonthlyConsumption));
@@ -236,14 +238,17 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldCalculateAverageMonthlyConsumptionCorrectly() throws Exception {
+    //given
     stockCard.setStockOnHand(400);
     stockService.stockRepository.createOrUpdate(stockCard);
-
-    createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
-    createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
     createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
+    createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
+    createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
 
+    // when
     float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
+
+    // then
     assertEquals(3,
         stockService.stockMovementRepository.listLastFiveStockMovements(stockCard.getId()).size());
     assertThat(100F, is(averageMonthlyConsumption));
@@ -253,14 +258,17 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
   @Test
   public void shouldCalculateAverageMonthlyConsumptionLessThanZeroWhenLastMonthSOHIsZero()
       throws Exception {
+    // give
     stockCard.setStockOnHand(300);
     stockService.stockRepository.createOrUpdate(stockCard);
-
-    createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
-    createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
     createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
+    createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
+    createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
 
+    // when
     float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
+
+    //then
     assertEquals(3,
         stockService.stockMovementRepository.listLastFiveStockMovements(stockCard.getId()).size());
     assertThat(100F, is(averageMonthlyConsumption));
@@ -269,15 +277,17 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
   @Test
   public void shouldCalculateAverageMonthlyConsumptionWhenLastMonthHaveNoStockItem()
       throws Exception {
+    // given
     stockCard.setStockOnHand(400);
     stockService.stockRepository.createOrUpdate(stockCard);
-
+    createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);
+    createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
     createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
 
-    createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
-    createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);
-
+    // when
     float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
+
+    // then
     assertEquals(3,
         stockService.stockMovementRepository.listLastFiveStockMovements(stockCard.getId()).size());
     assertThat(200F / 3, is(averageMonthlyConsumption));

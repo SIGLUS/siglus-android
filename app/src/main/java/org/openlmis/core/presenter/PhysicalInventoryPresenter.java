@@ -166,7 +166,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
   public Observable<Object> doInventory(final String sign) {
     return Observable.create(subscriber -> {
       try {
-        final Date latestStockMovementCreatedTime = movementRepository.getLatestStockMovementCreatedTime();
+        final Date latestStockMovementCreatedTime = movementRepository.getLatestStockMovementMovementDate();
         if (DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
           throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
         }

@@ -76,8 +76,8 @@ public class StockMovementRepository {
   }
 
   private void create(StockMovementItem stockMovementItem) throws LMISException {
-    Date latestCreateTime = getLatestStockMovementCreatedTime();
-    if (latestCreateTime != null && stockMovementItem.getCreatedTime().before(latestCreateTime)) {
+    Date latestCreateTime = getLatestStockMovementMovementDate();
+    if (latestCreateTime != null && stockMovementItem.getMovementDate().before(latestCreateTime)) {
       String productCode = stockMovementItem.getStockCard().getProduct().getCode();
       String facilityCode = UserInfoMgr.getInstance().getFacilityCode();
       LMISException e = new LMISException(
@@ -196,22 +196,22 @@ public class StockMovementRepository {
         .queryForFirst());
   }
 
-  public Date getLatestStockMovementCreatedTime() throws LMISException {
+  public Date getLatestStockMovementMovementDate() throws LMISException {
     return dbUtil.withDao(StockMovementItem.class, dao -> {
       try {
         final GenericRawResults<String[]> rawResults = dao.queryRaw(
-            "SELECT MAX(createdTime) FROM stock_items where movementDate="
-                + "(SELECT MAX(movementDate) FROM stock_items)");
+            "SELECT MAX(movementDate) FROM stock_items");
         final String[] firstResult = rawResults.getFirstResult();
         if (firstResult == null || firstResult.length <= 0) {
           return null;
         }
-        return DateUtil.parseString(firstResult[0], DateUtil.DATE_TIME_FORMAT);
+        return DateUtil.parseString(firstResult[0], DateUtil.DB_DATE_FORMAT);
       } catch (Exception e) {
         return null;
       }
     });
   }
+
 
   public List<String> queryStockMovementDatesByProgram(final String programCode) {
     String rawSql = "SELECT movementDate FROM stock_items s1 "
