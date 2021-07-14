@@ -313,6 +313,7 @@ public class BulkEntriesActivity extends BaseActivity {
             ArrayUtils.toPrimitive(stockCardIdList.toArray(new Long[0])));
         setResult(Activity.RESULT_OK, intent);
         loaded();
+        ToastUtil.show(R.string.msg_complete_successfully);
         finish();
       }
 
