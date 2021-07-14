@@ -30,8 +30,7 @@ import org.openlmis.core.view.viewmodel.BaseStockMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-public class BulkLotInfoReviewListAdapter extends
-    RecyclerView.Adapter<BulkLotInfoReviewViewHolder> {
+public class BulkLotInfoReviewListAdapter extends RecyclerView.Adapter<BulkLotInfoReviewViewHolder> {
 
   List<LotMovementViewModel> viewModels = new ArrayList<>();
 

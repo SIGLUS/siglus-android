@@ -120,7 +120,7 @@ public class LotMovementViewModel {
     LotMovementItem lotMovementItem = new LotMovementItem();
     lotMovementItem.setLot(lot);
     lotMovementItem.setStockOnHand(Long.parseLong(getLotSoh()));
-    lotMovementItem.setMovementQuantity(Long.parseLong(getQuantity()));
+    lotMovementItem.setMovementQuantity(StringUtils.isBlank(getQuantity()) ? null : Long.parseLong(getQuantity()));
     lotMovementItem.setReason(movementReason);
     lotMovementItem.setDocumentNumber(documentNumber);
     return lotMovementItem;

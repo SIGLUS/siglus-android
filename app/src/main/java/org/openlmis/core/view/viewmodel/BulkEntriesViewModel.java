@@ -23,29 +23,21 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import androidx.core.content.ContextCompat;
 import java.util.List;
+import java.util.Objects;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
 public class BulkEntriesViewModel extends InventoryViewModel {
 
-  public enum ValidationType {
-    NO_LOT,
-    EXISTING_LOT_ALL_BLANK,
-    NEW_LOT_BLANK,
-    VALID
-  }
-
   private boolean done;
-
   private Long quantity;
-
   private List<LotMovementViewModel> lotMovementViewModels;
-
   private ValidationType validationType;
 
   public BulkEntriesViewModel(Product product) {
@@ -83,13 +75,20 @@ public class BulkEntriesViewModel extends InventoryViewModel {
   }
 
   public void setLotOnHand() {
-    for (LotMovementViewModel lotMovementViewModel : getExistingLotMovementViewModelList()) {
+    for (LotMovementViewModel lotMovementViewModel : filterNoAmountLot(getExistingLotMovementViewModelList())) {
       lotMovementViewModel.setLotSoh(String.valueOf(
           Long.parseLong(lotMovementViewModel.getLotSoh()) + Long.parseLong(lotMovementViewModel.getQuantity())));
     }
     for (LotMovementViewModel lotMovementViewModel : getNewLotMovementViewModelList()) {
       lotMovementViewModel.setLotSoh(lotMovementViewModel.getQuantity());
     }
+  }
+
+  private List<LotMovementViewModel> filterNoAmountLot(List<LotMovementViewModel> existingLotMovementViewModels) {
+    return FluentIterable.from(existingLotMovementViewModels)
+        .filter(
+            lotMovementViewModel -> !StringUtils.isBlank(Objects.requireNonNull(lotMovementViewModel).getQuantity()))
+        .toList();
   }
 
   private boolean validExistingLotMovementViewModelList() {
@@ -119,7 +118,7 @@ public class BulkEntriesViewModel extends InventoryViewModel {
     }
     return !productFlag;
   }
-  
+
   private boolean validNewLotMovementViewModelList() {
     if (newLotMovementViewModelList.isEmpty()) {
       return true;
@@ -137,5 +136,12 @@ public class BulkEntriesViewModel extends InventoryViewModel {
     }
     validationType = ValidationType.VALID;
     return true;
+  }
+
+  public enum ValidationType {
+    NO_LOT,
+    EXISTING_LOT_ALL_BLANK,
+    NEW_LOT_BLANK,
+    VALID
   }
 }

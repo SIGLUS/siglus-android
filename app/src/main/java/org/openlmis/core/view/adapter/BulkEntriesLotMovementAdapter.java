@@ -30,8 +30,7 @@ import org.openlmis.core.view.holder.BulkEntriesLotMovementViewHolder;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
-public class BulkEntriesLotMovementAdapter extends
-    RecyclerView.Adapter<BulkEntriesLotMovementViewHolder> {
+public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntriesLotMovementViewHolder> {
 
   @Getter
   protected final List<LotMovementViewModel> lotList;
@@ -49,8 +48,7 @@ public class BulkEntriesLotMovementAdapter extends
   private BulkEntriesLotMovementViewHolder.AmountChangeListener amountChangeListener;
 
 
-  public BulkEntriesLotMovementAdapter(
-      List<LotMovementViewModel> lotList, String[] reasonDescriptionList,
+  public BulkEntriesLotMovementAdapter(List<LotMovementViewModel> lotList, String[] reasonDescriptionList,
       BulkEntriesViewModel bulkEntriesViewModel, BulkEntriesAdapter bulkEntriesAdapter) {
     this.lotList = lotList;
     this.movementReasons = reasonDescriptionList;
@@ -61,8 +59,7 @@ public class BulkEntriesLotMovementAdapter extends
 
   @NonNull
   @Override
-  public BulkEntriesLotMovementViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-      int viewType) {
+  public BulkEntriesLotMovementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     return new BulkEntriesLotMovementViewHolder(LayoutInflater.from(parent.getContext()).inflate(
         R.layout.item_bulk_entries_lots_info, parent, false), movementReasons);
   }
