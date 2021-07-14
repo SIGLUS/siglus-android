@@ -139,8 +139,11 @@ public class StockCardListFragment extends BaseFragment implements
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (resultCode == Activity.RESULT_OK) {
-      long[] stockCardIds = data.getLongArrayExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY);
-      if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE && stockCardIds != null) {
+      if (requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
+        long[] stockCardIds = data.getLongArrayExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY);
+        if (stockCardIds == null) {
+          return;
+        }
         presenter.refreshStockCardsObservable(stockCardIds);
       } else if (requestCode == Constants.REQUEST_UNPACK_KIT) {
         presenter.loadKits();
