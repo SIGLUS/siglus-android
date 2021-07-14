@@ -391,9 +391,8 @@ public class SyncDownManagerTest {
     data.add(new RnRForm());
 
     SyncDownRequisitionsResponse syncDownRequisitionsResponse = new SyncDownRequisitionsResponse();
-    syncDownRequisitionsResponse.setRequisitions(data);
-    when(lmisRestApi.fetchRequisitions(anyString(), anyString()))
-        .thenReturn(syncDownRequisitionsResponse);
+    syncDownRequisitionsResponse.setRequisitionResponseList(data);
+    when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncDownRequisitionsResponse);
   }
 
   private void mockStockCardsResponse() throws ParseException, LMISException {

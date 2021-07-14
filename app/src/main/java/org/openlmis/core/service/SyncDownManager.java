@@ -140,7 +140,7 @@ public class SyncDownManager {
         // syncDownService(subscriber1);
         syncDownProducts(subscriber1);
         syncDownLastMonthStockCards(subscriber1);
-        // syncDownRequisition(subscriber1);
+        syncDownRequisition(subscriber1);
         // syncDownRapidTests(subscriber1);
         setSyncing(false);
         subscriber1.onCompleted();
@@ -525,9 +525,7 @@ public class SyncDownManager {
   }
 
   private void fetchAndSaveRequisition() throws LMISException {
-    final String facilityCode = UserInfoMgr.getInstance().getUser().getFacilityCode();
-    SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi
-        .fetchRequisitions(facilityCode, getStartDate());
+    SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(getStartDate());
     if (syncDownRequisitionsResponse == null) {
       LMISException e = new LMISException(
           "Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
@@ -535,7 +533,7 @@ public class SyncDownManager {
       throw e;
     }
 
-    rnrFormRepository.createRnRsWithItems(syncDownRequisitionsResponse.getRequisitions());
+    rnrFormRepository.createRnRsWithItems(syncDownRequisitionsResponse.getRequisitionResponseList());
   }
 
   private void fetchLatestOneMonthMovements() throws LMISException {

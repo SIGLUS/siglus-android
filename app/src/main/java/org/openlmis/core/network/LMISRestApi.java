@@ -71,6 +71,9 @@ public interface LMISRestApi {
   @POST("/api/siglusapi/android/me/app-info")
   Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
 
+  @GET("/api/siglusapi/android/me/facility/requisitions")
+  SyncDownRequisitionsResponse fetchRequisitions(@Query("startDate") String startDate) throws LMISException;
+
   @POST("/api/siglusapi/android/me/facility/requisitions")
   Void submitRequisition(@Body RnRForm rnRForm) throws LMISException;
 
@@ -99,10 +102,6 @@ public interface LMISRestApi {
   @GET("/api/siglusapi/android/regimens")
   SyncDownRegimensResponse fetchRegimens() throws LMISException;
 
-
-  @GET("/rest-api/requisitions")
-  SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode,
-      @Query("startDate") String startDate) throws LMISException;
 
   @GET("/rest-api/programData/facilities/{facilityId}")
   SyncDownProgramDataResponse fetchProgramDataForms(@Path("facilityId") Long facilityId)

@@ -27,5 +27,5 @@ import org.openlmis.core.model.RnRForm;
 @Setter
 public class SyncDownRequisitionsResponse {
 
-  List<RnRForm> requisitions;
+  List<RnRForm> requisitionResponseList;
 }
