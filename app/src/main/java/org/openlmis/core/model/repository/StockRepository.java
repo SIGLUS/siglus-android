@@ -185,6 +185,7 @@ public class StockRepository {
           () -> {
             StockCard stockcard = stockMovementItem.getStockCard();
             createOrUpdate(stockcard);
+            productRepository.updateProduct(stockcard.getProduct());
             stockMovementRepository
                 .batchCreateStockMovementItemAndLotItemsForProductOperationForBulkEntries(stockMovementItem);
             return null;

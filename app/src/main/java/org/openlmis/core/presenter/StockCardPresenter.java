@@ -56,10 +56,9 @@ import rx.schedulers.Schedulers;
 public class StockCardPresenter extends Presenter {
 
   private static final String TAG = StockCardPresenter.class.getSimpleName();
-
-  private final List<InventoryViewModel> inventoryViewModels;
   private static final String SHOULD_SHOW_ALERT_MSG = "should_show_alert_msg";
-
+  final Map<String, String> lotsOnHands = new HashMap<>();
+  private final List<InventoryViewModel> inventoryViewModels;
   @Inject
   StockRepository stockRepository;
   @Inject
@@ -68,15 +67,10 @@ public class StockCardPresenter extends Presenter {
   StockService stockService;
   @Inject
   DirtyDataManager dirtyDataManager;
-
   @Inject
   SharedPreferenceMgr sharedPreferenceMgr;
-
-  Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
-
   private StockCardListView view;
-
-  final Map<String, String> lotsOnHands = new HashMap<>();
+  Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
   public StockCardPresenter() {
     inventoryViewModels = new ArrayList<>();
@@ -162,12 +156,13 @@ public class StockCardPresenter extends Presenter {
 
   public void refreshStockCardsObservable(@NonNull long[] stockCardIds) {
     view.loading();
-    Observable.create((OnSubscribe<List<StockCard>>) subscriber -> {
-      for (long stockCardId : stockCardIds) {
-        refreshStockCardViewModelsSOH(stockCardId);
-      }
-      checkDataAndEmitter(subscriber, ACTIVE);
-    }).subscribeOn(Schedulers.io())
+    Observable.create((OnSubscribe<List<StockCard>>) subscriber -> checkDataAndEmitter(subscriber, ACTIVE))
+        .doOnNext(stockCards -> {
+          refreshViewModels(stockCards);
+          for (long stockCardId : stockCardIds) {
+            refreshStockCardViewModelsSOH(stockCardId);
+          }
+        }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Subscriber<List<StockCard>>() {
           @Override
@@ -184,7 +179,6 @@ public class StockCardPresenter extends Presenter {
           @Override
           public void onNext(List<StockCard> stockCards) {
             view.loaded();
-            refreshViewModels(stockCards);
             view.refreshBannerText();
             view.refresh(inventoryViewModels);
           }
