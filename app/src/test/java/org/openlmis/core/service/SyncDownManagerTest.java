@@ -203,7 +203,7 @@ public class SyncDownManagerTest {
     laterEnterSubscriber.assertNoTerminalEvent();
 
     // then
-    assertThat(firstEnterSubscriber.syncProgresses.size(), is(8));
+    assertThat(firstEnterSubscriber.syncProgresses.size(), is(10));
     assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
   }
 

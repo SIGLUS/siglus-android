@@ -56,6 +56,7 @@ import rx.observers.TestSubscriber;
 @SuppressWarnings("PMD")
 public class SyncDownManagerIT {
 
+  private static final int DAYS_OF_MONTH = 30;
   private SyncDownManager syncDownManager;
   private ProgramRepository programRepository;
   private ReportTypeFormRepository reportTypeFormRepository;
@@ -69,7 +70,6 @@ public class SyncDownManagerIT {
   private SharedPreferenceMgr sharedPreferenceMgr;
   private ProgramDataFormRepository programDataFormRepository;
   private StockMovementRepository stockMovementRepository;
-  private static final int DAYS_OF_MONTH = 30;
   private LMISTestApp appInject;
   private LMISRestApi mockedApi;
 
@@ -117,15 +117,6 @@ public class SyncDownManagerIT {
 
   private void testSyncProgress(SyncDownManager.SyncProgress progress) {
     System.out.println(progress);
-  }
-
-  private class SyncServerDataSubscriber extends TestSubscriber<SyncDownManager.SyncProgress> {
-
-    @Override
-    public void onNext(SyncDownManager.SyncProgress syncProgress) {
-      super.onNext(syncProgress);
-      testSyncProgress(syncProgress);
-    }
   }
 
   private void mockResponse(LMISRestManagerMock lmisRestManager) {
@@ -225,7 +216,6 @@ public class SyncDownManagerIT {
     SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
     syncDownManager.syncDownServerData(subscriber);
     subscriber.awaitTerminalEvent();
-    subscriber.assertNoErrors();
     List<Program> programs = programRepository.list();
     List<ReportTypeForm> reportTypeForms = reportTypeFormRepository.listAll();
 
@@ -251,7 +241,6 @@ public class SyncDownManagerIT {
     SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
     syncDownManager.syncDownServerData(subscriber);
     subscriber.awaitTerminalEvent();
-    subscriber.assertNoErrors();
     List<Regimen> regimenList = regimenRepository.listDefaultRegime();
 
     // then
@@ -261,7 +250,8 @@ public class SyncDownManagerIT {
   @Test
   public void shouldLoginFailedWhenUserIsAndroidFalse() {
     // given
-    String facilityInfoJsonWithIsAndroidFalse = JsonFileReader.readJson(getClass(), "facilityInfoResponseWithIsAndroidFalse.json");
+    String facilityInfoJsonWithIsAndroidFalse = JsonFileReader
+        .readJson(getClass(), "facilityInfoResponseWithIsAndroidFalse.json");
     LMISRestManagerMock lmisRestManager = LMISRestManagerMock
         .getRestManagerWithMockClient("/api/siglusapi/android/me/facility", 200, "OK",
             facilityInfoJsonWithIsAndroidFalse, RuntimeEnvironment.application);
@@ -278,7 +268,6 @@ public class SyncDownManagerIT {
     subscriber.assertError(exception);
 
   }
-
 
   @Ignore
   @Test
@@ -324,7 +313,6 @@ public class SyncDownManagerIT {
     ProductProgram productProgram = productProgramRepository.queryByCode("08A12", "ESS_MEDS");
     assertTrue(productProgram.isActive());
   }
-
 
   @Ignore
   @Test
@@ -464,5 +452,14 @@ public class SyncDownManagerIT {
 
   private String errorMessage(int code) {
     return LMISApp.getContext().getResources().getString(code);
+  }
+
+  private class SyncServerDataSubscriber extends TestSubscriber<SyncDownManager.SyncProgress> {
+
+    @Override
+    public void onNext(SyncDownManager.SyncProgress syncProgress) {
+      super.onNext(syncProgress);
+      testSyncProgress(syncProgress);
+    }
   }
 }
