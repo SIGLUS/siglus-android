@@ -18,6 +18,8 @@
 
 package org.openlmis.core.presenter;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,8 @@ public class AddNonBasicProductsPresenter extends Presenter {
     return Observable
         .create((Observable.OnSubscribe<List<NonBasicProductsViewModel>>) subscriber -> {
           try {
-            List<Product> products = productRepository.listNonBasicProducts();
+            List<Product> products = from(productRepository.listNonBasicProducts())
+                .filter(product -> !product.isKit()).toList();
             for (Product product : products) {
               if (selectedProducts.contains(product.getCode())) {
                 continue;

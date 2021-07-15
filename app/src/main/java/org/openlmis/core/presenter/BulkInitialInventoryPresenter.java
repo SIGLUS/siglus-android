@@ -58,7 +58,9 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
   public Observable<List<InventoryViewModel>> loadInventory() {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
       try {
-        List<Product> inventoryProducts = productRepository.listBasicProducts();
+        List<Product> inventoryProducts = from(productRepository.listBasicProducts())
+            .filter(product -> !product.isKit())
+            .toList();
         defaultViewModelList.clear();
         inventoryViewModelList.clear();
         defaultViewModelList.addAll(convertProductToStockCardViewModel(inventoryProducts, ITEM_BASIC));
