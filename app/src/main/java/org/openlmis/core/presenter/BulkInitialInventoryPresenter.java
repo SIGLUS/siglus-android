@@ -25,6 +25,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static org.openlmis.core.utils.Constants.KIT_PRODUCTS;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class BulkInitialInventoryPresenter extends InventoryPresenter {
@@ -38,7 +39,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
         return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
             try {
                 List<Product> inventoryProducts = from(productRepository.listBasicProducts())
-                    .filter(product -> !product.isKit())
+                    .filter(product -> !KIT_PRODUCTS.contains(product.getCode()))
                     .toList();
                 defaultViewModelList.clear();
                 inventoryViewModelList.clear();
