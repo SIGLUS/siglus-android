@@ -19,6 +19,7 @@
 package org.openlmis.core.presenter;
 
 import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_BASIC;
+import static org.openlmis.core.utils.Constants.KIT_PRODUCTS;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.util.Log;
@@ -59,7 +60,7 @@ public class BulkInitialInventoryPresenter extends InventoryPresenter {
     return Observable.create((Observable.OnSubscribe<List<InventoryViewModel>>) subscriber -> {
       try {
         List<Product> inventoryProducts = from(productRepository.listBasicProducts())
-            .filter(product -> !product.isKit())
+            .filter(product -> !KIT_PRODUCTS.contains(product.getCode()))
             .toList();
         defaultViewModelList.clear();
         inventoryViewModelList.clear();

@@ -18,6 +18,7 @@
 
 package org.openlmis.core.presenter;
 
+import static org.openlmis.core.utils.Constants.KIT_PRODUCTS;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import com.google.inject.Inject;
@@ -55,7 +56,7 @@ public class AddNonBasicProductsPresenter extends Presenter {
         .create((Observable.OnSubscribe<List<NonBasicProductsViewModel>>) subscriber -> {
           try {
             List<Product> products = from(productRepository.listNonBasicProducts())
-                .filter(product -> !product.isKit()).toList();
+                .filter(product -> !KIT_PRODUCTS.contains(product.getCode())).toList();
             for (Product product : products) {
               if (selectedProducts.contains(product.getCode())) {
                 continue;
