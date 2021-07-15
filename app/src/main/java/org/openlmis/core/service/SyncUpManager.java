@@ -30,6 +30,7 @@ import com.google.inject.Singleton;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
@@ -412,6 +413,10 @@ public class SyncUpManager {
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
             Log.d(TAG, "===> SyncRnr : synced ->");
             return true;
+        } catch (NetWorkException e) {
+            new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
+            Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
+            return false;
         } catch (LMISException e) {
             new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
             Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
