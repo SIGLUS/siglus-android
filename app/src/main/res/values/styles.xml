@@ -458,7 +458,7 @@
   <style name="LotInfo" />
 
   <style name="LotInfo.Container">
-    <item name="android:background">@drawable/expire_date_bg</item>
+    <item name="android:background">@drawable/lot_unexpired_date_bg</item>
     <item name="android:gravity">center_vertical</item>
   </style>
 

@@ -21,8 +21,11 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
+import java.util.Date;
 import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -34,18 +37,11 @@ import roboguice.RoboGuice;
 
 public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout {
 
-  LayoutInflater inflater;
-
+  private LayoutInflater inflater;
 
   public LotInfoGroup(Context context, AttributeSet attributeSet) {
     super(context, attributeSet);
     init(context);
-  }
-
-  private void init(Context context) {
-    inflater = LayoutInflater.from(context);
-
-    RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
   }
 
   public void initLotInfoGroup(List<LotOnHand> lotOnHandList) {
@@ -59,20 +55,26 @@ public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout {
     }
   }
 
-  private ViewGroup addLotInfoView(LotOnHand lotOnHand) {
+  private void init(Context context) {
+    inflater = LayoutInflater.from(context);
+    RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
+  }
+
+  private void addLotInfoView(LotOnHand lotOnHand) {
     String lotOnHandQuantity = "" + lotOnHand.getQuantityOnHand();
+    final Date expirationDate = lotOnHand.getLot().getExpirationDate();
     String lotInfo = lotOnHand.getLot().getLotNumber() + " - "
-        + DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(),
+        + DateUtil.formatDate(expirationDate,
         DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)
         + " - "
         + lotOnHandQuantity;
-
-    final ViewGroup lotInfoView = (ViewGroup) inflater
-        .inflate(R.layout.item_lot_info_for_stockcard, null);
+    final ViewGroup lotInfoView = (ViewGroup) inflater.inflate(R.layout.item_lot_info_for_stockcard, null);
     TextView txLotInfo = lotInfoView.findViewById(R.id.tx_lot_info);
+    View llLotInfoBg = lotInfoView.findViewById(R.id.ll_lot_info_bg);
+    boolean isExpired = System.currentTimeMillis() > expirationDate.getTime();
+    llLotInfoBg.setBackgroundResource(isExpired ? R.drawable.lot_expired_date_bg : R.drawable.lot_unexpired_date_bg);
+    txLotInfo.setTextColor(ContextCompat.getColor(getContext(), isExpired ? R.color.color_red : R.color.color_black));
     txLotInfo.setText(lotInfo);
     addView(lotInfoView, getChildCount());
-    return lotInfoView;
   }
-
 }

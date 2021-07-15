@@ -20,6 +20,7 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import android.database.Cursor;
+import androidx.annotation.Nullable;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.Where;
@@ -136,16 +137,17 @@ public class RnrFormRepository {
     genericDao.create(rnRForm);
   }
 
-  public void createRnRsWithItems(final List<RnRForm> forms) throws LMISException {
+  public void createRnRsWithItems(@Nullable final List<RnRForm> forms) throws LMISException {
+    if (forms == null) {
+      return;
+    }
     try {
-      TransactionManager
-          .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-              () -> {
-                for (RnRForm form : forms) {
-                  createOrUpdateWithItems(form);
-                }
-                return null;
-              });
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        for (RnRForm form : forms) {
+          createOrUpdateWithItems(form);
+        }
+        return null;
+      });
     } catch (SQLException e) {
       throw new LMISException(e);
     }

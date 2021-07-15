@@ -158,11 +158,9 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   }
 
   private void initRecyclerView() {
-    View headerView = layoutInflater
-        .inflate(R.layout.item_stock_movement_header, stockMovementList, false);
+    View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
     stockMovementList.addHeaderView(headerView);
-    stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(),
-        presenter.getStockCard());
+    stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
     stockMovementList.setAdapter(stockMovementAdapter);
   }
 
@@ -207,7 +205,6 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   public boolean onPrepareOptionsMenu(Menu menu) {
     boolean isPrepared = super.onPrepareOptionsMenu(menu);
     menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
-
     return isPrepared;
   }
 
@@ -247,6 +244,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == Activity.RESULT_OK && (requestCode == Constants.REQUEST_UNPACK_KIT
         || requestCode == Constants.REQUEST_NEW_MOVEMENT_PAGE)) {
       loadStockCard();
@@ -254,13 +252,10 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
     }
   }
 
-
-  public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel,
-      boolean isKit) {
+  public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel, boolean isKit) {
     Intent intent = new Intent(context, StockMovementsWithLotActivity.class);
     intent.putExtra(Constants.PARAM_STOCK_CARD_ID, inventoryViewModel.getStockCardId());
-    intent.putExtra(Constants.PARAM_STOCK_NAME,
-        inventoryViewModel.getProduct().getFormattedProductName());
+    intent.putExtra(Constants.PARAM_STOCK_NAME, inventoryViewModel.getProduct().getFormattedProductName());
     intent.putExtra(Constants.PARAM_IS_ACTIVATED, inventoryViewModel.getProduct().isActive());
     intent.putExtra(Constants.PARAM_IS_KIT, isKit);
     return intent;
@@ -277,8 +272,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
           case R.id.btn_new_movement:
             String[] selections = FluentIterable.from(movementTypes)
                 .transform(movementType -> movementType.getDescription()).toArray(String.class);
-            newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(),
-                selections);
+            newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), selections);
             newMovementDialog.show(getSupportFragmentManager(), "");
             break;
           default:
