@@ -16,6 +16,7 @@
       android:name=".view.activity.LoginActivity"
       android:permission=""
       android:screenOrientation="portrait"
+      android:windowSoftInputMode="adjustPan|stateHidden"
       android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
