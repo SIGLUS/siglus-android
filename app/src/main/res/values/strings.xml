@@ -444,7 +444,7 @@
   <string name="Low_stock">Low stock</string>
   <string name="Stock_out">Stockout</string>
   <string name="hint_movement_date">Date of movement</string>
-  <string name="hint_document_number"><font size = "18">Document number</font></string>
+  <string name="hint_document_number">Document number</string>
   <string name="hint_movement_reason_receive">Origin of movement</string>
   <string name="hint_movement_reason_negative">Destination of movement</string>
   <string name="hint_requested_quantity">Requested</string>

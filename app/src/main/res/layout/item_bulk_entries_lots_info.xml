@@ -24,7 +24,8 @@
       android:drawablePadding="5dp"
       android:focusableInTouchMode="false"
       android:hint="@string/hint_movement_reason_receive"
-      android:inputType="textMultiLine" />
+      android:inputType="textMultiLine"
+      android:textSize="@dimen/font_large"/>
 
   </com.google.android.material.textfield.TextInputLayout>
 
@@ -43,7 +44,7 @@
       android:drawableLeft="@drawable/ic_document"
       android:drawablePadding="5dp"
       android:hint="@string/hint_document_number"
-      android:textSize="@dimen/px_20"
+      android:textSize="@dimen/font_large"
       android:maxLength="@integer/edit_amount_length"
       android:singleLine="true"/>
 
