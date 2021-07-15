@@ -178,24 +178,6 @@ public class StockRepository {
 
   }
 
-  // TODO when do #116 , merge with addStockMovementAndUpdateStockCard
-  public synchronized void addStockMovementAndUpdateStockCardForBulkEntries(final StockMovementItem stockMovementItem) {
-    try {
-      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-          () -> {
-            StockCard stockcard = stockMovementItem.getStockCard();
-            createOrUpdate(stockcard);
-            productRepository.updateProduct(stockcard.getProduct());
-            stockMovementRepository
-                .batchCreateStockMovementItemAndLotItemsForProductOperationForBulkEntries(stockMovementItem);
-            return null;
-          });
-    } catch (SQLException e) {
-      new LMISException(e, "StockRepository.addStock").reportToFabric();
-    }
-
-  }
-
   public List<StockCard> list() {
     try {
       List<StockCard> stockCards = genericDao.queryForAll();

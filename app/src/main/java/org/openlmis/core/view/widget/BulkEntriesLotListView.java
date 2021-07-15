@@ -30,12 +30,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.manager.MovementReasonManager.MovementReason;
-import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.BulkEntriesActivity;
 import org.openlmis.core.view.adapter.BulkEntriesAdapter;
@@ -45,7 +41,6 @@ import org.openlmis.core.view.holder.BulkEntriesLotMovementViewHolder;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel.ValidationType;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.InjectView;
 
 

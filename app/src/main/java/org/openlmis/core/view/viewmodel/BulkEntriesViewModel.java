@@ -23,15 +23,12 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import androidx.core.content.ContextCompat;
 import java.util.List;
-import java.util.Objects;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.utils.Constants;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
 public class BulkEntriesViewModel extends InventoryViewModel {

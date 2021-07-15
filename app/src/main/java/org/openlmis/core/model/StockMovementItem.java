@@ -213,6 +213,17 @@ public class StockMovementItem extends BaseModel {
     setNewAddedLotMovementItemListWrapper(newAddedLotMovementItemList);
   }
 
+  public void buildLotMovementReasonAndDocumentNumber() {
+    for (LotMovementItem lotMovementItem : getLotMovementItemListWrapper()) {
+      lotMovementItem.setReason(reason);
+      lotMovementItem.setDocumentNumber(documentNumber);
+    }
+    for (LotMovementItem lotMovementItem : getNewAddedLotMovementItemListWrapper()) {
+      lotMovementItem.setReason(reason);
+      lotMovementItem.setDocumentNumber(documentNumber);
+    }
+  }
+
   @Override
   public String toString() {
     return "[documentNumber=" + documentNumber

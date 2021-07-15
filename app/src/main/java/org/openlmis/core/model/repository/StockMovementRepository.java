@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -124,35 +123,6 @@ public class StockMovementRepository {
   }
 
   public void batchCreateStockMovementItemAndLotItemsForProductOperation(final StockMovementItem stockMovementItem)
-      throws LMISException {
-    stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
-    // Create Stock Movement history list
-    create(stockMovementItem);
-    if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())
-        || CollectionUtils.isNotEmpty(stockMovementItem.getNewAddedLotMovementItemListWrapper())) {
-      List<LotMovementItem> lotMovementItems = FluentIterable.from(
-          stockMovementItem.getLotMovementItemListWrapper())
-          .transform(lotMovementItem -> {
-            lotMovementItem.setReason(stockMovementItem.getReason());
-            lotMovementItem.setDocumentNumber(stockMovementItem.getDocumentNumber());
-            return lotMovementItem;
-          }).toList();
-      lotRepository.batchCreateLotsAndLotMovements(lotMovementItems);
-      List<LotMovementItem> newAddedLotMovementItems = FluentIterable.from(
-          stockMovementItem.getNewAddedLotMovementItemListWrapper())
-          .transform(lotMovementItem -> {
-            lotMovementItem.setReason(stockMovementItem.getReason());
-            lotMovementItem.setDocumentNumber(stockMovementItem.getDocumentNumber());
-            return lotMovementItem;
-          }).toList();
-      lotRepository.batchCreateLotsAndLotMovements(newAddedLotMovementItems);
-    }
-  }
-
-
-  // TODO when do #116 , merge with batchCreateStockMovementItemAndLotItemsForProductOperation
-  public void batchCreateStockMovementItemAndLotItemsForProductOperationForBulkEntries(
-      final StockMovementItem stockMovementItem)
       throws LMISException {
     stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
     // Create Stock Movement history list

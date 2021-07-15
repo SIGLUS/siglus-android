@@ -112,6 +112,7 @@ public class NewStockMovementPresenter extends Presenter {
 
     Date lastMovementDate = getLastMovementCreateDate();
     if (lastMovementDate == null || stockMovementItem.getCreatedAt().after(lastMovementDate)) {
+      stockMovementItem.buildLotMovementReasonAndDocumentNumber();
       stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
       if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
         SharedPreferenceMgr.getInstance()

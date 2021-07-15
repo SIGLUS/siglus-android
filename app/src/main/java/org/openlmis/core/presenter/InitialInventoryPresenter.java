@@ -128,11 +128,11 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     }
   }
 
-  private void createStockCardAndInventoryMovementWithLot(InventoryViewModel model)
-      throws LMISException {
+  private void createStockCardAndInventoryMovementWithLot(InventoryViewModel model) {
     StockCard stockCard = new StockCard();
     stockCard.setProduct(model.getProduct());
     StockMovementItem movementItem = new StockMovementItem(stockCard, model);
+    movementItem.buildLotMovementReasonAndDocumentNumber();
     stockCard.setStockOnHand(movementItem.getStockOnHand());
     stockRepository.addStockMovementAndUpdateStockCard(movementItem);
   }

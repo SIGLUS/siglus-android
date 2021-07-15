@@ -36,6 +36,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.BulkEntriesRepository;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
@@ -56,14 +57,18 @@ public class BulkEntriesPresenter extends Presenter {
   @Inject
   private final StockRepository stockRepository;
   @Inject
+  private final ProductRepository productRepository;
+  @Inject
   private final BulkEntriesRepository bulkEntriesRepository;
   @Getter
   private final List<BulkEntriesViewModel> bulkEntriesViewModels;
 
   @Inject
   public BulkEntriesPresenter(StockRepository stockRepository,
+      ProductRepository productRepository,
       BulkEntriesRepository bulkEntriesRepository) {
     this.stockRepository = stockRepository;
+    this.productRepository = productRepository;
     this.bulkEntriesRepository = bulkEntriesRepository;
     this.bulkEntriesViewModels = new ArrayList<>();
   }
@@ -133,25 +138,25 @@ public class BulkEntriesPresenter extends Presenter {
 
   public Observable<Long> saveBulkEntriesProducts(String signature) {
     return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-      for (BulkEntriesViewModel bulkEntriesViewModel : bulkEntriesViewModels) {
-        bulkEntriesViewModel.setSignature(signature);
-        bulkEntriesViewModel.calculateLotOnHand();
-        bulkEntriesViewModel.setDefaultReasonForNoAmountLot(Constants.DEFAULT_REASON_FOR_NO_AMOUNT_LOT);
-        StockCard stockCard = new StockCard();
-        if (bulkEntriesViewModel.getStockCard() != null) {
-          stockCard = bulkEntriesViewModel.getStockCard();
-        }
-        stockCard.setProduct(bulkEntriesViewModel.getProduct());
-        stockCard.getProduct().setArchived(false);
-        stockCard.setStockOnHand(getStockOnHand(bulkEntriesViewModel));
-        stockRepository
-            .addStockMovementAndUpdateStockCardForBulkEntries(buildStockMovementItem(bulkEntriesViewModel, stockCard));
-        try {
+      try {
+        for (BulkEntriesViewModel bulkEntriesViewModel : bulkEntriesViewModels) {
+          bulkEntriesViewModel.setSignature(signature);
+          bulkEntriesViewModel.calculateLotOnHand();
+          bulkEntriesViewModel.setDefaultReasonForNoAmountLot(Constants.DEFAULT_REASON_FOR_NO_AMOUNT_LOT);
+          StockCard stockCard = new StockCard();
+          if (bulkEntriesViewModel.getStockCard() != null) {
+            stockCard = bulkEntriesViewModel.getStockCard();
+          }
+          stockCard.setProduct(bulkEntriesViewModel.getProduct());
+          stockCard.getProduct().setArchived(false);
+          stockCard.setStockOnHand(getStockOnHand(bulkEntriesViewModel));
+          productRepository.updateProduct(stockCard.getProduct());
+          stockRepository.addStockMovementAndUpdateStockCard(buildStockMovementItem(bulkEntriesViewModel, stockCard));
           Long stockCardId = stockRepository.queryStockCardByProductId(bulkEntriesViewModel.getProductId()).getId();
           subscriber.onNext(stockCardId);
-        } catch (LMISException e) {
-          Log.d(TAG, e.toString());
         }
+      } catch (LMISException e) {
+        new LMISException(e, "BulkEntriesPresenter.saveBulkEntriesProducts").reportToFabric();
       }
       subscriber.onCompleted();
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
