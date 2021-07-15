@@ -159,12 +159,7 @@ public class StockMovementRepository {
     create(stockMovementItem);
     if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())
         || CollectionUtils.isNotEmpty(stockMovementItem.getNewAddedLotMovementItemListWrapper())) {
-      List<LotMovementItem> lotMovementItems = FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper())
-          .filter(
-              lotMovementItem -> Objects.requireNonNull(lotMovementItem).getMovementQuantity() != null && !StringUtils
-                  .isBlank(lotMovementItem.getMovementQuantity().toString()))
-          .toList();
-      lotRepository.batchCreateLotsAndLotMovements(lotMovementItems);
+      lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
       lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getNewAddedLotMovementItemListWrapper());
     }
   }

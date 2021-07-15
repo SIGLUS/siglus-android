@@ -111,8 +111,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
     existingLotListView.setLayoutManager(getEnScrollLinearLayoutManager());
     existingLotListView.setHasFixedSize(true);
     BulkEntriesLotMovementAdapter existingBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
-        viewModel.getExistingLotMovementViewModelList(), getMovementReasonDescriptionList(),
-        bulkEntriesViewModel, bulkEntriesAdapter);
+        viewModel.getExistingLotMovementViewModelList(), bulkEntriesViewModel, bulkEntriesAdapter);
     existingLotListView.setAdapter(existingBulkEntriesLotMovementAdapter);
     existingBulkEntriesLotMovementAdapter.setAmountChangeListener(amountChangeListenerFromAlert);
     setItemDecoration(existingLotListView);
@@ -123,8 +122,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
     newLotListView.setLayoutManager(getEnScrollLinearLayoutManager());
     newLotListView.setHasFixedSize(true);
     BulkEntriesLotMovementAdapter newBulkEntriesLotMovementAdapter = new BulkEntriesLotMovementAdapter(
-        viewModel.getNewLotMovementViewModelList(), getMovementReasonDescriptionList(),
-        bulkEntriesViewModel, bulkEntriesAdapter);
+        viewModel.getNewLotMovementViewModelList(), bulkEntriesViewModel, bulkEntriesAdapter);
     newLotListView.setAdapter(newBulkEntriesLotMovementAdapter);
     setItemDecoration(newLotListView);
   }
@@ -178,7 +176,7 @@ public class BulkEntriesLotListView extends BaseLotListView {
       btnAddNewLot.setBackground(getDrawable(R.drawable.border_round_red));
       btnAddNewLot.setTextColor(getColor(R.color.color_red));
       alertAddPositiveLotAmount.setVisibility(VISIBLE);
-    } else if (bulkEntriesViewModel.getValidationType() == ValidationType.EXISTING_LOT_ALL_BLANK) {
+    } else if (bulkEntriesViewModel.getValidationType() == ValidationType.EXISTING_LOT_ALL_AMOUNT_BLANK) {
       alertAddPositiveLotAmount.setVisibility(VISIBLE);
       btnAddNewLot.setBackground(getDrawable(R.drawable.border_round_blue));
       btnAddNewLot.setTextColor(getColor(R.color.color_accent));
@@ -204,21 +202,12 @@ public class BulkEntriesLotListView extends BaseLotListView {
 
   private void updateAddPositiveLotAmountAlert() {
     bulkEntriesViewModel.validate();
-    if (bulkEntriesViewModel.getValidationType() == ValidationType.EXISTING_LOT_ALL_BLANK) {
+    if (bulkEntriesViewModel.getValidationType() == ValidationType.EXISTING_LOT_ALL_AMOUNT_BLANK) {
       alertAddPositiveLotAmount.setVisibility(View.VISIBLE);
     } else {
       alertAddPositiveLotAmount.setVisibility(View.GONE);
     }
     amountChangeListenerFromTrashcan.onAmountChange();
-  }
-
-  private String[] getMovementReasonDescriptionList() {
-    String[] reasonDescriptionList;
-    List<MovementReason> movementReasons = MovementReasonManager
-        .getInstance().buildReasonListForMovementType(MovementType.RECEIVE);
-    reasonDescriptionList = FluentIterable.from(movementReasons)
-        .transform(MovementReason::getDescription).toArray(String.class);
-    return reasonDescriptionList;
   }
 
   private void markDone(boolean done) {

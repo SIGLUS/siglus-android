@@ -31,9 +31,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputLayout;
 import java.text.MessageFormat;
+import java.util.List;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.BulkEntriesActivity;
@@ -42,6 +44,7 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.InjectView;
 
 public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
@@ -69,16 +72,20 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   @InjectView(R.id.vg_lot_soh)
   private ViewGroup vgLotSOH;
 
-  private String[] movementReasons;
+  private List<MovementReason> movementReasons;
+
+  String [] reasonDescriptions;
 
   @Setter
   private AmountChangeListener amountChangeListener;
 
   private LotMovementViewModel lotMovementViewModel;
 
-  public BulkEntriesLotMovementViewHolder(View itemView, String[] movementReasons) {
+  public BulkEntriesLotMovementViewHolder(View itemView, List<MovementReason> movementReasons) {
     super(itemView);
     this.movementReasons = movementReasons;
+    this.reasonDescriptions = FluentIterable.from(movementReasons)
+        .transform(MovementReason::getDescription).toArray(String.class);
   }
 
   public void populate(final LotMovementViewModel viewModel,
@@ -119,7 +126,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
       @Override
       public void onSingleClick(View view) {
         Bundle bundle = new Bundle();
-        bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, movementReasons);
+        bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonDescriptions);
         SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
         reasonsDialog.setArguments(bundle);
         reasonsDialog.setMovementTypeOnClickListener(
@@ -147,7 +154,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   }
 
   private void setLyLotAmountError() {
-    if (StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+    if (StringUtils.isBlank(lotMovementViewModel.getQuantity()) && lotMovementViewModel.isNewAdded()) {
       lyLotAmount.setError(getString(R.string.msg_empty_quantity));
     }
   }
@@ -209,8 +216,8 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-      movementReason.setText(movementReasons[position]);
-      viewModel.setMovementReason(movementReasons[position]);
+      movementReason.setText(reasonDescriptions[position]);
+      viewModel.setMovementReason(movementReasons.get(position).getCode());
       lyMovementReason.setErrorEnabled(false);
       reasonsDialog.dismiss();
     }
@@ -248,7 +255,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
     private void updateVgLotSOHAndError() {
       if (viewModel.isNewAdded()) {
-        if (viewModel.validateLotWithPositiveQuantity()) {
+        if (!StringUtils.isBlank(viewModel.getQuantity()) && Long.parseLong(viewModel.getQuantity()) > 0) {
           vgLotSOH.setVisibility(View.GONE);
         } else {
           vgLotSOH.setVisibility(View.VISIBLE);

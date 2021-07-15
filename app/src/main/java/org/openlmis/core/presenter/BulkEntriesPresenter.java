@@ -37,6 +37,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.BulkEntriesRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.activity.BulkEntriesActivity;
@@ -134,7 +135,8 @@ public class BulkEntriesPresenter extends Presenter {
     return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
       for (BulkEntriesViewModel bulkEntriesViewModel : bulkEntriesViewModels) {
         bulkEntriesViewModel.setSignature(signature);
-        bulkEntriesViewModel.setLotOnHand();
+        bulkEntriesViewModel.calculateLotOnHand();
+        bulkEntriesViewModel.setDefaultReasonForNoAmountLot(Constants.DEFAULT_REASON_FOR_NO_AMOUNT_LOT);
         StockCard stockCard = new StockCard();
         if (bulkEntriesViewModel.getStockCard() != null) {
           stockCard = bulkEntriesViewModel.getStockCard();

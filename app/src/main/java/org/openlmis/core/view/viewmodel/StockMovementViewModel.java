@@ -118,13 +118,11 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
       stockMovementItem.setMovementQuantity(movementQuantity);
     }
 
-    stockMovementItem
-        .setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
+    stockMovementItem.setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
 
     stockMovementItem.setSignature(signature);
 
-    stockMovementItem
-        .setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
+    stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
 
     stockMovementItem.setStockCard(stockCard);
 

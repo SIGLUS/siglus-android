@@ -18,6 +18,7 @@
 
 package org.openlmis.core.presenter;
 
+import static java.lang.Long.getLong;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import com.google.inject.Inject;
@@ -65,37 +66,50 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
-
-  private List<InventoryViewModel> convertStockCardsToStockCardViewModels(
-      List<StockCard> validStockCardsForPhysicalInventory) {
-    Map<String, List<Map<String, String>>> lotInfoMap = stockRepository.getLotsAndLotOnHandInfo();
-    Map<String, String> lotOnHands = stockRepository.lotOnHands();
-    return FluentIterable.from(validStockCardsForPhysicalInventory).transform(stockCard -> {
-      addLotInfoToStockCard(stockCard, lotInfoMap);
-      InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard, lotOnHands);
-      setExistingLotViewModels(inventoryViewModel);
-      return inventoryViewModel;
-    }).toList();
+  public Observable<Object> saveDraftInventoryObservable() {
+    return Observable.create(subscriber -> {
+      try {
+        inventoryRepository.clearDraft();
+        for (InventoryViewModel model : inventoryViewModelList) {
+          inventoryRepository.createDraft(new DraftInventory((PhysicalInventoryViewModel) model));
+        }
+        subscriber.onNext(null);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        subscriber.onError(e);
+        new LMISException(e, "saveDraftInventoryObservable").reportToFabric();
+      }
+    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
   }
 
-  private void addLotInfoToStockCard(StockCard stockCard,
-      Map<String, List<Map<String, String>>> lotInfoMap) {
-    List<LotOnHand> lotOnHands = new ArrayList<>();
-    List<Map<String, String>> lotInfoList = lotInfoMap.get(String.valueOf(stockCard.getId()));
-    if (lotInfoList != null) {
-      for (Map<String, String> lotInfo : lotInfoList) {
-        Lot lot = new Lot();
-        LotOnHand lotOnHand = new LotOnHand();
-        lotOnHand.setQuantityOnHand(Long.valueOf(lotInfo.get("quantityOnHand")));
-        lot.setLotNumber(lotInfo.get("lotNumber"));
-        lot.setExpirationDate(
-            DateUtil.parseString(lotInfo.get("expirationDate"), DateUtil.DB_DATE_FORMAT));
-        lotOnHand.setLot(lot);
-        lotOnHands.add(lotOnHand);
-      }
-    }
+  public Observable<Object> doInventory(final String sign) {
+    return Observable.create(subscriber -> {
+      try {
+        final Date latestStockMovementCreatedTime = movementRepository.getLatestStockMovementMovementDate();
+        if (DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
+          throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
+        }
+        for (InventoryViewModel viewModel : inventoryViewModelList) {
+          viewModel.setSignature(sign);
+          StockCard stockCard = viewModel.getStockCard();
+          stockCard.setStockOnHand(viewModel.getLotListQuantityTotalAmount());
+          if (stockCard.getStockOnHand() == 0) {
+            stockCard.setExpireDates("");
+          }
+          stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard));
+        }
+        inventoryRepository.clearDraft();
+        sharedPreferenceMgr.setLatestPhysicInventoryTime(
+            DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT));
+        saveInventoryDate();
 
-    stockCard.setLotOnHandListWrapper(lotOnHands);
+        subscriber.onNext(null);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        subscriber.onError(e);
+        new LMISException(e, "doInventory").reportToFabric();
+      }
+    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
   }
 
   protected List<StockCard> getValidStockCardsForPhysicalInventory() {
@@ -139,58 +153,56 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
       item.setReason(MovementReasonManager.INVENTORY);
       item.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
     }
-
+    setLotMovementReason(model);
     item.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(
         model.getExistingLotMovementViewModelList(), model.getNewLotMovementViewModelList());
-
     return item;
   }
 
-  public Observable<Object> saveDraftInventoryObservable() {
-    return Observable.create(subscriber -> {
-      try {
-        inventoryRepository.clearDraft();
-        for (InventoryViewModel model : inventoryViewModelList) {
-          inventoryRepository.createDraft(new DraftInventory((PhysicalInventoryViewModel) model));
-        }
-        subscriber.onNext(null);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        subscriber.onError(e);
-        new LMISException(e, "saveDraftInventoryObservable").reportToFabric();
+  private void setLotMovementReason(InventoryViewModel model) {
+    for (LotMovementViewModel lotMovementViewModel : model.getExistingLotMovementViewModelList()) {
+      long quantity = Long.parseLong(lotMovementViewModel.getQuantity());
+      long lotSoh = Long.parseLong(lotMovementViewModel.getLotSoh());
+      if (quantity > lotSoh) {
+        lotMovementViewModel.setMovementReason(MovementReasonManager.INVENTORY_POSITIVE);
+      } else if (quantity < lotSoh) {
+        lotMovementViewModel.setMovementReason(MovementReasonManager.INVENTORY_NEGATIVE);
+      } else {
+        lotMovementViewModel.setMovementReason(MovementReasonManager.INVENTORY);
       }
-    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
   }
 
+  private List<InventoryViewModel> convertStockCardsToStockCardViewModels(
+      List<StockCard> validStockCardsForPhysicalInventory) {
+    Map<String, List<Map<String, String>>> lotInfoMap = stockRepository.getLotsAndLotOnHandInfo();
+    Map<String, String> lotOnHands = stockRepository.lotOnHands();
+    return FluentIterable.from(validStockCardsForPhysicalInventory).transform(stockCard -> {
+      addLotInfoToStockCard(stockCard, lotInfoMap);
+      InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard, lotOnHands);
+      setExistingLotViewModels(inventoryViewModel);
+      return inventoryViewModel;
+    }).toList();
+  }
 
-  public Observable<Object> doInventory(final String sign) {
-    return Observable.create(subscriber -> {
-      try {
-        final Date latestStockMovementCreatedTime = movementRepository.getLatestStockMovementMovementDate();
-        if (DateUtil.getCurrentDate().before(latestStockMovementCreatedTime)) {
-          throw new LMISException(LMISApp.getContext().getString(R.string.msg_invalid_stock_movement));
-        }
-        for (InventoryViewModel viewModel : inventoryViewModelList) {
-          viewModel.setSignature(sign);
-          StockCard stockCard = viewModel.getStockCard();
-          stockCard.setStockOnHand(viewModel.getLotListQuantityTotalAmount());
-          if (stockCard.getStockOnHand() == 0) {
-            stockCard.setExpireDates("");
-          }
-          stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard));
-        }
-        inventoryRepository.clearDraft();
-        sharedPreferenceMgr.setLatestPhysicInventoryTime(
-            DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT));
-        saveInventoryDate();
-
-        subscriber.onNext(null);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        subscriber.onError(e);
-        new LMISException(e, "doInventory").reportToFabric();
+  private void addLotInfoToStockCard(StockCard stockCard,
+      Map<String, List<Map<String, String>>> lotInfoMap) {
+    List<LotOnHand> lotOnHands = new ArrayList<>();
+    List<Map<String, String>> lotInfoList = lotInfoMap.get(String.valueOf(stockCard.getId()));
+    if (lotInfoList != null) {
+      for (Map<String, String> lotInfo : lotInfoList) {
+        Lot lot = new Lot();
+        LotOnHand lotOnHand = new LotOnHand();
+        lotOnHand.setQuantityOnHand(Long.valueOf(lotInfo.get("quantityOnHand")));
+        lot.setLotNumber(lotInfo.get("lotNumber"));
+        lot.setExpirationDate(
+            DateUtil.parseString(lotInfo.get("expirationDate"), DateUtil.DB_DATE_FORMAT));
+        lotOnHand.setLot(lot);
+        lotOnHands.add(lotOnHand);
       }
-    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    stockCard.setLotOnHandListWrapper(lotOnHands);
   }
 
   private void saveInventoryDate() {

@@ -108,6 +108,7 @@ public class LotMovementViewModel {
     long previousStockOnHand = Long.parseLong(getLotSoh());
     lotMovementItem.setStockOnHand(currentStockOnHand);
     lotMovementItem.setMovementQuantity(currentStockOnHand - previousStockOnHand);
+    lotMovementItem.setReason(movementReason);
     return lotMovementItem;
   }
 

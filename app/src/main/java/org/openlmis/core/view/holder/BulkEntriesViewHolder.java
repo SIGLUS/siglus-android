@@ -74,7 +74,7 @@ public class BulkEntriesViewHolder extends BaseViewHolder {
   }
 
   private void setInvalidStatus() {
-    if (bulkEntriesViewModel.getValidationType() == ValidationType.EXISTING_LOT_ALL_BLANK
+    if (bulkEntriesViewModel.getValidationType() == ValidationType.EXISTING_LOT_ALL_AMOUNT_BLANK
         || bulkEntriesViewModel.getValidationType() == ValidationType.NO_LOT) {
       icTrashcan.setImageResource(R.drawable.ic_trashcan_red);
     } else {

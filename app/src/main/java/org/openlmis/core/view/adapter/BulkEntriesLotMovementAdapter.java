@@ -26,6 +26,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.view.holder.BulkEntriesLotMovementViewHolder;
 import org.openlmis.core.view.viewmodel.BulkEntriesViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -42,16 +44,13 @@ public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntr
 
   private final BulkEntriesAdapter bulkEntriesAdapter;
 
-  private final String[] movementReasons;
-
   @Setter
   private BulkEntriesLotMovementViewHolder.AmountChangeListener amountChangeListener;
 
 
-  public BulkEntriesLotMovementAdapter(List<LotMovementViewModel> lotList, String[] reasonDescriptionList,
+  public BulkEntriesLotMovementAdapter(List<LotMovementViewModel> lotList,
       BulkEntriesViewModel bulkEntriesViewModel, BulkEntriesAdapter bulkEntriesAdapter) {
     this.lotList = lotList;
-    this.movementReasons = reasonDescriptionList;
     this.productName = bulkEntriesViewModel.getProduct().getPrimaryName();
     this.bulkEntriesViewModel = bulkEntriesViewModel;
     this.bulkEntriesAdapter = bulkEntriesAdapter;
@@ -61,7 +60,9 @@ public class BulkEntriesLotMovementAdapter extends RecyclerView.Adapter<BulkEntr
   @Override
   public BulkEntriesLotMovementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     return new BulkEntriesLotMovementViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-        R.layout.item_bulk_entries_lots_info, parent, false), movementReasons);
+        R.layout.item_bulk_entries_lots_info, parent, false),
+        MovementReasonManager.getInstance().buildReasonListForMovementType(
+            MovementType.RECEIVE));
   }
 
   @Override

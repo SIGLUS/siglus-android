@@ -30,6 +30,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
@@ -74,21 +75,24 @@ public class BulkEntriesViewModel extends InventoryViewModel {
     return existingLotsValidation && newLotsValidation;
   }
 
-  public void setLotOnHand() {
-    for (LotMovementViewModel lotMovementViewModel : filterNoAmountLot(getExistingLotMovementViewModelList())) {
-      lotMovementViewModel.setLotSoh(String.valueOf(
-          Long.parseLong(lotMovementViewModel.getLotSoh()) + Long.parseLong(lotMovementViewModel.getQuantity())));
+  public void calculateLotOnHand() {
+    for (LotMovementViewModel lotMovementViewModel : getExistingLotMovementViewModelList()) {
+      long lotSoh = Long.parseLong(lotMovementViewModel.getLotSoh());
+      long lotQuantity = Long.parseLong(
+          StringUtils.isBlank(lotMovementViewModel.getQuantity()) ? "0" : lotMovementViewModel.getQuantity());
+      lotMovementViewModel.setLotSoh(String.valueOf(lotSoh + lotQuantity));
     }
     for (LotMovementViewModel lotMovementViewModel : getNewLotMovementViewModelList()) {
       lotMovementViewModel.setLotSoh(lotMovementViewModel.getQuantity());
     }
   }
 
-  private List<LotMovementViewModel> filterNoAmountLot(List<LotMovementViewModel> existingLotMovementViewModels) {
-    return FluentIterable.from(existingLotMovementViewModels)
-        .filter(
-            lotMovementViewModel -> !StringUtils.isBlank(Objects.requireNonNull(lotMovementViewModel).getQuantity()))
-        .toList();
+  public void setDefaultReasonForNoAmountLot(String reasonForNoAmountLot) {
+    for (LotMovementViewModel lotMovementViewModel : getExistingLotMovementViewModelList()) {
+      if (StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+        lotMovementViewModel.setMovementReason(reasonForNoAmountLot);
+      }
+    }
   }
 
   private boolean validExistingLotMovementViewModelList() {
@@ -109,14 +113,15 @@ public class BulkEntriesViewModel extends InventoryViewModel {
         }
       }
     }
-    if (productFlag && lotFlag) {
+    if (productFlag && lotFlag || !productFlag && !newLotMovementViewModelList.isEmpty()) {
       validationType = ValidationType.VALID;
       return true;
-    } else if (!productFlag && newLotMovementViewModelList.isEmpty()) {
-      validationType = ValidationType.EXISTING_LOT_ALL_BLANK;
+    } else if (!productFlag) {
+      validationType = ValidationType.EXISTING_LOT_ALL_AMOUNT_BLANK;
       return false;
     }
-    return !productFlag;
+    validationType = ValidationType.EXISTING_LOT_INFO_HAS_BLANK;
+    return false;
   }
 
   private boolean validNewLotMovementViewModelList() {
@@ -140,7 +145,8 @@ public class BulkEntriesViewModel extends InventoryViewModel {
 
   public enum ValidationType {
     NO_LOT,
-    EXISTING_LOT_ALL_BLANK,
+    EXISTING_LOT_ALL_AMOUNT_BLANK,
+    EXISTING_LOT_INFO_HAS_BLANK,
     NEW_LOT_BLANK,
     VALID
   }

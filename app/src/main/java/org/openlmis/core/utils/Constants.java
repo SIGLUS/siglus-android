@@ -191,6 +191,8 @@ public final class Constants {
 
   public static final int STOCK_CARD_MAX_SYNC_MONTH = 12;
 
+  public static final String  DEFAULT_REASON_FOR_NO_AMOUNT_LOT = "INTERMEDIATE_WAREHOUSE";
+
   private Constants() {
 
   }
