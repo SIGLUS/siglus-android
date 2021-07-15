@@ -136,8 +136,8 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
   public long calculateSOHFromLots() {
     List<LotOnHand> lots = getLotOnHandListWrapper();
     long totalSOHFromLots = 0L;
-    if (CollectionUtils.isEmpty(lots)) {
-      totalSOHFromLots = stockOnHand;
+    if (CollectionUtils.isEmpty(lots) || product.isKit) {
+      return stockOnHand;
     }
 
     for (LotOnHand lotOnHand : lots) {
@@ -209,4 +209,5 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
         + super.toString()
         + "]";
   }
+
 }
