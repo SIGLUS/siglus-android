@@ -392,23 +392,24 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     public boolean isCompleted() {
-        boolean completedTotal = true;
-        boolean completedPharmacy = true;
-        for (EditText editText : editTotalTexts) {
-            if (TextUtils.isEmpty(editText.getText().toString())) {
-                editText.setError(context.getString(R.string.hint_error_input));
-                editText.requestFocus();
-                completedTotal = false;
+        for (int i = 0; i < editTotalTexts.size(); i++) {
+            EditText editTotalText = editTotalTexts.get(i);
+            if (TextUtils.isEmpty(editTotalText.getText().toString())) {
+                editTotalText.setError(context.getString(R.string.hint_error_input));
+                editTotalText.requestFocus();
+                return false;
+            }
+            if (editPharmacyTexts.size() > 0) {
+                EditText editPharmacyText = editPharmacyTexts.get(i);
+                if (TextUtils.isEmpty(editPharmacyText.getText().toString())) {
+                    editPharmacyText.setError(context.getString(R.string.hint_error_input));
+                    editPharmacyText.requestFocus();
+                    return false;
+                }
             }
         }
-        for (EditText editText : editPharmacyTexts) {
-            if (TextUtils.isEmpty(editText.getText().toString())) {
-                editText.setError(context.getString(R.string.hint_error_input));
-                editText.requestFocus();
-                completedPharmacy = false;
-            }
-        }
-        return completedTotal && completedPharmacy;
+
+        return true;
     }
 
     public long getTotal(COUNTTYPE counttype) {
