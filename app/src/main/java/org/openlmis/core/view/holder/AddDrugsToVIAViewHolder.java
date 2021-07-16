@@ -69,7 +69,8 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
     checkBox.setChecked(viewModel.isChecked());
 
     productName
-        .setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
+        .setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,
+            TextStyleUtil.formatStyledProductNameForAddProductPage(viewModel.getProduct())));
     tvShortCode
         .setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledUnit()));
 

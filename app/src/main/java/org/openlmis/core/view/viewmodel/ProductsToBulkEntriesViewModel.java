@@ -38,7 +38,7 @@ public class ProductsToBulkEntriesViewModel {
 
   public ProductsToBulkEntriesViewModel(Product product) {
     this.product = product;
-    this.styledProductName = TextStyleUtil.formatStyledProductName(product);
+    this.styledProductName = TextStyleUtil.formatStyledProductNameForAddProductPage(product);
     this.productType = "each";
     this.isChecked = false;
     this.isAdded = false;

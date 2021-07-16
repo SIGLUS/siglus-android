@@ -18,6 +18,7 @@
 
 package org.openlmis.core.utils;
 
+import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.text.Spanned.SPAN_POINT_MARK;
 
 import android.text.InputFilter;
@@ -35,6 +36,8 @@ import org.openlmis.core.model.Product;
 
 public final class TextStyleUtil {
 
+  private static final String HEADER_ARCHIVED = "[archived] ";
+
   private TextStyleUtil() {
   }
 
@@ -47,8 +50,7 @@ public final class TextStyleUtil {
     final int startIndex = spannableStringBuilder.toString().toLowerCase().indexOf(queryKeyWord.toLowerCase());
     spannableStringBuilder.setSpan(
         new ForegroundColorSpan(ContextCompat.getColor(LMISApp.getContext(), R.color.color_accent)),
-        startIndex,
-        startIndex + queryKeyWord.length(), SPAN_POINT_MARK);
+        startIndex, startIndex + queryKeyWord.length(), SPAN_POINT_MARK);
     return spannableStringBuilder;
   }
 
@@ -58,6 +60,23 @@ public final class TextStyleUtil {
     styledNameBuilder.setSpan(new ForegroundColorSpan(
             ContextCompat.getColor(LMISApp.getContext(), R.color.color_text_secondary)),
         product.getProductNameWithoutStrengthAndType().length(), productName.length(), SPAN_POINT_MARK);
+    return styledNameBuilder;
+  }
+
+  public static SpannableStringBuilder formatStyledProductNameForAddProductPage(Product product) {
+    String productName = product.getFormattedProductNameWithoutStrengthAndType();
+    SpannableStringBuilder styledNameBuilder = new SpannableStringBuilder(productName);
+    styledNameBuilder.setSpan(new ForegroundColorSpan(
+            ContextCompat.getColor(LMISApp.getContext(), R.color.color_text_secondary)),
+        product.getProductNameWithoutStrengthAndType().length(), productName.length(), SPAN_POINT_MARK);
+    if (product.isArchived()) {
+      SpannableStringBuilder styledArchivedBuilder = new SpannableStringBuilder(HEADER_ARCHIVED);
+      styledArchivedBuilder.setSpan(new ForegroundColorSpan(
+              ContextCompat.getColor(LMISApp.getContext(), R.color.color_de1313)),
+          0, HEADER_ARCHIVED.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+      styledArchivedBuilder.append(styledNameBuilder);
+      return styledArchivedBuilder;
+    }
     return styledNameBuilder;
   }
 
