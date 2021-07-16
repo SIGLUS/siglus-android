@@ -308,7 +308,8 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
             && regimeWrap.isCompleted()
             && mmiaPatientInfoListView.isCompleted()
             && mmiaDispensedInfoList.isCompleted()
-            && mmiaRegimeThreeLineListView.isCompleted()) {
+            && mmiaRegimeThreeLineListView.isCompleted()
+            && mmiaDispensedInfoList.isCompleted()) {
           presenter.setViewModels(rnrFormList.getItemFormList(), regimeWrap.getDataList(),
               combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
               mmiaRegimeThreeLineListView.getDataList(), etComment.getText().toString());
@@ -342,7 +343,6 @@ public class MMIARequisitionFragment extends BaseReportFragment implements
     long totalWithinMonths = getLongFromTextView(mmiaTotalDispensedWithMonth);
 
     boolean isCommentEmpty = TextUtils.isEmpty(etComment.getText().toString());
-
     return isCommentEmpty && (totalRegimes != totalLines || totalLines != totalWithinMonths);
   }
 
