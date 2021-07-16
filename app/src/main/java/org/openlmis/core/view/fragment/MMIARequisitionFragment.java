@@ -306,8 +306,8 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
                 if (rnrFormList.isCompleted()
                         && regimeWrap.isCompleted()
                         && mmiaPatientInfoListView.isCompleted()
-                        && mmiaDispensedInfoList.isCompleted()
-                        && mmiaRegimeThreeLineListView.isCompleted()) {
+                        && mmiaRegimeThreeLineListView.isCompleted()
+                        && mmiaDispensedInfoList.isCompleted()) {
                     presenter.setViewModels(rnrFormList.itemFormList,
                             regimeWrap.getDataList(),
                             combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
