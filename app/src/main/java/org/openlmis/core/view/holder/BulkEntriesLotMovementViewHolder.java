@@ -98,7 +98,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     documentNumber.setText(viewModel.getDocumentNumber());
     setErrorEnable();
     if (viewModel.isNewAdded()) {
-      lotSohTip.setText(getString(R.string.label_new_added_lot));
+      setLotSohTip();
       btnDelLot.setVisibility(View.VISIBLE);
     }
     if (!viewModel.isValid()) {
@@ -168,6 +168,14 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   private void setLyMovementReason() {
     if (StringUtils.isBlank(lotMovementViewModel.getMovementReason())) {
       lyMovementReason.setError(getString(R.string.msg_empty_movement_reason));
+    }
+  }
+
+  private void setLotSohTip() {
+    if (StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+      lotSohTip.setText(getString(R.string.label_new_added_lot));
+    } else {
+      vgLotSOH.setVisibility(View.GONE);
     }
   }
 
