@@ -193,7 +193,7 @@ public class BulkEntriesPresenter extends Presenter {
     List<LotMovementViewModel> lotMovementViewModelList = Lists.newArrayList(Iterables
         .concat(bulkEntriesViewModel.getExistingLotMovementViewModelList(),
             bulkEntriesViewModel.getNewLotMovementViewModelList()));
-    Long stockOnHand = 0L;
+    long stockOnHand = 0L;
     for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
       stockOnHand += Long.parseLong(lotMovementViewModel.getLotSoh());
     }

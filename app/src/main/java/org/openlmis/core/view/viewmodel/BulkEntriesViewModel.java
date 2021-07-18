@@ -33,6 +33,14 @@ import org.openlmis.core.model.StockCard;
 @Data
 public class BulkEntriesViewModel extends InventoryViewModel {
 
+  public enum ValidationType {
+    NO_LOT,
+    EXISTING_LOT_ALL_AMOUNT_BLANK,
+    EXISTING_LOT_INFO_HAS_BLANK,
+    NEW_LOT_BLANK,
+    VALID
+  }
+
   private boolean done;
   private Long quantity;
   private List<LotMovementViewModel> lotMovementViewModels;
@@ -65,13 +73,6 @@ public class BulkEntriesViewModel extends InventoryViewModel {
     return spannableStringBuilder;
   }
 
-  @Override
-  public boolean validate() {
-    boolean existingLotsValidation = validExistingLotMovementViewModelList();
-    boolean newLotsValidation = validNewLotMovementViewModelList();
-    return existingLotsValidation && newLotsValidation;
-  }
-
   public void calculateLotOnHand() {
     for (LotMovementViewModel lotMovementViewModel : getExistingLotMovementViewModelList()) {
       long lotSoh = Long.parseLong(lotMovementViewModel.getLotSoh());
@@ -91,6 +92,14 @@ public class BulkEntriesViewModel extends InventoryViewModel {
       }
     }
   }
+
+  @Override
+  public boolean validate() {
+    boolean existingLotsValidation = validExistingLotMovementViewModelList();
+    boolean newLotsValidation = validNewLotMovementViewModelList();
+    return existingLotsValidation && newLotsValidation;
+  }
+
 
   private boolean validExistingLotMovementViewModelList() {
     if (newLotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty()) {
@@ -136,15 +145,9 @@ public class BulkEntriesViewModel extends InventoryViewModel {
     if (!flag) {
       return false;
     }
-    validationType = ValidationType.VALID;
+    if (validationType == null) {
+      validationType = ValidationType.VALID;
+    }
     return true;
-  }
-
-  public enum ValidationType {
-    NO_LOT,
-    EXISTING_LOT_ALL_AMOUNT_BLANK,
-    EXISTING_LOT_INFO_HAS_BLANK,
-    NEW_LOT_BLANK,
-    VALID
   }
 }

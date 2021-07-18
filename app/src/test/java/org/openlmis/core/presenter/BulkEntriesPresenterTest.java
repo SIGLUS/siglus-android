@@ -38,7 +38,7 @@ public class BulkEntriesPresenterTest {
   private BulkEntriesPresenter bulkEntriesPresenter;
   private BulkEntriesRepository bulkEntriesRepository;
   private StockRepository stockRepository;
-  private List<DraftBulkEntriesProduct> bulkEntriesViewModels = new ArrayList<>();
+  private final List<DraftBulkEntriesProduct> bulkEntriesViewModels = new ArrayList<>();
   private final static String productCode = "22A07";
 
   @Before
@@ -70,8 +70,8 @@ public class BulkEntriesPresenterTest {
     DraftBulkEntriesProductLotItem draftBulkEntriesProductLotItem = DraftBulkEntriesProductLotItem
         .builder()
         .lotNumber("yyy66")
-        .lotSoh(Long.valueOf(100))
-        .quantity(Long.valueOf(200))
+        .lotSoh(100L)
+        .quantity(200L)
         .reason("District( DDM)")
         .expirationDate(new Date("2023/07/13"))
         .newAdded(true)
@@ -83,7 +83,7 @@ public class BulkEntriesPresenterTest {
     DraftBulkEntriesProduct draftBulkEntriesProduct = DraftBulkEntriesProduct.builder()
         .product(product)
         .draftLotItemListWrapper(draftBulkEntriesProductLotItems)
-        .quantity(Long.valueOf(300))
+        .quantity(300L)
         .done(true)
         .build();
     bulkEntriesViewModels.add(draftBulkEntriesProduct);
@@ -91,8 +91,7 @@ public class BulkEntriesPresenterTest {
     // when
     bulkEntriesPresenter.restoreDraftInventory();
     // then
-    assertEquals(Long.valueOf(300),
-        bulkEntriesPresenter.getBulkEntriesViewModels().get(0).getQuantity());
+    assertEquals(Long.valueOf(300), bulkEntriesPresenter.getBulkEntriesViewModels().get(0).getQuantity());
   }
 
   @Test
@@ -123,7 +122,7 @@ public class BulkEntriesPresenterTest {
     List<LotOnHand> lotOnHands = new ArrayList<>();
     LotOnHand lotOnHand = new LotOnHand();
     lotOnHand.setLot(lot);
-    lotOnHand.setQuantityOnHand(Long.valueOf(1000));
+    lotOnHand.setQuantityOnHand(1000L);
     lotOnHands.add(lotOnHand);
     stockCard.setLotOnHandListWrapper(lotOnHands);
 
@@ -133,7 +132,7 @@ public class BulkEntriesPresenterTest {
     DraftBulkEntriesProduct draftBulkEntriesProduct = DraftBulkEntriesProduct.builder()
         .product(product)
         .draftLotItemListWrapper(draftBulkEntriesProductLotItems)
-        .quantity(Long.valueOf(300))
+        .quantity(300L)
         .done(true)
         .build();
     bulkEntriesViewModels.add(draftBulkEntriesProduct);
@@ -248,6 +247,30 @@ public class BulkEntriesPresenterTest {
     bulkEntriesPresenter.deleteDraft();
     // then
     verify(bulkEntriesRepository,times(1)).clearBulkEntriesDraft();
+  }
+
+  @Test
+  public void shouldSaveBulkEntriesProductsSuccessFully() throws LMISException {
+    // given
+    String signature = "sign";
+    Product product = Product.builder()
+        .code(productCode)
+        .primaryName("test")
+        .build();
+    StockCard stockCard = new StockCard();
+    stockCard.setId(1L);
+    BulkEntriesViewModel bulkEntriesViewModel = new BulkEntriesViewModel(product);
+    bulkEntriesPresenter.getBulkEntriesViewModels().add(bulkEntriesViewModel);
+    when(stockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
+
+    // when
+    TestSubscriber<Long> subscriber = new TestSubscriber<>();
+    Observable<Long> observable = bulkEntriesPresenter.saveBulkEntriesProducts(signature);
+    observable.subscribe(subscriber);
+    subscriber.awaitTerminalEvent();
+
+    // then
+    assertEquals(1L, subscriber.getOnNextEvents().get(0).longValue());
   }
 
 }

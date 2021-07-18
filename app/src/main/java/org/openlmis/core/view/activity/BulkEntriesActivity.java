@@ -87,16 +87,6 @@ public class BulkEntriesActivity extends BaseActivity {
   View totalDivider;
   BulkEntriesAdapter adapter;
   List<Product> addedProducts;
-  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
-      new StartActivityForResult(),
-      result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
-          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
-          adapter.refresh();
-          adapter.notifyDataSetChanged();
-        }
-      });
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -356,5 +346,16 @@ public class BulkEntriesActivity extends BaseActivity {
       }
     };
   }
+
+  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          addedProducts = (List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS);
+          bulkEntriesPresenter.addNewProductsToBulkEntriesViewModels(addedProducts);
+          adapter.refresh();
+          adapter.notifyDataSetChanged();
+        }
+      });
 
 }
