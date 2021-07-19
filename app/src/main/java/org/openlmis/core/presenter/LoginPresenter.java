@@ -20,9 +20,11 @@ package org.openlmis.core.presenter;
 
 import static org.openlmis.core.utils.Constants.GRANT_TYPE;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +37,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.User.LoginErrorType;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
@@ -139,9 +142,14 @@ public class LoginPresenter extends Presenter {
     }
   }
 
-  public void onLoginFailed() {
+  public void onLoginFailed(LoginErrorType loginErrorType) {
     view.loaded();
-    view.showInvalidAlert();
+    if (loginErrorType == LoginErrorType.NO_INTERNET) {
+      view.showInvalidAlert(LMISApp.getContext().getResources().getString(R.string.message_wipe_no_connection));
+    }
+    if (loginErrorType == LoginErrorType.WRONG_PASSWORD) {
+      view.showInvalidAlert(LMISApp.getContext().getResources().getString(R.string.msg_invalid_user));
+    }
     view.clearPassword();
   }
 
@@ -265,7 +273,12 @@ public class LoginPresenter extends Presenter {
       if (internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
         loginRemote(user, fromReSync);
       } else {
-        loginLocal(user);
+        User localUser = userRepository.getLocalUser();
+        if (localUser == null) {
+          onLoginFailed(LoginErrorType.NO_INTERNET);
+        } else {
+          loginLocal(user);
+        }
       }
     };
   }
@@ -278,7 +291,7 @@ public class LoginPresenter extends Presenter {
     User localUser = userRepository.mapUserFromLocal(user);
 
     if (localUser == null) {
-      onLoginFailed();
+      onLoginFailed(LoginErrorType.WRONG_PASSWORD);
       return;
     }
 
@@ -306,7 +319,7 @@ public class LoginPresenter extends Presenter {
           @Override
           public void success(UserResponse userResponse, Response response) {
             if (userResponse == null || userResponse.getAccessToken() == null) {
-              onLoginFailed();
+              onLoginFailed(LoginErrorType.WRONG_PASSWORD);
             } else {
               user.setAccessToken(userResponse.getAccessToken());
               user.setTokenType(userResponse.getTokenType());
@@ -319,9 +332,14 @@ public class LoginPresenter extends Presenter {
           @Override
           public void failure(RetrofitError error) {
             if (error.getCause() instanceof NetWorkException) {
-              loginLocal(user);
+              User localUser = userRepository.getLocalUser();
+              if (localUser == null) {
+                onLoginFailed(LoginErrorType.NO_INTERNET);
+              } else {
+                loginLocal(user);
+              }
             } else {
-              onLoginFailed();
+              onLoginFailed(LoginErrorType.WRONG_PASSWORD);
             }
           }
         });
@@ -478,7 +496,7 @@ public class LoginPresenter extends Presenter {
 
     boolean needInitInventory();
 
-    void showInvalidAlert();
+    void showInvalidAlert(String alertMsg);
 
     void showUserNameEmpty();
 

@@ -111,18 +111,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
   @Inject
   DirtyDataManager dirtyDataManager;
 
-  InternetCheck.Callback validateConnectionListener = internet -> {
-    if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      ToastUtil.show(R.string.message_wipe_no_connection);
-    } else {
-      WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
-          R.string.message_warning_wipe_data,
-          R.string.btn_positive,
-          R.string.btn_negative);
-      getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
-    }
-  };
-
   @InjectPresenter(HomePresenter.class)
   private HomePresenter homePresenter;
 
@@ -134,33 +122,15 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private int syncedCount = 0;
 
-  private final SingleClickButtonListener singleClickButtonListener = new SingleClickButtonListener() {
-    @Override
-    public void onSingleClick(View v) {
-      if (isHaveDirtyData()) {
-        return;
-      }
-      switch (v.getId()) {
-        case R.id.btn_stock_card:
-          startActivity(StockCardListActivity.class);
-          break;
-        case R.id.btn_inventory:
-          Intent inventoryIntent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
-          startActivity(inventoryIntent);
-          break;
-        case R.id.btn_requisitions:
-          Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
-          startActivity(reportIntent);
-          break;
-        case R.id.btn_kits:
-          startActivity(KitStockCardListActivity.class);
-          break;
-        case R.id.btn_issue_voucher:
-          startActivity(new Intent(HomeActivity.this, IssueVoucherActivity.class));
-          break;
-        default:
-          // do nothing
-      }
+  public final InternetCheck.Callback validateConnectionListener = internet -> {
+    if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      ToastUtil.show(R.string.message_wipe_no_connection);
+    } else {
+      WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
+          R.string.message_warning_wipe_data,
+          R.string.btn_positive,
+          R.string.btn_negative);
+      getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
     }
   };
 
@@ -336,6 +306,36 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     EventBus.getDefault().unregister(this);
     super.onDestroy();
   }
+
+  private final SingleClickButtonListener singleClickButtonListener = new SingleClickButtonListener() {
+    @Override
+    public void onSingleClick(View v) {
+      if (isHaveDirtyData()) {
+        return;
+      }
+      switch (v.getId()) {
+        case R.id.btn_stock_card:
+          startActivity(StockCardListActivity.class);
+          break;
+        case R.id.btn_inventory:
+          Intent inventoryIntent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
+          startActivity(inventoryIntent);
+          break;
+        case R.id.btn_requisitions:
+          Intent reportIntent = new Intent(HomeActivity.this, ReportListActivity.class);
+          startActivity(reportIntent);
+          break;
+        case R.id.btn_kits:
+          startActivity(KitStockCardListActivity.class);
+          break;
+        case R.id.btn_issue_voucher:
+          startActivity(new Intent(HomeActivity.this, IssueVoucherActivity.class));
+          break;
+        default:
+          // do nothing
+      }
+    }
+  };
 
   private void setSyncedTime() {
     if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && !sharedPreferenceMgr.isSyncingLastYearStockCards()) {

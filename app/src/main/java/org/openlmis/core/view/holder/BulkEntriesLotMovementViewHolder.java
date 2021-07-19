@@ -49,6 +49,7 @@ import roboguice.inject.InjectView;
 
 public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
+  String[] reasonDescriptions;
   @InjectView(R.id.et_movement_reason)
   private EditText movementReason;
   @InjectView(R.id.tv_lot_soh_tip)
@@ -71,11 +72,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   private TextView lotStockOnHand;
   @InjectView(R.id.vg_lot_soh)
   private ViewGroup vgLotSOH;
-
   private List<MovementReason> movementReasons;
-
-  String [] reasonDescriptions;
-
   @Setter
   private AmountChangeListener amountChangeListener;
 
@@ -142,7 +139,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         reasonsDialog.setMovementTypeOnClickListener(
             new MovementTypeOnClickListener(reasonsDialog, viewModel));
         reasonsDialog.show(((BulkEntriesActivity) (((ContextWrapper) view.getContext()).getBaseContext()))
-                .getSupportFragmentManager(), "SELECT_REASONS");
+            .getSupportFragmentManager(), "SELECT_REASONS");
       }
     };
   }

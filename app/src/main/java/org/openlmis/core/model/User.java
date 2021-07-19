@@ -35,6 +35,13 @@ import org.openlmis.core.utils.HashUtil;
 @AllArgsConstructor
 public class User extends BaseModel {
 
+  public enum LoginErrorType{
+    NO_INTERNET,
+    USER_NOT_CREATED,
+    NON_MOBILE_USER,
+    WRONG_PASSWORD
+  }
+
   @DatabaseField
   String username;
 

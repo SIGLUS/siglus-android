@@ -38,6 +38,8 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -45,6 +47,7 @@ import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.User.LoginErrorType;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -54,8 +57,7 @@ import roboguice.inject.InjectView;
 
 @SuppressWarnings({"squid:S1874", "squid:S110"})
 @ContentView(R.layout.activity_login)
-public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView,
-    View.OnClickListener {
+public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView, View.OnClickListener {
 
   @InjectView(R.id.tx_username)
   public EditText etUsername;
@@ -87,83 +89,8 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   boolean isPwdVisible = false;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    if (!isTaskRoot() && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER)
-        && Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-      finish();
-      return;
-    }
-
-    try {
-      initUI();
-    } catch (PackageManager.NameNotFoundException e) {
-      Log.w("LoginActivity", e);
-    }
-
-    restoreFromResync();
-  }
-
-  private void restoreFromResync() {
-    String strUsername = getIntent().getStringExtra(Constants.PARAM_USERNAME);
-    String strPassword = getIntent().getStringExtra(Constants.PARAM_PASSWORD);
-
-    if (TextUtils.isEmpty(strUsername) || TextUtils.isEmpty(strPassword)) {
-      return;
-    }
-
-    etUsername.setText(strUsername);
-    etPassword.setText(strPassword);
-    startLogin(true);
-  }
-
-  @Override
-  protected ScreenName getScreenName() {
-    return null;
-  }
-
-  @Override
   public void sendScreenToGoogleAnalyticsAfterLogin() {
     LMISApp.getInstance().trackScreen(ScreenName.LOGIN_SCREEN);
-  }
-
-  @Override
-  protected int getThemeRes() {
-    return R.style.AppTheme_NoActionBar;
-  }
-
-  private void initUI() throws PackageManager.NameNotFoundException {
-    String versionNumber = LMISApp.getInstance().getPackageManager()
-        .getPackageInfo(LMISApp.getContext().getApplicationContext().getPackageName(),
-            0).versionName;
-    tvVersion
-        .setText(Html.fromHtml(getResources().getString(R.string.version_number, versionNumber)));
-
-    ivVisibilityPwd.setOnClickListener(this);
-    btnLogin.setOnClickListener(this);
-
-    String lastLoginUser = SharedPreferenceMgr.getInstance().getLastLoginUser();
-    etUsername.setEnabled(true);
-    if (StringUtils.isNotBlank(lastLoginUser)) {
-      etUsername.setText(lastLoginUser);
-      etUsername.setEnabled(false);
-      etPassword.requestFocus();
-    }
-
-    etPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
-    etPassword.setOnEditorActionListener((v, actionId, event) -> {
-      if (actionId == EditorInfo.IME_ACTION_DONE) {
-        hideImm();
-        startLogin(false);
-        return true;
-      }
-      return false;
-    });
-
-    if (BuildConfig.DEBUG) {
-      setDeveloperMode();
-    }
   }
 
   public void goToInitInventory() {
@@ -200,9 +127,9 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   }
 
   @Override
-  public void showInvalidAlert() {
+  public void showInvalidAlert(String alertMsg) {
     clearErrorAlerts();
-    lyUserName.setError(getResources().getString(R.string.msg_invalid_user));
+    lyPassword.setError(alertMsg);
     etUsername.getBackground()
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     etPassword.getBackground()
@@ -245,6 +172,115 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     moveTaskToBack(true);
   }
 
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onReceiveSyncStatusEvent(SyncStatusEvent event) {
+    if (event.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
+      showInvalidAlert(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
+    }
+  }
+
+  public void sendSyncStartBroadcast() {
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.START));
+  }
+
+  public void sendSyncFinishedBroadcast() {
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));
+  }
+
+  @Override
+  public void sendSyncErrorBroadcast(String errorMsg) {
+    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, errorMsg));
+  }
+
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    if (!isTaskRoot() && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER)
+        && Intent.ACTION_MAIN.equals(getIntent().getAction())) {
+      finish();
+      return;
+    }
+
+    try {
+      initUI();
+    } catch (PackageManager.NameNotFoundException e) {
+      Log.w("LoginActivity", e);
+    }
+
+    restoreFromResync();
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  protected void onStop() {
+    EventBus.getDefault().unregister(this);
+    super.onStop();
+  }
+
+  @Override
+  protected ScreenName getScreenName() {
+    return null;
+  }
+
+  @Override
+  protected int getThemeRes() {
+    return R.style.AppTheme_NoActionBar;
+  }
+
+  private void restoreFromResync() {
+    String strUsername = getIntent().getStringExtra(Constants.PARAM_USERNAME);
+    String strPassword = getIntent().getStringExtra(Constants.PARAM_PASSWORD);
+
+    if (TextUtils.isEmpty(strUsername) || TextUtils.isEmpty(strPassword)) {
+      return;
+    }
+
+    etUsername.setText(strUsername);
+    etPassword.setText(strPassword);
+    startLogin(true);
+  }
+
+  private void initUI() throws PackageManager.NameNotFoundException {
+    String versionNumber = LMISApp.getInstance().getPackageManager()
+        .getPackageInfo(LMISApp.getContext().getApplicationContext().getPackageName(),
+            0).versionName;
+    tvVersion
+        .setText(Html.fromHtml(getResources().getString(R.string.version_number, versionNumber)));
+
+    ivVisibilityPwd.setOnClickListener(this);
+    btnLogin.setOnClickListener(this);
+
+    String lastLoginUser = SharedPreferenceMgr.getInstance().getLastLoginUser();
+    etUsername.setEnabled(true);
+    if (StringUtils.isNotBlank(lastLoginUser)) {
+      etUsername.setText(lastLoginUser);
+      etUsername.setEnabled(false);
+      etPassword.requestFocus();
+    }
+
+    etPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
+    etPassword.setOnEditorActionListener((v, actionId, event) -> {
+      if (actionId == EditorInfo.IME_ACTION_DONE) {
+        hideImm();
+        startLogin(false);
+        return true;
+      }
+      return false;
+    });
+
+    if (BuildConfig.DEBUG) {
+      setDeveloperMode();
+    }
+  }
+
   private void hideKeyboard(View view) {
     InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
         Context.INPUT_METHOD_SERVICE);
@@ -254,8 +290,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   }
 
   private void startLogin(boolean fromReSync) {
-    presenter
-        .startLogin(etUsername.getText().toString(), etPassword.getText().toString(), fromReSync);
+    presenter.startLogin(etUsername.getText().toString(), etPassword.getText().toString(), fromReSync);
   }
 
   private void setPwdVisibility() {
@@ -288,18 +323,5 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         ToastUtil.show("Tap it " + (developerTimes - clickTimes) + " times to be Cong or Wei");
       }
     });
-  }
-
-  public void sendSyncStartBroadcast() {
-    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.START));
-  }
-
-  public void sendSyncFinishedBroadcast() {
-    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.FINISH));
-  }
-
-  @Override
-  public void sendSyncErrorBroadcast(String errorMsg) {
-    EventBus.getDefault().post(new SyncStatusEvent(SyncStatus.ERROR, errorMsg));
   }
 }
