@@ -94,7 +94,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     lotNumber.setText(MessageFormat.format("{0} - {1}", viewModel.getLotNumber(), viewModel.getExpiryDate()));
     etLotAmount.setText(viewModel.getQuantity());
     lotStockOnHand.setText(viewModel.getLotSoh());
-    movementReason.setText(viewModel.getMovementReason());
+    movementReason.setText(getReasonDescriptionByReasonCode(viewModel));
     documentNumber.setText(viewModel.getDocumentNumber());
     setErrorEnable();
     if (viewModel.isNewAdded()) {
@@ -110,6 +110,16 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   public void setMovementChangeListener(
       BulkEntriesLotMovementViewHolder.AmountChangeListener amountChangeListener) {
     this.amountChangeListener = amountChangeListener;
+  }
+
+  private String getReasonDescriptionByReasonCode(LotMovementViewModel viewModel) {
+    FluentIterable<String> description =  FluentIterable.from(movementReasons)
+        .filter(movementReason1 -> movementReason1.getCode().equals(viewModel.getMovementReason()))
+        .transform(movementReason1 -> movementReason1.getDescription());
+    if (description.isEmpty()) {
+      return null;
+    }
+    return description.get(0);
   }
 
   private void setUpViewListener(LotMovementViewModel viewModel,

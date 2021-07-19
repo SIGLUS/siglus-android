@@ -308,7 +308,7 @@ public class ProductRepository {
         + "ON p1.code = p2.productCode "
         + "JOIN programs p3 "
         + "ON p2.programCode = p3.programCode "
-        + "WHERE p3.programCode = 'VC' OR p3.parentCode = 'VC' "
+        + "WHERE p3.programCode = 'VC' "
         + "AND p2.isActive = 1 AND p1.isActive = 1 "
         + "AND p1.isKit = 0 "
         + "AND p1.id NOT IN "
