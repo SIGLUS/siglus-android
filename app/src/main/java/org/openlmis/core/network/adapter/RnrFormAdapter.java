@@ -112,6 +112,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   private void setPeriodTime(RnRForm rnRForm, JsonObject jsonObject) {
     rnRForm.setPeriodBegin(Instant.parse(jsonObject.get(ACTUAL_START_DATE).getAsString()).toDate());
     rnRForm.setPeriodEnd(Instant.parse(jsonObject.get(ACTUAL_END_DATE).getAsString()).toDate());
+    rnRForm.setSubmittedTime(Instant.parse(jsonObject.get("clientSubmittedTime").getAsString()).toDate());
   }
 
   private void setBaseInfoForRnR(RnRForm rnRForm, JsonObject jsonObject) {
