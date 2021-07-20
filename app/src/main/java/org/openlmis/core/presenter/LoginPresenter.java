@@ -20,11 +20,9 @@ package org.openlmis.core.presenter;
 
 import static org.openlmis.core.utils.Constants.GRANT_TYPE;
 
-import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -102,20 +100,15 @@ public class LoginPresenter extends Presenter {
 
   @Inject
   SharedPreferenceMgr sharedPreferenceMgr;
-
-  private boolean hasGoneToNextPage;
-
-  @Inject
-  private ProgramRepository programRepository;
-
-  @Inject
-  private DirtyDataRepository dirtyDataRepository;
-
-  @Inject
-  private DirtyDataManager dirtyDataManager;
-
   @Inject
   InternetCheck internetCheck;
+  private boolean hasGoneToNextPage;
+  @Inject
+  private ProgramRepository programRepository;
+  @Inject
+  private DirtyDataRepository dirtyDataRepository;
+  @Inject
+  private DirtyDataManager dirtyDataManager;
 
   @Override
   public void attachView(BaseView v) {
@@ -150,7 +143,6 @@ public class LoginPresenter extends Presenter {
     if (loginErrorType == LoginErrorType.WRONG_PASSWORD) {
       view.showInvalidAlert(LMISApp.getContext().getResources().getString(R.string.msg_invalid_user));
     }
-    view.clearPassword();
   }
 
   public void syncLocalUserData(Subscriber<SyncLocalUserProgress> subscriber) {
@@ -225,7 +217,10 @@ public class LoginPresenter extends Presenter {
 
       @Override
       public void onError(Throwable e) {
-        ToastUtil.showForLongTime(e.getMessage());
+        if (e.getMessage() != null && !e.getMessage()
+            .equals(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False))) {
+          ToastUtil.showForLongTime(e.getMessage());
+        }
         view.loaded();
       }
 
@@ -487,8 +482,6 @@ public class LoginPresenter extends Presenter {
   }
 
   public interface LoginView extends BaseView {
-
-    void clearPassword();
 
     void goToHomePage();
 

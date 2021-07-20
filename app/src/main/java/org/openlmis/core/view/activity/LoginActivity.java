@@ -111,10 +111,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     finish();
   }
 
-  public void clearPassword() {
-    etPassword.setText(StringUtils.EMPTY);
-  }
-
   public void clearErrorAlerts() {
     lyUserName.setErrorEnabled(false);
     lyPassword.setErrorEnabled(false);
@@ -174,8 +170,8 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
 
   @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveSyncStatusEvent(SyncStatusEvent event) {
-    if (event.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
+  public void onReceiveSyncStatusEvent(LoginErrorType loginErrorType) {
+    if (loginErrorType.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
       showInvalidAlert(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
     }
   }

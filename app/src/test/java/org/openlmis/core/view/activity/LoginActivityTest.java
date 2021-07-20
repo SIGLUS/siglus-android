@@ -88,16 +88,6 @@ public class LoginActivityTest {
   }
 
   @Test
-  public void shouldClearPasswordAfterMethodInvoked() {
-    loginActivity.etUsername.setText("superuser");
-    loginActivity.etPassword.setText("password");
-
-    loginActivity.clearPassword();
-
-    assertThat(loginActivity.etPassword.getText().toString()).isEmpty();
-  }
-
-  @Test
   public void shouldGoToHomePageAfterMethodInvoked() {
     loginActivity.goToHomePage();
 
@@ -122,15 +112,15 @@ public class LoginActivityTest {
 
   @Test
   public void shouldShowInvalidAlertAfterMethodInvoked() {
-    loginActivity.showInvalidAlert();
+    loginActivity.showInvalidAlert(loginActivity.getResources().getString(R.string.msg_invalid_user));
 
     String invalidUserMessage = loginActivity.getResources().getString(R.string.msg_invalid_user);
 
     String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
     String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-    assertThat(usernameErrorText).isNotNull().isEqualTo(invalidUserMessage);
-    assertThat(passwordErrorText).isNull();
+    assertThat(passwordErrorText).isNotNull().isEqualTo(invalidUserMessage);
+    assertThat(usernameErrorText).isNull();
   }
 
   @Test
@@ -161,7 +151,7 @@ public class LoginActivityTest {
 
   @Test
   public void shouldClearErrorAlertsAfterMethodInvoked() {
-    loginActivity.showInvalidAlert();
+    loginActivity.showInvalidAlert(loginActivity.getResources().getString(R.string.msg_invalid_user));
     loginActivity.clearErrorAlerts();
 
     assertThat(RobolectricUtils.getErrorText(loginActivity.lyUserName)).isNull();

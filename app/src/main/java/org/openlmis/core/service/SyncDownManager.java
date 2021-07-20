@@ -64,8 +64,6 @@ import org.openlmis.core.network.model.SyncDownProgramDataResponse;
 import org.openlmis.core.network.model.SyncDownRegimensResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownServiceResponse;
-import org.openlmis.core.presenter.LoginPresenter;
-import org.openlmis.core.presenter.LoginPresenter.LoginView;
 import org.openlmis.core.service.sync.SchedulerBuilder;
 import org.openlmis.core.service.sync.SyncStockCardsLastYearSilently;
 import org.openlmis.core.utils.Constants;
@@ -490,6 +488,7 @@ public class SyncDownManager {
     }
     if (!facilityInfoResponse.isAndroid()) {
       EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
+      throw new LMISException(errorMessage(R.string.msg_isAndroid_False));
     }
     User user = UserInfoMgr.getInstance().getUser();
     user.setFacilityCode(facilityInfoResponse.getCode());

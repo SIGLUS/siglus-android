@@ -20,6 +20,7 @@ package org.openlmis.core.presenter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -241,6 +242,7 @@ public class LoginPresenterTest {
   @Test
   public void shouldDoOfflineLoginWhenNoConnectionAndHasSyncedData() {
     when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
+    when(userRepository.getLocalUser()).thenReturn(new User("user", "password"));
     when(mockActivity.needInitInventory()).thenReturn(false);
 
     SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
@@ -251,7 +253,7 @@ public class LoginPresenterTest {
 
     verify(internetCheck1).execute(internetCheckCallBack.capture());
     internetCheckCallBack.getValue().launchResponse(false);
-    verify(userRepository).mapUserFromLocal(any(User.class));
+    verify(userRepository).getLocalUser();
     assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
 
   }
@@ -260,12 +262,13 @@ public class LoginPresenterTest {
   public void shouldShowMessageWhenNoConnectionAndHasNotGetProducts() {
 
     when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
+    when(userRepository.getLocalUser()).thenReturn(new User("user", "password"));
     when(mockActivity.needInitInventory()).thenReturn(false);
 
     presenter.startLogin("user", "password", false);
     verify(internetCheck1).execute(internetCheckCallBack.capture());
     internetCheckCallBack.getValue().launchResponse(false);
-    verify(userRepository).mapUserFromLocal(any(User.class));
+    verify(userRepository).getLocalUser();
     assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
 
   }
@@ -279,11 +282,10 @@ public class LoginPresenterTest {
     verify(internetCheck1).execute(internetCheckCallBack.capture());
     verify(internetCheck1).execute(internetCheckCallBack.capture());
     internetCheckCallBack.getValue().launchResponse(false);
-    verify(userRepository).mapUserFromLocal(any(User.class));
+    verify(userRepository).getLocalUser();
 
     verify(mockActivity).loaded();
-    verify(mockActivity).showInvalidAlert();
-    verify(mockActivity).clearPassword();
+    verify(mockActivity).showInvalidAlert(anyString());
   }
 
   @Test
