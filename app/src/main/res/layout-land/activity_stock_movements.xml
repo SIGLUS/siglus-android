@@ -94,16 +94,16 @@
     </LinearLayout>
   </LinearLayout>
 
-  <ListView
-    android:id="@+id/list_stock_movement"
+  <androidx.recyclerview.widget.RecyclerView
     style="@style/StockMovement.Space_Land"
+    android:id="@+id/rv_stock_movement"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@+id/new_movement_panel"
-    android:layout_below="@+id/stock_info_panel"
     android:layout_marginTop="10dp"
     android:background="@drawable/border_bg"
-    android:divider="@drawable/divider_horizontal" />
+    android:padding="1dp"
+    android:layout_above="@+id/new_movement_panel"
+    android:layout_below="@+id/stock_info_panel" />
 
   <include
     android:id="@+id/new_movement_panel"

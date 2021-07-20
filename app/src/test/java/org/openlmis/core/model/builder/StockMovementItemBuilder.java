@@ -12,9 +12,11 @@ public class StockMovementItemBuilder {
   int stockExistence = 200;
   String documentNo = "abc";
   String movementReason = "ISSUE1";
+  String signature = "signature";
   MovementType movementType = MovementReasonManager.MovementType.ISSUE;
   int quantity = 12;
   Date createdTime = DateUtil.getCurrentDate();
+  long requested = 10L;
 
   public StockMovementItem build() {
     StockMovementItem stockMovementItem = new StockMovementItem();
@@ -25,6 +27,8 @@ public class StockMovementItemBuilder {
     stockMovementItem.setMovementType(movementType);
     stockMovementItem.setMovementQuantity(quantity);
     stockMovementItem.setCreatedTime(createdTime);
+    stockMovementItem.setRequested(requested);
+    stockMovementItem.setSignature(signature);
     return stockMovementItem;
   }
 

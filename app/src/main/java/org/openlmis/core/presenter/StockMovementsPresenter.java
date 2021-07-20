@@ -33,7 +33,7 @@ import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -43,7 +43,7 @@ import rx.schedulers.Schedulers;
 public class StockMovementsPresenter extends Presenter {
 
   @Getter
-  final List<StockMovementViewModel> stockMovementModelList = new ArrayList<>();
+  final List<StockMovementHistoryViewModel> stockMovementHistoryViewModels = new ArrayList<>();
 
   @Inject
   StockRepository stockRepository;
@@ -70,19 +70,17 @@ public class StockMovementsPresenter extends Presenter {
   public void setStockCard(long stockCardId) throws LMISException {
     this.stockCard = stockRepository.queryStockCardById(stockCardId);
     updateMenus();
-
     view.updateExpiryDateViewGroup();
   }
 
   public void loadStockMovementViewModels() {
     view.loading();
-    Subscription subscription = loadStockMovementViewModelsObserver()
-        .subscribe(loadStockMovementViewModelSubscriber());
+    Subscription subscription = loadStockMovementViewModelsObserver().subscribe(loadStockMovementViewModelSubscriber());
     subscriptions.add(subscription);
   }
 
-  private Observer<List<StockMovementViewModel>> loadStockMovementViewModelSubscriber() {
-    return new Observer<List<StockMovementViewModel>>() {
+  private Observer<List<StockMovementHistoryViewModel>> loadStockMovementViewModelSubscriber() {
+    return new Observer<List<StockMovementHistoryViewModel>>() {
       @Override
       public void onCompleted() {
         // do nothing
@@ -94,23 +92,21 @@ public class StockMovementsPresenter extends Presenter {
       }
 
       @Override
-      public void onNext(List<StockMovementViewModel> stockMovementViewModels) {
-        stockMovementModelList.clear();
-        stockMovementModelList.addAll(stockMovementViewModels);
+      public void onNext(List<StockMovementHistoryViewModel> viewModels) {
+        stockMovementHistoryViewModels.clear();
+        stockMovementHistoryViewModels.addAll(viewModels);
         view.refreshStockMovement();
         view.loaded();
       }
     };
   }
 
-  @SuppressWarnings("squid:S1905")
-  protected Observable<List<StockMovementViewModel>> loadStockMovementViewModelsObserver() {
-    return Observable.create((Observable.OnSubscribe<List<StockMovementViewModel>>) subscriber -> {
+  protected Observable<List<StockMovementHistoryViewModel>> loadStockMovementViewModelsObserver() {
+    return Observable.create((Observable.OnSubscribe<List<StockMovementHistoryViewModel>>) subscriber -> {
       try {
-        List<StockMovementViewModel> list = from(
+        List<StockMovementHistoryViewModel> list = from(
             stockMovementRepository.listLastFiveStockMovements(stockCard.getId()))
-            .transform(StockMovementViewModel::new).toList();
-
+            .transform(StockMovementHistoryViewModel::new).toList();
         subscriber.onNext(list);
         subscriber.onCompleted();
       } catch (LMISException e) {
@@ -122,7 +118,6 @@ public class StockMovementsPresenter extends Presenter {
   private void updateMenus() {
     boolean isArchivable = !stockCard.getProduct().isKit() && stockCard.getStockOnHand() == 0;
     view.updateArchiveMenus(isArchivable);
-
     try {
       String code = stockCard.getProduct().getCode();
       List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(code);

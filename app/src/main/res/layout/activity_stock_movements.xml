@@ -106,12 +106,13 @@
     style="@style/StockMovement.Panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="1dp"
+    android:background="@drawable/border_bg"
     android:layout_above="@id/new_movement_panel"
     android:layout_below="@id/title_panel">
 
-    <ListView
-      android:id="@+id/list_stock_movement"
-      style="@style/StockMovement.List"
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/rv_stock_movement"
       android:layout_width="wrap_content"
       android:layout_height="match_parent" />
 

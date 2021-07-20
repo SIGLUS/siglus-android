@@ -18,29 +18,26 @@
 
 package org.openlmis.core.model;
 
-import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
-
-import com.j256.ormlite.field.DataType;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-import java.util.Date;
-import lombok.Data;
 import org.joda.time.DateTime;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestRunner;
 
-@Data
-@DatabaseTable(tableName = "lots")
-public class Lot extends BaseModel {
+@RunWith(LMISTestRunner.class)
+public class LotTest {
 
-  @DatabaseField(foreign = true, foreignAutoRefresh = true)
-  Product product;
+  @Test
+  public void isExpired() {
+    // given
+    Lot expiredLot = new Lot();
+    expiredLot.setExpirationDate(new DateTime().minusDays(2).toDate());
 
-  @DatabaseField
-  String lotNumber;
+    Lot unexpiredLot = new Lot();
+    unexpiredLot.setExpirationDate(new DateTime().minusDays(-1).toDate());
 
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
-  Date expirationDate;
-
-  public boolean isExpired() {
-    return new DateTime(expirationDate).minusDays(-1).isBeforeNow();
+    // when & then
+    Assert.assertTrue(expiredLot.isExpired());
+    Assert.assertFalse(unexpiredLot.isExpired());
   }
 }

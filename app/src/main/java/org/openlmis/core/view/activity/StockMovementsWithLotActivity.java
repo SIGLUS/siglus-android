@@ -22,21 +22,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
-import com.google.inject.Inject;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.StockMovementsPresenter;
 import org.openlmis.core.utils.Constants;
@@ -47,6 +47,7 @@ import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.LotInfoGroup;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
+import org.openlmis.core.view.widget.StockMovementHeaderView;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -55,8 +56,8 @@ import roboguice.inject.InjectView;
 public class StockMovementsWithLotActivity extends BaseActivity implements
     StockMovementsPresenter.StockMovementView {
 
-  @InjectView(R.id.list_stock_movement)
-  ListView stockMovementList;
+  @InjectView(R.id.rv_stock_movement)
+  RecyclerView rvStockMovement;
 
   @InjectView(R.id.stock_movement_banner)
   View banner;
@@ -82,9 +83,6 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   @InjectPresenter(StockMovementsPresenter.class)
   StockMovementsPresenter presenter;
 
-  @Inject
-  LayoutInflater layoutInflater;
-
   private long stockId;
   private String stockName;
 
@@ -109,13 +107,9 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
     isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
     isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
     movementTypes = MovementReasonManager.getInstance().getMovementTypes();
-
     super.onCreate(savedInstanceState);
-
     loadStockCard();
-
     initUI();
-
     if (savedInstanceState == null) {
       presenter.loadStockMovementViewModels();
     }
@@ -158,10 +152,11 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
   }
 
   private void initRecyclerView() {
-    View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
-    stockMovementList.addHeaderView(headerView);
-    stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
-    stockMovementList.setAdapter(stockMovementAdapter);
+    rvStockMovement.setLayoutManager(new LinearLayoutManager(this));
+    stockMovementAdapter = new StockMovementAdapter();
+    stockMovementAdapter.addHeaderView(new StockMovementHeaderView(this));
+    rvStockMovement.setAdapter(stockMovementAdapter);
+    stockMovementAdapter.setList(presenter.getStockMovementHistoryViewModels());
   }
 
   private void showBanner() {
@@ -181,11 +176,11 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
 
   @Override
   public void updateExpiryDateViewGroup() {
-    if (!isKit) {
-      lotInfoGroup.setVisibility(
-          presenter.getStockCard().calculateSOHFromLots() == 0 ? View.INVISIBLE : View.VISIBLE);
-      lotInfoGroup.initLotInfoGroup(presenter.getStockCard().getNonEmptyLotOnHandList());
+    if (isKit) {
+      return;
     }
+    lotInfoGroup.setVisibility(presenter.getStockCard().calculateSOHFromLots() == 0 ? View.INVISIBLE : View.VISIBLE);
+    lotInfoGroup.initLotInfoGroup(presenter.getStockCard().getNonEmptyLotOnHandList());
   }
 
   @Override
@@ -198,7 +193,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
 
   @Override
   public void refreshStockMovement() {
-    stockMovementAdapter.notifyDataSetChanged();
+    stockMovementAdapter.setList(presenter.getStockMovementHistoryViewModels());
   }
 
   @Override
@@ -270,8 +265,10 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
             unpackKit();
             break;
           case R.id.btn_new_movement:
-            String[] selections = FluentIterable.from(movementTypes)
-                .transform(movementType -> movementType.getDescription()).toArray(String.class);
+            String[] selections = FluentIterable
+                .from(movementTypes)
+                .transform(MovementType::getDescription)
+                .toArray(String.class);
             newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), selections);
             newMovementDialog.show(getSupportFragmentManager(), "");
             break;
@@ -302,5 +299,4 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
       newMovementDialog.dismiss();
     }
   }
-
 }

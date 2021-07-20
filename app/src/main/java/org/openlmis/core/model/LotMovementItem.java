@@ -67,4 +67,13 @@ public class LotMovementItem extends BaseModel {
       movementQuantity *= -1;
     }
   }
+
+  public boolean isUselessMovement() {
+    MovementType type = stockMovementItem.getMovementType();
+    boolean isAdjustmentType = type.equals(MovementType.ISSUE)
+        || type.equals(MovementType.RECEIVE)
+        || type.equals(MovementType.NEGATIVE_ADJUST)
+        || type.equals(MovementType.POSITIVE_ADJUST);
+    return isAdjustmentType && (movementQuantity == null || movementQuantity == 0);
+  }
 }

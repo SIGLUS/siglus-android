@@ -95,8 +95,7 @@ public class UnpackKitPresenter extends Presenter {
             .filter(inventoryViewModel -> inventoryViewModel.getLotListQuantityTotalAmount() > 0)
             .transform(inventoryViewModel -> {
               try {
-                return createStockCardForProductWithLot(inventoryViewModel, documentNumber,
-                    signature);
+                return createStockCardForProductWithLot(inventoryViewModel, documentNumber, signature);
               } catch (LMISException e) {
                 subscriber.onError(e);
               }
@@ -166,12 +165,8 @@ public class UnpackKitPresenter extends Presenter {
     }
     totalLotMovementViewModelList.addAll(inventoryViewModel.getNewLotMovementViewModelList());
     stockMovementItems.add(
-        createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature,
-            totalLotMovementViewModelList));
-
-    stockCard
-        .setStockOnHand(stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand());
-
+        createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature, totalLotMovementViewModelList));
+    stockCard.setStockOnHand(stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand());
     stockCard.setStockMovementItemsWrapper(stockMovementItems);
 
     return stockCard;
@@ -179,8 +174,7 @@ public class UnpackKitPresenter extends Presenter {
 
   @NonNull
   private StockMovementItem createUnpackMovementItemAndLotMovement(StockCard stockCard,
-      String documentNumber, String signature,
-      List<LotMovementViewModel> lotMovementViewModelList) {
+      String documentNumber, String signature, List<LotMovementViewModel> lotMovementViewModelList) {
     StockMovementItem unpackMovementItem = new StockMovementItem(stockCard);
     unpackMovementItem.setReason(MovementReasonManager.DDM);
     unpackMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);

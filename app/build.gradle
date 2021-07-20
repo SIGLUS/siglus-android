@@ -186,6 +186,7 @@ dependencies {
     implementation 'org.roboguice:roboguice:3.0.1'
     annotationProcessor 'org.roboguice:roboblender:3.0.1'
     implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'

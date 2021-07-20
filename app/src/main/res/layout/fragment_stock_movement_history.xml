@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.openlmis.core.view.widget.CustomHorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/tv_archived_old_data"
-      android:layout_marginBottom="0dp"
-      android:paddingLeft="@dimen/padding_small"
-      android:paddingTop="@dimen/padding_tiny"
-      android:paddingBottom="@dimen/padding_tiny"
-      android:background="@drawable/bottom_border_black"
-      android:text="@string/msg_has_archived_old_data" />
-
-    <include layout="@layout/item_stock_movement_header" />
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-      android:id="@+id/stock_movement_history_swipe_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-      <ListView
-        android:id="@+id/list"
+  <org.openlmis.core.view.widget.CustomHorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_archived_old_data"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingTop="@dimen/padding_tiny"
+        android:paddingBottom="@dimen/padding_tiny"
+        android:background="@drawable/bottom_border_black"
+        android:text="@string/msg_has_archived_old_data" />
+      <org.openlmis.core.view.widget.StockMovementHeaderView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@drawable/border_bg"
-        android:divider="@drawable/divider_horizontal" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-  </LinearLayout>
-</org.openlmis.core.view.widget.CustomHorizontalScrollView>
+        android:layout_height="wrap_content" />
+      <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/stock_movement_history_swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rv_stock_movement_list"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:background="@drawable/border_bg"
+          android:divider="@drawable/divider_horizontal" />
+      </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+  </org.openlmis.core.view.widget.CustomHorizontalScrollView>
+</LinearLayout>
 

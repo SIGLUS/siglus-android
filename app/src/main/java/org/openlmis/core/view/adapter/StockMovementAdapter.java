@@ -18,56 +18,55 @@
 
 package org.openlmis.core.view.adapter;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import java.util.List;
+import android.widget.LinearLayout;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import java.util.Objects;
 import org.openlmis.core.R;
-import org.openlmis.core.model.StockCard;
-import org.openlmis.core.view.holder.StockMovementViewHolder;
-import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
 
-public class StockMovementAdapter extends BaseAdapter {
+public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryViewModel, BaseViewHolder> {
 
-  private final StockCard stockCard;
-  List<StockMovementViewModel> stockMovementViewModels;
-
-  public StockMovementAdapter(List<StockMovementViewModel> stockMovementViewModels,
-      StockCard stockCard) {
-    this.stockMovementViewModels = stockMovementViewModels;
-    this.stockCard = stockCard;
+  public StockMovementAdapter() {
+    super(R.layout.item_stock_movement);
   }
 
   @Override
-  public int getCount() {
-    return stockMovementViewModels.size();
-  }
-
-  @Override
-  public StockMovementViewModel getItem(int position) {
-    return stockMovementViewModels.get(position);
-  }
-
-  @Override
-  public long getItemId(int position) {
-    return 0;
-  }
-
-  @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
-    StockMovementViewHolder holder;
-
-    if (convertView == null) {
-      convertView = LayoutInflater.from(parent.getContext())
-          .inflate(R.layout.item_stock_movement, parent, false);
-      holder = new StockMovementViewHolder(convertView);
-      convertView.setTag(holder);
+  protected void convert(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {
+    holder.setText(R.id.tv_date, model.getMovementDate());
+    holder.setText(R.id.tv_stock_on_hand, model.getStockOnHand());
+    holder.setText(R.id.tv_requested, model.getRequested());
+    holder.setText(R.id.tv_signature, model.getSignature());
+    holder.setText(R.id.tv_reason,
+        model.isNoStock() ? holder.itemView.getContext().getString(R.string.label_inventory) : "");
+    holder.setTextColorRes(R.id.tv_date, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_stock_on_hand, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_requested, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_signature, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_reason, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setBackgroundResource(R.id.ll_stock_movement_root, R.color.color_eeeeee);
+    RecyclerView rvLotList = holder.getView(R.id.rv_stock_movement_lot_list);
+    if (model.getLotViewModelList().isEmpty()) {
+      rvLotList.setVisibility(View.GONE);
     } else {
-      holder = (StockMovementViewHolder) convertView.getTag();
+      rvLotList.setVisibility(View.VISIBLE);
+      holder.setText(R.id.tv_reason, "");
+      rvLotList.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
+      DividerItemDecoration decor = new DividerItemDecoration(holder.itemView.getContext(), LinearLayout.VERTICAL);
+      decor.setDrawable(Objects.requireNonNull(ContextCompat
+          .getDrawable(holder.itemView.getContext(), R.drawable.shape_stock_movement_history_item_decoration)));
+      if (rvLotList.getItemDecorationCount() == 0) {
+        rvLotList.addItemDecoration(decor);
+      }
+      StockMovementLotAdapter lotAdapter = new StockMovementLotAdapter();
+      rvLotList.setAdapter(lotAdapter);
+      lotAdapter.setList(model.getLotViewModelList());
     }
-
-    holder.populate(getItem(position), stockCard);
-    return convertView;
   }
 }

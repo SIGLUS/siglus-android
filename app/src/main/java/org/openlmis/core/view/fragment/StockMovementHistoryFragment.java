@@ -20,15 +20,14 @@ package org.openlmis.core.view.fragment;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 import com.google.inject.Inject;
@@ -38,8 +37,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementHistoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.adapter.StockMovementHistoryAdapter;
+import org.openlmis.core.view.adapter.StockMovementAdapter;
 import roboguice.inject.InjectView;
 
 public class StockMovementHistoryFragment extends BaseFragment implements
@@ -51,36 +49,22 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   @InjectView(R.id.stock_movement_history_swipe_container)
   SwipeRefreshLayout swipeRefreshLayout;
 
-  @InjectView(R.id.list)
-  ListView historyListView;
+  @InjectView(R.id.rv_stock_movement_list)
+  RecyclerView rvStockMovementList;
 
   @InjectView(R.id.tv_archived_old_data)
   TextView tvArchivedOldData;
 
-  private long stockCardID;
   private long startIndex = 0;
   private boolean isLoading;
   private boolean isFirstLoading;
 
-  private BaseView baseView;
-  private BaseAdapter adapter;
-
-  @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-
-    stockCardID = activity.getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
-    if (activity instanceof BaseView) {
-      baseView = (BaseView) activity;
-    } else {
-      throw new ClassCastException("Host Activity should implements LoadingView method");
-    }
-  }
+  private StockMovementAdapter stockMovementAdapter;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+    long stockCardID = requireActivity().getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
     presenter.setStockCardId(stockCardID);
   }
 
@@ -97,7 +81,6 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   @Override
   public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-
     initUI();
     if (this.isSavedInstanceState) {
       addFooterViewIfMoreThanOneScreen();
@@ -107,20 +90,19 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   }
 
   private void initUI() {
-    adapter = new StockMovementHistoryAdapter(presenter.getStockMovementModelList());
-    historyListView.setAdapter(adapter);
-
+    rvStockMovementList.setLayoutManager(new LinearLayoutManager(requireContext()));
+    stockMovementAdapter = new StockMovementAdapter();
+    rvStockMovementList.setAdapter(stockMovementAdapter);
+    stockMovementAdapter.setNewInstance(presenter.getStockMovementModelList());
     swipeRefreshLayout.setOnRefreshListener(this);
-
     if (!SharedPreferenceMgr.getInstance().hasDeletedOldStockMovement()) {
       tvArchivedOldData.setVisibility(View.GONE);
     }
   }
 
-
   public void initData() {
     isFirstLoading = true;
-    baseView.loading();
+    loading();
     swipeRefreshLayout.post(() -> {
       swipeRefreshLayout.setRefreshing(true);
       loadData();
@@ -143,14 +125,14 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   @Override
   public void refreshStockMovement(boolean hasNewData) {
     if (hasNewData) {
-      adapter.notifyDataSetChanged();
+      stockMovementAdapter.notifyDataSetChanged();
       if (isFirstLoading) {
         firstLoadingScrollToBottom();
         isFirstLoading = false;
       }
     } else {
       ToastUtil.showInCenter(R.string.hint_has_not_new_data);
-      baseView.loaded();
+      loaded();
     }
     isLoading = false;
     swipeRefreshLayout.setRefreshing(false);
@@ -158,14 +140,14 @@ public class StockMovementHistoryFragment extends BaseFragment implements
 
   private void firstLoadingScrollToBottom() {
     addFooterViewIfMoreThanOneScreen();
-    historyListView.post(() -> {
-      historyListView.setSelection(historyListView.getCount() - 1);
-      baseView.loaded();
+    rvStockMovementList.post(() -> {
+      rvStockMovementList.scrollToPosition(stockMovementAdapter.getData().size() - 1);
+      loaded();
     });
   }
 
   private void addFooterViewIfMoreThanOneScreen() {
-    historyListView.post(() -> {
+    rvStockMovementList.post(() -> {
       if (isGreaterThanOneScreen()) {
         addFooterView();
       }
@@ -175,13 +157,12 @@ public class StockMovementHistoryFragment extends BaseFragment implements
   private void addFooterView() {
     TextView view = new TextView(getActivity());
     view.setLayoutParams(new AbsListView.LayoutParams(MATCH_PARENT, 150));
-    if (historyListView.getFooterViewsCount() == 0) {
-      historyListView.addFooterView(view);
+    if (stockMovementAdapter.getFooterLayoutCount() == 0) {
+      stockMovementAdapter.addFooterView(view);
     }
   }
 
   private boolean isGreaterThanOneScreen() {
-    return historyListView.getChildCount() < historyListView.getCount();
+    return rvStockMovementList.getChildCount() < stockMovementAdapter.getData().size();
   }
-
 }

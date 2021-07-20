@@ -57,19 +57,15 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
     documentNo = item.getDocumentNumber();
     stockExistence = String.valueOf(item.getStockOnHand());
     signature = item.getSignature();
-    if (null == item.getRequested()) {
-      requested = "";
-    } else {
-      requested = String.valueOf(item.getRequested());
-    }
+    requested = item.getRequested() == null ? "" : String.valueOf(item.getRequested());
     isDraft = false;
-
     try {
       reason = MovementReasonManager.getInstance().queryByCode(item.getReason());
     } catch (MovementReasonNotFoundException e) {
-      throw new RuntimeException("MovementReason Cannot be find " + e.getMessage());
+      throw new IllegalArgumentException("MovementReason Cannot be find " + e.getMessage());
     }
-
+    movementType = reason.getMovementType();
+    movementReason = item.getReason();
     typeQuantityMap.put(item.getMovementType(), String.valueOf(item.getMovementQuantity()));
   }
 
@@ -108,29 +104,20 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
   public StockMovementItem convertViewToModel(StockCard stockCard) {
     StockMovementItem stockMovementItem = new StockMovementItem();
     stockMovementItem.setStockOnHand(Long.parseLong(getStockExistence()));
-
     stockMovementItem.setReason(reason.getCode());
     stockMovementItem.setDocumentNumber(getDocumentNo());
     stockMovementItem.setMovementType(reason.getMovementType());
-
     if (isKit) {
-      Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
-      stockMovementItem.setMovementQuantity(movementQuantity);
+      stockMovementItem.setMovementQuantity(Long.parseLong(typeQuantityMap.get(reason.getMovementType())));
     }
-
     stockMovementItem.setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
-
     stockMovementItem.setSignature(signature);
-
     stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
-
     stockMovementItem.setStockCard(stockCard);
-
     List<LotMovementViewModel> totalLotMovementViewModelList = new ArrayList<>();
     totalLotMovementViewModelList.addAll(existingLotMovementViewModelList);
     totalLotMovementViewModelList.addAll(newLotMovementViewModelList);
     stockMovementItem.populateLotQuantitiesAndCalculateNewSOH(totalLotMovementViewModelList);
-
     return stockMovementItem;
   }
 
@@ -172,7 +159,6 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
         || StringUtils.isNumeric(getPositiveAdjustment())
         || StringUtils.isNumeric(getIssued());
   }
-
 
   public void populateStockExistence(long previousStockOnHand) {
     if (!isKit) {

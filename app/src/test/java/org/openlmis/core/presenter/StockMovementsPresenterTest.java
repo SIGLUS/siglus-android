@@ -38,14 +38,13 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
-import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
@@ -135,19 +134,17 @@ public class StockMovementsPresenterTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldLoadStockMovementViewModelsObserver() throws Exception {
-    when(mockStockMovementRepository.listLastFiveStockMovements(anyInt()))
-        .thenReturn(new ArrayList<StockMovementItem>());
+    when(mockStockMovementRepository.listLastFiveStockMovements(anyInt())).thenReturn(new ArrayList<>());
 
-    TestSubscriber<List<StockMovementViewModel>> subscriber = new TestSubscriber<>();
+    TestSubscriber<List<StockMovementHistoryViewModel>> subscriber = new TestSubscriber<>();
     stockMovementsPresenter.loadStockMovementViewModelsObserver().subscribe(subscriber);
 
     subscriber.awaitTerminalEvent();
     subscriber.assertNoErrors();
-    subscriber.assertValue(new ArrayList<StockMovementViewModel>());
   }
 
   @Test
-  public void shouldArchiveStockCard() throws Exception {
+  public void shouldArchiveStockCard() {
     //given
     StockCard stockCard = stockMovementsPresenter.stockCard;
     stockCard.getProduct().setArchived(false);

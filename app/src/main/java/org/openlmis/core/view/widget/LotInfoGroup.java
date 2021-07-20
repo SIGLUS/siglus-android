@@ -71,7 +71,7 @@ public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout {
     final ViewGroup lotInfoView = (ViewGroup) inflater.inflate(R.layout.item_lot_info_for_stockcard, null);
     TextView txLotInfo = lotInfoView.findViewById(R.id.tx_lot_info);
     View llLotInfoBg = lotInfoView.findViewById(R.id.ll_lot_info_bg);
-    boolean isExpired = System.currentTimeMillis() > expirationDate.getTime();
+    boolean isExpired = lotOnHand.getLot().isExpired();
     llLotInfoBg.setBackgroundResource(isExpired ? R.drawable.lot_expired_date_bg : R.drawable.lot_unexpired_date_bg);
     txLotInfo.setTextColor(ContextCompat.getColor(getContext(), isExpired ? R.color.color_red : R.color.color_black));
     txLotInfo.setText(lotInfo);

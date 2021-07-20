@@ -2,10 +2,12 @@ package org.openlmis.core.model;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-import java.text.ParseException;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 
 public class LotMovementItemTest {
@@ -13,7 +15,7 @@ public class LotMovementItemTest {
   LotMovementItem lotMovementItem = new LotMovementItem();
 
   @Test
-  public void shouldSetStockMovementItemAndUpdateMovementQuantity() throws ParseException {
+  public void shouldSetStockMovementItemAndUpdateMovementQuantity() {
     StockMovementItem stockMovementItem = new StockMovementItemBuilder().build();
 
     lotMovementItem.setMovementQuantity(10L);
@@ -25,5 +27,19 @@ public class LotMovementItemTest {
     stockMovementItem.setMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST);
     lotMovementItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
     assertThat(lotMovementItem.getMovementQuantity(), is(20L));
+  }
+
+  @Test
+  public void testIsUselessMovement() {
+    // given
+    StockMovementItem stockMovementItem = Mockito.mock(StockMovementItem.class);
+    Mockito.when(stockMovementItem.getMovementType()).thenReturn(MovementType.NEGATIVE_ADJUST);
+    LotMovementItem lotMovementItem = new LotMovementItem();
+    lotMovementItem.setStockMovementItem(stockMovementItem);
+    lotMovementItem.setMovementQuantity(0L);
+
+    // when & then
+    assertTrue(lotMovementItem.isUselessMovement());
+
   }
 }

@@ -26,9 +26,8 @@ import java.util.List;
 import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.repository.StockMovementRepository;
-import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
 import rx.Observable;
 import rx.Observable.OnSubscribe;
 import rx.Subscription;
@@ -38,10 +37,7 @@ import rx.schedulers.Schedulers;
 public class StockMovementHistoryPresenter extends Presenter {
 
   @Getter
-  List<StockMovementViewModel> stockMovementModelList = new ArrayList<>();
-
-  @Inject
-  StockRepository stockRepository;
+  List<StockMovementHistoryViewModel> stockMovementModelList = new ArrayList<>();
 
   StockMovementHistoryView view;
 
@@ -58,22 +54,21 @@ public class StockMovementHistoryPresenter extends Presenter {
 
   public void loadStockMovementViewModels(final long startIndex) {
     Subscription subscription = Observable
-        .create((OnSubscribe<List<StockMovementViewModel>>) subscriber -> {
+        .create((OnSubscribe<List<StockMovementHistoryViewModel>>) subscriber -> {
           try {
-            List<StockMovementViewModel> list = from(stockMovementRepository
+            List<StockMovementHistoryViewModel> list = from(stockMovementRepository
                 .queryStockMovementHistory(stockCardId, startIndex, MAXROWS))
-                .transform(StockMovementViewModel::new).toList();
+                .transform(StockMovementHistoryViewModel::new).toList();
             subscriber.onNext(list);
           } catch (LMISException e) {
             subscriber.onError(e);
           }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
         .subscribe(stockMovementViewModels -> {
-          if (stockMovementViewModels.size() == 0) {
+          if (stockMovementViewModels.isEmpty()) {
             view.refreshStockMovement(false);
           } else {
             stockMovementModelList.addAll(stockMovementModelList.size(), stockMovementViewModels);
-
             view.refreshStockMovement(true);
           }
           view.loaded();
@@ -89,5 +84,4 @@ public class StockMovementHistoryPresenter extends Presenter {
 
     void refreshStockMovement(boolean hasNewData);
   }
-
 }
