@@ -7,5 +7,4 @@
   <bool name="feature_basic_products_in_inventory">true</bool>
   <bool name="feature_patient_data">false</bool>
   <bool name="feature_deleted_dirty_data">true</bool>
-  <bool name="feature_https_trust_all">true</bool>
 </resources>

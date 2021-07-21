@@ -18,6 +18,7 @@
 
 package org.openlmis.core.network;
 
+import static javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier;
 import static org.openlmis.core.utils.Constants.ANDROID_SDK_VERSION;
 import static org.openlmis.core.utils.Constants.AUTHORIZATION;
 import static org.openlmis.core.utils.Constants.BASIC_AUTH;
@@ -35,7 +36,10 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLPeerUnverifiedException;
 import lombok.SneakyThrows;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
@@ -102,12 +106,27 @@ public class LMISRestManager {
   @NonNull
   protected Client getSSLClient() {
     OkHttpClient client = getOkHttpClient();
+
     try {
-      boolean trustAll = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_https_trust_all);
-      client.setSslSocketFactory(
-          trustAll ? SSLFactory.getTrustAllSocketFactory() : SSLFactory.getNormalSocketFactory());
-      client.setHostnameVerifier(
-          trustAll ? SSLFactory.getTrustALLHostnameVerifier() : SSLFactory.getNormalHostnameVerifier());
+      SSLContext sslContext = SSLContext.getDefault();
+
+      client.setSslSocketFactory(sslContext.getSocketFactory());
+      //OVERRIDE HOSTNAME VERIFIER BECAUSE WE CONNECT TO ELB DIRECTLY DUE TO OCCASIONAL DNS
+      // ISSUES IN MOZAMBIQUE
+      client.setHostnameVerifier((hostname, session) -> {
+
+        X509Certificate cert;
+        try {
+          cert = (X509Certificate) session.getPeerCertificates()[0];
+          if (cert.getSubjectDN().getName().equals("CN=lmis.cmam.gov.mz")) {
+            return true;
+          }
+        } catch (SSLPeerUnverifiedException e) {
+          new LMISException(e, "LMISRestManager,verify").reportToFabric();
+        }
+
+        return getDefaultHostnameVerifier().verify(hostname, session);
+      });
     } catch (Exception e) {
       new LMISException(e, "LMISRestManager,ssl").reportToFabric();
     }
@@ -131,6 +150,7 @@ public class LMISRestManager {
     httpClient.setConnectTimeout(30, TimeUnit.SECONDS);
     httpClient.setWriteTimeout(60, TimeUnit.SECONDS);
     httpClient.interceptors();
+
     return httpClient;
   }
 
@@ -146,7 +166,11 @@ public class LMISRestManager {
       } else {
         request.addHeader(AUTHORIZATION, BASIC_AUTH);
       }
-      request.addHeader(UNIQUE_ID, getAndroidId());
+
+      if (BuildConfig.MONITOR_DEVICE_ID) {
+        request.addHeader(UNIQUE_ID, getAndroidId());
+      }
+
       addDeviceInfoToRequestHeader(request);
     };
   }
