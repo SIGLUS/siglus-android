@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import lombok.Getter;
@@ -99,6 +100,12 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
 
   }
 
+  public void setBackgroundColor(int position) {
+    if (position % 2 == 1) {
+      itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.general_background_color));
+    }
+  }
+
   private void populateAdjustmentTheoreticalIcon(final RequisitionFormItemViewModel itemViewModel) {
     if (itemViewModel.getAdjustmentViewModels() == null
         || itemViewModel.getAdjustmentViewModels().size() == 0) {
@@ -171,7 +178,6 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
   }
 
   private void showEnabledAmount(View view) {
-    view.setBackgroundColor(context.getResources().getColor(R.color.color_white));
     view.setEnabled(true);
   }
 

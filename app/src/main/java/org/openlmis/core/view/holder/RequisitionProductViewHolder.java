@@ -21,6 +21,7 @@ package org.openlmis.core.view.holder;
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnrFormItem;
@@ -57,17 +58,10 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
     setDeleteIconForNewAddedProducts(entry);
   }
 
-  private void setDeleteIconForNewAddedProducts(final RequisitionFormItemViewModel entry) {
-    if (!hideDeleteIconInVIAPage() && isNewAddedProduct(entry)) {
-      ivDelete.setVisibility(View.VISIBLE);
-      ivDelete.setOnClickListener(v -> showDelConfirmDialog(entry.getItem()));
-    } else {
-      ivDelete.setVisibility(View.INVISIBLE);
+  public void setBackgroundColor(int position) {
+    if (position % 2 == 1) {
+      itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.general_background_color));
     }
-  }
-
-  private boolean isNewAddedProduct(RequisitionFormItemViewModel entry) {
-    return entry.getItem().isManualAdd();
   }
 
   public boolean hideDeleteIconInVIAPage() {
@@ -105,6 +99,19 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
         // do nothing
       }
     });
-
   }
+
+  private void setDeleteIconForNewAddedProducts(final RequisitionFormItemViewModel entry) {
+    if (!hideDeleteIconInVIAPage() && isNewAddedProduct(entry)) {
+      ivDelete.setVisibility(View.VISIBLE);
+      ivDelete.setOnClickListener(v -> showDelConfirmDialog(entry.getItem()));
+    } else {
+      ivDelete.setVisibility(View.INVISIBLE);
+    }
+  }
+
+  private boolean isNewAddedProduct(RequisitionFormItemViewModel entry) {
+    return entry.getItem().isManualAdd();
+  }
+
 }

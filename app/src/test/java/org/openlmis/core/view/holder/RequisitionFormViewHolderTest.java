@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import androidx.fragment.app.Fragment;
@@ -21,7 +20,6 @@ import org.openlmis.core.view.activity.DumpFragmentActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
 
 @RunWith(LMISTestRunner.class)
 @SuppressWarnings("PMD")
@@ -42,15 +40,9 @@ public class RequisitionFormViewHolderTest {
 
   @Test
   public void shouldHighLightRequestAmount() {
+    // when
     viewHolder.populate(viewModel, Status.DRAFT);
-
-    int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
-    int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
-
-    assertThat(bgReqColor, is(RuntimeEnvironment.application.getApplicationContext().getResources()
-        .getColor(R.color.color_white)));
-    assertThat(bgAprColor, is(RuntimeEnvironment.application.getApplicationContext().getResources()
-        .getColor(android.R.color.transparent)));
+    // then
     assertThat(viewHolder.requestAmount.isEnabled(), is(true));
     assertThat(viewHolder.approvedAmount.isEnabled(), is(false));
   }
@@ -58,15 +50,9 @@ public class RequisitionFormViewHolderTest {
 
   @Test
   public void shouldHighLightApprovedAmount() {
+    // when
     viewHolder.populate(viewModel, Status.SUBMITTED);
-
-    int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
-    int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
-
-    assertThat(bgReqColor, is(RuntimeEnvironment.application.getApplicationContext().getResources()
-        .getColor(android.R.color.transparent)));
-    assertThat(bgAprColor, is(RuntimeEnvironment.application.getApplicationContext().getResources()
-        .getColor(R.color.color_white)));
+    // then
     assertThat(viewHolder.requestAmount.isEnabled(), is(false));
     assertThat(viewHolder.approvedAmount.isEnabled(), is(true));
   }

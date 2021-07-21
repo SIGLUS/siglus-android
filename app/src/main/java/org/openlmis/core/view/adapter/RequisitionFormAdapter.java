@@ -79,6 +79,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
 
     final RequisitionFormItemViewModel entry = getItem(position);
     viewHolder.populate(entry, status);
+    viewHolder.setBackgroundColor(position);
 
     return convertView;
   }

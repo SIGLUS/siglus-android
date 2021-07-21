@@ -68,6 +68,7 @@ public class RequisitionProductAdapter extends BaseAdapter {
       viewHolder = (RequisitionProductViewHolder) convertView.getTag();
     }
     viewHolder.populate(getItem(position), presenter, context);
+    viewHolder.setBackgroundColor(position);
     return convertView;
   }
 

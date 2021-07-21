@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputLayout;
 import java.text.MessageFormat;
 import java.util.List;
+import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
@@ -50,12 +51,15 @@ import roboguice.inject.InjectView;
 public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
   String[] reasonDescriptions;
+  @Getter
   @InjectView(R.id.et_movement_reason)
-  private EditText movementReason;
+  EditText movementReason;
+  @Getter
   @InjectView(R.id.tv_lot_soh_tip)
   private TextView lotSohTip;
   @InjectView(R.id.et_movement_document_number)
   private EditText documentNumber;
+  @Getter
   @InjectView(R.id.btn_delete_lot)
   private ImageView btnDelLot;
   @InjectView(R.id.tv_lot_number)
@@ -68,6 +72,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
   private TextInputLayout lyMovementReason;
   @InjectView(R.id.ly_document_number)
   private TextInputLayout lyDocumentNumber;
+  @Getter
   @InjectView(R.id.tv_lot_soh)
   private TextView lotStockOnHand;
   @InjectView(R.id.vg_lot_soh)
