@@ -35,6 +35,7 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -63,24 +64,18 @@ import rx.schedulers.Schedulers;
 @ContextSingleton
 public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
-  @Inject
-  ProductRepository productRepository;
-
-  @Inject
-  StockRepository stockRepository;
-
-  VIARequisitionFragment view;
-
   @Getter
   protected List<RequisitionFormItemViewModel> requisitionFormItemViewModels;
-
+  @Inject
+  ProductRepository productRepository;
+  @Inject
+  StockRepository stockRepository;
+  VIARequisitionFragment view;
+  @Inject
+  RnrFormItemRepository rnrFormItemRepository;
   @Getter
   @Setter
   private ViaKitsViewModel viaKitsViewModel;
-
-  @Inject
-  RnrFormItemRepository rnrFormItemRepository;
-
   @Inject
   private RnrFormHelper rnrFormHelper;
 
@@ -120,6 +115,135 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     subscriptions.add(subscription);
   }
 
+  public void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems() {
+    try {
+      for (RnrFormItem rnrFormItem : rnrFormItemRepository.listAllNewRnrItems()) {
+        if (rnrFormItem.getProduct().isArchived()) {
+          rnrFormItem.getProduct().setArchived(false);
+          productRepository.updateProduct(rnrFormItem.getProduct());
+        }
+      }
+    } catch (LMISException e) {
+      new LMISException(e, "VIARequisitionPresenter. createStock").reportToFabric();
+    }
+  }
+
+  public Observable<Void> removeRnrItem(final RnrFormItem rnrFormItem) {
+    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+      try {
+        rnrFormItemRepository.deleteRnrItem(rnrFormItem);
+      } catch (LMISException e) {
+        new LMISException(e, "VIARequisitionPresenter.removeRnrItem").reportToFabric();
+        subscriber.onError(e);
+      }
+      subscriber.onCompleted();
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  public String getConsultationNumbers() {
+    if (rnRForm != null && !rnRForm.getBaseInfoItemListWrapper().isEmpty()) {
+      return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
+    }
+    return null;
+  }
+
+  public void setConsultationNumbers(String consultationNumbers) {
+    if (rnRForm != null && !rnRForm.getBaseInfoItemListWrapper().isEmpty()) {
+      rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
+    }
+  }
+
+  @Override
+  public void submitRequisition() {
+    if (rnRForm.isEmergency()) {
+      updateUIAfterSubmit();
+      return;
+    }
+    super.submitRequisition();
+  }
+
+  public boolean processRequisition(String consultationNumbers) {
+    if (!validateForm()) {
+      return false;
+    }
+
+    if (!validateFormPeriod()) {
+      ToastUtil.show(R.string.msg_requisition_not_unique);
+      return false;
+    }
+
+    dataViewToModel(consultationNumbers);
+    return true;
+  }
+
+  @Override
+  public void attachView(BaseView baseView) throws ViewNotMatchException {
+    if (baseView instanceof VIARequisitionView) {
+      this.view = (VIARequisitionFragment) baseView;
+    } else {
+      throw new ViewNotMatchException("required VIARequisitionView");
+    }
+    super.attachView(baseView);
+  }
+
+  public Observable<RnRForm> getSaveFormObservable(final String consultationNumbers) {
+    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
+      try {
+        dataViewToModel(consultationNumbers);
+        rnrFormRepository.createOrUpdateWithItems(rnRForm);
+        subscriber.onNext(rnRForm);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "VIARequisitionPresenter.getSaveFormObservable").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  public void populateAdditionalDrugsViewModels(List<RnrFormItem> addedDrugInVIAs,
+      Date periodBegin) {
+    List<RnrFormItem> additionalProducts = generateRnrItemsForAdditionalProducts(addedDrugInVIAs,
+        periodBegin);
+    requisitionFormItemViewModels.addAll(transformDataItemsToViewModels(additionalProducts));
+  }
+
+  public void deleteRnRItemFromViewModel(final RnrFormItem rnrFormItem) {
+    List<RequisitionFormItemViewModel> requisitionFormItemViewModelList = FluentIterable
+        .from(requisitionFormItemViewModels)
+        .filter(requisitionFormItemViewModel -> !requisitionFormItemViewModel.getFmn()
+            .equals(rnrFormItem.getProduct().getCode()))
+        .toList();
+    requisitionFormItemViewModels.clear();
+    requisitionFormItemViewModels.addAll(requisitionFormItemViewModelList);
+    view.refreshRequisitionForm(rnRForm);
+  }
+
+
+  @Override
+  public void updateUIAfterSubmit() {
+    if (rnRForm.getStatus() != Status.SUBMITTED_MISSED) {
+      view.highLightApprovedAmount();
+    }
+    view.refreshRequisitionForm(rnRForm);
+    view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
+  }
+
+  @Override
+  public void updateFormUI() {
+    if (rnRForm.isDraft()) {
+      view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
+      if (rnRForm.getStatus() != Status.DRAFT_MISSED) {
+        view.highLightRequestAmount();
+      }
+    } else if (rnRForm.isSubmitted()) {
+      view.setProcessButtonName(context.getString(R.string.btn_complete));
+      if (rnRForm.getStatus() != Status.SUBMITTED_MISSED) {
+        view.highLightApprovedAmount();
+      }
+    }
+    view.refreshRequisitionForm(rnRForm);
+  }
+
   protected RnRForm initEmergencyRnr(List<StockCard> stockCards, Date periodEndDate)
       throws LMISException {
     return rnrFormRepository.initEmergencyRnrForm(periodEndDate, stockCards);
@@ -131,13 +255,19 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
   }
 
   @Override
-  public void attachView(BaseView baseView) throws ViewNotMatchException {
-    if (baseView instanceof VIARequisitionView) {
-      this.view = (VIARequisitionFragment) baseView;
-    } else {
-      throw new ViewNotMatchException("required VIARequisitionView");
-    }
-    super.attachView(baseView);
+  protected Observable<Void> createOrUpdateRnrForm() {
+    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+      try {
+        rnrFormRepository.createOrUpdateWithItems(rnRForm);
+        subscriber.onNext(null);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "VIARequisitionPresenter.createOrUpdateRnrForm").reportToFabric();
+        subscriber.onError(e);
+      } finally {
+        stockService.monthlyUpdateAvgMonthlyConsumption();
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 
   protected List<RequisitionFormItemViewModel> getViewModelsFromRnrForm(RnRForm form) {
@@ -152,6 +282,78 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
       return requisitionFormItemViewModel;
     }).toList();
   }
+
+  @Override
+  protected Observable<RnRForm> getRnrFormObservable(final long formId) {
+    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
+      try {
+        RnRForm rnrForm = getRnrForm(formId);
+        convertRnrToViewModel(rnrForm);
+        subscriber.onNext(rnrForm);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        new LMISException(e, "VIARequisitionPresenter.getRnrFormObservable").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  protected int getCompleteErrorMessage() {
+    return R.string.hint_requisition_complete_failed;
+  }
+
+  protected boolean validateForm() {
+    if (rnRForm != null && rnRForm.isEmergency()) {
+      return validateRnrFormItems();
+    } else {
+      return view.validateConsultationNumber() && validateRnrFormItems();
+    }
+  }
+
+  protected boolean validateRnrFormItems() {
+    for (int i = 0; i < requisitionFormItemViewModels.size(); i++) {
+      RequisitionFormItemViewModel itemViewModel = requisitionFormItemViewModels.get(i);
+      if (TextUtils.isEmpty(itemViewModel.getRequestAmount())
+          || TextUtils.isEmpty(itemViewModel.getApprovedAmount())) {
+        view.showListInputError(i);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private void dataViewToModel(String consultationNumbers) {
+    List<RnrFormItem> rnrFormItems = new ArrayList<>();
+
+    rnrFormItems.addAll(convertRnrItemViewModelsToRnrItems());
+    rnrFormItems.addAll(viaKitsViewModel.getKitItems());
+
+    rnRForm.setRnrFormItemListWrapper(rnrFormItems);
+    if (!TextUtils.isEmpty(consultationNumbers)) {
+      rnRForm.getBaseInfoItemListWrapper().get(0)
+          .setValue(Long.valueOf(consultationNumbers).toString());
+    }
+  }
+
+  private ImmutableList<RnrFormItem> convertRnrItemViewModelsToRnrItems() {
+    return from(requisitionFormItemViewModels)
+        .transform(RequisitionFormItemViewModel::toRnrFormItem)
+        .toList();
+  }
+
+  private void populateRnrItemWithQuantities(RnrFormItem rnrFormItem, Date periodBegin,
+      Date periodEnd) throws LMISException {
+    StockCard stockCard = stockRepository
+        .queryStockCardByProductId(rnrFormItem.getProduct().getId());
+    List<StockMovementItem> stockMovementItems = stockMovementRepository
+        .queryStockItemsByCreatedDate(stockCard.getId(), periodBegin, periodEnd);
+    if (!stockMovementItems.isEmpty()) {
+      rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
+      rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
+    }
+  }
+
 
   private List<RequisitionFormItemViewModel> transformDataItemsToViewModels(
       List<RnrFormItem> additionalItems) {
@@ -193,48 +395,11 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     return stockRepository.queryStockCardByProductId(kit.getId()).getStockOnHand();
   }
 
-  @Override
-  protected Observable<RnRForm> getRnrFormObservable(final long formId) {
-    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
-      try {
-        RnRForm rnrForm = getRnrForm(formId);
-        convertRnrToViewModel(rnrForm);
-        subscriber.onNext(rnrForm);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "VIARequisitionPresenter.getRnrFormObservable").reportToFabric();
-        subscriber.onError(e);
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
-  @Override
-  protected int getCompleteErrorMessage() {
-    return R.string.hint_requisition_complete_failed;
-  }
 
   private void convertRnrToViewModel(RnRForm rnrForm) throws LMISException {
     requisitionFormItemViewModels.clear();
     requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
     viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.YES));
-  }
-
-  public void populateAdditionalDrugsViewModels(List<RnrFormItem> addedDrugInVIAs,
-      Date periodBegin) {
-    List<RnrFormItem> additionalProducts = generateRnrItemsForAdditionalProducts(addedDrugInVIAs,
-        periodBegin);
-    requisitionFormItemViewModels.addAll(transformDataItemsToViewModels(additionalProducts));
-  }
-
-  public void deleteRnRItemFromViewModel(final RnrFormItem rnrFormItem) {
-    List<RequisitionFormItemViewModel> requisitionFormItemViewModelList = FluentIterable
-        .from(requisitionFormItemViewModels)
-        .filter(requisitionFormItemViewModel -> !requisitionFormItemViewModel.getFmn()
-            .equals(rnrFormItem.getProduct().getCode()))
-        .toList();
-    requisitionFormItemViewModels.clear();
-    requisitionFormItemViewModels.addAll(requisitionFormItemViewModelList);
-    view.refreshRequisitionForm(rnRForm);
   }
 
   private List<RnrFormItem> generateRnrItemsForAdditionalProducts(List<RnrFormItem> addedDrugInVIAs,
@@ -257,166 +422,5 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
           }
           return rnrFormItem;
         }).toList();
-  }
-
-  private void populateRnrItemWithQuantities(RnrFormItem rnrFormItem, Date periodBegin,
-      Date periodEnd) throws LMISException {
-    StockCard stockCard = stockRepository
-        .queryStockCardByProductId(rnrFormItem.getProduct().getId());
-    List<StockMovementItem> stockMovementItems = stockMovementRepository
-        .queryStockItemsByCreatedDate(stockCard.getId(), periodBegin, periodEnd);
-    if (!stockMovementItems.isEmpty()) {
-      rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
-      rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
-    }
-  }
-
-  @Override
-  public void updateUIAfterSubmit() {
-    view.highLightApprovedAmount();
-    view.refreshRequisitionForm(rnRForm);
-    view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
-  }
-
-  @Override
-  public void updateFormUI() {
-    if (rnRForm.isDraft()) {
-      view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
-      view.highLightRequestAmount();
-    } else if (rnRForm.isSubmitted()) {
-      view.setProcessButtonName(context.getString(R.string.btn_complete));
-      view.highLightApprovedAmount();
-    }
-    view.refreshRequisitionForm(rnRForm);
-  }
-
-  protected boolean validateForm() {
-    if (rnRForm != null && rnRForm.isEmergency()) {
-      return validateRnrFormItems();
-    } else {
-      return view.validateConsultationNumber() && validateRnrFormItems();
-    }
-  }
-
-  protected boolean validateRnrFormItems() {
-    for (int i = 0; i < requisitionFormItemViewModels.size(); i++) {
-      RequisitionFormItemViewModel itemViewModel = requisitionFormItemViewModels.get(i);
-      if (TextUtils.isEmpty(itemViewModel.getRequestAmount())
-          || TextUtils.isEmpty(itemViewModel.getApprovedAmount())) {
-        view.showListInputError(i);
-        return false;
-      }
-    }
-    return true;
-  }
-
-  @Override
-  public void submitRequisition() {
-    if (rnRForm.isEmergency()) {
-      updateUIAfterSubmit();
-      return;
-    }
-    super.submitRequisition();
-  }
-
-  public boolean processRequisition(String consultationNumbers) {
-    if (!validateForm()) {
-      return false;
-    }
-
-    if (!validateFormPeriod()) {
-      ToastUtil.show(R.string.msg_requisition_not_unique);
-      return false;
-    }
-
-    dataViewToModel(consultationNumbers);
-    return true;
-  }
-
-  private void dataViewToModel(String consultationNumbers) {
-    List<RnrFormItem> rnrFormItems = new ArrayList<>();
-
-    rnrFormItems.addAll(convertRnrItemViewModelsToRnrItems());
-    rnrFormItems.addAll(viaKitsViewModel.getKitItems());
-
-    rnRForm.setRnrFormItemListWrapper(rnrFormItems);
-    if (!TextUtils.isEmpty(consultationNumbers)) {
-      rnRForm.getBaseInfoItemListWrapper().get(0)
-          .setValue(Long.valueOf(consultationNumbers).toString());
-    }
-  }
-
-  public Observable<RnRForm> getSaveFormObservable(final String consultationNumbers) {
-    return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
-      try {
-        dataViewToModel(consultationNumbers);
-        rnrFormRepository.createOrUpdateWithItems(rnRForm);
-        subscriber.onNext(rnRForm);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "VIARequisitionPresenter.getSaveFormObservable").reportToFabric();
-        subscriber.onError(e);
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
-  private ImmutableList<RnrFormItem> convertRnrItemViewModelsToRnrItems() {
-    return from(requisitionFormItemViewModels)
-        .transform(RequisitionFormItemViewModel::toRnrFormItem)
-        .toList();
-  }
-
-  public String getConsultationNumbers() {
-    if (rnRForm != null && !rnRForm.getBaseInfoItemListWrapper().isEmpty()) {
-      return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
-    }
-    return null;
-  }
-
-  public void setConsultationNumbers(String consultationNumbers) {
-    if (rnRForm != null && !rnRForm.getBaseInfoItemListWrapper().isEmpty()) {
-      rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
-    }
-  }
-
-  @Override
-  protected Observable<Void> createOrUpdateRnrForm() {
-    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
-      try {
-        rnrFormRepository.createOrUpdateWithItems(rnRForm);
-        subscriber.onNext(null);
-        subscriber.onCompleted();
-      } catch (LMISException e) {
-        new LMISException(e, "VIARequisitionPresenter.createOrUpdateRnrForm").reportToFabric();
-        subscriber.onError(e);
-      } finally {
-        stockService.monthlyUpdateAvgMonthlyConsumption();
-      }
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
-  public void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems() {
-    try {
-      for (RnrFormItem rnrFormItem : rnrFormItemRepository.listAllNewRnrItems()) {
-        if (rnrFormItem.getProduct().isArchived()) {
-          rnrFormItem.getProduct().setArchived(false);
-          productRepository.updateProduct(rnrFormItem.getProduct());
-        }
-      }
-    } catch (LMISException e) {
-      new LMISException(e, "VIARequisitionPresenter. createStock").reportToFabric();
-    }
-  }
-
-  public Observable<Void> removeRnrItem(final RnrFormItem rnrFormItem) {
-    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
-      try {
-        rnrFormItemRepository.deleteRnrItem(rnrFormItem);
-      } catch (LMISException e) {
-        new LMISException(e, "VIARequisitionPresenter.removeRnrItem").reportToFabric();
-        subscriber.onError(e);
-      }
-      subscriber.onCompleted();
-    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 }

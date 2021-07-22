@@ -64,8 +64,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
     RequisitionFormViewHolder viewHolder;
 
     if (convertView == null) {
-      convertView = LayoutInflater.from(context)
-          .inflate(R.layout.item_requisition_body, parent, false);
+      convertView = LayoutInflater.from(context).inflate(R.layout.item_requisition_body, parent, false);
       viewHolder = new RequisitionFormViewHolder(convertView);
       convertView.setTag(viewHolder);
     } else {
