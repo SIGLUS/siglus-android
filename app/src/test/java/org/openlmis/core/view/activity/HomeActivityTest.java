@@ -30,6 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.utils.RobolectricUtils.resetNextClickTime;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -57,7 +58,6 @@ import org.openlmis.core.model.builder.ReportTypeBuilder;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.widget.DashboardView;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.openlmis.core.view.widget.SyncTimeView;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -315,11 +315,5 @@ public class HomeActivityTest {
     // then
     verify(syncTimeView, times(1)).showLastSyncTime();
     verify(dashboardView, times(1)).showCalculating();
-  }
-
-  private void resetNextClickTime() {
-    SingleClickButtonListener.setIsViewClicked(false);
-    final long currentTimeMillis = LMISTestApp.getInstance().getCurrentTimeMillis();
-    LMISTestApp.getInstance().setCurrentTimeMillis(currentTimeMillis + 600);
   }
 }

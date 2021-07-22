@@ -54,11 +54,11 @@ public class StockCardListActivity extends SearchBarActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    if (savedInstanceState == null) {
-      stockCardFragment = createFragment();
-      getSupportFragmentManager().beginTransaction().replace(R.id.stock_card_container, stockCardFragment)
-          .commit();
+    if (savedInstanceState != null) {
+      return;
     }
+    stockCardFragment = createFragment();
+    getSupportFragmentManager().beginTransaction().replace(R.id.stock_card_container, stockCardFragment).commit();
   }
 
   @Override
@@ -83,6 +83,10 @@ public class StockCardListActivity extends SearchBarActivity {
         return true;
       case MENU_ID_BULK_ENTRIES:
         startActivityForResult(new Intent(LMISApp.getContext(), BulkEntriesActivity.class),
+            Constants.REQUEST_FROM_STOCK_LIST_PAGE);
+        return true;
+      case MENU_ID_BULK_ISSUES:
+        startActivityForResult(new Intent(LMISApp.getContext(), BulkIssueChooseDestinationActivity.class),
             Constants.REQUEST_FROM_STOCK_LIST_PAGE);
         return true;
       default:
@@ -111,7 +115,6 @@ public class StockCardListActivity extends SearchBarActivity {
   protected StockCardListFragment createFragment() {
     return new StockCardListFragment();
   }
-
 
   protected void addMenus(Menu menu) {
     menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug))

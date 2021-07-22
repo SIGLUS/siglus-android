@@ -20,7 +20,6 @@
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <action android:name="android.intent.action.VIEW" />
-
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
@@ -136,9 +135,14 @@
       android:name=".view.activity.AddProductsToBulkEntriesActivity"
       android:screenOrientation="portrait" />
     <activity
+      android:label="@string/home_label_requisition_and_report"
       android:name=".view.activity.ReportListActivity"
-      android:screenOrientation="portrait"
-      android:label="@string/home_label_requisition_and_report" />
+      android:screenOrientation="portrait" />
+
+    <activity
+      android:label="@string/title_bulk_issue_choose_destination"
+      android:name=".view.activity.BulkIssueChooseDestinationActivity"
+      android:screenOrientation="portrait"/>
 
     <meta-data
       android:name="com.google.android.gms.version"
@@ -225,7 +229,6 @@
       android:name="com.google.android.gms.analytics.AnalyticsService" />
     <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
   </application>
-
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />

@@ -36,8 +36,8 @@ import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
@@ -122,8 +122,7 @@ public class SelectPeriodActivityTest {
   @Test
   public void shouldInVisibleWarningWhenUserChoseTheInventory() throws Exception {
     // given
-    LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.setIsViewClicked(false);
+    RobolectricUtils.resetNextClickTime();
     when(stockMovementRepository.listLastFiveStockMovements(anyLong()))
         .thenReturn(newArrayList(new StockMovementItem()));
     when(stockMovementRepository.queryFirstStockMovementByStockCardId(anyLong()))

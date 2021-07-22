@@ -225,4 +225,10 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:background">@color/color_divider</item>
   </style>
+
+  <style name="EditText" />
+
+  <style name="EditText.Gray">
+    <item name="colorControlNormal">@color/color_979797</item>
+  </style>
 </resources>

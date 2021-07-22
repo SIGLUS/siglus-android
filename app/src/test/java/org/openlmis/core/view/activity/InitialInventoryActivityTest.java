@@ -18,7 +18,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -30,7 +29,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
@@ -130,8 +128,7 @@ public class InitialInventoryActivityTest {
 
   @Test
   public void shouldDoInitialInventoryWhenBtnDoneClicked() {
-    LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.setIsViewClicked(false);
+    RobolectricUtils.resetNextClickTime();
 
     when(initialInventoryActivity.mAdapter.validateAll()).thenReturn(-1);
     initialInventoryActivity.onNextMainPageAction = o -> { };

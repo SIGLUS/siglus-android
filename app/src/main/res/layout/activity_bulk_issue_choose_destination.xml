@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".view.activity.BulkIssueChooseDestinationActivity">
+
+  <View
+    android:id="@+id/v_white_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:layout_margin="@dimen/px_24" />
+
+  <TextView
+    android:id="@+id/tv_movement_detail_anchor"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="@id/v_white_background"
+    app:layout_constraintLeft_toLeftOf="@id/v_white_background"
+    android:text="@string/label_movement_detail"
+    android:textSize="@dimen/px_24"
+    android:layout_marginLeft="@dimen/px_82"
+    android:layout_marginTop="@dimen/px_101"
+    android:textColor="@color/color_black"
+    android:fontFamily="sans-serif-medium" />
+
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/til_destination"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    app:layout_constraintLeft_toLeftOf="@id/v_white_background"
+    app:layout_constraintTop_toBottomOf="@id/tv_movement_detail_anchor"
+    app:layout_constraintRight_toRightOf="@id/v_white_background"
+    android:layout_marginHorizontal="@dimen/px_76"
+    android:padding="0dp"
+    android:layout_marginTop="@dimen/px_96">
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/et_destination"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/EditText.Gray"
+      android:drawableLeft="@drawable/bitmap_destination_or_origin"
+      android:drawablePadding="5dp"
+      android:hint="@string/hint_movement_reason_negative"
+      android:focusableInTouchMode="false"
+      android:textSize="@dimen/px_20"
+      android:textColorHint="@color/color_black"
+      android:singleLine="true"
+      android:ellipsize="end"
+      android:textColor="@color/color_727272" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <ImageView
+    android:layout_width="@dimen/px_10"
+    android:layout_height="@dimen/px_15"
+    android:src="@drawable/ic_required"
+    app:layout_constraintRight_toLeftOf="@id/til_destination"
+    app:layout_constraintTop_toTopOf="@id/til_destination"
+    android:scaleType="centerInside"
+    android:layout_marginTop="@dimen/px_28"
+    />
+
+  <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/til_document_number"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    app:layout_constraintLeft_toLeftOf="@id/v_white_background"
+    app:layout_constraintTop_toBottomOf="@id/til_destination"
+    app:layout_constraintRight_toRightOf="@id/v_white_background"
+    android:layout_marginHorizontal="@dimen/px_76"
+    android:layout_marginTop="@dimen/px_81">
+
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/et_bulk_issue_document_number"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/EditText.Gray"
+      android:drawableLeft="@drawable/bitmap_document_number"
+      android:drawablePadding="5dp"
+      android:hint="@string/hint_document_number"
+      android:textSize="@dimen/px_20"
+      android:textColorHint="@color/color_black"
+      android:textColor="@color/color_727272"
+      android:gravity="center_vertical" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <androidx.appcompat.widget.AppCompatButton
+    android:id="@+id/bt_next"
+    android:layout_width="@dimen/px_220"
+    android:layout_height="@dimen/px_36"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/til_document_number"
+    android:background="@drawable/shape_blue_4_radius_bg"
+    android:layout_marginTop="@dimen/px_64"
+    android:gravity="center"
+    android:text="@string/label_next"
+    android:textColor="@color/color_white"
+    android:textSize="@dimen/px_20" />
+</androidx.constraintlayout.widget.ConstraintLayout>

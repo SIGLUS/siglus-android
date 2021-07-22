@@ -623,4 +623,5 @@
   <string name="msg_remove_confirm">Are you sure you want to remove the product? If you click \'yes\', the product will be removed.</string>
   <string name="hint_bulk_entries_signature">Signature</string>
   <string name="msg_complete_successfully">Complete Successfully</string>
+  <string name="title_bulk_issue_choose_destination">Multiple Issues</string>
 </resources>

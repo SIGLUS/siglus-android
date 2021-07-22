@@ -14,7 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -25,7 +24,6 @@ import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
-import org.openlmis.core.view.widget.SingleClickButtonListener;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
@@ -96,8 +94,7 @@ public class UnpackKitActivityTest {
 
   @Test
   public void shouldShowSignatureDialogIfIsValid() throws Exception {
-    LMISTestApp.getInstance().setCurrentTimeMillis(100000);
-    SingleClickButtonListener.setIsViewClicked(false);
+    RobolectricUtils.resetNextClickTime();
 
     viewModel.getNewLotMovementViewModelList().add(
         new LotMovementViewModelBuilder().setExpiryDate("Jan 2033").setQuantity("100")

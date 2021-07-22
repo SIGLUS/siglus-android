@@ -66,8 +66,7 @@ import roboguice.activity.RoboMigrationAndroidXActionBarActivity;
 import rx.Subscription;
 
 @SuppressWarnings("PMD")
-public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivity implements
-    BaseView {
+public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivity implements BaseView {
 
   private long lastOperateTime = 0L;
 
