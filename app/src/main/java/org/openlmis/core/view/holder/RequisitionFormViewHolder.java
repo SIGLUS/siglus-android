@@ -103,6 +103,8 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
   public void setBackgroundColor(int position) {
     if (position % 2 == 1) {
       itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.general_background_color));
+    } else {
+      itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.color_white));
     }
   }
 
