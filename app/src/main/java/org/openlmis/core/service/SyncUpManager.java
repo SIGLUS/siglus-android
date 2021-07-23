@@ -110,15 +110,22 @@ public class SyncUpManager {
 
   protected LMISRestApi lmisRestApi;
 
+  public static boolean isSyncing = false;
+
   public SyncUpManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
   }
 
   public void syncUpData(Context context) {
     Log.d(TAG, "sync Up Data start");
-    if (isSyncing()) {
-      return;
+    synchronized (SyncUpManager.class) {
+      if (isSyncing) {
+        return;
+      }
+      isSyncing = true;
     }
+    Log.d(TAG, "sync Up Data start " + isSyncing);
+
     setSyncing(true);
     boolean isSyncDeleted = syncDeleteMovement();
     if (isSyncDeleted) {
