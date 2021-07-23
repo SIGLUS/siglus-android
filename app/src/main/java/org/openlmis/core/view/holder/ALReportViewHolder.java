@@ -112,13 +112,14 @@ public class ALReportViewHolder extends BaseViewHolder {
   }
 
   public void checkTips() {
-    if (!viewModel.isShowCheckTip()) {
-      return;
-    }
+    if (!viewModel.isShowCheckTip()) return;
     for (EditText editText : editTexts) {
       if (editText.getText().length() == 0) {
         editText.setError(context.getString(R.string.hint_error_input));
+        editText.requestFocus();
         return;
+      } else {
+        editText.clearFocus();
       }
     }
   }
