@@ -6,8 +6,8 @@
     android:color="@color/color_blue" />
   <corners android:radius="3dip" />
   <padding
-    android:left="10dip"
+    android:left="8dip"
     android:top="5dip"
-    android:right="10dip"
+    android:right="8dip"
     android:bottom="5dip" />
 </shape>

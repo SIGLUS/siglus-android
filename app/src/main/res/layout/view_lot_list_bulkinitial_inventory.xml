@@ -90,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/margin_medium"
-        android:background="@drawable/border_round_blue"
+        android:background="@drawable/border_round_blue_no_padding"
         android:visibility="gone"
         tools:visibility="visible">
 

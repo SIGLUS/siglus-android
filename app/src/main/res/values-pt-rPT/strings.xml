@@ -453,7 +453,7 @@
   <string name="error_empty_rapid_test_product">As informações do Relatório Testes Rápidos não podem estar em branco.</string>
   <string name="error_empty_rapid_test_list">A lista de relatórios de testes rápidos não pode estar vazia.</string>
   <string name="btn_edit">EDITAR</string>
-  <string name="msg_initial_inventory_lot_review_add">Lote <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Initial</font>]]> de <![CDATA[<font color="#000">%2$d</font>]]> será feito</string>
+  <string name="msg_initial_inventory_lot_review_add">Lote <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Inventário</font>]]> de <![CDATA[<font color="#000">%2$d</font>]]> será feito</string>
   <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
   <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\"> Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
   <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>

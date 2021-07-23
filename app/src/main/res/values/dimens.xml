@@ -32,7 +32,7 @@
   <dimen name="margin_tiny">4dp</dimen>
   <dimen name="margin_small">8dp</dimen>
   <dimen name="margin_normal">16dp</dimen>
-  <dimen name="margin_medium">24dp</dimen>
+  <dimen name="margin_medium">17dp</dimen>
   <dimen name="margin_large">32dp</dimen>
   <dimen name="margin_larger">40dp</dimen>
 
