@@ -117,8 +117,8 @@ public class RequisitionPeriodServiceTest {
         when(mockReportTypeFormRepository.queryByCode(programMMIA.getProgramCode())).thenReturn(reportTypeForm);
         when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
         Period period = requisitionPeriodService.generateNextPeriod(new ArrayList<>(), programMMIA.getProgramCode(),null);
-        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2020-05-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
-        assertThat(period.getEnd(), is(new DateTime(DateUtil.parseString("2020-06-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2020-06-23 12:00:00", DateUtil.DB_DATE_FORMAT))));
+        assertThat(period.getEnd(), is(new DateTime(DateUtil.parseString("2020-07-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
     }
 
     @Test
