@@ -23,28 +23,46 @@ import java.security.NoSuchAlgorithmException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 
 @RunWith(LMISTestRunner.class)
 public class SSLFactoryTest {
 
   @Test
-  public void testGetNormalSocketFactory() throws NoSuchAlgorithmException {
-    Assert.assertNotNull(SSLFactory.getNormalSocketFactory());
+  public void testGetNormalSocketFactory() throws NoSuchAlgorithmException, KeyManagementException {
+    // given
+    LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_https_trust_all, false);
+
+    // then
+    Assert.assertNotNull(SSLFactory.getSocketFactory());
   }
 
   @Test
-  public void testGetTrustAllSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
-    Assert.assertNotNull(SSLFactory.getTrustAllSocketFactory());
+  public void testGetTrustAllSocketFactory() throws NoSuchAlgorithmException, KeyManagementException {
+    // given
+    LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_https_trust_all, true);
+
+    // then
+    Assert.assertNotNull(SSLFactory.getSocketFactory());
   }
 
   @Test
   public void testGetTrustALLHostnameVerifier() {
-    Assert.assertNotNull(SSLFactory.getTrustALLHostnameVerifier());
+    // given
+    LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_https_trust_all, false);
+
+    // then
+    Assert.assertNotNull(SSLFactory.getHostnameVerifier());
   }
 
   @Test
   public void testGetNormalHostnameVerifier() {
-    Assert.assertNotNull(SSLFactory.getNormalHostnameVerifier());
+    // given
+    LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_https_trust_all, true);
+
+    // then
+    Assert.assertNotNull(SSLFactory.getHostnameVerifier());
   }
 }

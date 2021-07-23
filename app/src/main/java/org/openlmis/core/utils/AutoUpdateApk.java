@@ -56,7 +56,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.network.SSLFactory;
 
 public class AutoUpdateApk {
 
@@ -141,6 +143,15 @@ public class AutoUpdateApk {
 
     private final OkHttpClient okHttpClient = new OkHttpClient();
     private final List<String> retrieved = new LinkedList<>();
+
+    public CheckUpdateTask() {
+      try {
+        okHttpClient.setSslSocketFactory(SSLFactory.getSocketFactory());
+        okHttpClient.setHostnameVerifier(SSLFactory.getHostnameVerifier());
+      } catch (Exception e) {
+        new LMISException(e, "LMISRestManager,ssl").reportToFabric();
+      }
+    }
 
     protected String[] doInBackground(Void... v) {
       String[] resultGetApkInfo = null;

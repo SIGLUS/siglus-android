@@ -98,6 +98,8 @@ public class StockService {
     Date firstPeriodBegin;
     try {
       firstPeriodBegin = queryFirstPeriodBegin(stockCard);
+    } catch (StockMovementIsNullException e) {
+      return -1;
     } catch (LMISException e) {
       new LMISException(e, "StockService:calculateAverage").reportToFabric();
       return -1;

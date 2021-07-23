@@ -103,11 +103,8 @@ public class LMISRestManager {
   protected Client getSSLClient() {
     OkHttpClient client = getOkHttpClient();
     try {
-      boolean trustAll = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_https_trust_all);
-      client.setSslSocketFactory(
-          trustAll ? SSLFactory.getTrustAllSocketFactory() : SSLFactory.getNormalSocketFactory());
-      client.setHostnameVerifier(
-          trustAll ? SSLFactory.getTrustALLHostnameVerifier() : SSLFactory.getNormalHostnameVerifier());
+      client.setSslSocketFactory(SSLFactory.getSocketFactory());
+      client.setHostnameVerifier(SSLFactory.getHostnameVerifier());
     } catch (Exception e) {
       new LMISException(e, "LMISRestManager,ssl").reportToFabric();
     }

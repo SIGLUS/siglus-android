@@ -30,6 +30,8 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 
 @SuppressWarnings({"squid:S4830", "squid:S5527"})
@@ -38,22 +40,32 @@ public class SSLFactory {
   private SSLFactory() {
   }
 
-  public static SSLSocketFactory getNormalSocketFactory() throws NoSuchAlgorithmException {
+  public static SSLSocketFactory getSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
+    boolean trustAll = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_https_trust_all);
+    return trustAll ? getTrustAllSocketFactory() : getNormalSocketFactory();
+  }
+
+  public static HostnameVerifier getHostnameVerifier() {
+    boolean trustAll = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_https_trust_all);
+    return trustAll ? getTrustALLHostnameVerifier() : getNormalHostnameVerifier();
+  }
+
+  private static SSLSocketFactory getNormalSocketFactory() throws NoSuchAlgorithmException {
     final SSLContext sslContext = SSLContext.getDefault();
     return sslContext.getSocketFactory();
   }
 
-  public static SSLSocketFactory getTrustAllSocketFactory() throws NoSuchAlgorithmException, KeyManagementException {
+  private static SSLSocketFactory getTrustAllSocketFactory() throws NoSuchAlgorithmException, KeyManagementException {
     SSLContext sslContext = SSLContext.getInstance("TLS");
     sslContext.init(null, new TrustManager[]{new TrustAllTrustManager()}, new SecureRandom());
     return sslContext.getSocketFactory();
   }
 
-  public static HostnameVerifier getTrustALLHostnameVerifier() {
+  private static HostnameVerifier getTrustALLHostnameVerifier() {
     return (hostname, session) -> true;
   }
 
-  public static HostnameVerifier getNormalHostnameVerifier() {
+  private static HostnameVerifier getNormalHostnameVerifier() {
     return (hostname, session) -> {
       // OVERRIDE HOSTNAME VERIFIER BECAUSE WE CONNECT TO ELB DIRECTLY DUE TO OCCASIONAL DNS
       // ISSUES IN MOZAMBIQUE
