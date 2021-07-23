@@ -81,7 +81,7 @@ public class ALReportViewHolder extends BaseViewHolder {
         fourTreatment.setText(getValue(viewModel.getGridFour().getTreatmentsValue()));
         fourStock.setText(getValue(viewModel.getGridFour().getExistentStockValue()));
         editTexts = Arrays.asList(oneTreatment, twoTreatment, threeTreatment, fourTreatment, oneStock, twoStock,
-                threeStock, fourStock);
+            threeStock, fourStock);
     }
 
     public void configureEditTextWatch() {
@@ -99,7 +99,10 @@ public class ALReportViewHolder extends BaseViewHolder {
         for (EditText editText : editTexts) {
             if (editText.getText().length() == 0) {
                 editText.setError(context.getString(R.string.hint_error_input));
+                editText.requestFocus();
                 return;
+            } else {
+                editText.clearFocus();
             }
         }
     }
