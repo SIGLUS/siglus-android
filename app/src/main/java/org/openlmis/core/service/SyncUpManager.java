@@ -104,18 +104,21 @@ public class SyncUpManager {
 
     protected LMISRestApi lmisRestApi;
 
-    public static volatile boolean isSyncing = false;
+    public static boolean isSyncing = false;
 
     public SyncUpManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
     }
 
     public void syncUpData(Context context) {
-        Log.d(TAG, "sync Up Data start");
-        if (isSyncing) {
-            return;
+        Log.d(TAG, "sync Up Data want to start " + isSyncing);
+        synchronized (SyncUpManager.class) {
+            if (isSyncing) {
+                return;
+            }
+            isSyncing = true;
         }
-        isSyncing = true;
+        Log.d(TAG, "sync Up Data start " + isSyncing);
         boolean isSyncDeleted = syncDeleteMovement();
         if (isSyncDeleted) {
             boolean isSyncRnrSuccessful = syncRnr();
@@ -142,7 +145,6 @@ public class SyncUpManager {
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
     }
-
     public boolean syncRnr() {
         List<RnRForm> forms;
         try {
