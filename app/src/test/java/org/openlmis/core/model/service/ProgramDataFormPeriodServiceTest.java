@@ -67,8 +67,8 @@ public class ProgramDataFormPeriodServiceTest {
         when(mockReportTypeFormRepository.queryByCode("TEST_KIT")).thenReturn(reportTypeForm);
         when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
         Period period = periodService.getFirstStandardPeriod().get();
-        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2020-06-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
-        assertThat(period.getEnd(), is(new DateTime(DateUtil.parseString("2020-07-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
+        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2020-07-21 12:00:00", DateUtil.DB_DATE_FORMAT))));
+        assertThat(period.getEnd(), is(new DateTime(DateUtil.parseString("2020-08-20 12:00:00", DateUtil.DB_DATE_FORMAT))));
     }
 
     @Test
