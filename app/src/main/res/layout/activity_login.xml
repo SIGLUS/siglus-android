@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:orientation="vertical">
 
   <LinearLayout
@@ -41,7 +42,8 @@
             android:id="@+id/ly_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small">
+            android:layout_marginTop="@dimen/margin_small"
+            app:errorTextAppearance="@style/error_appearance">
 
             <EditText
               android:id="@+id/tx_username"
@@ -59,7 +61,8 @@
               android:id="@+id/ly_password"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/margin_normal">
+              android:layout_marginTop="@dimen/margin_normal"
+              app:errorTextAppearance="@style/error_appearance">
 
 
               <EditText
@@ -80,6 +83,14 @@
                 android:src="@drawable/ic_visibility_off" />
             </com.google.android.material.textfield.TextInputLayout>
           </FrameLayout>
+
+          <TextView
+            android:id="@+id/tv_error_alert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_fc2b2a"
+            android:textSize="@dimen/px_14"
+            android:visibility="gone"/>
 
           <Button
             android:id="@+id/btn_login"

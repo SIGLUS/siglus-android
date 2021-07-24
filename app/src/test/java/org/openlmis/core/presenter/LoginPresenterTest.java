@@ -20,7 +20,6 @@ package org.openlmis.core.presenter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -285,7 +284,7 @@ public class LoginPresenterTest {
     verify(userRepository).getLocalUser();
 
     verify(mockActivity).loaded();
-    verify(mockActivity).showInvalidAlert(anyString());
+    verify(mockActivity).showInvalidAlert(any());
   }
 
   @Test

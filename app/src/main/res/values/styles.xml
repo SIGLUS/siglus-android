@@ -985,4 +985,7 @@
     <item name="android:paddingRight">@dimen/padding_small</item>
     <item name="android:enabled">false</item>
   </style>
+  <style name="error_appearance" parent="@android:style/TextAppearance">
+    <item name="android:textColor">@color/color_fc2b2a</item>
+  </style>
 </resources>

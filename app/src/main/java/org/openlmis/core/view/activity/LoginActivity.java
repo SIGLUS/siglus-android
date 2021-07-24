@@ -83,6 +83,9 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   @InjectView(R.id.tv_version)
   public TextView tvVersion;
 
+  @InjectView(R.id.tv_error_alert)
+  TextView errorAlert;
+
   @InjectPresenter(LoginPresenter.class)
   LoginPresenter presenter;
 
@@ -123,9 +126,25 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   }
 
   @Override
-  public void showInvalidAlert(String alertMsg) {
+  public void showInvalidAlert(LoginErrorType loginErrorType) {
     clearErrorAlerts();
-    lyPassword.setError(alertMsg);
+    if (loginErrorType == LoginErrorType.NO_INTERNET) {
+      errorAlert.setText(getResources().getText(R.string.message_wipe_no_connection));
+      errorAlert.setVisibility(View.VISIBLE);
+    }
+    if (loginErrorType == LoginErrorType.WRONG_PASSWORD) {
+      errorAlert.setVisibility(View.GONE);
+      if (etUsername.isEnabled()) {
+        lyUserName.setError(" ");
+      }
+      lyPassword.setError(getResources().getText(R.string.msg_invalid_user));
+    }
+    if (loginErrorType == LoginErrorType.NON_MOBILE_USER) {
+      etUsername.setEnabled(true);
+      errorAlert.setVisibility(View.GONE);
+      lyUserName.setError(" ");
+      lyPassword.setError(getResources().getText(R.string.msg_isAndroid_False));
+    }
     etUsername.getBackground()
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     etPassword.getBackground()
@@ -172,7 +191,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onReceiveSyncStatusEvent(LoginErrorType loginErrorType) {
     if (loginErrorType.toString().equals(LoginErrorType.NON_MOBILE_USER.toString())) {
-      showInvalidAlert(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False));
+      showInvalidAlert(LoginErrorType.NON_MOBILE_USER);
     }
   }
 

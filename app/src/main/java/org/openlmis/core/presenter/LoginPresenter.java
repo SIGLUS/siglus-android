@@ -137,12 +137,7 @@ public class LoginPresenter extends Presenter {
 
   public void onLoginFailed(LoginErrorType loginErrorType) {
     view.loaded();
-    if (loginErrorType == LoginErrorType.NO_INTERNET) {
-      view.showInvalidAlert(LMISApp.getContext().getResources().getString(R.string.message_wipe_no_connection));
-    }
-    if (loginErrorType == LoginErrorType.WRONG_PASSWORD) {
-      view.showInvalidAlert(LMISApp.getContext().getResources().getString(R.string.msg_invalid_user));
-    }
+    view.showInvalidAlert(loginErrorType);
   }
 
   public void syncLocalUserData(Subscriber<SyncLocalUserProgress> subscriber) {
@@ -489,7 +484,7 @@ public class LoginPresenter extends Presenter {
 
     boolean needInitInventory();
 
-    void showInvalidAlert(String alertMsg);
+    void showInvalidAlert(LoginErrorType loginErrorType);
 
     void showUserNameEmpty();
 

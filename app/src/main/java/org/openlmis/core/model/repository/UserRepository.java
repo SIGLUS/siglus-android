@@ -83,4 +83,13 @@ public class UserRepository {
     }
     return user;
   }
+
+  public void deleteLocalUser() {
+    try {
+      dbUtil.withDao(User.class, dao -> dao.deleteBuilder().delete());
+    } catch (LMISException e) {
+      Log.w("UserRepository", e);
+      new LMISException(e, "UserReposirory.deleteLocalUser").reportToFabric();
+    }
+  }
 }

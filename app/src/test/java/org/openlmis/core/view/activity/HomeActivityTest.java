@@ -249,12 +249,14 @@ public class HomeActivityTest {
 
   @Test
   public void shouldShowToastWhenResyncWithoutNetwork() {
+    // given
+    String expectedMessage = "The network is unavailable, please try again when you have the network";
     // when
     homeActivity.validateConnectionListener.launchResponse(false);
 
     // then
     String warningMessage = ShadowToast.getTextOfLatestToast();
-    assertEquals("Network is not available, please try again when you have the network.", warningMessage);
+    assertEquals(expectedMessage, warningMessage);
   }
 
   @Test

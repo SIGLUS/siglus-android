@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
@@ -32,6 +33,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.User.LoginErrorType;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;
@@ -112,15 +114,15 @@ public class LoginActivityTest {
 
   @Test
   public void shouldShowInvalidAlertAfterMethodInvoked() {
-    loginActivity.showInvalidAlert(loginActivity.getResources().getString(R.string.msg_invalid_user));
+    loginActivity.showInvalidAlert(LoginErrorType.WRONG_PASSWORD);
 
     String invalidUserMessage = loginActivity.getResources().getString(R.string.msg_invalid_user);
 
     String usernameErrorText = RobolectricUtils.getErrorText(loginActivity.lyUserName);
     String passwordErrorText = RobolectricUtils.getErrorText(loginActivity.lyPassword);
 
-    assertThat(passwordErrorText).isNotNull().isEqualTo(invalidUserMessage);
-    assertThat(usernameErrorText).isNull();
+    assertEquals(invalidUserMessage, passwordErrorText);
+    assertEquals(" ", usernameErrorText);
   }
 
   @Test
@@ -151,7 +153,7 @@ public class LoginActivityTest {
 
   @Test
   public void shouldClearErrorAlertsAfterMethodInvoked() {
-    loginActivity.showInvalidAlert(loginActivity.getResources().getString(R.string.msg_invalid_user));
+    loginActivity.showInvalidAlert(LoginErrorType.WRONG_PASSWORD);
     loginActivity.clearErrorAlerts();
 
     assertThat(RobolectricUtils.getErrorText(loginActivity.lyUserName)).isNull();

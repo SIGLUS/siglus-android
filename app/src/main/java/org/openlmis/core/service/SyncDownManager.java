@@ -487,6 +487,7 @@ public class SyncDownManager {
       throw e;
     }
     if (!facilityInfoResponse.isAndroid()) {
+      userRepository.deleteLocalUser();
       EventBus.getDefault().post(LoginErrorType.NON_MOBILE_USER);
       throw new LMISException(errorMessage(R.string.msg_isAndroid_False));
     }
