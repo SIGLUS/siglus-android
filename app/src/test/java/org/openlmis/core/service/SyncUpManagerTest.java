@@ -19,6 +19,8 @@
 package org.openlmis.core.service;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
@@ -41,10 +43,12 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -170,6 +174,8 @@ public class SyncUpManagerTest {
 
   @Test
   public void shouldSyncUnSyncedStockMovementData() throws LMISException, ParseException {
+    // given
+    LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2021-07-20").getMillis());
     StockCard stockCard = createTestStockCardData();
 
     SyncUpStockMovementDataSplitResponse response = new SyncUpStockMovementDataSplitResponse();
@@ -178,13 +184,15 @@ public class SyncUpManagerTest {
     when(mockedLmisRestApi.syncUpStockMovementDataSplit(any(List.class)))
         .thenReturn(response);
 
+    // when
     syncUpManager.syncStockCards();
     stockRepository.refresh(stockCard);
     List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
 
-    assertThat(items.size(), is(2));
-    assertThat(items.get(0).isSynced(), is(true));
-    assertThat(items.get(1).isSynced(), is(true));
+    // then
+    assertEquals(2, items.size());
+    assertTrue(items.get(0).isSynced());
+    assertTrue(items.get(1).isSynced());
     verify(mockedSyncErrorsRepository).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
   }
 
@@ -201,11 +209,13 @@ public class SyncUpManagerTest {
   @Test
   public void shouldNotMarkAsSyncedWhenStockMovementSyncFailed()
       throws LMISException, ParseException {
+    // given
+    LMISTestApp.getInstance().setCurrentTimeMillis(DateTime.parse("2021-07-20").getMillis());
     StockCard stockCard = createTestStockCardData();
-
     doThrow(new RuntimeException("Sync Failed")).when(mockedLmisRestApi)
         .syncUpStockMovementDataSplit(anyList());
 
+    // when
     try {
       syncUpManager.syncStockCards();
     } catch (RuntimeException e) {
@@ -214,9 +224,10 @@ public class SyncUpManagerTest {
     stockRepository.refresh(stockCard);
     List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
 
-    assertThat(items.size(), is(2));
-    assertThat(items.get(0).isSynced(), is(false));
-    assertThat(items.get(1).isSynced(), is(false));
+    // then
+    assertEquals(2, items.size());
+    assertFalse(items.get(0).isSynced());
+    assertFalse(items.get(1).isSynced());
   }
 
   @NonNull

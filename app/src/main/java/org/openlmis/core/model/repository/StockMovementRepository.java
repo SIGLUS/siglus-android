@@ -75,8 +75,8 @@ public class StockMovementRepository {
   }
 
   private void create(StockMovementItem stockMovementItem) throws LMISException {
-    Date latestCreateTime = getLatestStockMovementMovementDate();
-    if (latestCreateTime != null && stockMovementItem.getMovementDate().before(latestCreateTime)) {
+    Date latestMovementDate = getLatestStockMovementMovementDate();
+    if (latestMovementDate != null && stockMovementItem.getCreatedTime().before(latestMovementDate)) {
       String productCode = stockMovementItem.getStockCard().getProduct().getCode();
       String facilityCode = UserInfoMgr.getInstance().getFacilityCode();
       LMISException e = new LMISException(
@@ -252,7 +252,7 @@ public class StockMovementRepository {
     String rawSql =
         "SELECT stockOnHand, movementQuantity, movementType FROM stock_items WHERE stockCard_id='"
             + stockCardId + "'"
-            + " AND movementDate > '" + DateUtil.formatDateTimeToDay(periodBeginDate) + "'"
+            + " AND movementDate >= '" + DateUtil.formatDateTimeToDay(periodBeginDate) + "'"
             + " AND movementDate <= '" + DateUtil.formatDateTimeToDay(periodEndDate) + "'"
             + " ORDER BY movementDate, createdTime";
     final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
