@@ -154,6 +154,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   @Override
   public void showPasswordEmpty() {
     clearErrorAlerts();
+    errorAlert.setVisibility(View.GONE);
     lyPassword.setError(getResources().getString(R.string.msg_empty_user));
     etPassword.getBackground()
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
@@ -162,6 +163,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
   @Override
   public void showUserNameEmpty() {
     clearErrorAlerts();
+    errorAlert.setVisibility(View.GONE);
     lyUserName.setError(getResources().getString(R.string.msg_empty_user));
     etUsername.getBackground()
         .setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);

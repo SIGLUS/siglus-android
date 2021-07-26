@@ -88,8 +88,9 @@
             android:id="@+id/tv_error_alert"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/px_2"
             android:textColor="@color/color_fc2b2a"
-            android:textSize="@dimen/px_14"
+            android:textSize="@dimen/px_16"
             android:visibility="gone"/>
 
           <Button
