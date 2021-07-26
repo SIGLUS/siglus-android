@@ -18,8 +18,8 @@
 
 package org.openlmis.core.presenter;
 
-import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_BASIC;
 import static org.openlmis.core.utils.Constants.KIT_PRODUCTS;
+import static org.openlmis.core.view.adapter.BulkInitialInventoryAdapter.ITEM_BASIC;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.util.Log;

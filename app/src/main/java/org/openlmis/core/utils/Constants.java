@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 public final class Constants {
 
@@ -153,7 +154,7 @@ public final class Constants {
   public static final String REQUISITIONS = "Requisitions";
   public static final String FINAL_STOCK = "Final Stock";
   public static final String TOTAL = "Total";
-  public static final List<String> KIT_PRODUCTS = Arrays.asList("26A01", "26A02", "26B01", "26B02");
+  public static final List<String> KIT_PRODUCTS = ImmutableList.of("26A01", "26A02", "26B01", "26B02");
 
   public static final String IS_USER_TRIGGERED_SYCED = "isUserTriggered";
 
