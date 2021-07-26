@@ -138,7 +138,7 @@ public class RequisitionPeriodServiceTest {
       assertThat(period.getEnd(),
           is(new DateTime(
               DateUtil.parseString(String.format("2020-%s-20 12:00:00", monthOfYear), DateUtil.DB_DATE_FORMAT))));
-    } else if (dayOfMonth > Period.INVENTORY_END_DAY_NEXT) {
+    } else if (dayOfMonth >= Period.INVENTORY_END_DAY_NEXT) {
       assertThat(period.getBegin(),
           is(new DateTime(
               DateUtil.parseString(String.format("2020-%s-21 12:00:00", (monthOfYear - 1)), DateUtil.DB_DATE_FORMAT))));
