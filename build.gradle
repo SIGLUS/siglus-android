@@ -17,7 +17,7 @@ buildscript {
         classpath "gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.7.1"
     }
     ext {
-        appCenterSdkVersion = '2.5.1'
+        appCenterSdkVersion = '3.3.1'
         buildToolsVersion = "29.0.2"
         compileSdkVersion = 29
         minSdkVersion = 19

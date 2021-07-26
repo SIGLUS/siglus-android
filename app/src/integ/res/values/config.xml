@@ -9,4 +9,5 @@
   <bool name="ga_dryRun">true</bool>
   <string name="app_name">@string/app_name_in_integ</string>
   <string name="app_time_out">3600000</string>
+  <string name="appcenter_app_key" translatable="false">6503c5e1-77d1-42f8-8e28-dee5a684b7ea</string>
 </resources>

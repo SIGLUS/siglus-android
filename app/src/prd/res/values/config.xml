@@ -5,13 +5,9 @@
   <string name="sync_account_type">org.clintonhealthaccess.lmismoz</string>
   <integer name="sync_interval">3600</integer>
   <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync</string>
-
   <string name="ga_trackingId">UA-72363211-5</string>
   <bool name="ga_dryRun">false</bool>
-
   <string name="app_name">@string/app_name_in_prd</string>
-
   <string name="app_time_out">3600000</string>
-
-  <string name="appcenter_app_key" translatable="false">bb609655-f9a0-4761-a524-d6302976cff8</string>
+  <string name="appcenter_app_key" translatable="false">8c451470-bbed-460c-8b2e-6223daf96400</string>
 </resources>
