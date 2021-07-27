@@ -122,18 +122,6 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
 
   private int syncedCount = 0;
 
-  public final InternetCheck.Callback validateConnectionListener = internet -> {
-    if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-      ToastUtil.show(R.string.message_wipe_no_connection);
-    } else {
-      WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
-          R.string.message_warning_wipe_data,
-          R.string.btn_positive,
-          R.string.btn_negative);
-      getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
-    }
-  };
-
   public void syncData() {
     syncService.requestSyncImmediatelyFromUserTrigger();
   }
@@ -306,6 +294,18 @@ public class HomeActivity extends BaseActivity implements HomePresenter.HomeView
     EventBus.getDefault().unregister(this);
     super.onDestroy();
   }
+
+  protected final InternetCheck.Callback validateConnectionListener = internet -> {
+    if (!internet && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
+      ToastUtil.show(R.string.message_wipe_no_connection);
+    } else {
+      WarningDialogFragment wipeDataDialog = warningDialogFragmentBuilder.build(buildWipeDialogDelegate(),
+          R.string.message_warning_wipe_data,
+          R.string.btn_positive,
+          R.string.btn_negative);
+      getSupportFragmentManager().beginTransaction().add(wipeDataDialog, "WipeDataWarning").commitNow();
+    }
+  };
 
   private final SingleClickButtonListener singleClickButtonListener = new SingleClickButtonListener() {
     @Override

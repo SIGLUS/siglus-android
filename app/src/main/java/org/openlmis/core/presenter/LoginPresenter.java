@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.enums.LoginErrorType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -34,7 +35,6 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.User.LoginErrorType;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
@@ -211,8 +211,7 @@ public class LoginPresenter extends Presenter {
 
       @Override
       public void onError(Throwable e) {
-        if (e.getMessage() != null && !e.getMessage()
-            .equals(LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False))) {
+        if (!LMISApp.getContext().getResources().getString(R.string.msg_isAndroid_False).equals(e.getMessage())) {
           ToastUtil.showForLongTime(e.getMessage());
         }
         view.loaded();
