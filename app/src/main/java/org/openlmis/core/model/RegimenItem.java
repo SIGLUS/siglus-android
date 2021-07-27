@@ -44,11 +44,13 @@ public class RegimenItem extends BaseModel {
   @Expose
   @SerializedName("hf")
   @DatabaseField
+  //for AL product hf
   private Long hf;
 
   @Expose
   @SerializedName("chw")
   @DatabaseField
+  //for AL product chw
   private Long chw;
 
   @Expose

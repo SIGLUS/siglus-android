@@ -12,22 +12,12 @@
     }
   ],
   "nonFullSupplyProducts": [],
-  "regimens": [
+  "regimenLineItems": [
     {
-      "id": 21,
-      "rnrId": 130,
-      "code": "018",
-      "name": "ABC+3TC+EFZ",
-      "categoryName": "Paediatrics",
+      "code": "1alt1",
+      "name": "ABC+3TC+DTG",
       "patientsOnTreatment": 1,
-      "category": {
-        "id": null,
-        "code": null,
-        "name": "Paediatrics",
-        "displayOrder": 2
-      },
-      "regimenDisplayOrder": 3,
-      "skipped": false
+      "comunitaryPharmacy": 2
     }
   ],
   "patientQuantifications": [

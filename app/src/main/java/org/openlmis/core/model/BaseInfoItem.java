@@ -37,7 +37,7 @@ public class BaseInfoItem extends BaseModel {
   }
 
   @Expose
-  @SerializedName("category")
+  @SerializedName("name")
   @DatabaseField
   private String name;
 
@@ -45,7 +45,7 @@ public class BaseInfoItem extends BaseModel {
   private TYPE type = TYPE.STRING;
 
   @Expose
-  @SerializedName("total")
+  @SerializedName("value")
   @DatabaseField
   private String value;
 
@@ -53,12 +53,10 @@ public class BaseInfoItem extends BaseModel {
   private RnRForm rnRForm;
 
   @Expose
-  @SerializedName("tableName")
   @DatabaseField
   private String tableName;
 
   @Expose
-  @SerializedName("displayOrder")
   @DatabaseField
   private int displayOrder;
 

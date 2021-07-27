@@ -19,6 +19,7 @@
 package org.openlmis.core.network.adapter;
 
 import static org.openlmis.core.model.repository.VIARepository.ATTR_CONSULTATION;
+import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import com.google.gson.Gson;
@@ -34,9 +35,13 @@ import com.google.gson.JsonSerializer;
 import com.google.inject.Inject;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.openlmis.core.LMISApp;
@@ -51,6 +56,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
+import org.openlmis.core.network.model.PatientLineItemRequest;
 import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
@@ -148,6 +154,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     if (programCode.endsWith(VIA_PROGRAM_CODE)) {
       root.addProperty("consultationNumber", getConsultationNumber(rnRForm));
     }
+    setPatientLineItem(programCode, root, rnRForm);
   }
 
   private Long getConsultationNumber(RnRForm rnRForm) {
@@ -155,6 +162,34 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       return Long.valueOf(rnRForm.getBaseInfoItemListWrapper().get(0).getValue());
     }
     return null;
+  }
+
+  private void setPatientLineItem(String programCode, JsonObject root, RnRForm rnRForm) {
+    if (programCode.endsWith(MMIA_PROGRAM_CODE) && rnRForm != null
+        && !rnRForm.getBaseInfoItemListWrapper().isEmpty()) {
+      HashMap<String, List<BaseInfoItem>> tableNameToItems = groupPatientInfo(rnRForm);
+      List<PatientLineItemRequest> patientLineItemRequests = new ArrayList<>();
+      for (Map.Entry<String, List<BaseInfoItem>> map : tableNameToItems.entrySet()) {
+        patientLineItemRequests.add(new PatientLineItemRequest(map.getKey(), map.getValue()));
+      }
+      root.add("patientLineItems", jsonParser.parse(gson.toJson(patientLineItemRequests)));
+    }
+  }
+
+  @NotNull
+  private HashMap<String, List<BaseInfoItem>> groupPatientInfo(RnRForm rnRForm) {
+    List<BaseInfoItem> baseInfoItems = rnRForm.getBaseInfoItemListWrapper();
+    HashMap<String, List<BaseInfoItem>> tableNameToItems = new HashMap<>();
+    for (BaseInfoItem infoItem : baseInfoItems) {
+      if (tableNameToItems.containsKey(infoItem.getTableName())) {
+        List<BaseInfoItem> list = new ArrayList<>();
+        list.add(infoItem);
+        tableNameToItems.put(infoItem.getTableName(), list);
+      } else {
+        tableNameToItems.get(infoItem.getTableName()).add(infoItem);
+      }
+    }
+    return tableNameToItems;
   }
 
 }

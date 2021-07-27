@@ -66,13 +66,14 @@ public class RnRForm extends BaseModel {
   private ForeignCollection<RegimenItem> regimenItemList;
 
   @Expose
-  @SerializedName("regimens")
+  @SerializedName("regimenLineItems")
   private List<RegimenItem> regimenItemListWrapper;
 
   @ForeignCollectionField()
   private ForeignCollection<RegimenItemThreeLines> regimenThreeLineList;
+
   @Expose
-  @SerializedName("therapeuticLines")
+  @SerializedName("regimenSummaryLineItems")
   private List<RegimenItemThreeLines> regimenThreeLinesWrapper;
 
   @ForeignCollectionField()

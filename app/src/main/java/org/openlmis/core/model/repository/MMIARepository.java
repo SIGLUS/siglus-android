@@ -153,6 +153,38 @@ public class MMIARepository extends RnrFormRepository {
     programCode = Constants.MMIA_PROGRAM_CODE;
   }
 
+  public Map<String, Integer> getDisplayOrderMap() {
+    Map<String, Integer> displayOrderHashMap = new HashMap<>();
+    displayOrderHashMap.put(attrTableTravKey, 0);
+    displayOrderHashMap.put(attrTableTravNewKey, 1);
+    displayOrderHashMap.put(attrTableTravMaintenanceKey, 2);
+    displayOrderHashMap.put(attrTableTravAlterationKey, 3);
+    displayOrderHashMap.put(attrTableTravTransitKey, 4);
+    displayOrderHashMap.put(attrTableTravTransferKey, 5);
+    displayOrderHashMap.put(attrTablePatientsKey, 11);
+    displayOrderHashMap.put(attrTablePatientsAdultsKey, 12);
+    displayOrderHashMap.put(attrTablePatients0To4Key, 13);
+    displayOrderHashMap.put(attrTablePatients5To9Key, 14);
+    displayOrderHashMap.put(attrTablePatients10To14Key, 15);
+    displayOrderHashMap.put(attrTableProphylaxisKey, 16);
+    displayOrderHashMap.put(attrTableProphylaxisPpeKey, 17);
+    displayOrderHashMap.put(attrTableProphylaxisPrepKey, 18);
+    displayOrderHashMap.put(attrTableProphylaxisChildKey, 19);
+    displayOrderHashMap.put(attrTableProphylaxisTotalKey, 20);
+    displayOrderHashMap.put(attrTableDispensedKey, 21);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS5, 22);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS4, 23);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS3, 24);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS2, 25);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS1, 26);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DS, 27);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DT2, 28);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DT1, 29);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DT, 30);
+    displayOrderHashMap.put(ATTR_TABLE_DISPENSED_DM, 31);
+    return displayOrderHashMap;
+  }
+
   @Override
   protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
     List<RegimenItem> regimenItems = new ArrayList<>();
@@ -239,33 +271,7 @@ public class MMIARepository extends RnrFormRepository {
   }
 
   private void initDisplayOrder() {
-    displayOrderMap.put(attrTableTravKey, 0);
-    displayOrderMap.put(attrTableTravNewKey, 1);
-    displayOrderMap.put(attrTableTravMaintenanceKey, 2);
-    displayOrderMap.put(attrTableTravAlterationKey, 3);
-    displayOrderMap.put(attrTableTravTransitKey, 4);
-    displayOrderMap.put(attrTableTravTransferKey, 5);
-    displayOrderMap.put(attrTablePatientsKey, 11);
-    displayOrderMap.put(attrTablePatientsAdultsKey, 12);
-    displayOrderMap.put(attrTablePatients0To4Key, 13);
-    displayOrderMap.put(attrTablePatients5To9Key, 14);
-    displayOrderMap.put(attrTablePatients10To14Key, 15);
-    displayOrderMap.put(attrTableProphylaxisKey, 16);
-    displayOrderMap.put(attrTableProphylaxisPpeKey, 17);
-    displayOrderMap.put(attrTableProphylaxisPrepKey, 18);
-    displayOrderMap.put(attrTableProphylaxisChildKey, 19);
-    displayOrderMap.put(attrTableProphylaxisTotalKey, 20);
-    displayOrderMap.put(attrTableDispensedKey, 21);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DS5, 22);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DS4, 23);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DS3, 24);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DS2, 25);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DS1, 26);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DS, 27);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DT2, 28);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DT1, 29);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DT, 30);
-    displayOrderMap.put(ATTR_TABLE_DISPENSED_DM, 31);
+    displayOrderMap = getDisplayOrderMap();
   }
 
   private int getDisplayOrder(String attrName) {

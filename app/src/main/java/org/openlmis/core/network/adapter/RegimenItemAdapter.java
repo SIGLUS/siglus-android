@@ -82,9 +82,9 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>,
     JsonParser jsonParser = new JsonParser();
     JsonObject result = jsonParser.parse(gson.toJson(src.getRegimen())).getAsJsonObject();
     result.addProperty("patientsOnTreatment", src.getAmount());
+    result.addProperty("comunitaryPharmacy", src.getPharmacy());
     result.addProperty("hf", src.getHf());
     result.addProperty("chw", src.getChw());
-    result.addProperty("comunitaryPharmacy", src.getPharmacy());
     return result;
   }
 }

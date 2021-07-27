@@ -249,8 +249,6 @@ public class RnrFormAdapterTest {
 
     RegimenItem regimenItem = rnRForm.getRegimenItemListWrapper().get(0);
     assertEquals(Long.valueOf(1), regimenItem.getAmount());
-    assertEquals("ABC+3TC+EFZ", regimenItem.getRegimen().getName());
-    assertEquals("018", regimenItem.getRegimen().getCode());
 
     BaseInfoItem baseInfoItem = rnRForm.getBaseInfoItemListWrapper().get(0);
     assertEquals("consultation", baseInfoItem.getName());
