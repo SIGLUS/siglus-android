@@ -31,6 +31,7 @@ import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
@@ -48,6 +49,9 @@ public class NewStockMovementPresenter extends Presenter {
 
   @Inject
   StockRepository stockRepository;
+
+  @Inject
+  StockMovementRepository stockMovementRepository;
 
   @Getter
   final StockMovementViewModel viewModel = new StockMovementViewModel();
@@ -109,16 +113,19 @@ public class NewStockMovementPresenter extends Presenter {
     viewModel.populateStockExistence(stockCard.calculateSOHFromLots());
     StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
     stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
-
-    Date lastMovementDate = getLastMovementCreateDate();
-    if (lastMovementDate == null || stockMovementItem.getCreatedAt().after(lastMovementDate)) {
-      stockMovementItem.buildLotMovementReasonAndDocumentNumber();
-      stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-      if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
-        SharedPreferenceMgr.getInstance()
-            .setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+    try {
+      final Date lastMovementDate = stockMovementRepository.getLatestStockMovementMovementDate();
+      if (lastMovementDate == null || stockMovementItem.getCreatedAt().after(lastMovementDate)) {
+        stockMovementItem.buildLotMovementReasonAndDocumentNumber();
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+        if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
+          SharedPreferenceMgr.getInstance()
+              .setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+        }
+        return true;
       }
-      return true;
+    } catch (LMISException e) {
+      new LMISException(e, " NewStockM.convertViewModelToDataModelAndSave").reportToFabric();
     }
     return false;
   }

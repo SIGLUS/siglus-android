@@ -20,7 +20,6 @@ package org.openlmis.core.service;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import com.google.inject.Inject;
@@ -116,15 +115,15 @@ public class SyncUpManager {
     lmisRestApi = LMISApp.getInstance().getRestApi();
   }
 
-  public void syncUpData(Context context) {
+  public void syncUpData() {
     Log.d(TAG, "sync Up Data start");
     synchronized (SyncUpManager.class) {
-      if (isSyncing) {
+      if (isSyncing()) {
         return;
       }
-      isSyncing = true;
+      setSyncing(true);
     }
-    Log.d(TAG, "sync Up Data start " + isSyncing);
+    Log.d(TAG, "sync Up Data start " + isSyncing());
 
     setSyncing(true);
     boolean isSyncDeleted = syncDeleteMovement();

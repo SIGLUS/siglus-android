@@ -52,7 +52,7 @@ public class SyncAdapterTest {
     when(mockSyncUpManager.syncRnr()).thenReturn(true);
     when(mockSyncUpManager.syncStockCards()).thenReturn(true);
     when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
-    doCallRealMethod().when(mockSyncUpManager).syncUpData(syncAdapter.context);
+    doCallRealMethod().when(mockSyncUpManager).syncUpData();
 
     syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -89,7 +89,7 @@ public class SyncAdapterTest {
     when(mockSyncUpManager.syncRnr()).thenReturn(true);
     when(mockSyncUpManager.syncStockCards()).thenReturn(false);
     when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
-    doCallRealMethod().when(mockSyncUpManager).syncUpData(syncAdapter.context);
+    doCallRealMethod().when(mockSyncUpManager).syncUpData();
 
     syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -118,7 +118,7 @@ public class SyncAdapterTest {
     when(mockSyncUpManager.syncRnr()).thenReturn(false);
     when(mockSyncUpManager.syncStockCards()).thenReturn(true);
     when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
-    doCallRealMethod().when(mockSyncUpManager).syncUpData(syncAdapter.context);
+    doCallRealMethod().when(mockSyncUpManager).syncUpData();
 
     syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -142,7 +142,7 @@ public class SyncAdapterTest {
   @Test
   public void shouldSyncCmmsWhenToggleOn() throws Exception {
     when(mockSyncUpManager.syncDeleteMovement()).thenReturn(true);
-    doCallRealMethod().when(mockSyncUpManager).syncUpData(syncAdapter.context);
+    doCallRealMethod().when(mockSyncUpManager).syncUpData();
 
     syncAdapter.onPerformSync(null, null, null, null, null);
     verify(mockSyncUpManager).syncUpCmms();
