@@ -49,6 +49,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
@@ -99,7 +100,7 @@ public class RnrFormAdapterTest {
     rnRForm.setEmergency(true);
 
     JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
-    assertEquals("\"XYZ\"", rnrJson.getAsJsonObject().get("clientSubmittedNotes").toString());
+    assertEquals("\"XYZ\"", rnrJson.getAsJsonObject().get("comments").toString());
     assertEquals("true", rnrJson.getAsJsonObject().get("emergency").toString());
   }
 
@@ -239,7 +240,6 @@ public class RnrFormAdapterTest {
     RnRForm rnRForm = rnrFormAdapter.deserialize(new JsonParser().parse(json), null, null);
 
     //then
-    assertEquals("I don't know", rnRForm.getComments());
     RnrFormItem rnrFormItem = rnRForm.getRnrFormItemListWrapper().get(0);
     assertEquals(Long.valueOf(10), rnrFormItem.getInitialAmount());
     assertEquals(Long.valueOf(10), rnrFormItem.getInventory());
@@ -253,6 +253,81 @@ public class RnrFormAdapterTest {
     BaseInfoItem baseInfoItem = rnRForm.getBaseInfoItemListWrapper().get(0);
     assertEquals("consultation", baseInfoItem.getName());
     assertEquals("30", baseInfoItem.getValue());
+  }
+
+  @Test
+  public void shouldDeserializeMMIARnrFormJsonForProduct() throws LMISException {
+    // given
+    when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
+    Program MMIAProgram = new Program();
+    MMIAProgram.setProgramCode(Program.TARV_CODE);
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(MMIAProgram);
+
+    // when
+    RnRForm rnRForm = deserializeMMIAResponse();
+
+    //then
+    assertEquals("xing", rnRForm.getComments());
+    RnrFormItem rnrFormItem = rnRForm.getRnrFormItemListWrapper().get(0);
+    assertEquals(Long.valueOf(3), rnrFormItem.getInitialAmount());
+    assertEquals(Long.valueOf(0), rnrFormItem.getInventory());
+    assertEquals(6, rnrFormItem.getReceived());
+    assertEquals(Long.valueOf(2), rnrFormItem.getIssued());
+    verify(mockProductRepository).getByCode("08S01ZZ");
+  }
+
+  @Test
+  public void shouldDeserializeMMIARnrFormJsonForRegimen() throws LMISException {
+    // given
+    when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
+    Program MMIAProgram = new Program();
+    MMIAProgram.setProgramCode(Program.TARV_CODE);
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(MMIAProgram);
+
+    // when
+    RnRForm rnRForm = deserializeMMIAResponse();
+
+    //then
+    RegimenItem regimenItem = rnRForm.getRegimenItemListWrapper().get(0);
+    assertEquals(Long.valueOf(13), regimenItem.getAmount());
+    assertEquals(Long.valueOf(14), regimenItem.getPharmacy());
+  }
+
+  @Test
+  public void shouldDeserializeMMIARnrFormJsonForRegimenSummaryLineItems() throws LMISException {
+    // given
+    when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
+    Program MMIAProgram = new Program();
+    MMIAProgram.setProgramCode(Program.TARV_CODE);
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(MMIAProgram);
+
+    // when
+    RnRForm rnRForm = deserializeMMIAResponse();
+
+    //then
+    RegimenItemThreeLines regimenItem = rnRForm.getRegimenThreeLineListWrapper().get(0);
+    assertEquals(Long.valueOf(33), regimenItem.getPatientsAmount());
+    assertEquals(Long.valueOf(44), regimenItem.getPharmacyAmount());
+  }
+
+  @Test
+  public void shouldDeserializeMMIARnrFormJsonForPatientLineItems() throws LMISException {
+    // given
+    when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
+    Program MMIAProgram = new Program();
+    MMIAProgram.setProgramCode(Program.TARV_CODE);
+    when(mockProgramRepository.queryByCode(anyString())).thenReturn(MMIAProgram);
+
+    // when
+    RnRForm rnRForm = deserializeMMIAResponse();
+
+    //then
+    List<BaseInfoItem> baseInfoItems = rnRForm.getBaseInfoItemListWrapper();
+    assertEquals(23, baseInfoItems.size());
+    BaseInfoItem baseInfoItem = baseInfoItems.get(0);
+    assertEquals("table_patients_adults_key", baseInfoItem.getName());
+    assertEquals("table_patients_key", baseInfoItem.getTableName());
+    assertEquals("6", baseInfoItem.getValue());
   }
 
 
@@ -289,6 +364,11 @@ public class RnrFormAdapterTest {
         .programName(programName)
         .isSupportEmergency(false)
         .build();
+  }
+
+  private RnRForm deserializeMMIAResponse() {
+    String json = JsonFileReader.readJson(getClass(), "RequisitionMMIAResponse.json");
+    return rnrFormAdapter.deserialize(new JsonParser().parse(json), null, null);
   }
 
 }

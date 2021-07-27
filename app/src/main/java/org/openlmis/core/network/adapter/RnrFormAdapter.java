@@ -20,6 +20,7 @@ package org.openlmis.core.network.adapter;
 
 import static org.openlmis.core.model.repository.VIARepository.ATTR_CONSULTATION;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.PARAM_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import com.google.gson.Gson;
@@ -64,6 +65,11 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
 
   public static final String ACTUAL_START_DATE = "actualStartDate";
   public static final String ACTUAL_END_DATE = "actualEndDate";
+  public static final String PATIENT_LINE_ITEMS = "patientLineItems";
+  public static final String NAME = "name";
+  public static final String COLUMNS = "columns";
+  public static final String VALUE = "value";
+  public static final String TABLE_NAME = "tableName";
 
   @Inject
   public ProgramRepository programRepository;
@@ -122,6 +128,11 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   }
 
   private void setBaseInfoForRnR(RnRForm rnRForm, JsonObject jsonObject) {
+    setBaseInfoForVIA(rnRForm, jsonObject);
+    setBaseInfoForMMIA(rnRForm, jsonObject);
+  }
+
+  private void setBaseInfoForVIA(RnRForm rnRForm, JsonObject jsonObject) {
     if (rnRForm.getProgram().getProgramCode().equals(VIA_PROGRAM_CODE)) {
       Long consultationNumber = jsonObject.get("consultationNumber").getAsLong();
       BaseInfoItem baseInfoItem = new BaseInfoItem();
@@ -133,10 +144,28 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     }
   }
 
+  private void setBaseInfoForMMIA(RnRForm rnRForm, JsonObject jsonObject) {
+    if (rnRForm.getProgram().getProgramCode().equals(MMIA_PROGRAM_CODE)) {
+      List<BaseInfoItem> baseInfoItems = new ArrayList<>();
+      for (JsonElement jsonPatient : jsonObject.get(PATIENT_LINE_ITEMS).getAsJsonArray()) {
+        JsonObject jsonObjectForPatient = jsonPatient.getAsJsonObject();
+        String componentName = jsonObjectForPatient.get(NAME).getAsString();
+        for (JsonElement column : jsonObjectForPatient.get(COLUMNS).getAsJsonArray()) {
+          JsonObject jsonColumn = column.getAsJsonObject();
+          BaseInfoItem baseInfoItem = new BaseInfoItem(jsonColumn.get(NAME).getAsString(),
+              TYPE.STRING, rnRForm, componentName, 0);
+          baseInfoItem.setValue(jsonColumn.get(VALUE).getAsString());
+          baseInfoItems.add(baseInfoItem);
+        }
+      }
+      rnRForm.setBaseInfoItemListWrapper(baseInfoItems);
+    }
+  }
+
   private JsonElement buildRnrFormJson(RnRForm rnRForm) throws LMISException {
     JsonObject root = gson.toJsonTree(rnRForm).getAsJsonObject();
     String programCode = rnRForm.getProgram().getProgramCode();
-    root.addProperty("programCode", programCode);
+    root.addProperty(PARAM_PROGRAM_CODE, programCode);
     root.addProperty(ACTUAL_START_DATE, DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.DB_DATE_FORMAT));
     root.addProperty(ACTUAL_END_DATE, DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.DB_DATE_FORMAT));
     DateTime submittedTime = new DateTime(rnRForm.getSubmittedTime());

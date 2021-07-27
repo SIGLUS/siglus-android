@@ -1,0 +1,405 @@
+{
+  "programCode": "T",
+  "clientSubmittedTime": "2021-07-27T08:47:50.082Z",
+  "emergency": false,
+  "actualStartDate": "2021-06-29",
+  "actualEndDate": "2021-07-05",
+  "products": [
+    {
+      "productCode": "08S01ZZ",
+      "beginningBalance": 3,
+      "totalReceivedQuantity": 6,
+      "totalConsumedQuantity": 2,
+      "stockOnHand": 0,
+      "expirationDate": "2022-05-11",
+      "totalLossesAndAdjustments": 8
+    }
+  ],
+  "signatures": [
+    {
+      "name": "wangj1",
+      "type": "submit"
+    },
+    {
+      "name": "wangj1",
+      "type": "authorize"
+    },
+    {
+      "name": "wangj2",
+      "type": "approve"
+    }
+  ],
+  "comments": "xing",
+  "regimenLineItems": [
+    {
+      "code": "A2Fped",
+      "name": "AZT+3TC+LPV/r (2FDC+LPV/r Baby)",
+      "patientsOnTreatment": 13,
+      "comunitaryPharmacy": 14
+    },
+    {
+      "code": "PTV Crianças",
+      "name": "PTV Crianças OpA+",
+      "patientsOnTreatment": 33,
+      "comunitaryPharmacy": 34
+    },
+    {
+      "code": "TDF12",
+      "name": "TDF+3TC+NVP",
+      "patientsOnTreatment": 39,
+      "comunitaryPharmacy": 40
+    },
+    {
+      "code": "C4A",
+      "name": "TDF+ABC+3TC+LPV/r",
+      "patientsOnTreatment": 29,
+      "comunitaryPharmacy": 30
+    },
+    {
+      "code": "ABCPedXarope",
+      "name": "ABC+3TC+LPV/r (2DFC+LPV/r 80/20)",
+      "patientsOnTreatment": 25,
+      "comunitaryPharmacy": 26
+    },
+    {
+      "code": "2alt1",
+      "name": "TDF+3TC+ATV/r",
+      "patientsOnTreatment": 7,
+      "comunitaryPharmacy": 8
+    },
+    {
+      "code": "A2Bped",
+      "name": "AZT+3TC+EFV (2FDC+EFV 200)",
+      "patientsOnTreatment": 11,
+      "comunitaryPharmacy": 12
+    },
+    {
+      "code": "1alt1",
+      "name": "ABC+3TC+DTG",
+      "patientsOnTreatment": 1,
+      "comunitaryPharmacy": 2
+    },
+    {
+      "code": "ABC12",
+      "name": "ABC+3TC+LPV/r",
+      "patientsOnTreatment": 17,
+      "comunitaryPharmacy": 18
+    },
+    {
+      "code": "PTV Mulheres",
+      "name": "PTV Mulheres OpA+",
+      "patientsOnTreatment": 35,
+      "comunitaryPharmacy": 36
+    },
+    {
+      "code": "1TB3",
+      "name": "AZT+3TC+RAL",
+      "patientsOnTreatment": 3,
+      "comunitaryPharmacy": 4
+    },
+    {
+      "code": "A2A",
+      "name": "AZT+3TC+NVP",
+      "patientsOnTreatment": 5,
+      "comunitaryPharmacy": 6
+    },
+    {
+      "code": "X5APed",
+      "name": "ABC+3TC+EFV Ped (2DFC+EFV 200)",
+      "patientsOnTreatment": 47,
+      "comunitaryPharmacy": 48
+    },
+    {
+      "code": "C7A",
+      "name": "TDF+3TC+LPV/r",
+      "patientsOnTreatment": 19,
+      "comunitaryPharmacy": 20
+    },
+    {
+      "code": "PTV Pediatri",
+      "name": "PTV Pediatrico",
+      "patientsOnTreatment": 37,
+      "comunitaryPharmacy": 38
+    },
+    {
+      "code": "X3N1",
+      "name": "ABC+AZT+3TC+LPV/r",
+      "patientsOnTreatment": 45,
+      "comunitaryPharmacy": 46
+    },
+    {
+      "code": "A2B",
+      "name": "AZT+3TC+EFV",
+      "patientsOnTreatment": 9,
+      "comunitaryPharmacy": 10
+    },
+    {
+      "code": "2alt3",
+      "name": "AZT+3TC+ATV/r",
+      "patientsOnTreatment": 11,
+      "comunitaryPharmacy": 12
+    },
+    {
+      "code": "A2Fped Cpts",
+      "name": "AZT+3TC+LPV/r (2DFC+LPV/r 100/25)",
+      "patientsOnTreatment": 15,
+      "comunitaryPharmacy": 16
+    },
+    {
+      "code": "A2Aped",
+      "name": "AZT+3TC+NVP (3FDC Baby)",
+      "patientsOnTreatment": 7,
+      "comunitaryPharmacy": 8
+    },
+    {
+      "code": "A2Fped Xarope",
+      "name": "AZT+3TC+LPV/r (2DFC+LPV/r 80/20)",
+      "patientsOnTreatment": 19,
+      "comunitaryPharmacy": 20
+    },
+    {
+      "code": "C1A",
+      "name": "TDF+AZT+3TC+LPV/r",
+      "patientsOnTreatment": 27,
+      "comunitaryPharmacy": 28
+    },
+    {
+      "code": "2alt2",
+      "name": "ABC+3TC+ATV/r",
+      "patientsOnTreatment": 9,
+      "comunitaryPharmacy": 10
+    },
+    {
+      "code": "X5CPed",
+      "name": "ABC+3TC+NVP (2FDC+NVP50)",
+      "patientsOnTreatment": 49,
+      "comunitaryPharmacy": 50
+    },
+    {
+      "code": "TDF13",
+      "name": "TDF+AZT+LPV/r",
+      "patientsOnTreatment": 41,
+      "comunitaryPharmacy": 42
+    },
+    {
+      "code": "X6APed",
+      "name": "ABC+3TC+DTG (2DFCped+DTG50)",
+      "patientsOnTreatment": 51,
+      "comunitaryPharmacy": 52
+    },
+    {
+      "code": "ABCPedCpts",
+      "name": "ABC+3TC+LPV/r (2DFC+LPV/r 100/25)",
+      "patientsOnTreatment": 21,
+      "comunitaryPharmacy": 22
+    },
+    {
+      "code": "1aLTLD",
+      "name": "TDF+3TC+DTG",
+      "patientsOnTreatment": 5,
+      "comunitaryPharmacy": 6
+    },
+    {
+      "code": "X3N",
+      "name": "ABC+AZT+LPV/r",
+      "patientsOnTreatment": 43,
+      "comunitaryPharmacy": 44
+    },
+    {
+      "code": "1TB1",
+      "name": "TDF+3TC+RAL",
+      "patientsOnTreatment": 1,
+      "comunitaryPharmacy": 2
+    },
+    {
+      "code": "C6A",
+      "name": "TDF+ABC+LPV/r",
+      "patientsOnTreatment": 31,
+      "comunitaryPharmacy": 32
+    },
+    {
+      "code": "1alt2",
+      "name": "AZT+3TC+DTG",
+      "patientsOnTreatment": 3,
+      "comunitaryPharmacy": 4
+    },
+    {
+      "code": "ABCPedGranulos",
+      "name": "ABC+3TC+LPV/r (2DFC+LPV/r 40/10)",
+      "patientsOnTreatment": 23,
+      "comunitaryPharmacy": 24
+    },
+    {
+      "code": "A2F",
+      "name": "AZT+3TC+LPV/r",
+      "patientsOnTreatment": 13,
+      "comunitaryPharmacy": 14
+    },
+    {
+      "code": "A4A",
+      "name": "TDF+3TC+EFV",
+      "patientsOnTreatment": 15,
+      "comunitaryPharmacy": 16
+    },
+    {
+      "code": "A2Fped Granulos",
+      "name": "AZT+3TC+LPV/r (2DFC+LPV/r 40/10)",
+      "patientsOnTreatment": 17,
+      "comunitaryPharmacy": 18
+    }
+  ],
+  "regimenSummaryLineItems": [
+    {
+      "code": "key_regime_3lines_2",
+      "patientsOnTreatment": 33,
+      "comunitaryPharmacy": 44
+    },
+    {
+      "code": "key_regime_3lines_1",
+      "patientsOnTreatment": 11,
+      "comunitaryPharmacy": 22
+    },
+    {
+      "code": "key_regime_3lines_3",
+      "patientsOnTreatment": 55,
+      "comunitaryPharmacy": 66
+    }
+  ],
+  "patientLineItems": [
+    {
+      "name": "table_patients_key",
+      "columns": [
+        {
+          "name": "table_patients_adults_key",
+          "value": 6,
+          "tableName": "table_patients_key"
+        },
+        {
+          "name": "table_patients_10to14_key",
+          "value": 9,
+          "tableName": "table_patients_key"
+        },
+        {
+          "name": "table_patients_0to4_key",
+          "value": 7,
+          "tableName": "table_patients_key"
+        },
+        {
+          "name": "table_patients_5to9_key",
+          "value": 8,
+          "tableName": "table_patients_key"
+        }
+      ]
+    },
+    {
+      "name": "table_prophylaxy_key",
+      "columns": [
+        {
+          "name": "table_prophylaxis_ppe_key",
+          "value": 10,
+          "tableName": "table_prophylaxy_key"
+        },
+        {
+          "name": "table_prophylaxis_value_key",
+          "value": 13,
+          "tableName": "table_prophylaxy_key"
+        },
+        {
+          "name": "table_prophylaxis_prep_key",
+          "value": 11,
+          "tableName": "table_prophylaxy_key"
+        },
+        {
+          "name": "table_prophylaxis_child_key",
+          "value": 12,
+          "tableName": "table_prophylaxy_key"
+        }
+      ]
+    },
+    {
+      "name": "table_arvt_key",
+      "columns": [
+        {
+          "name": "table_trav_label_new_key",
+          "value": 1,
+          "tableName": "table_arvt_key"
+        },
+        {
+          "name": "table_trav_label_transfers_key",
+          "value": 5,
+          "tableName": "table_arvt_key"
+        },
+        {
+          "name": "table_trav_label_alteration_key",
+          "value": 3,
+          "tableName": "table_arvt_key"
+        },
+        {
+          "name": "table_trav_label_maintenance_key",
+          "value": 2,
+          "tableName": "table_arvt_key"
+        },
+        {
+          "name": "table_trav_label_transit_key",
+          "value": 4,
+          "tableName": "table_arvt_key"
+        }
+      ]
+    },
+    {
+      "name": "table_dispensed_key",
+      "columns": [
+        {
+          "name": "dispensed_ds",
+          "value": 19,
+          "tableName": "table_dispensed_key"
+        },
+        {
+          "name": "dispensed_ds5",
+          "value": 14,
+          "tableName": "table_dispensed_key"
+        },
+        {
+          "name": "dispensed_ds2",
+          "value": 17,
+          "tableName": "table_dispensed_key"
+        },
+        {
+          "name": "dispensed_ds1",
+          "value": 18,
+          "tableName": "table_dispensed_key"
+        },
+        {
+          "name": "dispensed_ds4",
+          "value": 15,
+          "tableName": "table_dispensed_key"
+        },
+        {
+          "name": "dispensed_ds3",
+          "value": 16,
+          "tableName": "table_dispensed_key"
+        },
+        {
+          "name": "dispensed_dt2",
+          "value": 20,
+          "tableName": "table_dispensed_key"
+        },
+        {
+          "name": "dispensed_dt1",
+          "value": 21,
+          "tableName": "table_dispensed_key"
+        },
+        {
+          "name": "dispensed_dt",
+          "value": 22,
+          "tableName": "table_dispensed_key"
+        },
+        {
+          "name": "dispensed_dm",
+          "value": 23,
+          "tableName": "table_dispensed_key"
+        }
+      ]
+    }
+  ]
+}

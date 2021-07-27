@@ -88,7 +88,7 @@ public class RnRForm extends BaseModel {
   private List<RnRFormSignature> signaturesWrapper;
 
   @Expose
-  @SerializedName("clientSubmittedNotes")
+  @SerializedName("comments")
   @DatabaseField
   private String comments;
 
