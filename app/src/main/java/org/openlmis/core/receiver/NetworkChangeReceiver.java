@@ -23,7 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import com.google.inject.Inject;
-import org.openlmis.core.LMISApp;
+import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
 import org.openlmis.core.network.InternetCheck;
@@ -50,14 +50,14 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     return internet -> {
       if (internet) {
         Log.d(TAG, "network connected, start sync service...");
-        LMISApp.getInstance()
+        AnalyticsTracker.getInstance()
             .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
         syncService.requestSyncImmediatelyByTask();
         syncService.kickOff();
       } else {
         Log.d(TAG, "there is no internet connection in network receiver");
         Log.d(TAG, "network disconnect, stop sync service...");
-        LMISApp.getInstance()
+        AnalyticsTracker.getInstance()
             .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
         syncService.shutDown();
       }

@@ -5,9 +5,12 @@
   <string name="sync_account_type">org.clintonhealthaccess.lmismoz.uat</string>
   <integer name="sync_interval">3600</integer>
   <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.uat</string>
-  <string name="ga_trackingId">I am a track id</string>
-  <bool name="ga_dryRun">true</bool>
   <string name="app_name">@string/app_name_in_uat</string>
   <string name="app_time_out">3600000</string>
   <string name="appcenter_app_key" translatable="false">a3b23b0c-75c0-49dd-bcb4-350385ce8734</string>
+
+  <!-- firebase param, do not change field name -->
+  <string name="google_app_id">google_app_id</string>
+  <string name="project_id">project_id</string>
+  <string name="google_api_key">google_api_key</string>
 </resources>

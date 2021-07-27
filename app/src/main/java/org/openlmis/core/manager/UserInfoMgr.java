@@ -18,8 +18,8 @@
 
 package org.openlmis.core.manager;
 
-import com.microsoft.appcenter.AppCenter;
 import org.openlmis.core.BuildConfig;
+import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.model.User;
 
 public final class UserInfoMgr {
@@ -42,12 +42,7 @@ public final class UserInfoMgr {
   }
 
   public void setUser(User user) {
-    AppCenter.isEnabled().thenAccept(enable -> {
-      if (Boolean.TRUE.equals(enable)) {
-        AppCenter.setUserId(user.getFacilityName());
-      }
-    });
-
+    AnalyticsTracker.getInstance().setUserInfo(user);
     SharedPreferenceMgr.getInstance().setCurrentUserFacility(user.getFacilityName());
     SharedPreferenceMgr.getInstance().setLastLoginUser(user.getUsername());
     SharedPreferenceMgr.getInstance().setUserFacilityId(user.getFacilityId());

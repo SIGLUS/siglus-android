@@ -38,8 +38,8 @@ import java.util.Objects;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
@@ -263,7 +263,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
   }
 
   protected void trackInventoryEvent(TrackerActions action) {
-    LMISApp.getInstance().trackEvent(TrackerCategories.INVENTORY, action);
+    AnalyticsTracker.getInstance().trackEvent(TrackerCategories.INVENTORY, action);
   }
 
   protected void setUpFastScroller(List<InventoryViewModel> viewModels) {

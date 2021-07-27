@@ -18,7 +18,7 @@
 
 package org.openlmis.core.utils;
 
-import org.openlmis.core.LMISApp;
+import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
 
@@ -29,9 +29,9 @@ public final class TrackRnREventUtil {
 
   public static void trackRnRListEvent(TrackerActions action, String programCode) {
     if (Constants.MMIA_PROGRAM_CODE.equals(programCode)) {
-      LMISApp.getInstance().trackEvent(TrackerCategories.MMIA, action);
+      AnalyticsTracker.getInstance().trackEvent(TrackerCategories.MMIA, action);
     } else {
-      LMISApp.getInstance().trackEvent(TrackerCategories.VIA, action);
+      AnalyticsTracker.getInstance().trackEvent(TrackerCategories.VIA, action);
     }
   }
 }

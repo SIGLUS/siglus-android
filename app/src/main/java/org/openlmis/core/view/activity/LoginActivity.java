@@ -45,6 +45,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
+import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.User.LoginErrorType;
@@ -93,7 +94,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
   @Override
   public void sendScreenToGoogleAnalyticsAfterLogin() {
-    LMISApp.getInstance().trackScreen(ScreenName.LOGIN_SCREEN);
+    AnalyticsTracker.getInstance().trackScreen(ScreenName.LOGIN_SCREEN);
   }
 
   public void goToInitInventory() {

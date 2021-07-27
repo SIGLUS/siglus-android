@@ -20,7 +20,6 @@ package org.openlmis.core.presenter;
 
 import static org.openlmis.core.utils.Constants.GRANT_TYPE;
 
-import android.os.Build;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.inject.Inject;
@@ -128,7 +127,7 @@ public class LoginPresenter extends Presenter {
     view.loading();
 
     User user = new User(userName.trim(), password);
-    if (!isRoboUniTest()) {
+    if (!LMISApp.getInstance().isRoboUniTest()) {
       new InternetCheck().execute(checkNetworkConnected(user, fromReSync));
     } else {
       internetCheck.execute(checkNetworkConnected(user, fromReSync));
@@ -252,10 +251,6 @@ public class LoginPresenter extends Presenter {
 
   protected void saveUserDataToLocalDatabase(final User user) throws LMISException {
     userRepository.createOrUpdate(user);
-  }
-
-  private boolean isRoboUniTest() {
-    return "robolectric".equals(Build.FINGERPRINT);
   }
 
   private InternetCheck.Callback checkNetworkConnected(User user, boolean fromReSync) {

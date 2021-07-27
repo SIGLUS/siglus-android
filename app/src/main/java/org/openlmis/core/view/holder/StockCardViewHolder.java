@@ -29,6 +29,7 @@ import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.enums.StockOnHandStatus;
+import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
 import org.openlmis.core.model.LotOnHand;
@@ -115,7 +116,7 @@ public class StockCardViewHolder extends BaseViewHolder {
   private void setListener(final InventoryViewModel inventoryViewModel) {
     itemView.setOnClickListener(v -> {
       if (listener != null) {
-        LMISApp.getInstance()
+        AnalyticsTracker.getInstance()
             .trackEvent(TrackerCategories.STOCK_MOVEMENT, TrackerActions.SELECT_STOCK_CARD);
         listener.onItemViewClick(inventoryViewModel);
       }

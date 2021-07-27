@@ -20,7 +20,7 @@ package org.openlmis.core.exceptions;
 
 import android.util.Log;
 import org.openlmis.core.BuildConfig;
-import org.openlmis.core.LMISApp;
+import org.openlmis.core.googleanalytics.AnalyticsTracker;
 
 public class LMISException extends Exception {
 
@@ -58,7 +58,7 @@ public class LMISException extends Exception {
     //it only uploads to fabric server when network is available
     //so this actually behaves analogously with our sync data logic
     if (!BuildConfig.DEBUG) {
-      LMISApp.getInstance().logErrorToFirebase(this);
+      AnalyticsTracker.getInstance().traceError(this);
     }
     Log.e(OPEN_LMIS_ERROR, this.getMessage(), this);
   }

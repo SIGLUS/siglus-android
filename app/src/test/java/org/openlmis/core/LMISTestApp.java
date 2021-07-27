@@ -1,10 +1,6 @@
 package org.openlmis.core;
 
 import java.util.HashMap;
-import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.googleanalytics.ScreenName;
-import org.openlmis.core.googleanalytics.TrackerActions;
-import org.openlmis.core.googleanalytics.TrackerCategories;
 import org.openlmis.core.network.LMISRestApi;
 
 public class LMISTestApp extends LMISApp {
@@ -51,22 +47,4 @@ public class LMISTestApp extends LMISApp {
   public void setRestApi(LMISRestApi restApi) {
     this.restApi = restApi;
   }
-
-  @Override
-  public void logErrorToFirebase(LMISException exception) {
-    //do nothing
-  }
-
-  @Override
-  protected void setupGoogleAnalytics() {
-  }
-
-  @Override
-  public void trackEvent(TrackerCategories category, TrackerActions action) {
-  }
-
-  @Override
-  public void trackScreen(ScreenName screenName) {
-  }
-
 }

@@ -46,6 +46,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockMovementItem;
@@ -129,7 +130,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
     ScreenName screenName = getScreenName();
 
     if (screenName != null) {
-      LMISApp.getInstance().trackScreen(screenName);
+      AnalyticsTracker.getInstance().trackScreen(screenName);
     }
   }
 

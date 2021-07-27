@@ -28,7 +28,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.util.Log;
-import org.openlmis.core.LMISApp;
+import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;
 import org.openlmis.core.service.SyncService;
@@ -74,7 +74,7 @@ public class NetworkSchedulerService extends JobService {
   }
 
   private void syncImmediately() {
-    LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
+    AnalyticsTracker.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_CONNECTED);
     syncService.requestSyncImmediatelyByTask();
     syncService.kickOff();
   }
@@ -82,7 +82,7 @@ public class NetworkSchedulerService extends JobService {
   private void shutDownImmediately() {
     Log.d(TAG, "there is no internet connection in network receiver");
     Log.d(TAG, "network disconnect, stop sync service...");
-    LMISApp.getInstance()
+    AnalyticsTracker.getInstance()
         .trackEvent(TrackerCategories.NETWORK, TrackerActions.NETWORK_DISCONNECTED);
     syncService.shutDown();
   }
