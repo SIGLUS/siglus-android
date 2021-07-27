@@ -81,6 +81,11 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
   }
 
   @Override
+  protected boolean enableFilter() {
+    return false;
+  }
+
+  @Override
   protected BulkInitialInventoryPresenter initPresenter() {
     return RoboGuice.getInjector(this).getInstance(BulkInitialInventoryPresenter.class);
   }

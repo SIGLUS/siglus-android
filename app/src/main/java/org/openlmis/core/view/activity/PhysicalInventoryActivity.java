@@ -71,6 +71,11 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
   }
 
   @Override
+  protected boolean enableFilterProgram() {
+    return false;
+  }
+
+  @Override
   protected PhysicalInventoryPresenter initPresenter() {
     return RoboGuice.getInjector(this).getInstance(PhysicalInventoryPresenter.class);
   }

@@ -19,6 +19,8 @@
 package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,11 +28,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.viethoa.RecyclerViewFastScroller;
 import com.viethoa.models.AlphabetItem;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -102,16 +106,28 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
     if (order < 0 || order >= optionsItems.size()) {
       return super.onOptionsItemSelected(item);
     }
-    mAdapter.setFilterProgram(optionsItems.get(order).getProgram());
+    Program selectProgram = optionsItems.get(order).getProgram();
+    if (Objects.equals(selectProgram, mAdapter.getFilterProgram())) {
+      return super.onOptionsItemSelected(item);
+    }
+    mAdapter.setFilterProgram(selectProgram);
     setUpFastScroller(mAdapter.getFilteredList());
     return super.onOptionsItemSelected(item);
   }
 
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
+    if (!enableFilter()) {
+      return super.onPrepareOptionsMenu(menu);
+    }
     menu.removeGroup(INVENTORY_MENU_GROUP);
     for (int i = 0; i < optionsItems.size(); i++) {
-      menu.add(INVENTORY_MENU_GROUP, i, i, optionsItems.get(i).getName());
+      int textColor = ContextCompat
+          .getColor(this, i == 0 || enableFilterProgram() ? R.color.color_black : R.color.color_bfbfbf);
+      SpannableString menuItemString = new SpannableString(optionsItems.get(i).getName());
+      menuItemString.setSpan(new ForegroundColorSpan(textColor), 0, menuItemString.length(), 0);
+      MenuItem menuItem = menu.add(INVENTORY_MENU_GROUP, i, i, menuItemString);
+      menuItem.setEnabled(i == 0 || enableFilterProgram());
     }
     return super.onPrepareOptionsMenu(menu);
   }
@@ -150,6 +166,14 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
   protected abstract void setTotal();
 
   protected abstract T initPresenter();
+
+  protected boolean enableFilter() {
+    return true;
+  }
+
+  protected boolean enableFilterProgram() {
+    return true;
+  }
 
   @Override
   protected ScreenName getScreenName() {
@@ -267,16 +291,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
   }
 
   protected String getValidateFailedTips() {
-    final StringBuilder tips = new StringBuilder();
-    final List<Program> validateFailedProgram = mAdapter.getValidateFailedProgram();
-    for (int i = 0; i < validateFailedProgram.size(); i++) {
-      final Program program = validateFailedProgram.get(i);
-      if (i > 0 && i == validateFailedProgram.size() - 1) {
-        tips.append("and ");
-      }
-      tips.append(program.getProgramName()).append(' ');
-    }
-    return getString(R.string.msg_validate_failed_tips, tips.toString());
+    return getString(R.string.msg_validate_failed_tips);
   }
 
   private void buildOptionsItem(List<Program> programs) {

@@ -47,6 +47,7 @@ public abstract class InventoryListAdapter<T extends RecyclerView.ViewHolder> ex
 
   String queryKeyWord;
 
+  @Getter
   @Nullable
   private Program filterProgram = null;
 
