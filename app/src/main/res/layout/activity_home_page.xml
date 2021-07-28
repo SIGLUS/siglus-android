@@ -19,7 +19,7 @@
     app:layout_constraintBottom_toBottomOf="@id/gl_half_screen"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toBottomOf="@id/view_incomplete_requisition_banner" />
 
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/gl_half_screen"
@@ -136,6 +136,5 @@
     android:layout_marginTop="@dimen/margin_normal"
     android:layout_marginBottom="@dimen/margin_normal"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/cl_home_entrance"
-    />
+    app:layout_constraintTop_toBottomOf="@id/cl_home_entrance" />
 </androidx.constraintlayout.widget.ConstraintLayout>

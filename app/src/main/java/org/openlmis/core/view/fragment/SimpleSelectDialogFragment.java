@@ -18,12 +18,12 @@
 
 package org.openlmis.core.view.fragment;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import lombok.Setter;
 import org.openlmis.core.R;
 
@@ -52,16 +52,14 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment {
     this.mySelections = mySelections;
   }
 
-  @SuppressWarnings("squid:S3740")
   @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-    AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
-    ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), R.layout.item_movement_type, R.id.tv_option, mySelections);
+    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.item_movement_type, R.id.tv_option,
+        mySelections);
     builder.setAdapter(adapter, null);
-    final AlertDialog alertDialog = builder.create();
-
+    AlertDialog alertDialog = builder.create();
     alertDialog.getListView().setOnItemClickListener(movementTypeOnClickListener);
     return alertDialog;
   }
