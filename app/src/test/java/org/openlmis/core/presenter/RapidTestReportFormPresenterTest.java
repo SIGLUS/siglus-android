@@ -109,7 +109,7 @@ public class RapidTestReportFormPresenterTest {
   public void shouldSaveDraftForm() throws Exception {
     rapidTestReportFormPresenter.viewModel = viewModelMock;
     ProgramDataForm dataForm = new ProgramDataForm();
-    when(programRepositoryMock.queryByCode(Constants.RAPID_TEST_CODE)).thenReturn(new Program());
+    when(programRepositoryMock.queryByCode(Constants.RAPID_TEST_PROGRAM_CODE)).thenReturn(new Program());
     when(viewModelMock.getRapidTestForm()).thenReturn(dataForm);
 
     rapidTestReportFormPresenter.saveForm();

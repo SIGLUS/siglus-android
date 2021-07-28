@@ -403,7 +403,7 @@ public class SyncDownManagerIT {
             200, "OK", syncDownKitChagneResponseJson);
 
     List<ProgramDataForm> programDataForms = programDataFormRepository
-        .listByProgramCode(Constants.RAPID_TEST_CODE);
+        .listByProgramCode(Constants.RAPID_TEST_PROGRAM_CODE);
     assertEquals(0, programDataForms.size());
 
   }
@@ -441,7 +441,7 @@ public class SyncDownManagerIT {
             200, "OK", syncDownKitChangeResponseJson);
 
     List<ProgramDataForm> programDataForms = programDataFormRepository
-        .listByProgramCode(Constants.RAPID_TEST_CODE);
+        .listByProgramCode(Constants.RAPID_TEST_PROGRAM_CODE);
     assertEquals(16, programDataForms.size());
 
   }

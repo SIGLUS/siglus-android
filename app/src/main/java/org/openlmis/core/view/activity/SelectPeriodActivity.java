@@ -21,7 +21,7 @@ package org.openlmis.core.view.activity;
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.PTV_PROGRAM_CODE;
-import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
+import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import android.content.Context;
@@ -166,7 +166,7 @@ public class SelectPeriodActivity extends BaseActivity implements
     loaded();
     Intent intent = new Intent();
     intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getInventoryDate());
-    if (programCode.equals(RAPID_TEST_CODE)) {
+    if (programCode.equals(RAPID_TEST_PROGRAM_CODE)) {
       intent.putExtra(Constants.PARAM_PERIOD, new Period(period.getBegin(),
           new DateTime(selectedInventory.getInventoryDate())));
     }
@@ -190,7 +190,7 @@ public class SelectPeriodActivity extends BaseActivity implements
     boolean correctCode = AL_PROGRAM_CODE.equals(programCode)
         || MMIA_PROGRAM_CODE.equals(programCode)
         || VIA_PROGRAM_CODE.equals(programCode)
-        || RAPID_TEST_CODE.equals(programCode)
+        || RAPID_TEST_PROGRAM_CODE.equals(programCode)
         || PTV_PROGRAM_CODE.equals(programCode);
     return correctCode
         && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
@@ -240,7 +240,7 @@ public class SelectPeriodActivity extends BaseActivity implements
       case VIA_PROGRAM_CODE:
         program = Constants.Program.VIA_PROGRAM;
         break;
-      case RAPID_TEST_CODE:
+      case RAPID_TEST_PROGRAM_CODE:
         program = Constants.Program.RAPID_TEST_PROGRAM;
         break;
       default:

@@ -81,7 +81,7 @@ public class SelectPeriodPresenter extends Presenter {
         .create((Observable.OnSubscribe<List<SelectInventoryViewModel>>) subscriber -> {
           try {
             Period periodInSchedule;
-            if (programCode.equals(Constants.RAPID_TEST_CODE)) {
+            if (programCode.equals(Constants.RAPID_TEST_PROGRAM_CODE)) {
               periodInSchedule = new Period(period.getBegin(), period.getEnd());
             } else {
               periodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);

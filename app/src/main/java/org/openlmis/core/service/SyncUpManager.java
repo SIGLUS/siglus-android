@@ -489,7 +489,7 @@ public class SyncUpManager {
     try {
       Log.d(TAG, "===> Preparing RapidTestForms for Syncing");
       forms = FluentIterable
-          .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
+          .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_PROGRAM_CODE))
           .filter(programDataForm -> !programDataForm.isSynced()
               && programDataForm.getStatus().equals(Status.AUTHORIZED))
           .toList();
@@ -513,7 +513,7 @@ public class SyncUpManager {
     try {
       Log.d(TAG, "===> Preparing RapidTestForms for Syncing");
       forms = FluentIterable
-          .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
+          .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_PROGRAM_CODE))
           .filter(programDataForm -> !programDataForm.isSynced()
               && programDataForm.getStatus().equals(Status.AUTHORIZED))
           .toList();

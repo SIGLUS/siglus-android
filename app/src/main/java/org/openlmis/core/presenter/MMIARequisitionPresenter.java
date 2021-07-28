@@ -36,6 +36,7 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -111,7 +112,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
   public RnRForm getLastRnrForm() {
     try {
-      List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, "MMIA");
+      List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.NO, Constants.MMIA_PROGRAM_CODE);
       if (rnRForms == null || rnRForms.size() == 1) {
         return null;
       }

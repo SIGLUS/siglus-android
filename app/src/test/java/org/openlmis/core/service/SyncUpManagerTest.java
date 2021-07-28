@@ -287,7 +287,7 @@ public class SyncUpManagerTest {
     rapidTest2.setStatus(Status.AUTHORIZED);
 
     syncUpManager.programDataFormRepository = mockedProgramDataFormRepository;
-    when(mockedProgramDataFormRepository.listByProgramCode(Constants.RAPID_TEST_CODE))
+    when(mockedProgramDataFormRepository.listByProgramCode(Constants.RAPID_TEST_PROGRAM_CODE))
         .thenReturn(newArrayList(rapidTest1, rapidTest2));
     syncUpManager.syncRapidTestForms();
 

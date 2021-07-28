@@ -79,7 +79,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>,
     try {
       String programCode = json.getAsJsonObject().get("programCode").getAsString();
       if (programCode.equals(Constants.RAPID_TEST_OLD_CODE)) {
-        programCode = Constants.RAPID_TEST_CODE;
+        programCode = Constants.RAPID_TEST_PROGRAM_CODE;
       }
 
       Program program = programRepository.queryByCode(programCode);
@@ -125,7 +125,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>,
     String programCode = programDataForm.getProgram().getProgramCode();
 
     root.addProperty("facilityId", facilityId);
-    if (programCode.equals(Constants.RAPID_TEST_CODE)) {
+    if (programCode.equals(Constants.RAPID_TEST_PROGRAM_CODE)) {
       programCode = Constants.RAPID_TEST_OLD_CODE;
     }
     String periodBegin = DateUtil

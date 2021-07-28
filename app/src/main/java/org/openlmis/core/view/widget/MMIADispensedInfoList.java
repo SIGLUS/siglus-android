@@ -293,7 +293,9 @@ public class MMIADispensedInfoList extends LinearLayout {
       return "0";
     }
     for (EditText item : list) {
-      sum += Integer.parseInt(item.getText().toString());
+      if (!item.getText().toString().isEmpty()) {
+        sum += Integer.parseInt(item.getText().toString());
+      }
     }
     return String.valueOf(sum);
   }

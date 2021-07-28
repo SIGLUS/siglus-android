@@ -18,8 +18,7 @@
 
 package org.openlmis.core.model.repository;
 
-import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
-import static org.openlmis.core.utils.Constants.TEST_KIT_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.helper.FormHelper;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 public class ProgramBasicItemsRepository {
@@ -59,7 +59,7 @@ public class ProgramBasicItemsRepository {
 
   public List<ProgramDataFormBasicItem> createInitProgramForm(ProgramDataForm form, Date periodEnd)
       throws LMISException {
-    return generateDataFormBasicItems(form, TEST_KIT_PROGRAM_CODE, periodEnd);
+    return generateDataFormBasicItems(form, Constants.RAPID_TEST_PROGRAM_CODE, periodEnd);
   }
 
   private List<ProgramDataFormBasicItem> generateDataFormBasicItems(ProgramDataForm form,
@@ -84,7 +84,7 @@ public class ProgramBasicItemsRepository {
       String programCode, List<ProgramDataFormBasicItem> basicItems) throws LMISException {
     List<Product> products = getProgramProducts(programCode);
     List<ProgramDataForm> rapidTestForms = programDataFormRepository
-        .listByProgramCode(RAPID_TEST_CODE);
+        .listByProgramCode(RAPID_TEST_PROGRAM_CODE);
     ArrayList<ProgramDataFormBasicItem> result = new ArrayList<>();
 
     for (Product product : products) {

@@ -22,7 +22,7 @@ import static org.openlmis.core.model.Period.BEGIN_DAY;
 import static org.openlmis.core.model.Period.END_DAY;
 import static org.openlmis.core.model.Period.INVENTORY_BEGIN_DAY;
 import static org.openlmis.core.model.ProgramDataForm.Status.DRAFT;
-import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
+import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 import static org.openlmis.core.view.viewmodel.RapidTestReportViewModel.Status;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
@@ -243,7 +243,7 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)
-        && stockMovementRepository.queryStockMovementDatesByProgram(RAPID_TEST_CODE).isEmpty()) {
+        && stockMovementRepository.queryStockMovementDatesByProgram(RAPID_TEST_PROGRAM_CODE).isEmpty()) {
       return new RapidTestReportViewModel(currentPeriod, RapidTestReportViewModel.Status.CANNOT_DO_MONTHLY_INVENTORY);
     }
     return null;

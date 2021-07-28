@@ -131,7 +131,7 @@ public class RapidTestReportFormPresenter extends BaseReportPresenter {
   public void saveForm() {
     try {
       viewModel.convertFormViewModelToDataModel(
-          programRepository.queryByCode(Constants.RAPID_TEST_CODE));
+          programRepository.queryByCode(Constants.RAPID_TEST_PROGRAM_CODE));
       programDataFormRepository.batchCreateOrUpdate(viewModel.getRapidTestForm());
     } catch (Exception e) {
       new LMISException(e).reportToFabric();

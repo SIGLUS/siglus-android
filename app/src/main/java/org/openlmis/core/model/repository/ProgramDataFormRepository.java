@@ -18,7 +18,7 @@
 
 package org.openlmis.core.model.repository;
 
-import static org.openlmis.core.utils.Constants.RAPID_TEST_CODE;
+import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -225,7 +225,7 @@ public class ProgramDataFormRepository {
   public boolean hasOldDate() {
     List<ProgramDataForm> list = null;
     try {
-      list = listByProgramCode(RAPID_TEST_CODE);
+      list = listByProgramCode(RAPID_TEST_PROGRAM_CODE);
     } catch (LMISException e) {
       new LMISException(e, "RnrFormRepository.hasOldDate").reportToFabric();
     }

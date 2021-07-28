@@ -48,7 +48,7 @@ public class RapidTestReportViewModelTest {
     List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(itemViewModel);
     viewModel.setItemViewModelList(itemViewModelList);
 
-    Program program = new Program(Constants.RAPID_TEST_CODE, PROGRAM_NAME, "", false, null, null);
+    Program program = new Program(Constants.RAPID_TEST_PROGRAM_CODE, PROGRAM_NAME, "", false, null, null);
     viewModel.convertFormViewModelToDataModel(program);
     assertFalse(this.viewModel.isSynced());
     assertFalse(this.viewModel.isSubmitted());
@@ -75,7 +75,7 @@ public class RapidTestReportViewModelTest {
     RapidTestFormItemViewModel itemViewModel = mock(RapidTestFormItemViewModel.class);
     List<RapidTestFormItemViewModel> itemViewModelList = Arrays.asList(itemViewModel);
     viewModel.setItemViewModelList(itemViewModelList);
-    Program program = new Program(Constants.RAPID_TEST_CODE, PROGRAM_NAME, "", false, null, null);
+    Program program = new Program(Constants.RAPID_TEST_PROGRAM_CODE, PROGRAM_NAME, "", false, null, null);
     viewModel.convertFormViewModelToDataModel(program);
     verify(itemViewModel).convertToDataModel();
     assertNull(this.viewModel.getSyncedTime());
@@ -143,7 +143,7 @@ public class RapidTestReportViewModelTest {
         new ProgramDataFormItem(PROGRAM_NAME, new ProgramDataColumnBuilder().setCode("code").build(),
             100));
 
-    Program program = new Program(Constants.RAPID_TEST_CODE, PROGRAM_NAME, "", false, null, null);
+    Program program = new Program(Constants.RAPID_TEST_PROGRAM_CODE, PROGRAM_NAME, "", false, null, null);
     this.viewModel.convertFormViewModelToDataModel(program);
 
     assertThat(this.viewModel.getRapidTestForm().getProgramDataFormItemListWrapper().size(), is(3));

@@ -51,8 +51,8 @@ public class ProgramDataFormAdapterTest {
         .getInstance(ProgramDataFormAdapter.class);
     UserInfoMgr.getInstance().setUser(new User("user", "password"));
     program = new Program();
-    program.setProgramCode(Constants.RAPID_TEST_CODE);
-    when(mockProgramRepository.queryByCode(Constants.RAPID_TEST_CODE)).thenReturn(program);
+    program.setProgramCode(Constants.RAPID_TEST_PROGRAM_CODE);
+    when(mockProgramRepository.queryByCode(Constants.RAPID_TEST_PROGRAM_CODE)).thenReturn(program);
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     DateTimeZone.setDefault(DateTimeZone.UTC);
   }

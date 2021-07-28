@@ -32,7 +32,7 @@ public final class Constants {
     VIA_PROGRAM(VIA_PROGRAM_CODE, R.string.requisition_list, VIA_REPORT),
     AL_PROGRAM(AL_PROGRAM_CODE, R.string.label_al_name, AL_REPORT),
     PTV_PROGRAM(PTV_PROGRAM_CODE, R.string.label_ptv_name, PTV_REPORT),
-    RAPID_TEST_PROGRAM(TEST_KIT_PROGRAM_CODE, R.string.title_rapid_test_reports, RAPID_REPORT);
+    RAPID_TEST_PROGRAM(RAPID_TEST_PROGRAM_CODE, R.string.title_rapid_test_reports, RAPID_REPORT);
 
 
     private final String code;
@@ -62,11 +62,10 @@ public final class Constants {
   public static final String MMIA_PROGRAM_CODE = "T";
   public static final String VIA_PROGRAM_CODE = "VC";
   public static final String ESS_PROGRAM_CODE = "ESS_MEDS";
-  public static final String RAPID_TEST_CODE = "TEST_KIT";
+  public static final String RAPID_TEST_PROGRAM_CODE = "TEST_KIT";
   public static final String RAPID_TEST_OLD_CODE = "RAPID_TEST";
   public static final String AL_PROGRAM_CODE = "MALARIA";
   public static final String PTV_PROGRAM_CODE = "PTV";
-  public static final String TEST_KIT_PROGRAM_CODE = "TEST_KIT";
   public static final String VIA_PROGRAM_CHILD_CODE_TARV = "TARV";
   public static final List<Constants.Program> PROGRAMS = Collections
       .unmodifiableList(Arrays.asList(Constants.Program.VIA_PROGRAM,
