@@ -134,8 +134,7 @@ public class SyncUpManager {
       }
 
       boolean isSyncStockSuccessful = syncStockCards();
-      // To Do modify isSyncStockSuccessful to true for test archived
-      if (true) {
+      if (isSyncStockSuccessful) {
         sharedPreferenceMgr.setStockLastSyncTime();
         syncArchivedProducts();
       }
