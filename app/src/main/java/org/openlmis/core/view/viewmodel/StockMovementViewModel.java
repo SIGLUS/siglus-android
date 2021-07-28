@@ -229,7 +229,7 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
   }
 
   public boolean validateSignature() {
-    return signature.length() >= 2 && signature.matches("\\D+");
+    return signature.length() >= 3 && signature.matches("\\D+");
   }
 
   public boolean validateMovementReason() {

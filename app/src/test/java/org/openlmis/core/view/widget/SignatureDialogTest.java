@@ -18,8 +18,8 @@ public class SignatureDialogTest {
   @Test
   public void shouldReturnTrueWhenGivenValidSignature() {
     assertTrue(signatureDialog.checkSignature("sign"));
-    assertTrue(signatureDialog.checkSignature(".."));
-    assertTrue(signatureDialog.checkSignature("__"));
+    assertTrue(signatureDialog.checkSignature("..."));
+    assertTrue(signatureDialog.checkSignature("___"));
     assertTrue(signatureDialog.checkSignature("Sign"));
     assertTrue(signatureDialog.checkSignature("abcde"));
   }
@@ -27,7 +27,7 @@ public class SignatureDialogTest {
   @Test
   public void shouldReturnFalseWhenGivenIllegalSignature() {
     assertFalse(signatureDialog.checkSignature("123"));
-    assertFalse(signatureDialog.checkSignature("a"));
+    assertFalse(signatureDialog.checkSignature("aa"));
     assertFalse(signatureDialog.checkSignature("abcdef"));
   }
 }

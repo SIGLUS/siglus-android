@@ -124,7 +124,7 @@ public class MovementDetailsView extends LinearLayout {
       if (!hasFocus) {
         if (StringUtils.isEmpty(etMovementSignature.getText())) {
           showSignatureError(getContext().getString(R.string.msg_empty_signature));
-        } else if (etMovementSignature.getText().length() < 2) {
+        } else if (etMovementSignature.getText().length() <= 2) {
           showSignatureError(getContext().getString(R.string.hint_signature_error_message));
         } else {
           lyMovementSignature.setErrorEnabled(false);
