@@ -128,11 +128,12 @@ public class SyncDownManager {
   }
 
   public void syncDownServerData(Subscriber<SyncProgress> subscriber) {
-    if (isSyncing()) {
-      return;
+    synchronized (SyncDownManager.class) {
+      if (isSyncing()) {
+        return;
+      }
+      setSyncing(true);
     }
-
-    setSyncing(true);
     Observable.create((Observable.OnSubscribe<SyncProgress>) subscriber1 -> {
       try {
         // TODO: Remove the comment when developing to the corresponding api

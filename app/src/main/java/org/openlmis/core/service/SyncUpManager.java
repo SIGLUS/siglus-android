@@ -109,8 +109,6 @@ public class SyncUpManager {
 
   protected LMISRestApi lmisRestApi;
 
-  public static boolean isSyncing = false;
-
   public SyncUpManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
   }
