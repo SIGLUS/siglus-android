@@ -77,9 +77,10 @@ public interface LMISRestApi {
   @POST("/api/siglusapi/android/me/facility/requisitions")
   Void submitRequisition(@Body RnRForm rnRForm) throws LMISException;
 
-  // below are v2 apis
-  @POST("/rest-api/sdp-requisitions")
+  @POST("/api/siglusapi/android/me/facility/requisitions")
   SyncUpRequisitionResponse submitEmergencyRequisition(@Body RnRForm rnRForm) throws LMISException;
+
+  // below are v2 apis
 
   @POST("/api/siglusapi/android/me/facility/stockCards")
   SyncUpStockMovementDataSplitResponse syncUpStockMovementDataSplit(@Body List<StockMovementEntry> entries)
