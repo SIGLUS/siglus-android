@@ -157,12 +157,14 @@ public class NewMovementLotListView extends MovementChangeLotListView {
         .validateLotQuantityNotGreaterThanSOH();
     if (position1 >= 0) {
       existingLotListView.scrollToPosition(position1);
+      existingLotListView.post(existingLotListView::requestFocus);
       return false;
     }
     int position2 = ((NewMovementLotMovementAdapter) newLotMovementAdapter)
         .validateLotPositiveQuantity();
     if (position2 >= 0) {
       newLotListView.scrollToPosition(position2);
+      newLotListView.post(newLotListView::requestFocus);
       return false;
     }
     return true;

@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
+import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -77,28 +78,17 @@ public class BaseLotListView extends FrameLayout {
     init(context);
   }
 
-  protected void init(Context context) {
-    this.context = context;
-    inflateLayout(context);
-    RoboGuice.injectMembers(getContext(), this);
-    RoboGuice.getInjector(getContext()).injectViewMembers(this);
-  }
-
-  protected void inflateLayout(Context context) {
-    inflate(context, R.layout.view_lot_list, this);
-  }
-
   public void initLotListView(BaseStockMovementViewModel viewModel) {
     this.viewModel = viewModel;
     initExistingLotListView();
     initNewLotListView();
+    setLotListVisible();
     btnAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
   }
 
   public void initExistingLotListView() {
     existingLotListView.setLayoutManager(new LinearLayoutManager(getContext()));
-    existingLotMovementAdapter = new LotMovementAdapter(
-        viewModel.getExistingLotMovementViewModelList());
+    existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
     existingLotListView.setAdapter(existingLotMovementAdapter);
   }
 
@@ -113,8 +103,8 @@ public class BaseLotListView extends FrameLayout {
     btnAddNewLot.setEnabled(actionAddNewEnabled);
   }
 
-
   public void refreshNewLotList() {
+    setLotListVisible();
     newLotMovementAdapter.notifyDataSetChanged();
   }
 
@@ -129,8 +119,7 @@ public class BaseLotListView extends FrameLayout {
       String lotNumber = LotMovementViewModel
           .generateLotNumberForProductWithoutLot(viewModel.getProduct().getCode(), expiryDate);
       if (getLotNumbers().contains(lotNumber)) {
-        ToastUtil
-            .show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
+        ToastUtil.show(LMISApp.getContext().getString(R.string.error_lot_without_number_already_exists));
       } else {
         addNewLot(new LotMovementViewModel(lotNumber, expiryDate,
             MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
@@ -142,9 +131,9 @@ public class BaseLotListView extends FrameLayout {
   public List<String> getLotNumbers() {
     final List<String> existingLots = new ArrayList<>();
     existingLots.addAll(FluentIterable.from(viewModel.getNewLotMovementViewModelList())
-        .transform(lotMovementViewModel -> lotMovementViewModel.getLotNumber()).toList());
+        .transform(LotMovementViewModel::getLotNumber).toList());
     existingLots.addAll(FluentIterable.from(viewModel.getExistingLotMovementViewModelList())
-        .transform(lotMovementViewModel -> lotMovementViewModel.getLotNumber()).toList());
+        .transform(LotMovementViewModel::getLotNumber).toList());
     return existingLots;
   }
 
@@ -175,6 +164,17 @@ public class BaseLotListView extends FrameLayout {
     return () -> setActionAddNewEnabled(true);
   }
 
+  protected void init(Context context) {
+    this.context = context;
+    inflateLayout(context);
+    RoboGuice.injectMembers(getContext(), this);
+    RoboGuice.getInjector(getContext()).injectViewMembers(this);
+  }
+
+  protected void inflateLayout(Context context) {
+    inflate(context, R.layout.view_lot_list, this);
+  }
+
   @NonNull
   protected SingleClickButtonListener getAddNewLotDialogOnClickListener() {
     return new SingleClickButtonListener() {
@@ -182,8 +182,7 @@ public class BaseLotListView extends FrameLayout {
       public void onSingleClick(View v) {
         switch (v.getId()) {
           case R.id.btn_complete:
-            if (addLotDialogFragment.validate() && !addLotDialogFragment
-                .hasIdenticalLot(getLotNumbers())) {
+            if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
               addNewLot(new LotMovementViewModel(addLotDialogFragment.getLotNumber(),
                   addLotDialogFragment.getExpiryDate(), viewModel.getMovementType()));
               addLotDialogFragment.dismiss();
@@ -197,6 +196,17 @@ public class BaseLotListView extends FrameLayout {
         }
       }
     };
+  }
+
+  private void setLotListVisible() {
+    if (existingLotListView != null) {
+      boolean existingLotsVisible = !CollectionUtils.isEmpty(viewModel.getExistingLotMovementViewModelList());
+      existingLotListView.setVisibility(existingLotsVisible ? VISIBLE : GONE);
+    }
+    if (newLotListView != null) {
+      boolean newLotsVisible = !CollectionUtils.isEmpty(viewModel.getNewLotMovementViewModelList());
+      newLotListView.setVisibility(newLotsVisible ? VISIBLE : GONE);
+    }
   }
 
   public interface OnDismissListener {

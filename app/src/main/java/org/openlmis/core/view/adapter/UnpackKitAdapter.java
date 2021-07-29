@@ -30,9 +30,7 @@ import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import rx.functions.Action1;
 
-@SuppressWarnings("PMD")
-public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implements
-    FilterableAdapter {
+public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implements FilterableAdapter {
 
   private final SingleClickButtonListener onClickListener;
   private final Action1<UnpackKitInventoryViewModel> setConfirmNoStockReceivedAction =
@@ -42,30 +40,27 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
         UnpackKitAdapter.this.notifyDataSetChanged();
       };
 
-  public UnpackKitAdapter(List<InventoryViewModel> data,
-      SingleClickButtonListener onClickListener) {
+  public UnpackKitAdapter(List<InventoryViewModel> data, SingleClickButtonListener onClickListener) {
     super(data);
     this.onClickListener = onClickListener;
   }
 
   @Override
   protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
-    final InventoryViewModel viewModel = filteredList.get(position);
-    ((UnpackKitWithLotViewHolder) viewHolder).populate(viewModel, setConfirmNoStockReceivedAction);
+    ((UnpackKitWithLotViewHolder) viewHolder).populate(filteredList.get(position), setConfirmNoStockReceivedAction);
   }
 
   @Override
   protected VHFooter onCreateFooterView(ViewGroup parent) {
-    VHFooter vhFooter = new VHFooter(LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.view_complete_btn, parent, false));
+    VHFooter vhFooter = new VHFooter(
+        LayoutInflater.from(parent.getContext()).inflate(R.layout.view_complete_btn, parent, false));
     vhFooter.itemView.findViewById(R.id.btn_complete).setOnClickListener(onClickListener);
     return vhFooter;
   }
 
   @Override
   public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent) {
-    View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.item_unpack_kit_with_lots, parent, false);
+    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_unpack_kit_with_lots, parent, false);
     return new UnpackKitWithLotViewHolder(view);
   }
 }

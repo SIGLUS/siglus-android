@@ -122,8 +122,8 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
     int position = mAdapter.validateAll();
     if (position >= 0) {
       clearSearch();
-
       productListRecycleView.scrollToPosition(position);
+      productListRecycleView.post(productListRecycleView::requestFocus);
       return false;
     }
     return true;

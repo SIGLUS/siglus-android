@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import com.google.android.material.textfield.TextInputLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
@@ -70,6 +71,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
   @InjectView(R.id.iv_del)
   private ImageView iconDel;
+
+  private LotMovementViewModel viewModel;
+
   private LotMovementAdapter.MovementChangedListener movementChangeListener;
   private LotMovementAdapter.MovementChangedListenerWithStatus movementChangedListenerWithStatus;
 
@@ -77,16 +81,15 @@ public class LotMovementViewHolder extends BaseViewHolder {
     super(itemView);
   }
 
-  public void populate(final LotMovementViewModel viewModel,
-      final LotMovementAdapter lotMovementAdapter) {
-    populateLotInfo(viewModel);
-    populateLotSOHBanner(viewModel);
-    updateDeleteIcon(viewModel.isNewAdded(),
-        getOnClickListenerForDeleteIcon(viewModel, lotMovementAdapter));
-    populateAmountField(viewModel);
+  public void populate(final LotMovementViewModel viewModel, LotMovementAdapter lotMovementAdapter) {
+    this.viewModel = viewModel;
+    populateLotInfo();
+    populateLotSOHBanner();
+    updateDeleteIcon(getOnClickListenerForDeleteIcon(lotMovementAdapter));
+    populateAmountField();
   }
 
-  private void populateLotSOHBanner(LotMovementViewModel viewModel) {
+  private void populateLotSOHBanner() {
     if (context instanceof InitialInventoryActivity
         || context instanceof UnpackKitActivity
         || context instanceof BulkInitialInventoryActivity) {
@@ -104,29 +107,29 @@ public class LotMovementViewHolder extends BaseViewHolder {
     }
   }
 
-  private void populateLotInfo(LotMovementViewModel viewModel) {
+  private void populateLotInfo() {
     etLotInfo.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
     etLotInfo.setKeyListener(null);
     etLotInfo.setOnKeyListener(null);
     etLotInfo.setBackground(null);
+    etLotInfo.setFocusableInTouchMode(false);
   }
 
-  private void populateAmountField(LotMovementViewModel viewModel) {
-    final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
-    if (viewModel.isExpiredLot()
-        && viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE) {
+  private void populateAmountField() {
+    EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
+    if (viewModel.isExpiredLot() && viewModel.getMovementType() == MovementReasonManager.MovementType.ISSUE) {
       etLotAmount.setText(null);
       lyLotAmount.setErrorEnabled(true);
       etLotAmount.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
       etLotAmount.setEnabled(false);
       etLotAmount.setHint(getString(R.string.lots_has_expire));
       etLotAmount.setTextSize(14);
-      etLotAmount.setHintTextColor(context.getResources().getColor(R.color.color_red));
+      etLotAmount.setHintTextColor(ContextCompat.getColor(context, R.color.color_red));
       etLotAmount.setGravity(Gravity.TOP);
       etLotAmount.setSingleLine(false);
       etLotAmount.setHorizontallyScrolling(false);
     } else {
-      etLotAmount.setHintTextColor(context.getResources().getColor(R.color.color_select_title));
+      etLotAmount.setHintTextColor(ContextCompat.getColor(context, R.color.color_select_title));
       etLotAmount.setEnabled(true);
       etLotAmount.setMaxLines(9);
       etLotAmount.removeTextChangedListener(textWatcher);
@@ -156,13 +159,11 @@ public class LotMovementViewHolder extends BaseViewHolder {
   }
 
   private void setQuantityError(String string) {
-    etLotAmount.requestFocus();
     lyLotAmount.setError(string);
   }
 
-  private void updateDeleteIcon(boolean isNewAdded,
-      View.OnClickListener onClickListenerForDeleteIcon) {
-    if (isNewAdded) {
+  private void updateDeleteIcon(View.OnClickListener onClickListenerForDeleteIcon) {
+    if (viewModel.isNewAdded()) {
       iconDel.setVisibility(View.VISIBLE);
       iconDel.setOnClickListener(onClickListenerForDeleteIcon);
     }
@@ -170,8 +171,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
   @SuppressWarnings("squid:S1874")
   @NonNull
-  private View.OnClickListener getOnClickListenerForDeleteIcon(final LotMovementViewModel viewModel,
-      final LotMovementAdapter lotMovementAdapter) {
+  private View.OnClickListener getOnClickListenerForDeleteIcon(LotMovementAdapter lotMovementAdapter) {
     return v -> {
       final SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
           Html.fromHtml(getString(R.string.msg_remove_new_lot_title)),
@@ -186,8 +186,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
         public void positiveClick(String tag) {
           lotMovementAdapter.remove(viewModel);
           if (context instanceof InventoryActivity) {
-            ((InventoryActivity) context).productListRecycleView.getAdapter()
-                .notifyDataSetChanged();
+            ((InventoryActivity) context).productListRecycleView.getAdapter().notifyDataSetChanged();
           }
         }
 

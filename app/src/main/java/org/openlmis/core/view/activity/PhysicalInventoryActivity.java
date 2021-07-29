@@ -108,6 +108,7 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
 
   @Override
   protected void goToNextPage() {
+    ToastUtil.show(getString(R.string.successfully_saved));
     setResult(Activity.RESULT_OK);
     finish();
   }

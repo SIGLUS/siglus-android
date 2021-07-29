@@ -7,6 +7,25 @@
   android:layout_margin="@dimen/px_15">
 
   <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/ly_lot_amount"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_normal"
+    app:layout_constraintRight_toLeftOf="@id/gl_lots_info"
+    app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
+    app:layout_constraintTop_toBottomOf="@id/tv_lot_number"
+    app:layout_constraintWidth_percent="0.5">
+
+    <EditText
+      android:id="@+id/et_lot_amount"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:imeOptions="actionDone"
+      android:inputType="number"
+      android:maxLength="@integer/edit_amount_length" />
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/ly_movement_reason"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
@@ -125,25 +144,5 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_constraintGuide_percent="0.55" />
-
-  <com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/ly_lot_amount"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_normal"
-    app:layout_constraintRight_toLeftOf="@id/gl_lots_info"
-    app:layout_constraintStart_toStartOf="@id/tv_hint_lot_info"
-    app:layout_constraintTop_toBottomOf="@id/tv_lot_number"
-    app:layout_constraintWidth_percent="0.5">
-
-    <EditText
-      android:id="@+id/et_lot_amount"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:imeOptions="actionDone"
-      android:inputType="number"
-      android:maxLength="@integer/edit_amount_length" />
-  </com.google.android.material.textfield.TextInputLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

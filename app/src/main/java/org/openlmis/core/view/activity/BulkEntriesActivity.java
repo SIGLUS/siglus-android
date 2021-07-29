@@ -262,8 +262,8 @@ public class BulkEntriesActivity extends BaseActivity {
     int firstInvalidPosition = adapter.validateAllForCompletedClick();
     adapter.notifyDataSetChanged();
     if (firstInvalidPosition >= 0) {
-      rvBulkEntriesProducts.requestFocus();
       rvBulkEntriesProducts.scrollToPosition(firstInvalidPosition);
+      rvBulkEntriesProducts.post(rvBulkEntriesProducts::requestFocus);
       LinearLayoutManager linearLayoutManager = (LinearLayoutManager) rvBulkEntriesProducts.getLayoutManager();
       linearLayoutManager.scrollToPositionWithOffset(firstInvalidPosition, 0);
       return false;

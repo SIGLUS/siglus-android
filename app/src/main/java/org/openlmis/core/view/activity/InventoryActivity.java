@@ -144,6 +144,7 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
     if (position >= 0) {
       clearSearch();
       productListRecycleView.scrollToPosition(position);
+      productListRecycleView.post(productListRecycleView::requestFocus);
       return false;
     }
     return true;
@@ -201,7 +202,6 @@ public abstract class InventoryActivity<T extends InventoryPresenter> extends Se
 
   protected void onCompleteClick() {
     mAdapter.setFilterProgram(null);
-    mAdapter.refresh();
   }
 
   protected void initDate() {

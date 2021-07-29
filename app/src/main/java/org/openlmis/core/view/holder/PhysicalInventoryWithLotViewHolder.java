@@ -63,6 +63,15 @@ public class PhysicalInventoryWithLotViewHolder extends BaseViewHolder {
     updateTitle(viewModel.isDone(), queryKeyWord);
   }
 
+  private void updateTitle(boolean done, String queryKeyWord) {
+    icDone.setVisibility(done ? View.VISIBLE : View.GONE);
+    highlightQueryKeyWord(viewModel, queryKeyWord, done);
+    vgStockOnHand.setVisibility(done ? View.VISIBLE : View.GONE);
+    if (done) {
+      tvSOH.setText(String.valueOf(viewModel.getLotListQuantityTotalAmount()));
+    }
+  }
+
   private void highlightQueryKeyWord(PhysicalInventoryViewModel inventoryViewModel,
       String queryKeyWord, boolean done) {
     if (done) {
@@ -75,15 +84,6 @@ public class PhysicalInventoryWithLotViewHolder extends BaseViewHolder {
           TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
       tvProductUnit.setText(
           TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
-    }
-  }
-
-  private void updateTitle(boolean done, String queryKeyWord) {
-    icDone.setVisibility(done ? View.VISIBLE : View.GONE);
-    highlightQueryKeyWord(viewModel, queryKeyWord, done);
-    vgStockOnHand.setVisibility(done ? View.VISIBLE : View.GONE);
-    if (done) {
-      tvSOH.setText(String.valueOf(viewModel.getLotListQuantityTotalAmount()));
     }
   }
 

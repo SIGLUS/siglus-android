@@ -53,6 +53,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
     if (position >= 0) {
       clearSearch();
       productListRecycleView.scrollToPosition(position);
+      productListRecycleView.post(productListRecycleView::requestFocus);
       return false;
     }
     return true;

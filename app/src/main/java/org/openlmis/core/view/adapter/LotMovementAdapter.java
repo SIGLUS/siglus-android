@@ -21,6 +21,7 @@ package org.openlmis.core.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import lombok.Getter;
@@ -48,17 +49,16 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     this.productName = productName;
   }
 
+  @NonNull
   @Override
   public LotMovementViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.item_lots_info, parent, false);
+    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lots_info, parent, false);
     return new LotMovementViewHolder(view);
   }
 
   @Override
   public void onBindViewHolder(LotMovementViewHolder holder, int position) {
-    final LotMovementViewModel viewModel = lotList.get(position);
-
+    LotMovementViewModel viewModel = lotList.get(position);
     holder.setMovementChangeListener(movementChangedListener);
     holder.setMovementChangedLisenerWithStatus(movementChangedListenerWithStatus);
     holder.populate(viewModel, this);

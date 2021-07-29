@@ -109,25 +109,25 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
     setUpViewListener(viewModel, bulkEntriesLotMovementAdapter);
   }
 
-  public void setMovementChangeListener(
-      BulkEntriesLotMovementViewHolder.AmountChangeListener amountChangeListener) {
+  public void setMovementChangeListener(BulkEntriesLotMovementViewHolder.AmountChangeListener amountChangeListener) {
     this.amountChangeListener = amountChangeListener;
   }
 
   private String getReasonDescriptionByReasonCode(LotMovementViewModel viewModel) {
-    FluentIterable<String> description =  FluentIterable.from(movementReasons)
+    FluentIterable<String> description = FluentIterable.from(movementReasons)
         .filter(movementReason1 -> movementReason1.getCode().equals(viewModel.getMovementReason()))
-        .transform(movementReason1 -> movementReason1.getDescription());
+        .transform(MovementReason::getDescription);
     if (description.isEmpty()) {
       return null;
     }
     return description.get(0);
   }
 
-  private void setUpViewListener(LotMovementViewModel viewModel,
-      BulkEntriesLotMovementAdapter adapter) {
+  private void setUpViewListener(LotMovementViewModel viewModel, BulkEntriesLotMovementAdapter adapter) {
+    EditTextWatcher textWatcher = new EditTextWatcher(etLotAmount, viewModel);
     movementReason.setOnClickListener(getMovementReasonOnClickListener(viewModel));
-    etLotAmount.addTextChangedListener(new EditTextWatcher(etLotAmount, viewModel));
+    etLotAmount.removeTextChangedListener(textWatcher);
+    etLotAmount.addTextChangedListener(textWatcher);
     documentNumber.addTextChangedListener(new EditTextWatcher(documentNumber, viewModel));
     btnDelLot.setOnClickListener(getOnClickListenerForDeleteIcon(viewModel, adapter));
   }
@@ -141,8 +141,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
         bundle.putStringArray(SimpleSelectDialogFragment.SELECTIONS, reasonDescriptions);
         SimpleSelectDialogFragment reasonsDialog = new SimpleSelectDialogFragment();
         reasonsDialog.setArguments(bundle);
-        reasonsDialog.setMovementTypeOnClickListener(
-            new MovementTypeOnClickListener(reasonsDialog, viewModel));
+        reasonsDialog.setMovementTypeOnClickListener(new MovementTypeOnClickListener(reasonsDialog, viewModel));
         reasonsDialog.show(((BulkEntriesActivity) (((ContextWrapper) view.getContext()).getBaseContext()))
             .getSupportFragmentManager(), "SELECT_REASONS");
       }
