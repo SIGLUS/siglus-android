@@ -170,6 +170,9 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         lotMovementViewModel.setMovementReason(MovementReasonManager.INVENTORY);
       }
     }
+    for (LotMovementViewModel lotMovementViewModel : model.getNewLotMovementViewModelList()) {
+      lotMovementViewModel.setMovementReason(MovementReasonManager.INVENTORY_POSITIVE);
+    }
   }
 
   private List<InventoryViewModel> convertStockCardsToStockCardViewModels(
