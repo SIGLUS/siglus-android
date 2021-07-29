@@ -26,10 +26,12 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.Where;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -53,7 +55,9 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableMap;
 
 @SuppressWarnings({"squid:S3776", "squid:S1172"})
 public class RnrFormRepository {
@@ -244,24 +248,32 @@ public class RnrFormRepository {
   public List<RnrFormItem> generateRnrFormItems(final RnRForm form, List<StockCard> stockCards)
       throws LMISException {
     List<RnrFormItem> rnrFormItems = new ArrayList<>();
-    List<String> programCodes = programRepository
-        .queryProgramCodesByProgramCodeOrParentCode(form.getProgram().getProgramCode());
     //为避免超时，在进入循环之前对以下两个变量赋值
     List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
     //避免出现越界异常，需要条件判断
     if (rnRForms.size() > 1) {
       rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
     }
+    HashMap<String, String> stringToCategory = getProductCodeToCategory();
     for (StockCard stockCard : stockCards) {
       RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(),
           form.getPeriodEnd());
       rnrFormItem.setForm(form);
       rnrFormItems.add(rnrFormItem);
-      rnrFormItem.setCategory(
-          productProgramRepository.queryByCode(rnrFormItem.getProduct().getCode(), programCodes)
-              .getCategory());
+      rnrFormItem.setCategory(stringToCategory.get(rnrFormItem.getProduct().getCode()));
     }
     return rnrFormItems;
+  }
+
+  @NotNull
+  private HashMap<String, String> getProductCodeToCategory() throws LMISException {
+    List<ProductProgram> productPrograms = productProgramRepository.listActiveProductProgramsByProgramCodes(
+        Arrays.asList(programCode));
+    HashMap<String, String> codeToCategory = new HashMap<>();
+    for (ProductProgram productProgram : productPrograms) {
+        codeToCategory.put(productProgram.getProductCode(), productProgram.getCategory());
+    }
+    return codeToCategory;
   }
 
   public void removeRnrForm(RnRForm form) throws LMISException {
