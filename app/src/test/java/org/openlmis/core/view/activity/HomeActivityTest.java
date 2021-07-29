@@ -43,6 +43,7 @@ import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -147,6 +148,7 @@ public class HomeActivityTest {
     assertThat(startedIntent.getComponent().getClassName(), equalTo(PhysicalInventoryActivity.class.getName()));
   }
 
+  @Ignore
   @Test
   public void shouldGoRequisitionPage() {
     // given
