@@ -69,7 +69,7 @@ import rx.Subscription;
 @SuppressWarnings("PMD")
 public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivity implements BaseView {
 
-  private long lastOperateTime = 0L;
+  private static long lastOperateTime = 0L;
 
   @Inject
   SharedPreferenceMgr preferencesMgr;
@@ -90,6 +90,14 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   private long onCreateStartMili;
   private boolean isPageLoadTimerInProgress;
+
+  public static synchronized void setLastOperateTime(long newOperateTIme) {
+    BaseActivity.lastOperateTime = newOperateTIme;
+  }
+
+  public static synchronized long getLastOperateTime() {
+    return lastOperateTime;
+  }
 
   public void injectPresenter() {
     Field[] fields = FieldUtils.getAllFields(this.getClass());
@@ -136,18 +144,18 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
-    if (lastOperateTime > 0L && alreadyTimeOuted() && !isLoginActivityActive()) {
+    if (getLastOperateTime() > 0L && alreadyTimeOuted() && !isLoginActivityActive()) {
       logout();
       return true;
     } else {
-      lastOperateTime = LMISApp.getInstance().getCurrentTimeMillis();
+      setLastOperateTime(LMISApp.getInstance().getCurrentTimeMillis());
       return super.dispatchTouchEvent(ev);
     }
   }
 
   protected void logout() {
     startActivity(new Intent(this, LoginActivity.class));
-    lastOperateTime = 0L;
+    setLastOperateTime(0L);
   }
 
   private boolean isLoginActivityActive() {
@@ -156,7 +164,7 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   private boolean alreadyTimeOuted() {
     long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
-    return currentTimeMillis - lastOperateTime > appTimeout;
+    return currentTimeMillis - getLastOperateTime() > appTimeout;
   }
 
   @Override
@@ -186,7 +194,8 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
 
   }
 
-  protected @StyleRes int getThemeRes() {
+  @StyleRes
+  protected int getThemeRes() {
     return R.style.AppTheme;
   }
 
@@ -337,10 +346,6 @@ public abstract class BaseActivity extends RoboMigrationAndroidXActionBarActivit
             getString(R.string.dialog_cancel));
     getSupportFragmentManager().beginTransaction()
         .add(warningDialogFragment, "deleteProductWarningDialogFragment").commitNow();
-  }
-
-  public long getLastOperateTime() {
-    return lastOperateTime;
   }
 }
 

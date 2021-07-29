@@ -184,7 +184,7 @@ public class HomeActivityTest {
   public void shouldNotLogOutOrResetTimeIfFirstTimeOperation() {
     testApp.setCurrentTimeMillis(1234L);
     homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
-    Assert.assertThat(homeActivity.getLastOperateTime(), Is.is(not(0L)));
+    Assert.assertThat(BaseActivity.getLastOperateTime(), Is.is(not(0L)));
   }
 
   @Test
@@ -197,7 +197,7 @@ public class HomeActivityTest {
         9000L + Long.parseLong(homeActivity.getString(R.string.app_time_out)));
     homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
-    Assert.assertThat(homeActivity.getLastOperateTime(), Is.is(not(0L)));
+    Assert.assertThat(BaseActivity.getLastOperateTime(), Is.is(not(0L)));
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
     assertNull(startedIntent);
   }
@@ -211,7 +211,7 @@ public class HomeActivityTest {
         11000L + Long.parseLong(homeActivity.getString(R.string.app_time_out)));
     homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
-    Assert.assertThat(homeActivity.getLastOperateTime(), is(0L));
+    Assert.assertThat(BaseActivity.getLastOperateTime(), is(0L));
 
     Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
     assertThat(startedIntent.getComponent().getClassName(), equalTo(LoginActivity.class.getName()));
