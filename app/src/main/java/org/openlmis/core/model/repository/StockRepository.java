@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.model.Product.MEDICINE_TYPE_DEFAULT;
+import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.content.Context;
@@ -52,7 +54,6 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 
-@SuppressWarnings("PMD")
 public class StockRepository {
 
   public static final String PRODUCT_ID = "product_id";
@@ -259,11 +260,12 @@ public class StockRepository {
 
   protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd)
       throws LMISException {
+    String codeBelongPrograms = getSqlForProgram(programCode);
+
     String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
         + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("
-        + " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode IN ("
-        + " SELECT programCode FROM programs WHERE parentCode= '" + programCode + "'"
-        + " OR programCode='" + programCode + "')))"
+        + codeBelongPrograms
+        + " ))"
         + " AND id NOT IN ("
         + " SELECT stockCard_id FROM stock_items WHERE stockCard_id NOT IN ("
         + " SELECT stockCard_id FROM stock_items"
@@ -452,6 +454,16 @@ public class StockRepository {
         });
       }
     }
+  }
+
+  private String getSqlForProgram(String programCode) {
+    if (programCode.equals(MMIA_PROGRAM_CODE)) {
+      return " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode = "
+          + programCode
+          + " AND category!= " + MEDICINE_TYPE_DEFAULT;
+    }
+    return " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode = "
+        + programCode;
   }
 
   private List<StockCard> getStockCardById(int stockCardId) throws LMISException {

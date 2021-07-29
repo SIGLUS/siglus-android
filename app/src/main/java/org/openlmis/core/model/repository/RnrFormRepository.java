@@ -55,9 +55,7 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-import org.roboguice.shaded.goole.common.collect.ImmutableMap;
 
 @SuppressWarnings({"squid:S3776", "squid:S1172"})
 public class RnrFormRepository {
@@ -66,6 +64,7 @@ public class RnrFormRepository {
   public static final String STATUS = "status";
   public static final String PERIOD_BEGIN = "periodBegin";
   public static final String PROGRAM_CODE = "programCode";
+  public static final String SUBMITTED_TIME = "submittedTime";
   public static final String WHERE_PERIOD_END = "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '";
   public static final String WHERE_PROGRAM_CODE = "WHERE programCode='";
   public static final String END_STRING = "' );";
@@ -248,11 +247,9 @@ public class RnrFormRepository {
   public List<RnrFormItem> generateRnrFormItems(final RnRForm form, List<StockCard> stockCards)
       throws LMISException {
     List<RnrFormItem> rnrFormItems = new ArrayList<>();
-    //为避免超时，在进入循环之前对以下两个变量赋值
-    List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.NO, programCode);
-    //避免出现越界异常，需要条件判断
-    if (rnRForms.size() > 1) {
-      rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 2).getRnrFormItemListWrapper();
+    RnRForm rnRForm = getLastSubmitRnr(form.getProgram().getId());
+    if (rnRForm != null) {
+      rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
     }
     HashMap<String, String> stringToCategory = getProductCodeToCategory();
     for (StockCard stockCard : stockCards) {
@@ -271,7 +268,7 @@ public class RnrFormRepository {
         Arrays.asList(programCode));
     HashMap<String, String> codeToCategory = new HashMap<>();
     for (ProductProgram productProgram : productPrograms) {
-        codeToCategory.put(productProgram.getProductCode(), productProgram.getCategory());
+      codeToCategory.put(productProgram.getProductCode(), productProgram.getCategory());
     }
     return codeToCategory;
   }
@@ -324,6 +321,14 @@ public class RnrFormRepository {
   protected List<RnRForm> listUnsynced() throws LMISException {
     return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("synced", false).and()
         .eq(STATUS, Status.AUTHORIZED).query());
+  }
+
+  protected RnRForm getLastSubmitRnr(long programId) throws LMISException {
+    return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder()
+        .orderBy("periodBegin", false)
+        .where().eq(PROGRAM_ID, programId)
+        .isNotNull(SUBMITTED_TIME)
+        .queryForFirst());
   }
 
   protected List<RnRForm> listNotSynchronizedFromStarTime() throws LMISException {
