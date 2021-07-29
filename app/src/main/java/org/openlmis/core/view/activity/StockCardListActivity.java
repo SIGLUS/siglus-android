@@ -86,8 +86,9 @@ public class StockCardListActivity extends SearchBarActivity {
             Constants.REQUEST_FROM_STOCK_LIST_PAGE);
         return true;
       case MENU_ID_BULK_ISSUES:
-        startActivityForResult(new Intent(LMISApp.getContext(), BulkIssueChooseDestinationActivity.class),
-            Constants.REQUEST_FROM_STOCK_LIST_PAGE);
+        // disable bulk issues feature for showcase 20210729
+        // startActivityForResult(new Intent(LMISApp.getContext(), BulkIssueChooseDestinationActivity.class),
+        //    Constants.REQUEST_FROM_STOCK_LIST_PAGE);
         return true;
       default:
         return super.onOptionsItemSelected(item);
