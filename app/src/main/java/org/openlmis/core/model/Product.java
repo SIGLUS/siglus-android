@@ -45,6 +45,7 @@ public class Product extends BaseModel implements Comparable<Product>, Serializa
   public static final String MEDICINE_TYPE_CHILDREN = "Children";
   public static final String MEDICINE_TYPE_SOLUTION = "Solution";
   public static final String MEDICINE_TYPE_OTHER = "Other";
+  public static final String MEDICINE_TYPE_DEFAULT = "Default";
 
   /**
    * @deprecated deprecated filed, use {@link ProductProgram}

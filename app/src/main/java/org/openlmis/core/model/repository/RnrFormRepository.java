@@ -235,10 +235,9 @@ public class RnrFormRepository {
   protected void deleteDeactivatedAndUnsupportedProductItems(List<RnRForm> rnRForms)
       throws LMISException {
     for (RnRForm rnRForm : rnRForms) {
-      List<String> programCodes = programRepository
-          .queryProgramCodesByProgramCodeOrParentCode(rnRForm.getProgram().getProgramCode());
       List<String> supportedProductCodes = FluentIterable
-          .from(productProgramRepository.listActiveProductProgramsByProgramCodes(programCodes))
+          .from(productProgramRepository
+              .listActiveProductProgramsByProgramCodes(Arrays.asList(rnRForm.getProgram().getProgramCode())))
           .transform(ProductProgram::getProductCode).toList();
       rnrFormItemRepository.deleteFormItems(rnRForm.getDeactivatedAndUnsupportedProductItems(supportedProductCodes));
     }
@@ -264,8 +263,8 @@ public class RnrFormRepository {
 
   @NotNull
   private HashMap<String, String> getProductCodeToCategory() throws LMISException {
-    List<ProductProgram> productPrograms = productProgramRepository.listActiveProductProgramsByProgramCodes(
-        Arrays.asList(programCode));
+    List<ProductProgram> productPrograms = productProgramRepository
+        .listActiveProductProgramsByProgramCodes(Arrays.asList(programCode));
     HashMap<String, String> codeToCategory = new HashMap<>();
     for (ProductProgram productProgram : productPrograms) {
       codeToCategory.put(productProgram.getProductCode(), productProgram.getCategory());
@@ -421,14 +420,11 @@ public class RnrFormRepository {
         }
       }
     } else {
-      List<String> programCodes = programRepository
-          .queryProgramCodesByProgramCodeOrParentCode(programCode);
-
       for (RnrFormItem item : rnrForm.getRnrFormItemListWrapper()) {
         ProductProgram productProgram = null;
         if (item.getProduct() != null) {
           productProgram = productProgramRepository
-              .queryByCode(item.getProduct().getCode(), programCodes);
+              .queryByCode(item.getProduct().getCode(), programCode);
         }
         if (productProgram != null) {
           item.setCategory(productProgram.getCategory());

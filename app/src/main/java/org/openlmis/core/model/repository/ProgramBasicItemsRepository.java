@@ -154,10 +154,8 @@ public class ProgramBasicItemsRepository {
   }
 
   private List<Product> getProgramProducts(String programCode) throws LMISException {
-    List<String> programCodes = programRepository
-        .queryProgramCodesByProgramCodeOrParentCode(programCode);
     List<Long> productIds = productProgramRepository
-        .queryActiveProductIdsByProgramsWithKits(programCodes, false);
+        .queryActiveProductIdsByProgramWithKits(programCode, false);
     List<Product> products = productRepository.queryProductsByProductIds(productIds);
     return products;
   }

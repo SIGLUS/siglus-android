@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.utils.Constants.PTV_PROGRAM_CODE;
+
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public class PTVRepository extends RnrFormRepository {
   @Inject
   public PTVRepository(Context context) {
     super(context);
-    programCode = Constants.PTV_PROGRAM_CODE;
+    programCode = PTV_PROGRAM_CODE;
   }
 
   @Override
@@ -99,12 +101,10 @@ public class PTVRepository extends RnrFormRepository {
 
   protected ArrayList<RnrFormItem> fillAllPTVProduct(RnRForm form, List<RnrFormItem> rnrFormItems)
       throws LMISException {
-    List<Product> products;
-    List<String> programCodes = Arrays.asList(Constants.PTV_PROGRAM_CODE);
     List<Long> productIds = productProgramRepository
-        .queryActiveProductIdsByProgramsWithKits(programCodes, false);
-    products = productRepository.queryProductsByProductIds(productIds);
-    Program program = programRepository.queryByCode(Constants.PTV_PROGRAM_CODE);
+        .queryActiveProductIdsByProgramWithKits(PTV_PROGRAM_CODE, false);
+    List<Product> products = productRepository.queryProductsByProductIds(productIds);
+    Program program = programRepository.queryByCode(PTV_PROGRAM_CODE);
     List<Service> services = serviceFormRepository.listAllActiveWithProgram(program);
     ArrayList<RnrFormItem> result = new ArrayList<>();
 

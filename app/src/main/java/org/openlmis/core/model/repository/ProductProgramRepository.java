@@ -18,8 +18,11 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.model.Product.MEDICINE_TYPE_DEFAULT;
+
 import android.content.Context;
 import com.google.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
@@ -55,13 +58,6 @@ public class ProductProgramRepository {
             .eq("productCode", productCode).queryForFirst());
   }
 
-  public ProductProgram queryByCode(final String productCode, final List<String> programCodes)
-      throws LMISException {
-    return dbUtil.withDao(ProductProgram.class,
-        dao -> dao.queryBuilder().where().in(PROGRAM_CODE, programCodes).and()
-            .eq("productCode", productCode).queryForFirst());
-  }
-
   public void batchSave(final Product product, final List<ProductProgram> productPrograms) {
     if (productPrograms == null || productPrograms.size() == 0) {
       deleteOldProductProgram(product);
@@ -84,12 +80,13 @@ public class ProductProgramRepository {
   }
 
 
-  public List<ProductProgram> listActiveProductProgramsForMMIA(final List<String> programCodes)
+  public List<ProductProgram> listActiveProductProgramsForMMIAWithoutDefault(final String programCode)
       throws LMISException {
     return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder()
         .where().eq("isActive", true)
         .and().eq("versionCode", BuildConfig.VERSION_CODE)
-        .and().in(PROGRAM_CODE, programCodes)
+        .and().ne("category", MEDICINE_TYPE_DEFAULT)
+        .and().eq(PROGRAM_CODE, programCode)
         .query());
   }
 
@@ -110,6 +107,11 @@ public class ProductProgramRepository {
   }
 
 
+  public List<Long> queryActiveProductIdsByProgramWithKits(String programCode,
+      boolean isWithKit) throws LMISException {
+    return queryActiveProductIdsByProgramsWithKits(Arrays.asList(programCode), isWithKit);
+  }
+
   public List<Long> queryActiveProductIdsByProgramsWithKits(List<String> programCodes,
       boolean isWithKit) throws LMISException {
     List<ProductProgram> productPrograms = listActiveProductProgramsByProgramCodes(programCodes);
@@ -121,8 +123,8 @@ public class ProductProgramRepository {
         .transform(product -> product.getId()).toList();
   }
 
-  public List<Long> queryActiveProductIdsForMMIA(List<String> programCodes) throws LMISException {
-    List<ProductProgram> productPrograms = listActiveProductProgramsForMMIA(programCodes);
+  public List<Long> queryActiveProductIdsForMMIA(String programCode) throws LMISException {
+    List<ProductProgram> productPrograms = listActiveProductProgramsForMMIAWithoutDefault(programCode);
     List<String> productCodes = FluentIterable.from(productPrograms)
         .transform(productProgram -> productProgram.getProductCode()).toList();
 

@@ -358,13 +358,8 @@ public class MMIARepository extends RnrFormRepository {
 
   protected ArrayList<RnrFormItem> fillAllMMIAProducts(RnRForm form, List<RnrFormItem> rnrFormItems)
       throws LMISException {
-    List<Product> products;
-
-    List<String> programCodes = programRepository
-        .queryProgramCodesByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE);
-    List<Long> productIds = productProgramRepository
-        .queryActiveProductIdsByProgramsWithKits(programCodes, false);
-    products = productRepository.queryProductsByProductIds(productIds);
+    List<Long> productIds = productProgramRepository.queryActiveProductIdsForMMIA(Constants.MMIA_PROGRAM_CODE);
+    List<Product> products = productRepository.queryProductsByProductIds(productIds);
 
     ArrayList<RnrFormItem> result = new ArrayList<>();
 

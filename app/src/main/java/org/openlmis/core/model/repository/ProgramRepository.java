@@ -123,27 +123,6 @@ public class ProgramRepository {
         dao -> dao.queryBuilder().where().eq("programCode", programCode).queryForFirst());
   }
 
-  public List<Long> queryProgramIdsByProgramCodeOrParentCode(final String programCode)
-      throws LMISException {
-    List<Program> programs = queryProgramsByProgramCodeOrParentCode(programCode);
-
-    return FluentIterable.from(programs).transform(BaseModel::getId).toList();
-  }
-
-  public List<String> queryProgramCodesByProgramCodeOrParentCode(final String programCode)
-      throws LMISException {
-    List<Program> programs = queryProgramsByProgramCodeOrParentCode(programCode);
-
-    return FluentIterable.from(programs).transform(Program::getProgramCode).toList();
-  }
-
-  public List<Program> queryProgramsByProgramCodeOrParentCode(final String programCode)
-      throws LMISException {
-    return dbUtil.withDao(Program.class, dao -> dao.queryBuilder()
-        .where().eq("parentCode", programCode)
-        .or().eq("programCode", programCode).query());
-  }
-
   public List<Program> queryActiveProgram() throws LMISException {
     final List<Program> programs = genericDao.queryForAll();
     final List<ReportTypeForm> reportTypes = dbUtil.withDao(ReportTypeForm.class, Dao::queryForAll);
