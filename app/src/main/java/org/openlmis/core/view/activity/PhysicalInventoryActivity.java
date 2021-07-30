@@ -91,7 +91,11 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
   protected void onSaveClick() {
     super.onSaveClick();
     loading();
-    Subscription subscription = presenter.saveDraftInventoryObservable().subscribe(onNextMainPageAction, errorAction);
+    Subscription subscription = presenter.saveDraftInventoryObservable().subscribe(o -> {
+      loaded();
+      ToastUtil.show(getString(R.string.successfully_saved));
+      goToNextPage();
+    }, errorAction);
     subscriptions.add(subscription);
   }
 
@@ -108,7 +112,6 @@ public class PhysicalInventoryActivity extends InventoryActivity<PhysicalInvento
 
   @Override
   protected void goToNextPage() {
-    ToastUtil.show(getString(R.string.successfully_saved));
     setResult(Activity.RESULT_OK);
     finish();
   }

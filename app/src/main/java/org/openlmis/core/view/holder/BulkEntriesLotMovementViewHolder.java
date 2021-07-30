@@ -115,7 +115,7 @@ public class BulkEntriesLotMovementViewHolder extends BaseViewHolder {
 
   private String getReasonDescriptionByReasonCode(LotMovementViewModel viewModel) {
     FluentIterable<String> description = FluentIterable.from(movementReasons)
-        .filter(movementReason1 -> movementReason1.getCode().equals(viewModel.getMovementReason()))
+        .filter(movementReasonItem -> movementReasonItem.getCode().equals(viewModel.getMovementReason()))
         .transform(MovementReason::getDescription);
     if (description.isEmpty()) {
       return null;
