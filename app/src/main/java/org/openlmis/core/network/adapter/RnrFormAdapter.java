@@ -201,7 +201,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       for (Map.Entry<String, List<BaseInfoItem>> map : tableNameToItems.entrySet()) {
         patientLineItemRequests.add(new PatientLineItemRequest(map.getKey(), map.getValue()));
       }
-      root.add("patientLineItems", jsonParser.parse(gson.toJson(patientLineItemRequests)));
+      root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests)));
     }
   }
 

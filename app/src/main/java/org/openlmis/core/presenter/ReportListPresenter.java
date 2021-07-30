@@ -71,6 +71,14 @@ public class ReportListPresenter extends Presenter {
       sortReportTypes(reportTypeForms);
       view.updateSupportReportTypes(reportTypeForms);
     }
+
+    private void sortReportTypes(List<ReportTypeForm> programs) {
+      Collections.sort(programs, (o1, o2) -> {
+        final Integer o1Order = PROGRAM_CODE_ORDER.get(o1.getCode());
+        final Integer o2Order = PROGRAM_CODE_ORDER.get(o2.getCode());
+        return Integer.compare(o1Order == null ? 0 : o1Order, o2Order == null ? 0 : o2Order);
+      });
+    }
   };
 
   @Override
@@ -103,14 +111,6 @@ public class ReportListPresenter extends Presenter {
         subscriber.onError(e);
       }
     }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-  }
-
-  private void sortReportTypes(List<ReportTypeForm> programs) {
-    Collections.sort(programs, (o1, o2) -> {
-      final Integer o1Order = PROGRAM_CODE_ORDER.get(o1.getCode());
-      final Integer o2Order = PROGRAM_CODE_ORDER.get(o2.getCode());
-      return Integer.compare(o1Order == null ? 0 : o1Order, o2Order == null ? 0 : o2Order);
-    });
   }
 
   private void setHasVCReportType(List<ReportTypeForm> reportTypeForms) {
