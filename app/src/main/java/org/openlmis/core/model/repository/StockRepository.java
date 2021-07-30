@@ -458,12 +458,12 @@ public class StockRepository {
 
   private String getSqlForProgram(String programCode) {
     if (programCode.equals(MMIA_PROGRAM_CODE)) {
-      return " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode = "
+      return " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode ='"
           + programCode
-          + " AND category!= " + MEDICINE_TYPE_DEFAULT;
+          + "' AND category!= '" + MEDICINE_TYPE_DEFAULT + "'";
     }
-    return " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode = "
-        + programCode;
+    return " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode = '"
+        + programCode + "'";
   }
 
   private List<StockCard> getStockCardById(int stockCardId) throws LMISException {

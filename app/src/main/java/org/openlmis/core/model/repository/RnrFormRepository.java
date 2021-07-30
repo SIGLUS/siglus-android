@@ -326,6 +326,7 @@ public class RnrFormRepository {
     return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder()
         .orderBy("periodBegin", false)
         .where().eq(PROGRAM_ID, programId)
+        .and()
         .isNotNull(SUBMITTED_TIME)
         .queryForFirst());
   }

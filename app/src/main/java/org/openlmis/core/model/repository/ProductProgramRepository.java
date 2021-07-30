@@ -84,7 +84,6 @@ public class ProductProgramRepository {
       throws LMISException {
     return dbUtil.withDao(ProductProgram.class, dao -> dao.queryBuilder()
         .where().eq("isActive", true)
-        .and().eq("versionCode", BuildConfig.VERSION_CODE)
         .and().ne("category", MEDICINE_TYPE_DEFAULT)
         .and().eq(PROGRAM_CODE, programCode)
         .query());

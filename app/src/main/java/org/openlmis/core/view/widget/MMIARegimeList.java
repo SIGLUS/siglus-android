@@ -18,8 +18,6 @@
 
 package org.openlmis.core.view.widget;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -31,6 +29,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import java.util.ArrayList;
 import java.util.List;
 import org.openlmis.core.LMISApp;
@@ -167,7 +167,7 @@ public class MMIARegimeList extends LinearLayout {
   }
 
   private Fragment getFragment() {
-    return ((Activity) getContext()).getFragmentManager().findFragmentById(R.id.fragment_requisition);
+    return ((FragmentActivity) getContext()).getSupportFragmentManager().findFragmentById(R.id.fragment_requisition);
   }
 
   private void initCategoryList(List<RegimenItem> regimenItems) {
