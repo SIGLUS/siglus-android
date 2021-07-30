@@ -47,6 +47,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
@@ -321,10 +322,13 @@ public class DirtyDataManager {
   }
 
   private DirtyDataItemInfo convertStockMovementItemsToStockMovementEntriesForSave(
-      List<StockMovementItem> stockMovementItems,
-      String productCode,
-      boolean fullyDelete) {
+      List<StockMovementItem> stockMovementItems, String productCode, boolean fullyDelete) {
+    Product product = Product.builder().code(productCode).build();
     List<StockMovementEntry> movementEntries = FluentIterable.from(stockMovementItems)
+        .transform(stockMovementItem -> {
+          Objects.requireNonNull(stockMovementItem).getStockCard().setProduct(product);
+          return stockMovementItem;
+        })
         .transform(StockMovementEntry::new)
         .toList();
 
