@@ -128,15 +128,17 @@ public class MMIARegimeList extends LinearLayout {
     int childSize = getChildCount();
 
     int[] firstItemLocations = new int[2];
-    int[] theDividerLocations = new int[2];
+    int[] lastAdultLocations = new int[2];
     int[] lastItemLocations = new int[2];
 
     getChildAt(0).getLocationOnScreen(firstItemLocations);
-    getChildAt(isCustomEnable() ? adults.size() + 1 : adults.size()).getLocationOnScreen(theDividerLocations);
-    getChildAt(childSize - 1).getLocationOnScreen(lastItemLocations);
+    View lastAdult = getChildAt(isCustomEnable() ? adults.size(): adults.size() -1);
+    lastAdult.getLocationOnScreen(lastAdultLocations);
 
-    adultHeight = theDividerLocations[1] - firstItemLocations[1];
-    childrenHeight = lastItemLocations[1] + getChildAt(childSize - 1).getHeight() - theDividerLocations[1];
+    adultHeight = lastAdultLocations[1] - firstItemLocations[1] + lastAdult.getHeight();
+    getChildAt(childSize - 1).getLocationOnScreen(lastItemLocations);
+    childrenHeight =
+        lastItemLocations[1] + getChildAt(childSize - 1).getHeight() - lastAdultLocations[1] - lastAdult.getHeight();
     ((MMIARegimeListWrap) getParent()).updateLeftHeader();
   }
 

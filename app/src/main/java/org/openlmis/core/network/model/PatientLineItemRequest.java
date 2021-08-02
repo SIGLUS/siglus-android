@@ -20,9 +20,11 @@ package org.openlmis.core.network.model;
 
 import java.util.List;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.openlmis.core.model.BaseInfoItem;
 
 @Data
+@NoArgsConstructor
 public class PatientLineItemRequest {
 
   private String name;

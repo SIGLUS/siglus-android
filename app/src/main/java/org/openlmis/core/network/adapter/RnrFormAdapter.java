@@ -33,6 +33,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -58,6 +59,7 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.model.PatientLineItemRequest;
+import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
@@ -172,7 +174,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     root.addProperty("clientSubmittedTime", String.valueOf(submittedTime.toInstant()));
     sectionInfo(rnRForm, root, programCode);
     List<RnRFormSignature> signatureList = signatureRepository.queryByRnrFormId(rnRForm.getId());
-    root.add("signatures", jsonParser.parse(gson.toJson(signatureList)));
+    root.add("signatures", jsonParser.parse(gson.xtoJson(signatureList)));
     return root;
   }
 
@@ -201,7 +203,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       for (Map.Entry<String, List<BaseInfoItem>> map : tableNameToItems.entrySet()) {
         patientLineItemRequests.add(new PatientLineItemRequest(map.getKey(), map.getValue()));
       }
-      root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests)));
+      Type type = new TypeToken<List<PatientLineItemRequest>>() {}.getType();
+      root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests, type)));
     }
   }
 
@@ -211,11 +214,11 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     HashMap<String, List<BaseInfoItem>> tableNameToItems = new HashMap<>();
     for (BaseInfoItem infoItem : baseInfoItems) {
       if (tableNameToItems.containsKey(infoItem.getTableName())) {
+        tableNameToItems.get(infoItem.getTableName()).add(infoItem);
+      } else {
         List<BaseInfoItem> list = new ArrayList<>();
         list.add(infoItem);
         tableNameToItems.put(infoItem.getTableName(), list);
-      } else {
-        tableNameToItems.get(infoItem.getTableName()).add(infoItem);
       }
     }
     return tableNameToItems;
