@@ -16,11 +16,12 @@
       android:name=".view.activity.LoginActivity"
       android:permission=""
       android:screenOrientation="portrait"
-      android:windowSoftInputMode="adjustPan|stateHidden"
-      android:theme="@style/AppTheme.NoActionBar">
+      android:theme="@style/AppTheme.NoActionBar"
+      android:windowSoftInputMode="adjustPan|stateHidden">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <action android:name="android.intent.action.VIEW" />
+
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
@@ -139,11 +140,14 @@
       android:label="@string/home_label_requisition_and_report"
       android:name=".view.activity.ReportListActivity"
       android:screenOrientation="portrait" />
-
     <activity
-      android:label="@string/title_bulk_issue_choose_destination"
+      android:label="@string/title_bulk_issue"
       android:name=".view.activity.BulkIssueChooseDestinationActivity"
-      android:screenOrientation="portrait"/>
+      android:screenOrientation="portrait" />
+    <activity
+      android:label="@string/title_bulk_issue"
+      android:name=".view.activity.BulkIssueActivity"
+      android:screenOrientation="portrait" />
 
     <meta-data
       android:name="com.google.android.gms.version"
@@ -230,6 +234,7 @@
       android:name="com.google.android.gms.analytics.AnalyticsService" />
     <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
   </application>
+
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />

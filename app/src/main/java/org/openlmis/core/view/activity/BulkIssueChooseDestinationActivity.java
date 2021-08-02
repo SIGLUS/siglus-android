@@ -20,11 +20,14 @@ package org.openlmis.core.view.activity;
 
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputLayout;
 import java.io.Serializable;
@@ -54,6 +57,17 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
   Button btNext;
 
   MovementReason chosenReason = null;
+
+  private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() != Activity.RESULT_OK) {
+          return;
+        }
+        Intent bulkIssueActivity = new Intent(BulkIssueChooseDestinationActivity.this, BulkIssueActivity.class);
+        bulkIssueActivity.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
+        startActivity(bulkIssueActivity);
+        finish();
+      });
 
   @Override
   protected ScreenName getScreenName() {
@@ -89,7 +103,7 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
         }
         Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
         intent.putExtra(SELECTED_PRODUCTS, (Serializable) Collections.singletonList(""));
-        startActivity(intent);
+        addProductsActivityResultLauncher.launch(intent);
       }
     };
   }
