@@ -56,6 +56,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.model.PatientLineItemRequest;
@@ -72,11 +73,15 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   public static final String COLUMNS = "columns";
   public static final String VALUE = "value";
   public static final String TABLE_NAME = "tableName";
+  public static final String SIGNATURES = "signatures";
+  public static final String CLIENT_SUBMITTED_TIME = "clientSubmittedTime";
 
   @Inject
   public ProgramRepository programRepository;
   @Inject
   RnrFormSignatureRepository signatureRepository;
+  @Inject
+  MMIARepository mmiaRepository;
 
   private final Gson gson;
   private final JsonParser jsonParser;
@@ -152,10 +157,14 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       for (JsonElement jsonPatient : jsonObject.get(PATIENT_LINE_ITEMS).getAsJsonArray()) {
         JsonObject jsonObjectForPatient = jsonPatient.getAsJsonObject();
         String componentName = jsonObjectForPatient.get(NAME).getAsString();
+        Map<String, Integer> tableNameToDisplayOrder = mmiaRepository.getDisplayOrderMap();
         for (JsonElement column : jsonObjectForPatient.get(COLUMNS).getAsJsonArray()) {
           JsonObject jsonColumn = column.getAsJsonObject();
-          BaseInfoItem baseInfoItem = new BaseInfoItem(jsonColumn.get(NAME).getAsString(),
-              TYPE.STRING, rnRForm, componentName, 0);
+          String tableName = jsonColumn.get(NAME).getAsString();
+          BaseInfoItem baseInfoItem = new BaseInfoItem(tableName,
+              TYPE.STRING, rnRForm, componentName,
+              tableNameToDisplayOrder.containsKey(tableName) ? tableNameToDisplayOrder.get(tableName) : 0);
+
           baseInfoItem.setValue(jsonColumn.get(VALUE).getAsString());
           baseInfoItems.add(baseInfoItem);
         }
@@ -171,10 +180,10 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     root.addProperty(ACTUAL_START_DATE, DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.DB_DATE_FORMAT));
     root.addProperty(ACTUAL_END_DATE, DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.DB_DATE_FORMAT));
     DateTime submittedTime = new DateTime(rnRForm.getSubmittedTime());
-    root.addProperty("clientSubmittedTime", String.valueOf(submittedTime.toInstant()));
+    root.addProperty(CLIENT_SUBMITTED_TIME, String.valueOf(submittedTime.toInstant()));
     sectionInfo(rnRForm, root, programCode);
     List<RnRFormSignature> signatureList = signatureRepository.queryByRnrFormId(rnRForm.getId());
-    root.add("signatures", jsonParser.parse(gson.xtoJson(signatureList)));
+    root.add(SIGNATURES, jsonParser.parse(gson.toJson(signatureList)));
     return root;
   }
 
@@ -203,8 +212,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       for (Map.Entry<String, List<BaseInfoItem>> map : tableNameToItems.entrySet()) {
         patientLineItemRequests.add(new PatientLineItemRequest(map.getKey(), map.getValue()));
       }
-      Type type = new TypeToken<List<PatientLineItemRequest>>() {}.getType();
-      root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests, type)));
+      root.add(PATIENT_LINE_ITEMS, jsonParser.parse(gson.toJson(patientLineItemRequests)));
     }
   }
 

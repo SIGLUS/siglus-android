@@ -18,6 +18,7 @@
 
 package org.openlmis.core.network.model;
 
+import com.google.gson.annotations.Expose;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,10 @@ import org.openlmis.core.model.BaseInfoItem;
 @NoArgsConstructor
 public class PatientLineItemRequest {
 
+  @Expose
   private String name;
+
+  @Expose
   private List<BaseInfoItem> columns;
 
   public PatientLineItemRequest(String name, List<BaseInfoItem> columns) {

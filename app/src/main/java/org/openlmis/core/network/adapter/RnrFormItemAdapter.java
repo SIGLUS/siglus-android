@@ -18,6 +18,10 @@
 
 package org.openlmis.core.network.adapter;
 
+import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
+import static org.openlmis.core.utils.DateUtil.SIMPLE_DATE_FORMAT;
+
+import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -30,12 +34,17 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.inject.Inject;
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.ServiceItem;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
 public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
@@ -61,9 +70,18 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
   @Override
   public JsonElement serialize(RnrFormItem rnrFormItem, Type typeOfSrc,
       JsonSerializationContext context) {
+    String validate = rnrFormItem.getValidate();
+    if (!TextUtils.isEmpty(validate)) {
+      try {
+        Date validateDate = new SimpleDateFormat(SIMPLE_DATE_FORMAT, Locale.getDefault()).parse(validate);
+        validate = DateUtil.formatDate(validateDate, DB_DATE_FORMAT);
+      } catch (ParseException e) {
+        new LMISException(e, "DateUtil,parseString").reportToFabric();
+        validate = rnrFormItem.getValidate();
+      }
+      rnrFormItem.setValidate(validate);
+    }
     JsonObject jsonObject = gson.toJsonTree(rnrFormItem).getAsJsonObject();
-    jsonObject.add("serviceItems",
-        jsonParser.parse(gson.toJson(rnrFormItem.getServiceItemListWrapper())));
     return jsonObject;
   }
 

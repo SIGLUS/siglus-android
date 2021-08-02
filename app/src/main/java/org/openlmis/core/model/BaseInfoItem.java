@@ -56,7 +56,6 @@ public class BaseInfoItem extends BaseModel {
   @DatabaseField
   private String tableName;
 
-  @Expose
   @DatabaseField
   private int displayOrder;
 
