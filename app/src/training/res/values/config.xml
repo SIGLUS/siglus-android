@@ -9,9 +9,4 @@
   <string name="app_time_out">3600000</string>
   <bool name="feature_training">true</bool>
   <string name="appcenter_app_key" translatable="false">86898d45-c0c2-4250-96e6-a56acdb0af01</string>
-
-  <!-- firebase param, do not change field name -->
-  <string name="google_app_id">google_app_id</string>
-  <string name="project_id">project_id</string>
-  <string name="google_api_key">google_api_key</string>
 </resources>

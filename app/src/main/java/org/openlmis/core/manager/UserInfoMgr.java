@@ -18,12 +18,18 @@
 
 package org.openlmis.core.manager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.model.User;
 
 public final class UserInfoMgr {
 
+  /**
+   * app center max user id max length.
+   * see {@link com.microsoft.appcenter.utils.context.UserIdContext#USER_ID_APP_CENTER_MAX_LENGTH}
+   */
+  private static final int USER_NAME_MAX_LENGTH = 256;
   private static UserInfoMgr mInstance;
   private User user;
 
@@ -42,11 +48,11 @@ public final class UserInfoMgr {
   }
 
   public void setUser(User user) {
-    AnalyticsTracker.getInstance().setUserInfo(user);
+    this.user = user;
     SharedPreferenceMgr.getInstance().setCurrentUserFacility(user.getFacilityName());
     SharedPreferenceMgr.getInstance().setLastLoginUser(user.getUsername());
     SharedPreferenceMgr.getInstance().setUserFacilityId(user.getFacilityId());
-    this.user = user;
+    AnalyticsTracker.getInstance().setUserInfo(getUserNameForAppCenter());
   }
 
   public String getVersion() {
@@ -59,5 +65,19 @@ public final class UserInfoMgr {
 
   public String getFacilityName() {
     return user == null ? "" : user.getFacilityName();
+  }
+
+  public String getUserNameForAppCenter() {
+    String userName;
+    String lastUserFacilityName = SharedPreferenceMgr.getInstance().getCurrentUserFacility();
+    String lastUserName = SharedPreferenceMgr.getInstance().getLastLoginUser();
+    if (user != null) {
+      userName = user.getFacilityName() + "-" + user.getUsername();
+    } else if (StringUtils.isNotBlank(lastUserFacilityName) && StringUtils.isNotBlank(lastUserName)) {
+      userName = lastUserFacilityName + "-" + lastUserName;
+    } else {
+      return "";
+    }
+    return userName.substring(0, Math.min(userName.length(), USER_NAME_MAX_LENGTH));
   }
 }

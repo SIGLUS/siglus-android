@@ -19,24 +19,17 @@
 package org.openlmis.core.googleanalytics;
 
 import android.app.Application;
-import android.content.Context;
-import android.os.Bundle;
 import androidx.annotation.NonNull;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
 import java.util.HashMap;
 import java.util.Map;
 import org.joda.time.DateTime;
-import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.User;
 
 public final class AnalyticsTracker {
 
@@ -56,68 +49,64 @@ public final class AnalyticsTracker {
     return sInstance;
   }
 
-  private final FirebaseAnalytics firebaseTracker;
-
   /**
    * Don't instantiate directly - use {@link #getInstance()} instead.
    */
   private AnalyticsTracker(Application application) {
-    Context context = application.getApplicationContext();
-
-    // init google analytics
-    FirebaseApp.initializeApp(context);
-    firebaseTracker = FirebaseAnalytics.getInstance(context);
-    firebaseTracker.setSessionTimeoutDuration(300);
-    firebaseTracker.setUserProperty("AppVersion", BuildConfig.VERSION_NAME);
-
-    // init app center analytics
     AppCenter.start(application,
         application.getResources().getString(R.string.appcenter_app_key), Analytics.class, Crashes.class);
     AppCenter.setEnabled(true);
     Analytics.setEnabled(true);
   }
 
-  public synchronized FirebaseAnalytics getGoogleAnalyticsTracker() {
-    return firebaseTracker;
-  }
-
-  public void setUserInfo(@NonNull User user) {
+  public void setUserInfo(@NonNull String userName) {
     AppCenter.isEnabled().thenAccept(enable -> {
-      if (Boolean.TRUE.equals(enable)) {
-        AppCenter.setUserId(user.getFacilityName());
+      if (Boolean.FALSE.equals(enable)) {
+        AppCenter.setUserId(userName);
       }
     });
-    firebaseTracker.setUserId(user.getFacilityName());
-    FirebaseCrashlytics.getInstance().setUserId(user.getFacilityName());
   }
 
   public void traceError(LMISException exception) {
-    Analytics.isEnabled().thenAccept(enable -> {
-      final StackTraceElement[] traceElements = exception.getStackTrace();
-      if (Boolean.TRUE.equals(enable) && (traceElements.length > 0)) {
-        Map<String, String> properties = new HashMap<>(traceElements.length);
-        for (int i = traceElements.length - 1; i >= 0; i--) {
-          properties.put(Integer.toString(i), traceElements[i].toString());
+    traceError(exception, null);
+  }
+
+  public void traceError(LMISException exception, Map<String, String> properties) {
+    Crashes.isEnabled().thenAccept(enable -> {
+      if (Boolean.TRUE.equals(enable)) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("errorMsg", exception.getMsg());
+        if (properties != null) {
+          params.putAll(properties);
         }
-        AppCenter.setUserId(UserInfoMgr.getInstance().getFacilityName());
-        Analytics.trackEvent(exception.getMsg(), properties);
+        AppCenter.setUserId(UserInfoMgr.getInstance().getUserNameForAppCenter());
+        Crashes.trackError(exception, params, null);
       }
     });
-    FirebaseCrashlytics.getInstance().recordException(exception);
   }
 
   public void trackEvent(TrackerCategories category, TrackerActions action) {
-    Bundle bundle = new Bundle();
-    bundle.putString("Category", category.getString());
-    bundle.putString("ActionName", action.getString());
-    bundle.putString("ProcessDate", new DateTime(LMISApp.getInstance().getCurrentTimeMillis()).toInstant().toString());
-    firebaseTracker.logEvent("UserAction", bundle);
+    HashMap<String, String> bundle = new HashMap<>();
+    bundle.put("category", category.getString());
+    bundle.put("actionName", action.getString());
+    bundle.put("processDate", new DateTime(LMISApp.getInstance().getCurrentTimeMillis()).toInstant().toString());
+    Analytics.isEnabled().thenAccept(enable -> {
+      if (Boolean.TRUE.equals(enable)) {
+        AppCenter.setUserId(UserInfoMgr.getInstance().getUserNameForAppCenter());
+        Analytics.trackEvent("UserAction", bundle);
+      }
+    });
   }
 
   public void trackScreen(ScreenName screenName) {
-    Bundle bundle = new Bundle();
-    bundle.putString("ScreenName", screenName.getName());
-    bundle.putString("ProcessDate", new DateTime(LMISApp.getInstance().getCurrentTimeMillis()).toInstant().toString());
-    firebaseTracker.logEvent("ScreenName", bundle);
+    HashMap<String, String> bundle = new HashMap<>();
+    bundle.put("screenName", screenName.getName());
+    bundle.put("processDate", new DateTime(LMISApp.getInstance().getCurrentTimeMillis()).toInstant().toString());
+    Analytics.isEnabled().thenAccept(enable -> {
+      if (Boolean.TRUE.equals(enable)) {
+        AppCenter.setUserId(UserInfoMgr.getInstance().getUserNameForAppCenter());
+        Analytics.trackEvent("ScreenName", bundle);
+      }
+    });
   }
 }

@@ -23,13 +23,13 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
-import com.google.android.gms.common.util.CollectionUtils;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;

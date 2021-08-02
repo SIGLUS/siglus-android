@@ -8,9 +8,4 @@
   <string name="app_name">@string/app_name_in_integ</string>
   <string name="app_time_out">3600000</string>
   <string name="appcenter_app_key" translatable="false">6503c5e1-77d1-42f8-8e28-dee5a684b7ea</string>
-
-  <!-- firebase param, do not change field name -->
-  <string name="google_app_id">1:216487685157:android:c2c1bc2cf2a16f979d63cc</string>
-  <string name="project_id">siglus-386a0</string>
-  <string name="google_api_key">AIzaSyAD-JkdMd1zsUr_ItJxlixHD5leYUVyaKc</string>
 </resources>
