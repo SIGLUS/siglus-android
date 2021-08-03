@@ -85,6 +85,8 @@ import org.openlmis.core.persistence.migrations.CreateKitProductsTable;
 import org.openlmis.core.persistence.migrations.CreateMalariaTreatments;
 import org.openlmis.core.persistence.migrations.CreatePTVProgramSchema;
 import org.openlmis.core.persistence.migrations.CreatePatientDataReportTable;
+import org.openlmis.core.persistence.migrations.CreatePodProductTable;
+import org.openlmis.core.persistence.migrations.CreatePodTable;
 import org.openlmis.core.persistence.migrations.CreateProductProgramsTable;
 import org.openlmis.core.persistence.migrations.CreateProgramBasicDataFormTable;
 import org.openlmis.core.persistence.migrations.CreateProgramDataColumnsTable;
@@ -113,6 +115,7 @@ import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
+import org.openlmis.core.persistence.migrations.CreatePodLotItemTable;
 
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
@@ -208,6 +211,9 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new AddLotMovementItemsReasonAndDocumentNumber());
     MIGRATIONS.add(new CreateBulkEntriesDraftTables());
     MIGRATIONS.add(new CreateBulkIssueDraftTables());
+    MIGRATIONS.add(new CreatePodTable());
+    MIGRATIONS.add(new CreatePodProductTable());
+    MIGRATIONS.add(new CreatePodLotItemTable());
   }
 
   private LmisSqliteOpenHelper(Context context) {
