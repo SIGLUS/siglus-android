@@ -55,16 +55,12 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
   @Inject
   public ProductRepository productRepository;
 
-  private final JsonParser jsonParser;
-
-
   public RnrFormItemAdapter() {
     RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
     gson = new GsonBuilder()
         .registerTypeAdapter(Product.class, new ProductAdapter())
         .registerTypeAdapter(ServiceItem.class, new ServiceItemAdapter())
         .excludeFieldsWithoutExposeAnnotation().create();
-    jsonParser = new JsonParser();
   }
 
   @Override

@@ -33,7 +33,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -60,7 +59,6 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.model.PatientLineItemRequest;
-import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
@@ -75,6 +73,9 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   public static final String TABLE_NAME = "tableName";
   public static final String SIGNATURES = "signatures";
   public static final String CLIENT_SUBMITTED_TIME = "clientSubmittedTime";
+  public static final String PRODUCTS = "products";
+  public static final String REGIMEN_LINE_ITEMS = "regimenLineItems";
+  public static final String REGIMEN_SUMMARY_LINE_ITEMS = "regimenSummaryLineItems";
 
   @Inject
   public ProgramRepository programRepository;
@@ -188,9 +189,9 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   }
 
   private void sectionInfo(RnRForm rnRForm, JsonObject root, String programCode) {
-    root.add("products", jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
-    root.add("regimens", jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
-    root.add("therapeuticLines", jsonParser.parse(gson.toJson(rnRForm.getRegimenThreeLineListWrapper())));
+    root.add(PRODUCTS, jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
+    root.add(REGIMEN_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
+    root.add(REGIMEN_SUMMARY_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenThreeLineListWrapper())));
     if (programCode.endsWith(VIA_PROGRAM_CODE)) {
       root.addProperty("consultationNumber", getConsultationNumber(rnRForm));
     }

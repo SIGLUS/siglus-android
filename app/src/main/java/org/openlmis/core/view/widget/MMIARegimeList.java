@@ -125,17 +125,17 @@ public class MMIARegimeList extends LinearLayout {
   }
 
   public void initAdultAndChildrenHeaderHeight() {
-    int childSize = getChildCount();
-
     int[] firstItemLocations = new int[2];
-    int[] lastAdultLocations = new int[2];
-    int[] lastItemLocations = new int[2];
-
     getChildAt(0).getLocationOnScreen(firstItemLocations);
-    View lastAdult = getChildAt(isCustomEnable() ? adults.size(): adults.size() -1);
-    lastAdult.getLocationOnScreen(lastAdultLocations);
 
+    int lastAdultPosition = isCustomEnable() ? adults.size() : adults.size() - 1;
+    View lastAdult = getChildAt(lastAdultPosition);
+    int[] lastAdultLocations = new int[2];
+    lastAdult.getLocationOnScreen(lastAdultLocations);
     adultHeight = lastAdultLocations[1] - firstItemLocations[1] + lastAdult.getHeight();
+
+    int childSize = getChildCount();
+    int[] lastItemLocations = new int[2];
     getChildAt(childSize - 1).getLocationOnScreen(lastItemLocations);
     childrenHeight =
         lastItemLocations[1] + getChildAt(childSize - 1).getHeight() - lastAdultLocations[1] - lastAdult.getHeight();

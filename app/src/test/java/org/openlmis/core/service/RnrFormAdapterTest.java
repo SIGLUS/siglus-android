@@ -95,11 +95,15 @@ public class RnrFormAdapterTest {
 
   @Test
   public void shouldSerializeRnrFormWithCommentsToJsonObject() throws LMISException {
+    // given
     rnRForm.setComments("XYZ");
     rnRForm.setSubmittedTime(DateUtil.today());
     rnRForm.setEmergency(true);
 
+    // when
     JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
+
+    // then
     assertEquals("\"XYZ\"", rnrJson.getAsJsonObject().get("comments").toString());
     assertEquals("true", rnrJson.getAsJsonObject().get("emergency").toString());
   }
@@ -121,7 +125,7 @@ public class RnrFormAdapterTest {
 
   @Test
   public void shouldSerializeRnrFormWithExpirationDate() throws Exception {
-
+    // given
     ArrayList<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
     RnrFormItem rnrFormItem = new RnrFormItem();
     Product product = new Product();
@@ -130,12 +134,14 @@ public class RnrFormAdapterTest {
     rnrFormItem.setValidate("10/11/2015");
     rnrFormItemListWrapper.add(rnrFormItem);
     rnRForm.setRnrFormItemListWrapper(rnrFormItemListWrapper);
-
     rnRForm.setSubmittedTime(DateUtil.parseString("2015-10-14 01:01:11", "yyyy-MM-dd HH:mm:ss"));
 
+    // when
     JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
-    assertThat(rnrJson.getAsJsonObject().get("products").getAsJsonArray().get(0).getAsJsonObject()
-        .get("expirationDate").toString(), is("\"10/11/2015\""));
+
+    // then
+    assertEquals("\"2015-11-10\"", rnrJson.getAsJsonObject().get("products").getAsJsonArray().get(0)
+        .getAsJsonObject().get("expirationDate").toString());
   }
 
 
@@ -160,16 +166,16 @@ public class RnrFormAdapterTest {
     // then
     JsonObject productInfo = rnrJson.getAsJsonObject().get("products").getAsJsonArray().get(0)
         .getAsJsonObject();
-    assertThat(productInfo.get("productCode").toString(), is("\"P1\""));
-    assertThat(productInfo.get("stockOnHand").toString(), is("100"));
-    assertThat(productInfo.get("expirationDate").toString(), is("\"10/11/2015\""));
-    assertThat(productInfo.get("requestedQuantity").toString(), is("111"));
-    assertThat(productInfo.get("authorizedQuantity").toString(), is("222"));
-
+    assertEquals("\"P1\"", productInfo.get("productCode").toString());
+    assertEquals("100", productInfo.get("stockOnHand").toString());
+    assertEquals("\"2015-11-10\"", productInfo.get("expirationDate").toString());
+    assertEquals("111", productInfo.get("requestedQuantity").toString());
+    assertEquals("222", productInfo.get("authorizedQuantity").toString());
   }
 
   @Test
   public void shouldSerializeRnrFormWithRegimen() throws Exception {
+    // given
     ArrayList<RegimenItem> regimenItems = new ArrayList<>();
     RegimenItem item = new RegimenItem();
     Regimen regimen = new Regimen();
@@ -180,13 +186,15 @@ public class RnrFormAdapterTest {
     regimenItems.add(item);
     rnRForm.setRegimenItemListWrapper(regimenItems);
 
+    // when
     JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
 
-    JsonObject regimens = rnrJson.getAsJsonObject().get("regimens").getAsJsonArray().get(0)
+    // then
+    JsonObject regimens = rnrJson.getAsJsonObject().get("regimenLineItems").getAsJsonArray().get(0)
         .getAsJsonObject();
-    assertThat(regimens.get("code").toString(), is("\"code1\""));
-    assertThat(regimens.get("name").toString(), is("\"name1\""));
-    assertThat(regimens.get("patientsOnTreatment").toString(), is("10"));
+    assertEquals("\"code1\"", regimens.get("code").toString());
+    assertEquals("\"name1\"", regimens.get("name").toString());
+    assertEquals("10", regimens.get("patientsOnTreatment").toString());
   }
 
   @Test

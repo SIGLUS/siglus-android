@@ -1,6 +1,5 @@
 package org.openlmis.core.model.repository;
 
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 

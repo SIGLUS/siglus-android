@@ -113,45 +113,44 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldGetStockCardsBeforePeriodEndDate() throws Exception {
+    // given
     Program program1 = new ProgramBuilder().setProgramCode("code1").build();
-    Program program2 = new ProgramBuilder().setProgramCode("code2").setParentCode("code1").build();
     Program program3 = new ProgramBuilder().setProgramCode("code3").build();
     generateTestDataForGetStockCards("P1", true, false, program1, "1969-11-11");
     generateTestDataForGetStockCards("P2", true, false, program1, "1970-11-11");
-    generateTestDataForGetStockCards("P3", true, false, program2, "1969-11-11");
     generateTestDataForGetStockCards("P4", true, false, program3, "1969-11-11");
-
     DateTime periodBegin = new DateTime(
         DateUtil.parseString("1970-01-01 10:10:10", DateUtil.DATE_TIME_FORMAT));
     DateTime periodEnd = new DateTime(
         DateUtil.parseString("1970-02-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
     RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
-    List<StockCard> stockCardsBeforeTimeLine = stockRepository
-        .getStockCardsBeforePeriodEnd(rnRForm);
-    assertThat(stockCardsBeforeTimeLine.size(), is(2));
+
+    // when
+    List<StockCard> stockCardsBeforeTimeLine = stockRepository.getStockCardsBeforePeriodEnd(rnRForm);
+
+    // then
+    assertThat(stockCardsBeforeTimeLine.size(), is(1));
     assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(), is("P1"));
-    assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(), is("P3"));
   }
 
   @Test
   public void shouldGetActiveAndNotArchivedStockCardsBeforePeriodEndDate() throws Exception {
+    // given
     Program program1 = new ProgramBuilder().setProgramCode("code1").build();
-    Program program2 = new ProgramBuilder().setProgramCode("code2").setParentCode("code1").build();
     generateTestDataForGetStockCards("P1", true, false, program1, "1969-11-11");
     generateTestDataForGetStockCards("P2", false, false, program1, "1969-11-11");
-    generateTestDataForGetStockCards("P3", true, false, program2, "1969-11-11");
-    generateTestDataForGetStockCards("P4", true, true, program2, "1969-11-11");
-
     DateTime periodBegin = new DateTime(
         DateUtil.parseString("1970-01-01 10:10:10", DateUtil.DATE_TIME_FORMAT));
     DateTime periodEnd = new DateTime(
         DateUtil.parseString("1970-02-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
     RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
-    List<StockCard> stockCardsBeforeTimeLine = stockRepository
-        .getStockCardsBeforePeriodEnd(rnRForm);
-    assertThat(stockCardsBeforeTimeLine.size(), is(2));
-    assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(), is("P1"));
-    assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(), is("P3"));
+
+    // when
+    List<StockCard> stockCardsBeforeTimeLine = stockRepository.getStockCardsBeforePeriodEnd(rnRForm);
+
+    // then
+    assertEquals(1, stockCardsBeforeTimeLine.size());
+    assertEquals("P1", stockCardsBeforeTimeLine.get(0).getProduct().getCode());
   }
 
   private void generateTestDataForGetStockCards(String productCode, boolean isActive,

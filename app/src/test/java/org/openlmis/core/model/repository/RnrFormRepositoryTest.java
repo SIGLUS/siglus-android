@@ -31,6 +31,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.NEGATIVE_ADJUST;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.POSITIVE_ADJUST;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
+import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 import androidx.annotation.NonNull;
@@ -72,14 +79,12 @@ import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.service.RequisitionPeriodService;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 @RunWith(LMISTestRunner.class)
-@SuppressWarnings("PMD")
 public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   RnrFormRepository rnrFormRepository;
@@ -96,6 +101,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   private ReportTypeFormRepository mockReportTypeFormRepository;
 
+  static final String comment = "DRAFT Form";
+
   @Before
   public void setup() throws LMISException {
     mockProgramRepository = mock(ProgramRepository.class);
@@ -111,7 +118,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(RnrFormRepository.class);
 
-    Program programMMIA = new Program("MMIA", "MMIA", null, false, null, null);
+    Program programMMIA = createProgram(MMIA_PROGRAM_CODE);
     programMMIA.setId(1l);
 
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
@@ -159,7 +166,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     List<RnRForm> list = rnrFormRepository
-        .listInclude(RnRForm.Emergency.NO, Constants.MMIA_PROGRAM_CODE);
+        .listInclude(RnRForm.Emergency.NO, MMIA_PROGRAM_CODE);
     assertThat(list.size(), is(6));
   }
 
@@ -167,7 +174,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
   public void shouldGetDraftForm() throws LMISException {
     Program program = new Program();
     program.setId(1l);
-    program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
+    program.setProgramCode(MMIA_PROGRAM_CODE);
 
     ReportTypeForm reportTypeForm = new ReportTypeBuilder()
         .setActive(true)
@@ -176,7 +183,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     when(mockReportTypeFormRepository.getReportType(anyString())).thenReturn(reportTypeForm);
 
-    RnRForm form = new RnRFormBuilder().setComments("DRAFT Form")
+    RnRForm form = new RnRFormBuilder().setComments(comment)
         .setStatus(Status.DRAFT).setProgram(program).build();
     form.setPeriodBegin(DateUtil.dateMinusMonth(new Date(), 1));
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
@@ -185,7 +192,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     RnRForm rnRForm = rnrFormRepository.queryUnAuthorized();
 
-    assertThat(rnRForm.getComments(), is("DRAFT Form"));
+    assertThat(rnRForm.getComments(), is(comment));
   }
 
   @Test
@@ -243,61 +250,32 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
   @Test
   public void shouldGenerateRnrFormItemWithCorrectAttributes() throws Exception {
+    //given
     int stockExistence = 100;
     int issueQuantity = 10;
     int receiveQuantity = 20;
     int positiveQuantity = 30;
     int negativeQuantity = 40;
-    Program program = new Program("mmia", "mmia", null, false, null, null);
+    Program program = createProgram(MMIA_PROGRAM_CODE);
 
     ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
     StockMovementItemBuilder stockMovementItemBuilder = new StockMovementItemBuilder();
 
-    StockMovementItem inventoryItem = stockMovementItemBuilder
-        .withDocumentNo("1")
-        .withMovementReason("reason")
-        .withMovementDate("10/10/2015")
-        .withMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY)
-        .withStockOnHand(stockExistence)
-        .build();
-    StockMovementItem issueItem = stockMovementItemBuilder
-        .withDocumentNo("1")
-        .withMovementReason("reason")
-        .withMovementDate("10/10/2015")
-        .withMovementType(MovementReasonManager.MovementType.ISSUE)
-        .withQuantity(issueQuantity)
-        .build();
-    StockMovementItem receiveItem = stockMovementItemBuilder
-        .withDocumentNo("1")
-        .withMovementReason("reason")
-        .withMovementDate("10/11/2015")
-        .withMovementType(MovementReasonManager.MovementType.RECEIVE)
-        .withQuantity(receiveQuantity)
-        .build();
-    StockMovementItem positiveItem = stockMovementItemBuilder
-        .withDocumentNo("1")
-        .withMovementReason("reason")
-        .withMovementDate("10/12/2015")
-        .withMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST)
-        .withQuantity(positiveQuantity)
-        .build();
-    StockMovementItem negativeItem = stockMovementItemBuilder
-        .withDocumentNo("1")
-        .withMovementReason("reason")
-        .withMovementDate("10/12/2015")
-        .withMovementType(MovementReasonManager.MovementType.NEGATIVE_ADJUST)
-        .withQuantity(negativeQuantity)
-        .build();
-
-    stockMovementItems.add(inventoryItem);
-    stockMovementItems.add(issueItem);
-    stockMovementItems.add(receiveItem);
-    stockMovementItems.add(positiveItem);
-    stockMovementItems.add(negativeItem);
+    StockMovementItem inventoryItem =
+        createStockMovementItemBySOH(stockMovementItemBuilder, PHYSICAL_INVENTORY, stockExistence);
+    StockMovementItem issueItem = createStockMovementItemByQuality(stockMovementItemBuilder, ISSUE, issueQuantity);
+    StockMovementItem receiveItem =
+        createStockMovementItemByQuality(stockMovementItemBuilder, RECEIVE, receiveQuantity);
+    StockMovementItem positiveItem =
+        createStockMovementItemByQuality(stockMovementItemBuilder, POSITIVE_ADJUST, positiveQuantity);
+    StockMovementItem negativeItem =
+        createStockMovementItemByQuality(stockMovementItemBuilder, NEGATIVE_ADJUST, negativeQuantity);
+    stockMovementItems.addAll(Arrays.asList(inventoryItem, issueItem, receiveItem, positiveItem, negativeItem));
 
     ArrayList<StockCard> stockCards = new ArrayList<>();
     Product product = new Product();
-    product.setCode("01A01");
+    String productCode = "01A01";
+    product.setCode(productCode);
 
     StockCard stockCard = new StockCardBuilder()
         .setCreateDate(new Date())
@@ -324,19 +302,22 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     ProductProgram productProgram = new ProductProgram();
     productProgram.setCategory("Adult");
-    when(mockProductProgramRepository.queryByCode(anyString(), anyString()))
-        .thenReturn(productProgram);
+    productProgram.setProductCode(productCode);
+
+    when(mockProductProgramRepository.listActiveProductProgramsByProgramCodes(anyList()))
+        .thenReturn(Arrays.asList(productProgram));
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
 
+    // when
     List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form, stockCards);
 
+    // then
     RnrFormItem rnrFormItem = rnrFormItemList.get(0);
     int expectAdjustment = positiveQuantity - negativeQuantity;
     int expectInventoryQuantity =
         stockExistence + receiveQuantity + positiveQuantity - issueQuantity - negativeQuantity;
     int expectOrderQuantity = 2 * issueQuantity - expectInventoryQuantity;
     expectOrderQuantity = Math.max(expectOrderQuantity, 0);
-
     assertThat(rnrFormItem.getProduct(), is(product));
     assertThat(rnrFormItem.getCategory(), is("Adult"));
     assertEquals(stockExistence, rnrFormItem.getInitialAmount().longValue());
@@ -354,12 +335,12 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     RnRForm form = new RnRForm();
     form.setProgram(program);
     form.setId(1);
-    form.setComments("DRAFT Form");
+    form.setComments(comment);
 
     rnrFormRepository.create(form);
 
     RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
-    assertThat(rnRForm.getComments(), is("DRAFT Form"));
+    assertThat(rnRForm.getComments(), is(comment));
   }
 
   @Test
@@ -369,12 +350,12 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     RnRForm form = new RnRForm();
     form.setProgram(program);
     form.setId(1);
-    form.setComments("DRAFT Form");
+    form.setComments(comment);
 
     rnrFormRepository.create(form);
     List<RnRForm> rnRForm = rnrFormRepository.list();
     assertThat(rnRForm.size(), is(1));
-    assertThat(rnRForm.get(0).getComments(), is("DRAFT Form"));
+    assertThat(rnRForm.get(0).getComments(), is(comment));
 
     rnrFormRepository.removeRnrForm(form);
 
@@ -405,7 +386,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     RnRForm form = RnRForm
         .init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
     form.setId(1);
-    form.setComments("DRAFT Form");
+    form.setComments(comment);
 
     form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
     form.setRegimenItemListWrapper(new ArrayList<RegimenItem>());
@@ -537,7 +518,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
   public void shouldInitRnrEmergencyService() throws Exception {
     when(mockRequisitionPeriodService.generateNextPeriod(anyString(), any(Date.class)))
         .thenReturn(new Period(new DateTime(), new DateTime()));
-    rnrFormRepository.programCode = "MMIA";
+    rnrFormRepository.programCode = VIA_PROGRAM_CODE;
 
     rnrFormRepository.initEmergencyRnrForm(null, Collections.EMPTY_LIST);
     verify(mockRequisitionPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
@@ -551,10 +532,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     Program programVIA = new Program();
     programVIA.setId(2L);
-    programVIA.setProgramCode(Constants.VIA_PROGRAM_CODE);
-    programEss.setParentCode(Constants.VIA_PROGRAM_CODE);
+    programVIA.setProgramCode(VIA_PROGRAM_CODE);
+    programEss.setParentCode(VIA_PROGRAM_CODE);
 
-    when(mockProgramRepository.queryByCode(Constants.VIA_PROGRAM_CODE)).thenReturn(programVIA);
+    when(mockProgramRepository.queryByCode(VIA_PROGRAM_CODE)).thenReturn(programVIA);
 
     RnRForm formEss = new RnRForm();
     formEss.setProgram(programEss);
@@ -582,12 +563,12 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     rnrFormRepository.create(formVIAEmergency);
 
     List<RnRForm> list = rnrFormRepository
-        .listInclude(RnRForm.Emergency.NO, Constants.VIA_PROGRAM_CODE);
+        .listInclude(RnRForm.Emergency.NO, VIA_PROGRAM_CODE);
     assertThat(list.size(), is(1));
 
     //I'm not sure why programCode is higher priority than Emergency...
     List<RnRForm> listWithEmergency = rnrFormRepository
-        .listInclude(RnRForm.Emergency.YES, Constants.VIA_PROGRAM_CODE);
+        .listInclude(RnRForm.Emergency.YES, VIA_PROGRAM_CODE);
     assertThat(listWithEmergency.size(), is(2));
   }
 
@@ -601,14 +582,14 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     Program programVIA = new Program();
     programVIA.setId(2L);
-    programVIA.setProgramCode(Constants.VIA_PROGRAM_CODE);
-    programEss.setParentCode(Constants.VIA_PROGRAM_CODE);
+    programVIA.setProgramCode(VIA_PROGRAM_CODE);
+    programEss.setParentCode(VIA_PROGRAM_CODE);
 
     Program programMMIA = new Program();
     programMMIA.setId(3L);
-    programMMIA.setProgramCode(Constants.MMIA_PROGRAM_CODE);
+    programMMIA.setProgramCode(MMIA_PROGRAM_CODE);
 
-    when(mockProgramRepository.queryByCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(programMMIA);
+    when(mockProgramRepository.queryByCode(MMIA_PROGRAM_CODE)).thenReturn(programMMIA);
     RnRForm formEss = new RnRForm();
     formEss.setProgram(programEss);
     formEss.setStatus(Status.AUTHORIZED);
@@ -681,5 +662,28 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     rnrFormItem.setProduct(product);
     rnrFormItem.setInventory(inventory);
     return rnrFormItem;
+  }
+
+  private StockMovementItem createStockMovementItemBySOH(StockMovementItemBuilder stockMovementItemBuilder,
+      MovementReasonManager.MovementType type, int stockExistence) {
+   return createStockMovementItem(stockMovementItemBuilder, type, stockExistence, 12);
+  }
+
+  private StockMovementItem createStockMovementItemByQuality(StockMovementItemBuilder stockMovementItemBuilder,
+      MovementReasonManager.MovementType type, int quantity) {
+    return createStockMovementItem(stockMovementItemBuilder, type, 100, quantity);
+  }
+
+  private StockMovementItem createStockMovementItem(StockMovementItemBuilder stockMovementItemBuilder,
+      MovementReasonManager.MovementType type, int stockExistence, int quantity) {
+    StockMovementItem inventoryItem = stockMovementItemBuilder
+        .withDocumentNo("1")
+        .withMovementReason("reason")
+        .withMovementDate("10/10/2015")
+        .withMovementType(type)
+        .withStockOnHand(stockExistence)
+        .withQuantity(quantity)
+        .build();
+    return inventoryItem;
   }
 }

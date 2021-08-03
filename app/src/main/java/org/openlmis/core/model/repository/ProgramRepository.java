@@ -29,7 +29,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;

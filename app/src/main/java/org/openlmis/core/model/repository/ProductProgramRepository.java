@@ -24,7 +24,6 @@ import android.content.Context;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
-import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
