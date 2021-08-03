@@ -106,10 +106,8 @@ public class PTVRepositoryTest extends LMISRepositoryUnitTest {
     when(mockProductProgramRepository
         .queryActiveProductIdsByProgramsWithKits(anyListOf(String.class), anyBoolean()))
         .thenReturn(mockProductIds);
-    when(mockProductProgramRepository.queryByCode(anyString(), anyListOf(String.class)))
+    when(mockProductProgramRepository.queryByCode(anyString(), anyString()))
         .thenReturn(productProgram);
-    when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString()))
-        .thenReturn(mockProgramCode);
     when(mockProductRepository.queryProductsByProductIds(anyListOf(Long.class)))
         .thenReturn(products);
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);

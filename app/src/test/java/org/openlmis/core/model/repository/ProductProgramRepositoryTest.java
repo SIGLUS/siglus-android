@@ -136,9 +136,7 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
     repository.batchSave(productOne, productOnePrograms);
     repository.batchSave(productSecond, productSecondPrograms);
 
-    List<String> programCodes = newArrayList("PR1", "PR2");
-
-    ProductProgram productProgram = repository.queryByCode("P1", programCodes);
+    ProductProgram productProgram = repository.queryByCode("P1", "PR1");
     assertEquals(productProgram.getProductCode(), "P1");
     assertEquals(productProgram.getProgramCode(), "PR1");
   }

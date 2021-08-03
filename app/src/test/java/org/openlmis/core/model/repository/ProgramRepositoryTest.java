@@ -97,38 +97,6 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
   }
 
   @Test
-  public void shouldQueryProgramIdsByProgramCodeOrParentCode() throws Exception {
-    insertProgram("MMIA", "MMIA Program", null);
-    insertProgram("PTV", "ptv Program", "MMIA");
-    insertProgram("TARV", "tarv Program", "MMIA");
-    insertProgram("VIA", "VIA Program", null);
-    insertProgram("TB", "Nutrition Program", "VIA");
-
-    List<Long> viaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("VIA");
-    List<Long> mmiaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("MMIA");
-    Assertions.assertThat(viaProgramIds.size())
-        .isGreaterThanOrEqualTo(2);//initialized VIA programs + TB
-    Assertions.assertThat(mmiaProgramIds.size()).isGreaterThanOrEqualTo(3); // TARV + PTV + MMIA
-  }
-
-  @Test
-  public void shouldQueryProgramCodesByProgramCodeOrParentCode() throws Exception {
-    insertProgram("MMIA", "MMIA Program", null);
-    insertProgram("PTV", "ptv Program", "MMIA");
-    insertProgram("TARV", "tarv Program", "MMIA");
-    insertProgram("VIA", "VIA Program", null);
-    insertProgram("TB", "Nutrition Program", "VIA");
-
-    List<String> viaProgramCodes = programRepository
-        .queryProgramCodesByProgramCodeOrParentCode("VIA");
-    List<String> mmiaProgramCodes = programRepository
-        .queryProgramCodesByProgramCodeOrParentCode("MMIA");
-    assertTrue(viaProgramCodes.contains("TB"));
-    Assertions.assertThat(mmiaProgramCodes.size()).isGreaterThanOrEqualTo(3);
-    assertTrue(mmiaProgramCodes.contains("PTV") && mmiaProgramCodes.contains("MMIA"));
-  }
-
-  @Test
   public void shouldQueryActivePrograms() throws Exception {
     // given
     insertProgram("MMIA", "MMIA Program", null);

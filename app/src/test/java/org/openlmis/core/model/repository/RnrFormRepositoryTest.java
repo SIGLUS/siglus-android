@@ -148,9 +148,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     programMMIA.setId(1l);
     Program programVIA = new Program();
     programVIA.setId(2l);
-    when(
-        mockProgramRepository.queryProgramIdsByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE))
-        .thenReturn(newArrayList(1L));
 
     for (int i = 0; i < 11; i++) {
       RnRForm form = new RnRFormBuilder().setComments("Rnr Form" + i)
@@ -327,10 +324,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     ProductProgram productProgram = new ProductProgram();
     productProgram.setCategory("Adult");
-    when(mockProductProgramRepository.queryByCode(anyString(), anyList()))
+    when(mockProductProgramRepository.queryByCode(anyString(), anyString()))
         .thenReturn(productProgram);
-    when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString()))
-        .thenReturn(new ArrayList<String>());
     when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
 
     List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form, stockCards);

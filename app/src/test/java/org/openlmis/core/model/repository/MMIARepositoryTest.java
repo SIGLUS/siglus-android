@@ -135,10 +135,8 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     ProductProgram productProgram = new ProductProgram();
     productProgram.setCategory("Adult");
-    when(productProgramRepository.queryByCode(anyString(), anyList())).thenReturn(productProgram);
+    when(productProgramRepository.queryByCode(anyString(), anyString())).thenReturn(productProgram);
     List<String> mmiaCodes = newArrayList("MMIA");
-    when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString()))
-        .thenReturn(mmiaCodes);
     List<Long> mmiaProductIds = new ArrayList<>();
     when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(mmiaCodes, false))
         .thenReturn(mmiaProductIds);
