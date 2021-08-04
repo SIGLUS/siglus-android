@@ -103,6 +103,7 @@ public class RequisitionPeriodServiceTest {
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(2));
     }
 
+    @Ignore
     @Test
     public void shouldGenerate12MonthsAgoPeriodBasedOnLastReportEndDate() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2021-05-24 12:00:00", DateUtil.DB_DATE_FORMAT).getTime());
