@@ -6,18 +6,20 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.openlmis.core.enums.OrderStatus;
+import org.openlmis.core.utils.ListUtil;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @DatabaseTable(tableName = "pods")
-public class Pod extends BaseModel{
+public class Pod extends BaseModel {
 
   @DatabaseField(canBeNull = false, dataType = DataType.STRING)
   private LocalDate shippedDate;
@@ -56,6 +58,9 @@ public class Pod extends BaseModel{
   @DatabaseField
   private boolean requisitionIsEmergency;
 
+  @DatabaseField
+  private String requisitionProgramCode;
+
   @DatabaseField(dataType = DataType.STRING)
   private LocalDate requisitionStartDate;
 
@@ -70,5 +75,12 @@ public class Pod extends BaseModel{
 
   @ForeignCollectionField
   private ForeignCollection<PodProduct> podProductForeignCollection;
+
+  private List<PodProduct> podProductsWrapper;
+
+  public List<PodProduct> getPodProductsWrapper() {
+    podProductsWrapper = ListUtil.wrapOrEmpty(podProductForeignCollection, podProductsWrapper);
+    return podProductsWrapper;
+  }
 
 }

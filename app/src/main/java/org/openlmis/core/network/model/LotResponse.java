@@ -18,6 +18,7 @@
 
 package org.openlmis.core.network.model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,7 @@ import lombok.NoArgsConstructor;
 public class LotResponse {
 
   private boolean valid;
+  @SerializedName(value = "lotCode", alternate = {"code"})
   private String lotCode;
   private String expirationDate;
 }

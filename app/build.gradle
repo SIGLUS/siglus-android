@@ -200,6 +200,7 @@ configurations.all {
     resolutionStrategy.force 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
     resolutionStrategy.force 'com.squareup.okhttp:okhttp:2.2.0'
     resolutionStrategy.force 'com.android.support:support-core-ui:26.1.0'
+    resolutionStrategy.force 'com.google.code.gson:gson:2.4'
 }
 
 task bundleInstall(type: Exec) {

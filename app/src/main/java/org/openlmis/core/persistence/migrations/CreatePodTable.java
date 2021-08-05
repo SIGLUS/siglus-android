@@ -20,6 +20,7 @@ public class CreatePodTable extends Migration {
         "`orderLastModifiedDate` VARCHAR NOT NULL, " +
         "`requisitionNumber` VARCHAR NOT NULL, " +
         "`requisitionIsEmergency` BOOLEAN DEFAULT 0, " +
+        "`requisitionProgramCode` VARCHAR NOT NULL, " +
         "`requisitionStartDate` VARCHAR NOT NULL, " +
         "`requisitionEndDate` VARCHAR NOT NULL, " +
         "`requisitionActualStartDate` VARCHAR NOT NULL, " +
