@@ -6,4 +6,47 @@
   android:layout_height="match_parent"
   tools:context=".view.activity.BulkIssueActivity">
 
+  <TextView
+    android:id="@+id/tv_total_amount"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/px_40"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    tools:text="Total: 1147"
+    android:textColor="@color/color_727272"
+    android:textSize="@dimen/px_20"
+    android:gravity="center"
+    android:layout_marginRight="@dimen/px_10" />
+
+  <View
+    android:id="@+id/v_divider_line"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_1"
+    app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
+    android:background="@color/color_00912e"
+    />
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_bulk_issue"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    app:layout_constraintTop_toBottomOf="@id/v_divider_line"
+    app:layout_constraintBottom_toTopOf="@id/action_panel"
+    android:layout_marginTop="@dimen/px_8"
+    tools:listitem="@layout/item_bulk_issue_edit"
+    android:paddingHorizontal="@dimen/px_16"
+    />
+
+  <include
+    layout="@layout/view_action_panel"
+    android:id="@+id/action_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent" />
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

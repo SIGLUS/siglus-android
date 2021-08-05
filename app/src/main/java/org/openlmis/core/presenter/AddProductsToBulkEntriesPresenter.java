@@ -49,12 +49,17 @@ public class AddProductsToBulkEntriesPresenter extends Presenter {
     // do nothing
   }
 
-  public Observable<List<ProductsToBulkEntriesViewModel>> getAllProductsWithoutKit(
-      final List<String> addedProducts) {
+  public Observable<List<ProductsToBulkEntriesViewModel>> getProducts(List<String> addedProducts,
+      boolean isFromBulkIssue) {
     return Observable
         .create((Observable.OnSubscribe<List<ProductsToBulkEntriesViewModel>>) subscriber -> {
           try {
-            List<Product> products = productRepository.listAllProductsWithoutKit();
+            List<Product> products;
+            if (isFromBulkIssue) {
+              products = productRepository.queryProductsInStockCard();
+            } else {
+              products = productRepository.listAllProductsWithoutKit();
+            }
             Collections.sort(products);
             for (Product product : products) {
               if (addedProducts.contains(product.getCode())) {

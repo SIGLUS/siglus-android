@@ -60,7 +60,7 @@ public class AddProductsToBulkEntriesPresenterTest {
 
     // when
     TestSubscriber<List<ProductsToBulkEntriesViewModel>> subscriber = new TestSubscriber<>();
-    Observable<List<ProductsToBulkEntriesViewModel>> observable = addProductsToBulkEntriesPresenter.getAllProductsWithoutKit(addedProducts);
+    Observable<List<ProductsToBulkEntriesViewModel>> observable = addProductsToBulkEntriesPresenter.getProducts(addedProducts,false);
     observable.subscribe(subscriber);
     subscriber.awaitTerminalEvent();
 

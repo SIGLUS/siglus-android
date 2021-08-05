@@ -52,6 +52,7 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
 
   public static final String EMPTY_STRING = "";
   public static final String SELECTED_PRODUCTS = "SELECTED_PRODUCTS";
+  public static final String IS_FROM_BULK_ISSUE = "IS_FROM_ISSUE";
   List<String> previouslyProductCodes;
 
   AddProductsToBulkEntriesAdapter adapter;
@@ -71,14 +72,18 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   @InjectView(R.id.btn_add_products)
   Button btnAddProducts;
 
+  private boolean isFromBulkIssue;
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     initRecyclerView();
     loading(getString(R.string.add_all_products_loading_message));
     previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
+    isFromBulkIssue = getIntent().getBooleanExtra(IS_FROM_BULK_ISSUE, false);
     btnAddProducts.setOnClickListener(addProductsListener());
-    Subscription subscription = addProductsToBulkEntriesPresenter.getAllProductsWithoutKit(previouslyProductCodes)
+    Subscription subscription = addProductsToBulkEntriesPresenter
+        .getProducts(previouslyProductCodes, isFromBulkIssue)
         .subscribe(getOnViewModelsLoadedSubscriber());
     subscriptions.add(subscription);
   }
@@ -173,6 +178,4 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
     fastScroller.setRecyclerView(rvProducts);
     fastScroller.setUpAlphabet(mAlphabetItems);
   }
-
-
 }

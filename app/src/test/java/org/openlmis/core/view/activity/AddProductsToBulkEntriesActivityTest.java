@@ -2,6 +2,7 @@ package org.openlmis.core.view.activity;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,11 +43,8 @@ public class AddProductsToBulkEntriesActivityTest {
         bind(AddProductsToBulkEntriesAdapter.class).toInstance(mockedAdapter);
       }
     });
-    Observable<List<ProductsToBulkEntriesViewModel>> value = Observable
-        .create(subscriber -> {
-
-        });
-    when(mockedPresenter.getAllProductsWithoutKit(any())).thenReturn(value);
+    Observable<List<ProductsToBulkEntriesViewModel>> value = Observable.create(subscriber -> {});
+    when(mockedPresenter.getProducts(any(),anyBoolean())).thenReturn(value);
 
     activityController = Robolectric.buildActivity(AddProductsToBulkEntriesActivity.class);
     activity = activityController.create().get();
@@ -75,5 +73,4 @@ public class AddProductsToBulkEntriesActivityTest {
     // then
     assertEquals("Total:0", activity.tvTotal.getText().toString());
   }
-
 }

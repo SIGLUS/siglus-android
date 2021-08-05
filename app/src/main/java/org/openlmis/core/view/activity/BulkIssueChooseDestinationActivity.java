@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
 import android.app.Activity;
@@ -63,9 +64,9 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
         if (result.getResultCode() != Activity.RESULT_OK) {
           return;
         }
-        Intent bulkIssueActivity = new Intent(BulkIssueChooseDestinationActivity.this, BulkIssueActivity.class);
-        bulkIssueActivity.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
-        startActivity(bulkIssueActivity);
+        Intent intent = new Intent(BulkIssueChooseDestinationActivity.this, BulkIssueActivity.class);
+        intent.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
+        startActivity(intent);
         finish();
       });
 
@@ -103,6 +104,7 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
         }
         Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
         intent.putExtra(SELECTED_PRODUCTS, (Serializable) Collections.singletonList(""));
+        intent.putExtra(IS_FROM_BULK_ISSUE, true);
         addProductsActivityResultLauncher.launch(intent);
       }
     };
