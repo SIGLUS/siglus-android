@@ -331,7 +331,10 @@ public class ProductRepository {
   }
 
   public List<Product> queryProductsInStockCard() {
-    String rawSql = "SELECT * FROM products WHERE id IN (SELECT product_id FROM stock_cards WHERE stockOnHand > 0);";
+    String rawSql = "SELECT * FROM products "
+        + "WHERE id IN (SELECT product_id FROM stock_cards WHERE stockOnHand > 0) "
+        + "AND isKit = 0 "
+        + "AND isArchived = 0;";
     Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
     List<Product> activeProducts = new ArrayList<>();
     if (cursor.moveToFirst()) {

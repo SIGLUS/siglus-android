@@ -33,14 +33,16 @@ import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
 public class BulkIssueRepository {
 
-  private final GenericDao<DraftBulkIssueProduct> productGenericDao;
+  private final GenericDao<DraftBulkIssueProduct> draftProductGenericDao;
+  private final GenericDao<DraftBulkIssueProductLotItem> draftLotGenericDao;
 
   @Inject
   private final DbUtil dbUtil;
 
   @Inject
   public BulkIssueRepository(Context context, DbUtil dbUtil) {
-    this.productGenericDao = new GenericDao<>(DraftBulkIssueProduct.class, context);
+    this.draftProductGenericDao = new GenericDao<>(DraftBulkIssueProduct.class, context);
+    this.draftLotGenericDao = new GenericDao<>(DraftBulkIssueProductLotItem.class, context);
     this.dbUtil = dbUtil;
   }
 
@@ -49,15 +51,31 @@ public class BulkIssueRepository {
   }
 
   public List<DraftBulkIssueProduct> queryAllBulkIssueDraft() throws LMISException {
-    return productGenericDao.queryForAll();
+    return draftProductGenericDao.queryForAll();
   }
 
-  public void clearBulkEntriesDraft() throws LMISException {
+  public void deleteDraft() throws LMISException {
     dbUtil.withDaoAsBatch(DraftBulkIssueProduct.class, dao -> {
       TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
           .getConnectionSource(), DraftBulkIssueProduct.class);
       TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
           .getConnectionSource(), DraftBulkIssueProductLotItem.class);
+      return null;
+    });
+  }
+
+  public void saveDraft(List<DraftBulkIssueProduct> draftProducts) throws LMISException {
+    if (CollectionUtils.isEmpty(draftProducts)) {
+      return;
+    }
+    dbUtil.withDaoAsBatch(DraftBulkIssueProduct.class, dao -> {
+      deleteDraft();
+      for (DraftBulkIssueProduct draftProduct : draftProducts) {
+        draftProductGenericDao.createOrUpdate(draftProduct);
+        for (DraftBulkIssueProductLotItem lotItem : draftProduct.getDraftLotItemListWrapper()) {
+          draftLotGenericDao.createOrUpdate(lotItem);
+        }
+      }
       return null;
     });
   }

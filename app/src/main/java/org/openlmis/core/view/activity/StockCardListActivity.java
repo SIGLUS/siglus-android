@@ -26,7 +26,9 @@ import android.view.MenuItem;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
+import org.openlmis.core.presenter.StockCardListPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 import roboguice.inject.ContentView;
 
@@ -38,7 +40,11 @@ public class StockCardListActivity extends SearchBarActivity {
   private static final int MENU_ID_MOVEMENT_HISTORY = 300;
   private static final int MENU_ID_BULK_ISSUES = 400;
   private static final int MENU_ID_BULK_ENTRIES = 500;
+
   protected StockCardListFragment stockCardFragment;
+
+  @InjectPresenter(StockCardListPresenter.class)
+  private StockCardListPresenter presenter;
 
   public static Intent getIntentToMe(Context context) {
     Intent intent = new Intent(context, StockCardListActivity.class);
@@ -86,8 +92,9 @@ public class StockCardListActivity extends SearchBarActivity {
             Constants.REQUEST_FROM_STOCK_LIST_PAGE);
         return true;
       case MENU_ID_BULK_ISSUES:
-        startActivityForResult(new Intent(LMISApp.getContext(), BulkIssueChooseDestinationActivity.class),
-            Constants.REQUEST_FROM_STOCK_LIST_PAGE);
+        Intent intent = new Intent(LMISApp.getContext(),
+            presenter.hasBulkIssueDraft() ? BulkIssueActivity.class : BulkIssueChooseDestinationActivity.class);
+        startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
         return true;
       default:
         return super.onOptionsItemSelected(item);

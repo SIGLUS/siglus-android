@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
@@ -43,6 +44,8 @@ import org.openlmis.core.presenter.BulkIssuePresenter.BulkIssueView;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkIssueAdapter;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -93,6 +96,18 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
     }
   };
 
+  private final OnClickListener clickListener = new SingleClickButtonListener() {
+    @Override
+    public void onSingleClick(View v) {
+      if (v.getId() == R.id.btn_save) {
+        bulkIssuePresenter.saveDraft();
+      } else if (v.getId() == R.id.btn_complete) {
+        // TODO after complete clicked
+        ToastUtil.show("complete");
+      }
+    }
+  };
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
@@ -131,8 +146,19 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
   }
 
   @Override
+  public void onBackPressed() {
+    if (bulkIssuePresenter.needConfirm()) {
+      showConfirmDialog();
+    } else {
+      super.onBackPressed();
+    }
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    findViewById(R.id.btn_save).setOnClickListener(clickListener);
+    findViewById(R.id.btn_complete).setOnClickListener(clickListener);
     rvBulkIssue.setLayoutManager(new LinearLayoutManager(this));
     rvBulkIssue.setAdapter(bulkIssueAdapter);
     bulkIssueAdapter.registerAdapterDataObserver(dataObserver);
@@ -150,5 +176,27 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
     intent.putExtra(SELECTED_PRODUCTS, (Serializable) bulkIssuePresenter.getAddedProductCodes());
     intent.putExtra(IS_FROM_BULK_ISSUE, true);
     addProductsLauncher.launch(intent);
+  }
+
+  private void showConfirmDialog() {
+    SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+        null,
+        getString(R.string.msg_back_confirm),
+        getString(R.string.btn_positive),
+        getString(R.string.btn_negative),
+        "bulk_issue_back_confirm_dialog");
+    dialogFragment.show(getSupportFragmentManager(), "bulk_issue_back_confirm_dialog");
+    dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+      @Override
+      public void positiveClick(String tag) {
+        bulkIssuePresenter.deleteDraft();
+        finish();
+      }
+
+      @Override
+      public void negativeClick(String tag) {
+        // do nothing
+      }
+    });
   }
 }

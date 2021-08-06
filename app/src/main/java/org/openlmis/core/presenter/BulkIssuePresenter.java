@@ -42,6 +42,7 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.BulkIssueLotViewModel;
 import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -111,10 +112,53 @@ public class BulkIssuePresenter extends Presenter {
   public void saveDraft() {
     bulkIssueView.loading();
     Observable.create(subscriber -> {
-      // TODO complete save draft logic
+      try {
+        ImmutableList<DraftBulkIssueProduct> draftProducts = FluentIterable
+            .from(currentViewModels)
+            .transform(viewModel -> viewModel.convertToDraft(documentNumber, movementReasonCode))
+            .toList();
+        bulkIssueRepository.saveDraft(draftProducts);
+        subscriber.onNext(null);
+      } catch (LMISException e) {
+        new LMISException(e, "bulk issue save draft failed").reportToFabric();
+        subscriber.onError(e);
+      }
     }).observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .subscribe(o -> bulkIssueView.loaded(), throwable -> bulkIssueView.loaded());
+        .subscribe(o -> {
+              bulkIssueView.loaded();
+              bulkIssueView.onSaveDraftFinished(true);
+              },
+            throwable -> {
+              bulkIssueView.loaded();
+              bulkIssueView.onSaveDraftFinished(false);
+            }
+    );
+  }
+
+  public void deleteDraft() {
+    try {
+      bulkIssueRepository.deleteDraft();
+    } catch (LMISException e) {
+      new LMISException(e, "delete bulk issue draft failed").reportToFabric();
+    }
+  }
+
+  public boolean needConfirm() {
+    try {
+      List<DraftBulkIssueProduct> draftProducts = bulkIssueRepository.queryAllBulkIssueDraft();
+      if (draftProducts == null) {
+        return !currentViewModels.isEmpty();
+      }
+      for (BulkIssueProductViewModel productViewModel : currentViewModels) {
+        if (productViewModel.hasChanged()) {
+          return true;
+        }
+      }
+      return draftProducts.size() != currentViewModels.size();
+    } catch (LMISException e) {
+      return true;
+    }
   }
 
   @NonNull

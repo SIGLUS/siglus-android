@@ -25,6 +25,7 @@ import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
 import org.openlmis.core.model.DraftBulkIssueProduct;
 import org.openlmis.core.model.Product;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
 @Builder
@@ -61,6 +62,22 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
         .build();
   }
 
+  public DraftBulkIssueProduct convertToDraft(String documentNumber, String movementReasonCode) {
+    if (draftProduct == null) {
+      draftProduct = new DraftBulkIssueProduct();
+    }
+    return draftProduct
+        .setDone(done)
+        .setMovementReasonCode(movementReasonCode)
+        .setProduct(product)
+        .setRequested(requested)
+        .setDocumentNumber(documentNumber)
+        .setDraftLotItemListWrapper(FluentIterable
+            .from(lotViewModels)
+            .transform(lotViewModel -> lotViewModel.convertToDraft(draftProduct))
+            .toList());
+  }
+
   @Override
   public int getItemType() {
     return done ? TYPE_DONE : TYPE_EDIT;
@@ -81,7 +98,7 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
     Long draftRequested = draftProduct == null ? null : draftProduct.getRequested();
     Long currentRequested = requested == null ? null : requested;
     boolean requestedChanged = ObjectUtils.notEqual(draftRequested, currentRequested);
-    boolean statusChanged = (draftProduct == null && done) || (draftProduct != null && draftProduct.isDone() == done);
+    boolean statusChanged = (draftProduct == null && done) || (draftProduct != null && draftProduct.isDone() != done);
     return requestedChanged || statusChanged;
   }
 }

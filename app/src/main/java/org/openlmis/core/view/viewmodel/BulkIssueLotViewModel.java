@@ -23,6 +23,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
+import org.openlmis.core.model.DraftBulkIssueProduct;
 import org.openlmis.core.model.DraftBulkIssueProductLotItem;
 
 @Data
@@ -55,6 +56,18 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel> 
         .lotNumber(lotNumber)
         .expirationDate(expirationDate)
         .build();
+  }
+
+  public DraftBulkIssueProductLotItem convertToDraft(DraftBulkIssueProduct draftProduct) {
+    if (draftLotItem == null) {
+      draftLotItem = new DraftBulkIssueProductLotItem();
+    }
+    return draftLotItem
+        .setAmount(amount)
+        .setLotSoh(lotSoh)
+        .setExpirationDate(expirationDate)
+        .setLotNumber(lotNumber)
+        .setDraftBulkIssueProduct(draftProduct);
   }
 
   @Override
