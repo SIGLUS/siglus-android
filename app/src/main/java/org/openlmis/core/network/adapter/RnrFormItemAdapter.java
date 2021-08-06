@@ -66,17 +66,7 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
   @Override
   public JsonElement serialize(RnrFormItem rnrFormItem, Type typeOfSrc,
       JsonSerializationContext context) {
-    String validate = rnrFormItem.getValidate();
-    if (!TextUtils.isEmpty(validate)) {
-      try {
-        Date validateDate = new SimpleDateFormat(SIMPLE_DATE_FORMAT, Locale.getDefault()).parse(validate);
-        validate = DateUtil.formatDate(validateDate, DB_DATE_FORMAT);
-      } catch (ParseException e) {
-        new LMISException(e, "DateUtil,parseString").reportToFabric();
-        validate = rnrFormItem.getValidate();
-      }
-      rnrFormItem.setValidate(validate);
-    }
+    transformExpireDate(rnrFormItem, SIMPLE_DATE_FORMAT, DB_DATE_FORMAT);
     JsonObject jsonObject = gson.toJsonTree(rnrFormItem).getAsJsonObject();
     return jsonObject;
   }
@@ -85,10 +75,25 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
   public RnrFormItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
     RnrFormItem rnrFormItem = gson.fromJson(json.toString(), RnrFormItem.class);
+    transformExpireDate(rnrFormItem, DB_DATE_FORMAT, SIMPLE_DATE_FORMAT);
     for (ServiceItem serviceItem : rnrFormItem.getServiceItemListWrapper()) {
       serviceItem.setFormItem(rnrFormItem);
     }
     return rnrFormItem;
+  }
+
+  private void transformExpireDate(RnrFormItem rnrFormItem, String fromDateFormat, String toDateFormat) {
+    String validate = rnrFormItem.getValidate();
+    if (!TextUtils.isEmpty(validate)) {
+      try {
+        Date validateDate = new SimpleDateFormat(fromDateFormat, Locale.getDefault()).parse(validate);
+        validate = DateUtil.formatDate(validateDate, toDateFormat);
+      } catch (ParseException e) {
+        new LMISException(e, "DateUtil,parseString").reportToFabric();
+        validate = rnrFormItem.getValidate();
+      }
+      rnrFormItem.setValidate(validate);
+    }
   }
 
   class ProductAdapter implements JsonDeserializer<Product>, JsonSerializer<Product> {
