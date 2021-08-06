@@ -319,7 +319,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         stockMovementItem.setMovementDate(dateTime.toDate());
         stockMovementItem.setCreatedTime(new Date());
         when(mockStockMovementRepository.queryFirstStockMovementByStockCardId(anyLong())).thenReturn(stockMovementItem);
-        when(mockStockMovementRepository.queryStockItemsByCreatedDate(stockCard.getId(), form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
+        when(mockStockMovementRepository.queryNotFullFillStockItemsByCreatedData(stockCard.getId(), form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
 
         ProductProgram productProgram = new ProductProgram();
         productProgram.setCategory("Adult");
@@ -333,7 +333,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         int expectAdjustment = positiveQuantity - negativeQuantity;
         int expectInventoryQuantity = stockExistence + receiveQuantity + positiveQuantity - issueQuantity - negativeQuantity;
         int expectOrderQuantity = 2 * issueQuantity - expectInventoryQuantity;
-        expectOrderQuantity = expectOrderQuantity > 0 ? expectOrderQuantity : 0;
+        expectOrderQuantity = Math.max(expectOrderQuantity, 0);
 
         assertThat(rnrFormItem.getProduct(), is(product));
         assertThat(rnrFormItem.getCategory(), is("Adult"));

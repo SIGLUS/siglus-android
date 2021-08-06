@@ -45,7 +45,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -139,7 +138,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
             logout();
             return true;
         } else {
-            LMISApp.lastOperateTime = DateUtil.getCurrentDate().getTime();
+            LMISApp.lastOperateTime = LMISApp.getInstance().getCurrentTimeMillis();
             return super.dispatchTouchEvent(ev);
         }
     }
@@ -154,14 +153,14 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
     }
 
     private boolean alreadyTimeOuted() {
-        Long currentTimeMillis = DateUtil.getCurrentDate().getTime();
+        Long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
         return currentTimeMillis - LMISApp.lastOperateTime > APP_TIMEOUT;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         isPageLoadTimerInProgress = true;
-        onCreateStartMili = DateUtil.getCurrentDate().getTime();
+        onCreateStartMili = LMISApp.getInstance().getCurrentTimeMillis();
 
         setTheme(getThemeRes());
         super.onCreate(savedInstanceState);
@@ -261,7 +260,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
                 loadingDialog = null;
                 isLoading = false;
                 if (isPageLoadTimerInProgress) {
-                    Log.d(this.getTitle() + " page", " load time " + (DateUtil.getCurrentDate().getTime() - onCreateStartMili)
+                    Log.d(this.getTitle() + " page", " load time " + (LMISApp.getInstance().getCurrentTimeMillis() - onCreateStartMili)
                             + " ms" + " in " + BuildConfig.VERSION_CODE);
                     isPageLoadTimerInProgress = false;
                 }

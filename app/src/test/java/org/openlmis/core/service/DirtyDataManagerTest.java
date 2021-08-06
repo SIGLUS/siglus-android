@@ -4,12 +4,12 @@ package org.openlmis.core.service;
 import com.google.inject.AbstractModule;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -23,7 +23,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.robolectric.RuntimeEnvironment;
-
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -89,12 +89,15 @@ public class DirtyDataManagerTest {
         List<StockCard> list = Arrays.asList(stockCard1, stockCard2);
         List<StockMovementItem> stockMovementsForStockCard1 = Arrays.asList(stockMovementItem11, stockMovementItem12);
         List<StockMovementItem> stockMovementsForStockCard2 = Arrays.asList(stockMovementItem21, stockMovementItem22);
+        Map<String, String> lotsOnHands = new HashMap<>();
+        lotsOnHands.put("1", "0");
         when(stockRepository.list()).thenReturn(list);
         when(stockMovementRepository.listLastTwoStockMovements()).thenReturn(stockMovementsForStockCard1);
         when(stockMovementRepository.listLastTwoStockMovements()).thenReturn(stockMovementsForStockCard2);
         when(stockMovementRepository.queryMovementByStockCardId(2)).thenReturn(stockMovementsForStockCard2);
-
+        when(stockRepository.lotOnHands()).thenReturn(lotsOnHands);
         //When
+        SharedPreferenceMgr.getInstance().setIsInitialDataCheck(false);
         List<StockCard> wrongStockCards = dirtyDataManager.correctData();
 
         //Then
@@ -121,7 +124,7 @@ public class DirtyDataManagerTest {
     }
 
     @Test
-    public void shouldScanDuplicateInventory()  {
+    public void shouldScanWrongSOHBetweenMovementAndStockCard()  {
         Product product = ProductBuilder.create()
                 .setCode("productCode1")
                 .setProductId(1l)
@@ -150,11 +153,11 @@ public class DirtyDataManagerTest {
 
         when(stockMovementRepository.listLastTwoStockMovements()).thenReturn(duplicateMovement);
 
+        SharedPreferenceMgr.getInstance().setIsInitialDataCheck(false);
         Map<String, String> lotsOnHands = new HashMap<>();
-        lotsOnHands.put("1l", "0");
+        lotsOnHands.put("1", "0");
         List<StockCard> wrongStockCards = dirtyDataManager
                 .correctDataForStockCardOverView(list, lotsOnHands);
-
         assertThat(wrongStockCards.size(), is(1));
         assertThat(wrongStockCards.get(0).getProduct().getCode(), is("productCode1"));
     }

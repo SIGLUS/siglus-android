@@ -111,7 +111,7 @@ public class AutoUpdateApk {
     private void removeOldPackage(ApplicationInfo appInfo) {
         if (new File(appInfo.sourceDir).lastModified() > preferences.getMd5Time()) {
             preferences.setMd5Key(MD5Hex(appInfo.sourceDir));
-            preferences.setMd5Time(DateUtil.getCurrentDate().getTime());
+            preferences.setMd5Time(LMISApp.getInstance().getCurrentTimeMillis());
 
             String updateFile = preferences.getUpdateFile();
             if (updateFile.length() > 0) {
@@ -301,7 +301,7 @@ public class AutoUpdateApk {
 
                     Log.e(TAG,"updateFilePath  ==  "+updateFilePath);
                     preferences.setMd5Key(MD5Hex(updateFilePath));
-                    preferences.setMd5Time(DateUtil.getCurrentDate().getTime());
+                    preferences.setMd5Time(LMISApp.getInstance().getCurrentTimeMillis());
                 }
                 String updateFile = preferences.getUpdateFile();
                 Log.e(TAG,"updateFile= "+updateFile);
@@ -368,7 +368,7 @@ public class AutoUpdateApk {
     }
 
     private void checkUpdates(boolean forced) {
-        long now = DateUtil.getCurrentDate().getTime();
+        long now = LMISApp.getInstance().getCurrentTimeMillis();
         if (forced || (last_update + updateInterval) < now) {
             try {
                 PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -377,7 +377,7 @@ public class AutoUpdateApk {
                 e.printStackTrace();
             }
             new CheckUpdateTask().execute();
-            last_update = DateUtil.getCurrentDate().getTime();
+            last_update = LMISApp.getInstance().getCurrentTimeMillis();
             preferences.setLastUpdate(last_update);
         }
     }

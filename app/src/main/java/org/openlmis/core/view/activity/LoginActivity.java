@@ -27,8 +27,9 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
-import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -78,6 +79,8 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @InjectPresenter(LoginPresenter.class)
     LoginPresenter presenter;
+
+    Boolean isPwdVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,17 +242,15 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     private void setPwdVisibility() {
-        if (etPassword.getInputType() == (InputType.TYPE_CLASS_TEXT
-                | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)) {
-            ivVisibilityPwd.setImageResource(R.drawable.ic_visibility);
-            etPassword.setInputType(InputType.TYPE_CLASS_TEXT
-                    | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        } else {
-            etPassword.setInputType(InputType.TYPE_CLASS_TEXT
-                    | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+        if (isPwdVisible) {
+            etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             ivVisibilityPwd.setImageResource(R.drawable.ic_visibility_off);
+            isPwdVisible = false;
+        } else {
+            etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            ivVisibilityPwd.setImageResource(R.drawable.ic_visibility);
+            isPwdVisible = true;
         }
-
         etPassword.setSelection(etPassword.getText().length());
     }
 

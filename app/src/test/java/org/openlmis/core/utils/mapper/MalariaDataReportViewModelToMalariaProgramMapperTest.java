@@ -1,7 +1,10 @@
 package org.openlmis.core.utils.mapper;
 
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +16,12 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Implementation;
 import org.openlmis.core.model.MalariaProgram;
 import org.openlmis.core.model.User;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.malaria.ImplementationReportViewModel;
 import org.openlmis.core.view.viewmodel.malaria.MalariaDataReportViewModel;
 
 import java.util.Collection;
+import java.util.Date;
 
 import static com.natpryce.makeiteasy.MakeItEasy.a;
 import static com.natpryce.makeiteasy.MakeItEasy.make;
@@ -26,6 +31,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.joda.time.DateTime.now;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.helpers.MalariaDataReportBuilder.apeImplementations;
 import static org.openlmis.core.helpers.MalariaDataReportBuilder.randomMalariaDataReport;
@@ -50,6 +56,7 @@ public class MalariaDataReportViewModelToMalariaProgramMapperTest {
     private MalariaDataReportViewModelToMalariaProgramMapper mapper;
     private User user;
     private MalariaProgram malariaProgram;
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE MMM dd HH:mm:ss z yyyy");
 
     @Before
     public void setUp() throws Exception {
@@ -75,7 +82,8 @@ public class MalariaDataReportViewModelToMalariaProgramMapperTest {
     @Test
     public void shouldMapReportedDate() throws Exception {
         mapper.map(malariaDataReportViewModel, malariaProgram);
-        assertThat(malariaProgram.getReportedDate(), is(now()));
+        assertThat(malariaProgram.getReportedDate().toDate().toString(),
+                is(new DateTime(DateUtil.getCurrentDate()).toDate().toString()));
     }
 
     @Test
@@ -107,7 +115,8 @@ public class MalariaDataReportViewModelToMalariaProgramMapperTest {
     public void shouldMapReportedDateWhenMalariaIsNotDefined() throws Exception {
         malariaProgram = null;
         malariaProgram = mapper.map(malariaDataReportViewModel, malariaProgram);
-        assertThat(malariaProgram.getReportedDate(), is(now()));
+        assertThat(malariaProgram.getReportedDate().toDate().toString(),
+                is(new DateTime(DateUtil.getCurrentDate()).toDate().toString()));
     }
 
     @Test

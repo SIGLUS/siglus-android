@@ -21,7 +21,9 @@ package org.openlmis.core.utils;
 import android.content.res.Resources;
 import android.text.InputFilter;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
@@ -72,11 +74,26 @@ public final class TextStyleUtil {
     public static InputFilter[] getSignatureLimitation() {
         InputFilter inputFilterCharacterRange = (source, start, end, dest, dstart, dend) -> {
             Pattern pattern = Pattern.compile("[a-zA-Z]");
-            Matcher matcher = pattern.matcher(source.toString());
-            if (matcher.find()) {
-                return source.toString();
-            } else {
-                return "";
+            boolean keepOriginal = true;
+            StringBuilder sb = new StringBuilder(end - start);
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                Matcher matcher = pattern.matcher(String.valueOf(c));
+                if (matcher.find())
+                    sb.append(c);
+                else
+                    keepOriginal = false;
+            }
+            if (keepOriginal)
+                return null;
+            else {
+                if (source instanceof Spanned) {
+                    SpannableString sp = new SpannableString(sb);
+                    TextUtils.copySpansFrom((Spanned) source, start, sb.length(), null, sp, 0);
+                    return sp;
+                } else {
+                    return sb;
+                }
             }
         };
         InputFilter inputFilterMaxLength = new InputFilter.LengthFilter(getResources().getInteger(R.integer.signature_length));

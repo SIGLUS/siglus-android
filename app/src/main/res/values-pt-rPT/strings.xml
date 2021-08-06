@@ -25,6 +25,7 @@
     <string name="msg_sync_requisition_failed">Descarregamento de dados de requisição a partir do servidor falhou, por favor entre novamente.</string>
     <string name="msg_sync_stock_movement_failed">Falha no descarregamento de movimentos de stock, faça o login novamente.</string>
     <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
+    <string name="msg_requisition_field_exist_null">Não é possível enviar requisição com campo nulo!</string>
     <string name="version_number"><![CDATA[Versão <b>%1$s</b>]]></string>
     <!--Init Inventory-->
     <string name="label_dummy_product">Paracetamol</string>
@@ -393,7 +394,7 @@
     <!--Add products to requisition form-->
     <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
     <string name="title_add_drugs_to_form">Adicione produtos para requisição</string>
-    <string name="label_hint_amount_requisition">Quantidade recebida</string>
+    <string name="label_hint_amount_requisition">Quantidade Pedida</string>
     <string name="label_to_comfirm_delete_product">Tem certeza de que deseja remover este produto?</string>
     <!--Stock movement adding page-->
     <string name="hint_movement_date">Data do movimento</string>
@@ -454,7 +455,7 @@
     <string name="error_empty_rapid_test_product">As informações do Relatório Testes Rápidos não podem estar em branco.</string>
     <string name="error_empty_rapid_test_list">A lista de relatórios de testes rápidos não pode estar vazia.</string>
     <string name="btn_edit">EDITAR</string>
-    <string name="msg_initial_inventory_lot_review_add">Lote <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Initial</font>]]> de <![CDATA[<font color="#000">%2$d</font>]]> será feito</string>
+    <string name="msg_initial_inventory_lot_review_add">Lote <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Inventário</font>]]> de <![CDATA[<font color="#000">%2$d</font>]]> será feito</string>
     <string name="msg_physical_inventory_lot_review_no_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - Nenhum ajuste será feito</string>
     <string name="msg_physical_inventory_lot_review_positive_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\"> Ajuste positivo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>
     <string name="msg_physical_inventory_lot_review_negative_adjustment">Lote <![CDATA[<font color=\"#000\">%1$s</font>]]> - <![CDATA[<font color=\"#000\">Ajuste negativo</font>]]> de <![CDATA[<font color=\"#000\">%2$d</font>]]> será feito</string>

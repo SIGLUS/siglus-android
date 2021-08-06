@@ -112,7 +112,7 @@ public class RapidTestReportsPresenter extends Presenter {
                     && (lastViewModel.getStatus() == Status.FIRST_MISSING
                     && lastViewModel.getPeriod().getEnd().isAfterNow())) {
 
-                DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
+                DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
                 DateTime endDateTime = new DateTime(lastViewModel.getPeriod().getEnd());
                 addLastRapidTestViewModel(lastViewModel, dateTime, endDateTime);
             }
@@ -120,7 +120,6 @@ public class RapidTestReportsPresenter extends Presenter {
 
         RapidTestReportViewModel lastViewModel = viewModelList.size() > 0 ? viewModelList.get(viewModelList.size() - 1) : null;
         addCompletedColumn(typeForm, period, lastViewModel);
-        viewModelList = removeGreaterThanData(viewModelList);
         Collections.sort(viewModelList, new Comparator<RapidTestReportViewModel>() {
             @Override
             public int compare(RapidTestReportViewModel lhs, RapidTestReportViewModel rhs) {
@@ -155,7 +154,7 @@ public class RapidTestReportsPresenter extends Presenter {
                 if (period.isPresent()) {
                     currentPeriod = period.get().getBegin();
                 } else {
-                    currentPeriod = new DateTime(new DateTime(DateUtil.getCurrentDate().getTime()));
+                    currentPeriod = new DateTime(new DateTime(LMISApp.getInstance().getCurrentTimeMillis()));
                 }
             } else {
                 currentPeriod = period.get().getEnd();
@@ -217,7 +216,7 @@ public class RapidTestReportsPresenter extends Presenter {
     }
 
     private boolean isCanNotCreateRnr(Period currentPeriod) {
-        DateTime dateTime = new DateTime(DateUtil.getCurrentDate().getTime());
+        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         return dateTime.isBefore(currentPeriod.getInventoryBegin());
     }
 

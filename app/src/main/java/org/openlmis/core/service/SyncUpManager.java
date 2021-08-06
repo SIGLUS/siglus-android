@@ -30,6 +30,7 @@ import com.google.inject.Singleton;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
@@ -62,7 +63,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 
 import javax.annotation.Nullable;
 
@@ -104,19 +104,21 @@ public class SyncUpManager {
 
     protected LMISRestApi lmisRestApi;
 
-    private boolean isSyncing = false;
+    public static boolean isSyncing = false;
 
     public SyncUpManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
     }
 
     public void syncUpData(Context context) {
-        Log.d(TAG, "sync Up Data start");
-        if (isSyncing) {
-            return;
+        Log.d(TAG, "sync Up Data want to start " + isSyncing);
+        synchronized (SyncUpManager.class) {
+            if (isSyncing) {
+                return;
+            }
+            isSyncing = true;
         }
-
-        isSyncing = true;
+        Log.d(TAG, "sync Up Data start " + isSyncing);
         boolean isSyncDeleted = syncDeleteMovement();
         if (isSyncDeleted) {
             boolean isSyncRnrSuccessful = syncRnr();
@@ -134,18 +136,15 @@ public class SyncUpManager {
             syncUpUnSyncedStockCardCodes();
             syncAppVersion();
             syncUpCmms();
-
-            if (!sharedPreferenceMgr.shouldSyncLastYearStockData()
-                    && TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
-                Intent intent = new Intent();
-                intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-            }
         }
         Log.d(TAG, "sync Up Data end");
         isSyncing = false;
+        if (!sharedPreferenceMgr.shouldSyncLastYearStockData() && TextUtils.isEmpty(sharedPreferenceMgr.getStockMovementSyncError())) {
+            Intent intent = new Intent();
+            intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
     }
-
     public boolean syncRnr() {
         List<RnRForm> forms;
         try {
@@ -416,6 +415,10 @@ public class SyncUpManager {
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
             Log.d(TAG, "===> SyncRnr : synced ->");
             return true;
+        } catch (NetWorkException e) {
+            new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
+            Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
+            return false;
         } catch (LMISException e) {
             new LMISException(e, "SyncUpManager.submitRequisition").reportToFabric();
             Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());

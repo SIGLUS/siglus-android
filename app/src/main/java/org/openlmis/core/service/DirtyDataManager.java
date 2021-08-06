@@ -23,12 +23,11 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.DirtyDataRepository;
 import org.openlmis.core.model.repository.LotRepository;
-import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -77,7 +76,7 @@ public class DirtyDataManager {
     @Inject
     RnrFormRepository rnrFormRepository;
     @Inject
-    ProgramRepository programRepository;
+    ProgramDataFormRepository programDataFormRepository;
     @Inject
     CmmRepository cmmRepository;
     @Inject
@@ -109,7 +108,7 @@ public class DirtyDataManager {
         if (sharedPreferenceMgr.shouldInitialDataCheck()) {
             return deletedStockCards;
         }
-        sharedPreferenceMgr.setCheckDataDate(DateUtil.getCurrentDate().getTime());
+        sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
         List<StockCard> lastTwoMovementAndLotSOHWrong = checkTheLastTwoMovementAndLotSOH(stockCards);
         deletedStockCards.addAll(lastTwoMovementAndLotSOHWrong);
         saveFullyDeletedInfo(deletedStockCards);
@@ -216,7 +215,7 @@ public class DirtyDataManager {
         Period period = Period.of(today());
         if (recordLastDirtyDataCheck.isBefore(period.getBegin())) {
             isSyncedMonthCheck = true;
-            sharedPreferenceMgr.setCheckDataDate(DateUtil.getCurrentDate().getTime());
+            sharedPreferenceMgr.setCheckDataDate(LMISApp.getInstance().getCurrentTimeMillis());
             Set<String> filterStockCardIds = new HashSet<>();
             final String facilityId = sharedPreferenceMgr.getUserFacilityId();
 
@@ -299,7 +298,7 @@ public class DirtyDataManager {
                 stockRepository.resetLotsOnHand(productCodes);
                 cmmRepository.resetCmm(productCodes);
                 rnrFormRepository.deleteRnrFormDirtyData(productCodes);
-                programRepository.deleteProgramDirtyData(productCodes);
+                programDataFormRepository.deleteProgramDirtyData(productCodes);
                 sharedPreferenceMgr.setDeletedProduct(new HashSet<>());
             }
         }

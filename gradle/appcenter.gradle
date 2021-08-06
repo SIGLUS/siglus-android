@@ -1,24 +1,23 @@
 apply plugin: "com.betomorrow.appcenter"
 
 appcenter {
-    apiToken = "8f0ab2fe7829098e892a976559bd1168ba864434"
-    ownerName = "toc.siglus"
-    distributionGroups = ["beta"]
+    apiToken = "8e0e3d7f8a828e0ec7913acb32b5776e847a57ef"
+    ownerName = "SIGLUS-V2"
+    distributionGroups = ["Internal"]
     releaseNotes = getGitCommit()
     notifyTesters = false
     apps {
-        uatRelease {
-            appName = "SIGLUS-UAT"
-        }
         devRelease {
-            appName = "Siglus-Dev"
+            appName = "SIGLUS-V2-DEV"
+        }
+        uatRelease {
+            appName = "SIGLUS-V2-UAT"
         }
         trainingRelease {
-            appName = "Training"
+            appName = "SIGLUS-V2-TRAINING"
         }
         prdRelease {
-            appName = "Siglus-Prod"
-            distributionGroups = ["release"]
+            appName = "SIGLUS-V2-PROD"
         }
     }
 }

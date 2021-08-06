@@ -15,6 +15,8 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.SyncErrorsPresenter;
+import org.openlmis.core.service.SyncDownManager;
+import org.openlmis.core.service.SyncUpManager;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 
@@ -68,7 +70,11 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     }
 
     public void showLastSyncTime() {
-        hideSyncProgressBarAndShowIcon();
+        if (SyncUpManager.isSyncing || SyncDownManager.isSyncing) {
+            showSyncProgressBarAndHideIcon();
+        } else {
+            hideSyncProgressBarAndShowIcon();
+        }
 
         rnrLastSyncTime = sharedPreferenceMgr.getRnrLastSyncTime();
         stockLastSyncTime = sharedPreferenceMgr.getStockLastSyncTime();
@@ -143,7 +149,6 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
         syncDateBottomSheet.setArguments(SyncDateBottomSheet.getArgumentsToMe(rnrLastSyncTime, stockLastSyncTime));
         syncDateBottomSheet.show(((BaseActivity) context).getFragmentManager());
-
     }
 
     public void showSyncProgressBarAndHideIcon() {
@@ -154,10 +159,10 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     private void hideSyncProgressBarAndShowIcon() {
         progressBar.setVisibility(GONE);
         ivSyncTimeIcon.setVisibility(VISIBLE);
-
     }
 
     public void setSyncStockCardLastYearText() {
+        showSyncProgressBarAndHideIcon();
         txSyncTime.setText(R.string.last_year_stock_cards_sync);
     }
 

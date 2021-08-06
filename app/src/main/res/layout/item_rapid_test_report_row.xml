@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/repid_view_body_item_line_heigh"
+    android:layout_height="@dimen/repid_view_body_item_line_height"
     android:background="@drawable/border_bottom_black"
     android:orientation="horizontal">
 

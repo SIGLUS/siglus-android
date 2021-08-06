@@ -190,8 +190,8 @@ public class StockMovementRepositoryTest {
         productPrograms.add(viaProductProgram);
 
         ProductProgram mmiaProductProgram = new ProductProgram();
-        mmiaProductProgram.setProductCode(viaProduct.getCode());
-        mmiaProductProgram.setProgramCode(via.getProgramCode());
+        mmiaProductProgram.setProductCode(mmiaProduct.getCode());
+        mmiaProductProgram.setProgramCode(mmia.getProgramCode());
         mmiaProductProgram.setActive(true);
         productPrograms.add(mmiaProductProgram);
 

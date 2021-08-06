@@ -17,44 +17,40 @@
  */
 package org.openlmis.core.view.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.text.Editable;
-import android.text.TextUtils;
+import android.content.res.TypedArray;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Pair;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.ProgramDataForm;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
-import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.SimpleTextWatcher;
+import org.openlmis.core.view.adapter.RapidTestTopProductCodeAdapter;
+import org.openlmis.core.view.adapter.RapidTestTopProductInfoAdapter;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
+import javax.annotation.Nullable;
 
 public class RapidTestRnrForm extends LinearLayout {
-    private Context context;
-    private ViewGroup viewGroup;
-    private List<Pair<EditText, SimpleTextWatcher>> editTextConfigures = new ArrayList<>();
-    public List<ProgramDataFormBasicItem> itemFormList;
-    private LayoutInflater layoutInflater;
 
-    @Getter
-    private ViewGroup leftHeaderScrollView;
-    private ViewGroup leftHeaderLinearlayout;
-    @Getter
-    private ViewGroup topRightScrollView;
+    private static final int HEIGHT_FORM_TITLE_DP = 44;
+    private static final int HEIGHT_ACTION_PANEL_DP = 60;
+
+    private RecyclerView rvLeftProductCode;
+    private RapidTestProductInfoView rvRightProductInfo;
+    private RapidTestTopProductInfoAdapter infoAdapter;
+
+    private int maxHeight = 0;
 
     public RapidTestRnrForm(Context context) {
         super(context);
@@ -66,170 +62,78 @@ public class RapidTestRnrForm extends LinearLayout {
         init(context);
     }
 
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        for (Pair<EditText, SimpleTextWatcher> editTextConfigure : editTextConfigures) {
-            editTextConfigure.first.removeTextChangedListener(editTextConfigure.second);
-        }
-
-    }
-
     private void init(Context context) {
-        this.context = context;
-        layoutInflater = LayoutInflater.from(context);
-        View container = layoutInflater.inflate(R.layout.view_rapid_test_rnr_form, this, true);
-        viewGroup = (ViewGroup) container.findViewById(R.id.program_from_list);
-        leftHeaderLinearlayout = (ViewGroup) container.findViewById(R.id.rapid_test_top_left_layout);
-        leftHeaderScrollView = (ViewGroup) container.findViewById(R.id.rapid_test_top_left_scrollview);
-        topRightScrollView = (ViewGroup) container.findViewById(R.id.rapid_test_top_scrollview);
+        View container = LayoutInflater.from(context).inflate(R.layout.view_rapid_test_rnr_form, this, true);
+        rvLeftProductCode = container.findViewById(R.id.rv_top_left_product_code);
+        rvRightProductInfo = container.findViewById(R.id.rv_top_right_product_info);
+        calculateMaxHeight();
     }
 
     public void initView(List<ProgramDataFormBasicItem> itemFormList) {
-        this.itemFormList = itemFormList;
-        addHeaderView();
-        addItemView(itemFormList);
+        initProductCode(itemFormList);
+        initProductInfo(itemFormList);
     }
 
-    private void addHeaderView() {
-        addView(null, true);
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int height = MeasureSpec.getSize(heightMeasureSpec);
+        final int newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight == 0 ? height : Math.min(height, maxHeight), MeasureSpec.getMode(heightMeasureSpec));
+        super.onMeasure(widthMeasureSpec, newHeightMeasureSpec);
     }
 
-    private void addItemView(List<ProgramDataFormBasicItem> itemFormList) {
-        this.itemFormList = itemFormList;
-        for (ProgramDataFormBasicItem basicItem : itemFormList) {
-            addView(basicItem, false);
-        }
-    }
-
-    private ViewGroup inflateView() {
-        return (ViewGroup) layoutInflater.inflate(R.layout.item_rapid_test_from, this, false);
-    }
-
-    private ViewGroup getTopLeftInflateView() {
-        return (ViewGroup) layoutInflater.inflate(R.layout.item_rapid_test_top_left, this, false);
-    }
-
-    private ViewGroup addView(ProgramDataFormBasicItem item, boolean isHeaderView) {
-        ViewGroup inflate = inflateView();
-        ViewGroup topLeftInflate = getTopLeftInflateView();
-        TextView tvName = (TextView) inflate.findViewById(R.id.tv_name);
-        EditText etStock = (EditText) inflate.findViewById(R.id.et_stock);
-        TextView tvReceived = (TextView) inflate.findViewById(R.id.tv_received);
-        TextView tvIssue = (TextView) inflate.findViewById(R.id.tv_issue);
-        TextView tvAdjustment = (TextView) inflate.findViewById(R.id.tv_adjustment);
-        TextView tvValidate = (TextView) inflate.findViewById(R.id.tv_expire);
-        EditText etInventory = (EditText) inflate.findViewById(R.id.et_inventory);
-        TextView leftHeaderText = topLeftInflate.findViewById(R.id.left_tv_code);
-
-        if (isHeaderView) {
-            setHeaderView(inflate, tvName, etStock, tvReceived, tvIssue, tvAdjustment, tvValidate, etInventory, leftHeaderText);
-
-        } else {
-            leftHeaderText.setText(item.getProduct().getCode());
-            tvName.setText(item.getProduct().getPrimaryName());
-            tvReceived.setText(String.valueOf(item.getReceived()));
-            tvIssue.setText(String.valueOf(item.getIssued()));
-            tvAdjustment.setText(String.valueOf(item.getAdjustment()));
-            if (item.getIsCustomAmount()) {
-                configEditText(item, etStock, getValue(item.getInitialAmount()));
-            } else {
-                etStock.setText(getValue(item.getInitialAmount()));
-                etStock.setEnabled(false);
+    @SuppressLint("ClickableViewAccessibility")
+    private void initProductCode(List<ProgramDataFormBasicItem> itemFormList) {
+        final ImmutableList<String> productCodes = FluentIterable.from(itemFormList).transform(new Function<ProgramDataFormBasicItem, String>() {
+            @Nullable
+            @Override
+            public String apply(@Nullable ProgramDataFormBasicItem programDataFormBasicItem) {
+                if (programDataFormBasicItem == null) return "";
+                final Product product = programDataFormBasicItem.getProduct();
+                return product == null ? "" : product.getCode();
             }
-            configEditText(item, etInventory, getValue(item.getInventory()));
+        }).toList();
+        final RapidTestTopProductCodeAdapter rapidTestTopProductCodeAdapter = new RapidTestTopProductCodeAdapter(productCodes);
+        rvLeftProductCode.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        rvLeftProductCode.setAdapter(rapidTestTopProductCodeAdapter);
+        rvLeftProductCode.setOnTouchListener((v, event) -> true);
+    }
 
-            try {
-                if (!(TextUtils.isEmpty(item.getValidate()))) {
-                    tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
-                }
-            } catch (ParseException e) {
-                new LMISException(e,"RapidTestRnrForm.addView").reportToFabric();
-            }
+    private void initProductInfo(List<ProgramDataFormBasicItem> itemFormList) {
+        infoAdapter = new RapidTestTopProductInfoAdapter(itemFormList);
+        rvRightProductInfo.setAdapter(infoAdapter);
+        rvRightProductInfo.setOnScrollChangedListener((l, t, oldl, oldt) -> rvLeftProductCode.scrollBy(0, t - oldt));
+        rvRightProductInfo.setOnViewExceedBoundsListener(position -> infoAdapter.clearFocusByPosition(position));
+    }
+
+    private void calculateMaxHeight() {
+        final DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        int screenHeight = displayMetrics.heightPixels;
+        int formTitleHeightPX = (int) (HEIGHT_FORM_TITLE_DP * displayMetrics.density + 0.5f);
+        int actionPanelHeightPX = (int) (HEIGHT_ACTION_PANEL_DP * displayMetrics.density + 0.5f);
+        int actionBarHeight = getActionBarHeight();
+        maxHeight = (screenHeight - formTitleHeightPX - actionPanelHeightPX - actionBarHeight) / 2;
+    }
+
+    private int getActionBarHeight() {
+        try {
+            final TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
+            int actionBarSize = styledAttributes.getDimensionPixelSize(0, 0);
+            styledAttributes.recycle();
+            return actionBarSize;
+        } catch (Exception e) {
+            return 0;
         }
-        leftHeaderLinearlayout.addView(topLeftInflate);
-        viewGroup.addView(inflate);
-        return inflate;
     }
 
     public boolean isCompleted() {
-        for (Pair<EditText, SimpleTextWatcher> editTextConfigure : editTextConfigures) {
-            EditText editText = editTextConfigure.first;
-            if (TextUtils.isEmpty(editText.getText().toString())) {
-                editText.setError(context.getString(R.string.hint_error_input));
-                editText.requestFocus();
-                return false;
-            }
+        if (infoAdapter == null) return false;
+        final int notCompletePosition = infoAdapter.getNotCompletePosition();
+        if (notCompletePosition != RapidTestTopProductInfoAdapter.ALL_COMPLETE) {
+            rvRightProductInfo.scrollToPosition(notCompletePosition);
+            rvRightProductInfo.setCantExceedPosition(notCompletePosition);
+            infoAdapter.showError(notCompletePosition);
+            return false;
         }
         return true;
     }
-
-    private void configEditText(ProgramDataFormBasicItem item, EditText editText, String value) {
-        editText.setText(value);
-        editText.setEnabled(item.getForm().getStatus() == null
-                || item.getForm().getStatus() == ProgramDataForm.STATUS.DRAFT);
-        RapidTestRnrForm.EditTextWatcher textWatcher = new RapidTestRnrForm.EditTextWatcher(item, editText);
-        editText.addTextChangedListener(textWatcher);
-        editTextConfigures.add(new Pair<>(editText, textWatcher));
-    }
-
-    private String getValue(Long vaule) {
-        return vaule == null ? "" : String.valueOf(vaule.longValue());
-
-    }
-
-    private void setHeaderView(ViewGroup inflate,
-                               TextView tvName,
-                               EditText etStock,
-                               TextView tvReceived,
-                               TextView tvIssue,
-                               TextView tvAdjustment,
-                               TextView tvValidate,
-                               EditText etInventory,
-                               TextView leftHeaderText) {
-        leftHeaderText.setText(R.string.label_product_codes);
-        tvName.setText(R.string.label_product_name);
-        etStock.setText(R.string.initial_stock);
-        tvReceived.setText(R.string.entries);
-        tvIssue.setText(R.string.ISSUE);
-        tvAdjustment.setText(R.string.loss_and_adjustment);
-        tvValidate.setText(R.string.label_validate);
-        etInventory.setText(R.string.label_inventory);
-
-        etStock.setEnabled(false);
-        etInventory.setEnabled(false);
-
-    }
-
-    class EditTextWatcher extends SimpleTextWatcher {
-        private final ProgramDataFormBasicItem item;
-        private final EditText editText;
-
-        public EditTextWatcher(ProgramDataFormBasicItem item, EditText editText) {
-            this.item = item;
-            this.editText = editText;
-        }
-
-        @Override
-        public void afterTextChanged(Editable etText) {
-            switch (editText.getId()) {
-                case R.id.et_inventory:
-                    item.setInventory(getEditValue(etText));
-                    break;
-                case R.id.et_stock:
-                    item.setInitialAmount(getEditValue(etText));
-                    break;
-            }
-        }
-
-        private Long getEditValue(Editable etText) {
-            Long editText;
-            try {
-                editText = Long.valueOf(etText.toString());
-            } catch (NumberFormatException e) {
-                editText = null;
-            }
-            return editText;
-        }
-    }
-
 }

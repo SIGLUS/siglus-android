@@ -16,7 +16,7 @@ public class UpdateRegimeShortCodeTable extends Migration {
 
         execSQL("DELETE FROM 'regime_short_code' WHERE id NOTNULL");
 
-        String formatDate = DateUtil.formatDate(DateUtil.getCurrentDate(), DateUtil.DATE_TIME_FORMAT);
+        String formatDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
         execSQL("INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus01', 'ABC+3TC+EFV', '" + formatDate + "' , '" + formatDate + "','" + Adults + "')");
         execSQL("INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus02', 'ABC+3TC+NVP', '" + formatDate + "' , '" + formatDate + "','" + Adults + "')");
         execSQL("INSERT INTO `regime_short_code` (`code` ,`shortCode`,`createdAt` ,`updatedAt`, `type` ) VALUES ('AdultPlus03', 'ABC+3TC+RAL', '" + formatDate + "' , '" + formatDate + "','" + Adults + "')");

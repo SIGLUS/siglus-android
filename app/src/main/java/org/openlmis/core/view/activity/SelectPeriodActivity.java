@@ -105,7 +105,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private void init() {
         invalidateNextBtn();
 
-        DateTime date = new DateTime(DateUtil.getCurrentDate().getTime());
+        DateTime date = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_training_select_close_of_period, date.toString("dd MMM"))));
         } else {
@@ -166,7 +166,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     }
 
     private boolean shouldStartDataCheck() {
-        long now = DateUtil.getCurrentDate().getTime();
+        long now = LMISApp.getInstance().getCurrentTimeMillis();
         long previousChecked = sharedPreferenceMgr.getCheckDataDate().getTime();
         return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deleted_dirty_data)
                 && (Math.abs(now - previousChecked) > DateUtil.MILLISECONDS_HOUR * 6)

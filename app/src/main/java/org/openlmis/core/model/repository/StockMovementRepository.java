@@ -53,10 +53,9 @@ public class StockMovementRepository {
     }
 
     private void create(StockMovementItem stockMovementItem) throws LMISException {
-        StockMovementItem latestStockMovement = getLatestStockMovement();
-        if (latestStockMovement != null
-                && stockMovementItem.getCreatedTime().before(latestStockMovement.getCreatedTime())) {
-            String productCode = latestStockMovement.getStockCard().getProduct().getCode();
+        Date latestCreateTime = getLatestStockMovementCreatedTime();
+        if (latestCreateTime != null && stockMovementItem.getCreatedTime().before(latestCreateTime)) {
+            String productCode = stockMovementItem.getStockCard().getProduct().getCode();
             String facilityCode = UserInfoMgr.getInstance().getFacilityCode();
             LMISException e = new LMISException(facilityCode + ":" + productCode + ":" + (DateUtil.getCurrentDate()).toString());
             e.reportToFabric();
@@ -91,23 +90,13 @@ public class StockMovementRepository {
     }
 
     public void batchCreateStockMovementItemAndLotItems(final StockMovementItem stockMovementItem) throws LMISException {
-        stockMovementItem.setCreatedTime(DateUtil.getCurrentDate());
+        stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         // Create Stock Movement history list
         create(stockMovementItem);
         if (CollectionUtils.isNotEmpty(stockMovementItem.getLotMovementItemListWrapper())
                 || CollectionUtils.isNotEmpty(stockMovementItem.getNewAddedLotMovementItemListWrapper())) {
             lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
             lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getNewAddedLotMovementItemListWrapper());
-            long totalSoh = 0;
-            for (LotMovementItem lotMovementItem : stockMovementItem.getLotMovementItemListWrapper()) {
-                totalSoh += lotMovementItem.getStockOnHand();
-            }
-            for (LotMovementItem lotMovementItem : stockMovementItem.getNewAddedLotMovementItemListWrapper()) {
-                totalSoh += lotMovementItem.getStockOnHand();
-            }
-            stockMovementItem.setStockOnHand(totalSoh);
-            genericDao.update(stockMovementItem);
-            stockMovementItem.getStockCard().setStockOnHand(totalSoh);
         }
     }
 
@@ -133,11 +122,19 @@ public class StockMovementRepository {
                 .queryForFirst());
     }
 
-    private StockMovementItem getLatestStockMovement() throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, dao -> dao.queryBuilder()
-                .orderBy("movementDate", false)
-                .orderBy("createdTime", false)
-                .queryForFirst());
+    public Date getLatestStockMovementCreatedTime() throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, dao -> {
+            try {
+                final GenericRawResults<String[]> rawResults = dao.queryRaw("SELECT MAX(createdTime) FROM stock_items where movementDate=(SELECT MAX(movementDate) FROM stock_items)");
+                final String[] firstResult = rawResults.getFirstResult();
+                if (firstResult == null || firstResult.length <=0) {
+                    return null;
+                }
+                return DateUtil.parseString(firstResult[0],DateUtil.DATE_TIME_FORMAT);
+            }catch (Exception e){
+                return null;
+            }
+        });
     }
 
     public List<String> queryStockMovementDatesByProgram(final String programCode) {
@@ -200,6 +197,29 @@ public class StockMovementRepository {
                 .and().gt("createdTime", periodBeginDate)//difference from the api above
                 .and().le("createdTime", periodEndDate)
                 .query());
+    }
+
+    //仅查找stockOnHand, movementQuantity, movementType用于填充RnrItem
+    public List<StockMovementItem> queryNotFullFillStockItemsByCreatedData(final long stockCardId, final Date periodBeginDate, final Date periodEndDate){
+        String rawSql = "SELECT stockOnHand, movementQuantity, movementType FROM stock_items WHERE stockCard_id='" + stockCardId + "'"
+                + " AND createdTime > '" + DateUtil.formatDateTime(periodBeginDate) + "'"
+                + " AND createdTime <= '" + DateUtil.formatDateTime(periodEndDate) + "'"
+                + " ORDER BY movementDate, createdTime";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        List<StockMovementItem> stockItems = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                StockMovementItem stockMovementItem = new StockMovementItem();
+                stockMovementItem.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+                stockMovementItem.setMovementQuantity(cursor.getLong(cursor.getColumnIndexOrThrow("movementQuantity")));
+                stockMovementItem.setMovementType(MovementReasonManager.MovementType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("movementType"))));
+                stockItems.add(stockMovementItem);
+            } while (cursor.moveToNext());
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return stockItems;
     }
 
     public List<StockMovementItem> queryStockMovementsByMovementDate(final long stockCardId, final Date startDate, final Date endDate) throws LMISException {

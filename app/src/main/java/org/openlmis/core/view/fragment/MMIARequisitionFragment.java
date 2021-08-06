@@ -54,6 +54,7 @@ import org.openlmis.core.view.widget.MMIARegimeListWrap;
 import org.openlmis.core.view.widget.MMIARnrFormProductList;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -165,6 +166,12 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
         } else {
             presenter.loadData(formId, periodEndDate);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        rnrFormList.removeListenerOnDestroyView();
+        super.onDestroyView();
     }
 
     protected void initUI() {
@@ -299,14 +306,16 @@ public class MMIARequisitionFragment extends BaseReportFragment implements MMIAR
                 if (rnrFormList.isCompleted()
                         && regimeWrap.isCompleted()
                         && mmiaPatientInfoListView.isCompleted()
-                        && mmiaDispensedInfoList.isCompleted()
-                        && mmiaRegimeThreeLineListView.isCompleted()) {
+                        && mmiaRegimeThreeLineListView.isCompleted()
+                        && mmiaDispensedInfoList.isCompleted()) {
                     presenter.setViewModels(rnrFormList.itemFormList,
                             regimeWrap.getDataList(),
                             combinePatientAndDispensed(mmiaPatientInfoListView.getDataList(), mmiaDispensedInfoList.getDataList()),
                             mmiaRegimeThreeLineListView.getDataList(),
                             etComment.getText().toString());
-                    if (!presenter.validateFormPeriod()) {
+                    if (presenter.viewModelHasNull()) {
+                        ToastUtil.show(R.string.msg_requisition_field_exist_null);
+                    } else if (!presenter.validateFormPeriod()) {
                         ToastUtil.show(R.string.msg_requisition_not_unique);
                     } else if (shouldCommentMandatory()) {
                         etComment.setError(getString(R.string.mmia_comment_should_not_empty));

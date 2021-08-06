@@ -1,5 +1,8 @@
 package org.openlmis.core.presenter;
 
+import static org.openlmis.core.utils.Constants.KIT_PRODUCTS;
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -36,7 +39,8 @@ public class AddNonBasicProductsPresenter extends Presenter {
     public Observable<List<NonBasicProductsViewModel>> getAllNonBasicProductsViewModels(final List<String> selectedProducts) {
         return Observable.create((Observable.OnSubscribe<List<NonBasicProductsViewModel>>) subscriber -> {
             try {
-                List<Product> products = productRepository.listNonBasicProducts();
+                List<Product> products = from(productRepository.listNonBasicProducts())
+                    .filter(product -> !KIT_PRODUCTS.contains(product.getCode())).toList();
                 for (Product product : products) {
                     if (selectedProducts.contains(product.getCode())) {
                         continue;

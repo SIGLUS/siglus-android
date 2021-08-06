@@ -131,8 +131,10 @@ public class StockMovementViewModel extends BaseStockMovementViewModel {
         List<LotMovementViewModel> totalLotMovementViewModelList = new ArrayList<>();
         totalLotMovementViewModelList.addAll(existingLotMovementViewModelList);
         totalLotMovementViewModelList.addAll(newLotMovementViewModelList);
-        stockMovementItem.populateLotQuantitiesAndCalculateNewSOH(totalLotMovementViewModelList, stockMovementItem.getMovementType());
-
+        if (!isKit) {
+            stockMovementItem.populateLotQuantitiesAndCalculateNewSOH(totalLotMovementViewModelList,
+                stockMovementItem.getMovementType());
+        }
         return stockMovementItem;
     }
 

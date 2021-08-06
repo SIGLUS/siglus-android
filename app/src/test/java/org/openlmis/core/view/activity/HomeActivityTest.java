@@ -105,13 +105,6 @@ public class HomeActivityTest {
     }
 
     @Test
-    public void shouldGoToPatientDataReportPage() {
-        homeActivity.btnPatientData.performClick();
-        verifyNextPage(ViaPatientDataReportActivity.class.getName());
-    }
-
-
-    @Test
     public void shouldGoToKitsStockCardsPage() throws Exception {
         homeActivity.btnKitStockCard.performClick();
 

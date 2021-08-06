@@ -76,7 +76,7 @@ public class SyncDownManager {
     private static final int MONTHS_OF_YEAR = 12;
     private static final String TAG = SyncDownManager.class.getSimpleName();
 
-    private boolean isSyncing = false;
+    public static volatile boolean isSyncing = false;
 
     protected LMISRestApi lmisRestApi;
 
@@ -288,6 +288,7 @@ public class SyncDownManager {
             public void onCompleted() {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
                 sharedPreferenceMgr.setStockCardLastYearSyncError(false);
+                sharedPreferenceMgr.setStockLastSyncTime();
                 sendSyncFinishedBroadcast();
             }
 
@@ -355,8 +356,6 @@ public class SyncDownManager {
                 if (sharedPreferenceMgr.isNeedsInventory()) {
                     fetchKitChangeProduct();
                 }
-                subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
-
             } catch (LMISException e) {
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
                 e.printStackTrace();
@@ -367,6 +366,7 @@ public class SyncDownManager {
         } else {
             dirtyDataManager.initialDirtyDataCheck();
         }
+        subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
     }
 
     private void syncDownProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {

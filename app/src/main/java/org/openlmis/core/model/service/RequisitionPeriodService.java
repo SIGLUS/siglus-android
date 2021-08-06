@@ -3,9 +3,13 @@ package org.openlmis.core.model.service;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.model.RnRForm;
@@ -32,6 +36,9 @@ public class RequisitionPeriodService {
 
     @Inject
     private ReportTypeFormRepository reportTypeFormRepository;
+
+    @Inject
+    private SharedPreferenceMgr sharedPreferenceMgr;
 
     public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
         return generateNextPeriod(programCode, physicalInventoryDate, reportTypeFormRepository.getReportType(programCode));
@@ -71,7 +78,7 @@ public class RequisitionPeriodService {
 
     private Period generatePeriodBasedOnDefaultDates(Date physicalInventoryDate, String programCode) throws LMISException {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-            return Period.generateForTraining(DateUtil.getCurrentDate());
+            return Period.generateForTraining(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         }
         DateTime periodBeginDate = calculatePeriodBeginDate(programCode);
         DateTime periodEndDate;
@@ -83,8 +90,17 @@ public class RequisitionPeriodService {
         return new Period(periodBeginDate, periodEndDate);
     }
 
-    private DateTime calculatePeriodBeginDate(String programCode) throws LMISException {
-        DateTime initializeDateTime = new DateTime(stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode));
+    private DateTime calculatePeriodBeginDate(String programCode) throws LMISException{
+        DateTime initializeDateTime = null;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        ReportTypeForm reportTypeForm = reportTypeFormRepository.queryByCode(programCode);
+        if (reportTypeForm.lastReportEndTime != null) {
+            DateTime lastReportEndTime = dateTimeFormatter.parseDateTime(reportTypeForm.lastReportEndTime);
+            if (Months.monthsBetween(lastReportEndTime, new DateTime()).getMonths() > 12){
+                initializeDateTime = new DateTime().plusMonths(-sharedPreferenceMgr.getMonthOffsetThatDefinedOldData()).toDateTime();
+            }
+        }
+        initializeDateTime = initializeDateTime == null? new DateTime(stockMovementRepository.queryEarliestStockMovementDateByProgram(programCode)):initializeDateTime;
 
         int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 
@@ -142,11 +158,11 @@ public class RequisitionPeriodService {
                     .withDate(nextPeriodInScheduleEnd.getYear(),
                             nextPeriodInScheduleEnd.getMonthOfYear(),
                             Period.INVENTORY_END_DAY_NEXT);
-            return lastInventoryDateForNextPeriodInSchedule.isBefore(DateUtil.getCurrentDate().getTime());
+            return lastInventoryDateForNextPeriodInSchedule.isBefore(LMISApp.getInstance().getCurrentTimeMillis());
         }
 
         Date lastRnrPeriodEndDate = rnRForms.get(rnRForms.size() - 1).getPeriodEnd();
-        return new DateTime(lastRnrPeriodEndDate).isBefore(DateUtil.getCurrentDate().getTime());
+        return new DateTime(lastRnrPeriodEndDate).isBefore(LMISApp.getInstance().getCurrentTimeMillis());
     }
 
     public int getMissedPeriodOffsetMonth(String programCode) throws LMISException {
@@ -172,7 +188,7 @@ public class RequisitionPeriodService {
     }
 
     public DateTime getCurrentMonthInventoryBeginDate() {
-        DateTime currentDate = new DateTime(DateUtil.getCurrentDate().getTime());
+        DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         DateTime currentMonthInventoryBeginDate;
         if (currentDate.getDayOfMonth() >= Period.INVENTORY_BEGIN_DAY) {
             currentMonthInventoryBeginDate = currentDate

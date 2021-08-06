@@ -35,6 +35,12 @@ public class Period implements Serializable {
         }
     }
 
+    public Period(Date reportBeginDate) {
+        DateTime reportBeginTime = new DateTime(reportBeginDate);
+        periodBegin = DateUtil.cutTimeStamp(reportBeginTime.withDayOfMonth(BEGIN_DAY));
+        periodEnd = DateUtil.cutTimeStamp(nextMonth(reportBeginTime).withDayOfMonth(END_DAY));
+    }
+
     public static Period of(Date date) {
         return new Period(new DateTime(date));
     }
@@ -107,13 +113,13 @@ public class Period implements Serializable {
     }
 
     private boolean isOpenForCurrentDate() {
-        DateTime today = new DateTime(DateUtil.getCurrentDate().getTime());
+        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         Interval requisitionInterval = new Interval(getOpeningRequisitionDate(), getClosingRequisitionDate());
         return requisitionInterval.contains(today);
     }
 
     private boolean isBeforeCurrent() {
-        DateTime today = new DateTime(DateUtil.getCurrentDate().getTime());
+        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         Period currentPeriod = new Period(today);
         return periodEnd.isBefore(currentPeriod.getBegin());
     }

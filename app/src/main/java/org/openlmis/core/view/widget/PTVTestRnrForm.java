@@ -56,10 +56,6 @@ public class PTVTestRnrForm extends LinearLayout {
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        for (Pair<EditText, SimpleTextWatcher> editTextConfigure : editTextConfigures) {
-            editTextConfigure.first.removeTextChangedListener(editTextConfigure.second);
-        }
-
     }
 
     private void addItemView(List<RnrFormItem> itemFormList) {
@@ -163,6 +159,18 @@ public class PTVTestRnrForm extends LinearLayout {
             }
         }
         return true;
+    }
+
+
+    public void removeListenerOnDestroyView() {
+        for (Pair<EditText, SimpleTextWatcher> editTextConfigure: editTextConfigures) {
+            if (editTextConfigure.first != null) {
+                editTextConfigure.first.clearFocus();
+                if (editTextConfigure.second != null) {
+                    editTextConfigure.first.removeTextChangedListener(editTextConfigure.second);
+                }
+            }
+        }
     }
 
     class EditTextWatcher extends SimpleTextWatcher {

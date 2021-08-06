@@ -198,7 +198,7 @@ public class RnRFormListActivityTest {
     public void shouldStartMMIAEditPageWhenBtnClickedWithTypeUnauthorized() throws Exception {
         View view = mock(View.class);
 
-        RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
+        RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_DRAFT);
         rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel, view);
 
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
@@ -222,7 +222,7 @@ public class RnRFormListActivityTest {
         assertEquals(startedIntentWhenIsHistory.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
         assertEquals(1L, startedIntentWhenIsHistory.getLongExtra(Constants.PARAM_FORM_ID, 0));
 
-        RnRFormViewModel defaultViewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
+        RnRFormViewModel defaultViewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_DRAFT);
         rnRFormListActivity.rnRFormItemClickListener.clickBtnView(defaultViewModel, view);
 
         Intent startedIntentWhenIsDefault = ShadowApplication.getInstance().getNextStartedActivity();

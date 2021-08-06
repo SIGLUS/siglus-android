@@ -27,7 +27,6 @@ import com.google.gson.JsonParseException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.DateUtil;
 
-import java.util.Date;
 
 public class ProductAdapter implements JsonDeserializer<Product> {
 

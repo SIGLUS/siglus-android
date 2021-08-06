@@ -149,6 +149,7 @@
     <string name="label_product_name">Product Name</string>
     <string name="msg_requisition_submit_tip">Your Requisition form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
+    <string name="msg_requisition_field_exist_null">Cannot submit requisition with null field!</string>
     <string name="btn_approve">Approve</string>
     <string name="msg_via_submit_signature">Enter your initials and then approve the requisition amounts</string>
     <string name="msg_rapid_test_submit_signature">Enter your initials and then approve the rapid test amounts</string>

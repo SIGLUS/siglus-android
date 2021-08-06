@@ -32,7 +32,7 @@
     <dimen name="margin_tiny">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
-    <dimen name="margin_medium">24dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_large">32dp</dimen>
     <dimen name="margin_larger">40dp</dimen>
 
@@ -53,10 +53,10 @@
     <dimen name="rapid_view_view_left_padding">12dp</dimen>
     <dimen name="rapid_view_border_width">2dp</dimen>
     <dimen name="rapid_view_basic_form_item_width">120dp</dimen>
-    <dimen name="repid_view_top_item_line_heigh">44dp</dimen>
-    <dimen name="repid_view_item_line_heigh">44dp</dimen>
-    <dimen name="repid_view_body_item_line_heigh">50dp</dimen>
-    <dimen name="repid_view_item_two_line_heigh">88dp</dimen>
+    <dimen name="repid_view_top_item_line_height">44dp</dimen>
+    <dimen name="rapid_view_margin_bottom">1dp</dimen>
+    <dimen name="repid_view_body_item_line_height">50dp</dimen>
+    <dimen name="repid_view_item_two_line_height">88dp</dimen>
 
     <!--AL-->
     <dimen name="al_view_list_height">44dp</dimen>

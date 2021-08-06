@@ -13,7 +13,6 @@ import org.openlmis.core.view.viewmodel.malaria.MalariaDataReportViewModel;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import static org.joda.time.DateTime.now;
 
 public class MalariaDataReportViewModelToMalariaProgramMapper {
 

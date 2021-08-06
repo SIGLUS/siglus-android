@@ -52,6 +52,7 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.NetworkSchedulerService;
 import org.openlmis.core.receiver.NetworkChangeReceiver;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FileUtil;
 
 import java.io.File;
@@ -78,11 +79,14 @@ public class LMISApp extends Application {
         }
         JodaTimeAndroid.init(this);
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
-        RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
+        final SharedPreferenceMgr sharedPreferenceMgr = RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
+        //fix: Reset the syncing flag on illegal exit during initialization
+        sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
+
         setupAppCenter();
         setupGoogleAnalytics();
 
-        instance = this;
+        LMISApp.instance = this;
         registerNetWorkChangeListener();
     }
 
@@ -134,7 +138,7 @@ public class LMISApp extends Application {
     }
 
     public long getCurrentTimeMillis() {
-        return System.currentTimeMillis();
+        return DateUtil.getCurrentDate().getTime();
     }
 
     public static Context getContext() {
