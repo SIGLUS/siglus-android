@@ -19,22 +19,58 @@
 package org.openlmis.core.view.viewmodel;
 
 import java.util.Date;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
+import org.joda.time.DateTime;
+import org.openlmis.core.model.DraftBulkIssueProductLotItem;
 
 @Data
-@RequiredArgsConstructor(staticName = "create")
-public class BulkIssueLotViewModel {
+@Builder
+public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel> {
 
   private Long amount;
 
-  @NonNull
-  private long sotSoh;
+  private long lotSoh;
 
-  @NonNull
   private String lotNumber;
 
-  @NonNull
   private Date expirationDate;
+
+  private DraftBulkIssueProductLotItem draftLotItem;
+
+  public static BulkIssueLotViewModel buildFromDraft(DraftBulkIssueProductLotItem draftLotItem) {
+    return new BulkIssueLotViewModelBuilder()
+        .amount(draftLotItem.getAmount())
+        .lotSoh(draftLotItem.getLotSoh())
+        .lotNumber(draftLotItem.getLotNumber())
+        .expirationDate(draftLotItem.getExpirationDate())
+        .draftLotItem(draftLotItem)
+        .build();
+  }
+
+  public static BulkIssueLotViewModel buildFromProduct(long lotSoh, String lotNumber, Date expirationDate) {
+    return new BulkIssueLotViewModelBuilder()
+        .lotSoh(lotSoh)
+        .lotNumber(lotNumber)
+        .expirationDate(expirationDate)
+        .build();
+  }
+
+  @Override
+  public int compareTo(BulkIssueLotViewModel other) {
+    long otherExpirationDate = other.getExpirationDate().getTime();
+    long myExpirationDate = getExpirationDate().getTime();
+    return Long.compare(myExpirationDate, otherExpirationDate);
+  }
+
+  public boolean isExpired() {
+    return new DateTime(expirationDate).minusDays(-1).isBeforeNow();
+  }
+
+  public boolean hasChanged() {
+    Long draftAmount = draftLotItem == null ? null : draftLotItem.getAmount();
+    Long currentAmount = amount == null ? null : amount;
+    return ObjectUtils.notEqual(draftAmount, currentAmount);
+  }
 }

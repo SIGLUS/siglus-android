@@ -26,10 +26,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.io.Serializable;
 import java.util.List;
 import org.openlmis.core.R;
@@ -38,6 +41,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkIssuePresenter;
 import org.openlmis.core.presenter.BulkIssuePresenter.BulkIssueView;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -45,8 +49,17 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_bulk_issue)
 public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
 
+  @InjectView(R.id.tv_total_amount)
+  private TextView tvTotalAmount;
+
   @InjectView(R.id.rv_bulk_issue)
   private RecyclerView rvBulkIssue;
+
+  @InjectView(R.id.action_panel)
+  private View actionPanel;
+
+  @InjectView(R.id.cl_empty)
+  private View emptyView;
 
   @InjectPresenter(BulkIssuePresenter.class)
   BulkIssuePresenter bulkIssuePresenter;
@@ -60,6 +73,25 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
         }
         bulkIssuePresenter.addProducts((List<Product>) result.getData().getSerializableExtra(SELECTED_PRODUCTS));
       });
+
+  private final RecyclerView.AdapterDataObserver dataObserver = new AdapterDataObserver() {
+    @Override
+    public void onChanged() {
+      updateUI();
+    }
+
+    @Override
+    public void onItemRangeChanged(int positionStart, int itemCount) {
+      updateUI();
+    }
+
+    private void updateUI() {
+      int viewModelSize = bulkIssuePresenter.getCurrentViewModels().size();
+      actionPanel.setVisibility(viewModelSize == 0 ? View.GONE : View.VISIBLE);
+      emptyView.setVisibility(viewModelSize == 0 ? View.VISIBLE : View.GONE);
+      tvTotalAmount.setText(getString(R.string.label_total, viewModelSize));
+    }
+  };
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,10 +121,21 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
   }
 
   @Override
+  public void onSaveDraftFinished(boolean succeeded) {
+    if (succeeded) {
+      ToastUtil.show(getString(R.string.successfully_saved));
+      finish();
+    } else {
+      ToastUtil.show(getString(R.string.unsuccessfully_saved));
+    }
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     rvBulkIssue.setLayoutManager(new LinearLayoutManager(this));
     rvBulkIssue.setAdapter(bulkIssueAdapter);
+    bulkIssueAdapter.registerAdapterDataObserver(dataObserver);
     bulkIssueAdapter.setNewInstance(bulkIssuePresenter.getCurrentViewModels());
     bulkIssuePresenter.initialViewModels(getIntent());
   }

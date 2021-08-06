@@ -18,21 +18,67 @@
 
 package org.openlmis.core.view.adapter;
 
+import android.text.Editable;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.SingleTextWatcher;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
+import org.openlmis.core.view.widget.SingleClickButtonListener;
 
 public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProductViewModel, BaseViewHolder> {
 
   public BulkIssueAdapter() {
     addItemType(BulkIssueProductViewModel.TYPE_EDIT, R.layout.item_bulk_issue_edit);
-    addItemType(BulkIssueProductViewModel.TYPE_DONE, R.layout.item_bulk_issue_edit);
+    addItemType(BulkIssueProductViewModel.TYPE_DONE, R.layout.item_bulk_issue_done);
   }
 
   @Override
-  protected void convert(@NonNull BaseViewHolder holder, BulkIssueProductViewModel bulkIssueProductViewModel) {
-    holder.setText(R.id.tv_temp, "data: " + bulkIssueProductViewModel.toString());
+  protected void convert(@NonNull BaseViewHolder holder, BulkIssueProductViewModel viewModel) {
+    if (holder.getItemViewType() == BulkIssueProductViewModel.TYPE_EDIT) {
+      holder.setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
+      EditText etRequested = holder.getView(R.id.et_requested);
+      etRequested.setText(viewModel.getRequested() == null ? "" : viewModel.getRequested().toString());
+      SingleTextWatcher requestedTextWatcher = new SingleTextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+          viewModel.setRequested(StringUtils.isBlank(s) ? null : Long.parseLong(s.toString()));
+        }
+      };
+      etRequested.removeTextChangedListener(requestedTextWatcher);
+      etRequested.addTextChangedListener(requestedTextWatcher);
+      holder.getView(R.id.rl_trashcan).setOnClickListener(new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          removeAt(holder.getLayoutPosition());
+        }
+      });
+
+      // init lot list
+      RecyclerView rvLots = holder.getView(R.id.rv_lots);
+      rvLots.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
+      BulkIssueLotAdapter lotAdapter = new BulkIssueLotAdapter();
+      rvLots.setAdapter(lotAdapter);
+      DividerItemDecoration decor = new DividerItemDecoration(holder.itemView.getContext(), LinearLayout.VERTICAL);
+      decor.setDrawable(Objects.requireNonNull(ContextCompat
+          .getDrawable(holder.itemView.getContext(), R.drawable.shape_bulk_issue_item_decoration)));
+      if (rvLots.getItemDecorationCount() == 0) {
+        rvLots.addItemDecoration(decor);
+      }
+      lotAdapter.setList(viewModel.getLotViewModels());
+    }
+    // TODO set view for done status
+
   }
 }

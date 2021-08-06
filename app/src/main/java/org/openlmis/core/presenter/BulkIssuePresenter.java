@@ -21,9 +21,11 @@ package org.openlmis.core.presenter;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
 import android.content.Intent;
+import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
@@ -46,7 +48,12 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+
 public class BulkIssuePresenter extends Presenter {
+
+  public static final String MOVEMENT_REASON_CODE = "MOVEMENT_REASON_CODE";
+
+  public static final String DOCUMENT_NUMBER = "DOCUMENT_NUMBER";
 
   @Inject
   private BulkIssueRepository bulkIssueRepository;
@@ -55,6 +62,10 @@ public class BulkIssuePresenter extends Presenter {
   private StockRepository stockRepository;
 
   private BulkIssueView bulkIssueView;
+
+  private String movementReasonCode;
+
+  private String documentNumber;
 
   @Getter
   private final List<BulkIssueProductViewModel> currentViewModels = new ArrayList<>();
@@ -68,7 +79,9 @@ public class BulkIssuePresenter extends Presenter {
     bulkIssueView.loading();
     currentViewModels.clear();
     Observable<List<BulkIssueProductViewModel>> initObservable;
-    if (intent.hasExtra(SELECTED_PRODUCTS)) {
+    documentNumber = intent.getStringExtra(DOCUMENT_NUMBER);
+    if (intent.hasExtra(SELECTED_PRODUCTS) && intent.hasExtra(MOVEMENT_REASON_CODE)) {
+      movementReasonCode = intent.getStringExtra(MOVEMENT_REASON_CODE);
       initObservable = createViewModelsFromProducts((List<Product>) intent.getSerializableExtra(SELECTED_PRODUCTS));
     } else {
       initObservable = restoreViewModelsFromDraft();
@@ -76,24 +89,7 @@ public class BulkIssuePresenter extends Presenter {
     Subscription initialSubscription = initObservable
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .subscribe(new Subscriber<List<BulkIssueProductViewModel>>() {
-          @Override
-          public void onCompleted() {
-            bulkIssueView.loaded();
-            bulkIssueView.onRefreshViewModels();
-          }
-
-          @Override
-          public void onError(Throwable e) {
-            bulkIssueView.loaded();
-            bulkIssueView.onLoadViewModelsFailed(e);
-          }
-
-          @Override
-          public void onNext(List<BulkIssueProductViewModel> bulkIssueProductViewModels) {
-            currentViewModels.addAll(bulkIssueProductViewModels);
-          }
-        });
+        .subscribe(getViewModelSubscribe());
     subscriptions.add(initialSubscription);
   }
 
@@ -102,24 +98,7 @@ public class BulkIssuePresenter extends Presenter {
     Subscription addProductsSubscription = createViewModelsFromProducts(productCodes)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .subscribe(new Subscriber<List<BulkIssueProductViewModel>>() {
-          @Override
-          public void onCompleted() {
-            bulkIssueView.loaded();
-            bulkIssueView.onRefreshViewModels();
-          }
-
-          @Override
-          public void onError(Throwable e) {
-            bulkIssueView.loaded();
-            bulkIssueView.onLoadViewModelsFailed(e);
-          }
-
-          @Override
-          public void onNext(List<BulkIssueProductViewModel> bulkIssueProductViewModels) {
-            currentViewModels.addAll(bulkIssueProductViewModels);
-          }
-        });
+        .subscribe(getViewModelSubscribe());
     subscriptions.add(addProductsSubscription);
   }
 
@@ -127,6 +106,38 @@ public class BulkIssuePresenter extends Presenter {
     return FluentIterable.from(currentViewModels)
         .transform(viewModel -> Objects.requireNonNull(viewModel).getProduct().getCode())
         .toList();
+  }
+
+  public void saveDraft() {
+    bulkIssueView.loading();
+    Observable.create(subscriber -> {
+      // TODO complete save draft logic
+    }).observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .subscribe(o -> bulkIssueView.loaded(), throwable -> bulkIssueView.loaded());
+  }
+
+  @NonNull
+  private Subscriber<List<BulkIssueProductViewModel>> getViewModelSubscribe() {
+    return new Subscriber<List<BulkIssueProductViewModel>>() {
+      @Override
+      public void onCompleted() {
+        Collections.sort(currentViewModels);
+        bulkIssueView.loaded();
+        bulkIssueView.onRefreshViewModels();
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        bulkIssueView.loaded();
+        bulkIssueView.onLoadViewModelsFailed(e);
+      }
+
+      @Override
+      public void onNext(List<BulkIssueProductViewModel> bulkIssueProductViewModels) {
+        currentViewModels.addAll(bulkIssueProductViewModels);
+      }
+    };
   }
 
   private Observable<List<BulkIssueProductViewModel>> createViewModelsFromProducts(List<Product> products) {
@@ -141,7 +152,7 @@ public class BulkIssuePresenter extends Presenter {
             continue;
           }
           viewModels.add(BulkIssueProductViewModel
-              .create(stockCard.getProduct(), buildLotViewModelsFromLotOnHands(lotOnHandList)));
+              .buildFromProduct(stockCard.getProduct(), buildLotViewModelsFromLotOnHands(lotOnHandList)));
         }
         subscriber.onNext(viewModels);
         subscriber.onCompleted();
@@ -158,7 +169,9 @@ public class BulkIssuePresenter extends Presenter {
         ArrayList<BulkIssueProductViewModel> viewModels = new ArrayList<>();
         List<DraftBulkIssueProduct> draftBulkIssueProducts = bulkIssueRepository.queryAllBulkIssueDraft();
         for (DraftBulkIssueProduct draftProduct : draftBulkIssueProducts) {
-          viewModels.add(BulkIssueProductViewModel.create(draftProduct.getProduct(),
+          movementReasonCode = draftProduct.getMovementReasonCode();
+          documentNumber = draftProduct.getDocumentNumber();
+          viewModels.add(BulkIssueProductViewModel.buildFromDraft(draftProduct,
               buildLotViewModelsFromDraftLots(draftProduct.getDraftLotItemListWrapper())));
         }
         subscriber.onNext(viewModels);
@@ -175,19 +188,19 @@ public class BulkIssuePresenter extends Presenter {
     for (LotOnHand lotOnHand : lotOnHands) {
       Lot lot = lotOnHand.getLot();
       long lotSoh = lotOnHand.getQuantityOnHand() == null ? 0 : lotOnHand.getQuantityOnHand();
-      lotViewModels.add(BulkIssueLotViewModel.create(lotSoh, lot.getLotNumber(), lot.getExpirationDate()));
+      lotViewModels.add(BulkIssueLotViewModel.buildFromProduct(lotSoh, lot.getLotNumber(), lot.getExpirationDate()));
     }
+    Collections.sort(lotViewModels);
     return lotViewModels;
   }
 
   private List<BulkIssueLotViewModel> buildLotViewModelsFromDraftLots(List<DraftBulkIssueProductLotItem> draftLots) {
     final ArrayList<BulkIssueLotViewModel> lotViewModels = new ArrayList<>();
     for (DraftBulkIssueProductLotItem draftLot : draftLots) {
-      BulkIssueLotViewModel viewModel = BulkIssueLotViewModel
-          .create(draftLot.getLotSoh(), draftLot.getLotNumber(), draftLot.getExpirationDate());
-      viewModel.setAmount(draftLot.getAmount());
+      BulkIssueLotViewModel viewModel = BulkIssueLotViewModel.buildFromDraft(draftLot);
       lotViewModels.add(viewModel);
     }
+    Collections.sort(lotViewModels);
     return lotViewModels;
   }
 
@@ -196,5 +209,7 @@ public class BulkIssuePresenter extends Presenter {
     void onRefreshViewModels();
 
     void onLoadViewModelsFailed(Throwable throwable);
+
+    void onSaveDraftFinished(boolean succeeded);
   }
 }

@@ -20,14 +20,15 @@ package org.openlmis.core.view.viewmodel;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.util.List;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
+import org.openlmis.core.model.DraftBulkIssueProduct;
 import org.openlmis.core.model.Product;
 
 @Data
-@RequiredArgsConstructor(staticName = "create")
-public class BulkIssueProductViewModel implements MultiItemEntity {
+@Builder
+public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<BulkIssueProductViewModel> {
 
   public static final int TYPE_EDIT = 1;
 
@@ -35,16 +36,52 @@ public class BulkIssueProductViewModel implements MultiItemEntity {
 
   private boolean done;
 
-  @NonNull
   private Product product;
 
   private Long requested;
 
-  @NonNull
+  private DraftBulkIssueProduct draftProduct;
+
   private List<BulkIssueLotViewModel> lotViewModels;
+
+  public static BulkIssueProductViewModel buildFromDraft(DraftBulkIssueProduct draftProduct,
+      List<BulkIssueLotViewModel> lotViewModels) {
+    return new BulkIssueProductViewModelBuilder()
+        .product(draftProduct.getProduct())
+        .draftProduct(draftProduct)
+        .requested(draftProduct.getRequested())
+        .lotViewModels(lotViewModels)
+        .build();
+  }
+
+  public static BulkIssueProductViewModel buildFromProduct(Product product, List<BulkIssueLotViewModel> lotViewModels) {
+    return new BulkIssueProductViewModelBuilder()
+        .product(product)
+        .lotViewModels(lotViewModels)
+        .build();
+  }
 
   @Override
   public int getItemType() {
     return done ? TYPE_DONE : TYPE_EDIT;
+  }
+
+  @Override
+  public int compareTo(BulkIssueProductViewModel o) {
+    return product.compareTo(o.getProduct());
+  }
+
+  public boolean hasChanged() {
+    for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
+      if (lotViewModel.hasChanged()) {
+        return true;
+      }
+    }
+    // self check
+    Long draftRequested = draftProduct == null ? null : draftProduct.getRequested();
+    Long currentRequested = requested == null ? null : requested;
+    boolean requestedChanged = ObjectUtils.notEqual(draftRequested, currentRequested);
+    boolean statusChanged = (draftProduct == null && done) || (draftProduct != null && draftProduct.isDone() == done);
+    return requestedChanged || statusChanged;
   }
 }

@@ -12,6 +12,8 @@ public class CreateBulkIssueDraftTables extends Migration {
         "`createdAt` VARCHAR NOT NULL , " +
         "`updatedAt` VARCHAR NOT NULL , " +
         "`id` INTEGER PRIMARY KEY AUTOINCREMENT , " +
+        "`movementReasonCode` VARCHAR NOT NULL , " +
+        "`documentNumber` VARCHAR , " +
         "`done` BOOLEAN DEFAULT 0)");
 
     execSQL("CREATE TABLE `draft_bulk_issue_product_lot_item` " +

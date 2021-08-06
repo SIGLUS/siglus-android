@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.openlmis.core.presenter.BulkIssuePresenter.DOCUMENT_NUMBER;
+import static org.openlmis.core.presenter.BulkIssuePresenter.MOVEMENT_REASON_CODE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
@@ -34,6 +36,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -54,6 +57,9 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
   @InjectView(R.id.et_destination)
   EditText etDestination;
 
+  @InjectView(R.id.et_bulk_issue_document_number)
+  EditText etDocumentNumber;
+
   @InjectView(R.id.bt_next)
   Button btNext;
 
@@ -66,6 +72,10 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
         }
         Intent intent = new Intent(BulkIssueChooseDestinationActivity.this, BulkIssueActivity.class);
         intent.putExtra(SELECTED_PRODUCTS, result.getData().getSerializableExtra(SELECTED_PRODUCTS));
+        intent.putExtra(MOVEMENT_REASON_CODE, chosenReason.getCode());
+        if (StringUtils.isNotBlank(etDocumentNumber.getText())) {
+          intent.putExtra(DOCUMENT_NUMBER, etDocumentNumber.getText().toString());
+        }
         startActivity(intent);
         finish();
       });

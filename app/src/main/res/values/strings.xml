@@ -624,4 +624,5 @@
   <string name="hint_bulk_entries_signature">Signature</string>
   <string name="msg_complete_successfully">Complete Successfully</string>
   <string name="title_bulk_issue">Multiple Issues</string>
+  <string name="unsuccessfully_saved">Unsuccessfully Saved</string>
 </resources>

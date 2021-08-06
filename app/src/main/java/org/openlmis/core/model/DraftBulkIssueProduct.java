@@ -28,24 +28,32 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.openlmis.core.utils.ListUtil;
 
 @Setter
 @Getter
 @Builder
+@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @DatabaseTable(tableName = "draft_bulk_issue_product")
 public class DraftBulkIssueProduct extends BaseModel {
-
-  @DatabaseField(foreign = true, foreignAutoRefresh = true)
-  private Product product;
 
   @DatabaseField
   private boolean done;
 
   @DatabaseField
   private Long requested;
+
+  @DatabaseField(canBeNull = false)
+  private String movementReasonCode;
+
+  @DatabaseField
+  private String documentNumber;
+
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private Product product;
 
   @ForeignCollectionField(eager = true)
   private ForeignCollection<DraftBulkIssueProductLotItem> foreignDraftLotItems;
