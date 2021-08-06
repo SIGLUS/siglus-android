@@ -25,6 +25,8 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,23 +37,29 @@ import org.openlmis.core.utils.ListUtil;
 @Getter
 @Builder
 @Accessors(chain = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @DatabaseTable(tableName = "draft_bulk_issue_product")
 public class DraftBulkIssueProduct extends BaseModel {
 
+  @Include
   @DatabaseField
   private boolean done;
 
+  @Include
   @DatabaseField
   private Long requested;
 
+  @Include
   @DatabaseField(canBeNull = false)
   private String movementReasonCode;
 
+  @Include
   @DatabaseField
   private String documentNumber;
 
+  @Include
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private Product product;
 

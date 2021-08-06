@@ -46,39 +46,36 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
 
   @Override
   protected void convert(@NonNull BaseViewHolder holder, BulkIssueProductViewModel viewModel) {
-    if (holder.getItemViewType() == BulkIssueProductViewModel.TYPE_EDIT) {
-      holder.setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
-      EditText etRequested = holder.getView(R.id.et_requested);
-      etRequested.setText(viewModel.getRequested() == null ? "" : viewModel.getRequested().toString());
-      SingleTextWatcher requestedTextWatcher = new SingleTextWatcher() {
-        @Override
-        public void afterTextChanged(Editable s) {
-          viewModel.setRequested(StringUtils.isBlank(s) ? null : Long.parseLong(s.toString()));
-        }
-      };
-      etRequested.removeTextChangedListener(requestedTextWatcher);
-      etRequested.addTextChangedListener(requestedTextWatcher);
-      holder.getView(R.id.rl_trashcan).setOnClickListener(new SingleClickButtonListener() {
-        @Override
-        public void onSingleClick(View v) {
-          removeAt(holder.getLayoutPosition());
-        }
-      });
-
-      // init lot list
-      RecyclerView rvLots = holder.getView(R.id.rv_lots);
-      rvLots.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
-      BulkIssueLotAdapter lotAdapter = new BulkIssueLotAdapter();
-      rvLots.setAdapter(lotAdapter);
-      DividerItemDecoration decor = new DividerItemDecoration(holder.itemView.getContext(), LinearLayout.VERTICAL);
-      decor.setDrawable(Objects.requireNonNull(ContextCompat
-          .getDrawable(holder.itemView.getContext(), R.drawable.shape_bulk_issue_item_decoration)));
-      if (rvLots.getItemDecorationCount() == 0) {
-        rvLots.addItemDecoration(decor);
+    holder.setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
+    EditText etRequested = holder.getView(R.id.et_requested);
+    etRequested.setText(viewModel.getRequested() == null ? "" : viewModel.getRequested().toString());
+    SingleTextWatcher requestedTextWatcher = new SingleTextWatcher() {
+      @Override
+      public void afterTextChanged(Editable s) {
+        viewModel.setRequested(StringUtils.isBlank(s) ? null : Long.parseLong(s.toString()));
       }
-      lotAdapter.setList(viewModel.getLotViewModels());
-    }
-    // TODO set view for done status
+    };
+    etRequested.removeTextChangedListener(requestedTextWatcher);
+    etRequested.addTextChangedListener(requestedTextWatcher);
+    holder.getView(R.id.rl_trashcan).setOnClickListener(new SingleClickButtonListener() {
+      @Override
+      public void onSingleClick(View v) {
+        removeAt(holder.getLayoutPosition());
+      }
+    });
 
+    // init lot list
+    RecyclerView rvLots = holder.getView(R.id.rv_lots);
+    rvLots.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
+    BulkIssueLotAdapter lotAdapter = new BulkIssueLotAdapter();
+    rvLots.setAdapter(lotAdapter);
+    DividerItemDecoration decor = new DividerItemDecoration(holder.itemView.getContext(), LinearLayout.VERTICAL);
+    decor.setDrawable(Objects.requireNonNull(ContextCompat
+        .getDrawable(holder.itemView.getContext(), R.drawable.shape_bulk_issue_item_decoration)));
+    if (rvLots.getItemDecorationCount() == 0) {
+      rvLots.addItemDecoration(decor);
+    }
+    lotAdapter.setList(viewModel.getLotViewModels());
   }
+  // TODO set view for done status
 }

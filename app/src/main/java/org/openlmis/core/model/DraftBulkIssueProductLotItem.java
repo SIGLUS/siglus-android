@@ -26,6 +26,8 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,23 +37,29 @@ import lombok.experimental.Accessors;
 @Getter
 @Builder
 @Accessors(chain = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @DatabaseTable(tableName = "draft_bulk_issue_product_lot_item")
 public class DraftBulkIssueProductLotItem extends BaseModel {
 
+  @Include
   @DatabaseField
   private Long amount;
 
+  @Include
   @DatabaseField
   private long lotSoh;
 
+  @Include
   @DatabaseField
   private String lotNumber;
 
+  @Include
   @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
   private Date expirationDate;
 
+  @Include
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private DraftBulkIssueProduct draftBulkIssueProduct;
 }

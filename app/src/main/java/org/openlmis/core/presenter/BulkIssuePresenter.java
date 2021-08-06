@@ -21,7 +21,6 @@ package org.openlmis.core.presenter;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +43,7 @@ import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import rx.Observable;
-import rx.Subscriber;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -71,6 +70,45 @@ public class BulkIssuePresenter extends Presenter {
   @Getter
   private final List<BulkIssueProductViewModel> currentViewModels = new ArrayList<>();
 
+  Observer<List<BulkIssueProductViewModel>> viewModelsSubscribe = new Observer<List<BulkIssueProductViewModel>>() {
+    @Override
+    public void onCompleted() {
+      Collections.sort(currentViewModels);
+      bulkIssueView.loaded();
+      bulkIssueView.onRefreshViewModels();
+    }
+
+    @Override
+    public void onError(Throwable e) {
+      bulkIssueView.loaded();
+      bulkIssueView.onLoadViewModelsFailed(e);
+    }
+
+    @Override
+    public void onNext(List<BulkIssueProductViewModel> bulkIssueProductViewModels) {
+      currentViewModels.addAll(bulkIssueProductViewModels);
+    }
+  };
+
+  Observer<Object> saveDraftSubscribe = new Observer<Object>() {
+    @Override
+    public void onCompleted() {
+      bulkIssueView.loaded();
+      bulkIssueView.onSaveDraftFinished(true);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+      bulkIssueView.loaded();
+      bulkIssueView.onSaveDraftFinished(false);
+    }
+
+    @Override
+    public void onNext(Object o) {
+      // do nothing
+    }
+  };
+
   @Override
   public void attachView(BaseView v) {
     this.bulkIssueView = (BulkIssueView) v;
@@ -90,7 +128,7 @@ public class BulkIssuePresenter extends Presenter {
     Subscription initialSubscription = initObservable
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .subscribe(getViewModelSubscribe());
+        .subscribe(viewModelsSubscribe);
     subscriptions.add(initialSubscription);
   }
 
@@ -99,7 +137,7 @@ public class BulkIssuePresenter extends Presenter {
     Subscription addProductsSubscription = createViewModelsFromProducts(productCodes)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .subscribe(getViewModelSubscribe());
+        .subscribe(viewModelsSubscribe);
     subscriptions.add(addProductsSubscription);
   }
 
@@ -119,21 +157,14 @@ public class BulkIssuePresenter extends Presenter {
             .toList();
         bulkIssueRepository.saveDraft(draftProducts);
         subscriber.onNext(null);
+        subscriber.onCompleted();
       } catch (LMISException e) {
         new LMISException(e, "bulk issue save draft failed").reportToFabric();
         subscriber.onError(e);
       }
     }).observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .subscribe(o -> {
-              bulkIssueView.loaded();
-              bulkIssueView.onSaveDraftFinished(true);
-              },
-            throwable -> {
-              bulkIssueView.loaded();
-              bulkIssueView.onSaveDraftFinished(false);
-            }
-    );
+        .subscribe(saveDraftSubscribe);
   }
 
   public void deleteDraft() {
@@ -159,29 +190,6 @@ public class BulkIssuePresenter extends Presenter {
     } catch (LMISException e) {
       return true;
     }
-  }
-
-  @NonNull
-  private Subscriber<List<BulkIssueProductViewModel>> getViewModelSubscribe() {
-    return new Subscriber<List<BulkIssueProductViewModel>>() {
-      @Override
-      public void onCompleted() {
-        Collections.sort(currentViewModels);
-        bulkIssueView.loaded();
-        bulkIssueView.onRefreshViewModels();
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        bulkIssueView.loaded();
-        bulkIssueView.onLoadViewModelsFailed(e);
-      }
-
-      @Override
-      public void onNext(List<BulkIssueProductViewModel> bulkIssueProductViewModels) {
-        currentViewModels.addAll(bulkIssueProductViewModels);
-      }
-    };
   }
 
   private Observable<List<BulkIssueProductViewModel>> createViewModelsFromProducts(List<Product> products) {
