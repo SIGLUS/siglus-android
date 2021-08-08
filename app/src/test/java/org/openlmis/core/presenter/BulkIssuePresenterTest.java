@@ -114,7 +114,7 @@ public class BulkIssuePresenterTest {
   public void shouldCorrectInitViewModelsFromDraft() throws LMISException {
     // given
     DraftBulkIssueProduct draftProduct = Mockito.mock(DraftBulkIssueProduct.class);
-    Mockito.when(mockBulkIssueRepository.queryAllBulkIssueDraft()).thenReturn(Collections.singletonList(draftProduct));
+    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft()).thenReturn(Collections.singletonList(draftProduct));
     TestSubscriber<List<BulkIssueProductViewModel>> subscriber = new TestSubscriber<>(presenter.viewModelsSubscribe);
     presenter.viewModelsSubscribe = subscriber;
 
@@ -208,7 +208,7 @@ public class BulkIssuePresenterTest {
   @Test
   public void shouldNotConfirmWithoutDraftAndViewModelsIsEmpty() throws LMISException {
     // given
-    Mockito.when(mockBulkIssueRepository.queryAllBulkIssueDraft()).thenReturn(null);
+    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft()).thenReturn(null);
     presenter.getCurrentViewModels().clear();
 
     // then
@@ -218,7 +218,7 @@ public class BulkIssuePresenterTest {
   @Test
   public void shouldConfirmWithoutDraftAndViewModelsIsNotEmpty() throws LMISException {
     // given
-    Mockito.when(mockBulkIssueRepository.queryAllBulkIssueDraft()).thenReturn(null);
+    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft()).thenReturn(null);
     presenter.getCurrentViewModels().add(Mockito.mock(BulkIssueProductViewModel.class));
 
     // then
@@ -229,7 +229,7 @@ public class BulkIssuePresenterTest {
   public void shouldConfirmWithDraftAndViewModelsHasChanged() throws LMISException {
     // given
     DraftBulkIssueProduct mockDraftProduct = Mockito.mock(DraftBulkIssueProduct.class);
-    Mockito.when(mockBulkIssueRepository.queryAllBulkIssueDraft())
+    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft())
         .thenReturn(Collections.singletonList(mockDraftProduct));
 
     BulkIssueProductViewModel mockProductViewModel = Mockito.mock(BulkIssueProductViewModel.class);
@@ -244,7 +244,7 @@ public class BulkIssuePresenterTest {
   public void shouldNotConfirmWithDraftsAndViewModelsHaveSameSize() throws LMISException {
     // given
     DraftBulkIssueProduct mockDraftProduct = Mockito.mock(DraftBulkIssueProduct.class);
-    Mockito.when(mockBulkIssueRepository.queryAllBulkIssueDraft())
+    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft())
         .thenReturn(Collections.singletonList(mockDraftProduct));
 
     BulkIssueProductViewModel mockProductViewModel = Mockito.mock(BulkIssueProductViewModel.class);
@@ -259,7 +259,7 @@ public class BulkIssuePresenterTest {
   public void shouldConfirmWithDraftsAndViewModelsHaveDifferentSize() throws LMISException {
     // given
     DraftBulkIssueProduct mockDraftProduct = Mockito.mock(DraftBulkIssueProduct.class);
-    Mockito.when(mockBulkIssueRepository.queryAllBulkIssueDraft())
+    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft())
         .thenReturn(Collections.singletonList(mockDraftProduct));
 
     BulkIssueProductViewModel mockProductViewModel1 = Mockito.mock(BulkIssueProductViewModel.class);

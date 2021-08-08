@@ -26,9 +26,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
-import org.openlmis.core.model.DraftBulkIssueProductLotItem;
+import org.openlmis.core.model.LotOnHand;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.builder.LotBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
@@ -38,18 +43,35 @@ public class BulkIssueRepositoryTest {
 
   BulkIssueRepository bulkIssueRepository;
 
+  ProductRepository productRepository;
+
+  StockRepository stockRepository;
+
+  LotRepository lotRepository;
+
+  private Product product;
+
+  private LotOnHand lotOnHand;
+
   @Before
   public void setUp() throws Exception {
     bulkIssueRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(BulkIssueRepository.class);
+    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(ProductRepository.class);
+    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(StockRepository.class);
+    lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(LotRepository.class);
+    prepareData();
   }
 
   @Test
   public void shouldHasDraftAfterSave() throws LMISException {
     // given
     DraftBulkIssueProduct draftProduct = getDraftProduct();
-    List<DraftBulkIssueProductLotItem> draftLots = getDraftLots(draftProduct);
-    draftProduct.setDraftLotItemListWrapper(draftLots);
+    List<DraftBulkIssueLot> draftLots = getDraftLots(draftProduct);
+    draftProduct.setDraftLotListWrapper(draftLots);
     bulkIssueRepository.saveDraft(Collections.singletonList(draftProduct));
 
     // when
@@ -63,31 +85,34 @@ public class BulkIssueRepositoryTest {
   public void shouldCorrectSaveDraft() throws LMISException {
     // given
     DraftBulkIssueProduct draftProduct = getDraftProduct();
-    List<DraftBulkIssueProductLotItem> draftLots = getDraftLots(draftProduct);
-    draftProduct.setDraftLotItemListWrapper(draftLots);
+    List<DraftBulkIssueLot> draftLots = getDraftLots(draftProduct);
+    draftProduct.setDraftLotListWrapper(draftLots);
 
     // when
     bulkIssueRepository.saveDraft(Collections.singletonList(draftProduct));
 
     // then
-    List<DraftBulkIssueProduct> draftBulkIssueProducts = bulkIssueRepository.queryAllBulkIssueDraft();
+    List<DraftBulkIssueProduct> draftBulkIssueProducts = bulkIssueRepository.queryUsableBulkIssueDraft();
     Assert.assertEquals(1, draftBulkIssueProducts.size());
 
     DraftBulkIssueProduct actualDraftProduct = draftBulkIssueProducts.get(0);
     actualDraftProduct.setProduct(draftProduct.getProduct());
     Assert.assertEquals(draftProduct, actualDraftProduct);
 
-    Assert.assertEquals(1, draftBulkIssueProducts.get(0).getDraftLotItemListWrapper().size());
+    Assert.assertEquals(1, draftBulkIssueProducts.get(0).getDraftLotListWrapper().size());
 
-    Assert.assertEquals(draftLots.get(0), draftBulkIssueProducts.get(0).getDraftLotItemListWrapper().get(0));
+    DraftBulkIssueLot actual = draftBulkIssueProducts.get(0).getDraftLotListWrapper().get(0);
+    actual.getLotOnHand().getLot().setProduct(product);
+    actual.getLotOnHand().getStockCard().setProduct(product);
+    Assert.assertEquals(draftLots.get(0), actual);
   }
 
   @Test
   public void shouldCorrectDeleteDraft() throws LMISException {
     // given
     DraftBulkIssueProduct draftProduct = getDraftProduct();
-    List<DraftBulkIssueProductLotItem> draftLots = getDraftLots(draftProduct);
-    draftProduct.setDraftLotItemListWrapper(draftLots);
+    List<DraftBulkIssueLot> draftLots = getDraftLots(draftProduct);
+    draftProduct.setDraftLotListWrapper(draftLots);
     bulkIssueRepository.saveDraft(Collections.singletonList(draftProduct));
 
     // when
@@ -97,23 +122,41 @@ public class BulkIssueRepositoryTest {
     Assert.assertFalse(bulkIssueRepository.hasDraft());
   }
 
+  private void prepareData() throws LMISException {
+    product = ProductBuilder.buildAdultProduct();
+    product.setActive(true);
+    productRepository.createOrUpdate(product);
+    StockCard stockCard = new StockCardBuilder()
+        .setProduct(product)
+        .setStockOnHand(100)
+        .build();
+    stockRepository.createOrUpdate(stockCard);
+    lotOnHand = new LotOnHand();
+    lotOnHand.setStockCard(stockCard);
+    lotOnHand.setQuantityOnHand(100L);
+    lotOnHand.setLot(LotBuilder.create()
+        .setExpirationDate(DateUtil.parseString("2021-08-06", DateUtil.DB_DATE_FORMAT))
+        .setLotNumber("LotNumber")
+        .setProduct(product)
+        .build());
+    lotRepository.createOrUpdateLotsInformation(Collections.singletonList(lotOnHand));
+  }
+
   private DraftBulkIssueProduct getDraftProduct() {
     return DraftBulkIssueProduct.builder()
         .documentNumber("123")
         .done(false)
         .movementReasonCode("movementReason")
-        .product(ProductBuilder.buildAdultProduct())
-        .requested(123L)
+        .product(product)
+        .requested(10L)
         .build();
   }
 
-  private List<DraftBulkIssueProductLotItem> getDraftLots(DraftBulkIssueProduct draftBulkIssueProduct) {
-    return Collections.singletonList(DraftBulkIssueProductLotItem.builder()
+  private List<DraftBulkIssueLot> getDraftLots(DraftBulkIssueProduct draftBulkIssueProduct) {
+    return Collections.singletonList(DraftBulkIssueLot.builder()
         .amount(1L)
         .draftBulkIssueProduct(draftBulkIssueProduct)
-        .expirationDate(DateUtil.parseString("2021-08-06", DateUtil.DB_DATE_FORMAT))
-        .lotNumber("lotNumber")
-        .lotSoh(10)
+        .lotOnHand(lotOnHand)
         .build());
   }
 }

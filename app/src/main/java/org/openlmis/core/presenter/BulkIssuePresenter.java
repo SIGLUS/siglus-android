@@ -23,22 +23,18 @@ import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.S
 import android.content.Intent;
 import com.google.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftBulkIssueProduct;
-import org.openlmis.core.model.DraftBulkIssueProductLotItem;
-import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.BulkIssueRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.viewmodel.BulkIssueLotViewModel;
 import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
@@ -177,7 +173,7 @@ public class BulkIssuePresenter extends Presenter {
 
   public boolean needConfirm() {
     try {
-      List<DraftBulkIssueProduct> draftProducts = bulkIssueRepository.queryAllBulkIssueDraft();
+      List<DraftBulkIssueProduct> draftProducts = bulkIssueRepository.queryUsableBulkIssueDraft();
       if (draftProducts == null) {
         return !currentViewModels.isEmpty();
       }
@@ -203,8 +199,7 @@ public class BulkIssuePresenter extends Presenter {
           if (lotOnHandList.isEmpty()) {
             continue;
           }
-          viewModels.add(BulkIssueProductViewModel
-              .buildFromProduct(stockCard.getProduct(), buildLotViewModelsFromLotOnHands(lotOnHandList)));
+          viewModels.add(BulkIssueProductViewModel.buildFromProduct(stockCard.getProduct(), lotOnHandList));
         }
         subscriber.onNext(viewModels);
         subscriber.onCompleted();
@@ -219,12 +214,11 @@ public class BulkIssuePresenter extends Presenter {
     return Observable.create(subscriber -> {
       try {
         ArrayList<BulkIssueProductViewModel> viewModels = new ArrayList<>();
-        List<DraftBulkIssueProduct> draftBulkIssueProducts = bulkIssueRepository.queryAllBulkIssueDraft();
+        List<DraftBulkIssueProduct> draftBulkIssueProducts = bulkIssueRepository.queryUsableBulkIssueDraft();
         for (DraftBulkIssueProduct draftProduct : draftBulkIssueProducts) {
           movementReasonCode = draftProduct.getMovementReasonCode();
           documentNumber = draftProduct.getDocumentNumber();
-          viewModels.add(BulkIssueProductViewModel.buildFromDraft(draftProduct,
-              buildLotViewModelsFromDraftLots(draftProduct.getDraftLotItemListWrapper())));
+          viewModels.add(BulkIssueProductViewModel.buildFromDraft(draftProduct));
         }
         subscriber.onNext(viewModels);
         subscriber.onCompleted();
@@ -233,27 +227,6 @@ public class BulkIssuePresenter extends Presenter {
         subscriber.onError(e);
       }
     });
-  }
-
-  private List<BulkIssueLotViewModel> buildLotViewModelsFromLotOnHands(Collection<LotOnHand> lotOnHands) {
-    final ArrayList<BulkIssueLotViewModel> lotViewModels = new ArrayList<>();
-    for (LotOnHand lotOnHand : lotOnHands) {
-      Lot lot = lotOnHand.getLot();
-      long lotSoh = lotOnHand.getQuantityOnHand() == null ? 0 : lotOnHand.getQuantityOnHand();
-      lotViewModels.add(BulkIssueLotViewModel.buildFromProduct(lotSoh, lot.getLotNumber(), lot.getExpirationDate()));
-    }
-    Collections.sort(lotViewModels);
-    return lotViewModels;
-  }
-
-  private List<BulkIssueLotViewModel> buildLotViewModelsFromDraftLots(List<DraftBulkIssueProductLotItem> draftLots) {
-    final ArrayList<BulkIssueLotViewModel> lotViewModels = new ArrayList<>();
-    for (DraftBulkIssueProductLotItem draftLot : draftLots) {
-      BulkIssueLotViewModel viewModel = BulkIssueLotViewModel.buildFromDraft(draftLot);
-      lotViewModels.add(viewModel);
-    }
-    Collections.sort(lotViewModels);
-    return lotViewModels;
   }
 
   public interface BulkIssueView extends BaseView {

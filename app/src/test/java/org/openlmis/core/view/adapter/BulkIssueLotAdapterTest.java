@@ -32,6 +32,8 @@ import org.mockito.Mockito;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.view.viewmodel.BulkIssueLotViewModel;
 
 @RunWith(LMISTestRunner.class)
@@ -46,11 +48,15 @@ public class BulkIssueLotAdapterTest {
     BaseViewHolder holder = new BaseViewHolder(
         LayoutInflater.from(context).inflate(R.layout.item_bulk_issue_lot, null));
     BulkIssueLotViewModel mockLotViewModel = Mockito.mock(BulkIssueLotViewModel.class);
+    LotOnHand mockLotOnHand = Mockito.mock(LotOnHand.class);
+    Lot mockLot = Mockito.mock(Lot.class);
+    Mockito.when(mockLotOnHand.getLot()).thenReturn(mockLot);
     Mockito.when(mockLotViewModel.getAmount()).thenReturn(1L);
     Mockito.when(mockLotViewModel.isExpired()).thenReturn(true);
-    Mockito.when(mockLotViewModel.getLotNumber()).thenReturn("LotNumber");
-    Mockito.when(mockLotViewModel.getLotSoh()).thenReturn(1L);
-    Mockito.when(mockLotViewModel.getExpirationDate()).thenReturn(new Date());
+    Mockito.when(mockLotViewModel.getLotOnHand()).thenReturn(mockLotOnHand);
+    Mockito.when(mockLotOnHand.getQuantityOnHand()).thenReturn(1L);
+    Mockito.when(mockLot.getLotNumber()).thenReturn("LotNumber");
+    Mockito.when(mockLot.getExpirationDate()).thenReturn(new Date());
 
     // when
     adapter.convert(holder, mockLotViewModel);

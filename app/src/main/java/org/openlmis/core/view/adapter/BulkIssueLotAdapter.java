@@ -25,6 +25,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.BulkIssueLotViewModel;
@@ -41,10 +43,15 @@ public class BulkIssueLotAdapter extends BaseQuickAdapter<BulkIssueLotViewModel,
     holder.setVisible(R.id.til_amount, !viewModel.isExpired());
     EditText etAmount = holder.getView(R.id.et_amount);
     etAmount.setText(viewModel.getAmount() == null ? "" : viewModel.getAmount().toString());
+    LotOnHand lotOnHand = viewModel.getLotOnHand();
+    Lot lot = lotOnHand.getLot();
     holder.setText(R.id.tv_lot_number_and_date,
-        viewModel.getLotNumber() + " - " + DateUtil.formatDateWithLongMonthAndYear(viewModel.getExpirationDate()));
+        lot.getLotNumber() + " - " + DateUtil.formatDateWithLongMonthAndYear(lot.getExpirationDate()));
     holder.setText(R.id.tv_existing_lot_on_hand,
-        holder.itemView.getContext().getString(R.string.label_existing_soh_of_lot) + "  " + viewModel.getLotSoh());
+        holder.itemView.getContext().getString(R.string.label_existing_soh_of_lot)
+            + "  "
+            + lotOnHand
+            .getQuantityOnHand());
     SingleTextWatcher amountTextWatcher = new SingleTextWatcher() {
       @Override
       public void afterTextChanged(Editable s) {

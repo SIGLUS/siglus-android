@@ -20,10 +20,12 @@ package org.openlmis.core.view.viewmodel;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.util.List;
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
 import org.openlmis.core.model.DraftBulkIssueProduct;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -45,20 +47,26 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
 
   private List<BulkIssueLotViewModel> lotViewModels;
 
-  public static BulkIssueProductViewModel buildFromDraft(DraftBulkIssueProduct draftProduct,
-      List<BulkIssueLotViewModel> lotViewModels) {
+  public static BulkIssueProductViewModel buildFromDraft(DraftBulkIssueProduct draftProduct) {
     return new BulkIssueProductViewModelBuilder()
+        .done(draftProduct.isDone())
         .product(draftProduct.getProduct())
-        .draftProduct(draftProduct)
         .requested(draftProduct.getRequested())
-        .lotViewModels(lotViewModels)
+        .draftProduct(draftProduct)
+        .lotViewModels(FluentIterable
+            .from(draftProduct.getDraftLotListWrapper())
+            .transform(BulkIssueLotViewModel::buildFromDraft)
+            .toSortedList(BulkIssueLotViewModel::compareTo))
         .build();
   }
 
-  public static BulkIssueProductViewModel buildFromProduct(Product product, List<BulkIssueLotViewModel> lotViewModels) {
+  public static BulkIssueProductViewModel buildFromProduct(Product product, List<LotOnHand> lotOnHandList) {
     return new BulkIssueProductViewModelBuilder()
         .product(product)
-        .lotViewModels(lotViewModels)
+        .lotViewModels(FluentIterable
+            .from(lotOnHandList)
+            .transform(BulkIssueLotViewModel::buildFromLotOnHand)
+            .toSortedList(BulkIssueLotViewModel::compareTo))
         .build();
   }
 
@@ -72,9 +80,9 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
         .setProduct(product)
         .setRequested(requested)
         .setDocumentNumber(documentNumber)
-        .setDraftLotItemListWrapper(FluentIterable
+        .setDraftLotListWrapper(FluentIterable
             .from(lotViewModels)
-            .transform(lotViewModel -> lotViewModel.convertToDraft(draftProduct))
+            .transform(lotViewModel -> Objects.requireNonNull(lotViewModel).convertToDraft(draftProduct))
             .toList());
   }
 

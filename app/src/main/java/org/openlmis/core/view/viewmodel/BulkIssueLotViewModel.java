@@ -18,13 +18,13 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import java.util.Date;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
+import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
-import org.openlmis.core.model.DraftBulkIssueProductLotItem;
+import org.openlmis.core.model.LotOnHand;
 
 @Data
 @Builder
@@ -32,53 +32,43 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel> 
 
   private Long amount;
 
-  private long lotSoh;
+  private LotOnHand lotOnHand;
 
-  private String lotNumber;
+  private DraftBulkIssueLot draftLotItem;
 
-  private Date expirationDate;
-
-  private DraftBulkIssueProductLotItem draftLotItem;
-
-  public static BulkIssueLotViewModel buildFromDraft(DraftBulkIssueProductLotItem draftLotItem) {
+  public static BulkIssueLotViewModel buildFromDraft(DraftBulkIssueLot draftLotItem) {
     return new BulkIssueLotViewModelBuilder()
         .amount(draftLotItem.getAmount())
-        .lotSoh(draftLotItem.getLotSoh())
-        .lotNumber(draftLotItem.getLotNumber())
-        .expirationDate(draftLotItem.getExpirationDate())
+        .lotOnHand(draftLotItem.getLotOnHand())
         .draftLotItem(draftLotItem)
         .build();
   }
 
-  public static BulkIssueLotViewModel buildFromProduct(long lotSoh, String lotNumber, Date expirationDate) {
+  public static BulkIssueLotViewModel buildFromLotOnHand(LotOnHand lotOnHand) {
     return new BulkIssueLotViewModelBuilder()
-        .lotSoh(lotSoh)
-        .lotNumber(lotNumber)
-        .expirationDate(expirationDate)
+        .lotOnHand(lotOnHand)
         .build();
   }
 
-  public DraftBulkIssueProductLotItem convertToDraft(DraftBulkIssueProduct draftProduct) {
+  public DraftBulkIssueLot convertToDraft(DraftBulkIssueProduct draftProduct) {
     if (draftLotItem == null) {
-      draftLotItem = new DraftBulkIssueProductLotItem();
+      draftLotItem = new DraftBulkIssueLot();
     }
     return draftLotItem
         .setAmount(amount)
-        .setLotSoh(lotSoh)
-        .setExpirationDate(expirationDate)
-        .setLotNumber(lotNumber)
+        .setLotOnHand(lotOnHand)
         .setDraftBulkIssueProduct(draftProduct);
   }
 
   @Override
   public int compareTo(BulkIssueLotViewModel other) {
-    long otherExpirationDate = other.getExpirationDate().getTime();
-    long myExpirationDate = getExpirationDate().getTime();
+    long otherExpirationDate = other.getLotOnHand().getLot().getExpirationDate().getTime();
+    long myExpirationDate = getLotOnHand().getLot().getExpirationDate().getTime();
     return Long.compare(myExpirationDate, otherExpirationDate);
   }
 
   public boolean isExpired() {
-    return new DateTime(expirationDate).minusDays(-1).isBeforeNow();
+    return new DateTime(lotOnHand.getLot().getExpirationDate()).minusDays(-1).isBeforeNow();
   }
 
   public boolean hasChanged() {

@@ -18,16 +18,11 @@
 
 package org.openlmis.core.model;
 
-import static org.openlmis.core.utils.DateUtil.DB_DATE_FORMAT;
-
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,29 +32,23 @@ import lombok.experimental.Accessors;
 @Getter
 @Builder
 @Accessors(chain = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@DatabaseTable(tableName = "draft_bulk_issue_product_lot_item")
-public class DraftBulkIssueProductLotItem extends BaseModel {
+@DatabaseTable(tableName = "draft_bulk_issue_lots")
+public class DraftBulkIssueLot extends BaseModel {
 
-  @Include
   @DatabaseField
   private Long amount;
 
-  @Include
-  @DatabaseField
-  private long lotSoh;
+  /**
+   * foreign object, only fetch 2 level foreign object
+   * see {@link com.j256.ormlite.field.DatabaseField#DEFAULT_MAX_FOREIGN_AUTO_REFRESH_LEVEL}
+   * don`t use more than 2 level
+   */
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private LotOnHand lotOnHand;
 
-  @Include
-  @DatabaseField
-  private String lotNumber;
-
-  @Include
-  @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DB_DATE_FORMAT)
-  private Date expirationDate;
-
-  @Include
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private DraftBulkIssueProduct draftBulkIssueProduct;
 }

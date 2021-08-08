@@ -40,8 +40,8 @@ import org.openlmis.core.utils.ListUtil;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@DatabaseTable(tableName = "draft_bulk_issue_product")
-public class DraftBulkIssueProduct extends BaseModel {
+@DatabaseTable(tableName = "draft_bulk_issue_products")
+public class DraftBulkIssueProduct extends BaseModel implements Comparable<DraftBulkIssueProduct> {
 
   @Include
   @DatabaseField
@@ -64,11 +64,16 @@ public class DraftBulkIssueProduct extends BaseModel {
   private Product product;
 
   @ForeignCollectionField(eager = true)
-  private ForeignCollection<DraftBulkIssueProductLotItem> foreignDraftLotItems;
+  private ForeignCollection<DraftBulkIssueLot> foreignDraftLots;
 
-  private List<DraftBulkIssueProductLotItem> draftLotItemListWrapper;
+  private List<DraftBulkIssueLot> draftLotListWrapper;
 
-  public List<DraftBulkIssueProductLotItem> getDraftLotItemListWrapper() {
-    return ListUtil.wrapOrEmpty(foreignDraftLotItems, draftLotItemListWrapper);
+  public List<DraftBulkIssueLot> getDraftLotListWrapper() {
+    return ListUtil.wrapOrEmpty(foreignDraftLots, draftLotListWrapper);
+  }
+
+  @Override
+  public int compareTo(DraftBulkIssueProduct o) {
+    return product.compareTo(o.getProduct());
   }
 }

@@ -59,8 +59,8 @@
       android:inputType="number"
       android:maxLength="@integer/edit_amount_length"
       android:singleLine="true"
-      android:textColorHint="@color/color_black"
-      android:textColor="@color/color_727272"
+      android:textColor="@color/color_black"
+      android:textColorHint="@color/color_606162"
       android:gravity="center_vertical" />
   </com.google.android.material.textfield.TextInputLayout>
 
