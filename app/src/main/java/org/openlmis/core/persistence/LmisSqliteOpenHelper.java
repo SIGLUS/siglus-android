@@ -85,6 +85,7 @@ import org.openlmis.core.persistence.migrations.CreateKitProductsTable;
 import org.openlmis.core.persistence.migrations.CreateMalariaTreatments;
 import org.openlmis.core.persistence.migrations.CreatePTVProgramSchema;
 import org.openlmis.core.persistence.migrations.CreatePatientDataReportTable;
+import org.openlmis.core.persistence.migrations.CreatePodLotItemTable;
 import org.openlmis.core.persistence.migrations.CreatePodProductTable;
 import org.openlmis.core.persistence.migrations.CreatePodTable;
 import org.openlmis.core.persistence.migrations.CreateProductProgramsTable;
@@ -115,7 +116,7 @@ import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
-import org.openlmis.core.persistence.migrations.CreatePodLotItemTable;
+
 
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
@@ -235,6 +236,10 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     Log.d(TAG, "Instance Destroyed : total count : " + instanceCount);
   }
 
+  public static int getDBVersion() {
+    return MIGRATIONS.size();
+  }
+
   @Override
   public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
     if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
@@ -278,9 +283,5 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
       db.disableWriteAheadLogging();
     }
-  }
-
-  public static int getDBVersion() {
-    return MIGRATIONS.size();
   }
 }

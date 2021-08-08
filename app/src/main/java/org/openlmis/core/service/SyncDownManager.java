@@ -282,9 +282,9 @@ public class SyncDownManager {
   private void fetchAndSavePods() throws LMISException {
     PodsLocalResponse podsLocalResponse;
     if (sharedPreferenceMgr.isPodDataInitialSynced()) {
-       podsLocalResponse = lmisRestApi.fetchPods(true);
+      podsLocalResponse = lmisRestApi.fetchPods(true);
     } else {
-       podsLocalResponse = lmisRestApi.fetchPods(false);
+      podsLocalResponse = lmisRestApi.fetchPods(false);
     }
     if (podsLocalResponse == null) {
       LMISException e = new LMISException("fetch pods info exception");

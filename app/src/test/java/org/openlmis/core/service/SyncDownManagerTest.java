@@ -40,6 +40,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
@@ -66,6 +67,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.FacilityInfoResponse;
+import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SupportedProgram;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -153,6 +155,7 @@ public class SyncDownManagerTest {
     mockStockCardsResponse();
     mockRapidTestsResponse();
     mockFetchProgramsResponse();
+    mockFetchPodsResponse();
     mockFetchPTVServiceResponse();
 
     // when
@@ -190,6 +193,7 @@ public class SyncDownManagerTest {
     mockStockCardsResponse();
     mockRapidTestsResponse();
     mockFetchProgramsResponse();
+    mockFetchPodsResponse();
     mockFetchPTVServiceResponse();
 
     // when
@@ -203,8 +207,8 @@ public class SyncDownManagerTest {
     laterEnterSubscriber.assertNoTerminalEvent();
 
     // then
-    assertThat(firstEnterSubscriber.syncProgresses.size(), is(10));
-    assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
+    assertEquals(12, firstEnterSubscriber.syncProgresses.size());
+    assertEquals(0, laterEnterSubscriber.syncProgresses.size());
   }
 
   @Ignore
@@ -439,6 +443,12 @@ public class SyncDownManagerTest {
     getSyncDownServiceResponse();
   }
 
+  private void mockFetchPodsResponse() throws LMISException {
+    PodsLocalResponse podsLocalResponse = buildPodsResponse();
+    when(lmisRestApi.fetchPods(false)).thenReturn(podsLocalResponse);
+    when(lmisRestApi.fetchPods(true)).thenReturn(podsLocalResponse);
+  }
+
   private SyncDownServiceResponse getSyncDownServiceResponse() throws LMISException {
     SyncDownServiceResponse response = new SyncDownServiceResponse();
     Service service1 = new Service();
@@ -524,6 +534,13 @@ public class SyncDownManagerTest {
     SyncDownReportTypeResponse syncDownReportTypeResponse = new SyncDownReportTypeResponse();
     syncDownReportTypeResponse.setReportTypes(newArrayList(reportTypeMMIA, reportTypeVIA));
     return syncDownReportTypeResponse;
+  }
+
+  private PodsLocalResponse buildPodsResponse() {
+    PodsLocalResponse podsLocalResponse = new PodsLocalResponse();
+    List<Pod> pods = new ArrayList<>();
+    podsLocalResponse.setPods(pods);
+    return podsLocalResponse;
   }
 
   private void verifyLastMonthStockCardsSynced() throws LMISException, SQLException {
