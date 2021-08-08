@@ -24,8 +24,8 @@ public class CreatePodTable extends Migration {
         "`requisitionStartDate` VARCHAR NOT NULL, " +
         "`requisitionEndDate` VARCHAR NOT NULL, " +
         "`requisitionActualStartDate` VARCHAR NOT NULL, " +
-        "`requisitionActualEndDate` VARCHAR NOT NULL) ");
-
-    execSQL("CREATE UNIQUE INDEX `pod_id_idx` ON `pods` ( `id` )");
+        "`requisitionActualEndDate` VARCHAR NOT NULL, " +
+        "`createdAt` VARCHAR NOT NULL, " +
+        "`updatedAt` VARCHAR NOT NULL) ");
   }
 }

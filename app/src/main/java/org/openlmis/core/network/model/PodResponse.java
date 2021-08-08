@@ -7,8 +7,7 @@ import org.joda.time.LocalDate;
 @Data
 public class PodResponse {
 
-  private LocalDate shippedDate;
-  private PodOrderItemResponse podOrderItemResponse;
-  private List<PodProductItemResponse> podProductItemResponses;
-
+  private PodOrderItemResponse order;
+  private String  shippedDate;
+  private List<PodProductItemResponse> products;
 }

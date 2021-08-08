@@ -10,6 +10,6 @@ public class PodOrderItemResponse {
   private String status;
   private long createdDate;
   private long lastModifiedDate;
-  private PodRequisitionItemResponse podRequisitionItemResponse;
+  private PodRequisitionItemResponse requisition;
 
 }

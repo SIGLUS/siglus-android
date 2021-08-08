@@ -24,6 +24,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ import org.joda.time.DateTime;
 
 @Data
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @DatabaseTable(tableName = "lots")
 public class Lot extends BaseModel {

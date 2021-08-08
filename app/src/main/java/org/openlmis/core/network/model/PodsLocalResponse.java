@@ -7,6 +7,6 @@ import org.openlmis.core.model.Pod;
 @Data
 public class PodsLocalResponse {
 
-  List<Pod> pods;
+  private List<Pod> pods;
 
 }

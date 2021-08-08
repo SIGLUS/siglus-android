@@ -26,6 +26,7 @@ import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.DirtyDataItemEntry;
 import org.openlmis.core.network.model.FacilityInfoResponse;
+import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -60,6 +61,9 @@ public interface LMISRestApi {
   @GET("/api/siglusapi/android/me/facility/stockCards")
   StockCardsLocalResponse fetchStockMovementData(@Query("startTime") String startDate, @Query("endTime") String endDate)
       throws LMISException;
+
+  @GET("/api/siglusapi/android/me/facility/pods")
+  PodsLocalResponse fetchPods() throws LMISException;
 
   @POST("/api/oauth/token")
   void login(@Query("grant_type") String grantType, @Query("username") String username,

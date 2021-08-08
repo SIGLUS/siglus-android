@@ -1,28 +1,28 @@
 package org.openlmis.core.model;
 
-import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 import org.openlmis.core.enums.OrderStatus;
 import org.openlmis.core.utils.ListUtil;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @DatabaseTable(tableName = "pods")
 public class Pod extends BaseModel {
 
-  @DatabaseField(canBeNull = false, dataType = DataType.STRING)
-  private LocalDate shippedDate;
+  @DatabaseField
+  private String shippedDate;
 
   @DatabaseField
   private String deliveredBy;
@@ -30,12 +30,11 @@ public class Pod extends BaseModel {
   @DatabaseField
   private String receivedBy;
 
-  @SerializedName("documentNo")
   @DatabaseField
-  private String documentNumber;
+  private String documentNo;
 
-  @DatabaseField(dataType = DataType.STRING)
-  private LocalDate receivedDate;
+  @DatabaseField
+  private String receivedDate;
 
   @DatabaseField
   private String orderCode;
@@ -46,11 +45,11 @@ public class Pod extends BaseModel {
   @DatabaseField
   private OrderStatus orderStatus;
 
-  @DatabaseField(dataType = DataType.STRING)
-  private LocalDateTime orderCreatedDate;
+  @DatabaseField
+  private String orderCreatedDate;
 
   @DatabaseField
-  private LocalDateTime orderLastModifiedDate;
+  private String  orderLastModifiedDate;
 
   @DatabaseField
   private String requisitionNumber;
@@ -61,17 +60,17 @@ public class Pod extends BaseModel {
   @DatabaseField
   private String requisitionProgramCode;
 
-  @DatabaseField(dataType = DataType.STRING)
-  private LocalDate requisitionStartDate;
+  @DatabaseField
+  private String requisitionStartDate;
 
-  @DatabaseField(dataType = DataType.STRING)
-  private LocalDate requisitionEndDate;
+  @DatabaseField
+  private String requisitionEndDate;
 
-  @DatabaseField(dataType = DataType.STRING)
-  private LocalDate requisitionActualStartDate;
+  @DatabaseField
+  private String requisitionActualStartDate;
 
-  @DatabaseField(dataType = DataType.STRING)
-  private LocalDate requisitionActualEndDate;
+  @DatabaseField
+  private String requisitionActualEndDate;
 
   @ForeignCollectionField
   private ForeignCollection<PodProduct> podProductForeignCollection;

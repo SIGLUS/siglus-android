@@ -8,12 +8,12 @@ public class CreatePodProductTable extends Migration {
   public void up() {
     execSQL("CREATE TABLE `pod_products` " +
         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
-        "`pod_id ` BIGINT NOT NULL, " +
+        "`pod_id` BIGINT NOT NULL, " +
         "`code` VARCHAR NOT NULL, " +
         "`orderedQuantity` BIGINT NOT NULL, " +
-        "`partialFulfilledQuantity` BIGINT NOT NULL )");
-
-    execSQL("CREATE UNIQUE INDEX `pod_product_id_idx` ON `pod_products` ( `id` )");
+        "`partialFulfilledQuantity` BIGINT NOT NULL, " +
+        "`createdAt` VARCHAR NOT NULL, " +
+        "`updatedAt` VARCHAR NOT NULL)");
   }
 
 }

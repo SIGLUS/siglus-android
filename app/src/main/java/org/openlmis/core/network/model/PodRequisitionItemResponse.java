@@ -9,10 +9,10 @@ public class PodRequisitionItemResponse {
   private String number;
   private boolean isEmergency;
   private String programCode;
-  private LocalDate startDate;
-  private LocalDate endDate;
-  private LocalDate actualStartDate;
-  private LocalDate actualEndDate;
+  private String  startDate;
+  private String  endDate;
+  private String actualStartDate;
+  private String actualEndDate;
 
 
 }

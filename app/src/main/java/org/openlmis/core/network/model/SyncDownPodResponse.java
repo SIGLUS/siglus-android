@@ -7,6 +7,6 @@ import org.openlmis.core.model.Pod;
 @Data
 public class SyncDownPodResponse {
 
-  List<PodResponse> podResponses;
+  private List<PodResponse> podResponses;
 
 }

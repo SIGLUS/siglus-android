@@ -8,13 +8,13 @@ public class CreatePodLotItemTable extends Migration {
   public void up() {
     execSQL("CREATE TABLE `pod_lot_items` " +
         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
-        "`pod_product_code ` VARCHAR NOT NULL, " +
+        "`podProduct_id` VARCHAR NOT NULL, " +
         "`lot_id` VARCHAR NOT NULL, " +
         "`shippedQuantity` BIGINT NOT NULL, " +
         "`acceptedQuantity` BIGINT, " +
         "`rejectedReason` VARCHAR, " +
-        "`notes` VARCHAR)");
-
-    execSQL("CREATE UNIQUE INDEX `pod_lot_item_id_idx` ON `pod_lot_items` ( `id` )");
+        "`notes` VARCHAR, " +
+        "`createdAt` VARCHAR NOT NULL, " +
+        "`updatedAt` VARCHAR NOT NULL)");
   }
 }

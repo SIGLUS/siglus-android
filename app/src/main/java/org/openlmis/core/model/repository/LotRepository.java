@@ -121,6 +121,14 @@ public class LotRepository {
     });
   }
 
+  public Lot createOrUpdate(final Lot lot) throws LMISException {
+    Lot existingLot = getLotByLotNumberAndProductId(lot.getLotNumber(), lot.getProduct().getId());
+    if (existingLot != null) {
+      lot.setId(existingLot.getId());
+    }
+    return lotGenericDao.createOrUpdate(lot);
+  }
+
   private void createOrUpdateLotOnHand(final LotOnHand finalLotOnHand) throws LMISException {
     dbUtil.withDao(LotOnHand.class, dao -> {
       dao.createOrUpdate(finalLotOnHand);

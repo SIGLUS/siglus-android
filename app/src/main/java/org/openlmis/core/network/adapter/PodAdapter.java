@@ -1,14 +1,17 @@
 package org.openlmis.core.network.adapter;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.openlmis.core.enums.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
@@ -21,7 +24,6 @@ import org.openlmis.core.network.model.PodLotMovementItemResponse;
 import org.openlmis.core.network.model.PodProductItemResponse;
 import org.openlmis.core.network.model.PodResponse;
 import org.openlmis.core.network.model.PodsLocalResponse;
-import org.openlmis.core.network.model.SyncDownPodResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -31,43 +33,44 @@ public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
   public PodsLocalResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
     final Gson gson = new Gson();
-    final SyncDownPodResponse syncDownPodResponse = gson.fromJson(json, SyncDownPodResponse.class);
+    final JsonArray jsonArray = json.getAsJsonArray();
+    final List<PodResponse> podResponses = new ArrayList<>();
+    for (JsonElement jsonElement : jsonArray) {
+      podResponses.add(gson.fromJson(jsonElement, PodResponse.class));
+    }
     final PodsLocalResponse podsLocalResponse = new PodsLocalResponse();
-    podsLocalResponse.getPods()
-        .addAll(FluentIterable.from(syncDownPodResponse.getPodResponses()).transform(podResponse -> {
-          try {
-            return fitForPod(Objects.requireNonNull(podResponse));
-          } catch (LMISException e) {
-            new LMISException(e, "PodAdapter.deserialize").reportToFabric();
-            throw new JsonParseException("Pod deserialize fail", e);
-          }
-        }).toList());
+    podsLocalResponse.setPods(FluentIterable.from(podResponses).transform(podResponse -> {
+      try {
+        return fitForPod(Objects.requireNonNull(podResponse));
+      } catch (LMISException e) {
+        new LMISException(e, "PodAdapter.deserialize").reportToFabric();
+        throw new JsonParseException("Pod deserialize fail", e);
+      }
+    }).toList());
     return podsLocalResponse;
   }
 
   private Pod fitForPod(PodResponse podResponse) throws LMISException {
     return Pod.builder()
-        .shippedDate(podResponse.getShippedDate())
-        .orderCode(podResponse.getPodOrderItemResponse().getCode())
-        .orderSupplyFacilityName(podResponse.getPodOrderItemResponse().getSupplyFacilityName())
-        .orderStatus(mapToOrderStatus(podResponse.getPodOrderItemResponse().getStatus()))
-        .orderCreatedDate(new LocalDateTime(podResponse.getPodOrderItemResponse().getCreatedDate()))
-        .orderLastModifiedDate(new LocalDateTime(podResponse.getPodOrderItemResponse().getLastModifiedDate()))
-        .requisitionNumber(podResponse.getPodOrderItemResponse().getPodRequisitionItemResponse().getNumber())
-        .requisitionIsEmergency(podResponse.getPodOrderItemResponse().getPodRequisitionItemResponse().isEmergency())
-        .requisitionProgramCode(podResponse.getPodOrderItemResponse().getPodRequisitionItemResponse().getProgramCode())
-        .requisitionStartDate(podResponse.getPodOrderItemResponse().getPodRequisitionItemResponse().getStartDate())
-        .requisitionEndDate(podResponse.getPodOrderItemResponse().getPodRequisitionItemResponse().getEndDate())
-        .requisitionActualStartDate(
-            podResponse.getPodOrderItemResponse().getPodRequisitionItemResponse().getActualStartDate())
-        .requisitionActualEndDate(
-            podResponse.getPodOrderItemResponse().getPodRequisitionItemResponse().getActualEndDate())
+        .shippedDate(new LocalDate(podResponse.getShippedDate()).toString())
+        .orderCode(podResponse.getOrder().getCode())
+        .orderSupplyFacilityName(podResponse.getOrder().getSupplyFacilityName())
+        .orderStatus(mapToOrderStatus(podResponse.getOrder().getStatus()))
+        .orderCreatedDate(new LocalDate(podResponse.getOrder().getCreatedDate()).toString())
+        .orderLastModifiedDate(new LocalDate(podResponse.getOrder().getLastModifiedDate()).toString())
+        .requisitionNumber(podResponse.getOrder().getRequisition().getNumber())
+        .requisitionIsEmergency(podResponse.getOrder().getRequisition().isEmergency())
+        .requisitionProgramCode(podResponse.getOrder().getRequisition().getProgramCode())
+        .requisitionStartDate(new LocalDate(podResponse.getOrder().getRequisition().getStartDate()).toString())
+        .requisitionEndDate(new LocalDate(podResponse.getOrder().getRequisition().getEndDate()).toString())
+        .requisitionActualStartDate(new LocalDate(podResponse.getOrder().getRequisition().getActualStartDate()).toString())
+        .requisitionActualEndDate(new LocalDate(podResponse.getOrder().getRequisition().getActualEndDate()).toString())
         .podProductsWrapper(buildPodProductItems(podResponse))
         .build();
   }
 
   private List<PodProduct> buildPodProductItems(PodResponse podResponse) {
-    return FluentIterable.from(podResponse.getPodProductItemResponses()).transform(this::fitForPodProduct).toList();
+    return FluentIterable.from(podResponse.getProducts()).transform(this::fitForPodProduct).toList();
   }
 
   private PodProduct fitForPodProduct(PodProductItemResponse podProductItemResponse) {
@@ -85,7 +88,7 @@ public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
 
   private PodLotItem fitForPodLotItems(PodLotMovementItemResponse podLotMovementItemResponse) {
     return PodLotItem.builder()
-        .lot(buildLot(podLotMovementItemResponse.getLotResponse()))
+        .lot(buildLot(podLotMovementItemResponse.getLot()))
         .shippedQuantity(podLotMovementItemResponse.getShippedQuantity())
         .build();
   }
@@ -93,7 +96,7 @@ public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
   private Lot buildLot(LotResponse lotResponse) {
     return Lot.builder()
         .lotNumber(lotResponse.getLotCode())
-        .expirationDate(DateUtil.parseString(lotResponse.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR))
+        .expirationDate(DateUtil.parseString(lotResponse.getExpirationDate(), DateUtil.DB_DATE_FORMAT))
         .build();
   }
 

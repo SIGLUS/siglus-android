@@ -42,6 +42,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
@@ -56,6 +57,7 @@ import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.ProgramCacheManager;
 import org.openlmis.core.network.model.FacilityInfoResponse;
+import org.openlmis.core.network.model.PodsLocalResponse;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.StockCardsLocalResponse;
 import org.openlmis.core.network.model.SupportedProgram;
@@ -122,6 +124,8 @@ public class SyncDownManager {
   UserRepository userRepository;
   @Inject
   RegimenRepository regimenRepository;
+  @Inject
+  PodRepository podRepository;
 
   public SyncDownManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -141,6 +145,7 @@ public class SyncDownManager {
         syncDownRegimens(subscriber1);
         // syncDownService(subscriber1);
         syncDownProducts(subscriber1);
+        syncDownPods(subscriber1);
         syncDownLastMonthStockCards(subscriber1);
         syncDownRequisition(subscriber1);
         // syncDownRapidTests(subscriber1);
@@ -259,6 +264,28 @@ public class SyncDownManager {
     }
 
     programDataFormRepository.batchSaveForms(syncDownProgramDataResponse.getProgramDataForms());
+  }
+
+  private void syncDownPods(Subscriber<? super SyncProgress> subscriber)throws LMISException {
+    try {
+      subscriber.onNext(SyncProgress.SYNCING_PODS);
+      fetchAndSavePods();
+      subscriber.onNext(SyncProgress.PODS_SYNCED);
+    } catch (LMISException e) {
+      LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_pod_failed));
+      e1.reportToFabric();
+      throw e1;
+    }
+  }
+
+  private void fetchAndSavePods() throws LMISException {
+    PodsLocalResponse podsLocalResponse = lmisRestApi.fetchPods();
+    if (podsLocalResponse == null) {
+      LMISException e = new LMISException("fetch pods info exception");
+      e.reportToFabric();
+      throw e;
+    }
+    podRepository.batchCreatePodsWithItems(podsLocalResponse.getPods());
   }
 
   @NonNull
@@ -574,6 +601,7 @@ public class SyncDownManager {
     SYNCING_STOCK_CARDS_LAST_MONTH(R.string.msg_sync_stock_movements_data),
     SYNCING_REQUISITION(R.string.msg_sync_requisition_data),
     SYNCING_RAPID_TESTS,
+    SYNCING_PODS(R.string.msg_fetching_pods),
 
     PRODUCT_SYNCED,
     SERVICE_SYNCED,
@@ -583,6 +611,7 @@ public class SyncDownManager {
     REQUISITION_SYNCED,
     STOCK_CARDS_LAST_YEAR_SYNCED,
     RAPID_TESTS_SYNCED,
+    PODS_SYNCED,
     SHOULD_GO_TO_INITIAL_INVENTORY;
 
     private int messageCode;

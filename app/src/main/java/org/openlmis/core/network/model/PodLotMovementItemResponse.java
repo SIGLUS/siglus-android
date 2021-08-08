@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class PodLotMovementItemResponse {
 
-  private LotResponse lotResponse;
+  private LotResponse lot;
   private long shippedQuantity;
 }
