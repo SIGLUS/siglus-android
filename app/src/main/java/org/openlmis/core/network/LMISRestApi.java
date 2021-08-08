@@ -63,7 +63,7 @@ public interface LMISRestApi {
       throws LMISException;
 
   @GET("/api/siglusapi/android/me/facility/pods")
-  PodsLocalResponse fetchPods() throws LMISException;
+  PodsLocalResponse fetchPods(@Query("shippedOnly") boolean shippedOnly) throws LMISException;
 
   @POST("/api/oauth/token")
   void login(@Query("grant_type") String grantType, @Query("username") String username,

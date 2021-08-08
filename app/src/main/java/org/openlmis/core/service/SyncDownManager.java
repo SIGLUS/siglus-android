@@ -270,6 +270,7 @@ public class SyncDownManager {
     try {
       subscriber.onNext(SyncProgress.SYNCING_PODS);
       fetchAndSavePods();
+      sharedPreferenceMgr.setKeyIsPodDataSynced();
       subscriber.onNext(SyncProgress.PODS_SYNCED);
     } catch (LMISException e) {
       LMISException e1 = new LMISException(errorMessage(R.string.msg_sync_pod_failed));
@@ -279,7 +280,12 @@ public class SyncDownManager {
   }
 
   private void fetchAndSavePods() throws LMISException {
-    PodsLocalResponse podsLocalResponse = lmisRestApi.fetchPods();
+    PodsLocalResponse podsLocalResponse;
+    if (sharedPreferenceMgr.isPodDataInitialSynced()) {
+       podsLocalResponse = lmisRestApi.fetchPods(true);
+    } else {
+       podsLocalResponse = lmisRestApi.fetchPods(false);
+    }
     if (podsLocalResponse == null) {
       LMISException e = new LMISException("fetch pods info exception");
       e.reportToFabric();

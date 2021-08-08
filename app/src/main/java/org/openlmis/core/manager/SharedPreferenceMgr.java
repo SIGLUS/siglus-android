@@ -94,6 +94,7 @@ public class SharedPreferenceMgr {
   public static final String KEY_DELETED_MOVEMENT_ITEM = "deleted_movement_line";
   public static final String KEY_DELETED_PRODUCT_TIME = "deleted_product_time";
   public static final String KEY_KEEP_MOVEMENT_LINE = "keep_movement_line";
+  public static final String KEY_IS_POD_DATA_SYNCED = "key_is_pod_data_synced";
 
   static final int MONTH_OFFSET = 13;
   protected StockRepository stockRepository;
@@ -167,6 +168,14 @@ public class SharedPreferenceMgr {
         .getInstance(RnrFormRepository.class);
     return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED,
         rnrFormRepository.hasRequisitionData());
+  }
+
+  public boolean isPodDataInitialSynced() {
+    return sharedPreferences.getBoolean(KEY_IS_POD_DATA_SYNCED, false);
+  }
+
+  public void setKeyIsPodDataSynced() {
+    sharedPreferences.edit().putBoolean(KEY_IS_POD_DATA_SYNCED, true).apply();
   }
 
   public boolean hasDeletedOldStockMovement() {

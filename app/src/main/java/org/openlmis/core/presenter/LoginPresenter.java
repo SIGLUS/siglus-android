@@ -223,6 +223,7 @@ public class LoginPresenter extends Presenter {
           case SYNCING_FACILITY_INFO:
           case SYNCING_SERVICE_LIST:
           case SYNCING_PRODUCT:
+          case SYNCING_PODS:
           case SYNCING_STOCK_CARDS_LAST_MONTH:
           case SYNCING_REQUISITION:
             view.loading(LMISApp.getInstance().getString(progress.getMessageCode()));
