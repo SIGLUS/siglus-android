@@ -79,7 +79,7 @@ public class ReportListFragment extends BaseReportListFragment {
 
   String programCode;
 
-  private ArrayList<RnRFormViewModel> data;
+  private List<RnRFormViewModel> data;
 
   private WarningDialogFragment warningDialog;
 

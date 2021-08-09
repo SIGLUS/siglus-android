@@ -26,7 +26,7 @@ import org.openlmis.core.model.User;
 public final class UserInfoMgr {
 
   /**
-   * app center max user id max length.
+   * app center max user id max length
    * see {@link com.microsoft.appcenter.utils.context.UserIdContext#USER_ID_APP_CENTER_MAX_LENGTH}
    */
   private static final int USER_NAME_MAX_LENGTH = 256;
@@ -72,9 +72,9 @@ public final class UserInfoMgr {
     String lastUserFacilityName = SharedPreferenceMgr.getInstance().getCurrentUserFacility();
     String lastUserName = SharedPreferenceMgr.getInstance().getLastLoginUser();
     if (user != null) {
-      userName = user.getFacilityName() + "-" + user.getUsername();
+      userName = String.format("[%s] %s", user.getFacilityName(), user.getUsername());
     } else if (StringUtils.isNotBlank(lastUserFacilityName) && StringUtils.isNotBlank(lastUserName)) {
-      userName = lastUserFacilityName + "-" + lastUserName;
+      userName = String.format("[%s] %s", lastUserFacilityName, lastUserName);
     } else {
       return "";
     }

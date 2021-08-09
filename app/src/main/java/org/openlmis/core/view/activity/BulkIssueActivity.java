@@ -65,7 +65,7 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
   private View emptyView;
 
   @InjectPresenter(BulkIssuePresenter.class)
-  BulkIssuePresenter bulkIssuePresenter;
+  private BulkIssuePresenter bulkIssuePresenter;
 
   BulkIssueAdapter bulkIssueAdapter = new BulkIssueAdapter();
 

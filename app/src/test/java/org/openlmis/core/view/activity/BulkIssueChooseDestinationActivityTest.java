@@ -57,8 +57,8 @@ public class BulkIssueChooseDestinationActivityTest {
   @Test
   public void shouldClickListenerCorrectSet() {
     // given
-    boolean chooseDestinationHasListener = bulkIssueChooseDestinationActivity.etDestination.hasOnClickListeners();
-    boolean nextHasListener = bulkIssueChooseDestinationActivity.btNext.hasOnClickListeners();
+    boolean chooseDestinationHasListener = bulkIssueChooseDestinationActivity.getEtDestination().hasOnClickListeners();
+    boolean nextHasListener = bulkIssueChooseDestinationActivity.getBtNext().hasOnClickListeners();
 
     // then
     Assert.assertTrue(chooseDestinationHasListener);
@@ -69,7 +69,7 @@ public class BulkIssueChooseDestinationActivityTest {
   public void shouldGotoAddProductActivityAfterValidate() {
     // given
     RobolectricUtils.resetNextClickTime();
-    bulkIssueChooseDestinationActivity.chosenReason = Mockito.mock(MovementReason.class);
+    bulkIssueChooseDestinationActivity.setChosenReason(Mockito.mock(MovementReason.class));
 
     // when
     bulkIssueChooseDestinationActivity.findViewById(R.id.bt_next).performClick();
@@ -84,7 +84,7 @@ public class BulkIssueChooseDestinationActivityTest {
   public void shouldShowDialogFragmentAfterClickDestination() {
     // when
     RobolectricUtils.resetNextClickTime();
-    bulkIssueChooseDestinationActivity.etDestination.performClick();
+    bulkIssueChooseDestinationActivity.getEtDestination().performClick();
     RobolectricUtils.waitLooperIdle();
 
     // then

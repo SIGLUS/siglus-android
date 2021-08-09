@@ -68,7 +68,7 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel> 
   }
 
   public boolean isExpired() {
-    return new DateTime(lotOnHand.getLot().getExpirationDate()).minusDays(-1).isBeforeNow();
+    return new DateTime(lotOnHand.getLot().getExpirationDate()).plusDays(1).isBeforeNow();
   }
 
   public boolean hasChanged() {

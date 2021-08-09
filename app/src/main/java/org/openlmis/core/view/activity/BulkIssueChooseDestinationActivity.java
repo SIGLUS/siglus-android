@@ -36,6 +36,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
@@ -52,18 +55,21 @@ import roboguice.inject.InjectView;
 public class BulkIssueChooseDestinationActivity extends BaseActivity {
 
   @InjectView(R.id.til_destination)
-  TextInputLayout tilDestination;
+  private TextInputLayout tilDestination;
 
+  @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.et_destination)
-  EditText etDestination;
+  private EditText etDestination;
 
   @InjectView(R.id.et_bulk_issue_document_number)
-  EditText etDocumentNumber;
+  private EditText etDocumentNumber;
 
+  @Getter(AccessLevel.PACKAGE)
   @InjectView(R.id.bt_next)
-  Button btNext;
+  private Button btNext;
 
-  MovementReason chosenReason = null;
+  @Setter(AccessLevel.PACKAGE)
+  private MovementReason chosenReason = null;
 
   private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {

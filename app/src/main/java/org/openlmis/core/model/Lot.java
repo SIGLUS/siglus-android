@@ -47,6 +47,6 @@ public class Lot extends BaseModel {
   Date expirationDate;
 
   public boolean isExpired() {
-    return new DateTime(expirationDate).minusDays(-1).isBeforeNow();
+    return new DateTime(expirationDate).plusDays(1).isBeforeNow();
   }
 }

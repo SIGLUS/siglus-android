@@ -34,7 +34,7 @@ public class LotTest {
     expiredLot.setExpirationDate(new DateTime().minusDays(2).toDate());
 
     Lot unexpiredLot = new Lot();
-    unexpiredLot.setExpirationDate(new DateTime().minusDays(-1).toDate());
+    unexpiredLot.setExpirationDate(new DateTime().plusDays(1).toDate());
 
     // when & then
     Assert.assertTrue(expiredLot.isExpired());
