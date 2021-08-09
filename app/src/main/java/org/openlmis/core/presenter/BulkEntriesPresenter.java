@@ -146,8 +146,10 @@ public class BulkEntriesPresenter extends Presenter {
           StockCard stockCard = new StockCard();
           if (bulkEntriesViewModel.getStockCard() != null) {
             stockCard = bulkEntriesViewModel.getStockCard();
+          } else {
+            stockCard.setProduct(bulkEntriesViewModel.getProduct());
+            stockRepository.addStockMovementAndUpdateStockCard(stockCard.generateInitialStockMovementItem());
           }
-          stockCard.setProduct(bulkEntriesViewModel.getProduct());
           stockCard.getProduct().setArchived(false);
           stockCard.setStockOnHand(getStockOnHand(bulkEntriesViewModel));
           productRepository.updateProduct(stockCard.getProduct());
