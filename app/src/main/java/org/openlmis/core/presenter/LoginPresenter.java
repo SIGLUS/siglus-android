@@ -159,9 +159,9 @@ public class LoginPresenter extends Presenter {
     private void authorizeAndLoginUserLocal(User user) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
             sharedPreferenceMgr.resetLatestLowStockAvgTime();
-//            if (userRepository.getLocalUser() == null) {
+            if (userRepository.getLocalUser() == null) {
                 TrainingEnvironmentHelper.getInstance().setUpData();
-//            }
+            }
         }
         setDefaultReportType();
         User localUser = userRepository.mapUserFromLocal(user);

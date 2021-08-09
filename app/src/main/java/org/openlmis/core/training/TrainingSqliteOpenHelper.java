@@ -17,7 +17,7 @@ import java.util.Date;
 
 
 public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
-    private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2017-02-14", DateUtil.DB_DATE_FORMAT);
+    private static final Date TRAINING_ANCHOR_DATE = DateUtil.parseString("2021-01-18", DateUtil.DB_DATE_FORMAT);
     public static final String DATE_TIME_SUFFIX = ".000000";
     public static final String APP_ENVIRONMENT_TRAINING = "org.clintonhealthaccess.lmismoz.training";
     private int monthOffsetFromAnchor;
@@ -65,10 +65,16 @@ public final class TrainingSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         updateProgramDataFromPeriodsAndSubmitTime();
         updateRnRFormPeriods();
         updateStockMovementItemMovementDate();
+        updateStockMovementItemCreatedTime();
     }
 
     private void updateStockMovementItemMovementDate() throws SQLException {
         String sql = "UPDATE stock_items SET movementDate = date(movementDate, '+" + monthOffsetFromAnchor + " months')";
+        dbConnection.update(sql, null, null);
+    }
+
+    private void updateStockMovementItemCreatedTime() throws SQLException {
+        String sql = "UPDATE stock_items SET createdTime = datetime(createdTime, '+" + monthOffsetFromAnchor + " months') || " + DATE_TIME_SUFFIX;
         dbConnection.update(sql, null, null);
     }
 
