@@ -203,7 +203,7 @@ public class RapidTestReportsPresenter extends Presenter {
 
     private Optional<Period> generateNextPeriod(DateTime beginDate) {
         Period period = generateNextAvailablePeriod(beginDate);
-        return period.getBegin().isAfterNow() ? Optional.absent() : Optional.of(period);
+        return period.getBegin().isAfter(DateUtil.getCurrentDate().getTime()) ? Optional.absent() : Optional.of(period);
     }
 
     private Period generateNextAvailablePeriod(DateTime beginDate) {
