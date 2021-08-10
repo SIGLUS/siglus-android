@@ -23,8 +23,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
 import lombok.Getter;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.BulkEntriesViewHolder;
@@ -75,7 +73,7 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
   }
 
   public void remove(BulkEntriesViewModel bulkEntriesViewModel, int position) {
-    removeBulkEntriesViewModel(bulkEntriesViewModel);
+    models.remove(bulkEntriesViewModel);
     this.notifyItemRemoved(position);
     this.notifyItemRangeChanged(position, getItemCount());
   }
@@ -97,15 +95,4 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
     return firstInvalidPosition;
   }
 
-  private void removeBulkEntriesViewModel(BulkEntriesViewModel bulkEntriesViewModel) {
-    synchronized (models) {
-      ListIterator<BulkEntriesViewModel> iterator = models.listIterator();
-      while (iterator.hasNext()) {
-        BulkEntriesViewModel viewModel = iterator.next();
-        if (Objects.equals(viewModel.getProduct().getCode(), bulkEntriesViewModel.getProduct().getCode())) {
-          iterator.remove();
-        }
-      }
-    }
-  }
 }
