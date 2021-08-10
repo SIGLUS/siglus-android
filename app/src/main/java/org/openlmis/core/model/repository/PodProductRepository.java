@@ -25,6 +25,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
 import java.util.List;
 import org.openlmis.core.constant.FieldConstants;
+import lombok.Setter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProduct;
@@ -42,6 +43,7 @@ public class PodProductRepository {
 
   private final Context context;
 
+  @Setter
   @Inject
   PodLotItemRepository podLotItemRepository;
 

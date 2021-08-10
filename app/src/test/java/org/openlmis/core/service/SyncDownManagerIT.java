@@ -24,6 +24,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
+import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
@@ -34,6 +35,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.LotRepository;
+import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
@@ -66,6 +68,7 @@ public class SyncDownManagerIT {
   private StockRepository stockRepository;
   private LotRepository lotRepository;
   private RegimenRepository regimenRepository;
+  private PodRepository podRepository;
   private User defaultUser1;
   private SharedPreferenceMgr sharedPreferenceMgr;
   private ProgramDataFormRepository programDataFormRepository;
@@ -92,6 +95,8 @@ public class SyncDownManagerIT {
         .getInstance(LotRepository.class);
     regimenRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(RegimenRepository.class);
+    podRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(PodRepository.class);
     programDataFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(ProgramDataFormRepository.class);
     stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
@@ -145,7 +150,7 @@ public class SyncDownManagerIT {
     String V3ProductsResponseAdapterResponse = JsonFileReader
         .readJson(getClass(), "SyncDownLatestProductResponse.json");
     String regimenJson = JsonFileReader.readJson(getClass(), "fetchRegimenResponse.json");
-    String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
+    String podJson = JsonFileReader.readJson(getClass(), "fetchPodsData.json");
 
     lmisRestManager.addNewMockedResponse(
         "/api/oauth/token?grant_type=password&username=cs_gelo&password=password", 200, "OK", authSuccessResponse);
@@ -176,6 +181,8 @@ public class SyncDownManagerIT {
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/products", 200, "OK",
         V3ProductsResponseAdapterResponse);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/regimens", 200, "OK", regimenJson);
+    lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/pods", 200, "OK",
+        podJson);
   }
 
   // TODO: fix the test later as a teach card
@@ -245,6 +252,29 @@ public class SyncDownManagerIT {
 
     // then
     assertEquals(93, regimenList.size());
+  }
+
+  @Test
+  public void shouldSyncDownPods() throws LMISException {
+    // given
+    String podJson = JsonFileReader.readJson(getClass(), "fetchPodsData.json");
+    String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
+    LMISRestManagerMock lmisRestManager = LMISRestManagerMock
+        .getRestManagerWithMockClient("/api/siglusapi/android/me/facility/pods?shippedOnly=false", 200, "OK", podJson,
+            RuntimeEnvironment.application);
+    lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility", 200, "OK",
+        facilityInfoJson);
+    mockResponse(lmisRestManager);
+    syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+
+    // when
+    SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+    syncDownManager.syncDownServerData(subscriber);
+    subscriber.awaitTerminalEvent();
+    List<Pod> pods = podRepository.listAllPods();
+
+    // then
+    assertEquals("RNR-EM010809070000006", pods.get(0).getRequisitionNumber());
   }
 
   @Test

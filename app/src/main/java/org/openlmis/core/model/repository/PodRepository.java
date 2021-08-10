@@ -25,6 +25,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
 import java.util.List;
 import org.openlmis.core.constant.FieldConstants;
+import lombok.Setter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.persistence.DbUtil;
@@ -41,6 +42,7 @@ public class PodRepository {
 
   private final Context context;
 
+  @Setter
   @Inject
   PodProductRepository podProductRepository;
 
@@ -49,6 +51,10 @@ public class PodRepository {
     this.podGenericDao = new GenericDao<>(Pod.class, context);
     this.dbUtil = dbUtil;
     this.context = context;
+  }
+
+  public List<Pod> listAllPods() throws LMISException {
+    return dbUtil.withDao(Pod.class, dao -> dao.queryBuilder().query());
   }
 
   public Pod queryByOrderCode(String orderCode) throws LMISException {
