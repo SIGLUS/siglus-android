@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.enums.StockOnHandStatus;
+import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;
 import org.openlmis.core.googleanalytics.TrackerActions;
 import org.openlmis.core.googleanalytics.TrackerCategories;

@@ -31,7 +31,7 @@ import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.enums.LoginErrorType;
+import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.event.CmmCalculateEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;

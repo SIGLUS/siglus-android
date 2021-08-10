@@ -18,6 +18,10 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.ACTIVE;
+import static org.openlmis.core.constant.FieldConstants.CODE;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
+
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
@@ -40,7 +44,7 @@ public class ServiceFormRepository {
   }
 
   public void batchCreateOrUpdateServiceList(final List<Service> serviceList) throws LMISException {
-    dbUtil.withDaoAsBatch(Service.class, (DbUtil.Operation<Service, Void>) dao -> {
+    dbUtil.withDaoAsBatch(Service.class, dao -> {
       for (Service service : serviceList) {
         createOrUpdate(service);
       }
@@ -59,21 +63,19 @@ public class ServiceFormRepository {
   }
 
   public Service queryByCode(final String serviceCode) throws LMISException {
-    return dbUtil.withDao(Service.class,
-        dao -> dao.queryBuilder().where().eq("code", serviceCode).queryForFirst());
+    return dbUtil.withDao(Service.class, dao -> dao.queryBuilder().where().eq(CODE, serviceCode).queryForFirst());
   }
 
   protected List<Service> listAllActive() throws LMISException {
-    List<Service> activeService = dbUtil
-        .withDao(Service.class, dao -> dao.queryBuilder().where().eq("active", true).query());
-    return activeService;
+    return dbUtil.withDao(Service.class, dao ->
+        dao.queryBuilder().where().eq(ACTIVE, true).query());
   }
 
   public List<Service> listAllActiveWithProgram(Program program) throws LMISException {
-    List<Service> activeService = dbUtil.withDao(Service.class,
-        dao -> dao.queryBuilder().where().eq("active", true).and().eq("program_id", program.getId())
+    return dbUtil.withDao(Service.class, dao ->
+        dao.queryBuilder()
+            .where().eq(ACTIVE, true)
+            .and().eq(PROGRAM_ID, program.getId())
             .query());
-    return activeService;
   }
-
 }

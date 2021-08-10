@@ -22,6 +22,7 @@ import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.StockCard;
@@ -44,9 +45,9 @@ public class CmmRepository {
 
   public void save(final Cmm cmm) throws LMISException {
     Cmm sameCardSamePeriodCmm = dbUtil.withDao(Cmm.class, dao -> dao.queryBuilder()
-        .where().eq("stockCard_id", cmm.getStockCard().getId())
-        .and().eq("periodBegin", cmm.getPeriodBegin())
-        .and().eq("periodEnd", cmm.getPeriodEnd())
+        .where().eq(FieldConstants.STOCK_CARD_ID, cmm.getStockCard().getId())
+        .and().eq(FieldConstants.PERIOD_BEGIN, cmm.getPeriodBegin())
+        .and().eq(FieldConstants.PERIOD_END, cmm.getPeriodEnd())
         .queryForFirst());
 
     if (sameCardSamePeriodCmm != null) {
@@ -66,17 +67,18 @@ public class CmmRepository {
   public void resetCmm(List<String> productCodeList) {
     for (String productCode : productCodeList) {
       String resetCmmValueAndSynced = "UPDATE cmm "
-          + "SET cmmValue=-1.0,synced=0 WHERE stockCard_id=(SELECT stockCard_id "
-          + "FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code='" + productCode
+          + "SET cmmValue=-1.0, synced=0 WHERE stockCard_id=(SELECT stockCard_id "
+          + "FROM stock_cards WHERE product_id=(SELECT id FROM products WHERE code= '"
+          + productCode
           + "' ));";
-      LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
-          .execSQL(resetCmmValueAndSynced);
+      LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(resetCmmValueAndSynced);
     }
   }
 
   public void deleteCmm(final StockCard stockCard) throws LMISException {
     List<Cmm> cmms = dbUtil.withDao(Cmm.class, dao -> dao.queryBuilder()
-        .where().eq("stockCard_id", stockCard != null ? stockCard.getId() : "0")
+        .where()
+        .eq(FieldConstants.STOCK_CARD_ID, stockCard != null ? stockCard.getId() : "0")
         .query());
     for (Cmm cmm : cmms) {
       cmmDao.delete(cmm);

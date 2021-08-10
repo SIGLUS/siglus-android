@@ -18,7 +18,7 @@
  *
  */
 
-package org.openlmis.core.enums;
+package org.openlmis.core.enumeration;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
@@ -66,7 +67,7 @@ public class BulkIssueRepository {
       Iterator<DraftBulkIssueProduct> productIterator = draftProducts.iterator();
       while (productIterator.hasNext()) {
         DraftBulkIssueProduct draftProduct = productIterator.next();
-        dao.assignEmptyForeignCollection(draftProduct, "foreignDraftLots");
+        dao.assignEmptyForeignCollection(draftProduct, FieldConstants.FOREIGN_DRAFT_LOTS);
         ForeignCollection<DraftBulkIssueLot> foreignDraftLots = draftProduct.getForeignDraftLots();
         Iterator<DraftBulkIssueLot> lotIterator = foreignDraftLots.iterator();
         while (lotIterator.hasNext()) {

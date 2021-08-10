@@ -20,7 +20,7 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 import java.util.Map;
-import org.openlmis.core.enums.StockOnHandStatus;
+import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import rx.Observable;

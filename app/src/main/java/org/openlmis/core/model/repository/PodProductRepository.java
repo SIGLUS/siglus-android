@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
 import java.util.List;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.model.PodProduct;
@@ -73,7 +74,9 @@ public class PodProductRepository {
 
   public PodProduct queryByPodIdAndProductCode(long podId, String productCode) throws LMISException {
     return dbUtil.withDao(PodProduct.class,
-        dao -> dao.queryBuilder().where().eq("pod_id", podId).and().eq("code", productCode)
+        dao -> dao.queryBuilder()
+            .where().eq(FieldConstants.POD_ID, podId)
+            .and().eq(FieldConstants.CODE, productCode)
             .queryForFirst());
   }
 

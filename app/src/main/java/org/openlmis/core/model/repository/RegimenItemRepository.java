@@ -20,6 +20,7 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.Dao;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RegimenItem;
@@ -39,7 +40,7 @@ public class RegimenItemRepository {
   }
 
   public void batchCreateOrUpdate(final List<RegimenItem> regimenItemList) throws LMISException {
-    dbUtil.withDaoAsBatch(RegimenItem.class, (DbUtil.Operation<RegimenItem, Void>) dao -> {
+    dbUtil.withDaoAsBatch(RegimenItem.class, dao -> {
       for (RegimenItem item : regimenItemList) {
         dao.createOrUpdate(item);
       }
@@ -48,7 +49,7 @@ public class RegimenItemRepository {
   }
 
   public void create(final RegimenItem regimenItem) throws LMISException {
-    dbUtil.withDao(RegimenItem.class, (DbUtil.Operation<RegimenItem, Void>) dao -> {
+    dbUtil.withDao(RegimenItem.class, dao -> {
       dao.create(regimenItem);
       return null;
     });
@@ -56,21 +57,21 @@ public class RegimenItemRepository {
 
   public void deleteRegimenItems(final List<RegimenItem> regimenItemListWrapper)
       throws LMISException {
-    dbUtil.withDao(RegimenItem.class, (DbUtil.Operation<RegimenItem, Void>) dao -> {
+    dbUtil.withDao(RegimenItem.class, dao -> {
       dao.delete(regimenItemListWrapper);
       return null;
     });
   }
 
   public void deleteRegimeItem(final RegimenItem item) throws LMISException {
-    dbUtil.withDao(RegimenItem.class, (DbUtil.Operation<RegimenItem, Void>) dao -> {
+    dbUtil.withDao(RegimenItem.class, dao -> {
       dao.delete(item);
       return null;
     });
   }
 
   public List<RegimenItem> listAll() throws LMISException {
-    return dbUtil.withDao(RegimenItem.class, dao -> dao.queryForAll());
+    return dbUtil.withDao(RegimenItem.class, Dao::queryForAll);
   }
 
 }

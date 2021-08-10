@@ -58,8 +58,7 @@ public class PTVRepository extends RnrFormRepository {
   }
 
   @Override
-  public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
-      throws LMISException {
+  public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) throws LMISException {
     List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
     return fillAllPTVProduct(form, rnrFormItems);
   }
@@ -67,8 +66,7 @@ public class PTVRepository extends RnrFormRepository {
   @Override
   protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
     List<RegimenItem> regimenItems = new ArrayList<>();
-    List<String> regimenCodes = Arrays
-        .asList(Constants.PTV_REGIME_ADULT, Constants.PTV_REGIME_CHILD);
+    List<String> regimenCodes = Arrays.asList(Constants.PTV_REGIME_ADULT, Constants.PTV_REGIME_CHILD);
     for (String regimenCode : regimenCodes) {
       RegimenItem newRegimenItem = new RegimenItem();
       Regimen regimen = regimenRepository.getByCode(regimenCode);

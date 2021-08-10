@@ -43,7 +43,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.enums.LoginErrorType;
+import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.googleanalytics.AnalyticsTracker;

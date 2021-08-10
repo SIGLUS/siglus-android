@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.joda.time.LocalDate;
-import org.openlmis.core.enums.OrderStatus;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.Pod;

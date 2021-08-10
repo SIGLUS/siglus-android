@@ -38,21 +38,19 @@ public class RegimenItemThreeLineRepository {
   }
 
   public void batchCreateOrUpdate(final List<RegimenItemThreeLines> list) throws LMISException {
-    dbUtil.withDaoAsBatch(RegimenItemThreeLines.class,
-        (DbUtil.Operation<RegimenItemThreeLines, Void>) dao -> {
-          for (RegimenItemThreeLines item : list) {
-            dao.createOrUpdate(item);
-          }
-          return null;
-        });
+    dbUtil.withDaoAsBatch(RegimenItemThreeLines.class, dao -> {
+      for (RegimenItemThreeLines item : list) {
+        dao.createOrUpdate(item);
+      }
+      return null;
+    });
   }
 
   public void deleteRegimeThreeLineItems(final List<RegimenItemThreeLines> itemThreeLinesWrapper)
       throws LMISException {
-    dbUtil.withDao(RegimenItemThreeLines.class,
-        (DbUtil.Operation<RegimenItemThreeLines, Void>) dao -> {
-          dao.delete(itemThreeLinesWrapper);
-          return null;
-        });
+    dbUtil.withDao(RegimenItemThreeLines.class, dao -> {
+      dao.delete(itemThreeLinesWrapper);
+      return null;
+    });
   }
 }

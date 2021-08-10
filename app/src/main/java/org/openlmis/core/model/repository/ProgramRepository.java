@@ -19,6 +19,10 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.IS_SUPPORT_EMERGENCY;
+import static org.openlmis.core.constant.FieldConstants.PRODUCT_CODE;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_CODE;
+
 import android.content.Context;
 import android.util.Log;
 import androidx.annotation.Nullable;
@@ -62,8 +66,7 @@ public class ProgramRepository {
   }
 
   public List<Program> listEmergencyPrograms() throws LMISException {
-    return dbUtil.withDao(Program.class,
-        dao -> dao.queryBuilder().where().eq("isSupportEmergency", true).query());
+    return dbUtil.withDao(Program.class, dao -> dao.queryBuilder().where().eq(IS_SUPPORT_EMERGENCY, true).query());
   }
 
   public void createOrUpdate(Program program) throws LMISException {
@@ -78,14 +81,12 @@ public class ProgramRepository {
 
   public void batchCreateOrUpdatePrograms(final List<Program> programs) throws LMISException {
     try {
-      TransactionManager
-          .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-              () -> {
-                for (Program program : programs) {
-                  createOrUpdate(program);
-                }
-                return null;
-              });
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        for (Program program : programs) {
+          createOrUpdate(program);
+        }
+        return null;
+      });
     } catch (SQLException e) {
       throw new LMISException(e);
     }
@@ -93,17 +94,15 @@ public class ProgramRepository {
 
   public void createOrUpdateProgramWithProduct(final List<Program> programs) throws LMISException {
     try {
-      TransactionManager
-          .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-              () -> {
-                for (Program program : programs) {
-                  createOrUpdate(program);
-                  for (Product product : program.getProducts()) {
-                    productRepository.createOrUpdate(product);
-                  }
-                }
-                return null;
-              });
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        for (Program program : programs) {
+          createOrUpdate(program);
+          for (Product product : program.getProducts()) {
+            productRepository.createOrUpdate(product);
+          }
+        }
+        return null;
+      });
     } catch (SQLException e) {
       throw new LMISException(e);
     }
@@ -118,8 +117,8 @@ public class ProgramRepository {
   }
 
   public Program queryByCode(final String programCode) throws LMISException {
-    return dbUtil.withDao(Program.class,
-        dao -> dao.queryBuilder().where().eq("programCode", programCode).queryForFirst());
+    return dbUtil
+        .withDao(Program.class, dao -> dao.queryBuilder().where().eq(PROGRAM_CODE, programCode).queryForFirst());
   }
 
   public List<Program> queryActiveProgram() throws LMISException {
@@ -152,7 +151,7 @@ public class ProgramRepository {
       return dbUtil.withDaoAsBatch(ProductProgram.class, dao -> {
         final ProductProgram productProgram = dao.queryBuilder()
             .where()
-            .eq("productCode", productCode)
+            .eq(PRODUCT_CODE, productCode)
             .queryForFirst();
         if (productProgram == null) {
           return null;

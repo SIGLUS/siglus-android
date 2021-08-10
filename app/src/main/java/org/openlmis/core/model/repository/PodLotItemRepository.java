@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
 import java.util.List;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.PodLotItem;
@@ -60,9 +61,9 @@ public class PodLotItemRepository {
     return dbUtil.withDao(PodLotItem.class,
         dao -> dao.queryBuilder()
             .where()
-            .eq("podProduct_id", podProductId)
+            .eq(FieldConstants.POD_PRODUCT_ID, podProductId)
             .and()
-            .eq("lot_id", lotId)
+            .eq(FieldConstants.LOT_ID, lotId)
             .queryForFirst());
   }
 
@@ -112,5 +113,4 @@ public class PodLotItemRepository {
     }
     podLotItemGenericDao.createOrUpdate(podLotItem);
   }
-
 }

@@ -136,8 +136,7 @@ public class ProgramBasicItemsRepository {
     return null;
   }
 
-  private Long lastProgramInventory(Product product, List<ProgramDataForm> rapidTestForms)
-      throws LMISException {
+  private Long lastProgramInventory(Product product, List<ProgramDataForm> rapidTestForms) throws LMISException {
     if (rapidTestForms.isEmpty() || rapidTestForms.size() == 1) {
       return null;
     }
@@ -154,9 +153,7 @@ public class ProgramBasicItemsRepository {
   }
 
   private List<Product> getProgramProducts(String programCode) throws LMISException {
-    List<Long> productIds = productProgramRepository
-        .queryActiveProductIdsByProgramWithKits(programCode, false);
-    List<Product> products = productRepository.queryProductsByProductIds(productIds);
-    return products;
+    List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramWithKits(programCode, false);
+    return productRepository.queryProductsByProductIds(productIds);
   }
 }

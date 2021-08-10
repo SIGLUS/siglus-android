@@ -28,7 +28,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.openlmis.core.enums.OrderStatus;
+import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.utils.ListUtil;
 
 @EqualsAndHashCode(callSuper = true)

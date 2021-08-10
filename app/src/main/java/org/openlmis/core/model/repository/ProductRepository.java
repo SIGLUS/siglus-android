@@ -18,6 +18,18 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.CODE;
+import static org.openlmis.core.constant.FieldConstants.ID;
+import static org.openlmis.core.constant.FieldConstants.IS_ACTIVE;
+import static org.openlmis.core.constant.FieldConstants.IS_ARCHIVED;
+import static org.openlmis.core.constant.FieldConstants.IS_BASIC;
+import static org.openlmis.core.constant.FieldConstants.IS_KIT;
+import static org.openlmis.core.constant.FieldConstants.KIT_CODE;
+import static org.openlmis.core.constant.FieldConstants.PRIMARY_NAME;
+import static org.openlmis.core.constant.FieldConstants.PRODUCT_CODE;
+import static org.openlmis.core.constant.FieldConstants.STRENGTH;
+import static org.openlmis.core.constant.FieldConstants.TYPE;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -44,16 +56,6 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 public class ProductRepository {
 
   private static final String TAG = ProductRepository.class.getSimpleName();
-  private static final String PRIMARY_NAME = "primaryName";
-  private static final String IS_ACTIVE = "isActive";
-  private static final String IS_BASIC = "isBasic";
-  private static final String IS_ARCHIVED = "isArchived";
-  private static final String STRENGTH = "strength";
-  private static final String KIT_CODE = "kitCode";
-  private static final String CODE = "code";
-  private static final String TYPE = "type";
-  private static final String IS_KIT = "isKit";
-  private static final String ID = "id";
   private static final String SELECT_PRODUCTS = "SELECT * FROM products WHERE isactive = '1' ";
   private static final String ARCHIVED = "AND (isarchived = '1' OR id NOT IN (SELECT product_id from stock_cards));";
 
@@ -214,7 +216,7 @@ public class ProductRepository {
   protected KitProduct queryKitProductByCode(final String kitCode, final String productCode)
       throws LMISException {
     return dbUtil.withDao(KitProduct.class,
-        dao -> dao.queryBuilder().where().eq(KIT_CODE, kitCode).and().eq("productCode", productCode).queryForFirst());
+        dao -> dao.queryBuilder().where().eq(KIT_CODE, kitCode).and().eq(PRODUCT_CODE, productCode).queryForFirst());
   }
 
   private void deleteKitProductByCode(final String productCode) throws SQLException {
@@ -241,7 +243,7 @@ public class ProductRepository {
 
   public Product getProductById(final long id) throws LMISException {
     return dbUtil
-        .withDao(Product.class, dao -> dao.queryBuilder().where().eq("id", id).queryForFirst());
+        .withDao(Product.class, dao -> dao.queryBuilder().where().eq(ID, id).queryForFirst());
   }
 
   public List<Product> queryActiveProductsByCodesWithKits(final List<String> productCodes,
@@ -260,7 +262,7 @@ public class ProductRepository {
 
   public List<KitProduct> queryKitProductByProductCode(final String productCode) throws LMISException {
     return dbUtil.withDao(KitProduct.class,
-        dao -> dao.queryBuilder().where().eq("productCode", productCode).query());
+        dao -> dao.queryBuilder().where().eq(PRODUCT_CODE, productCode).query());
   }
 
   public List<String> listArchivedProductCodes() throws LMISException {
@@ -271,7 +273,7 @@ public class ProductRepository {
 
   public List<Product> queryProductsByProductIds(final List<Long> productIds) throws LMISException {
     return dbUtil
-        .withDao(Product.class, dao -> dao.queryBuilder().where().in("id", productIds).query());
+        .withDao(Product.class, dao -> dao.queryBuilder().where().in(ID, productIds).query());
   }
 
   public List<Product> queryActiveProductsInVIAProgramButNotInDraftVIAForm() throws LMISException {

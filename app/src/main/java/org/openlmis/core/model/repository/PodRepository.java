@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 import java.sql.SQLException;
 import java.util.List;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
 import org.openlmis.core.persistence.DbUtil;
@@ -52,7 +53,7 @@ public class PodRepository {
 
   public Pod queryByOrderCode(String orderCode) throws LMISException {
     return dbUtil.withDao(Pod.class,
-        dao -> dao.queryBuilder().where().eq("orderCode", orderCode).queryForFirst());
+        dao -> dao.queryBuilder().where().eq(FieldConstants.ORDER_CODE, orderCode).queryForFirst());
   }
 
   public void batchCreatePodsWithItems(@Nullable final List<Pod> pods) throws LMISException {
@@ -94,6 +95,4 @@ public class PodRepository {
     }
     return podGenericDao.createOrUpdate(pod);
   }
-
-
 }

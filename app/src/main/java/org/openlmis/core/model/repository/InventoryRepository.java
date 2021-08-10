@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.table.TableUtils;
 import java.util.List;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInitialInventory;
 import org.openlmis.core.model.DraftInitialInventoryLotItem;
@@ -67,11 +68,10 @@ public class InventoryRepository {
   }
 
   public List<Inventory> queryPeriodInventory(final Period period) throws LMISException {
-    return dbUtil.withDao(Inventory.class, dao -> dao.queryBuilder().orderBy("updatedAt", false)
+    return dbUtil.withDao(Inventory.class, dao -> dao.queryBuilder()
+        .orderBy(FieldConstants.UPDATED_AT, false)
         .where()
-        .between("updatedAt",
-            period.getInventoryBegin().toDate(),
-            period.getInventoryEnd().toDate())
+        .between(FieldConstants.UPDATED_AT, period.getInventoryBegin().toDate(), period.getInventoryEnd().toDate())
         .query());
   }
 

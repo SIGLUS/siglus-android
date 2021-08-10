@@ -22,6 +22,7 @@ import android.content.Context;
 import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.List;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ReportTypeForm;
 import org.openlmis.core.persistence.DbUtil;
@@ -62,8 +63,8 @@ public class ReportTypeFormRepository {
   }
 
   public ReportTypeForm queryByCode(final String code) throws LMISException {
-    return dbUtil.withDao(ReportTypeForm.class,
-        dao -> dao.queryBuilder().where().eq("code", code).queryForFirst());
+    return dbUtil
+        .withDao(ReportTypeForm.class, dao -> dao.queryBuilder().where().eq(FieldConstants.CODE, code).queryForFirst());
   }
 
   public List<ReportTypeForm> listAll() throws LMISException {
@@ -77,7 +78,7 @@ public class ReportTypeFormRepository {
   public List<ReportTypeForm> listAllWithActive() {
     try {
       return dbUtil
-          .withDao(ReportTypeForm.class, dao -> dao.queryBuilder().where().eq("active", true).query());
+          .withDao(ReportTypeForm.class, dao -> dao.queryBuilder().where().eq(FieldConstants.ACTIVE, true).query());
     } catch (LMISException e) {
       e.reportToFabric();
       return Collections.emptyList();

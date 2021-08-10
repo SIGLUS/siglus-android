@@ -18,6 +18,11 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.ID;
+import static org.openlmis.core.constant.FieldConstants.INVENTORY;
+import static org.openlmis.core.constant.FieldConstants.IS_MANUAL_ADD;
+import static org.openlmis.core.constant.FieldConstants.PRODUCT_ID;
+
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
@@ -47,23 +52,26 @@ public class RnrFormItemRepository {
   public List<RnrFormItem> queryListForLowStockByProductId(final Product product)
       throws LMISException {
     return dbUtil.withDao(RnrFormItem.class,
-        dao -> dao.queryBuilder().orderBy("id", false).limit(3L).where()
-            .eq("product_id", product.getId()).and().ne("inventory", 0).query());
+        dao -> dao.queryBuilder()
+            .orderBy(ID, false)
+            .limit(3L)
+            .where().eq(PRODUCT_ID, product.getId())
+            .and().ne(INVENTORY, 0)
+            .query());
   }
 
   public void batchCreateOrUpdate(final List<RnrFormItem> rnrFormItemList) throws LMISException {
     batchCreateOrUpdateItems(rnrFormItemList);
     for (RnrFormItem item : rnrFormItemList) {
       List<ServiceItem> serviceItems = item.getServiceItemListWrapper();
-      if (serviceItems.size() > 0) {
+      if (!serviceItems.isEmpty()) {
         serviceItemRepository.batchCreateOrUpdate(serviceItems);
       }
     }
   }
 
-  private void batchCreateOrUpdateItems(final List<RnrFormItem> rnrFormItemList)
-      throws LMISException {
-    dbUtil.withDaoAsBatch(RnrFormItem.class, (DbUtil.Operation<RnrFormItem, Void>) dao -> {
+  private void batchCreateOrUpdateItems(final List<RnrFormItem> rnrFormItemList) throws LMISException {
+    dbUtil.withDaoAsBatch(RnrFormItem.class, dao -> {
       for (RnrFormItem item : rnrFormItemList) {
         dao.createOrUpdate(item);
       }
@@ -73,18 +81,16 @@ public class RnrFormItemRepository {
 
   public void deleteFormItems(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
     batchDeleteItems(rnrFormItemListWrapper);
-
     for (RnrFormItem item : rnrFormItemListWrapper) {
       List<ServiceItem> serviceItems = item.getServiceItemListWrapper();
-      if (serviceItems.size() > 0) {
+      if (!serviceItems.isEmpty()) {
         serviceItemRepository.deleteServiceItems(serviceItems);
       }
     }
   }
 
-  private void batchDeleteItems(final List<RnrFormItem> rnrFormItemListWrapper)
-      throws LMISException {
-    dbUtil.withDaoAsBatch(RnrFormItem.class, (DbUtil.Operation<RnrFormItem, Void>) dao -> {
+  private void batchDeleteItems(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
+    dbUtil.withDaoAsBatch(RnrFormItem.class, dao -> {
       for (RnrFormItem item : rnrFormItemListWrapper) {
         dao.delete(item);
       }
@@ -93,15 +99,13 @@ public class RnrFormItemRepository {
   }
 
   public List<RnrFormItem> listAllNewRnrItems() throws LMISException {
-    return dbUtil.withDao(RnrFormItem.class,
-        dao -> dao.queryBuilder().where().eq("isManualAdd", true).query());
+    return dbUtil.withDao(RnrFormItem.class, dao -> dao.queryBuilder().where().eq(IS_MANUAL_ADD, true).query());
   }
 
   public void deleteRnrItem(final RnrFormItem rnrFormItem) throws LMISException {
-    dbUtil.withDaoAsBatch(RnrFormItem.class, (DbUtil.Operation<RnrFormItem, Void>) dao -> {
+    dbUtil.withDaoAsBatch(RnrFormItem.class, dao -> {
       dao.delete(rnrFormItem);
       return null;
     });
   }
-
 }

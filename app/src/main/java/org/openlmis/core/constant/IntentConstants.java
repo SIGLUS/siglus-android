@@ -16,9 +16,13 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.enums;
+package org.openlmis.core.constant;
 
-public enum OrderStatus {
-  SHIPPED,
-  RECEIVED
+public class IntentConstants {
+
+  private IntentConstants() {
+  }
+  
+  
+  
 }

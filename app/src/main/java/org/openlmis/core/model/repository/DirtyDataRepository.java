@@ -27,7 +27,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DirtyDataItemInfo;
 import org.openlmis.core.persistence.DbUtil;
@@ -124,7 +126,7 @@ public class DirtyDataRepository {
   }
 
   private boolean hasBackedData(List<DirtyDataItemInfo> infos) {
-    return infos != null && infos.size() > 0;
+    return CollectionUtils.isNotEmpty(infos);
   }
 
   public boolean hasOldDate() {
@@ -145,7 +147,7 @@ public class DirtyDataRepository {
     try {
       dbUtil.withDao(DirtyDataItemInfo.class, dao -> {
         DeleteBuilder<DirtyDataItemInfo, String> deleteBuilder = dao.deleteBuilder();
-        deleteBuilder.where().le("createdAt", dueDateShouldDataLivedInDB);
+        deleteBuilder.where().le(FieldConstants.CREATED_AT, dueDateShouldDataLivedInDB);
         deleteBuilder.delete();
         return null;
       });
@@ -157,10 +159,7 @@ public class DirtyDataRepository {
   public void deleteDraftForDirtyData() {
     String deleteDraftLotItems = "DELETE FROM draft_lot_items";
     String deleteDraftInventory = "DELETE FROM draft_inventory";
-    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
-        .execSQL(deleteDraftLotItems);
-    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
-        .execSQL(deleteDraftInventory);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteDraftLotItems);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteDraftInventory);
   }
-
 }

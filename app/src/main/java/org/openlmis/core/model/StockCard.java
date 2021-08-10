@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
-import org.openlmis.core.enums.StockOnHandStatus;
+import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;

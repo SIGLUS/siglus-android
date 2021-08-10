@@ -18,6 +18,16 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.EMERGENCY;
+import static org.openlmis.core.constant.FieldConstants.ID;
+import static org.openlmis.core.constant.FieldConstants.PERIOD_BEGIN;
+import static org.openlmis.core.constant.FieldConstants.PERIOD_END;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_CODE;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
+import static org.openlmis.core.constant.FieldConstants.STATUS;
+import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
+import static org.openlmis.core.constant.FieldConstants.SYNCED;
+
 import android.content.Context;
 import android.database.Cursor;
 import androidx.annotation.Nullable;
@@ -31,6 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
@@ -60,14 +71,10 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 @SuppressWarnings({"squid:S3776", "squid:S1172"})
 public class RnrFormRepository {
 
-  public static final String PROGRAM_ID = "program_id";
-  public static final String STATUS = "status";
-  public static final String PERIOD_BEGIN = "periodBegin";
-  public static final String PROGRAM_CODE = "programCode";
-  public static final String SUBMITTED_TIME = "submittedTime";
   public static final String WHERE_PERIOD_END = "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '";
   public static final String WHERE_PROGRAM_CODE = "WHERE programCode='";
   public static final String END_STRING = "' );";
+
   @Inject
   DbUtil dbUtil;
 
@@ -129,8 +136,7 @@ public class RnrFormRepository {
     return createInitRnrForm(rnrForm);
   }
 
-  public RnRForm initEmergencyRnrForm(Date periodEndDate, List<StockCard> stockCards)
-      throws LMISException {
+  public RnRForm initEmergencyRnrForm(Date periodEndDate, List<StockCard> stockCards) throws LMISException {
     RnRForm rnRForm = initRnRForm(periodEndDate, RnRForm.Emergency.YES);
     rnRForm.setRnrFormItemListWrapper(generateRnrFormItems(rnRForm, stockCards));
     return rnRForm;
@@ -173,11 +179,12 @@ public class RnrFormRepository {
 
   public boolean isPeriodUnique(final RnRForm form) {
     try {
-      return null == dbUtil.withDao(RnRForm.class,
-          dao -> dao.queryBuilder().where().eq(PROGRAM_ID, form.getProgram().getId())
+      return null == dbUtil.withDao(RnRForm.class, dao ->
+          dao.queryBuilder()
+              .where().eq(PROGRAM_ID, form.getProgram().getId())
               .and().eq(STATUS, Status.AUTHORIZED)
               .and().eq(PERIOD_BEGIN, form.getPeriodBegin())
-              .and().eq("periodEnd", form.getPeriodEnd())
+              .and().eq(PERIOD_END, form.getPeriodEnd())
               .queryForFirst());
 
     } catch (LMISException e) {
@@ -190,8 +197,7 @@ public class RnrFormRepository {
     return genericDao.queryForAll();
   }
 
-  public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode)
-      throws LMISException {
+  public List<RnRForm> listInclude(RnRForm.Emergency includeEmergency, String programCode) throws LMISException {
     ReportTypeForm reportTypeForm = reportTypeFormRepository.getReportType(programCode);
     return listInclude(includeEmergency, programCode, reportTypeForm);
   }
@@ -226,7 +232,7 @@ public class RnrFormRepository {
 
   public RnRForm queryRnRForm(final long id) throws LMISException {
     RnRForm rnRForm = dbUtil
-        .withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("id", id).queryForFirst());
+        .withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq(ID, id).queryForFirst());
     assignCategoryForRnrItems(rnRForm);
 
     return rnRForm;
@@ -243,8 +249,7 @@ public class RnrFormRepository {
     }
   }
 
-  public List<RnrFormItem> generateRnrFormItems(final RnRForm form, List<StockCard> stockCards)
-      throws LMISException {
+  public List<RnrFormItem> generateRnrFormItems(final RnRForm form, List<StockCard> stockCards) throws LMISException {
     List<RnrFormItem> rnrFormItems = new ArrayList<>();
     RnRForm rnRForm = getLastSubmitRnr(form.getProgram().getId());
     if (rnRForm != null) {
@@ -276,8 +281,7 @@ public class RnrFormRepository {
     if (form != null) {
       rnrFormItemRepository.deleteFormItems(form.getRnrFormItemListWrapper());
       regimenItemRepository.deleteRegimenItems(form.getRegimenItemListWrapper());
-      regimenItemThreeLineRepository
-          .deleteRegimeThreeLineItems(form.getRegimenThreeLineListWrapper());
+      regimenItemThreeLineRepository.deleteRegimeThreeLineItems(form.getRegimenThreeLineListWrapper());
       baseInfoItemRepository.batchDelete(form.getBaseInfoItemListWrapper());
       signatureRepository.batchDelete(form.getSignaturesWrapper());
       genericDao.delete(form);
@@ -286,8 +290,7 @@ public class RnrFormRepository {
 
   public boolean hasRequisitionData() {
     try {
-      List<RnRForm> list = list();
-      if (list != null && list.size() > 0) {
+      if (CollectionUtils.isNotEmpty(list())) {
         return true;
       }
     } catch (LMISException e) {
@@ -307,7 +310,7 @@ public class RnrFormRepository {
     Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(DateUtil.getCurrentDate(),
         SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
 
-    if (list != null && list.size() > 0) {
+    if (CollectionUtils.isNotEmpty(list)) {
       for (RnRForm rnrForm : list) {
         if (rnrForm.getPeriodEnd().before(dueDateShouldDataLivedInDB)) {
           return true;
@@ -318,13 +321,13 @@ public class RnrFormRepository {
   }
 
   protected List<RnRForm> listUnsynced() throws LMISException {
-    return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq("synced", false).and()
+    return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder().where().eq(SYNCED, false).and()
         .eq(STATUS, Status.AUTHORIZED).query());
   }
 
   protected RnRForm getLastSubmitRnr(long programId) throws LMISException {
     return dbUtil.withDao(RnRForm.class, dao -> dao.queryBuilder()
-        .orderBy("periodBegin", false)
+        .orderBy(PERIOD_BEGIN, false)
         .where().eq(PROGRAM_ID, programId)
         .and()
         .isNotNull(SUBMITTED_TIME)
@@ -494,18 +497,15 @@ public class RnrFormRepository {
 
     return dbUtil.withDao(RnRForm.class, dao -> {
       Where<RnRForm, String> where = dao.queryBuilder().orderBy(PERIOD_BEGIN, true).where();
-      where.in(PROGRAM_ID, programId).and()
-          .between(PERIOD_BEGIN, typeForm.getStartTime(), DateUtil.getCurrentDate());
-
+      where.in(PROGRAM_ID, programId).and().between(PERIOD_BEGIN, typeForm.getStartTime(), DateUtil.getCurrentDate());
       if (!isWithEmergency) {
-        where.and().eq("emergency", false);
+        where.and().eq(EMERGENCY, false);
       }
       return where.query();
     });
   }
 
-  public List<RnRForm> listNotSynchronizedFromReportStartTime(String programCode)
-      throws LMISException {
+  public List<RnRForm> listNotSynchronizedFromReportStartTime(String programCode) throws LMISException {
     long programId;
     ReportTypeForm reportTypeForm;
 
@@ -519,11 +519,11 @@ public class RnrFormRepository {
       return new ArrayList<>();
     }
     return dbUtil.withDao(RnRForm.class, dao -> {
-      Where<RnRForm, String> where = dao.queryBuilder().where()
-          .eq(PROGRAM_ID, programId).and()
-          .eq("synced", false).and()
-          .eq(STATUS, Status.AUTHORIZED).and()
-          .between(PERIOD_BEGIN, reportTypeForm.getStartTime(), DateUtil.getCurrentDate());
+      Where<RnRForm, String> where = dao.queryBuilder()
+          .where().eq(PROGRAM_ID, programId)
+          .and().eq(SYNCED, false)
+          .and().eq(STATUS, Status.AUTHORIZED)
+          .and().between(PERIOD_BEGIN, reportTypeForm.getStartTime(), DateUtil.getCurrentDate());
       return where.query();
     });
   }

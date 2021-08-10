@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.enums.LoginErrorType;
+import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;

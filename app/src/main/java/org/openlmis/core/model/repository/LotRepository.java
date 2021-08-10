@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseModel;
 import org.openlmis.core.model.Lot;
@@ -149,7 +150,7 @@ public class LotRepository {
   public LotOnHand getLotOnHandByLot(final Lot lot) throws LMISException {
     return dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
         .where()
-        .eq("lot_id", lot.getId())
+        .eq(FieldConstants.LOT_ID, lot.getId())
         .queryForFirst());
   }
 
@@ -157,9 +158,9 @@ public class LotRepository {
       throws LMISException {
     return dbUtil.withDao(Lot.class, dao -> dao.queryBuilder()
         .where()
-        .eq("lotNumber", lotNumber.toUpperCase())
+        .eq(FieldConstants.LOT_NUMBER, lotNumber.toUpperCase())
         .and()
-        .eq("product_id", productId)
+        .eq(FieldConstants.PRODUCT_ID, productId)
         .queryForFirst());
   }
 
@@ -176,17 +177,15 @@ public class LotRepository {
 
   public void deleteLotInfo(final StockCard stockCard) throws LMISException {
     List<Lot> lots = dbUtil.withDao(Lot.class, dao -> dao.queryBuilder()
-        .where()
-        .eq("product_id", stockCard.getProduct() != null ? stockCard.getProduct().getId() : "null")
+        .where().eq(FieldConstants.PRODUCT_ID, stockCard.getProduct() != null ? stockCard.getProduct().getId() : "null")
         .query());
     List<LotOnHand> lotOnHands = dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
-        .where().eq("stockCard_id", stockCard.getId())
+        .where().eq(FieldConstants.STOCK_CARD_ID, stockCard.getId())
         .query());
     List<Long> lotIds = FluentIterable.from(lots).transform(BaseModel::getId).toList();
-    List<LotMovementItem> lotMovementItems = dbUtil
-        .withDao(LotMovementItem.class, dao -> dao.queryBuilder()
-            .where().in("lot_id", lotIds)
-            .query());
+    List<LotMovementItem> lotMovementItems = dbUtil.withDao(LotMovementItem.class, dao -> dao.queryBuilder()
+        .where().in(FieldConstants.LOT_ID, lotIds)
+        .query());
 
     for (LotMovementItem item : lotMovementItems) {
       lotMovementItemGenericDao.delete(item);

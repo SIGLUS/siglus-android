@@ -18,6 +18,12 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.AVG_MONTHLY_CONSUMPTION;
+import static org.openlmis.core.constant.FieldConstants.ID;
+import static org.openlmis.core.constant.FieldConstants.LOT_NUMBER;
+import static org.openlmis.core.constant.FieldConstants.PRODUCT_ID;
+import static org.openlmis.core.constant.FieldConstants.STOCK_CARD_ID;
+import static org.openlmis.core.constant.FieldConstants.STOCK_ON_HAND;
 import static org.openlmis.core.model.Product.MEDICINE_TYPE_DEFAULT;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
@@ -36,9 +42,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.enums.StockOnHandStatus;
+import org.openlmis.core.enumeration.StockOnHandStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -56,10 +63,6 @@ import org.openlmis.core.utils.DateUtil;
 
 public class StockRepository {
 
-  public static final String PRODUCT_ID = "product_id";
-  public static final String STOCK_ON_HAND = "stockOnHand";
-  public static final String AVG_MONTHLY_CONSUMPTION = "avgMonthlyConsumption";
-  public static final String STOCK_CARD_ID = "stockCard_id";
   private static final String TAG = StockRepository.class.getSimpleName();
   @Inject
   DbUtil dbUtil;
@@ -85,16 +88,14 @@ public class StockRepository {
     genericDao = new GenericDao<>(StockCard.class, context);
   }
 
-  public void batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(
-      final List<StockCard> stockCards) {
+  public void batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(final List<StockCard> stockCards) {
     try {
       dbUtil.withDaoAsBatch(StockCard.class, dao -> {
         for (StockCard stockCard : stockCards) {
           setStockCardCmmStatus(stockCard);
           dao.createOrUpdate(stockCard);
           updateProductOfStockCard(stockCard.getProduct());
-          stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotInfo(
-              stockCard.getStockMovementItemsWrapper());
+          stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotInfo(stockCard.getStockMovementItemsWrapper());
         }
         return null;
       });
@@ -126,15 +127,13 @@ public class StockRepository {
 
   protected void saveStockCardAndBatchUpdateMovements(final StockCard stockCard) {
     try {
-      TransactionManager
-          .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-              () -> {
-                createOrUpdate(stockCard);
-                lotRepository.createOrUpdateLotsInformation(stockCard.getLotOnHandListWrapper());
-                stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(
-                    stockCard.getStockMovementItemsWrapper());
-                return null;
-              });
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        createOrUpdate(stockCard);
+        lotRepository.createOrUpdateLotsInformation(stockCard.getLotOnHandListWrapper());
+        stockMovementRepository
+            .batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
+        return null;
+      });
     } catch (SQLException e) {
       new LMISException(e, "StockRepository.saveStock").reportToFabric();
     }
@@ -150,15 +149,13 @@ public class StockRepository {
 
   public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard) {
     try {
-      TransactionManager
-          .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-              () -> {
-                createOrUpdate(stockCard);
-                stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(
-                    stockCard.generateInitialStockMovementItem());
-                updateProductOfStockCard(stockCard.getProduct());
-                return null;
-              });
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        createOrUpdate(stockCard);
+        stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(
+            stockCard.generateInitialStockMovementItem());
+        updateProductOfStockCard(stockCard.getProduct());
+        return null;
+      });
     } catch (SQLException e) {
       new LMISException(e, "StockRepository.addStock").reportToFabric();
     }
@@ -166,13 +163,12 @@ public class StockRepository {
 
   public synchronized void addStockMovementAndUpdateStockCard(final StockMovementItem stockMovementItem) {
     try {
-      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-          () -> {
-            StockCard stockcard = stockMovementItem.getStockCard();
-            createOrUpdate(stockcard);
-            stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(stockMovementItem);
-            return null;
-          });
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        StockCard stockcard = stockMovementItem.getStockCard();
+        createOrUpdate(stockcard);
+        stockMovementRepository.batchCreateStockMovementItemAndLotItemsForProductOperation(stockMovementItem);
+        return null;
+      });
     } catch (SQLException e) {
       new LMISException(e, "StockRepository.addStock").reportToFabric();
     }
@@ -191,12 +187,11 @@ public class StockRepository {
   }
 
   public boolean hasStockData() {
-    List<StockCard> list = list();
-    return list != null && !list.isEmpty();
+    return CollectionUtils.isNotEmpty(list());
   }
 
   private boolean hasStockCardData(List<StockCard> list) {
-    return list != null && !list.isEmpty();
+    return CollectionUtils.isNotEmpty(list);
   }
 
   public boolean hasOldDate() {
@@ -216,18 +211,15 @@ public class StockRepository {
     return false;
   }
 
-  public List<StockCard> listStockCardsByProductIds(final List<Long> productIds)
-      throws LMISException {
-    return dbUtil.withDao(StockCard.class,
-        dao -> dao.queryBuilder().where().in(PRODUCT_ID, productIds).query());
+  public List<StockCard> listStockCardsByProductIds(final List<Long> productIds) throws LMISException {
+    return dbUtil.withDao(StockCard.class, dao -> dao.queryBuilder().where().in(PRODUCT_ID, productIds).query());
   }
 
   public List<StockCard> listEmergencyStockCards() throws LMISException {
     List<Program> programs = programRepository.listEmergencyPrograms();
 
     List<String> programCodes = from(programs).transform(Program::getProgramCode).toList();
-    List<Long> productIds = productProgramRepository
-        .queryActiveProductIdsByProgramsWithKits(programCodes, false);
+    List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
     return listStockCardsByProductIds(productIds);
   }
 
@@ -254,8 +246,7 @@ public class StockRepository {
   }
 
   protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) throws LMISException {
-    return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(),
-        rnRForm.getPeriodEnd());
+    return getStockCardsBeforePeriodEnd(rnRForm.getProgram().getProgramCode(), rnRForm.getPeriodEnd());
   }
 
   protected List<StockCard> getStockCardsBeforePeriodEnd(String programCode, Date periodEnd)
@@ -311,7 +302,7 @@ public class StockRepository {
         stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
         stockCard.setAvgMonthlyConsumption(
             cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
-        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(ID)));
         stockCardList.add(stockCard);
       } while (cursor.moveToNext());
     }
@@ -323,25 +314,23 @@ public class StockRepository {
 
   private List<LotOnHand> getLotOnHandByStockCard(final long stockCardId) throws LMISException {
     return dbUtil.withDao(LotOnHand.class, dao -> dao.queryBuilder()
-        .where()
-        .eq(STOCK_CARD_ID, stockCardId)
+        .where().eq(STOCK_CARD_ID, stockCardId)
         .query());
   }
 
   public void batchCreateSyncDownStockCardsAndMovements(final List<StockCard> stockCards)
       throws SQLException {
-    TransactionManager
-        .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
-          for (StockCard stockCard : stockCards) {
-            if (stockCard.getId() <= 0) {
-              saveStockCardAndBatchUpdateMovements(stockCard);
-            } else {
-              stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(
-                  stockCard.getStockMovementItemsWrapper());
-            }
-          }
-          return null;
-        });
+    TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+      for (StockCard stockCard : stockCards) {
+        if (stockCard.getId() <= 0) {
+          saveStockCardAndBatchUpdateMovements(stockCard);
+        } else {
+          stockMovementRepository.batchCreateOrUpdateStockMovementsAndLotMovements(
+              stockCard.getStockMovementItemsWrapper());
+        }
+      }
+      return null;
+    });
   }
 
   public void deleteOldData() {
@@ -383,7 +372,7 @@ public class StockRepository {
       stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
       stockCard.setAvgMonthlyConsumption(
           cursor.getFloat(cursor.getColumnIndexOrThrow(AVG_MONTHLY_CONSUMPTION)));
-      stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+      stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(ID)));
       stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
     }
     if (!cursor.isClosed()) {
@@ -434,7 +423,7 @@ public class StockRepository {
       if (getStockCardCursor != null && getStockCardCursor.moveToFirst()) {
         StockMovementItem addNewStockMovementItem = new StockMovementItem();
         StockCard stockCard = getStockCardById(
-            getStockCardCursor.getInt(getStockCardCursor.getColumnIndexOrThrow("id"))).get(0);
+            getStockCardCursor.getInt(getStockCardCursor.getColumnIndexOrThrow(ID))).get(0);
         addNewStockMovementItem.setCreatedTime(now);
         addNewStockMovementItem.setStockOnHand(0);
         addNewStockMovementItem.setMovementDate(now);
@@ -468,7 +457,7 @@ public class StockRepository {
 
   private List<StockCard> getStockCardById(int stockCardId) throws LMISException {
     return dbUtil
-        .withDao(StockCard.class, dao -> dao.queryBuilder().where().eq("id", stockCardId).query());
+        .withDao(StockCard.class, dao -> dao.queryBuilder().where().eq(ID, stockCardId).query());
   }
 
   public void resetLotsOnHand(List<String> productCodeList) {
@@ -482,7 +471,7 @@ public class StockRepository {
           .getWritableDatabase().rawQuery(getLotsOnHandItemsByStockCardId, null);
       while (getLotsOnHandItemsCursor.moveToNext()) {
         int lotsOnHandId = getLotsOnHandItemsCursor
-            .getInt(getLotsOnHandItemsCursor.getColumnIndexOrThrow("id"));
+            .getInt(getLotsOnHandItemsCursor.getColumnIndexOrThrow(ID));
         String reSetQuantityOnHandValue = "UPDATE lots_on_hand "
             + "SET quantityOnHand=0 WHERE id='" + lotsOnHandId + "';";
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
@@ -561,7 +550,7 @@ public class StockRepository {
 
   private void getLotInfo(List<Map<String, String>> lotList, Cursor cursor) {
     String stockCardId = cursor.getString(cursor.getColumnIndexOrThrow(STOCK_CARD_ID));
-    String lotNumber = cursor.getString(cursor.getColumnIndexOrThrow("lotNumber"));
+    String lotNumber = cursor.getString(cursor.getColumnIndexOrThrow(LOT_NUMBER));
     String expirationDate = cursor.getString(cursor.getColumnIndexOrThrow("expirationDate"));
     String quantityOnHand = cursor.getString(cursor.getColumnIndexOrThrow("quantityOnHand"));
     Map<String, String> infoMap = new HashMap<>();
@@ -591,7 +580,7 @@ public class StockRepository {
       do {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow(STOCK_ON_HAND)));
-        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+        stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(ID)));
         checkedStockCards.add(stockCard);
       } while (cursor.moveToNext());
     }

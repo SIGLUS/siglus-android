@@ -18,11 +18,15 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.CODE;
+import static org.openlmis.core.constant.FieldConstants.FORM_ID;
+import static org.openlmis.core.constant.FieldConstants.PERIOD_BEGIN;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_CODE;
+import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
 import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import com.google.inject.Inject;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -30,7 +34,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -48,7 +51,6 @@ import org.openlmis.core.utils.DateUtil;
 
 public class ProgramDataFormRepository {
 
-  private static final String FORM_ID = "form_id";
   private static final String WHERE_PERIOD_END =
       "WHERE form_id IN (SELECT id FROM program_data_forms WHERE periodEnd < '";
   private static final String END_STRING = "' );";
@@ -72,43 +74,32 @@ public class ProgramDataFormRepository {
   }
 
   public void batchCreateOrUpdate(final ProgramDataForm form) throws SQLException {
-    TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-        () -> {
-          genericDao.createOrUpdate(form);
-          Log.d("---|show items size|---",
-              "" + form.getProgramDataFormItemListWrapper().size());
-          saveFormItems(form);
-          Log.d("---|show items size|---", "" + form.getFormBasicItemListWrapper().size());
-          saveFormBasicItems(form);
-          saveSignatures(form.getSignaturesWrapper());
-          return null;
-        });
+    TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+      genericDao.createOrUpdate(form);
+      saveFormItems(form);
+      saveFormBasicItems(form);
+      saveSignatures(form.getSignaturesWrapper());
+      return null;
+    });
   }
 
-  private void saveSignatures(final List<ProgramDataFormSignature> signatures)
-      throws LMISException {
-    dbUtil.withDao(ProgramDataFormSignature.class,
-        dao -> {
-          for (ProgramDataFormSignature signature : signatures) {
-            dao.createOrUpdate(signature);
-          }
-          return null;
-        });
+  private void saveSignatures(final List<ProgramDataFormSignature> signatures) throws LMISException {
+    dbUtil.withDao(ProgramDataFormSignature.class, dao -> {
+      for (ProgramDataFormSignature signature : signatures) {
+        dao.createOrUpdate(signature);
+      }
+      return null;
+    });
   }
 
   public void batchSaveForms(final List<ProgramDataForm> programDataForms) {
     try {
-      TransactionManager
-          .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-              new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                  for (ProgramDataForm programDataForm : programDataForms) {
-                    batchCreateOrUpdate(programDataForm);
-                  }
-                  return null;
-                }
-              });
+      TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+        for (ProgramDataForm programDataForm : programDataForms) {
+          batchCreateOrUpdate(programDataForm);
+        }
+        return null;
+      });
     } catch (SQLException e) {
       new LMISException(e, "ProgramDataFormRepository.batchSaveForms").reportToFabric();
     }
@@ -118,8 +109,7 @@ public class ProgramDataFormRepository {
     deleteFormItemsByFormId(form.getId());
     for (ProgramDataFormItem item : form.getProgramDataFormItemListWrapper()) {
       if (item.getProgramDataColumn().getId() == 0) {
-        item.setProgramDataColumn(
-            getProgramDataColumnByCode(item.getProgramDataColumn().getCode()));
+        item.setProgramDataColumn(getProgramDataColumnByCode(item.getProgramDataColumn().getCode()));
       }
       programDataFormItemGenericDao.create(item);
     }
@@ -132,20 +122,18 @@ public class ProgramDataFormRepository {
     }
   }
 
-  public ProgramDataColumn getProgramDataColumnByCode(final String columnCode)
-      throws LMISException {
+  public ProgramDataColumn getProgramDataColumnByCode(final String columnCode) throws LMISException {
     return dbUtil.withDao(ProgramDataColumn.class,
-        dao -> dao.queryBuilder().where().eq("code", columnCode).queryForFirst());
+        dao -> dao.queryBuilder().where().eq(CODE, columnCode).queryForFirst());
   }
 
   private void deleteFormBasicItems(final long formId) throws LMISException {
-    dbUtil.withDao(ProgramDataFormBasicItem.class,
-        dao -> {
-          DeleteBuilder<ProgramDataFormBasicItem, String> deleteBuilder = dao.deleteBuilder();
-          deleteBuilder.where().eq(FORM_ID, formId);
-          deleteBuilder.delete();
-          return null;
-        });
+    dbUtil.withDao(ProgramDataFormBasicItem.class, dao -> {
+      DeleteBuilder<ProgramDataFormBasicItem, String> deleteBuilder = dao.deleteBuilder();
+      deleteBuilder.where().eq(FORM_ID, formId);
+      deleteBuilder.delete();
+      return null;
+    });
   }
 
   private void deleteFormItemsByFormId(final long formId) throws LMISException {
@@ -162,10 +150,11 @@ public class ProgramDataFormRepository {
     if (program == null) {
       return Collections.emptyList();
     }
-
     return dbUtil.withDao(ProgramDataForm.class,
-        dao -> dao.queryBuilder().orderBy("periodBegin", true).where()
-            .eq("program_id", program.getId()).query());
+        dao -> dao.queryBuilder()
+            .orderBy(PERIOD_BEGIN, true)
+            .where().eq(PROGRAM_ID, program.getId())
+            .query());
   }
 
   public ProgramDataForm queryById(long formId) throws LMISException {
@@ -173,18 +162,15 @@ public class ProgramDataFormRepository {
   }
 
   public void delete(final ProgramDataForm programDataForm) throws SQLException {
-    TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
-        () -> {
-          genericDao.delete(programDataForm);
-          deleteFormItemsByFormId(programDataForm.getId());
-          return null;
-        });
+    TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
+      genericDao.delete(programDataForm);
+      deleteFormItemsByFormId(programDataForm.getId());
+      return null;
+    });
   }
 
-  public List<ProgramDataFormItem> listProgramDataItemsByFormId(final long formId)
-      throws LMISException {
-    return dbUtil.withDao(ProgramDataFormItem.class,
-        dao -> dao.queryBuilder().where().eq(FORM_ID, formId).query());
+  public List<ProgramDataFormItem> listProgramDataItemsByFormId(final long formId) throws LMISException {
+    return dbUtil.withDao(ProgramDataFormItem.class, dao -> dao.queryBuilder().where().eq(FORM_ID, formId).query());
   }
 
   public void deleteProgramDirtyData(List<String> productCodeList) {
@@ -204,7 +190,7 @@ public class ProgramDataFormRepository {
           .getWritableDatabase().rawQuery(getProgramByProductCode, null);
       while (getProgramByProductCodeCursor.moveToNext()) {
         if (getProgramByProductCodeCursor
-            .getString(getProgramByProductCodeCursor.getColumnIndexOrThrow("programCode"))
+            .getString(getProgramByProductCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
             .equals(Constants.RAPID_TEST_OLD_CODE)) {
           LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
               .execSQL(deleteProgramDataItems);
@@ -243,10 +229,9 @@ public class ProgramDataFormRepository {
   }
 
   public void deleteOldData() {
-    String dueDateShouldDataLivedInDB = DateUtil
-        .formatDate(DateUtil.dateMinusMonth(DateUtil.getCurrentDate(),
-            SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()),
-            DateUtil.DB_DATE_FORMAT);
+    String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(DateUtil.getCurrentDate(),
+        SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()),
+        DateUtil.DB_DATE_FORMAT);
 
     String rawSqlDeleteProgramDataItems = "DELETE FROM program_data_items "
         + WHERE_PERIOD_END

@@ -21,6 +21,7 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
+import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.persistence.DbUtil;
@@ -40,24 +41,22 @@ public class RnrFormSignatureRepository {
 
   public List<RnRFormSignature> queryByRnrFormId(final long formId) throws LMISException {
     return dbUtil.withDao(RnRFormSignature.class,
-        dao -> dao.queryBuilder().where().eq("form_id", formId).query());
+        dao -> dao.queryBuilder().where().eq(FieldConstants.FORM_ID, formId).query());
   }
 
   public void batchCreateOrUpdate(final List<RnRFormSignature> signatures) throws LMISException {
-    dbUtil
-        .withDaoAsBatch(RnRFormSignature.class, (DbUtil.Operation<RnRFormSignature, Void>) dao -> {
-          for (RnRFormSignature item : signatures) {
-            dao.createOrUpdate(item);
-          }
-          return null;
-        });
+    dbUtil.withDaoAsBatch(RnRFormSignature.class, dao -> {
+      for (RnRFormSignature item : signatures) {
+        dao.createOrUpdate(item);
+      }
+      return null;
+    });
   }
 
   public void batchDelete(final List<RnRFormSignature> signatures) throws LMISException {
-    dbUtil
-        .withDaoAsBatch(RnRFormSignature.class, (DbUtil.Operation<RnRFormSignature, Void>) dao -> {
-          dao.delete(signatures);
-          return null;
-        });
+    dbUtil.withDaoAsBatch(RnRFormSignature.class, dao -> {
+      dao.delete(signatures);
+      return null;
+    });
   }
 }

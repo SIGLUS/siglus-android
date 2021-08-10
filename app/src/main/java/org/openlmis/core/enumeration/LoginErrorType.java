@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.enums;
+package org.openlmis.core.enumeration;
 
 public enum LoginErrorType {
   NO_INTERNET,

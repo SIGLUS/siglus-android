@@ -39,7 +39,7 @@ public class ServiceItemRepository {
   }
 
   public void batchCreateOrUpdate(final List<ServiceItem> serviceItemList) throws LMISException {
-    dbUtil.withDaoAsBatch(ServiceItem.class, (DbUtil.Operation<ServiceItem, Void>) dao -> {
+    dbUtil.withDaoAsBatch(ServiceItem.class, dao -> {
       for (ServiceItem serviceItem : serviceItemList) {
         dao.createOrUpdate(serviceItem);
       }
@@ -48,7 +48,7 @@ public class ServiceItemRepository {
   }
 
   public void deleteServiceItems(final List<ServiceItem> serviceItems) throws LMISException {
-    dbUtil.withDaoAsBatch(ServiceItem.class, (DbUtil.Operation<ServiceItem, Void>) dao -> {
+    dbUtil.withDaoAsBatch(ServiceItem.class, dao -> {
       dao.delete(serviceItems);
       return null;
     });

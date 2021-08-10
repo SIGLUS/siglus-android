@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.ID;
+
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.Collections;
@@ -30,8 +32,12 @@ import org.openlmis.core.persistence.GenericDao;
 
 public class SyncErrorsRepository {
 
-  public static final String SYNC_TYPE = "syncType";
+  private static final String SYNC_TYPE = "syncType";
+
+  private static final String SYNC_OBJECT_ID = "syncObjectId";
+
   final Context context;
+
   GenericDao<SyncError> genericDao;
 
   @Inject
@@ -64,7 +70,7 @@ public class SyncErrorsRepository {
     try {
       return dbUtil.withDao(SyncError.class, dao -> dao.queryBuilder()
           .where().eq(SYNC_TYPE, syncType)
-          .and().eq("syncObjectId", syncObjectId).query());
+          .and().eq(SYNC_OBJECT_ID, syncObjectId).query());
     } catch (LMISException e) {
       new LMISException(e, "SyncErrorsRepository.getBy").reportToFabric();
       return Collections.emptyList();
@@ -74,9 +80,9 @@ public class SyncErrorsRepository {
   public Integer deleteBySyncTypeAndObjectId(final SyncType syncType, final long syncObjectId) {
     try {
       return dbUtil.withDao(SyncError.class, dao -> dao.delete(dao.queryBuilder()
-          .orderBy("id", false)
+          .orderBy(ID, false)
           .where().eq(SYNC_TYPE, syncType)
-          .and().eq("syncObjectId", syncObjectId).query()));
+          .and().eq(SYNC_OBJECT_ID, syncObjectId).query()));
     } catch (LMISException e) {
       new LMISException(e, "SyncErrorsRepository.deleteBy").reportToFabric();
       return null;

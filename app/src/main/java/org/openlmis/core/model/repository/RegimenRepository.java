@@ -18,6 +18,12 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.ACTIVE;
+import static org.openlmis.core.constant.FieldConstants.CODE;
+import static org.openlmis.core.constant.FieldConstants.IS_CUSTOM;
+import static org.openlmis.core.constant.FieldConstants.NAME;
+import static org.openlmis.core.constant.FieldConstants.TYPE;
+
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
@@ -47,13 +53,13 @@ public class RegimenRepository {
   public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category)
       throws LMISException {
     return dbUtil.withDao(Regimen.class,
-        dao -> dao.queryBuilder().where().eq("name", name).and().eq("type", category)
+        dao -> dao.queryBuilder().where().eq(NAME, name).and().eq(TYPE, category)
             .queryForFirst());
   }
 
   public Regimen getByCode(final String code) throws LMISException {
     return dbUtil
-        .withDao(Regimen.class, dao -> dao.queryBuilder().where().eq("code", code).queryForFirst());
+        .withDao(Regimen.class, dao -> dao.queryBuilder().where().eq(CODE, code).queryForFirst());
   }
 
   public void batchSave(List<Regimen> regimens) {
@@ -86,15 +92,15 @@ public class RegimenRepository {
   public List<Regimen> listDefaultRegime() throws LMISException {
     return dbUtil.withDao(Regimen.class, dao -> dao.queryBuilder()
         .where()
-        .eq("isCustom", false)
-        .and().eq("active", true)
+        .eq(IS_CUSTOM, false)
+        .and().eq(ACTIVE, true)
         .query());
   }
 
   public List<RegimeShortCode> listRegimeShortCode(Regimen.RegimeType type) throws LMISException {
     return dbUtil.withDao(RegimeShortCode.class, dao -> dao.queryBuilder()
         .where()
-        .eq("type", type)
+        .eq(TYPE, type)
         .query());
   }
 
@@ -107,9 +113,7 @@ public class RegimenRepository {
         + "WHERE form_id=(SELECT id FROM rnr_forms WHERE synced=0 AND program_id=(SELECT id FROM "
         + "programs "
         + "WHERE programCode='" + programCode + "'));";
-    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
-        .execSQL(deleteRegimeThreeLines);
-    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase()
-        .execSQL(deleteRegimeItems);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeThreeLines);
+    LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(deleteRegimeItems);
   }
 }

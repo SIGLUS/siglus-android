@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.enums.LoginErrorType;
+import org.openlmis.core.enumeration.LoginErrorType;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
