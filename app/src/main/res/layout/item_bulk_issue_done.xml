@@ -2,12 +2,77 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  android:background="@color/color_white"
+  android:layout_marginTop="@dimen/px_8"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <LinearLayout
+    android:id="@+id/ll_product_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/px_84"
+    app:layout_constraintTop_toTopOf="parent"
+    android:gravity="center_vertical">
+
+    <ImageView
+      android:layout_width="@dimen/px_36"
+      android:layout_height="@dimen/px_36"
+      android:src="@drawable/ic_done_green"
+      android:layout_marginLeft="@dimen/px_24" />
+
+    <TextView
+      android:id="@+id/tv_product_title"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:textStyle="bold"
+      android:layout_marginRight="@dimen/px_36"
+      android:layout_height="wrap_content"
+      android:textColor="@color/color_primary"
+      android:layout_marginHorizontal="@dimen/px_24"
+      tools:text="ABACAVIR+LAMIVUDINA 100mg [08S01Z]"
+      android:textSize="@dimen/px_20" />
+
+    <RelativeLayout
+      android:id="@+id/rl_trashcan"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:paddingHorizontal="@dimen/px_24">
+      <ImageView
+        android:layout_width="@dimen/px_24"
+        android:layout_height="@dimen/px_24"
+        android:src="@drawable/ic_trashcan"
+        android:layout_centerInParent="true" />
+    </RelativeLayout>
+  </LinearLayout>
+
+  <View
+    android:id="@+id/v_title_divider_line"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_1"
+    android:background="@drawable/shape_bulk_issue_item_decoration"
+    app:layout_constraintTop_toBottomOf="@id/ll_product_title" />
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rv_lots"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:listitem="@layout/item_bulk_issue_lot_done"
+    tools:itemCount="3"
+    app:layout_constraintTop_toBottomOf="@id/v_title_divider_line" />
 
   <TextView
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/px_100"
-    app:layout_constraintTop_toTopOf="parent"
-    android:id="@+id/tv_temp"
-    />
+    android:id="@+id/tv_edit"
+    android:layout_width="@dimen/px_216"
+    android:layout_height="@dimen/px_40"
+    android:layout_marginVertical="@dimen/px_16"
+    android:text="@string/btn_edit"
+    android:gravity="center"
+    android:textSize="@dimen/px_16"
+    android:background="@drawable/border_round_blue"
+    android:textColor="@color/color_form_button_blue"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/rv_lots" />
 </androidx.constraintlayout.widget.ConstraintLayout>

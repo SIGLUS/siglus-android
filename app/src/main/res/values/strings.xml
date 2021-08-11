@@ -627,4 +627,5 @@
   <string name="unsuccessfully_saved">Unsuccessfully Saved</string>
   <string name="msg_fetching_pods">Downloading pods…</string>
   <string name="msg_sync_pod_failed">Sync pods failed.</string>
+  <string name="label_issued_amount">Issued amount:&#160;</string>
 </resources>

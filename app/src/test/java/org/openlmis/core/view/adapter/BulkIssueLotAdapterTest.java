@@ -46,7 +46,7 @@ public class BulkIssueLotAdapterTest {
     Context context = LMISTestApp.getContext();
     context.setTheme(R.style.AppTheme);
     BaseViewHolder holder = new BaseViewHolder(
-        LayoutInflater.from(context).inflate(R.layout.item_bulk_issue_lot, null));
+        LayoutInflater.from(context).inflate(R.layout.item_bulk_issue_lot_edit, null));
     BulkIssueLotViewModel mockLotViewModel = Mockito.mock(BulkIssueLotViewModel.class);
     LotOnHand mockLotOnHand = Mockito.mock(LotOnHand.class);
     Lot mockLot = Mockito.mock(Lot.class);

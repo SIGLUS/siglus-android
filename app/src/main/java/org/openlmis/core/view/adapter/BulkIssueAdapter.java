@@ -46,17 +46,7 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
 
   @Override
   protected void convert(@NonNull BaseViewHolder holder, BulkIssueProductViewModel viewModel) {
-    holder.setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
-    EditText etRequested = holder.getView(R.id.et_requested);
-    etRequested.setText(viewModel.getRequested() == null ? "" : viewModel.getRequested().toString());
-    SingleTextWatcher requestedTextWatcher = new SingleTextWatcher() {
-      @Override
-      public void afterTextChanged(Editable s) {
-        viewModel.setRequested(StringUtils.isBlank(s) ? null : Long.parseLong(s.toString()));
-      }
-    };
-    etRequested.removeTextChangedListener(requestedTextWatcher);
-    etRequested.addTextChangedListener(requestedTextWatcher);
+    // trashcan
     holder.getView(R.id.rl_trashcan).setOnClickListener(new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
@@ -64,18 +54,49 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
       }
     });
 
-    // init lot list
+    // init lots
     RecyclerView rvLots = holder.getView(R.id.rv_lots);
     rvLots.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
     BulkIssueLotAdapter lotAdapter = new BulkIssueLotAdapter();
     rvLots.setAdapter(lotAdapter);
-    DividerItemDecoration decor = new DividerItemDecoration(holder.itemView.getContext(), LinearLayout.VERTICAL);
-    decor.setDrawable(Objects.requireNonNull(ContextCompat
-        .getDrawable(holder.itemView.getContext(), R.drawable.shape_bulk_issue_item_decoration)));
-    if (rvLots.getItemDecorationCount() == 0) {
-      rvLots.addItemDecoration(decor);
+
+    if (viewModel.isDone()) {
+      holder.setText(R.id.tv_product_title, viewModel.getProduct().getFormattedProductNameWithoutStrengthAndType());
+      holder.getView(R.id.tv_edit).setOnClickListener(new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          viewModel.setDone(false);
+          notifyItemChanged(holder.getLayoutPosition());
+        }
+      });
+      lotAdapter.setList(viewModel.getFilteredLotViewModels());
+    } else {
+      holder.setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
+      EditText etRequested = holder.getView(R.id.et_requested);
+      etRequested.setText(viewModel.getRequested() == null ? "" : viewModel.getRequested().toString());
+      SingleTextWatcher requestedTextWatcher = new SingleTextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+          viewModel.setRequested(StringUtils.isBlank(s) ? null : Long.parseLong(s.toString()));
+        }
+      };
+      etRequested.removeTextChangedListener(requestedTextWatcher);
+      etRequested.addTextChangedListener(requestedTextWatcher);
+      holder.getView(R.id.tv_verified).setOnClickListener(new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          if (viewModel.validate()) {
+            notifyItemChanged(holder.getLayoutPosition());
+          }
+        }
+      });
+      DividerItemDecoration decor = new DividerItemDecoration(holder.itemView.getContext(), LinearLayout.VERTICAL);
+      decor.setDrawable(Objects.requireNonNull(ContextCompat
+          .getDrawable(holder.itemView.getContext(), R.drawable.shape_bulk_issue_item_decoration)));
+      if (rvLots.getItemDecorationCount() == 0) {
+        rvLots.addItemDecoration(decor);
+      }
+      lotAdapter.setList(viewModel.getLotViewModels());
     }
-    lotAdapter.setList(viewModel.getLotViewModels());
   }
-  // TODO set view for done status
 }

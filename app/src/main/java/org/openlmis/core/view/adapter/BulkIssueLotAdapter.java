@@ -21,7 +21,7 @@ package org.openlmis.core.view.adapter;
 import android.text.Editable;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
-import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
@@ -30,35 +30,43 @@ import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.BulkIssueLotViewModel;
+import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
 
-public class BulkIssueLotAdapter extends BaseQuickAdapter<BulkIssueLotViewModel, BaseViewHolder> {
+public class BulkIssueLotAdapter extends BaseMultiItemQuickAdapter<BulkIssueLotViewModel, BaseViewHolder> {
 
   public BulkIssueLotAdapter() {
-    super(R.layout.item_bulk_issue_lot);
+    addItemType(BulkIssueProductViewModel.TYPE_EDIT, R.layout.item_bulk_issue_lot_edit);
+    addItemType(BulkIssueProductViewModel.TYPE_DONE, R.layout.item_bulk_issue_lot_done);
   }
 
   @Override
   protected void convert(@NonNull BaseViewHolder holder, BulkIssueLotViewModel viewModel) {
     holder.setVisible(R.id.tv_expired_tips, viewModel.isExpired());
-    holder.setVisible(R.id.til_amount, !viewModel.isExpired());
-    EditText etAmount = holder.getView(R.id.et_amount);
-    etAmount.setText(viewModel.getAmount() == null ? "" : viewModel.getAmount().toString());
     LotOnHand lotOnHand = viewModel.getLotOnHand();
     Lot lot = lotOnHand.getLot();
-    holder.setText(R.id.tv_lot_number_and_date,
-        lot.getLotNumber() + " - " + DateUtil.formatDateWithLongMonthAndYear(lot.getExpirationDate()));
-    holder.setText(R.id.tv_existing_lot_on_hand,
-        holder.itemView.getContext().getString(R.string.label_existing_soh_of_lot)
-            + "  "
-            + lotOnHand
-            .getQuantityOnHand());
-    SingleTextWatcher amountTextWatcher = new SingleTextWatcher() {
-      @Override
-      public void afterTextChanged(Editable s) {
-        viewModel.setAmount(StringUtils.isBlank(s) ? null : Long.parseLong(s.toString()));
-      }
-    };
-    etAmount.removeTextChangedListener(amountTextWatcher);
-    etAmount.addTextChangedListener(amountTextWatcher);
+    if (viewModel.isDone()) {
+      holder.setText(R.id.tv_lot_number, lot.getLotNumber());
+      holder.setVisible(R.id.ll_issued_amount, !viewModel.isExpired());
+      holder.setText(R.id.tv_issued_amount, viewModel.getAmount() == null ? "0" : viewModel.getAmount().toString());
+    } else {
+      holder.setVisible(R.id.til_amount, !viewModel.isExpired());
+      EditText etAmount = holder.getView(R.id.et_amount);
+      etAmount.setText(viewModel.getAmount() == null ? "" : viewModel.getAmount().toString());
+      holder.setText(R.id.tv_lot_number_and_date,
+          lot.getLotNumber() + " - " + DateUtil.formatDateWithLongMonthAndYear(lot.getExpirationDate()));
+      holder.setText(R.id.tv_existing_lot_on_hand,
+          holder.itemView.getContext().getString(R.string.label_existing_soh_of_lot)
+              + "  "
+              + lotOnHand
+              .getQuantityOnHand());
+      SingleTextWatcher amountTextWatcher = new SingleTextWatcher() {
+        @Override
+        public void afterTextChanged(Editable s) {
+          viewModel.setAmount(StringUtils.isBlank(s) ? null : Long.parseLong(s.toString()));
+        }
+      };
+      etAmount.removeTextChangedListener(amountTextWatcher);
+      etAmount.addTextChangedListener(amountTextWatcher);
+    }
   }
 }

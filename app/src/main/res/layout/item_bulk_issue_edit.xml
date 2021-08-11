@@ -76,7 +76,7 @@
     android:id="@+id/rv_lots"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:listitem="@layout/item_bulk_issue_lot"
+    tools:listitem="@layout/item_bulk_issue_lot_edit"
     tools:itemCount="3"
     app:layout_constraintTop_toBottomOf="@id/v_divider_line" />
 

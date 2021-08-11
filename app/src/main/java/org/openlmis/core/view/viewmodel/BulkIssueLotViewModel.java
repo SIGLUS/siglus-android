@@ -18,6 +18,10 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import static org.openlmis.core.view.viewmodel.BulkIssueProductViewModel.TYPE_DONE;
+import static org.openlmis.core.view.viewmodel.BulkIssueProductViewModel.TYPE_EDIT;
+
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
@@ -28,7 +32,7 @@ import org.openlmis.core.model.LotOnHand;
 
 @Data
 @Builder
-public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel> {
+public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel>, MultiItemEntity {
 
   private Long amount;
 
@@ -36,9 +40,12 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel> 
 
   private DraftBulkIssueLot draftLotItem;
 
-  public static BulkIssueLotViewModel buildFromDraft(DraftBulkIssueLot draftLotItem) {
+  private boolean done;
+
+  public static BulkIssueLotViewModel buildFromDraft(boolean done, DraftBulkIssueLot draftLotItem) {
     return new BulkIssueLotViewModelBuilder()
         .amount(draftLotItem.getAmount())
+        .done(done)
         .lotOnHand(draftLotItem.getLotOnHand())
         .draftLotItem(draftLotItem)
         .build();
@@ -75,5 +82,14 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel> 
     Long draftAmount = draftLotItem == null ? null : draftLotItem.getAmount();
     Long currentAmount = amount == null ? null : amount;
     return ObjectUtils.notEqual(draftAmount, currentAmount);
+  }
+
+  public boolean shouldDisplayAfterDone() {
+    return isExpired() || (amount != null && amount != 0);
+  }
+
+  @Override
+  public int getItemType() {
+    return done ? TYPE_DONE : TYPE_EDIT;
   }
 }

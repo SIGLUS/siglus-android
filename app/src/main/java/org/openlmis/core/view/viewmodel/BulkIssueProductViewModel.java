@@ -55,7 +55,7 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
         .draftProduct(draftProduct)
         .lotViewModels(FluentIterable
             .from(draftProduct.getDraftLotListWrapper())
-            .transform(BulkIssueLotViewModel::buildFromDraft)
+            .transform(draftLot -> BulkIssueLotViewModel.buildFromDraft(draftProduct.isDone(), draftLot))
             .toSortedList(BulkIssueLotViewModel::compareTo))
         .build();
   }
@@ -84,6 +84,28 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
             .from(lotViewModels)
             .transform(lotViewModel -> Objects.requireNonNull(lotViewModel).convertToDraft(draftProduct))
             .toList());
+  }
+
+  public boolean validate() {
+    setDone(true);
+    return done;
+  }
+
+  public void setDone(boolean isDone) {
+    this.done = isDone;
+    if (lotViewModels == null) {
+      return;
+    }
+    for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
+      lotViewModel.setDone(isDone);
+    }
+  }
+
+  public List<BulkIssueLotViewModel> getFilteredLotViewModels() {
+    return FluentIterable
+        .from(lotViewModels)
+        .filter(BulkIssueLotViewModel::shouldDisplayAfterDone)
+        .toList();
   }
 
   @Override

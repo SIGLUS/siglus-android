@@ -142,11 +142,13 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
 
   private void setBaseInfoForVIA(RnRForm rnRForm, JsonObject jsonObject) {
     if (rnRForm.getProgram().getProgramCode().equals(VIA_PROGRAM_CODE)) {
-      Long consultationNumber = jsonObject.get("consultationNumber").getAsLong();
       BaseInfoItem baseInfoItem = new BaseInfoItem();
       baseInfoItem.setName(ATTR_CONSULTATION);
       baseInfoItem.setType(TYPE.STRING);
-      baseInfoItem.setValue(String.valueOf(consultationNumber));
+      if (jsonObject.has("consultationNumber")) {
+        Long consultationNumber = jsonObject.get("consultationNumber").getAsLong();
+        baseInfoItem.setValue(String.valueOf(consultationNumber));
+      }
       baseInfoItem.setRnRForm(rnRForm);
       rnRForm.setBaseInfoItemListWrapper(Arrays.asList(baseInfoItem));
     }
