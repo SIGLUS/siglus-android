@@ -99,6 +99,8 @@ import org.openlmis.core.persistence.migrations.CreateRegimeThreeLineTable;
 import org.openlmis.core.persistence.migrations.CreateReportTypeTable;
 import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
 import org.openlmis.core.persistence.migrations.CreateServiceTable;
+import org.openlmis.core.persistence.migrations.CreateUsageColumnsMapTable;
+import org.openlmis.core.persistence.migrations.CreateUsageInformationLineItemsTable;
 import org.openlmis.core.persistence.migrations.DeletePrograms;
 import org.openlmis.core.persistence.migrations.DeleteReportTypes;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
@@ -116,6 +118,7 @@ import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 import org.openlmis.core.persistence.migrations.UpdateReportType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardProductType;
 import org.openlmis.core.persistence.migrations.UpdateStockCardSOHStatus;
+import org.openlmis.core.persistence.migrations.UpdateUsageColumnsMap;
 
 
 public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
@@ -215,6 +218,9 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreatePodTable());
     MIGRATIONS.add(new CreatePodProductTable());
     MIGRATIONS.add(new CreatePodLotItemTable());
+    MIGRATIONS.add(new CreateUsageInformationLineItemsTable());
+    MIGRATIONS.add(new CreateUsageColumnsMapTable());
+    MIGRATIONS.add(new UpdateUsageColumnsMap());
   }
 
   private LmisSqliteOpenHelper(Context context) {

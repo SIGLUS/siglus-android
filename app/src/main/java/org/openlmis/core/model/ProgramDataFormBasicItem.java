@@ -25,6 +25,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 import lombok.Setter;
 
+@Deprecated
 @Getter
 @Setter
 @DatabaseTable(tableName = "program_data_Basic_items")

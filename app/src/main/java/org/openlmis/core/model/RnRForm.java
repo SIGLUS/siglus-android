@@ -77,6 +77,13 @@ public class RnRForm extends BaseModel {
   private List<RegimenItemThreeLines> regimenThreeLinesWrapper;
 
   @ForeignCollectionField()
+  private ForeignCollection<UsageInformationLineItem> usageInformationLineItems;
+
+  @Expose
+  @SerializedName("usageInformationLineItems")
+  private List<UsageInformationLineItem> usageInformationLinesWrapper;
+
+  @ForeignCollectionField()
   private ForeignCollection<BaseInfoItem> baseInfoItemList;
 
   @Expose
@@ -228,6 +235,11 @@ public class RnRForm extends BaseModel {
     return signaturesWrapper;
   }
 
+  public List<UsageInformationLineItem> getUsageInformationLineItemsWrapper() {
+    usageInformationLinesWrapper = ListUtil.wrapOrEmpty(usageInformationLineItems, usageInformationLinesWrapper);
+    return usageInformationLinesWrapper;
+  }
+
   public static void fillFormId(RnRForm rnRForm) {
     for (RnrFormItem item : rnRForm.getRnrFormItemListWrapper()) {
       item.setForm(rnRForm);
@@ -240,6 +252,9 @@ public class RnRForm extends BaseModel {
     }
     for (RegimenItemThreeLines itemThreeLines : rnRForm.getRegimenThreeLineListWrapper()) {
       itemThreeLines.setForm(rnRForm);
+    }
+    for (UsageInformationLineItem usageInformationLineItem : rnRForm.getUsageInformationLineItemsWrapper()) {
+      usageInformationLineItem.setForm(rnRForm);
     }
   }
 

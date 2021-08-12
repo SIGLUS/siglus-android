@@ -100,6 +100,9 @@ public class RnrFormRepository {
   BaseInfoItemRepository baseInfoItemRepository;
 
   @Inject
+  UsageInformationLineItemRepository usageInformationLineItemRepository;
+
+  @Inject
   ProductProgramRepository productProgramRepository;
 
   @Inject
@@ -283,6 +286,7 @@ public class RnrFormRepository {
       regimenItemRepository.deleteRegimenItems(form.getRegimenItemListWrapper());
       regimenItemThreeLineRepository.deleteRegimeThreeLineItems(form.getRegimenThreeLineListWrapper());
       baseInfoItemRepository.batchDelete(form.getBaseInfoItemListWrapper());
+      usageInformationLineItemRepository.batchDelete(form.getUsageInformationLineItemsWrapper());
       signatureRepository.batchDelete(form.getSignaturesWrapper());
       genericDao.delete(form);
     }

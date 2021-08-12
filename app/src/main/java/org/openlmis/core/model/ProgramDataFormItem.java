@@ -24,6 +24,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Deprecated
 @Data
 @NoArgsConstructor
 @DatabaseTable(tableName = "program_data_items")

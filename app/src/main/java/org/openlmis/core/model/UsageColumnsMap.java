@@ -18,24 +18,29 @@
 
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Deprecated
 @Data
-@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-@DatabaseTable(tableName = "program_data_form_signatures")
-public class ProgramDataFormSignature extends Signature {
+@DatabaseTable(tableName = "usage_columns_map")
+public class UsageColumnsMap extends BaseModel {
 
-  @DatabaseField(foreign = true, foreignAutoRefresh = true)
-  ProgramDataForm form;
+  @DatabaseField
+  String code;
 
-  public ProgramDataFormSignature(ProgramDataForm form, String signature, TYPE type) {
-    super(signature, type);
-    this.form = form;
+  @Expose
+  @DatabaseField
+  String testOutcome;
+
+  @Expose
+  @DatabaseField
+  String testProject;
+
+  public UsageColumnsMap(String code) {
+    this.code = code;
   }
 }
