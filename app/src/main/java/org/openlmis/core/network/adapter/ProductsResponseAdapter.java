@@ -83,6 +83,7 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
     product.setKit(getBoolean(jsonProduct, "isKit", false));
     product.setBasic(getBoolean(jsonProduct, "isBasic", false));
     product.setKitProductList(generateKitProduct(product.getCode(), jsonProduct));
+    product.setAdditionalProgramCode(getString(jsonProduct, "additionalProgramCode", ""));
     return product;
   }
 
@@ -118,6 +119,6 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
   }
 
   private String getString(JsonObject jsonObject, String memberName, String defaultValue) {
-    return jsonObject.has(memberName) ? jsonObject.get(memberName).getAsString() : defaultValue;
+    return jsonObject.get(memberName).isJsonNull() ? defaultValue : jsonObject.get(memberName).getAsString();
   }
 }

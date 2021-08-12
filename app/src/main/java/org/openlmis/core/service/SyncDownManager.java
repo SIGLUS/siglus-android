@@ -38,10 +38,12 @@ import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.AdditionalProductProgram;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.AdditionalProductProgramRepository;
 import org.openlmis.core.model.repository.PodRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -126,6 +128,8 @@ public class SyncDownManager {
   RegimenRepository regimenRepository;
   @Inject
   PodRepository podRepository;
+  @Inject
+  AdditionalProductProgramRepository additionalProductProgramRepository;
 
   public SyncDownManager() {
     lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -408,7 +412,14 @@ public class SyncDownManager {
     for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
       Product product = productAndSupportedPrograms.getProduct();
       productProgramRepository.batchSave(product, productAndSupportedPrograms.getProductPrograms());
-
+      if (Program.MALARIA_CODE.equals(product.getAdditionalProgramCode())) {
+        additionalProductProgramRepository.createOrUpdate(AdditionalProductProgram
+            .builder()
+            .productCode(product.getCode())
+            .programCode(product.getAdditionalProgramCode())
+            .originProgramCode(productAndSupportedPrograms.getProductPrograms().get(0).getProgramCode())
+            .build());
+      }
       updateDeactivateProductNotifyList(product);
       productList.add(product);
     }

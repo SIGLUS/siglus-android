@@ -73,6 +73,7 @@ import org.openlmis.core.persistence.migrations.ChangeMalariaTreatments;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
 import org.openlmis.core.persistence.migrations.ConvertEssMedsToVIAProgram;
+import org.openlmis.core.persistence.migrations.CreateAdditionalProductProgramTable;
 import org.openlmis.core.persistence.migrations.CreateBulkEntriesDraftTables;
 import org.openlmis.core.persistence.migrations.CreateBulkIssueDraftTables;
 import org.openlmis.core.persistence.migrations.CreateDirtyDataProductTable;
@@ -221,6 +222,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreateUsageInformationLineItemsTable());
     MIGRATIONS.add(new CreateUsageColumnsMapTable());
     MIGRATIONS.add(new UpdateUsageColumnsMap());
+    MIGRATIONS.add(new CreateAdditionalProductProgramTable());
   }
 
   private LmisSqliteOpenHelper(Context context) {

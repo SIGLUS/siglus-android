@@ -19,8 +19,6 @@ public class CreateBulkEntriesDraftTables extends Migration {
         "`documentNumber` VARCHAR , " +
         "`reason` VARCHAR , " +
         "`expirationDate` VARCHAR NOT NULL) ");
-    execSQL(
-        "CREATE UNIQUE INDEX `draft_bulk_entries_product_lot_item_idx` ON `draft_bulk_entries_product_lot_item` ( `id` )");
 
     execSQL("CREATE TABLE `draft_bulk_entries_product` " +
         "( `quantity` BIGINT , " +
@@ -29,7 +27,5 @@ public class CreateBulkEntriesDraftTables extends Migration {
         "`updatedAt` VARCHAR NOT NULL , " +
         "`id` INTEGER PRIMARY KEY AUTOINCREMENT , " +
         "done BOOLEAN DEFAULT 0)");
-    execSQL(
-        "CREATE UNIQUE INDEX `draft_bulk_entries_product_idx` ON `draft_bulk_entries_product` ( `id` );");
   }
 }
