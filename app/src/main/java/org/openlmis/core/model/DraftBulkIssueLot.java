@@ -35,19 +35,14 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@DatabaseTable(tableName = "draft_bulk_issue_lots")
+@DatabaseTable(tableName = "draft_bulk_issue_product_lot_items")
 public class DraftBulkIssueLot extends BaseModel {
 
   @DatabaseField
   private Long amount;
 
-  /**
-   * foreign object, only fetch 2 level foreign object
-   * see {@link com.j256.ormlite.field.DatabaseField#DEFAULT_MAX_FOREIGN_AUTO_REFRESH_LEVEL}
-   * don`t use more than 2 level
-   */
-  @DatabaseField(foreign = true, foreignAutoRefresh = true)
-  private LotOnHand lotOnHand;
+  @DatabaseField
+  private String lotNumber;
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private DraftBulkIssueProduct draftBulkIssueProduct;

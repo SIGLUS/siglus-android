@@ -46,7 +46,6 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
 
   @Override
   protected void convert(@NonNull BaseViewHolder holder, BulkIssueProductViewModel viewModel) {
-    // trashcan
     holder.getView(R.id.rl_trashcan).setOnClickListener(new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
@@ -69,7 +68,6 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
           notifyItemChanged(holder.getLayoutPosition());
         }
       });
-      lotAdapter.setList(viewModel.getFilteredLotViewModels());
     } else {
       holder.setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
       EditText etRequested = holder.getView(R.id.et_requested);
@@ -96,7 +94,7 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
       if (rvLots.getItemDecorationCount() == 0) {
         rvLots.addItemDecoration(decor);
       }
-      lotAdapter.setList(viewModel.getLotViewModels());
     }
+    lotAdapter.setList(viewModel.getFilteredLotViewModels());
   }
 }

@@ -19,6 +19,11 @@
 package org.openlmis.core.presenter;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.openlmis.core.presenter.BulkIssuePresenter.MOVEMENT_REASON_CODE;
 import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.SELECTED_PRODUCTS;
 
@@ -31,7 +36,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftBulkIssueProduct;
@@ -65,12 +69,12 @@ public class BulkIssuePresenterTest {
 
   @Before
   public void setUp() throws Exception {
-    mockBulkIssueRepository = Mockito.mock(BulkIssueRepository.class);
-    mockStockRepository = Mockito.mock(StockRepository.class);
-    mockView = Mockito.mock(BulkIssueView.class);
-    mockLot = Mockito.mock(Lot.class);
-    mockLotOnHand = Mockito.mock(LotOnHand.class);
-    Mockito.when(mockLotOnHand.getLot()).thenReturn(mockLot);
+    mockBulkIssueRepository = mock(BulkIssueRepository.class);
+    mockStockRepository = mock(StockRepository.class);
+    mockView = mock(BulkIssueView.class);
+    mockLot = mock(Lot.class);
+    mockLotOnHand = mock(LotOnHand.class);
+    when(mockLotOnHand.getLot()).thenReturn(mockLot);
 
     RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
       @Override
@@ -92,10 +96,9 @@ public class BulkIssuePresenterTest {
     Intent intent = new Intent();
     intent.putExtra(SELECTED_PRODUCTS, (Serializable) Collections.emptyList());
     intent.putExtra(MOVEMENT_REASON_CODE, "movementReasonCode");
-    Mockito.when(mockStockRepository.listStockCardsByProductIds(any()))
-        .thenReturn(Collections.singletonList(stockCard));
-    Mockito.when(mockLot.getLotNumber()).thenReturn("lotNumber");
-    Mockito.when(mockLot.getExpirationDate()).thenReturn(DateUtil.parseString("2021-08-06", DateUtil.DB_DATE_FORMAT));
+    when(mockStockRepository.listStockCardsByProductIds(any())).thenReturn(Collections.singletonList(stockCard));
+    when(mockLot.getLotNumber()).thenReturn("lotNumber");
+    when(mockLot.getExpirationDate()).thenReturn(DateUtil.parseString("2021-08-06", DateUtil.DB_DATE_FORMAT));
     TestSubscriber<List<BulkIssueProductViewModel>> subscriber = new TestSubscriber<>(presenter.viewModelsSubscribe);
     presenter.viewModelsSubscribe = subscriber;
 
@@ -105,16 +108,22 @@ public class BulkIssuePresenterTest {
 
     // then
     Assert.assertEquals(1, presenter.getCurrentViewModels().size());
-    Mockito.verify(mockView, Mockito.times(1)).loading();
-    Mockito.verify(mockView, Mockito.times(1)).loaded();
-    Mockito.verify(mockView, Mockito.times(1)).onRefreshViewModels();
+    verify(mockView, times(1)).loading();
+    verify(mockView, times(1)).loaded();
+    verify(mockView, times(1)).onRefreshViewModels();
   }
 
   @Test
   public void shouldCorrectInitViewModelsFromDraft() throws LMISException {
     // given
-    DraftBulkIssueProduct draftProduct = Mockito.mock(DraftBulkIssueProduct.class);
-    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft()).thenReturn(Collections.singletonList(draftProduct));
+    StockCard stockCard = StockCardBuilder.buildStockCard();
+    stockCard.setLotOnHandListWrapper(Collections.singletonList(mockLotOnHand));
+    DraftBulkIssueProduct mockDraftProduct = mock(DraftBulkIssueProduct.class);
+    when(mockDraftProduct.getProduct()).thenReturn(stockCard.getProduct());
+    when(mockBulkIssueRepository.queryUsableProductAndLotDraft()).thenReturn(Collections.singletonList(mockDraftProduct));
+    when(mockStockRepository.listStockCardsByProductIds(any())).thenReturn(Collections.singletonList(stockCard));
+    when(mockLot.getLotNumber()).thenReturn("lotNumber");
+    when(mockLot.getExpirationDate()).thenReturn(DateUtil.parseString("2021-08-06", DateUtil.DB_DATE_FORMAT));
     TestSubscriber<List<BulkIssueProductViewModel>> subscriber = new TestSubscriber<>(presenter.viewModelsSubscribe);
     presenter.viewModelsSubscribe = subscriber;
 
@@ -124,9 +133,9 @@ public class BulkIssuePresenterTest {
     // then
     subscriber.awaitTerminalEvent();
     Assert.assertEquals(1, presenter.getCurrentViewModels().size());
-    Mockito.verify(mockView, Mockito.times(1)).loading();
-    Mockito.verify(mockView, Mockito.times(1)).loaded();
-    Mockito.verify(mockView, Mockito.times(1)).onRefreshViewModels();
+    verify(mockView, times(1)).loading();
+    verify(mockView, times(1)).loaded();
+    verify(mockView, times(1)).onRefreshViewModels();
   }
 
   @Test
@@ -134,10 +143,9 @@ public class BulkIssuePresenterTest {
     // given
     StockCard stockCard = StockCardBuilder.buildStockCard();
     stockCard.setLotOnHandListWrapper(Collections.singletonList(mockLotOnHand));
-    Mockito.when(mockStockRepository.listStockCardsByProductIds(any()))
-        .thenReturn(Collections.singletonList(stockCard));
-    Mockito.when(mockLot.getLotNumber()).thenReturn("lotNumber");
-    Mockito.when(mockLot.getExpirationDate()).thenReturn(DateUtil.parseString("2021-08-06", DateUtil.DB_DATE_FORMAT));
+    when(mockStockRepository.listStockCardsByProductIds(any())).thenReturn(Collections.singletonList(stockCard));
+    when(mockLot.getLotNumber()).thenReturn("lotNumber");
+    when(mockLot.getExpirationDate()).thenReturn(DateUtil.parseString("2021-08-06", DateUtil.DB_DATE_FORMAT));
     TestSubscriber<List<BulkIssueProductViewModel>> subscriber = new TestSubscriber<>(presenter.viewModelsSubscribe);
     presenter.getCurrentViewModels().clear();
     presenter.viewModelsSubscribe = subscriber;
@@ -148,18 +156,18 @@ public class BulkIssuePresenterTest {
 
     // then
     Assert.assertEquals(1, presenter.getCurrentViewModels().size());
-    Mockito.verify(mockView, Mockito.times(1)).loading();
-    Mockito.verify(mockView, Mockito.times(1)).loaded();
-    Mockito.verify(mockView, Mockito.times(1)).onRefreshViewModels();
+    verify(mockView, times(1)).loading();
+    verify(mockView, times(1)).loaded();
+    verify(mockView, times(1)).onRefreshViewModels();
   }
 
   @Test
   public void shouldGetCorrectProductCodes() {
     // given
-    BulkIssueProductViewModel mockViewModel = Mockito.mock(BulkIssueProductViewModel.class);
-    Product mockProduct = Mockito.mock(Product.class);
-    Mockito.when(mockViewModel.getProduct()).thenReturn(mockProduct);
-    Mockito.when(mockProduct.getCode()).thenReturn("productCode");
+    BulkIssueProductViewModel mockViewModel = mock(BulkIssueProductViewModel.class);
+    Product mockProduct = mock(Product.class);
+    when(mockViewModel.getProduct()).thenReturn(mockProduct);
+    when(mockProduct.getCode()).thenReturn("productCode");
     presenter.getCurrentViewModels().clear();
     presenter.getCurrentViewModels().add(mockViewModel);
 
@@ -172,7 +180,7 @@ public class BulkIssuePresenterTest {
   }
 
   @Test
-  public void testSaveDraftSuccess(){
+  public void testSaveDraftSuccess() {
     // given
     TestSubscriber<Object> testSubscriber = new TestSubscriber<>(presenter.saveDraftSubscribe);
     presenter.saveDraftSubscribe = testSubscriber;
@@ -183,32 +191,32 @@ public class BulkIssuePresenterTest {
 
     // then
     testSubscriber.awaitTerminalEvent();
-    Mockito.verify(mockView, Mockito.times(1)).loading();
-    Mockito.verify(mockView, Mockito.times(1)).loaded();
-    Mockito.verify(mockView, Mockito.times(1)).onSaveDraftFinished(true);
+    verify(mockView, times(1)).loading();
+    verify(mockView, times(1)).loaded();
+    verify(mockView, times(1)).onSaveDraftFinished(true);
   }
 
   @Test
-  public void testSaveDraftFailure() throws LMISException{
+  public void testSaveDraftFailure() throws LMISException {
     // given
     TestSubscriber<Object> testSubscriber = new TestSubscriber<>(presenter.saveDraftSubscribe);
     presenter.saveDraftSubscribe = testSubscriber;
-    Mockito.doThrow(new NullPointerException()).when(mockBulkIssueRepository).saveDraft(any());
+    doThrow(new NullPointerException()).when(mockBulkIssueRepository).saveDraft(any());
 
     // when
     presenter.saveDraft();
 
     // then
     testSubscriber.awaitTerminalEvent();
-    Mockito.verify(mockView, Mockito.times(1)).loading();
-    Mockito.verify(mockView, Mockito.times(1)).loaded();
-    Mockito.verify(mockView, Mockito.times(1)).onSaveDraftFinished(false);
+    verify(mockView, times(1)).loading();
+    verify(mockView, times(1)).loaded();
+    verify(mockView, times(1)).onSaveDraftFinished(false);
   }
 
   @Test
   public void shouldNotConfirmWithoutDraftAndViewModelsIsEmpty() throws LMISException {
     // given
-    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft()).thenReturn(null);
+    when(mockBulkIssueRepository.queryUsableProductAndLotDraft()).thenReturn(null);
     presenter.getCurrentViewModels().clear();
 
     // then
@@ -218,8 +226,8 @@ public class BulkIssuePresenterTest {
   @Test
   public void shouldConfirmWithoutDraftAndViewModelsIsNotEmpty() throws LMISException {
     // given
-    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft()).thenReturn(null);
-    presenter.getCurrentViewModels().add(Mockito.mock(BulkIssueProductViewModel.class));
+    when(mockBulkIssueRepository.queryUsableProductAndLotDraft()).thenReturn(null);
+    presenter.getCurrentViewModels().add(mock(BulkIssueProductViewModel.class));
 
     // then
     Assert.assertTrue(presenter.needConfirm());
@@ -228,12 +236,12 @@ public class BulkIssuePresenterTest {
   @Test
   public void shouldConfirmWithDraftAndViewModelsHasChanged() throws LMISException {
     // given
-    DraftBulkIssueProduct mockDraftProduct = Mockito.mock(DraftBulkIssueProduct.class);
-    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft())
+    DraftBulkIssueProduct mockDraftProduct = mock(DraftBulkIssueProduct.class);
+    when(mockBulkIssueRepository.queryUsableProductAndLotDraft())
         .thenReturn(Collections.singletonList(mockDraftProduct));
 
-    BulkIssueProductViewModel mockProductViewModel = Mockito.mock(BulkIssueProductViewModel.class);
-    Mockito.when(mockProductViewModel.hasChanged()).thenReturn(true);
+    BulkIssueProductViewModel mockProductViewModel = mock(BulkIssueProductViewModel.class);
+    when(mockProductViewModel.hasChanged()).thenReturn(true);
     presenter.getCurrentViewModels().add(mockProductViewModel);
 
     // then
@@ -243,12 +251,12 @@ public class BulkIssuePresenterTest {
   @Test
   public void shouldNotConfirmWithDraftsAndViewModelsHaveSameSize() throws LMISException {
     // given
-    DraftBulkIssueProduct mockDraftProduct = Mockito.mock(DraftBulkIssueProduct.class);
-    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft())
+    DraftBulkIssueProduct mockDraftProduct = mock(DraftBulkIssueProduct.class);
+    when(mockBulkIssueRepository.queryUsableProductAndLotDraft())
         .thenReturn(Collections.singletonList(mockDraftProduct));
 
-    BulkIssueProductViewModel mockProductViewModel = Mockito.mock(BulkIssueProductViewModel.class);
-    Mockito.when(mockProductViewModel.hasChanged()).thenReturn(false);
+    BulkIssueProductViewModel mockProductViewModel = mock(BulkIssueProductViewModel.class);
+    when(mockProductViewModel.hasChanged()).thenReturn(false);
     presenter.getCurrentViewModels().add(mockProductViewModel);
 
     // then
@@ -258,14 +266,14 @@ public class BulkIssuePresenterTest {
   @Test
   public void shouldConfirmWithDraftsAndViewModelsHaveDifferentSize() throws LMISException {
     // given
-    DraftBulkIssueProduct mockDraftProduct = Mockito.mock(DraftBulkIssueProduct.class);
-    Mockito.when(mockBulkIssueRepository.queryUsableBulkIssueDraft())
+    DraftBulkIssueProduct mockDraftProduct = mock(DraftBulkIssueProduct.class);
+    when(mockBulkIssueRepository.queryUsableProductAndLotDraft())
         .thenReturn(Collections.singletonList(mockDraftProduct));
 
-    BulkIssueProductViewModel mockProductViewModel1 = Mockito.mock(BulkIssueProductViewModel.class);
-    BulkIssueProductViewModel mockProductViewModel2 = Mockito.mock(BulkIssueProductViewModel.class);
-    Mockito.when(mockProductViewModel1.hasChanged()).thenReturn(false);
-    Mockito.when(mockProductViewModel2.hasChanged()).thenReturn(false);
+    BulkIssueProductViewModel mockProductViewModel1 = mock(BulkIssueProductViewModel.class);
+    BulkIssueProductViewModel mockProductViewModel2 = mock(BulkIssueProductViewModel.class);
+    when(mockProductViewModel1.hasChanged()).thenReturn(false);
+    when(mockProductViewModel2.hasChanged()).thenReturn(false);
     presenter.getCurrentViewModels().add(mockProductViewModel1);
     presenter.getCurrentViewModels().add(mockProductViewModel2);
 

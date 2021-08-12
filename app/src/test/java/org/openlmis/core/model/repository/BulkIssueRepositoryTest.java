@@ -92,7 +92,7 @@ public class BulkIssueRepositoryTest {
     bulkIssueRepository.saveDraft(Collections.singletonList(draftProduct));
 
     // then
-    List<DraftBulkIssueProduct> draftBulkIssueProducts = bulkIssueRepository.queryUsableBulkIssueDraft();
+    List<DraftBulkIssueProduct> draftBulkIssueProducts = bulkIssueRepository.queryUsableProductAndLotDraft();
     Assert.assertEquals(1, draftBulkIssueProducts.size());
 
     DraftBulkIssueProduct actualDraftProduct = draftBulkIssueProducts.get(0);
@@ -101,10 +101,7 @@ public class BulkIssueRepositoryTest {
 
     Assert.assertEquals(1, draftBulkIssueProducts.get(0).getDraftLotListWrapper().size());
 
-    DraftBulkIssueLot actual = draftBulkIssueProducts.get(0).getDraftLotListWrapper().get(0);
-    actual.getLotOnHand().getLot().setProduct(product);
-    actual.getLotOnHand().getStockCard().setProduct(product);
-    Assert.assertEquals(draftLots.get(0), actual);
+    Assert.assertEquals(draftLots.get(0), draftBulkIssueProducts.get(0).getDraftLotListWrapper().get(0));
   }
 
   @Test
@@ -156,7 +153,7 @@ public class BulkIssueRepositoryTest {
     return Collections.singletonList(DraftBulkIssueLot.builder()
         .amount(1L)
         .draftBulkIssueProduct(draftBulkIssueProduct)
-        .lotOnHand(lotOnHand)
+        .lotNumber("123")
         .build());
   }
 }

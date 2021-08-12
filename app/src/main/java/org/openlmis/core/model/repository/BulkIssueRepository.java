@@ -20,11 +20,8 @@ package org.openlmis.core.model.repository;
 
 import android.content.Context;
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.ForeignCollection;
-import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.table.TableUtils;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
@@ -32,7 +29,6 @@ import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
-import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -53,35 +49,26 @@ public class BulkIssueRepository {
   }
 
   public boolean hasDraft() throws LMISException {
-    return CollectionUtils.isNotEmpty(queryUsableBulkIssueDraft());
+    return CollectionUtils.isNotEmpty(queryUsableProductDraft());
   }
 
-  public List<DraftBulkIssueProduct> queryUsableBulkIssueDraft() throws LMISException {
+  public List<DraftBulkIssueProduct> queryUsableProductAndLotDraft() throws LMISException {
     return dbUtil.withDaoAsBatch(DraftBulkIssueProduct.class, dao -> {
-      String rawSql = "SELECT * FROM draft_bulk_issue_products "
-          + "WHERE product_id IN (SELECT product_id FROM stock_cards WHERE stockOnHand > 0) "
-          + "AND product_id IN (SELECT id from products WHERE isKit = 0 "
-          + "AND isArchived = 0); ";
-      GenericRawResults<DraftBulkIssueProduct> queryResult = dao.queryRaw(rawSql, dao.getRawRowMapper());
-      List<DraftBulkIssueProduct> draftProducts = queryResult.getResults();
-      Iterator<DraftBulkIssueProduct> productIterator = draftProducts.iterator();
-      while (productIterator.hasNext()) {
-        DraftBulkIssueProduct draftProduct = productIterator.next();
+      List<DraftBulkIssueProduct> draftProducts = queryUsableProductDraft();
+      for (DraftBulkIssueProduct draftProduct : draftProducts) {
         dao.assignEmptyForeignCollection(draftProduct, FieldConstants.FOREIGN_DRAFT_LOTS);
-        ForeignCollection<DraftBulkIssueLot> foreignDraftLots = draftProduct.getForeignDraftLots();
-        Iterator<DraftBulkIssueLot> lotIterator = foreignDraftLots.iterator();
-        while (lotIterator.hasNext()) {
-          LotOnHand lotOnHand = lotIterator.next().getLotOnHand();
-          if (lotOnHand.getQuantityOnHand() == null || lotOnHand.getQuantityOnHand() <= 0) {
-            lotIterator.remove();
-          }
-        }
-        if (foreignDraftLots.isEmpty()) {
-          productIterator.remove();
-        }
       }
       Collections.sort(draftProducts);
       return draftProducts;
+    });
+  }
+
+  private List<DraftBulkIssueProduct> queryUsableProductDraft() throws LMISException {
+    return dbUtil.withDaoAsBatch(DraftBulkIssueProduct.class, dao -> {
+      String rawSql = "SELECT * FROM draft_bulk_issue_products "
+          + "WHERE product_id IN (SELECT product_id FROM stock_cards WHERE stockOnHand > 0) "
+          + "AND product_id IN (SELECT id from products WHERE isKit = 0 AND isArchived = 0); ";
+      return dao.queryRaw(rawSql, dao.getRawRowMapper()).getResults();
     });
   }
 

@@ -23,7 +23,10 @@ import java.util.List;
 import java.util.Objects;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
@@ -47,27 +50,32 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
 
   private List<BulkIssueLotViewModel> lotViewModels;
 
-  public static BulkIssueProductViewModel buildFromDraft(DraftBulkIssueProduct draftProduct) {
-    return new BulkIssueProductViewModelBuilder()
-        .done(draftProduct.isDone())
-        .product(draftProduct.getProduct())
-        .requested(draftProduct.getRequested())
-        .draftProduct(draftProduct)
-        .lotViewModels(FluentIterable
-            .from(draftProduct.getDraftLotListWrapper())
-            .transform(draftLot -> BulkIssueLotViewModel.buildFromDraft(draftProduct.isDone(), draftLot))
-            .toSortedList(BulkIssueLotViewModel::compareTo))
-        .build();
-  }
-
-  public static BulkIssueProductViewModel buildFromProduct(Product product, List<LotOnHand> lotOnHandList) {
+  public static BulkIssueProductViewModel build(Product product, List<LotOnHand> lotOnHandList) {
     return new BulkIssueProductViewModelBuilder()
         .product(product)
         .lotViewModels(FluentIterable
             .from(lotOnHandList)
-            .transform(BulkIssueLotViewModel::buildFromLotOnHand)
+            .transform(BulkIssueLotViewModel::build)
             .toSortedList(BulkIssueLotViewModel::compareTo))
         .build();
+  }
+
+  public void restoreFromDraft(DraftBulkIssueProduct draftProduct) {
+    setDraftProduct(draftProduct);
+    setDone(draftProduct.isDone());
+    setRequested(draftProduct.getRequested());
+    setProduct(draftProduct.getProduct());
+    if (CollectionUtils.isEmpty(lotViewModels)) {
+      return;
+    }
+    for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
+      for (DraftBulkIssueLot draftLot : draftProduct.getDraftLotListWrapper()) {
+        if (!StringUtils.equals(draftLot.getLotNumber(), lotViewModel.getLotOnHand().getLot().getLotNumber())) {
+          continue;
+        }
+        lotViewModel.restoreFromDraft(draftProduct.isDone(), draftLot);
+      }
+    }
   }
 
   public DraftBulkIssueProduct convertToDraft(String documentNumber, String movementReasonCode) {
@@ -104,7 +112,7 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
   public List<BulkIssueLotViewModel> getFilteredLotViewModels() {
     return FluentIterable
         .from(lotViewModels)
-        .filter(BulkIssueLotViewModel::shouldDisplayAfterDone)
+        .filter(lotViewModel -> done ? lotViewModel.shouldDisplayWhenDone() : lotViewModel.shouldDisplayWhenEdit())
         .toList();
   }
 

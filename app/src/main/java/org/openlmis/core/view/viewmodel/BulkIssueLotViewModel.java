@@ -42,19 +42,16 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel>,
 
   private boolean done;
 
-  public static BulkIssueLotViewModel buildFromDraft(boolean done, DraftBulkIssueLot draftLotItem) {
-    return new BulkIssueLotViewModelBuilder()
-        .amount(draftLotItem.getAmount())
-        .done(done)
-        .lotOnHand(draftLotItem.getLotOnHand())
-        .draftLotItem(draftLotItem)
-        .build();
-  }
-
-  public static BulkIssueLotViewModel buildFromLotOnHand(LotOnHand lotOnHand) {
+  public static BulkIssueLotViewModel build(LotOnHand lotOnHand) {
     return new BulkIssueLotViewModelBuilder()
         .lotOnHand(lotOnHand)
         .build();
+  }
+
+  public void restoreFromDraft(boolean isDone, DraftBulkIssueLot draftLot) {
+    setAmount(draftLot.getAmount());
+    setDraftLotItem(draftLot);
+    setDone(isDone);
   }
 
   public DraftBulkIssueLot convertToDraft(DraftBulkIssueProduct draftProduct) {
@@ -63,7 +60,7 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel>,
     }
     return draftLotItem
         .setAmount(amount)
-        .setLotOnHand(lotOnHand)
+        .setLotNumber(lotOnHand.getLot().getLotNumber())
         .setDraftBulkIssueProduct(draftProduct);
   }
 
@@ -84,8 +81,12 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel>,
     return ObjectUtils.notEqual(draftAmount, currentAmount);
   }
 
-  public boolean shouldDisplayAfterDone() {
+  public boolean shouldDisplayWhenDone() {
     return isExpired() || (amount != null && amount != 0);
+  }
+
+  public boolean shouldDisplayWhenEdit() {
+    return lotOnHand.getQuantityOnHand() != null && lotOnHand.getQuantityOnHand() > 0;
   }
 
   @Override
