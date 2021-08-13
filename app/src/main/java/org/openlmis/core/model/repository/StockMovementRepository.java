@@ -50,6 +50,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
@@ -210,8 +211,14 @@ public class StockMovementRepository {
 
   public Date queryEarliestStockMovementDateByProgram(final String programCode) {
     Date earliestDate = null;
+    final List<String> movementDates;
+    if (Program.MALARIA_CODE.equals(programCode)) {
+      movementDates = queryMalariaStockMovementDates();
+    } else {
+      movementDates = queryStockMovementDatesByProgram(programCode);
+    }
 
-    for (String movementDate : queryStockMovementDatesByProgram(programCode)) {
+    for (String movementDate : movementDates) {
       Date date = DateUtil.parseString(movementDate, DB_DATE_FORMAT);
       if (earliestDate == null || (date != null && date.before(earliestDate))) {
         earliestDate = date;
@@ -515,6 +522,28 @@ public class StockMovementRepository {
     SortClass sort = new SortClass();
     Collections.sort(stockMovementItems, sort);
     stockCardsMovements.put(stockCardId, stockMovementItems);
+  }
+
+  private List<String> queryMalariaStockMovementDates() {
+    String rawSql = "SELECT movementDate FROM stock_items s1 "
+        + "JOIN stock_cards s2 ON s1.stockCard_id = s2.id "
+        + "JOIN products p1 ON s2.product_id = p1.id "
+        + "JOIN additional_product_program p2 ON p2.productCode = p1.code "
+        + "JOIN programs p3 ON p2.programCode = p3.programCode "
+        + "WHERE p1.isActive = 1 AND p1.isArchived = 0 AND p3.programCode = '" + Program.MALARIA_CODE + "' ";
+
+    final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
+        .getWritableDatabase().rawQuery(rawSql, null);
+    List<String> movementDates = new ArrayList<>();
+    if (cursor.moveToFirst()) {
+      do {
+        movementDates.add(cursor.getString(cursor.getColumnIndexOrThrow(MOVEMENT_DATE)));
+      } while (cursor.moveToNext());
+    }
+    if (!cursor.isClosed()) {
+      cursor.close();
+    }
+    return movementDates;
   }
 
   public void resetKeepItemToNotSynced(Map<String, List<StockMovementItem>> stockMovementItemsMap) {
