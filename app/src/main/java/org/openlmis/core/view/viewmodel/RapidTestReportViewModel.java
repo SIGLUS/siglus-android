@@ -38,10 +38,13 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
-import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.ProgramDataFormSignature;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.Signature;
+import org.openlmis.core.model.UsageInformationLineItem;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -59,8 +62,8 @@ public class RapidTestReportViewModel {
   private RapidTestFormItemViewModel itemAPEs;
   private List<RapidTestFormItemViewModel> itemViewModelList = new ArrayList<>();
   private Map<String, RapidTestFormItemViewModel> itemViewModelMap = new HashMap<>();
-  private List<ProgramDataFormBasicItem> basicItems = new ArrayList<>();
-  private ProgramDataForm rapidTestForm = new ProgramDataForm();
+  private List<RnrFormItem> productItems = new ArrayList<>();
+  private RnRForm rapidTestForm = new RnRForm();
 
   public static final long DEFAULT_FORM_ID = 0;
 
@@ -113,26 +116,26 @@ public class RapidTestReportViewModel {
     }
   }
 
-  public RapidTestReportViewModel(ProgramDataForm programDataForm) {
-    setRapidTestForm(programDataForm);
-    DateTime beginDateTime = new DateTime(programDataForm.getPeriodBegin());
-    DateTime endDateTime = new DateTime(programDataForm.getPeriodEnd());
+  public RapidTestReportViewModel(RnRForm rnRForm) {
+    setRapidTestForm(rnRForm);
+    DateTime beginDateTime = new DateTime(rnRForm.getPeriodBegin());
+    DateTime endDateTime = new DateTime(rnRForm.getPeriodEnd());
     period = new Period(beginDateTime, endDateTime);
-    observation = programDataForm.getObservation();
+    observation = rnRForm.getComments();
 
-    if (programDataForm.getFormBasicItemListWrapper() != null) {
-      basicItems.addAll(programDataForm.getFormBasicItemListWrapper());
+    if (rnRForm.getRnrFormItemListWrapper() != null) {
+      productItems.addAll(rnRForm.getRnrFormItemListWrapper());
     }
 
     setupCategories();
     setItemViewModelMap();
-    setFormItemViewModels(programDataForm.getProgramDataFormItemListWrapper());
+    setFormItemViewModels(rnRForm.getUsageInformationLineItemsWrapper());
   }
 
-  private void setFormItemViewModels(List<ProgramDataFormItem> programDataFormItemList) {
-    for (ProgramDataFormItem item : programDataFormItemList) {
-      itemViewModelMap.get(item.getName())
-          .setColumnValue(item.getProgramDataColumn(), item.getValue());
+  private void setFormItemViewModels(List<UsageInformationLineItem> usageInformationLineItemList) {
+    for (UsageInformationLineItem item : usageInformationLineItemList) {
+      itemViewModelMap.get(item.getService())
+          .setColumnValue(item.getUsageColumnsMap(), item.getValue());
     }
     addCompatibleWithNotSubmitUnjustified();
     addCompatibleWithNotSubmitAPE();
@@ -169,7 +172,7 @@ public class RapidTestReportViewModel {
     return false;
   }
 
-  public void setRapidTestForm(ProgramDataForm rapidTestForm) {
+  public void setRapidTestForm(RnRForm rapidTestForm) {
     this.rapidTestForm = rapidTestForm;
     switch (rapidTestForm.getStatus()) {
       case DRAFT:
@@ -195,17 +198,17 @@ public class RapidTestReportViewModel {
     rapidTestForm.setProgram(program);
     rapidTestForm.setPeriodBegin(period.getBegin().toDate());
     rapidTestForm.setPeriodEnd(period.getEnd().toDate());
-    rapidTestForm.setObservation(observation);
-    rapidTestForm.getProgramDataFormItemListWrapper().clear();
-    rapidTestForm.setFormBasicItemListWrapper(basicItems);
+    rapidTestForm.setComments(observation);
+    rapidTestForm.getUsageInformationLineItemsWrapper().clear();
+    rapidTestForm.setRnrFormItemListWrapper(productItems);
     convertFormItemViewModelToDataModel();
   }
 
   private void convertFormItemViewModelToDataModel() {
     for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-      rapidTestForm.getProgramDataFormItemListWrapper().addAll(itemViewModel.convertToDataModel());
+      rapidTestForm.getUsageInformationLineItemsWrapper().addAll(itemViewModel.convertToDataModel());
     }
-    for (ProgramDataFormItem item : rapidTestForm.getProgramDataFormItemListWrapper()) {
+    for (UsageInformationLineItem item : rapidTestForm.getUsageInformationLineItemsWrapper()) {
       item.setForm(rapidTestForm);
     }
   }
@@ -220,13 +223,12 @@ public class RapidTestReportViewModel {
 
 
   public boolean isDraft() {
-    return rapidTestForm.getStatus() == null
-        || rapidTestForm.getStatus() == ProgramDataForm.Status.DRAFT;
+    return rapidTestForm.getStatus() == null || rapidTestForm.isDraft() ;
   }
 
   private boolean isReadyForCompleted() {
     return rapidTestForm.getStatus() == null
-        || rapidTestForm.getStatus() == ProgramDataForm.Status.SUBMITTED;
+        || rapidTestForm.getStatus() == RnRForm.Status.SUBMITTED;
   }
 
   public boolean validatePositive() {
@@ -263,19 +265,19 @@ public class RapidTestReportViewModel {
   public void addSignature(String signature) {
     if (rapidTestForm.getSignaturesWrapper().size() == 0) {
       rapidTestForm.getSignaturesWrapper()
-          .add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
-      rapidTestForm.setStatus(ProgramDataForm.Status.SUBMITTED);
+          .add(new RnRFormSignature(rapidTestForm, signature, Signature.TYPE.SUBMITTER));
+      rapidTestForm.setStatus(RnRForm.Status.SUBMITTED);
     } else {
       rapidTestForm.getSignaturesWrapper()
-          .add(new ProgramDataFormSignature(rapidTestForm, signature, Signature.TYPE.APPROVER));
-      rapidTestForm.setStatus(ProgramDataForm.Status.AUTHORIZED);
+          .add(new RnRFormSignature(rapidTestForm, signature, Signature.TYPE.APPROVER));
+      rapidTestForm.setStatus(RnRForm.Status.AUTHORIZED);
       rapidTestForm.setSubmittedTime(DateUtil.getCurrentDate());
       status = RapidTestReportViewModel.Status.COMPLETED;
     }
   }
 
   public boolean isAuthorized() {
-    return rapidTestForm.getStatus() == ProgramDataForm.Status.AUTHORIZED;
+    return rapidTestForm.getStatus() == RnRForm.Status.AUTHORIZED;
   }
 
   public boolean isFormEmpty() {
@@ -291,7 +293,7 @@ public class RapidTestReportViewModel {
   }
 
   public boolean isSubmitted() {
-    return rapidTestForm.getStatus() == ProgramDataForm.Status.SUBMITTED;
+    return rapidTestForm.getStatus() == RnRForm.Status.SUBMITTED;
   }
 
   public void updateTotal(ColumnCode columnCode, RapidTestGridColumnCode gridColumnCode) {

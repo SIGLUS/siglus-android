@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.view.adapter.RapidTestTopProductCodeAdapter;
 import org.openlmis.core.view.adapter.RapidTestTopProductInfoAdapter;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -68,7 +69,7 @@ public class RapidTestRnrForm extends LinearLayout {
     calculateMaxHeight();
   }
 
-  public void initView(List<ProgramDataFormBasicItem> itemFormList) {
+  public void initView(List<RnrFormItem> itemFormList) {
     initProductCode(itemFormList);
     initProductInfo(itemFormList);
   }
@@ -83,12 +84,12 @@ public class RapidTestRnrForm extends LinearLayout {
   }
 
   @SuppressLint("ClickableViewAccessibility")
-  private void initProductCode(List<ProgramDataFormBasicItem> itemFormList) {
+  private void initProductCode(List<RnrFormItem> itemFormList) {
     final ImmutableList<String> productCodes = FluentIterable.from(itemFormList)
-        .transform(new Function<ProgramDataFormBasicItem, String>() {
+        .transform(new Function<RnrFormItem, String>() {
           @Nullable
           @Override
-          public String apply(@Nullable ProgramDataFormBasicItem programDataFormBasicItem) {
+          public String apply(@Nullable RnrFormItem programDataFormBasicItem) {
             if (programDataFormBasicItem == null) {
               return "";
             }
@@ -104,7 +105,7 @@ public class RapidTestRnrForm extends LinearLayout {
     rvLeftProductCode.setOnTouchListener((v, event) -> true);
   }
 
-  private void initProductInfo(List<ProgramDataFormBasicItem> itemFormList) {
+  private void initProductInfo(List<RnrFormItem> itemFormList) {
     infoAdapter = new RapidTestTopProductInfoAdapter(itemFormList);
     rvRightProductInfo.setAdapter(infoAdapter);
     rvRightProductInfo

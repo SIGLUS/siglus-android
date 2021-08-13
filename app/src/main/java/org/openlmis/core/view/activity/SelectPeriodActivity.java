@@ -166,10 +166,6 @@ public class SelectPeriodActivity extends BaseActivity implements
     loaded();
     Intent intent = new Intent();
     intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getInventoryDate());
-    if (programCode.equals(RAPID_TEST_PROGRAM_CODE)) {
-      intent.putExtra(Constants.PARAM_PERIOD, new Period(period.getBegin(),
-          new DateTime(selectedInventory.getInventoryDate())));
-    }
     intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
 
     TrackRnREventUtil.trackRnRListEvent(TrackerActions.SELECT_PERIOD, programCode);

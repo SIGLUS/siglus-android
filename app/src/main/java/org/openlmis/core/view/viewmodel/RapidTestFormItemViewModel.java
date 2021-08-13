@@ -32,6 +32,8 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.UsageColumnsMap;
+import org.openlmis.core.model.UsageInformationLineItem;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
@@ -59,7 +61,7 @@ public class RapidTestFormItemViewModel {
     }
   }
 
-  public void setColumnValue(ProgramDataColumn column, int value) {
+  public void setColumnValue(UsageColumnsMap column, int value) {
     rapidTestFormGridViewModelMap.get(ColumnCode.valueOf(column.getCode().split("_")[1]))
         .setValue(column, value);
   }
@@ -87,12 +89,12 @@ public class RapidTestFormItemViewModel {
         StringUtils.isEmpty(viewModel.unjustifiedValue) ? "0" : viewModel.unjustifiedValue;
   }
 
-  public List<ProgramDataFormItem> convertToDataModel() {
+  public List<UsageInformationLineItem> convertToDataModel() {
     if (issueReason.getDescription().equals(LMISApp.getInstance().getString(R.string.total))) {
       return newArrayList();
     }
 
-    List<ProgramDataFormItem> programDataFormItems = new ArrayList<>();
+    List<UsageInformationLineItem> programDataFormItems = new ArrayList<>();
     for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
       programDataFormItems.addAll(gridViewModel.convertFormGridViewModelToDataModel(issueReason));
     }

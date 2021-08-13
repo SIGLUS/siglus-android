@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import java.util.Date;
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
 import org.openlmis.core.googleanalytics.ScreenName;
@@ -84,19 +85,15 @@ public class RapidTestReportFormActivity extends BaseActivity implements Keyboar
     rapidTestReportFormFragment.onBackPressed();
   }
 
-  public static Intent getIntentToMe(Context context, long formId, DateTime periodBegin) {
+  public static Intent getIntentToMe(Context context, Date periodEndDate) {
     Intent intent = new Intent(context, RapidTestReportFormActivity.class);
-    intent.putExtra(Constants.PARAM_FORM_ID, formId);
-    intent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
+    intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, periodEndDate);
     return intent;
   }
 
-  public static Intent getIntentToMe(Context context, long formId, Period period,
-      DateTime periodBegin) {
+  public static Intent getIntentToMe(Context context, long formId) {
     Intent intent = new Intent(context, RapidTestReportFormActivity.class);
     intent.putExtra(Constants.PARAM_FORM_ID, formId);
-    intent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
-    intent.putExtra(Constants.PARAM_PERIOD, period);
     return intent;
   }
 

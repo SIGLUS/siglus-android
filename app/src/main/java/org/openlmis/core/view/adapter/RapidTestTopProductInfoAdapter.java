@@ -31,6 +31,8 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ProgramDataFormBasicItem;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.view.widget.CleanableEditText;
@@ -57,11 +59,11 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
    */
   private final List<CleanableEditText> stockEditTexts;
 
-  private final List<ProgramDataFormBasicItem> productInfos;
+  private final List<RnrFormItem> productInfos;
 
   private int lastNotCompleteType = -1;
 
-  public RapidTestTopProductInfoAdapter(List<ProgramDataFormBasicItem> productInfos) {
+  public RapidTestTopProductInfoAdapter(List<RnrFormItem> productInfos) {
     this.productInfos = productInfos;
     this.inventoryEditTexts = new ArrayList<>();
     this.stockEditTexts = new ArrayList<>();
@@ -79,7 +81,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     TextView tvReceived = itemView.findViewById(R.id.tv_received);
     TextView tvIssue = itemView.findViewById(R.id.tv_issue);
     TextView tvValidate = itemView.findViewById(R.id.tv_expire);
-    final ProgramDataFormBasicItem formBasicItem = productInfos.get(position);
+    final RnrFormItem formBasicItem = productInfos.get(position);
     tvProductName.setText(formBasicItem.getProduct().getPrimaryName());
     tvReceived.setText(String.valueOf(formBasicItem.getReceived()));
     tvIssue.setText(String.valueOf(formBasicItem.getIssued()));
@@ -90,7 +92,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     etStock.setText(getValue(formBasicItem.getInitialAmount()));
     etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && (
         formBasicItem.getForm().getStatus() == null
-            || formBasicItem.getForm().getStatus() == Status.DRAFT));
+            || formBasicItem.getForm().getStatus() == RnRForm.Status.DRAFT));
     if (Boolean.TRUE.equals(formBasicItem.getIsCustomAmount())) {
       etStock.addTextChangedListener(new SimpleTextWatcher() {
         @Override
@@ -105,7 +107,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     CleanableEditText etInventory = itemView.findViewById(R.id.et_inventory);
     etInventory.setText(getValue(formBasicItem.getInventory()));
     etInventory.setEnabled(formBasicItem.getForm().getStatus() == null
-        || formBasicItem.getForm().getStatus() == Status.DRAFT);
+        || formBasicItem.getForm().getStatus() == RnRForm.Status.DRAFT);
     etInventory.addTextChangedListener(new SimpleTextWatcher() {
       @Override
       public void afterTextChanged(Editable s) {

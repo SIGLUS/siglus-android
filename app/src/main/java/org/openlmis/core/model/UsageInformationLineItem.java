@@ -23,11 +23,13 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @DatabaseTable(tableName = "usage_information_line_item")
 public class UsageInformationLineItem extends BaseModel {
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
@@ -43,4 +45,10 @@ public class UsageInformationLineItem extends BaseModel {
   @Expose
   @DatabaseField
   private int value;
+
+  public UsageInformationLineItem(String service, UsageColumnsMap usageColumnsMap, int value) {
+    this.service = service;
+    this.usageColumnsMap = usageColumnsMap;
+    this.value = value;
+  }
 }

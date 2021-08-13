@@ -19,6 +19,7 @@
 package org.openlmis.core.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -31,13 +32,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.model.Period;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.BaseReportPresenter;
 import org.openlmis.core.presenter.RapidTestReportFormPresenter;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RapidTestReportBodyLeftHeaderAdapter;
 import org.openlmis.core.view.adapter.RapidTestReportRowAdapter;
@@ -50,7 +51,8 @@ import roboguice.inject.InjectView;
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class RapidTestReportFormFragment extends BaseReportFragment {
+public class RapidTestReportFormFragment extends BaseReportFragment
+    implements RapidTestReportFormPresenter.RapidTestReportView {
 
   @InjectView(R.id.v_bottom_root)
   ViewGroup vBottomRoot;
@@ -79,7 +81,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
   @InjectView(R.id.action_panel)
   View vActionPanel;
 
-  RapidTestReportFormPresenter rapidTestReportFormPresenter;
+  RapidTestReportFormPresenter presenter;
 
   RapidTestReportRowAdapter rapidBodyRightAdapter;
 
@@ -87,31 +89,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
   @Override
   protected BaseReportPresenter injectPresenter() {
-    rapidTestReportFormPresenter = RoboGuice.getInjector(getActivity())
-        .getInstance(RapidTestReportFormPresenter.class);
-    return rapidTestReportFormPresenter;
-  }
-
-  @Override
-  public void onViewCreated(View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-    loading();
-    long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
-    Period period = (Period) getActivity().getIntent().getSerializableExtra(Constants.PARAM_PERIOD);
-    if (period != null) {
-      getActivity().setTitle(getString(R.string.label_rapid_test_title,
-          DateUtil.formatDateWithoutYear(period.getBegin().toDate()),
-          DateUtil.formatDateWithoutYear(period.getEnd().toDate())));
-    }
-    updateHeaderSize();
-    setUpRowItems();
-    setUpBodyLeftItems();
-    rvReportRowItemListView.setNestedScrollingEnabled(false);
-    if (isSavedInstanceState && rapidTestReportFormPresenter.getViewModel() != null) {
-      updateUI();
-    } else {
-      loadForm(formId, period);
-    }
+    presenter = RoboGuice.getInjector(getActivity()).getInstance(RapidTestReportFormPresenter.class);
+    return presenter;
   }
 
   @Nullable
@@ -120,17 +99,65 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     return inflater.inflate(R.layout.fragment_rapid_test_report_form, container, false);
   }
 
+  @Override
+  public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    loading();
+    long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
+    Date periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+    updateHeaderSize();
+    setUpRowItems();
+    setUpBodyLeftItems();
+    actionPanelView.setListener(getOnCompleteClickListener(), getOnSaveClickListener());
+    rvReportRowItemListView.setNestedScrollingEnabled(false);
+    if (isSavedInstanceState && presenter.getViewModel() != null) {
+      presenter.updateFormUI();
+    } else {
+      presenter.loadData(formId, periodEndDate);
+    }
+  }
+
+
+  @Override
+  public void setProcessButtonName(String buttonName) { actionPanelView.setPositiveButtonText(buttonName); }
+
+  @Override
+  public void refreshRequisitionForm(RnRForm rnRForm) {
+    RapidTestReportViewModel viewModel = presenter.getViewModel();
+    if (!viewModel.getProductItems().isEmpty()) {
+      rnrBasicItemHeader.setVisibility(View.VISIBLE);
+      int width = (int) (rnrBasicItemHeader.getWidth() * 0.7);
+      rnrBasicItemHeaderLeft.setMaxWidth(width);
+      rapidTestFormTop.setVisibility(View.VISIBLE);
+      rapidTestFormTop.initView(viewModel.getProductItems());
+    } else {
+      rnrBasicItemHeader.setVisibility(View.GONE);
+      rapidTestFormTop.setVisibility(View.GONE);
+    }
+    actionPanelView.setVisibility(
+        presenter.getViewModel().getStatus().isEditable() ? View.VISIBLE : View.GONE);
+    updateButtonName();
+    initListener();
+    populateFormData(viewModel);
+    loaded();
+  }
+
+  @Override
+  public void completeSuccess() {
+    ToastUtil.showForLongTime(R.string.msg_rapid_test_submit_tip);
+    finish();
+  }
+
+  @Override
+  protected void finish() {
+    getActivity().setResult(Activity.RESULT_OK);
+    getActivity().finish();
+  }
+
   private void updateHeaderSize() {
     final int rowHeaderWidth = (int) getResources().getDimension(R.dimen.rapid_view_Header_view);
     emptyHeaderView.getLayoutParams().width = rowHeaderWidth;
     rapidTestBodyLeftHeader.getLayoutParams().width = rowHeaderWidth;
-  }
-
-  private void loadForm(long formId, Period period) {
-    loading();
-    Subscription subscription = rapidTestReportFormPresenter.loadViewModel(formId, period)
-        .subscribe(getOnViewModelLoadedAction());
-    subscriptions.add(subscription);
   }
 
   private void setUpRowItems() {
@@ -157,18 +184,10 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
 
   private RapidTestReportGridViewHolder.QuantityChangeListener getQuantityChangeListener() {
     return (columnCode, gridColumnCode) -> {
-      rapidTestReportFormPresenter.getViewModel().updateTotal(columnCode, gridColumnCode);
-      rapidTestReportFormPresenter.getViewModel().updateAPEWaring();
+      presenter.getViewModel().updateTotal(columnCode, gridColumnCode);
+      presenter.getViewModel().updateAPEWaring();
       rapidBodyRightAdapter.updateRowValue();
     };
-  }
-
-  private void updateActionPanel() {
-    actionPanelView.setVisibility(
-        rapidTestReportFormPresenter.getViewModel().getStatus().isEditable() ? View.VISIBLE
-            : View.GONE);
-    updateButtonName();
-    actionPanelView.setListener(getOnCompleteClickListener(), getOnSaveClickListener());
   }
 
   @NonNull
@@ -176,8 +195,17 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     return new SingleClickButtonListener() {
       @Override
       public void onSingleClick(View v) {
-        onSaveForm();
-      }
+        loading();
+        Subscription subscription = presenter.createOrUpdateRapidTest()
+            .subscribe(getOnSavedAction());
+        subscriptions.add(subscription);      }
+    };
+  }
+
+  private Action1<? super RapidTestReportViewModel> getOnSavedAction() {
+    return (Action1<RapidTestReportViewModel>) viewModel -> {
+      loaded();
+      finish();
     };
   }
 
@@ -198,15 +226,15 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
         String errorMessage = "";
         if (!rapidTestFormTop.isCompleted()) {
           errorMessage = getString(R.string.error_empty_rapid_test_product);
-        } else if (rapidTestReportFormPresenter.getViewModel().isFormEmpty()) {
+        } else if (presenter.getViewModel().isFormEmpty()) {
           errorMessage = getString(R.string.error_empty_rapid_test_list);
-        } else if (!rapidTestReportFormPresenter.getViewModel().validatePositive()) {
+        } else if (!presenter.getViewModel().validatePositive()) {
           errorMessage = getString(R.string.error_positive_larger_than_consumption);
-        } else if (!rapidTestReportFormPresenter.getViewModel().validateUnjustified()) {
+        } else if (!presenter.getViewModel().validateUnjustified()) {
           errorMessage = getString(R.string.error_rapid_test_unjustified);
-        } else if (!rapidTestReportFormPresenter.getViewModel().validateAPES()) {
+        } else if (!presenter.getViewModel().validateAPES()) {
           errorMessage = getString(R.string.error_rapid_test_ape);
-        } else if (rapidTestReportFormPresenter.getViewModel().validateOnlyAPES()) {
+        } else if (presenter.getViewModel().validateOnlyAPES()) {
           errorMessage = getString(R.string.error_rapid_test_only_ape);
         }
 
@@ -215,95 +243,33 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     };
   }
 
-  public void onSaveForm() {
-    loading();
-    Subscription subscription = rapidTestReportFormPresenter.onAuthoriseDraftForm()
-        .subscribe(getOnSavedAction());
-    subscriptions.add(subscription);
-  }
-
-  public void onSubmitForm() {
-    loading();
-    Subscription subscription = rapidTestReportFormPresenter.onSaveDraftForm()
-        .subscribe(getOnSubmittedAction());
-    subscriptions.add(subscription);
-  }
-
-  private Action1<? super RapidTestReportViewModel> getOnSubmittedAction() {
-    return (Action1<RapidTestReportViewModel>) viewModel -> {
-      showMessageNotifyDialog();
-      updateUIAfterSubmit();
-      loaded();
-    };
-  }
-
   private void updateButtonName() {
     actionPanelView.setPositiveButtonText(
-        rapidTestReportFormPresenter.getViewModel().isDraft() ? getResources()
+        presenter.getViewModel().isDraft() ? getResources()
             .getString(R.string.btn_submit) : getResources().getString(R.string.btn_complete));
   }
 
   @Override
   protected String getSignatureDialogTitle() {
-    return rapidTestReportFormPresenter.getViewModel().isDraft() ? getResources()
+    return presenter.getViewModel().isDraft() ? getResources()
         .getString(R.string.msg_rapid_test_submit_signature)
         : getResources().getString(R.string.msg_approve_signature_rapid_test);
   }
 
   protected Action1<Void> getOnSignedAction() {
     return aVoid -> {
-      if (rapidTestReportFormPresenter.getViewModel().isAuthorized()) {
-        onSaveForm();
+      if (presenter.getViewModel().isSubmitted()) {
+        presenter.submitRequisition();
+        showMessageNotifyDialog();
       } else {
-        onSubmitForm();
+        presenter.authoriseRequisition();
       }
     };
-  }
-
-  public void updateUIAfterSubmit() {
-    rapidBodyRightAdapter.notifyDataSetChanged();
-    rapidBodyLeftAdapter.notifyDataSetChanged();
-    updateButtonName();
   }
 
   @Override
   protected String getNotifyDialogMsg() {
     return getString(R.string.msg_requisition_signature_message_notify_rapid_test);
-  }
-
-  private Action1<? super RapidTestReportViewModel> getOnSavedAction() {
-    return (Action1<RapidTestReportViewModel>) viewModel -> {
-      loaded();
-      finish();
-    };
-  }
-
-  @NonNull
-  private Action1<RapidTestReportViewModel> getOnViewModelLoadedAction() {
-    return viewModel -> {
-      updateUI();
-      if (rapidTestReportFormPresenter.isSubmitted()) {
-        showMessageNotifyDialog();
-      }
-    };
-  }
-
-  public void updateUI() {
-    RapidTestReportViewModel viewModel = rapidTestReportFormPresenter.getViewModel();
-    if (!viewModel.getBasicItems().isEmpty()) {
-      rnrBasicItemHeader.setVisibility(View.VISIBLE);
-      int width = (int) (rnrBasicItemHeader.getWidth() * 0.7);
-      rnrBasicItemHeaderLeft.setMaxWidth(width);
-      rapidTestFormTop.setVisibility(View.VISIBLE);
-      rapidTestFormTop.initView(viewModel.getBasicItems());
-    } else {
-      rnrBasicItemHeader.setVisibility(View.GONE);
-      rapidTestFormTop.setVisibility(View.GONE);
-    }
-    initListener();
-    populateFormData(viewModel);
-    updateActionPanel();
-    loaded();
   }
 
   @SuppressLint("ClickableViewAccessibility")
@@ -359,4 +325,5 @@ public class RapidTestReportFormFragment extends BaseReportFragment {
     return new RectF(location[0], location[1], (float) location[0] + view.getWidth(),
         (float) location[1] + view.getHeight());
   }
+
 }

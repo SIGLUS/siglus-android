@@ -23,9 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import java.util.List;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ReportTypeForm;
-import org.openlmis.core.view.fragment.RapidTestReportListFragment;
 import org.openlmis.core.view.fragment.ReportListFragment;
 
 public class ReportListPageAdapter extends FragmentStateAdapter {
@@ -45,11 +43,7 @@ public class ReportListPageAdapter extends FragmentStateAdapter {
   @Override
   public Fragment createFragment(int position) {
     final ReportTypeForm reportTypeForm = data.get(position);
-    if (Program.RAPID_TEST_CODE.equals(reportTypeForm.getCode())) {
-      return RapidTestReportListFragment.newInstance();
-    } else {
       return ReportListFragment.newInstance(reportTypeForm.getCode());
-    }
   }
 
   @Override

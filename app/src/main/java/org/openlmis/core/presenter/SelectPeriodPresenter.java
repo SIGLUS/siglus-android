@@ -80,12 +80,7 @@ public class SelectPeriodPresenter extends Presenter {
     Subscription subscription = Observable
         .create((Observable.OnSubscribe<List<SelectInventoryViewModel>>) subscriber -> {
           try {
-            Period periodInSchedule;
-            if (programCode.equals(Constants.RAPID_TEST_PROGRAM_CODE)) {
-              periodInSchedule = new Period(period.getBegin(), period.getEnd());
-            } else {
-              periodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
-            }
+            Period periodInSchedule = requisitionPeriodService.generateNextPeriod(programCode, null);
             List<Inventory> inventories = inventoryRepository
                 .queryPeriodInventory(periodInSchedule);
             boolean isDefaultInventoryDate = false;

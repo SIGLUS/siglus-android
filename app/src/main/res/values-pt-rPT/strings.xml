@@ -165,7 +165,9 @@
 
   <!-- Rapid Test -->
   <string name="balance_test_report">Balancete dos testes rápidos na Unidade Sanitária</string>
+  <string name="msg_rapid_test_submit_tip">O seu Relatório testes rápidos foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
   <string name="attention_report_in_kit">(Atenção: Reportados em Kits)</string>
+  <string name="hint_rapid_test_complete_failed">Não foi possível completar o MMIT, por favor, contacte o administrador.</string>
   <string name="unjustified">Injustificados</string>
 
   <!-- PTV -->

@@ -25,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.UsageColumnsMap;
+import org.openlmis.core.model.UsageInformationLineItem;
 
 @SuppressWarnings("squid:S1874")
 @Data
@@ -52,9 +54,9 @@ public class RapidTestFormGridViewModel {
   String consumptionValue = StringUtils.EMPTY;
   String positiveValue = StringUtils.EMPTY;
   String unjustifiedValue = StringUtils.EMPTY;
-  ProgramDataColumn positiveColumn;
-  ProgramDataColumn consumeColumn;
-  ProgramDataColumn unjustifiedColumn;
+  UsageColumnsMap positiveColumn;
+  UsageColumnsMap consumeColumn;
+  UsageColumnsMap unjustifiedColumn;
   Boolean isNeedAllAPEValue = false;
   Boolean isAPE = false;
 
@@ -98,7 +100,7 @@ public class RapidTestFormGridViewModel {
   }
 
 
-  public void setValue(ProgramDataColumn column, int value) {
+  public void setValue(UsageColumnsMap column, int value) {
     setConsumptionValue(column, value);
     setPositiveValue(column, value);
     setUnjustifiedValue(column, value);
@@ -120,9 +122,9 @@ public class RapidTestFormGridViewModel {
     }
   }
 
-  public List<ProgramDataFormItem> convertFormGridViewModelToDataModel(
+  public List<UsageInformationLineItem> convertFormGridViewModelToDataModel(
       MovementReasonManager.MovementReason issueReason) {
-    List<ProgramDataFormItem> programDataFormItems = new ArrayList<>();
+    List<UsageInformationLineItem> programDataFormItems = new ArrayList<>();
     setConsumptionFormItem(issueReason, programDataFormItems);
     setPositiveFormItem(issueReason, programDataFormItems);
     setUnjustifiedFormItem(issueReason, programDataFormItems);
@@ -171,21 +173,21 @@ public class RapidTestFormGridViewModel {
     return prefix + StringUtils.upperCase(getColumnCode().name());
   }
 
-  private void setUnjustifiedValue(ProgramDataColumn column, int value) {
+  private void setUnjustifiedValue(UsageColumnsMap column, int value) {
     if (column.getCode().contains(COLUMN_CODE_PREFIX_UNJUSTIFIED)) {
       unjustifiedColumn = column;
       setUnjustifiedValue(String.valueOf(value));
     }
   }
 
-  private void setPositiveValue(ProgramDataColumn column, int value) {
+  private void setPositiveValue(UsageColumnsMap column, int value) {
     if (column.getCode().contains(COLUMN_CODE_PREFIX_POSITIVE)) {
       positiveColumn = column;
       setPositiveValue(String.valueOf(value));
     }
   }
 
-  private void setConsumptionValue(ProgramDataColumn column, int value) {
+  private void setConsumptionValue(UsageColumnsMap column, int value) {
     if (column.getCode().contains(COLUMN_CODE_PREFIX_CONSUME)) {
       consumeColumn = column;
       setConsumptionValue(String.valueOf(value));
@@ -193,39 +195,39 @@ public class RapidTestFormGridViewModel {
   }
 
   private void setUnjustifiedFormItem(MovementReasonManager.MovementReason issueReason,
-      List<ProgramDataFormItem> programDataFormItems) {
+      List<UsageInformationLineItem> programDataFormItems) {
     if (!StringUtils.isEmpty(getUnjustifiedValue())) {
       if (unjustifiedColumn == null) {
-        unjustifiedColumn = new ProgramDataColumn();
+        unjustifiedColumn = new UsageColumnsMap();
         unjustifiedColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_UNJUSTIFIED));
       }
-      ProgramDataFormItem unjustfiedDataFormItem = new ProgramDataFormItem(issueReason.getCode(),
+      UsageInformationLineItem unjustfiedDataFormItem = new UsageInformationLineItem(issueReason.getCode(),
           unjustifiedColumn, Integer.parseInt(getUnjustifiedValue()));
       programDataFormItems.add(unjustfiedDataFormItem);
     }
   }
 
   private void setPositiveFormItem(MovementReasonManager.MovementReason issueReason,
-      List<ProgramDataFormItem> programDataFormItems) {
+      List<UsageInformationLineItem> programDataFormItems) {
     if (!StringUtils.isEmpty(getPositiveValue())) {
       if (positiveColumn == null) {
-        positiveColumn = new ProgramDataColumn();
+        positiveColumn = new UsageColumnsMap();
         positiveColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_POSITIVE));
       }
-      ProgramDataFormItem positiveDataFormItem = new ProgramDataFormItem(issueReason.getCode(),
+      UsageInformationLineItem positiveDataFormItem = new UsageInformationLineItem(issueReason.getCode(),
           positiveColumn, Integer.parseInt(getPositiveValue()));
       programDataFormItems.add(positiveDataFormItem);
     }
   }
 
   private void setConsumptionFormItem(MovementReasonManager.MovementReason issueReason,
-      List<ProgramDataFormItem> programDataFormItems) {
+      List<UsageInformationLineItem> programDataFormItems) {
     if (!StringUtils.isEmpty(getConsumptionValue())) {
       if (consumeColumn == null) {
-        consumeColumn = new ProgramDataColumn();
+        consumeColumn = new UsageColumnsMap();
         consumeColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_CONSUME));
       }
-      ProgramDataFormItem consumeDataFormItem = new ProgramDataFormItem(issueReason.getCode(),
+      UsageInformationLineItem consumeDataFormItem = new UsageInformationLineItem(issueReason.getCode(),
           consumeColumn, Integer.parseInt(getConsumptionValue()));
       programDataFormItems.add(consumeDataFormItem);
     }
