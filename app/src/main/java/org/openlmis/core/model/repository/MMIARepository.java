@@ -291,7 +291,7 @@ public class MMIARepository extends RnrFormRepository {
   public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards)
       throws LMISException {
     List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
-    return fillAllMMIAProducts(form, rnrFormItems);
+    return fillAllProducts(form, rnrFormItems);
   }
 
   @Override
@@ -356,35 +356,4 @@ public class MMIARepository extends RnrFormRepository {
     rnrFormItem.setInitialAmount(lastRnrInventory);
   }
 
-  protected ArrayList<RnrFormItem> fillAllMMIAProducts(RnRForm form, List<RnrFormItem> rnrFormItems)
-      throws LMISException {
-    List<Long> productIds = productProgramRepository.queryActiveProductIdsForMMIA(Constants.MMIA_PROGRAM_CODE);
-    List<Product> products = productRepository.queryProductsByProductIds(productIds);
-
-    ArrayList<RnrFormItem> result = new ArrayList<>();
-
-    for (Product product : products) {
-      RnrFormItem rnrFormItem = new RnrFormItem();
-      rnrFormItem.setForm(form);
-      rnrFormItem.setProduct(product);
-      RnrFormItem stockFormItem = getStockCardRnr(product, rnrFormItems);
-      if (stockFormItem == null) {
-        Long lastInventory = lastRnrInventory(product);
-        rnrFormItem.setInitialAmount(lastInventory != null ? lastInventory : 0);
-      } else {
-        rnrFormItem = stockFormItem;
-      }
-      result.add(rnrFormItem);
-    }
-    return result;
-  }
-
-  private RnrFormItem getStockCardRnr(Product product, List<RnrFormItem> rnrStockFormItems) {
-    for (RnrFormItem item : rnrStockFormItems) {
-      if (item.getProduct().getId() == product.getId()) {
-        return item;
-      }
-    }
-    return null;
-  }
 }

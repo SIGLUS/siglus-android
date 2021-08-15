@@ -21,6 +21,7 @@ package org.openlmis.core.model.helper;
 import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
 
@@ -52,6 +53,15 @@ public class RnrFormHelper {
 
     rnrFormItem
         .setCalculatedOrderQuantity(calculatedOrderQuantity(modifiedItem.totalIssued, inventory));
+  }
+
+  public RnrFormItem getStockCardRnr(Product product, List<RnrFormItem> rnrStockFormItems) {
+    for (RnrFormItem item : rnrStockFormItems) {
+      if (item.getProduct().getId() == product.getId()) {
+        return item;
+      }
+    }
+    return null;
   }
 
   private long calculatedOrderQuantity(long totalIssued, Long inventory) {

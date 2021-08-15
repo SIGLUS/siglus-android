@@ -19,26 +19,16 @@
 package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import lombok.Getter;
-import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.model.Period;
-import org.openlmis.core.model.ProgramDataForm;
-import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.model.repository.ProgramBasicItemsRepository;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RapidTestRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.presenter.MMIARequisitionPresenter.MMIARequisitionView;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;

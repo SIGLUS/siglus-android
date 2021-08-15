@@ -27,6 +27,7 @@ import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
 import static org.openlmis.core.constant.FieldConstants.STATUS;
 import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
 import static org.openlmis.core.constant.FieldConstants.SYNCED;
+import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -51,6 +52,7 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.ReportTypeForm;
@@ -109,6 +111,9 @@ public class RnrFormRepository {
   ProgramRepository programRepository;
 
   @Inject
+  ProductRepository productRepository;
+
+  @Inject
   ReportTypeFormRepository reportTypeFormRepository;
 
   @Inject
@@ -150,9 +155,7 @@ public class RnrFormRepository {
   }
 
   public void createRnRsWithItems(@Nullable final List<RnRForm> forms) throws LMISException {
-    if (forms == null) {
-      return;
-    }
+    if (forms == null) { return; }
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
         for (RnRForm form : forms) {
@@ -360,6 +363,37 @@ public class RnrFormRepository {
     rnrFormItem.setProduct(stockCard.getProduct());
     return rnrFormItem;
   }
+
+  protected ArrayList<RnrFormItem> fillAllProducts(RnRForm form, List<RnrFormItem> basicItems)
+      throws LMISException {
+    List<Long> productIds = productProgramRepository
+        .queryActiveProductIdsByProgramWithKits(form.getProgram().getProgramCode(), false);
+    List<Product> products = productRepository.queryProductsByProductIds(productIds);
+    ArrayList<RnrFormItem> result = new ArrayList<>();
+
+    for (Product product : products) {
+      RnrFormItem rnrFormItem = new RnrFormItem();
+      RnrFormItem stockFormItem = rnrFormHelper.getStockCardRnr(product, basicItems);
+      if (stockFormItem == null) {
+        rnrFormItem.setForm(form);
+        rnrFormItem.setProduct(product);
+      } else {
+        rnrFormItem = stockFormItem;
+      }
+
+      Long lastInventory = lastRnrInventory(product);
+      rnrFormItem.setIsCustomAmount(lastInventory == null);
+      rnrFormItem.setInitialAmount(lastInventory);
+      result.add(rnrFormItem);
+
+    }
+    return result;
+  }
+
+  protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
+    rnrFormItem.setInitialAmount(lastInventory != null ? lastInventory : 0);
+  }
+
 
   protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
     return new ArrayList<>();
