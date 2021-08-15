@@ -22,11 +22,14 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.openlmis.core.utils.Constants;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @DatabaseTable(tableName = "regime_items")
 public class RegimenItem extends BaseModel {
 
@@ -40,6 +43,12 @@ public class RegimenItem extends BaseModel {
   @SerializedName("patientsOnTreatment")
   @DatabaseField
   private Long amount;
+
+  @Expose
+  private String information;
+
+  @Expose
+  private String productCode;
 
   @Expose
   @SerializedName("hf")
@@ -57,5 +66,21 @@ public class RegimenItem extends BaseModel {
   @SerializedName("comunitaryPharmacy")
   @DatabaseField
   private Long pharmacy;
+
+  public RegimenItem buildInformationAndProductCode() {
+    this.information = getInformation(regimen.getCode());
+    this.productCode = Constants.REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.get(getRegimenStrength(regimen.getCode()));
+    return this;
+  }
+
+  private String getRegimenStrength(String regimenCode) {
+    return regimenCode.substring(regimenCode.length() - 3);
+  }
+
+  private String getInformation(String regimenCode) {
+    if (regimenCode.contains("US/APE")) {
+      return Constants.TREATMENTS_ATTENDED;
+    } else return Constants.EXISTENT_STOCK;
+  }
 
 }

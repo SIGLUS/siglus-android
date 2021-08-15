@@ -20,9 +20,13 @@ package org.openlmis.core.utils;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.xml.transform.sax.SAXTransformerFactory;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.model.AdditionalProductProgram;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 public final class Constants {
@@ -83,6 +87,18 @@ public final class Constants {
 
   public static final String PTV_REGIME_CHILD = "PTV Crianças";
   public static final String PTV_REGIME_ADULT = "PTV Mulheres";
+
+  public static final String EXISTENT_STOCK = "existentStock";
+  public static final String TREATMENTS_ATTENDED = "treatmentsAttended";
+
+  public static final Map<String, String> REGIMEN_CODE_TO_ADDITIONAL_PRODUCT = new HashMap<>();
+
+  static {
+    REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.put("1x6", "08O05");
+    REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.put("2x6", "08O05Z");
+    REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.put("3x6", "08O05Y");
+    REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.put("4x6", "08O05X");
+  }
 
 
   // Intent Params
@@ -146,7 +162,7 @@ public final class Constants {
   public static final String PTV_PRODUCT_FOURTH_CODE = "08S17";
   public static final String PTV_PRODUCT_FIFTH_CODE = "08S23";
 
-  public static long DEFAULT_FORM_ID = 0;
+  public static final long DEFAULT_FORM_ID = 0;
 
   public static final String ENTRIES = "Entries";
   public static final String LOSSES_AND_ADJUSTMENTS = "Losses and Adjustments";

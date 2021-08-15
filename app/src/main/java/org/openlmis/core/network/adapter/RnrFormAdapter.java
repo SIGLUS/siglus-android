@@ -19,6 +19,7 @@
 package org.openlmis.core.network.adapter;
 
 import static org.openlmis.core.model.repository.VIARepository.ATTR_CONSULTATION;
+import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.PARAM_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
@@ -60,6 +61,7 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.model.PatientLineItemRequest;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
 
 public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer<RnRForm> {
@@ -76,6 +78,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   public static final String PRODUCTS = "products";
   public static final String REGIMEN_LINE_ITEMS = "regimenLineItems";
   public static final String REGIMEN_SUMMARY_LINE_ITEMS = "regimenSummaryLineItems";
+  public static final String USAGE_INFORMATION_LINE_ITEMS = "usageInformationLineItems";
+  public static final String CONSULTATION_NUMBER = "consultationNumber";
 
   @Inject
   public ProgramRepository programRepository;
@@ -132,7 +136,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   private void setPeriodTime(RnRForm rnRForm, JsonObject jsonObject) {
     rnRForm.setPeriodBegin(Instant.parse(jsonObject.get(ACTUAL_START_DATE).getAsString()).toDate());
     rnRForm.setPeriodEnd(Instant.parse(jsonObject.get(ACTUAL_END_DATE).getAsString()).toDate());
-    rnRForm.setSubmittedTime(Instant.parse(jsonObject.get("clientSubmittedTime").getAsString()).toDate());
+    rnRForm.setSubmittedTime(Instant.parse(jsonObject.get(CLIENT_SUBMITTED_TIME).getAsString()).toDate());
   }
 
   private void setBaseInfoForRnR(RnRForm rnRForm, JsonObject jsonObject) {
@@ -145,8 +149,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       BaseInfoItem baseInfoItem = new BaseInfoItem();
       baseInfoItem.setName(ATTR_CONSULTATION);
       baseInfoItem.setType(TYPE.STRING);
-      if (jsonObject.has("consultationNumber")) {
-        Long consultationNumber = jsonObject.get("consultationNumber").getAsLong();
+      if (jsonObject.has(CONSULTATION_NUMBER)) {
+        Long consultationNumber = jsonObject.get(CONSULTATION_NUMBER).getAsLong();
         baseInfoItem.setValue(String.valueOf(consultationNumber));
       }
       baseInfoItem.setRnRForm(rnRForm);
@@ -191,13 +195,22 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   }
 
   private void sectionInfo(RnRForm rnRForm, JsonObject root, String programCode) {
-    root.add(PRODUCTS, jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
-    root.add(REGIMEN_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
-    root.add(REGIMEN_SUMMARY_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenThreeLineListWrapper())));
-    if (programCode.endsWith(VIA_PROGRAM_CODE)) {
-      root.addProperty("consultationNumber", getConsultationNumber(rnRForm));
+    if (AL_PROGRAM_CODE.equals(programCode)) {
+      root.add(USAGE_INFORMATION_LINE_ITEMS, buildUsageInformationLineItems(rnRForm));
+    } else {
+      root.add(PRODUCTS, jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
+      root.add(REGIMEN_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
+      root.add(REGIMEN_SUMMARY_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenThreeLineListWrapper())));
+      if (programCode.endsWith(VIA_PROGRAM_CODE)) {
+        root.addProperty(CONSULTATION_NUMBER, getConsultationNumber(rnRForm));
+      }
+      setPatientLineItem(programCode, root, rnRForm);
     }
-    setPatientLineItem(programCode, root, rnRForm);
+  }
+  private JsonElement buildUsageInformationLineItems(RnRForm rnRForm) {
+    List<RegimenItem> regimenItems = rnRForm.getRegimenItemListWrapper();
+    regimenItems = FluentIterable.from(regimenItems).transform(RegimenItem::buildInformationAndProductCode).toList();
+    return jsonParser.parse(gson.toJson(regimenItems));
   }
 
   private Long getConsultationNumber(RnRForm rnRForm) {
