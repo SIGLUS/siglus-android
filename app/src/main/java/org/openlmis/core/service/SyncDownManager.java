@@ -147,12 +147,10 @@ public class SyncDownManager {
         // TODO: Remove the comment when developing to the corresponding api
         syncDownFacilityInfo(subscriber1);
         syncDownRegimens(subscriber1);
-        // syncDownService(subscriber1);
         syncDownProducts(subscriber1);
         syncDownPods(subscriber1);
         syncDownLastMonthStockCards(subscriber1);
         syncDownRequisition(subscriber1);
-        // syncDownRapidTests(subscriber1);
         setSyncing(false);
         subscriber1.onCompleted();
       } catch (LMISException e) {
@@ -218,56 +216,6 @@ public class SyncDownManager {
       e1.reportToFabric();
       throw e;
     }
-  }
-
-
-  private void syncDownService(Subscriber<? super SyncProgress> subscriber) throws LMISException {
-    try {
-      subscriber.onNext(SyncProgress.SYNCING_SERVICE_LIST);
-      fetchAndSaveService();
-      subscriber.onNext(SyncProgress.SERVICE_SYNCED);
-    } catch (LMISException e) {
-      LMISException e1 = new LMISException(errorMessage(R.string.msg_service_lists));
-      e1.reportToFabric();
-      throw e1;
-    }
-  }
-
-  private void fetchAndSaveService() throws LMISException {
-    SyncDownServiceResponse response = lmisRestApi
-        .fetchPTVService(sharedPreferenceMgr.getLastSyncServiceTime(),
-            Constants.PTV_PROGRAM_CODE);
-    serviceFormRepository.batchCreateOrUpdateServiceList(response.getLatestServices());
-  }
-
-  private void syncDownRapidTests(Subscriber<? super SyncProgress> subscriber)
-      throws LMISException {
-    if (!sharedPreferenceMgr.isRapidTestDataSynced()) {
-      try {
-        subscriber.onNext(SyncProgress.SYNCING_RAPID_TESTS);
-        fetchAndSaveRapidTests();
-        sharedPreferenceMgr.setRapidTestsDataSynced(true);
-        subscriber.onNext(SyncProgress.RAPID_TESTS_SYNCED);
-      } catch (LMISException e) {
-        sharedPreferenceMgr.setRapidTestsDataSynced(false);
-        LMISException e1 = new LMISException(e, errorMessage(R.string.msg_sync_rapid_tests_failed));
-        e1.reportToFabric();
-        throw e1;
-      }
-    }
-  }
-
-  private void fetchAndSaveRapidTests() throws LMISException {
-    SyncDownProgramDataResponse syncDownProgramDataResponse = lmisRestApi
-        .fetchProgramDataForms(Long.parseLong(UserInfoMgr.getInstance().getUser().getFacilityId()));
-    if (syncDownProgramDataResponse == null) {
-      LMISException e = new LMISException(
-          "Can't get SyncDownRapidTestsResponse, you can check json parse to POJO logic");
-      e.reportToFabric();
-      throw e;
-    }
-
-    programDataFormRepository.batchSaveForms(syncDownProgramDataResponse.getProgramDataForms());
   }
 
   private void syncDownPods(Subscriber<? super SyncProgress> subscriber)throws LMISException {
