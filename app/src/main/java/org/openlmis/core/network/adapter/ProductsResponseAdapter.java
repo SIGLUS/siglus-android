@@ -119,6 +119,7 @@ public class ProductsResponseAdapter implements JsonDeserializer<SyncDownLatestP
   }
 
   private String getString(JsonObject jsonObject, String memberName, String defaultValue) {
-    return jsonObject.get(memberName).isJsonNull() ? defaultValue : jsonObject.get(memberName).getAsString();
+    return jsonObject.has(memberName) && !jsonObject.get(memberName).isJsonNull() ? jsonObject.get(memberName)
+        .getAsString() : defaultValue;
   }
 }

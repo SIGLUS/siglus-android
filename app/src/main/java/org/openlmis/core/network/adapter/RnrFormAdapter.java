@@ -22,6 +22,7 @@ import static org.openlmis.core.model.repository.VIARepository.ATTR_CONSULTATION
 import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.PARAM_PROGRAM_CODE;
+import static org.openlmis.core.utils.Constants.REGIMEN_INFORMATION_TO_REGIMEN_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 
 import com.google.gson.Gson;
@@ -51,6 +52,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.BaseInfoItem.TYPE;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
@@ -58,6 +60,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.model.PatientLineItemRequest;
 import org.openlmis.core.utils.DateUtil;
@@ -80,16 +83,16 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   public static final String REGIMEN_SUMMARY_LINE_ITEMS = "regimenSummaryLineItems";
   public static final String USAGE_INFORMATION_LINE_ITEMS = "usageInformationLineItems";
   public static final String CONSULTATION_NUMBER = "consultationNumber";
-
+  private final Gson gson;
+  private final JsonParser jsonParser;
   @Inject
   public ProgramRepository programRepository;
   @Inject
   RnrFormSignatureRepository signatureRepository;
   @Inject
   MMIARepository mmiaRepository;
-
-  private final Gson gson;
-  private final JsonParser jsonParser;
+  @Inject
+  RegimenRepository regimenRepository;
 
   public RnrFormAdapter() {
     RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
@@ -126,7 +129,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     }
     JsonObject jsonObject = json.getAsJsonObject();
     setPeriodTime(rnRForm, jsonObject);
-    setBaseInfoForRnR(rnRForm, jsonObject);
+    setInfoForRnR(rnRForm, jsonObject);
     rnRForm.setStatus(Status.AUTHORIZED);
     rnRForm.setSynced(true);
 
@@ -139,9 +142,10 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     rnRForm.setSubmittedTime(Instant.parse(jsonObject.get(CLIENT_SUBMITTED_TIME).getAsString()).toDate());
   }
 
-  private void setBaseInfoForRnR(RnRForm rnRForm, JsonObject jsonObject) {
+  private void setInfoForRnR(RnRForm rnRForm, JsonObject jsonObject) {
     setBaseInfoForVIA(rnRForm, jsonObject);
     setBaseInfoForMMIA(rnRForm, jsonObject);
+    setRegimenLineItemsForMalaria(rnRForm, jsonObject);
   }
 
   private void setBaseInfoForVIA(RnRForm rnRForm, JsonObject jsonObject) {
@@ -180,6 +184,43 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     }
   }
 
+  private void setRegimenLineItemsForMalaria(RnRForm rnRForm, JsonObject jsonObject) {
+    if (AL_PROGRAM_CODE.equals(rnRForm.getProgram().getProgramCode())) {
+      List<RegimenItem> regimenItems = new ArrayList<>();
+      for (JsonElement jsonRegimenItem : jsonObject.get(USAGE_INFORMATION_LINE_ITEMS).getAsJsonArray()) {
+        JsonObject jsonObjectForRegimenItem = jsonRegimenItem.getAsJsonObject();
+        RegimenItem regimenItem = RegimenItem.builder()
+            .form(rnRForm)
+            .regimen(getRegimen(jsonObjectForRegimenItem))
+            .amount(calculateAmount(jsonObjectForRegimenItem))
+            .hf(jsonObjectForRegimenItem.get("hf").getAsLong())
+            .chw(jsonObjectForRegimenItem.get("chw").getAsLong())
+            .build();
+        regimenItems.add(regimenItem);
+      }
+      rnRForm.setRegimenItemListWrapper(regimenItems);
+    }
+  }
+
+  private Regimen getRegimen(JsonObject jsonObjectForRegimenItem) {
+    String regimenCodeKey =
+        jsonObjectForRegimenItem.get("information").getAsString() + "_" + jsonObjectForRegimenItem.get("productCode")
+            .getAsString();
+    String regimenCode = REGIMEN_INFORMATION_TO_REGIMEN_CODE.get(regimenCodeKey);
+    Regimen regimen;
+    try {
+      regimen = regimenRepository.getByCode(regimenCode);
+    } catch (LMISException e) {
+      new LMISException(e, "RnrFormAdapter.deserialize").reportToFabric();
+      throw new JsonParseException("can not find Regimen by regimenCode", e);
+    }
+    return regimen;
+  }
+
+  private Long calculateAmount(JsonObject jsonObjectForRegimenItem) {
+    return jsonObjectForRegimenItem.get("hf").getAsLong() + jsonObjectForRegimenItem.get("chw").getAsLong();
+  }
+
   private JsonElement buildRnrFormJson(RnRForm rnRForm) throws LMISException {
     JsonObject root = gson.toJsonTree(rnRForm).getAsJsonObject();
     String programCode = rnRForm.getProgram().getProgramCode();
@@ -207,6 +248,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       setPatientLineItem(programCode, root, rnRForm);
     }
   }
+
   private JsonElement buildUsageInformationLineItems(RnRForm rnRForm) {
     List<RegimenItem> regimenItems = rnRForm.getRegimenItemListWrapper();
     regimenItems = FluentIterable.from(regimenItems).transform(RegimenItem::buildInformationAndProductCode).toList();

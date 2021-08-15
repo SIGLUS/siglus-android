@@ -23,10 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.transform.sax.SAXTransformerFactory;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.model.AdditionalProductProgram;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 public final class Constants {
@@ -91,13 +89,30 @@ public final class Constants {
   public static final String EXISTENT_STOCK = "existentStock";
   public static final String TREATMENTS_ATTENDED = "treatmentsAttended";
 
-  public static final Map<String, String> REGIMEN_CODE_TO_ADDITIONAL_PRODUCT = new HashMap<>();
+  public static final Map<String, String> REGIMEN_CODE_TO_ADDITIONAL_PRODUCT;
 
   static {
-    REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.put("1x6", "08O05");
-    REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.put("2x6", "08O05Z");
-    REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.put("3x6", "08O05Y");
-    REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.put("4x6", "08O05X");
+    Map<String, String> map = new HashMap<>();
+    map.put("1x6", "08O05");
+    map.put("2x6", "08O05Z");
+    map.put("3x6", "08O05Y");
+    map.put("4x6", "08O05X");
+    REGIMEN_CODE_TO_ADDITIONAL_PRODUCT = Collections.unmodifiableMap(map);
+  }
+
+  public static final Map<String, String> REGIMEN_INFORMATION_TO_REGIMEN_CODE;
+
+  static {
+    Map<String, String> map = new HashMap<>();
+    map.put("existentStock_08O05", "AL STOCK Malaria 1x6");
+    map.put("existentStock_08O05Z", "AL STOCK Malaria 2x6");
+    map.put("existentStock_08O05Y", "AL STOCK Malaria 3x6");
+    map.put("existentStock_08O05X", "AL STOCK Malaria 4x6");
+    map.put("treatmentsAttended_08O05", "AL US/APE Malaria 1x6");
+    map.put("treatmentsAttended_08O05Z", "AL US/APE Malaria 2x6");
+    map.put("treatmentsAttended_08O05Y", "AL US/APE Malaria 3x6");
+    map.put("treatmentsAttended_08O05X", "AL US/APE Malaria 4x6");
+    REGIMEN_INFORMATION_TO_REGIMEN_CODE = Collections.unmodifiableMap(map);
   }
 
 

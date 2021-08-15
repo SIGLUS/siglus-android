@@ -32,13 +32,10 @@ public class AdditionalProductProgramRepository {
   @Inject
   private final DbUtil dbUtil;
 
-  private final Context context;
-
   @Inject
   public AdditionalProductProgramRepository(DbUtil dbUtil, Context context) {
     this.genericDao = new GenericDao<>(AdditionalProductProgram.class, context);
     this.dbUtil = dbUtil;
-    this.context = context;
   }
 
   public AdditionalProductProgram queryByProgramCodeAndProductCode(String programCode, String productCode)

@@ -22,13 +22,19 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.openlmis.core.utils.Constants;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 @DatabaseTable(tableName = "regime_items")
 public class RegimenItem extends BaseModel {
@@ -80,7 +86,8 @@ public class RegimenItem extends BaseModel {
   private String getInformation(String regimenCode) {
     if (regimenCode.contains("US/APE")) {
       return Constants.TREATMENTS_ATTENDED;
-    } else return Constants.EXISTENT_STOCK;
+    }
+    return Constants.EXISTENT_STOCK;
   }
 
 }
