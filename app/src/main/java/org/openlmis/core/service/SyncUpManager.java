@@ -503,28 +503,6 @@ public class SyncUpManager {
         .subscribe(this::markProgramDataFormsSynced);
   }
 
-  public void fakeSyncRapidTestForms() {
-    List<ProgramDataForm> forms;
-    try {
-      Log.d(TAG, "===> Preparing RapidTestForms for Syncing");
-      forms = FluentIterable
-          .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_PROGRAM_CODE))
-          .filter(programDataForm -> !programDataForm.isSynced()
-              && programDataForm.getStatus().equals(Status.AUTHORIZED))
-          .toList();
-
-      Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");
-
-    } catch (LMISException e) {
-      new LMISException(e, "SyncUpManager.fakeSyncRapidTestForms").reportToFabric();
-      return;
-    }
-
-    for (ProgramDataForm form : forms) {
-      markProgramDataFormsSynced(form);
-    }
-  }
-
   private void markProgramDataFormsSynced(ProgramDataForm programDataForm) {
     programDataForm.setSynced(true);
     try {

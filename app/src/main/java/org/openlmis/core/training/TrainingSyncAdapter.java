@@ -65,7 +65,6 @@ public class TrainingSyncAdapter {
       sharedPreferenceMgr.setSyncedVersion(true);
     }
     syncUpManager.fakeSyncUpCmms();
-    syncUpManager.fakeSyncRapidTestForms();
     sendSyncFinishedBroadcast();
   }
 
