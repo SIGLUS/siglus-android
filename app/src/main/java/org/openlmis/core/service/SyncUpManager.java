@@ -139,7 +139,6 @@ public class SyncUpManager {
         syncArchivedProducts();
       }
 
-      // syncRapidTestForms();
       // syncUpUnSyncedStockCardCodes();
       syncAppVersion();
       syncUpCmms();
@@ -479,37 +478,4 @@ public class SyncUpManager {
     }
   }
 
-  public void syncRapidTestForms() {
-    List<ProgramDataForm> forms;
-    try {
-      Log.d(TAG, "===> Preparing RapidTestForms for Syncing");
-      forms = FluentIterable
-          .from(programDataFormRepository.listByProgramCode(Constants.RAPID_TEST_PROGRAM_CODE))
-          .filter(programDataForm -> !programDataForm.isSynced()
-              && programDataForm.getStatus().equals(Status.AUTHORIZED))
-          .toList();
-
-      Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");
-
-      if (forms.isEmpty()) {
-        return;
-      }
-    } catch (LMISException e) {
-      new LMISException(e, "SyncUpManager.syncRapidTestForms").reportToFabric();
-      return;
-    }
-    Observable.from(forms)
-        .filter(this::submitProgramDataForm)
-        .subscribe(this::markProgramDataFormsSynced);
-  }
-
-  private void markProgramDataFormsSynced(ProgramDataForm programDataForm) {
-    programDataForm.setSynced(true);
-    try {
-      programDataFormRepository.batchCreateOrUpdate(programDataForm);
-    } catch (SQLException e) {
-      new LMISException(e, "SyncUpManager.markProgramDataFormsSynced").reportToFabric();
-      Log.e(TAG, "===> SyncRapidTests : mark synced failed -> " + programDataForm.getId());
-    }
-  }
 }
