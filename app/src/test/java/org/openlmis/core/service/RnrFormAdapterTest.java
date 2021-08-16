@@ -26,6 +26,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.utils.Constants.AL_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.MMIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.Constants.VIA_PROGRAM_CODE;
 import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
@@ -36,6 +37,7 @@ import com.google.gson.JsonParser;
 import com.google.inject.AbstractModule;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 import org.junit.Before;
@@ -48,6 +50,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
+import org.openlmis.core.model.Regimen.RegimeType;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.RnRForm;
@@ -59,6 +62,7 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
@@ -355,6 +359,23 @@ public class RnrFormAdapterTest {
     assertNotNull(rnrJson.getAsJsonObject().get("actualEndDate"));
   }
 
+  @Test
+  public void shouldSerializeMalariaRnrFormForUsageInformationLineItems() {
+    // given
+    RnRForm rnRForm = new RnRForm();
+    rnRForm.setProgram(generateProgram(AL_PROGRAM_CODE, "Malaria"));
+    rnRForm.setEmergency(false);
+    rnRForm.setRegimenItemListWrapper(generateRegimenItems());
+    rnRForm.setPeriodBegin(DateUtil.parseString("2015-10-15 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+    rnRForm.setPeriodEnd(DateUtil.parseString("2015-11-15 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+
+    // when
+    JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
+
+    // then
+    assertNotNull(rnrJson.getAsJsonObject().get("usageInformationLineItems"));
+  }
+
   public class MyTestModule extends AbstractModule {
 
     @Override
@@ -377,6 +398,24 @@ public class RnrFormAdapterTest {
   private RnRForm deserializeMMIAResponse() {
     String json = JsonFileReader.readJson(getClass(), "RequisitionMMIAResponse.json");
     return rnrFormAdapter.deserialize(new JsonParser().parse(json), null, null);
+  }
+
+  private List<RegimenItem> generateRegimenItems() {
+    Regimen regimen = Regimen.builder()
+        .code("AL US/APE Malaria 1x6")
+        .name("Consultas AL US/APE Malaria 1x6")
+        .type(RegimeType.Paediatrics)
+        .build();
+
+    RegimenItem regimenItem = RegimenItem.builder()
+        .hf(1L)
+        .chw(2L)
+        .amount(3L)
+        .regimen(regimen)
+        .build();
+
+    return Collections.singletonList(regimenItem);
+
   }
 
 }
