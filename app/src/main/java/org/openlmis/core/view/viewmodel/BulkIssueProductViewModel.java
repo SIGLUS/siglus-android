@@ -28,10 +28,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
+import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
-import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
@@ -49,7 +53,7 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
 
   private boolean showErrorFlag;
 
-  private Product product;
+  private StockCard stockCard;
 
   private Long requested;
 
@@ -57,9 +61,9 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
 
   private List<BulkIssueLotViewModel> lotViewModels;
 
-  public static BulkIssueProductViewModel build(Product product, List<LotOnHand> lotOnHandList) {
+  public static BulkIssueProductViewModel build(StockCard stockCard, List<LotOnHand> lotOnHandList) {
     return new BulkIssueProductViewModelBuilder()
-        .product(product)
+        .stockCard(stockCard)
         .lotViewModels(FluentIterable
             .from(lotOnHandList)
             .transform(BulkIssueLotViewModel::build)
@@ -70,7 +74,6 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
   public void restoreFromDraft(DraftBulkIssueProduct draftProduct) {
     setDraftProduct(draftProduct);
     setRequested(draftProduct.getRequested());
-    setProduct(draftProduct.getProduct());
     if (CollectionUtils.isEmpty(lotViewModels)) {
       setDone(draftProduct.isDone());
       return;
@@ -100,7 +103,7 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
     return draftProduct
         .setDone(done)
         .setMovementReasonCode(movementReasonCode)
-        .setProduct(product)
+        .setStockCard(stockCard)
         .setRequested(requested)
         .setDocumentNumber(documentNumber)
         .setDraftLotListWrapper(FluentIterable
@@ -109,9 +112,45 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
             .toList());
   }
 
+  public StockMovementItem convertToMovement(String movementReasonCode, String documentNumber) {
+    StockMovementItem stockMovementItem = new StockMovementItem();
+    stockMovementItem.setStockOnHand(stockCard.calculateSOHFromLots());
+    stockMovementItem.setMovementType(MovementType.ISSUE);
+    stockMovementItem.setRequested(requested);
+    stockMovementItem.setStockCard(stockCard);
+    stockMovementItem.setReason(movementReasonCode);
+    stockMovementItem.setDocumentNumber(documentNumber);
+    stockMovementItem.setMovementDate(DateUtil.getCurrentDate());
+    List<LotMovementItem> lotMovementItemListWrapper = stockMovementItem.getLotMovementItemListWrapper();
+    long movementQuantity = 0;
+    for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
+      if (lotViewModel.getAmount() != null) {
+        movementQuantity += lotViewModel.getAmount();
+      }
+      LotMovementItem lotMovementItem = lotViewModel.convertToMovement();
+      lotMovementItem.setReason(movementReasonCode);
+      lotMovementItem.setDocumentNumber(documentNumber);
+      lotMovementItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
+      lotMovementItemListWrapper.add(lotMovementItem);
+    }
+    stockMovementItem.setMovementQuantity(movementQuantity);
+    stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - movementQuantity);
+    stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+    return stockMovementItem;
+  }
+
   public boolean validate() {
+    updateErrorBannerFlag();
+    if (isAllLotsExpired() || isEmptyIssue()) {
+      return false;
+    }
+    for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
+      if (lotViewModel.isBiggerThanSoh()) {
+        return false;
+      }
+    }
     setDone(true);
-    return done;
+    return true;
   }
 
   public void setDone(boolean isDone) {
@@ -138,7 +177,7 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
 
   @Override
   public int compareTo(BulkIssueProductViewModel o) {
-    return product.compareTo(o.getProduct());
+    return stockCard.compareTo(o.getStockCard());
   }
 
   public boolean hasChanged() {

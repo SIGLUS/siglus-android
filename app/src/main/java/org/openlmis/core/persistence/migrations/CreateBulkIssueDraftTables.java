@@ -8,7 +8,7 @@ public class CreateBulkIssueDraftTables extends Migration {
   public void up() {
     execSQL("CREATE TABLE `draft_bulk_issue_products` " +
         "( `requested` BIGINT , " +
-        "`product_id` BIGINT , " +
+        "`stockCard_id` BIGINT , " +
         "`createdAt` VARCHAR NOT NULL , " +
         "`updatedAt` VARCHAR NOT NULL , " +
         "`id` INTEGER PRIMARY KEY AUTOINCREMENT , " +

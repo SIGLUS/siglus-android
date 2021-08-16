@@ -22,13 +22,18 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.table.TableUtils;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -40,6 +45,9 @@ public class BulkIssueRepository {
 
   @Inject
   private final DbUtil dbUtil;
+
+  @Inject
+  private StockRepository stockRepository;
 
   @Inject
   public BulkIssueRepository(Context context, DbUtil dbUtil) {
@@ -66,8 +74,8 @@ public class BulkIssueRepository {
   private List<DraftBulkIssueProduct> queryUsableProductDraft() throws LMISException {
     return dbUtil.withDaoAsBatch(DraftBulkIssueProduct.class, dao -> {
       String rawSql = "SELECT * FROM draft_bulk_issue_products "
-          + "WHERE product_id IN (SELECT product_id FROM stock_cards WHERE stockOnHand > 0) "
-          + "AND product_id IN (SELECT id from products WHERE isKit = 0 AND isArchived = 0); ";
+          + "WHERE stockCard_id IN (SELECT id FROM stock_cards WHERE stockOnHand > 0 "
+          + "AND product_id IN (SELECT id from products WHERE isKit = 0 AND isArchived = 0)); ";
       return dao.queryRaw(rawSql, dao.getRawRowMapper()).getResults();
     });
   }
@@ -92,6 +100,24 @@ public class BulkIssueRepository {
         draftProductGenericDao.createOrUpdate(draftProduct);
         for (DraftBulkIssueLot lotItem : draftProduct.getDraftLotListWrapper()) {
           draftLotGenericDao.createOrUpdate(lotItem);
+        }
+      }
+      return null;
+    });
+  }
+
+  public void saveMovement(List<StockMovementItem> stockMovementItems) throws LMISException {
+    dbUtil.withDaoAsBatch(DraftBulkIssueProduct.class, dao -> {
+      for (StockMovementItem stockMovementItem : stockMovementItems) {
+        StockCard stockCard = stockMovementItem.getStockCard();
+        Date lastMovementCreateDate = stockCard.getLastStockMovementCreatedTime();
+        if (lastMovementCreateDate != null && stockMovementItem.getCreatedAt().before(lastMovementCreateDate)) {
+          throw new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_invalid_stock_movement));
+        }
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+        if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
+          SharedPreferenceMgr.getInstance()
+              .setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
         }
       }
       return null;

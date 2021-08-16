@@ -34,6 +34,7 @@ import org.openlmis.core.model.DraftBulkIssueProduct;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.BulkIssueRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
@@ -107,6 +108,30 @@ public class BulkIssuePresenter extends Presenter {
     }
   };
 
+  Observer<Object> doIssueSubscribe = new Observer<Object>() {
+    @Override
+    public void onCompleted() {
+      bulkIssueView.loaded();
+      bulkIssueView.onSaveMovementSuccess();
+    }
+
+    @Override
+    public void onError(Throwable e) {
+      if (e instanceof LMISException) {
+        bulkIssueView.onSaveMovementFailed((LMISException) e);
+      } else {
+        LMISException unknownException = new LMISException(e, "unknown exception when save bulk issue movement");
+        unknownException.reportToFabric();
+        bulkIssueView.onSaveMovementFailed(unknownException);
+      }
+    }
+
+    @Override
+    public void onNext(Object o) {
+      // do nothing
+    }
+  };
+
   @Override
   public void attachView(BaseView v) {
     this.bulkIssueView = (BulkIssueView) v;
@@ -139,15 +164,23 @@ public class BulkIssuePresenter extends Presenter {
     subscriptions.add(addProductsSubscription);
   }
 
-  public List<String> getAddedProductCodes() {
+  public List<String> getAddedProductCodeList() {
     return FluentIterable.from(currentViewModels)
-        .transform(viewModel -> Objects.requireNonNull(viewModel).getProduct().getCode())
+        .transform(viewModel -> Objects.requireNonNull(viewModel).getStockCard().getProduct().getCode())
         .toList();
+  }
+
+  public long[] getEffectedStockCardIds() {
+    long[] effectedStockCardIds = new long[currentViewModels.size()];
+    for (int i = 0; i < currentViewModels.size(); i++) {
+      effectedStockCardIds[i] = currentViewModels.get(i).getStockCard().getId();
+    }
+    return effectedStockCardIds;
   }
 
   public void saveDraft() {
     bulkIssueView.loading();
-    Observable.create(subscriber -> {
+    Subscription saveDraftSubscription = Observable.create(subscriber -> {
       try {
         ImmutableList<DraftBulkIssueProduct> draftProducts = FluentIterable.from(currentViewModels)
             .transform(viewModel -> viewModel.convertToDraft(documentNumber, movementReasonCode))
@@ -162,6 +195,7 @@ public class BulkIssuePresenter extends Presenter {
     }).observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
         .subscribe(saveDraftSubscribe);
+    subscriptions.add(saveDraftSubscription);
   }
 
   public void deleteDraft() {
@@ -189,6 +223,26 @@ public class BulkIssuePresenter extends Presenter {
     }
   }
 
+  public void doIssue(String signature) {
+    Subscription doIssueSubscription = Observable.create(subscriber -> {
+      try {
+        bulkIssueRepository.saveMovement(FluentIterable.from(currentViewModels).transform(productViewModel -> {
+          StockMovementItem stockMovementItem = productViewModel.convertToMovement(movementReasonCode, documentNumber);
+          stockMovementItem.setSignature(signature);
+          return stockMovementItem;
+        }).toList());
+        deleteDraft();
+        subscriber.onNext(null);
+        subscriber.onCompleted();
+      } catch (LMISException e) {
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .subscribe(doIssueSubscribe);
+    subscriptions.add(doIssueSubscription);
+  }
+
   private Observable<List<BulkIssueProductViewModel>> getObservableFromProducts(List<Product> products) {
     return Observable.create(subscriber -> {
       try {
@@ -196,7 +250,8 @@ public class BulkIssuePresenter extends Presenter {
             .from(products)
             .transform(BaseModel::getId)
             .toList();
-        subscriber.onNext(createViewModelFromProducts(productIds));
+        List<StockCard> stockCards = stockRepository.listStockCardsByProductIds(productIds);
+        subscriber.onNext(createViewModelFromStockCards(stockCards));
         subscriber.onCompleted();
       } catch (LMISException e) {
         new LMISException(e, "add products failed").reportToFabric();
@@ -215,14 +270,14 @@ public class BulkIssuePresenter extends Presenter {
         }
         documentNumber = draftBulkIssueProducts.get(0).getDocumentNumber();
         movementReasonCode = draftBulkIssueProducts.get(0).getMovementReasonCode();
-        ImmutableList<Long> productIds = FluentIterable
+        ImmutableList<StockCard> productIds = FluentIterable
             .from(draftBulkIssueProducts)
-            .transform(draftProduct -> draftProduct.getProduct().getId())
+            .transform(draftProduct -> draftProduct.getStockCard())
             .toList();
-        ArrayList<BulkIssueProductViewModel> viewModels = createViewModelFromProducts(productIds);
+        List<BulkIssueProductViewModel> viewModels = createViewModelFromStockCards(productIds);
         for (BulkIssueProductViewModel viewModel : viewModels) {
           for (DraftBulkIssueProduct draftProduct : draftBulkIssueProducts) {
-            if (Objects.equals(viewModel.getProduct(), draftProduct.getProduct())) {
+            if (Objects.equals(viewModel.getStockCard(), draftProduct.getStockCard())) {
               viewModel.restoreFromDraft(draftProduct);
               break;
             }
@@ -238,15 +293,14 @@ public class BulkIssuePresenter extends Presenter {
   }
 
   @NonNull
-  private ArrayList<BulkIssueProductViewModel> createViewModelFromProducts(List<Long> productIds) throws LMISException {
+  private List<BulkIssueProductViewModel> createViewModelFromStockCards(List<StockCard> stockCards) {
     ArrayList<BulkIssueProductViewModel> viewModels = new ArrayList<>();
-    List<StockCard> stockCards = stockRepository.listStockCardsByProductIds(productIds);
     for (StockCard stockCard : stockCards) {
       List<LotOnHand> lotOnHandList = stockCard.getLotOnHandListWrapper();
       if (lotOnHandList.isEmpty()) {
         continue;
       }
-      viewModels.add(BulkIssueProductViewModel.build(stockCard.getProduct(), lotOnHandList));
+      viewModels.add(BulkIssueProductViewModel.build(stockCard, lotOnHandList));
     }
     return viewModels;
   }
@@ -258,5 +312,9 @@ public class BulkIssuePresenter extends Presenter {
     void onLoadViewModelsFailed(Throwable throwable);
 
     void onSaveDraftFinished(boolean succeeded);
+
+    void onSaveMovementSuccess();
+
+    void onSaveMovementFailed(LMISException e);
   }
 }

@@ -54,7 +54,17 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
   }
 
   public int validateAll() {
-    return -1;
+    int position = -1;
+    for (int i = 0; i < getData().size(); i++) {
+      if (getData().get(i).validate()) {
+        continue;
+      }
+      if (position == -1) {
+        position = i;
+      }
+    }
+    notifyDataSetChanged();
+    return position;
   }
 
   protected class BulkIssueProductViewHolder extends BaseViewHolder implements AmountChangeListener {
@@ -80,20 +90,21 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
     public void populate(BulkIssueProductViewModel viewModel) {
       this.viewModel = viewModel;
       ivTrashcan = getView(R.id.iv_trashcan);
-      tvErrorBanner = getView(R.id.tv_error_banner);
-      tvWarningBanner = getView(R.id.tv_warning_banner);
       getView(R.id.rl_trashcan).setOnClickListener(getRemoveClickListener());
       initLots();
       if (viewModel.isDone()) {
         setText(R.id.tv_requested, itemView.getContext().getString(R.string.label_requested)
             + ": "
             + (viewModel.getRequested() == null ? "0" : viewModel.getRequested().toString()));
-        setText(R.id.tv_product_title, viewModel.getProduct().getFormattedProductNameWithoutStrengthAndType());
+        setText(R.id.tv_product_title,
+            viewModel.getStockCard().getProduct().getFormattedProductNameWithoutStrengthAndType());
         getView(R.id.tv_edit).setOnClickListener(getEditClickListener());
       } else {
+        tvErrorBanner = getView(R.id.tv_error_banner);
+        tvWarningBanner = getView(R.id.tv_warning_banner);
         updateBanner();
         getView(R.id.tv_verified).setOnClickListener(getVerifyClickListener());
-        setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
+        setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getStockCard().getProduct()));
         EditText etRequested = getView(R.id.et_requested);
         SingleTextWatcher requestedTextWatcher = getRequestedTextWatcher();
         etRequested.removeTextChangedListener(requestedTextWatcher);
@@ -149,6 +160,8 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
         public void onSingleClick(View v) {
           if (viewModel.validate()) {
             notifyItemChanged(getLayoutPosition());
+          } else {
+            updateBanner();
           }
         }
       };

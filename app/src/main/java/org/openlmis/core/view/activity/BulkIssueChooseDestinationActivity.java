@@ -71,6 +71,15 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
   @Setter(AccessLevel.PACKAGE)
   private MovementReason chosenReason = null;
 
+  private final ActivityResultLauncher<Intent> bulkIssueActivityResultLauncher = registerForActivityResult(
+      new StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          setResult(Activity.RESULT_OK, result.getData());
+        }
+        finish();
+      }
+  );
+
   private final ActivityResultLauncher<Intent> addProductsActivityResultLauncher = registerForActivityResult(
       new StartActivityForResult(), result -> {
         if (result.getResultCode() != Activity.RESULT_OK) {
@@ -82,8 +91,7 @@ public class BulkIssueChooseDestinationActivity extends BaseActivity {
         if (StringUtils.isNotBlank(etDocumentNumber.getText())) {
           intent.putExtra(DOCUMENT_NUMBER, etDocumentNumber.getText().toString());
         }
-        startActivity(intent);
-        finish();
+        bulkIssueActivityResultLauncher.launch(intent);
       });
 
   @Override

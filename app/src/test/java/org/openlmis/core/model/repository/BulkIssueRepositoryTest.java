@@ -49,9 +49,7 @@ public class BulkIssueRepositoryTest {
 
   LotRepository lotRepository;
 
-  private Product product;
-
-  private LotOnHand lotOnHand;
+  private StockCard stockCard;
 
   @Before
   public void setUp() throws Exception {
@@ -96,7 +94,7 @@ public class BulkIssueRepositoryTest {
     Assert.assertEquals(1, draftBulkIssueProducts.size());
 
     DraftBulkIssueProduct actualDraftProduct = draftBulkIssueProducts.get(0);
-    actualDraftProduct.setProduct(draftProduct.getProduct());
+    actualDraftProduct.setStockCard(draftProduct.getStockCard());
     Assert.assertEquals(draftProduct, actualDraftProduct);
 
     Assert.assertEquals(1, draftBulkIssueProducts.get(0).getDraftLotListWrapper().size());
@@ -120,15 +118,15 @@ public class BulkIssueRepositoryTest {
   }
 
   private void prepareData() throws LMISException {
-    product = ProductBuilder.buildAdultProduct();
+    Product product = ProductBuilder.buildAdultProduct();
     product.setActive(true);
     productRepository.createOrUpdate(product);
-    StockCard stockCard = new StockCardBuilder()
+    stockCard = new StockCardBuilder()
         .setProduct(product)
         .setStockOnHand(100)
         .build();
     stockRepository.createOrUpdate(stockCard);
-    lotOnHand = new LotOnHand();
+    LotOnHand lotOnHand = new LotOnHand();
     lotOnHand.setStockCard(stockCard);
     lotOnHand.setQuantityOnHand(100L);
     lotOnHand.setLot(LotBuilder.create()
@@ -144,7 +142,7 @@ public class BulkIssueRepositoryTest {
         .documentNumber("123")
         .done(false)
         .movementReasonCode("movementReason")
-        .product(product)
+        .stockCard(stockCard)
         .requested(10L)
         .build();
   }

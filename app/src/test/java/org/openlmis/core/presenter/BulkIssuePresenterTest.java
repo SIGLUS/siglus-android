@@ -119,7 +119,7 @@ public class BulkIssuePresenterTest {
     StockCard stockCard = StockCardBuilder.buildStockCard();
     stockCard.setLotOnHandListWrapper(Collections.singletonList(mockLotOnHand));
     DraftBulkIssueProduct mockDraftProduct = mock(DraftBulkIssueProduct.class);
-    when(mockDraftProduct.getProduct()).thenReturn(stockCard.getProduct());
+    when(mockDraftProduct.getStockCard()).thenReturn(stockCard);
     when(mockBulkIssueRepository.queryUsableProductAndLotDraft()).thenReturn(Collections.singletonList(mockDraftProduct));
     when(mockStockRepository.listStockCardsByProductIds(any())).thenReturn(Collections.singletonList(stockCard));
     when(mockLot.getLotNumber()).thenReturn("lotNumber");
@@ -165,14 +165,16 @@ public class BulkIssuePresenterTest {
   public void shouldGetCorrectProductCodes() {
     // given
     BulkIssueProductViewModel mockViewModel = mock(BulkIssueProductViewModel.class);
+    StockCard mockStockCard = mock(StockCard.class);
     Product mockProduct = mock(Product.class);
-    when(mockViewModel.getProduct()).thenReturn(mockProduct);
+    when(mockViewModel.getStockCard()).thenReturn(mockStockCard);
+    when(mockStockCard.getProduct()).thenReturn(mockProduct);
     when(mockProduct.getCode()).thenReturn("productCode");
     presenter.getCurrentViewModels().clear();
     presenter.getCurrentViewModels().add(mockViewModel);
 
     // when
-    List<String> addedProductCodes = presenter.getAddedProductCodes();
+    List<String> addedProductCodes = presenter.getAddedProductCodeList();
 
     // then
     Assert.assertEquals(1, addedProductCodes.size());

@@ -35,16 +35,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.BulkIssuePresenter;
 import org.openlmis.core.presenter.BulkIssuePresenter.BulkIssueView;
+import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.widget.BulkEntriesSignatureDialog;
+import org.openlmis.core.view.widget.SignatureDialog.DialogDelegate;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -102,8 +108,20 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
       if (v.getId() == R.id.btn_save) {
         bulkIssuePresenter.saveDraft();
       } else if (v.getId() == R.id.btn_complete) {
-        // TODO after complete clicked
-        ToastUtil.show("complete");
+        int position = bulkIssueAdapter.validateAll();
+        if (position >= 0) {
+          rvBulkIssue.smoothScrollToPosition(position);
+        } else {
+          BulkEntriesSignatureDialog signatureDialog = new BulkEntriesSignatureDialog();
+          signatureDialog.setArguments(BulkEntriesSignatureDialog.getBundleToMe(DateUtil.formatDate(new Date())));
+          signatureDialog.setDelegate(new DialogDelegate() {
+            @Override
+            public void onSign(String sign) {
+              bulkIssuePresenter.doIssue(sign);
+            }
+          });
+          signatureDialog.show(getSupportFragmentManager());
+        }
       }
     }
   };
@@ -146,6 +164,20 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
   }
 
   @Override
+  public void onSaveMovementSuccess() {
+    Intent intent = new Intent();
+    intent.putExtra(Constants.PARAM_STOCK_CARD_ID_ARRAY, bulkIssuePresenter.getEffectedStockCardIds());
+    setResult(Activity.RESULT_OK, intent);
+    ToastUtil.show(R.string.msg_complete_successfully);
+    finish();
+  }
+
+  @Override
+  public void onSaveMovementFailed(LMISException e) {
+    ToastUtil.show(e.getMsg());
+  }
+
+  @Override
   public void onBackPressed() {
     if (bulkIssuePresenter.needConfirm()) {
       showConfirmDialog();
@@ -173,7 +205,7 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
 
   private void openAddProducts() {
     Intent intent = new Intent(getApplicationContext(), AddProductsToBulkEntriesActivity.class);
-    intent.putExtra(SELECTED_PRODUCTS, (Serializable) bulkIssuePresenter.getAddedProductCodes());
+    intent.putExtra(SELECTED_PRODUCTS, (Serializable) bulkIssuePresenter.getAddedProductCodeList());
     intent.putExtra(IS_FROM_BULK_ISSUE, true);
     addProductsLauncher.launch(intent);
   }

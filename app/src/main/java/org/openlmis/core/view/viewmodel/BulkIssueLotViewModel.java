@@ -27,6 +27,7 @@ import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
 import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
+import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 
 @Data
@@ -60,6 +61,13 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel>,
         .setAmount(amount)
         .setLotNumber(lotOnHand.getLot().getLotNumber())
         .setDraftBulkIssueProduct(draftProduct);
+  }
+
+  public LotMovementItem convertToMovement() {
+    LotMovementItem lotMovementItem = new LotMovementItem();
+    lotMovementItem.setLot(lotOnHand.getLot());
+    lotMovementItem.setMovementQuantity(amount);
+    return lotMovementItem;
   }
 
   @Override

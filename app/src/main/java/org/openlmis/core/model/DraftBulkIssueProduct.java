@@ -61,7 +61,7 @@ public class DraftBulkIssueProduct extends BaseModel implements Comparable<Draft
 
   @Include
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
-  private Product product;
+  private StockCard stockCard;
 
   @ForeignCollectionField(eager = true)
   private ForeignCollection<DraftBulkIssueLot> foreignDraftLots;
@@ -74,6 +74,6 @@ public class DraftBulkIssueProduct extends BaseModel implements Comparable<Draft
 
   @Override
   public int compareTo(DraftBulkIssueProduct o) {
-    return product.compareTo(o.getProduct());
+    return stockCard.compareTo(o.getStockCard());
   }
 }

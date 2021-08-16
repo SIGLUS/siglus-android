@@ -159,14 +159,4 @@ public class BulkEntriesSignatureDialog extends BaseDialogFragment {
   protected boolean checkSignature(String signature) {
     return signature.length() >= 3 && signature.length() <= 5 && signature.matches("\\D+");
   }
-
-  public interface DialogDelegate {
-
-    void onCancel();
-
-    void onSign(String sign);
-  }
-
-
-
 }
