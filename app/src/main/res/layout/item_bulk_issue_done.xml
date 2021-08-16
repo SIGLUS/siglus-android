@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:background="@color/color_white"
   android:layout_marginTop="@dimen/px_8"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:orientation="vertical"
+  android:gravity="center_horizontal"
+  android:divider="@drawable/shape_bulk_issue_item_decoration"
+  android:showDividers="middle"
   xmlns:tools="http://schemas.android.com/tools">
 
   <LinearLayout
@@ -12,7 +15,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/px_84"
-    app:layout_constraintTop_toTopOf="parent"
     android:gravity="center_vertical">
 
     <ImageView
@@ -39,6 +41,7 @@
       android:layout_height="match_parent"
       android:paddingHorizontal="@dimen/px_24">
       <ImageView
+        android:id="@+id/iv_trashcan"
         android:layout_width="@dimen/px_24"
         android:layout_height="@dimen/px_24"
         android:src="@drawable/ic_trashcan"
@@ -46,20 +49,23 @@
     </RelativeLayout>
   </LinearLayout>
 
-  <View
-    android:id="@+id/v_title_divider_line"
+  <TextView
+    android:id="@+id/tv_requested"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/px_1"
-    android:background="@drawable/shape_bulk_issue_item_decoration"
-    app:layout_constraintTop_toBottomOf="@id/ll_product_title" />
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/px_24"
+    tools:text="Requested: 100"
+    android:textColor="@color/color_6b6b6b"
+    android:textSize="@dimen/px_18"
+    android:layout_marginVertical="@dimen/px_8"
+    android:textStyle="bold" />
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv_lots"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:listitem="@layout/item_bulk_issue_lot_done"
-    tools:itemCount="3"
-    app:layout_constraintTop_toBottomOf="@id/v_title_divider_line" />
+    tools:itemCount="3" />
 
   <TextView
     android:id="@+id/tv_edit"
@@ -70,9 +76,5 @@
     android:gravity="center"
     android:textSize="@dimen/px_16"
     android:background="@drawable/border_round_blue"
-    android:textColor="@color/color_form_button_blue"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/rv_lots" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:textColor="@color/color_form_button_blue" />
+</LinearLayout>

@@ -21,7 +21,9 @@ package org.openlmis.core.view.adapter;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -34,10 +36,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
+import org.openlmis.core.view.adapter.BulkIssueAdapter.BulkIssueProductViewHolder;
+import org.openlmis.core.view.listener.AmountChangeListener;
 import org.openlmis.core.view.viewmodel.BulkIssueProductViewModel;
 import org.openlmis.core.view.widget.SingleClickButtonListener;
 
-public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProductViewModel, BaseViewHolder> {
+public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProductViewModel, BulkIssueProductViewHolder> {
 
   public BulkIssueAdapter() {
     addItemType(BulkIssueProductViewModel.TYPE_EDIT, R.layout.item_bulk_issue_edit);
@@ -45,56 +49,127 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
   }
 
   @Override
-  protected void convert(@NonNull BaseViewHolder holder, BulkIssueProductViewModel viewModel) {
-    holder.getView(R.id.rl_trashcan).setOnClickListener(new SingleClickButtonListener() {
-      @Override
-      public void onSingleClick(View v) {
-        removeAt(holder.getLayoutPosition());
+  protected void convert(@NonNull BulkIssueProductViewHolder holder, BulkIssueProductViewModel viewModel) {
+    holder.populate(viewModel);
+  }
+
+  public int validateAll() {
+    return -1;
+  }
+
+  protected class BulkIssueProductViewHolder extends BaseViewHolder implements AmountChangeListener {
+
+    private BulkIssueProductViewModel viewModel;
+
+    private ImageView ivTrashcan;
+
+    private TextView tvErrorBanner;
+
+    private TextView tvWarningBanner;
+
+    public BulkIssueProductViewHolder(@NonNull View view) {
+      super(view);
+    }
+
+    @Override
+    public void onAmountChange(String amount) {
+      viewModel.updateBannerRes();
+      updateBanner();
+    }
+
+    public void populate(BulkIssueProductViewModel viewModel) {
+      this.viewModel = viewModel;
+      ivTrashcan = getView(R.id.iv_trashcan);
+      tvErrorBanner = getView(R.id.tv_error_banner);
+      tvWarningBanner = getView(R.id.tv_warning_banner);
+      getView(R.id.rl_trashcan).setOnClickListener(getRemoveClickListener());
+      initLots();
+      if (viewModel.isDone()) {
+        setText(R.id.tv_requested, itemView.getContext().getString(R.string.label_requested)
+            + ": "
+            + (viewModel.getRequested() == null ? "0" : viewModel.getRequested().toString()));
+        setText(R.id.tv_product_title, viewModel.getProduct().getFormattedProductNameWithoutStrengthAndType());
+        getView(R.id.tv_edit).setOnClickListener(getEditClickListener());
+      } else {
+        updateBanner();
+        getView(R.id.tv_verified).setOnClickListener(getVerifyClickListener());
+        setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
+        EditText etRequested = getView(R.id.et_requested);
+        SingleTextWatcher requestedTextWatcher = getRequestedTextWatcher();
+        etRequested.removeTextChangedListener(requestedTextWatcher);
+        etRequested.addTextChangedListener(requestedTextWatcher);
+        etRequested.setText(viewModel.getRequested() == null ? "" : viewModel.getRequested().toString());
       }
-    });
+    }
 
-    // init lots
-    RecyclerView rvLots = holder.getView(R.id.rv_lots);
-    rvLots.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
-    BulkIssueLotAdapter lotAdapter = new BulkIssueLotAdapter();
-    rvLots.setAdapter(lotAdapter);
+    private void initLots() {
+      // init lots
+      RecyclerView rvLots = getView(R.id.rv_lots);
+      rvLots.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+      BulkIssueLotAdapter lotAdapter = new BulkIssueLotAdapter();
+      rvLots.setAdapter(lotAdapter);
+      if (!viewModel.isDone()) {
+        DividerItemDecoration decor = new DividerItemDecoration(itemView.getContext(), LinearLayout.VERTICAL);
+        decor.setDrawable(Objects.requireNonNull(ContextCompat
+            .getDrawable(itemView.getContext(), R.drawable.shape_bulk_issue_item_decoration)));
+        if (rvLots.getItemDecorationCount() == 0) {
+          rvLots.addItemDecoration(decor);
+        }
+      }
+      lotAdapter.setAmountChangeListener(this);
+      lotAdapter.setList(viewModel.getFilteredLotViewModels());
+    }
 
-    if (viewModel.isDone()) {
-      holder.setText(R.id.tv_product_title, viewModel.getProduct().getFormattedProductNameWithoutStrengthAndType());
-      holder.getView(R.id.tv_edit).setOnClickListener(new SingleClickButtonListener() {
+    private void updateBanner() {
+      int warningRes = viewModel.getWarningRes();
+      if (warningRes == 0) {
+        tvWarningBanner.setVisibility(View.GONE);
+      } else {
+        tvWarningBanner.setVisibility(View.VISIBLE);
+        tvWarningBanner.setText(warningRes);
+      }
+
+      ivTrashcan.setImageResource(viewModel.shouldShowError() ? R.drawable.ic_trashcan_red : R.drawable.ic_trashcan);
+      tvErrorBanner.setVisibility(viewModel.shouldShowError() ? View.VISIBLE : View.GONE);
+    }
+
+    private SingleClickButtonListener getEditClickListener() {
+      return new SingleClickButtonListener() {
         @Override
         public void onSingleClick(View v) {
           viewModel.setDone(false);
-          notifyItemChanged(holder.getLayoutPosition());
+          notifyItemChanged(getLayoutPosition());
         }
-      });
-    } else {
-      holder.setText(R.id.tv_product_title, TextStyleUtil.formatStyledProductName(viewModel.getProduct()));
-      EditText etRequested = holder.getView(R.id.et_requested);
-      etRequested.setText(viewModel.getRequested() == null ? "" : viewModel.getRequested().toString());
-      SingleTextWatcher requestedTextWatcher = new SingleTextWatcher() {
+      };
+    }
+
+    private SingleClickButtonListener getVerifyClickListener() {
+      return new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          if (viewModel.validate()) {
+            notifyItemChanged(getLayoutPosition());
+          }
+        }
+      };
+    }
+
+    private SingleClickButtonListener getRemoveClickListener() {
+      return new SingleClickButtonListener() {
+        @Override
+        public void onSingleClick(View v) {
+          removeAt(getLayoutPosition());
+        }
+      };
+    }
+
+    private SingleTextWatcher getRequestedTextWatcher() {
+      return new SingleTextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
           viewModel.setRequested(StringUtils.isBlank(s) ? null : Long.parseLong(s.toString()));
         }
       };
-      etRequested.removeTextChangedListener(requestedTextWatcher);
-      etRequested.addTextChangedListener(requestedTextWatcher);
-      holder.getView(R.id.tv_verified).setOnClickListener(new SingleClickButtonListener() {
-        @Override
-        public void onSingleClick(View v) {
-          if (viewModel.validate()) {
-            notifyItemChanged(holder.getLayoutPosition());
-          }
-        }
-      });
-      DividerItemDecoration decor = new DividerItemDecoration(holder.itemView.getContext(), LinearLayout.VERTICAL);
-      decor.setDrawable(Objects.requireNonNull(ContextCompat
-          .getDrawable(holder.itemView.getContext(), R.drawable.shape_bulk_issue_item_decoration)));
-      if (rvLots.getItemDecorationCount() == 0) {
-        rvLots.addItemDecoration(decor);
-      }
     }
-    lotAdapter.setList(viewModel.getFilteredLotViewModels());
   }
 }

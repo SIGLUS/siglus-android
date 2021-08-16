@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import androidx.annotation.StringRes;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,7 @@ import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.R;
 import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
 import org.openlmis.core.model.LotOnHand;
@@ -41,6 +43,11 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
   public static final int TYPE_DONE = 2;
 
   private boolean done;
+
+  @StringRes
+  private int warningRes;
+
+  private boolean showErrorFlag;
 
   private Product product;
 
@@ -62,19 +69,27 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
 
   public void restoreFromDraft(DraftBulkIssueProduct draftProduct) {
     setDraftProduct(draftProduct);
-    setDone(draftProduct.isDone());
     setRequested(draftProduct.getRequested());
     setProduct(draftProduct.getProduct());
     if (CollectionUtils.isEmpty(lotViewModels)) {
+      setDone(draftProduct.isDone());
       return;
     }
+    boolean hasIllegalAmount = false;
     for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
       for (DraftBulkIssueLot draftLot : draftProduct.getDraftLotListWrapper()) {
         if (!StringUtils.equals(draftLot.getLotNumber(), lotViewModel.getLotOnHand().getLot().getLotNumber())) {
           continue;
         }
-        lotViewModel.restoreFromDraft(draftProduct.isDone(), draftLot);
+        lotViewModel.restoreFromDraft(draftLot);
+        if (!hasIllegalAmount && lotViewModel.isBiggerThanSoh()) {
+          hasIllegalAmount = true;
+        }
       }
+    }
+    setDone(draftProduct.isDone() && !hasIllegalAmount);
+    for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
+      lotViewModel.setDone(isDone());
     }
   }
 
@@ -138,5 +153,62 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
     boolean requestedChanged = ObjectUtils.notEqual(draftRequested, currentRequested);
     boolean statusChanged = (draftProduct == null && done) || (draftProduct != null && draftProduct.isDone() != done);
     return requestedChanged || statusChanged;
+  }
+
+  public boolean shouldShowError() {
+    return showErrorFlag || isAllLotsExpired();
+  }
+
+  public void updateBannerRes() {
+    updateWarningBannerRes();
+    updateErrorBannerFlag();
+  }
+
+  private void updateWarningBannerRes() {
+    if (isAllLotsExpired()) {
+      return;
+    }
+    if (!lotViewModels.isEmpty() && lotViewModels.get(0).isExpired()) {
+      warningRes = R.string.alert_issue_with_expired;
+      return;
+    }
+    boolean hasEarlierConsumableLot = false;
+    for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
+      if (lotViewModel.getAmount() != null && lotViewModel.getAmount() > 0) {
+        if (hasEarlierConsumableLot) {
+          warningRes = R.string.alert_soonest_expire;
+          return;
+        }
+        if (lotViewModel.isSmallerThanSoh()) {
+          hasEarlierConsumableLot = true;
+        }
+      } else {
+        hasEarlierConsumableLot = true;
+      }
+    }
+    warningRes = 0;
+  }
+
+  private void updateErrorBannerFlag() {
+    showErrorFlag = isEmptyIssue();
+  }
+
+  private boolean isAllLotsExpired() {
+    if (lotViewModels.isEmpty()) {
+      return true;
+    }
+    return lotViewModels.get(lotViewModels.size() - 1).isExpired();
+  }
+
+  private boolean isEmptyIssue() {
+    for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
+      if (lotViewModel.isExpired()) {
+        continue;
+      }
+      if (lotViewModel.getAmount() != null && lotViewModel.getAmount() > 0) {
+        return false;
+      }
+    }
+    return true;
   }
 }

@@ -25,7 +25,6 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
-import org.joda.time.DateTime;
 import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
 import org.openlmis.core.model.LotOnHand;
@@ -48,10 +47,9 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel>,
         .build();
   }
 
-  public void restoreFromDraft(boolean isDone, DraftBulkIssueLot draftLot) {
+  public void restoreFromDraft(DraftBulkIssueLot draftLot) {
     setAmount(draftLot.getAmount());
     setDraftLotItem(draftLot);
-    setDone(isDone);
   }
 
   public DraftBulkIssueLot convertToDraft(DraftBulkIssueProduct draftProduct) {
@@ -72,7 +70,7 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel>,
   }
 
   public boolean isExpired() {
-    return new DateTime(lotOnHand.getLot().getExpirationDate()).plusDays(1).isBeforeNow();
+    return lotOnHand.getLot().isExpired();
   }
 
   public boolean hasChanged() {
@@ -87,6 +85,22 @@ public class BulkIssueLotViewModel implements Comparable<BulkIssueLotViewModel>,
 
   public boolean shouldDisplayWhenEdit() {
     return lotOnHand.getQuantityOnHand() != null && lotOnHand.getQuantityOnHand() > 0;
+  }
+
+  public boolean isBiggerThanSoh() {
+    if (amount == null || amount == 0) {
+      return false;
+    }
+    Long currentSoh = lotOnHand.getQuantityOnHand();
+    return currentSoh != null && amount > currentSoh;
+  }
+
+  public boolean isSmallerThanSoh() {
+    if (amount == null || amount == 0) {
+      return true;
+    }
+    Long currentSoh = lotOnHand.getQuantityOnHand();
+    return currentSoh != null && amount < currentSoh;
   }
 
   @Override

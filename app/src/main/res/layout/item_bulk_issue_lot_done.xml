@@ -34,7 +34,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/label_issued_amount"
-      android:textSize="@dimen/px_16"
+      android:textSize="@dimen/px_18"
       android:textColor="@color/color_6b6b6b" />
     <TextView
       android:id="@+id/tv_issued_amount"
@@ -42,7 +42,7 @@
       android:layout_height="wrap_content"
       android:textStyle="bold"
       tools:text="50"
-      android:textSize="@dimen/px_16"
+      android:textSize="@dimen/px_18"
       android:textColor="@color/color_6b6b6b" />
   </LinearLayout>
 
@@ -57,5 +57,5 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintLeft_toRightOf="@id/tv_lot_number"
     app:layout_constraintRight_toRightOf="parent"
-    android:visibility="invisible" />
+    android:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

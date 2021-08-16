@@ -74,6 +74,8 @@
 
   <!--migration androidx -->
   <dimen name="tab_max_width">264dp</dimen>
+  <dimen name="material_helper_text_font_1_3_padding_top">0dp</dimen>
+  <dimen name="material_helper_text_default_padding_top">0dp</dimen>
 
   <!--dash board view-->
   <dimen name="dash_board_circle_ring_width">@dimen/px_30</dimen>

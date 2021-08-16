@@ -61,7 +61,8 @@
     app:layout_constraintLeft_toLeftOf="@id/guideline"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintRight_toRightOf="parent"
-    android:layout_marginTop="@dimen/px_26"
+    app:layout_constraintBottom_toTopOf="@id/tv_existing_lot_on_hand"
+    android:paddingVertical="@dimen/px_8"
     >
 
     <com.google.android.material.textfield.TextInputEditText
@@ -75,6 +76,7 @@
       android:maxLength="@integer/edit_amount_length"
       android:singleLine="true"
       android:inputType="number"
+      android:background="@drawable/shape_edit_text_background"
       android:textColorHint="@color/color_606162"
       android:textColor="@color/color_black"
       android:gravity="center_vertical" />
