@@ -18,15 +18,18 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
-public class UsageInformationLineItemRepository {
+public class TestConsumptionLineItemRepository {
 
   GenericDao<TestConsumptionLineItem> genericDao;
 
@@ -34,14 +37,19 @@ public class UsageInformationLineItemRepository {
   DbUtil dbUtil;
 
   @Inject
-  public UsageInformationLineItemRepository(Context context) {
+  UsageColumnsMapRepository usageColumnsMapRepository;
+
+  @Inject
+  public TestConsumptionLineItemRepository(Context context) {
     this.genericDao = new GenericDao<>(TestConsumptionLineItem.class, context);
   }
 
   public void batchCreateOrUpdate(final List<TestConsumptionLineItem> testConsumptionLineItems)
       throws LMISException {
+    List<UsageColumnsMap> usageColumnsMaps = usageColumnsMapRepository.list();
     dbUtil.withDaoAsBatch(TestConsumptionLineItem.class, (DbUtil.Operation<TestConsumptionLineItem, Void>) dao -> {
       for (TestConsumptionLineItem item : testConsumptionLineItems) {
+        setUsageColumnsMap(item, usageColumnsMaps);
         dao.createOrUpdate(item);
       }
       return null;
@@ -61,4 +69,14 @@ public class UsageInformationLineItemRepository {
   public List<TestConsumptionLineItem> list() throws LMISException {
     return genericDao.queryForAll();
   }
+
+  private void setUsageColumnsMap(TestConsumptionLineItem lineItem, List<UsageColumnsMap> usageColumnsMaps) {
+    List<UsageColumnsMap> usageColumnsMapList = from(usageColumnsMaps).filter(usageColumnsMap ->
+        usageColumnsMap.getCode().equals(lineItem.getUsageColumnsMap().getCode()))
+        .toList();
+    if (!usageColumnsMapList.isEmpty()) {
+      lineItem.setUsageColumnsMap(usageColumnsMapList.get(0));
+    }
+  }
+
 }

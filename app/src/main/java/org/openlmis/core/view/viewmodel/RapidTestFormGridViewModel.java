@@ -23,8 +23,8 @@ import java.util.List;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.UsageColumnsMap;
 
 @SuppressWarnings("squid:S1874")
 @Data
@@ -122,11 +122,11 @@ public class RapidTestFormGridViewModel {
 
   public List<TestConsumptionLineItem> convertFormGridViewModelToDataModel(
       MovementReasonManager.MovementReason issueReason) {
-    List<TestConsumptionLineItem> programDataFormItems = new ArrayList<>();
-    setConsumptionFormItem(issueReason, programDataFormItems);
-    setPositiveFormItem(issueReason, programDataFormItems);
-    setUnjustifiedFormItem(issueReason, programDataFormItems);
-    return programDataFormItems;
+    List<TestConsumptionLineItem> testConsumptionLineItems = new ArrayList<>();
+    setConsumptionFormItem(issueReason, testConsumptionLineItems);
+    setPositiveFormItem(issueReason, testConsumptionLineItems);
+    setUnjustifiedFormItem(issueReason, testConsumptionLineItems);
+    return testConsumptionLineItems;
   }
 
   public void clear(RapidTestGridColumnCode column) {

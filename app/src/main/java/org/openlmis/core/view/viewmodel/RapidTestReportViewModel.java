@@ -126,7 +126,7 @@ public class RapidTestReportViewModel {
 
     setupCategories();
     setItemViewModelMap();
-    setFormItemViewModels(rnRForm.getUsageInformationLineItemsWrapper());
+    setFormItemViewModels(rnRForm.getTestConsumptionLinesWrapper());
   }
 
   private void setFormItemViewModels(List<TestConsumptionLineItem> testConsumptionLineItemList) {
@@ -196,16 +196,16 @@ public class RapidTestReportViewModel {
     rapidTestForm.setPeriodBegin(period.getBegin().toDate());
     rapidTestForm.setPeriodEnd(period.getEnd().toDate());
     rapidTestForm.setComments(observation);
-    rapidTestForm.getUsageInformationLineItemsWrapper().clear();
+    rapidTestForm.getTestConsumptionLinesWrapper().clear();
     rapidTestForm.setRnrFormItemListWrapper(productItems);
     convertFormItemViewModelToDataModel();
   }
 
   private void convertFormItemViewModelToDataModel() {
     for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-      rapidTestForm.getUsageInformationLineItemsWrapper().addAll(itemViewModel.convertToDataModel());
+      rapidTestForm.getTestConsumptionLinesWrapper().addAll(itemViewModel.convertToDataModel());
     }
-    for (TestConsumptionLineItem item : rapidTestForm.getUsageInformationLineItemsWrapper()) {
+    for (TestConsumptionLineItem item : rapidTestForm.getTestConsumptionLinesWrapper()) {
       item.setForm(rapidTestForm);
     }
   }
@@ -220,7 +220,7 @@ public class RapidTestReportViewModel {
 
 
   public boolean isDraft() {
-    return rapidTestForm.getStatus() == null || rapidTestForm.isDraft() ;
+    return rapidTestForm.getStatus() == null || rapidTestForm.isDraft();
   }
 
   private boolean isReadyForCompleted() {

@@ -43,7 +43,7 @@ public class ReportListPageAdapter extends FragmentStateAdapter {
   @Override
   public Fragment createFragment(int position) {
     final ReportTypeForm reportTypeForm = data.get(position);
-      return ReportListFragment.newInstance(reportTypeForm.getCode());
+    return ReportListFragment.newInstance(reportTypeForm.getCode());
   }
 
   @Override

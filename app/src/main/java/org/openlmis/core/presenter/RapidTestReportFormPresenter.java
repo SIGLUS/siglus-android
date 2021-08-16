@@ -111,7 +111,7 @@ public class RapidTestReportFormPresenter extends BaseRequisitionPresenter {
 
   @Override
   public boolean isDraft() {
-    return viewModel.isDraft();
+    return viewModel == null ||  viewModel.isDraft();
   }
 
 
@@ -138,59 +138,9 @@ public class RapidTestReportFormPresenter extends BaseRequisitionPresenter {
     return viewModel.isSubmitted();
   }
 
-//  private void generateNewRapidTestForm(Period period) {
-//    viewModel = new RapidTestReportViewModel(period);
-//    viewModel.setStatus(RapidTestReportViewModel.Status.INCOMPLETE);
-//  }
-//  public void addSignature(String sign) {
-//    viewModel.addSignature(sign);
-//  }
-//  public Observable<RapidTestReportViewModel> loadViewModel(final long formId,
-//      final Date periodEndDate) {
-//    return Observable.create((Observable.OnSubscribe<RapidTestReportViewModel>) subscriber -> {
-//      try {
-//        if (formId == 0) {
-//          Period reportPeriod = period;
-//          if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_training)) {
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTime(period.getEnd().toDate());
-//            int year = calendar.get(Calendar.YEAR);
-//            int month = calendar.get(Calendar.MONTH);
-//            int date = calendar.get(Calendar.DATE);
-//            calendar.set(year, month, date, 23, 59, 59);
-//            reportPeriod = new Period(period.getBegin(), new DateTime(calendar.getTime()));
-//          }
-//          generateNewRapidTestForm(reportPeriod);
-//          saveForm();
-//          List<ProgramDataFormBasicItem> basicItems = programBasicItemsRepository
-//              .createInitProgramForm(viewModel.getRapidTestForm(), reportPeriod.getEnd().toDate());
-//          viewModel.setBasicItems(basicItems);
-//          saveForm();
-//        } else {
-//          convertProgramDataFormToRapidTestReportViewModel(
-//              programDataFormRepository.queryById(formId));
-//        }
-//        subscriber.onNext(viewModel);
-//        subscriber.onCompleted();
-//      } catch (LMISException e) {
-//        subscriber.onError(e);
-//        e.reportToFabric();
-//      }
-//    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-//  }
-//@Override
-//public void deleteDraft() {
-//  if (viewModel.getRapidTestForm().getId() != 0L) {
-//    try {
-//      programDataFormRepository.delete(viewModel.getRapidTestForm());
-//    } catch (Exception e) {
-//      new LMISException(e).reportToFabric();
-//    }
-//  }
-//}
+  public interface RapidTestReportView extends BaseRequisitionView {
 
-public interface RapidTestReportView extends BaseRequisitionView {
-  void setProcessButtonName(String buttonName);
-}
+    void setProcessButtonName(String buttonName);
+  }
 
 }

@@ -27,7 +27,6 @@ import static org.openlmis.core.constant.FieldConstants.PROGRAM_ID;
 import static org.openlmis.core.constant.FieldConstants.STATUS;
 import static org.openlmis.core.constant.FieldConstants.SUBMITTED_TIME;
 import static org.openlmis.core.constant.FieldConstants.SYNCED;
-import static org.openlmis.core.utils.Constants.RAPID_TEST_PROGRAM_CODE;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -52,7 +51,6 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RegimenItemThreeLines;
 import org.openlmis.core.model.ReportTypeForm;
@@ -102,7 +100,7 @@ public class RnrFormRepository {
   BaseInfoItemRepository baseInfoItemRepository;
 
   @Inject
-  UsageInformationLineItemRepository usageInformationLineItemRepository;
+  TestConsumptionLineItemRepository testConsumptionLineItemRepository;
 
   @Inject
   ProductProgramRepository productProgramRepository;
@@ -155,7 +153,9 @@ public class RnrFormRepository {
   }
 
   public void createRnRsWithItems(@Nullable final List<RnRForm> forms) throws LMISException {
-    if (forms == null) { return; }
+    if (forms == null) {
+      return;
+    }
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
         for (RnRForm form : forms) {
@@ -289,7 +289,7 @@ public class RnrFormRepository {
       regimenItemRepository.deleteRegimenItems(form.getRegimenItemListWrapper());
       regimenItemThreeLineRepository.deleteRegimeThreeLineItems(form.getRegimenThreeLineListWrapper());
       baseInfoItemRepository.batchDelete(form.getBaseInfoItemListWrapper());
-      usageInformationLineItemRepository.batchDelete(form.getUsageInformationLineItemsWrapper());
+      testConsumptionLineItemRepository.batchDelete(form.getTestConsumptionLinesWrapper());
       signatureRepository.batchDelete(form.getSignaturesWrapper());
       genericDao.delete(form);
     }
@@ -577,6 +577,7 @@ public class RnrFormRepository {
     regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
     regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
     baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
+    testConsumptionLineItemRepository.batchCreateOrUpdate(form.getTestConsumptionLinesWrapper());
   }
 
   public void deleteOldData() {

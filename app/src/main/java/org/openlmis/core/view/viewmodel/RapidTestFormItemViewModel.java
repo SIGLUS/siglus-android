@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 

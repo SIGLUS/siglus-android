@@ -237,7 +237,7 @@ public class RnRForm extends BaseModel {
     return signaturesWrapper;
   }
 
-  public List<TestConsumptionLineItem> getUsageInformationLineItemsWrapper() {
+  public List<TestConsumptionLineItem> getTestConsumptionLinesWrapper() {
     testConsumptionLinesWrapper = ListUtil.wrapOrEmpty(testConsumptionLineList, testConsumptionLinesWrapper);
     return testConsumptionLinesWrapper;
   }
@@ -255,7 +255,7 @@ public class RnRForm extends BaseModel {
     for (RegimenItemThreeLines itemThreeLines : rnRForm.getRegimenThreeLineListWrapper()) {
       itemThreeLines.setForm(rnRForm);
     }
-    for (TestConsumptionLineItem testConsumptionLineItem : rnRForm.getUsageInformationLineItemsWrapper()) {
+    for (TestConsumptionLineItem testConsumptionLineItem : rnRForm.getTestConsumptionLinesWrapper()) {
       testConsumptionLineItem.setForm(rnRForm);
     }
   }

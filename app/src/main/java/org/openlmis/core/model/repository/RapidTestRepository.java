@@ -53,8 +53,7 @@ public class RapidTestRepository extends RnrFormRepository {
   protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate)
       throws LMISException {
     List<StockMovementItem> stockMovementItems = stockMovementRepository
-        .queryStockItemsByCreatedDate(stockCard.getId(),startDate,
-            endDate);
+        .queryStockItemsByCreatedDate(stockCard.getId(), startDate, endDate);
     RnrFormItem rnrFormItem = new RnrFormItem();
     FormHelper.StockMovementModifiedItem modifiedItem = formHelper
         .assignTotalValues(stockMovementItems);

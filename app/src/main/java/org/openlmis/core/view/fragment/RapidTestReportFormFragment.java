@@ -104,7 +104,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment
     super.onViewCreated(view, savedInstanceState);
     loading();
     long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0L);
-    Date periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+    Date periodEndDate = ((Date) getActivity().getIntent()
+        .getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
     updateHeaderSize();
     setUpRowItems();
     setUpBodyLeftItems();
@@ -117,9 +118,10 @@ public class RapidTestReportFormFragment extends BaseReportFragment
     }
   }
 
-
   @Override
-  public void setProcessButtonName(String buttonName) { actionPanelView.setPositiveButtonText(buttonName); }
+  public void setProcessButtonName(String buttonName) {
+    actionPanelView.setPositiveButtonText(buttonName);
+  }
 
   @Override
   public void refreshRequisitionForm(RnRForm rnRForm) {
@@ -198,7 +200,8 @@ public class RapidTestReportFormFragment extends BaseReportFragment
         loading();
         Subscription subscription = presenter.createOrUpdateRapidTest()
             .subscribe(getOnSavedAction());
-        subscriptions.add(subscription);      }
+        subscriptions.add(subscription);
+      }
     };
   }
 
