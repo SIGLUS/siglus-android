@@ -21,6 +21,8 @@ package org.openlmis.core.network.model;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.utils.DateUtil;
 
 @NoArgsConstructor
 @Data
@@ -32,4 +34,11 @@ public class LotResponse {
   private String lotCode;
 
   private String expirationDate;
+
+  public Lot from() {
+    return Lot.builder()
+        .lotNumber(lotCode)
+        .expirationDate(DateUtil.parseString(expirationDate, DateUtil.DB_DATE_FORMAT))
+        .build();
+  }
 }

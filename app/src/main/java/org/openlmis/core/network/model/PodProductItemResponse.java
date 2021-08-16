@@ -20,13 +20,31 @@ package org.openlmis.core.network.model;
 
 import java.util.List;
 import lombok.Data;
+import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.model.PodProductLotItem;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 @Data
 public class PodProductItemResponse {
 
   private String code;
+
   private long orderedQuantity;
+
   private long partialFulfilledQuantity;
+
   private List<PodLotMovementItemResponse> lots;
 
+  public PodProductItem from() {
+    return PodProductItem.builder()
+        .code(code)
+        .orderedQuantity(orderedQuantity)
+        .partialFulfilledQuantity(partialFulfilledQuantity)
+        .podProductLotItemsWrapper(buildPodProductLotItems())
+        .build();
+  }
+
+  private List<PodProductLotItem> buildPodProductLotItems() {
+    return FluentIterable.from(lots).transform(PodLotMovementItemResponse::from).toList();
+  }
 }

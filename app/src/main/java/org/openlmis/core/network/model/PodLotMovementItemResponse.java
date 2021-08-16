@@ -19,10 +19,19 @@
 package org.openlmis.core.network.model;
 
 import lombok.Data;
+import org.openlmis.core.model.PodProductLotItem;
 
 @Data
 public class PodLotMovementItemResponse {
 
   private LotResponse lot;
+
   private long shippedQuantity;
+
+  public PodProductLotItem from() {
+    return PodProductLotItem.builder()
+        .lot(lot.from())
+        .shippedQuantity(shippedQuantity)
+        .build();
+  }
 }

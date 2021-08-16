@@ -18,7 +18,18 @@
 
 package org.openlmis.core.enumeration;
 
+import org.openlmis.core.exceptions.LMISException;
+
 public enum OrderStatus {
   SHIPPED,
-  RECEIVED
+  RECEIVED;
+
+  public static OrderStatus covertToOrderStatus(String status) throws LMISException {
+    for (OrderStatus orderStatus : OrderStatus.values()) {
+      if (orderStatus.name().equalsIgnoreCase(status)) {
+        return orderStatus;
+      }
+    }
+    throw new LMISException("Illegal order status" + status);
+  }
 }

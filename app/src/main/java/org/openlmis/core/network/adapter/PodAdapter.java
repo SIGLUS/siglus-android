@@ -28,19 +28,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.joda.time.LocalDate;
-import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Lot;
-import org.openlmis.core.model.Pod;
-import org.openlmis.core.model.PodProductItem;
-import org.openlmis.core.model.PodProductLotItem;
-import org.openlmis.core.network.model.LotResponse;
-import org.openlmis.core.network.model.PodLotMovementItemResponse;
-import org.openlmis.core.network.model.PodProductItemResponse;
 import org.openlmis.core.network.model.PodResponse;
 import org.openlmis.core.network.model.PodsLocalResponse;
-import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
@@ -57,7 +47,7 @@ public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
     final PodsLocalResponse podsLocalResponse = new PodsLocalResponse();
     podsLocalResponse.setPods(FluentIterable.from(podResponses).transform(podResponse -> {
       try {
-        return fitForPod(Objects.requireNonNull(podResponse));
+        return Objects.requireNonNull(podResponse).from();
       } catch (LMISException e) {
         new LMISException(e, "PodAdapter.deserialize").reportToFabric();
         throw new JsonParseException("Pod deserialize fail", e);
@@ -66,63 +56,4 @@ public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
     return podsLocalResponse;
   }
 
-  private Pod fitForPod(PodResponse podResponse) throws LMISException {
-    return Pod.builder()
-        .shippedDate(new LocalDate(podResponse.getShippedDate()).toString())
-        .orderCode(podResponse.getOrder().getCode())
-        .orderSupplyFacilityName(podResponse.getOrder().getSupplyFacilityName())
-        .orderStatus(mapToOrderStatus(podResponse.getOrder().getStatus()))
-        .orderCreatedDate(new LocalDate(podResponse.getOrder().getCreatedDate()).toString())
-        .orderLastModifiedDate(new LocalDate(podResponse.getOrder().getLastModifiedDate()).toString())
-        .requisitionNumber(podResponse.getOrder().getRequisition().getNumber())
-        .requisitionIsEmergency(podResponse.getOrder().getRequisition().isEmergency())
-        .requisitionProgramCode(podResponse.getOrder().getRequisition().getProgramCode())
-        .requisitionStartDate(new LocalDate(podResponse.getOrder().getRequisition().getStartDate()).toString())
-        .requisitionEndDate(new LocalDate(podResponse.getOrder().getRequisition().getEndDate()).toString())
-        .requisitionActualStartDate(
-            new LocalDate(podResponse.getOrder().getRequisition().getActualStartDate()).toString())
-        .requisitionActualEndDate(new LocalDate(podResponse.getOrder().getRequisition().getActualEndDate()).toString())
-        .podProductItemsWrapper(buildPodProductItems(podResponse))
-        .build();
-  }
-
-  private List<PodProductItem> buildPodProductItems(PodResponse podResponse) {
-    return FluentIterable.from(podResponse.getProducts()).transform(this::fitForPodProduct).toList();
-  }
-
-  private PodProductItem fitForPodProduct(PodProductItemResponse podProductItemResponse) {
-    return PodProductItem.builder()
-        .code(podProductItemResponse.getCode())
-        .orderedQuantity(podProductItemResponse.getOrderedQuantity())
-        .partialFulfilledQuantity(podProductItemResponse.getPartialFulfilledQuantity())
-        .podProductLotItemsWrapper(buildPodLotItems(podProductItemResponse))
-        .build();
-  }
-
-  private List<PodProductLotItem> buildPodLotItems(PodProductItemResponse podProductItemResponse) {
-    return FluentIterable.from(podProductItemResponse.getLots()).transform(this::fitForPodLotItems).toList();
-  }
-
-  private PodProductLotItem fitForPodLotItems(PodLotMovementItemResponse podLotMovementItemResponse) {
-    return PodProductLotItem.builder()
-        .lot(buildLot(podLotMovementItemResponse.getLot()))
-        .shippedQuantity(podLotMovementItemResponse.getShippedQuantity())
-        .build();
-  }
-
-  private Lot buildLot(LotResponse lotResponse) {
-    return Lot.builder()
-        .lotNumber(lotResponse.getLotCode())
-        .expirationDate(DateUtil.parseString(lotResponse.getExpirationDate(), DateUtil.DB_DATE_FORMAT))
-        .build();
-  }
-
-  private OrderStatus mapToOrderStatus(String status) throws LMISException {
-    for (OrderStatus orderStatus : OrderStatus.values()) {
-      if (orderStatus.name().equalsIgnoreCase(status)) {
-        return orderStatus;
-      }
-    }
-    throw new LMISException("Illegal order status" + status);
-  }
 }
