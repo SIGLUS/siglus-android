@@ -611,67 +611,21 @@ public class RnrFormRepository {
 
   public void deleteRnrFormDirtyData(List<String> productCodeList) {
     Cursor getProgramCodeCursor = null;
-    Cursor getParentCodeCursor = null;
     for (String productCode : productCodeList) {
       String getProgramCodeByProductCode =
           "SELECT programCode FROM product_programs WHERE productCode='" + productCode + "'";
       getProgramCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
           .getWritableDatabase().rawQuery(getProgramCodeByProductCode, null);
-      while (getProgramCodeCursor.moveToNext()) {
-        String getParentCode =
-            "SELECT count(parentCode) AS 'result' FROM programs WHERE programCode='"
-                + getProgramCodeCursor
-                .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE)) + "'";
-        getParentCodeCursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext())
-            .getWritableDatabase().rawQuery(getParentCode, null);
-        getParentCodeCursor.moveToFirst();
-        if (getParentCodeCursor.getInt(getParentCodeCursor.getColumnIndexOrThrow("result")) == 0
-            && !getProgramCodeCursor
-            .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
-            .equals(Constants.RAPID_TEST_OLD_CODE)) {
-          if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
-              .equals(Constants.MMIA_PROGRAM_CODE)) {
-            regimenRepository.deleteRegimeDirtyData(Constants.MMIA_PROGRAM_CODE);
-            deleteRnrData(Constants.MMIA_PROGRAM_CODE);
-          }
-          if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
-              .equals(Constants.VIA_PROGRAM_CODE)) {
-            deleteRnrData(Constants.VIA_PROGRAM_CODE);
-          }
-        } else {
-          if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
-              .equals(Constants.PTV_PROGRAM_CODE)) {
-            regimenRepository.deleteRegimeDirtyData(Constants.MMIA_PROGRAM_CODE);
-            deleteRnrData(Constants.PTV_PROGRAM_CODE);
-            deleteRnrData(Constants.MMIA_PROGRAM_CODE);
-          } else if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
-              .equals(Constants.AL_PROGRAM_CODE)) {
+      String programCode = getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE));
+      if (programCode.equals(Constants.AL_PROGRAM_CODE)) {
             deleteRnrData(Constants.AL_PROGRAM_CODE);
             deleteRnrData(Constants.VIA_PROGRAM_CODE);
-          } else if (getProgramCodeCursor
-              .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
-              .equals(Constants.VIA_PROGRAM_CHILD_CODE_TARV)) {
-            regimenRepository.deleteRegimeDirtyData(Constants.MMIA_PROGRAM_CODE);
-            deleteRnrData(Constants.MMIA_PROGRAM_CODE);
-          } else {
-            if (!getProgramCodeCursor
-                .getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE))
-                .equals(Constants.RAPID_TEST_OLD_CODE)) {
-              deleteRnrData(Constants.VIA_PROGRAM_CODE);
-            }
-          }
-        }
+      } else {
+        deleteRnrData(programCode);
       }
     }
     if (getProgramCodeCursor != null && !getProgramCodeCursor.isClosed()) {
       getProgramCodeCursor.close();
-    }
-    if (getParentCodeCursor != null && !getParentCodeCursor.isClosed()) {
-      getParentCodeCursor.close();
     }
   }
 
