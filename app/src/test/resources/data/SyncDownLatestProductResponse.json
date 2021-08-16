@@ -18,6 +18,25 @@
       "isNos": false,
       "isHiv": false,
       "lastUpdated": "2020-12-31T09:18:34.086Z"
+    },
+    {
+      "productCode": "08O05",
+      "active": true,
+      "archived": false,
+      "fullProductName": "Artemeter+Lumefantrina; 120mg+20mg 1x6; Comp testyby",
+      "description": "Artemeter+Lumefantrina;Comp(20mg+120mg 1x6)",
+      "netContent": 1,
+      "packRoundingThreshold": 1,
+      "roundToZero": false,
+      "category": "Default",
+      "programCode": "VC",
+      "additionalProgramCode": "ML",
+      "isKit": false,
+      "children": [],
+      "isBasic": true,
+      "isNos": false,
+      "isHiv": false,
+      "lastUpdated": "2021-07-26T09:52:42.065Z"
     }
   ]
 }
