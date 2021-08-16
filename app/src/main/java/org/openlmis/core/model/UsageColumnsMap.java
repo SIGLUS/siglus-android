@@ -39,8 +39,4 @@ public class UsageColumnsMap extends BaseModel {
   @Expose
   @DatabaseField
   String testProject;
-
-  public UsageColumnsMap(String code) {
-    this.code = code;
-  }
 }

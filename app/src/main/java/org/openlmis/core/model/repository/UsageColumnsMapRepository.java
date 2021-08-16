@@ -18,16 +18,23 @@
 
 package org.openlmis.core.model.repository;
 
+import static org.openlmis.core.constant.FieldConstants.CODE;
+
 import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.UsageColumnsMap;
+import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 public class UsageColumnsMapRepository {
 
   GenericDao<UsageColumnsMap> usageColumnsMapGenericDao;
+
+  @Inject
+  DbUtil dbUtil;
 
   @Inject
   public UsageColumnsMapRepository(Context context) {
@@ -38,4 +45,8 @@ public class UsageColumnsMapRepository {
     return usageColumnsMapGenericDao.queryForAll();
   }
 
+  public UsageColumnsMap getByCode(final String code) throws LMISException {
+    return dbUtil
+        .withDao(UsageColumnsMap.class, dao -> dao.queryBuilder().where().eq(CODE, code).queryForFirst());
+  }
 }

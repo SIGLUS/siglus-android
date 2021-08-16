@@ -58,6 +58,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.TestConsumptionLineItem;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
@@ -81,10 +82,12 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   public static final String PRODUCTS = "products";
   public static final String REGIMEN_LINE_ITEMS = "regimenLineItems";
   public static final String REGIMEN_SUMMARY_LINE_ITEMS = "regimenSummaryLineItems";
+  public static final String TEST_CONSUMPTION_LINE_ITEMS = "testConsumptionLineItems";
   public static final String USAGE_INFORMATION_LINE_ITEMS = "usageInformationLineItems";
   public static final String CONSULTATION_NUMBER = "consultationNumber";
   private final Gson gson;
   private final JsonParser jsonParser;
+
   @Inject
   public ProgramRepository programRepository;
   @Inject
@@ -100,6 +103,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
         .registerTypeAdapter(Date.class, new DateAdapter()).setDateFormat(DateFormat.LONG)
         .registerTypeAdapter(RegimenItem.class, new RegimenItemAdapter())
         .registerTypeAdapter(RnrFormItem.class, new RnrFormItemAdapter())
+        .registerTypeAdapter(TestConsumptionLineItem.class, new TestConsumptionLineItemAdapter())
         .create();
     jsonParser = new JsonParser();
   }
@@ -242,6 +246,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
       root.add(PRODUCTS, jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
       root.add(REGIMEN_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
       root.add(REGIMEN_SUMMARY_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getRegimenThreeLineListWrapper())));
+      root.add(TEST_CONSUMPTION_LINE_ITEMS, jsonParser.parse(gson.toJson(rnRForm.getTestConsumptionLineList())));
       if (programCode.endsWith(VIA_PROGRAM_CODE)) {
         root.addProperty(CONSULTATION_NUMBER, getConsultationNumber(rnRForm));
       }
