@@ -62,7 +62,6 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
@@ -138,7 +137,7 @@ public class RnrFormAdapterTest {
     rnrFormItem.setValidate("10/11/2015");
     rnrFormItemListWrapper.add(rnrFormItem);
     rnRForm.setRnrFormItemListWrapper(rnrFormItemListWrapper);
-    rnRForm.setSubmittedTime(DateUtil.parseString("2015-10-14 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+    rnRForm.setSubmittedTime(DateUtil.parseString("2015-10-14 01:01:11", DATE_TIME_FORMAT));
 
     // when
     JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
@@ -348,8 +347,8 @@ public class RnrFormAdapterTest {
     // given
     UserInfoMgr.getInstance().setUser(new User("user", "password"));
 
-    rnRForm.setPeriodBegin(DateUtil.parseString("2015-10-15 01:01:11", "yyyy-MM-dd HH:mm:ss"));
-    rnRForm.setPeriodEnd(DateUtil.parseString("2015-11-15 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+    rnRForm.setPeriodBegin(DateUtil.parseString("2015-10-15 01:01:11", DATE_TIME_FORMAT));
+    rnRForm.setPeriodEnd(DateUtil.parseString("2015-11-15 01:01:11", DATE_TIME_FORMAT));
 
     // when
     JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
@@ -366,8 +365,8 @@ public class RnrFormAdapterTest {
     rnRForm.setProgram(generateProgram(AL_PROGRAM_CODE, "Malaria"));
     rnRForm.setEmergency(false);
     rnRForm.setRegimenItemListWrapper(generateRegimenItems());
-    rnRForm.setPeriodBegin(DateUtil.parseString("2015-10-15 01:01:11", "yyyy-MM-dd HH:mm:ss"));
-    rnRForm.setPeriodEnd(DateUtil.parseString("2015-11-15 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+    rnRForm.setPeriodBegin(DateUtil.parseString("2015-10-15 01:01:11", DATE_TIME_FORMAT));
+    rnRForm.setPeriodEnd(DateUtil.parseString("2015-11-15 01:01:11", DATE_TIME_FORMAT));
 
     // when
     JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
