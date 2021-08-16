@@ -22,43 +22,43 @@ import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.UsageInformationLineItem;
+import org.openlmis.core.model.TestConsumptionLineItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 public class UsageInformationLineItemRepository {
 
-  GenericDao<UsageInformationLineItem> genericDao;
+  GenericDao<TestConsumptionLineItem> genericDao;
 
   @Inject
   DbUtil dbUtil;
 
   @Inject
   public UsageInformationLineItemRepository(Context context) {
-    this.genericDao = new GenericDao<>(UsageInformationLineItem.class, context);
+    this.genericDao = new GenericDao<>(TestConsumptionLineItem.class, context);
   }
 
-  public void batchCreateOrUpdate(final List<UsageInformationLineItem> usageInformationLineItems)
+  public void batchCreateOrUpdate(final List<TestConsumptionLineItem> testConsumptionLineItems)
       throws LMISException {
-    dbUtil.withDaoAsBatch(UsageInformationLineItem.class, dao -> {
-      for (UsageInformationLineItem item : usageInformationLineItems) {
+    dbUtil.withDaoAsBatch(TestConsumptionLineItem.class, (DbUtil.Operation<TestConsumptionLineItem, Void>) dao -> {
+      for (TestConsumptionLineItem item : testConsumptionLineItems) {
         dao.createOrUpdate(item);
       }
       return null;
     });
   }
 
-  public void batchDelete(final List<UsageInformationLineItem> usageInformationLineItemListWrapper)
+  public void batchDelete(final List<TestConsumptionLineItem> testConsumptionLineItemListWrapper)
       throws LMISException {
-    dbUtil.withDaoAsBatch(UsageInformationLineItem.class, dao -> {
-      for (UsageInformationLineItem item : usageInformationLineItemListWrapper) {
+    dbUtil.withDaoAsBatch(TestConsumptionLineItem.class, (DbUtil.Operation<TestConsumptionLineItem, Void>) dao -> {
+      for (TestConsumptionLineItem item : testConsumptionLineItemListWrapper) {
         dao.delete(item);
       }
       return null;
     });
   }
 
-  public List<UsageInformationLineItem> list() throws LMISException {
+  public List<TestConsumptionLineItem> list() throws LMISException {
     return genericDao.queryForAll();
   }
 }

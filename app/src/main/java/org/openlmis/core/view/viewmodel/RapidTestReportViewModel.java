@@ -37,14 +37,11 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.ProgramDataForm;
-import org.openlmis.core.model.ProgramDataFormItem;
-import org.openlmis.core.model.ProgramDataFormSignature;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.Signature;
-import org.openlmis.core.model.UsageInformationLineItem;
+import org.openlmis.core.model.TestConsumptionLineItem;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -132,8 +129,8 @@ public class RapidTestReportViewModel {
     setFormItemViewModels(rnRForm.getUsageInformationLineItemsWrapper());
   }
 
-  private void setFormItemViewModels(List<UsageInformationLineItem> usageInformationLineItemList) {
-    for (UsageInformationLineItem item : usageInformationLineItemList) {
+  private void setFormItemViewModels(List<TestConsumptionLineItem> testConsumptionLineItemList) {
+    for (TestConsumptionLineItem item : testConsumptionLineItemList) {
       itemViewModelMap.get(item.getService())
           .setColumnValue(item.getUsageColumnsMap(), item.getValue());
     }
@@ -208,7 +205,7 @@ public class RapidTestReportViewModel {
     for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
       rapidTestForm.getUsageInformationLineItemsWrapper().addAll(itemViewModel.convertToDataModel());
     }
-    for (UsageInformationLineItem item : rapidTestForm.getUsageInformationLineItemsWrapper()) {
+    for (TestConsumptionLineItem item : rapidTestForm.getUsageInformationLineItemsWrapper()) {
       item.setForm(rapidTestForm);
     }
   }

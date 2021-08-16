@@ -30,8 +30,8 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@DatabaseTable(tableName = "usage_information_line_item")
-public class UsageInformationLineItem extends BaseModel {
+@DatabaseTable(tableName = "test_consumption_line_items")
+public class TestConsumptionLineItem extends BaseModel {
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private RnRForm form;
 
@@ -46,7 +46,7 @@ public class UsageInformationLineItem extends BaseModel {
   @DatabaseField
   private int value;
 
-  public UsageInformationLineItem(String service, UsageColumnsMap usageColumnsMap, int value) {
+  public TestConsumptionLineItem(String service, UsageColumnsMap usageColumnsMap, int value) {
     this.service = service;
     this.usageColumnsMap = usageColumnsMap;
     this.value = value;
