@@ -152,7 +152,7 @@ public class RnRFormViewHolderTest {
 
   @Test
   public void shouldShowTvDrugCountWhenIsHistoricalEmergency() throws SQLException {
-    program.setProgramCode(Constants.ESS_PROGRAM_CODE);
+    program.setProgramCode(Constants.VIA_PROGRAM_CODE);
     RnRForm form = RnRForm.init(program, DateUtil.today());
     form.setStatus(Status.AUTHORIZED);
     form.setSynced(true);
