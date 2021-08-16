@@ -31,6 +31,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.ReportTypeForm;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
@@ -42,6 +43,7 @@ import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.ReportTypeFormRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockMovementRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
@@ -73,6 +75,7 @@ public class SyncDownManagerIT {
   private SharedPreferenceMgr sharedPreferenceMgr;
   private ProgramDataFormRepository programDataFormRepository;
   private StockMovementRepository stockMovementRepository;
+  private RnrFormRepository rnrFormRepository;
   private LMISTestApp appInject;
   private LMISRestApi mockedApi;
 
@@ -101,6 +104,8 @@ public class SyncDownManagerIT {
         .getInstance(ProgramDataFormRepository.class);
     stockMovementRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(StockMovementRepository.class);
+    rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
+        .getInstance(RnrFormRepository.class);
     syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application)
         .getInstance(SyncDownManager.class);
     sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application)
@@ -166,8 +171,8 @@ public class SyncDownManagerIT {
         .addNewMockedResponse("/rest-api/report-types/mapping/" + getDefaultUser().getFacilityId(),
             200, "OK", fetchReportTypesMapping);
     lmisRestManager.addNewMockedResponse(
-        "/rest-api/requisitions?" + "facilityCode=" + getDefaultUser().getFacilityCode()
-            + "&startDate=" + getStartDateWithDB_DATE_FORMAT(), 200, "OK", fetchRequisitionsData);
+        "/api/siglusapi/android/me/facility/requisitions?" + "startDate=" + getStartDateWithDB_DATE_FORMAT(), 200,
+        "OK", fetchRequisitionsData);
     lmisRestManager.addNewMockedResponse(
         "/rest-api/programData/facilities/" + getDefaultUser().getFacilityId(), 200, "OK",
         fetchProgramDataFacilities);
@@ -181,7 +186,7 @@ public class SyncDownManagerIT {
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/products", 200, "OK",
         V3ProductsResponseAdapterResponse);
     lmisRestManager.addNewMockedResponse("/api/siglusapi/android/regimens", 200, "OK", regimenJson);
-    lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/pods", 200, "OK",
+    lmisRestManager.addNewMockedResponse("/api/siglusapi/android/me/facility/pods?shippedOnly=false", 200, "OK",
         podJson);
   }
 
@@ -275,6 +280,30 @@ public class SyncDownManagerIT {
 
     // then
     assertEquals("RNR-EM010809070000006", pods.get(0).getRequisitionNumber());
+  }
+
+  @Test
+  public void shouldSyncDownRequisitions() throws LMISException {
+    // given
+    String facilityInfoJson = JsonFileReader.readJson(getClass(), "fetchFacilityInfoResponse.json");
+    String requisitionsJson = JsonFileReader.readJson(getClass(), "fetchRequisitionsData.json");
+    LMISRestManagerMock lmisRestManagerMock = LMISRestManagerMock.getRestManagerWithMockClient(
+        "/api/siglusapi/android/me/facility/requisitions?" + "startDate=" + getStartDateWithDB_DATE_FORMAT(), 200,
+        "OK", requisitionsJson, RuntimeEnvironment.application);
+    lmisRestManagerMock.addNewMockedResponse("/api/siglusapi/android/me/facility", 200, "OK",
+        facilityInfoJson);
+    mockResponse(lmisRestManagerMock);
+    syncDownManager.lmisRestApi = lmisRestManagerMock.getLmisRestApi();
+    // when
+    SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+    syncDownManager.syncDownServerData(subscriber);
+    subscriber.awaitTerminalEvent();
+    List<RnRForm> rnRForms = rnrFormRepository.list();
+    // then
+
+    assertEquals(3, rnRForms.size());
+
+
   }
 
   @Test
