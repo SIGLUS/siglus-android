@@ -91,13 +91,13 @@ public class Pod extends BaseModel {
   private String requisitionActualEndDate;
 
   @ForeignCollectionField
-  private ForeignCollection<PodProduct> podProductForeignCollection;
+  private ForeignCollection<PodProductItem> podProductItemForeignCollection;
 
-  private List<PodProduct> podProductsWrapper;
+  private List<PodProductItem> podProductItemsWrapper;
 
-  public List<PodProduct> getPodProductsWrapper() {
-    podProductsWrapper = ListUtil.wrapOrEmpty(podProductForeignCollection, podProductsWrapper);
-    return podProductsWrapper;
+  public List<PodProductItem> getPodProductItemsWrapper() {
+    podProductItemsWrapper = ListUtil.wrapOrEmpty(podProductItemForeignCollection, podProductItemsWrapper);
+    return podProductItemsWrapper;
   }
 
 }

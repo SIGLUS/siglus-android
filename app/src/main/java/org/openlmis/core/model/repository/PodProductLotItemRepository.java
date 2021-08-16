@@ -28,17 +28,17 @@ import lombok.Setter;
 import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Lot;
-import org.openlmis.core.model.PodLotItem;
-import org.openlmis.core.model.PodProduct;
+import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 
-public class PodLotItemRepository {
+public class PodProductLotItemRepository {
 
-  private final GenericDao<PodLotItem> podLotItemGenericDao;
+  private final GenericDao<PodProductLotItem> podProductLotItemGenericDao;
 
   @Inject
   private final DbUtil dbUtil;
@@ -53,37 +53,38 @@ public class PodLotItemRepository {
   ProductRepository productRepository;
 
   @Inject
-  public PodLotItemRepository(Context context, DbUtil dbUtil) {
-    this.podLotItemGenericDao = new GenericDao<>(PodLotItem.class, context);
+  public PodProductLotItemRepository(Context context, DbUtil dbUtil) {
+    this.podProductLotItemGenericDao = new GenericDao<>(PodProductLotItem.class, context);
     this.dbUtil = dbUtil;
     this.context = context;
   }
 
-  public PodLotItem queryByPodProductIdAndLotId(long podProductId, long lotId) throws LMISException {
-    return dbUtil.withDao(PodLotItem.class,
+  public PodProductLotItem queryByPodProductIdAndLotId(long podProductItemId, long lotId) throws LMISException {
+    return dbUtil.withDao(PodProductLotItem.class,
         dao -> dao.queryBuilder()
             .where()
-            .eq(FieldConstants.POD_PRODUCT_ID, podProductId)
+            .eq(FieldConstants.POD_PRODUCT_ITEM_ID, podProductItemId)
             .and()
             .eq(FieldConstants.LOT_ID, lotId)
             .queryForFirst());
   }
 
-  public void batchCreatePodLotItemsWithLotInfo(@Nullable final List<PodLotItem> podLotItems, PodProduct podProduct)
+  public void batchCreatePodLotItemsWithLotInfo(@Nullable final List<PodProductLotItem> podProductLotItems,
+      PodProductItem podProductItem)
       throws LMISException {
-    if (podLotItems == null) {
+    if (podProductLotItems == null) {
       return;
     }
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
-        for (PodLotItem podLotItem : podLotItems) {
-          Product product = productRepository.getByCode(podProduct.getCode());
-          Lot lot = podLotItem.getLot();
+        for (PodProductLotItem podProductLotItem : podProductLotItems) {
+          Product product = productRepository.getByCode(podProductItem.getCode());
+          Lot lot = podProductLotItem.getLot();
           lot.setProduct(product);
           Lot savedLot = lotRepository.createOrUpdate(lot);
-          podLotItem.setPodProduct(podProduct);
-          podLotItem.setLot(savedLot);
-          createOrUpdateItem(podLotItem);
+          podProductLotItem.setPodProductItem(podProductItem);
+          podProductLotItem.setLot(savedLot);
+          createOrUpdateItem(podProductLotItem);
         }
         return null;
       });
@@ -92,14 +93,14 @@ public class PodLotItemRepository {
     }
   }
 
-  private void createOrUpdateItem(final PodLotItem podLotItem) throws LMISException {
+  private void createOrUpdateItem(final PodProductLotItem podProductLotItem) throws LMISException {
     try {
       TransactionManager
           .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
               () -> {
-                podLotItem.setCreatedAt(DateUtil.getCurrentDate());
-                podLotItem.setUpdatedAt(DateUtil.getCurrentDate());
-                createdOrUpdate(podLotItem);
+                podProductLotItem.setCreatedAt(DateUtil.getCurrentDate());
+                podProductLotItem.setUpdatedAt(DateUtil.getCurrentDate());
+                createdOrUpdate(podProductLotItem);
                 return null;
               });
     } catch (SQLException e) {
@@ -107,12 +108,13 @@ public class PodLotItemRepository {
     }
   }
 
-  private void createdOrUpdate(PodLotItem podLotItem) throws LMISException {
-    PodLotItem existingPodLotItem = queryByPodProductIdAndLotId(podLotItem.getPodProduct().getId(),
-        podLotItem.getLot().getId());
-    if (existingPodLotItem != null) {
-      podLotItem.setId(existingPodLotItem.getId());
+  private void createdOrUpdate(PodProductLotItem podProductLotItem) throws LMISException {
+    PodProductLotItem existingPodProductLotItem = queryByPodProductIdAndLotId(
+        podProductLotItem.getPodProductItem().getId(),
+        podProductLotItem.getLot().getId());
+    if (existingPodProductLotItem != null) {
+      podProductLotItem.setId(existingPodProductLotItem.getId());
     }
-    podLotItemGenericDao.createOrUpdate(podLotItem);
+    podProductLotItemGenericDao.createOrUpdate(podProductLotItem);
   }
 }

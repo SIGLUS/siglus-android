@@ -44,7 +44,7 @@ public class PodRepository {
 
   @Setter
   @Inject
-  PodProductRepository podProductRepository;
+  PodProductItemRepository podProductItemRepository;
 
   @Inject
   public PodRepository(Context context, DbUtil dbUtil) {
@@ -86,7 +86,7 @@ public class PodRepository {
           .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
               () -> {
                 Pod savedPod = createOrUpdate(pod);
-                podProductRepository.batchCreatePodProductsWithItems(pod.getPodProductsWrapper(), savedPod);
+                podProductItemRepository.batchCreatePodProductsWithItems(pod.getPodProductItemsWrapper(), savedPod);
                 return null;
               });
     } catch (SQLException e) {

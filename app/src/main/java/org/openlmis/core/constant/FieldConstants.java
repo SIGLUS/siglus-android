@@ -104,7 +104,7 @@ public class FieldConstants {
 
   public static final String LOT_ID = "lot_id";
 
-  public static final String POD_PRODUCT_ID = "podProduct_id";
+  public static final String POD_PRODUCT_ITEM_ID = "podProductItem_id";
 
   public static final String POD_ID = "pod_id";
 

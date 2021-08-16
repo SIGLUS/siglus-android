@@ -33,8 +33,8 @@ import org.openlmis.core.enumeration.OrderStatus;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.Pod;
-import org.openlmis.core.model.PodLotItem;
-import org.openlmis.core.model.PodProduct;
+import org.openlmis.core.model.PodProductItem;
+import org.openlmis.core.model.PodProductLotItem;
 import org.openlmis.core.network.model.LotResponse;
 import org.openlmis.core.network.model.PodLotMovementItemResponse;
 import org.openlmis.core.network.model.PodProductItemResponse;
@@ -82,29 +82,29 @@ public class PodAdapter implements JsonDeserializer<PodsLocalResponse> {
         .requisitionActualStartDate(
             new LocalDate(podResponse.getOrder().getRequisition().getActualStartDate()).toString())
         .requisitionActualEndDate(new LocalDate(podResponse.getOrder().getRequisition().getActualEndDate()).toString())
-        .podProductsWrapper(buildPodProductItems(podResponse))
+        .podProductItemsWrapper(buildPodProductItems(podResponse))
         .build();
   }
 
-  private List<PodProduct> buildPodProductItems(PodResponse podResponse) {
+  private List<PodProductItem> buildPodProductItems(PodResponse podResponse) {
     return FluentIterable.from(podResponse.getProducts()).transform(this::fitForPodProduct).toList();
   }
 
-  private PodProduct fitForPodProduct(PodProductItemResponse podProductItemResponse) {
-    return PodProduct.builder()
+  private PodProductItem fitForPodProduct(PodProductItemResponse podProductItemResponse) {
+    return PodProductItem.builder()
         .code(podProductItemResponse.getCode())
         .orderedQuantity(podProductItemResponse.getOrderedQuantity())
         .partialFulfilledQuantity(podProductItemResponse.getPartialFulfilledQuantity())
-        .podLotItemsWrapper(buildPodLotItems(podProductItemResponse))
+        .podProductLotItemsWrapper(buildPodLotItems(podProductItemResponse))
         .build();
   }
 
-  private List<PodLotItem> buildPodLotItems(PodProductItemResponse podProductItemResponse) {
+  private List<PodProductLotItem> buildPodLotItems(PodProductItemResponse podProductItemResponse) {
     return FluentIterable.from(podProductItemResponse.getLots()).transform(this::fitForPodLotItems).toList();
   }
 
-  private PodLotItem fitForPodLotItems(PodLotMovementItemResponse podLotMovementItemResponse) {
-    return PodLotItem.builder()
+  private PodProductLotItem fitForPodLotItems(PodLotMovementItemResponse podLotMovementItemResponse) {
+    return PodProductLotItem.builder()
         .lot(buildLot(podLotMovementItemResponse.getLot()))
         .shippedQuantity(podLotMovementItemResponse.getShippedQuantity())
         .build();

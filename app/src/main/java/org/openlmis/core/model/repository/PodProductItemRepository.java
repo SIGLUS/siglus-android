@@ -28,15 +28,15 @@ import lombok.Setter;
 import org.openlmis.core.constant.FieldConstants;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Pod;
-import org.openlmis.core.model.PodProduct;
+import org.openlmis.core.model.PodProductItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 
-public class PodProductRepository {
+public class PodProductItemRepository {
 
-  private final GenericDao<PodProduct> podProductGenericDao;
+  private final GenericDao<PodProductItem> podProductItemGenericDao;
 
   @Inject
   private final DbUtil dbUtil;
@@ -45,27 +45,27 @@ public class PodProductRepository {
 
   @Setter
   @Inject
-  PodLotItemRepository podLotItemRepository;
+  PodProductLotItemRepository podProductLotItemRepository;
 
   @Inject
-  public PodProductRepository(DbUtil dbUtil, Context context) {
-    this.podProductGenericDao = new GenericDao<>(PodProduct.class, context);
+  public PodProductItemRepository(DbUtil dbUtil, Context context) {
+    this.podProductItemGenericDao = new GenericDao<>(PodProductItem.class, context);
     this.dbUtil = dbUtil;
     this.context = context;
   }
 
-  public void batchCreatePodProductsWithItems(@Nullable final List<PodProduct> podProducts, Pod pod)
+  public void batchCreatePodProductsWithItems(@Nullable final List<PodProductItem> podProductItems, Pod pod)
       throws LMISException {
-    if (podProducts == null) {
+    if (podProductItems == null) {
       return;
     }
     try {
       TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), () -> {
-        for (PodProduct podProduct : podProducts) {
-          podProduct.setPod(pod);
-          podProduct.setCreatedAt(DateUtil.getCurrentDate());
-          podProduct.setUpdatedAt(DateUtil.getCurrentDate());
-          createOrUpdateWithItems(podProduct);
+        for (PodProductItem podProductItem : podProductItems) {
+          podProductItem.setPod(pod);
+          podProductItem.setCreatedAt(DateUtil.getCurrentDate());
+          podProductItem.setUpdatedAt(DateUtil.getCurrentDate());
+          createOrUpdateWithItems(podProductItem);
         }
         return null;
       });
@@ -74,22 +74,23 @@ public class PodProductRepository {
     }
   }
 
-  public PodProduct queryByPodIdAndProductCode(long podId, String productCode) throws LMISException {
-    return dbUtil.withDao(PodProduct.class,
+  public PodProductItem queryByPodIdAndProductCode(long podId, String productCode) throws LMISException {
+    return dbUtil.withDao(PodProductItem.class,
         dao -> dao.queryBuilder()
             .where().eq(FieldConstants.POD_ID, podId)
             .and().eq(FieldConstants.CODE, productCode)
             .queryForFirst());
   }
 
-  private void createOrUpdateWithItems(final PodProduct podProduct) throws LMISException {
+  private void createOrUpdateWithItems(final PodProductItem podProductItem) throws LMISException {
     try {
       TransactionManager
           .callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(),
               () -> {
-                PodProduct savedPodProduct = createOrUpdate(podProduct);
-                podLotItemRepository
-                    .batchCreatePodLotItemsWithLotInfo(podProduct.getPodLotItemsWrapper(), savedPodProduct);
+                PodProductItem savedPodProductItem = createOrUpdate(podProductItem);
+                podProductLotItemRepository
+                    .batchCreatePodLotItemsWithLotInfo(podProductItem.getPodProductLotItemsWrapper(),
+                        savedPodProductItem);
                 return null;
               });
     } catch (SQLException e) {
@@ -98,12 +99,13 @@ public class PodProductRepository {
   }
 
 
-  private PodProduct createOrUpdate(PodProduct podProduct) throws LMISException {
-    PodProduct existingPodProduct = queryByPodIdAndProductCode(podProduct.getPod().getId(), podProduct.getCode());
-    if (existingPodProduct != null) {
-      podProduct.setId(existingPodProduct.getId());
+  private PodProductItem createOrUpdate(PodProductItem podProductItem) throws LMISException {
+    PodProductItem existingPodProductItem = queryByPodIdAndProductCode(podProductItem.getPod().getId(),
+        podProductItem.getCode());
+    if (existingPodProductItem != null) {
+      podProductItem.setId(existingPodProductItem.getId());
     }
-    return podProductGenericDao.createOrUpdate(podProduct);
+    return podProductItemGenericDao.createOrUpdate(podProductItem);
   }
 
 }

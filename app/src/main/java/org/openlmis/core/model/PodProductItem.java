@@ -18,8 +18,11 @@
 
 package org.openlmis.core.model;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -28,30 +31,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @EqualsAndHashCode(callSuper = true)
-@Getter
 @Setter
+@Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@DatabaseTable(tableName = "pod_lot_items")
-public class PodLotItem extends BaseModel {
+@AllArgsConstructor
+@DatabaseTable(tableName = "pod_product_items")
+public class PodProductItem extends BaseModel {
+
+  @DatabaseField
+  private String code;
+
+  @DatabaseField
+  private long orderedQuantity;
+
+  @DatabaseField
+  private long partialFulfilledQuantity;
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
-  private Lot lot;
+  private Pod pod;
 
-  @DatabaseField
-  private long shippedQuantity;
+  @ForeignCollectionField
+  private ForeignCollection<PodProductLotItem> podProductLotItemForeignCollection;
 
-  @DatabaseField
-  private long acceptedQuantity;
-
-  @DatabaseField
-  private String rejectedReason;
-
-  @DatabaseField
-  private String notes;
-
-  @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false)
-  private PodProduct podProduct;
-
+  private List<PodProductLotItem> podProductLotItemsWrapper;
 }
