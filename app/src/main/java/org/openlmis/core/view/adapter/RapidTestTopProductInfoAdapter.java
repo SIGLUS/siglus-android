@@ -91,8 +91,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     CleanableEditText etStock = itemView.findViewById(R.id.et_stock);
     etStock.setText(getValue(formBasicItem.getInitialAmount()));
     etStock.setEnabled(Boolean.TRUE.equals(formBasicItem.getIsCustomAmount()) && (
-        formBasicItem.getForm().getStatus() == null
-            || formBasicItem.getForm().getStatus() == RnRForm.Status.DRAFT));
+        formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().isDraft()));
     if (Boolean.TRUE.equals(formBasicItem.getIsCustomAmount())) {
       etStock.addTextChangedListener(new SimpleTextWatcher() {
         @Override
@@ -106,8 +105,7 @@ public class RapidTestTopProductInfoAdapter extends RapidTestProductInfoView.Ada
     //config etInventory
     CleanableEditText etInventory = itemView.findViewById(R.id.et_inventory);
     etInventory.setText(getValue(formBasicItem.getInventory()));
-    etInventory.setEnabled(formBasicItem.getForm().getStatus() == null
-        || formBasicItem.getForm().getStatus() == RnRForm.Status.DRAFT);
+    etInventory.setEnabled(formBasicItem.getForm().getStatus() == null || formBasicItem.getForm().isDraft());
     etInventory.addTextChangedListener(new SimpleTextWatcher() {
       @Override
       public void afterTextChanged(Editable s) {
