@@ -18,14 +18,14 @@
 
 package org.openlmis.core.view.adapter;
 
-import android.content.Context;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.Date;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -34,20 +34,21 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
+import org.openlmis.core.view.adapter.BulkIssueLotAdapter.BulkIssueLotViewHolder;
 import org.openlmis.core.view.viewmodel.BulkIssueLotViewModel;
 
 @RunWith(LMISTestRunner.class)
 public class BulkIssueLotAdapterTest {
 
-  @Test
-  public void testConvertEditType() {
-    // given
-    BulkIssueLotAdapter adapter = new BulkIssueLotAdapter();
-    Context context = LMISTestApp.getContext();
-    context.setTheme(R.style.AppTheme);
-    BaseViewHolder holder = new BaseViewHolder(
-        LayoutInflater.from(context).inflate(R.layout.item_bulk_issue_lot_edit, null));
-    BulkIssueLotViewModel mockLotViewModel = Mockito.mock(BulkIssueLotViewModel.class);
+  private BulkIssueLotAdapter adapter;
+  private BulkIssueLotViewModel mockLotViewModel;
+
+  @Before
+  public void setup(){
+    adapter = new BulkIssueLotAdapter();
+    LMISTestApp.getContext().setTheme(R.style.AppTheme);
+
+    mockLotViewModel = Mockito.mock(BulkIssueLotViewModel.class);
     LotOnHand mockLotOnHand = Mockito.mock(LotOnHand.class);
     Lot mockLot = Mockito.mock(Lot.class);
     Mockito.when(mockLotOnHand.getLot()).thenReturn(mockLot);
@@ -57,6 +58,13 @@ public class BulkIssueLotAdapterTest {
     Mockito.when(mockLotOnHand.getQuantityOnHand()).thenReturn(1L);
     Mockito.when(mockLot.getLotNumber()).thenReturn("LotNumber");
     Mockito.when(mockLot.getExpirationDate()).thenReturn(new Date());
+  }
+
+  @Test
+  public void testConvertEditType() {
+    // given
+    BulkIssueLotViewHolder holder = adapter.new BulkIssueLotViewHolder(
+        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_bulk_issue_lot_edit, null));
 
     // when
     adapter.convert(holder, mockLotViewModel);
@@ -68,5 +76,19 @@ public class BulkIssueLotAdapterTest {
     Assert.assertEquals("1", etAmount.getText().toString());
     TextView tvExistingOnHand = holder.getView(R.id.tv_existing_lot_on_hand);
     Assert.assertEquals("Existing stock on hand of lot  1", tvExistingOnHand.getText().toString());
+  }
+
+  @Test
+  public void shouldSetAmountAfterAmountChange(){
+    // given
+    BulkIssueLotViewHolder holder = adapter.new BulkIssueLotViewHolder(
+        LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_bulk_issue_lot_edit, null));
+    holder.populate(mockLotViewModel);
+
+    // when
+    holder.getAmountTextWatcher().afterTextChanged(new SpannableStringBuilder("123"));
+
+    // then
+    Mockito.verify(mockLotViewModel,Mockito.times(1)).setAmount(123L);
   }
 }

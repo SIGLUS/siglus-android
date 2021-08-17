@@ -43,6 +43,7 @@ import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.BulkIssueRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -120,7 +121,8 @@ public class BulkIssuePresenterTest {
     stockCard.setLotOnHandListWrapper(Collections.singletonList(mockLotOnHand));
     DraftBulkIssueProduct mockDraftProduct = mock(DraftBulkIssueProduct.class);
     when(mockDraftProduct.getStockCard()).thenReturn(stockCard);
-    when(mockBulkIssueRepository.queryUsableProductAndLotDraft()).thenReturn(Collections.singletonList(mockDraftProduct));
+    when(mockBulkIssueRepository.queryUsableProductAndLotDraft())
+        .thenReturn(Collections.singletonList(mockDraftProduct));
     when(mockStockRepository.listStockCardsByProductIds(any())).thenReturn(Collections.singletonList(stockCard));
     when(mockLot.getLotNumber()).thenReturn("lotNumber");
     when(mockLot.getExpirationDate()).thenReturn(DateUtil.parseString("2021-08-06", DateUtil.DB_DATE_FORMAT));
@@ -182,6 +184,36 @@ public class BulkIssuePresenterTest {
   }
 
   @Test
+  public void shouldGetCorrectEffectedStockCardIds() {
+    // given
+    BulkIssueProductViewModel mockViewModel = mock(BulkIssueProductViewModel.class);
+    StockCard mockStockCard = mock(StockCard.class);
+    when(mockViewModel.getStockCard()).thenReturn(mockStockCard);
+    when(mockStockCard.getId()).thenReturn(2L);
+    presenter.getCurrentViewModels().clear();
+    presenter.getCurrentViewModels().add(mockViewModel);
+
+    // when
+    long[] effectedStockCardIds = presenter.getEffectedStockCardIds();
+
+    // then
+    Assert.assertEquals(1, effectedStockCardIds.length);
+    Assert.assertEquals(2, effectedStockCardIds[0]);
+  }
+
+  @Test
+  public void shouldGetCorrectEffectedStockCardIdsWhenNoViewModels() {
+    // given
+    presenter.getCurrentViewModels().clear();
+
+    // when
+    long[] effectedStockCardIds = presenter.getEffectedStockCardIds();
+
+    // then
+    Assert.assertEquals(0, effectedStockCardIds.length);
+  }
+
+  @Test
   public void testSaveDraftSuccess() {
     // given
     TestSubscriber<Object> testSubscriber = new TestSubscriber<>(presenter.saveDraftSubscribe);
@@ -203,13 +235,15 @@ public class BulkIssuePresenterTest {
     // given
     TestSubscriber<Object> testSubscriber = new TestSubscriber<>(presenter.saveDraftSubscribe);
     presenter.saveDraftSubscribe = testSubscriber;
-    doThrow(new NullPointerException()).when(mockBulkIssueRepository).saveDraft(any());
+    LMISException toBeThrown = new LMISException("");
+    doThrow(toBeThrown).when(mockBulkIssueRepository).saveDraft(any());
 
     // when
     presenter.saveDraft();
 
     // then
     testSubscriber.awaitTerminalEvent();
+    Assert.assertEquals(toBeThrown, testSubscriber.getOnErrorEvents().get(0));
     verify(mockView, times(1)).loading();
     verify(mockView, times(1)).loaded();
     verify(mockView, times(1)).onSaveDraftFinished(false);
@@ -281,5 +315,54 @@ public class BulkIssuePresenterTest {
 
     // then
     Assert.assertTrue(presenter.needConfirm());
+  }
+
+  @Test
+  public void shouldConfirmWhenCatchException() throws LMISException {
+    // given
+    when(mockBulkIssueRepository.queryUsableProductAndLotDraft()).thenThrow(new LMISException(""));
+
+    // then
+    Assert.assertTrue(presenter.needConfirm());
+  }
+
+  @Test
+  public void shouldCorrectSaveData() throws LMISException {
+    // given
+    BulkIssueProductViewModel mockProductViewModel = mock(BulkIssueProductViewModel.class);
+    StockMovementItem mockStockMovementItem = mock(StockMovementItem.class);
+    when(mockProductViewModel.convertToMovement(any(), any())).thenReturn(mockStockMovementItem);
+    presenter.getCurrentViewModels().clear();
+    presenter.getCurrentViewModels().add(mockProductViewModel);
+    TestSubscriber<Object> testSubscriber = new TestSubscriber<>(presenter.doIssueSubscribe);
+    presenter.doIssueSubscribe = testSubscriber;
+
+    // when
+    presenter.doIssue("signature");
+
+    testSubscriber.awaitTerminalEvent();
+    // then
+    verify(mockStockMovementItem, times(1)).setSignature("signature");
+    verify(mockBulkIssueRepository, times(1)).deleteDraft();
+    verify(mockView, times(1)).loading();
+    verify(mockView, times(1)).loaded();
+    verify(mockView, times(1)).onSaveMovementSuccess();
+  }
+
+  @Test
+  public void shouldUpdateViewWhenError() throws LMISException {
+    // given
+    doThrow(new LMISException("mocked exception")).when(mockBulkIssueRepository).saveMovement(any());
+    TestSubscriber<Object> testSubscriber = new TestSubscriber<>(presenter.doIssueSubscribe);
+    presenter.doIssueSubscribe = testSubscriber;
+
+    // when
+    presenter.doIssue("signature");
+
+    testSubscriber.awaitTerminalEvent();
+    // then
+    verify(mockView, times(1)).loading();
+    verify(mockView, times(1)).loaded();
+    verify(mockView, times(1)).onSaveMovementFailed(any(LMISException.class));
   }
 }

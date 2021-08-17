@@ -37,6 +37,8 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleanalytics.ScreenName;
@@ -61,6 +63,7 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
   @InjectView(R.id.tv_total_amount)
   private TextView tvTotalAmount;
 
+  @Setter(AccessLevel.PROTECTED)
   @InjectView(R.id.rv_bulk_issue)
   private RecyclerView rvBulkIssue;
 
@@ -120,7 +123,7 @@ public class BulkIssueActivity extends BaseActivity implements BulkIssueView {
               bulkIssuePresenter.doIssue(sign);
             }
           });
-          signatureDialog.show(getSupportFragmentManager());
+          signatureDialog.show(getSupportFragmentManager(), "bulk_issue_signature");
         }
       }
     }

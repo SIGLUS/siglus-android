@@ -24,6 +24,7 @@ import com.j256.ormlite.table.TableUtils;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.collections.CollectionUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -107,20 +108,29 @@ public class BulkIssueRepository {
   }
 
   public void saveMovement(List<StockMovementItem> stockMovementItems) throws LMISException {
-    dbUtil.withDaoAsBatch(DraftBulkIssueProduct.class, dao -> {
-      for (StockMovementItem stockMovementItem : stockMovementItems) {
-        StockCard stockCard = stockMovementItem.getStockCard();
-        Date lastMovementCreateDate = stockCard.getLastStockMovementCreatedTime();
-        if (lastMovementCreateDate != null && stockMovementItem.getCreatedAt().before(lastMovementCreateDate)) {
-          throw new LMISException(LMISApp.getContext().getResources().getString(R.string.msg_invalid_stock_movement));
+    AtomicBoolean failedWithErrorDate = new AtomicBoolean(false);
+    try {
+      dbUtil.withDaoAsBatch(DraftBulkIssueProduct.class, dao -> {
+        for (StockMovementItem stockMovementItem : stockMovementItems) {
+          StockCard stockCard = stockMovementItem.getStockCard();
+          Date lastMovementCreateDate = stockCard.getLastStockMovementCreatedTime();
+          if (lastMovementCreateDate != null && stockMovementItem.getCreatedAt().before(lastMovementCreateDate)) {
+            failedWithErrorDate.set(true);
+            throw new IllegalArgumentException();
+          }
+          stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+          if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
+            SharedPreferenceMgr.getInstance()
+                .setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+          }
         }
-        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-        if (stockCard.calculateSOHFromLots() == 0 && !stockCard.getProduct().isActive()) {
-          SharedPreferenceMgr.getInstance()
-              .setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
-        }
+        return null;
+      });
+    } catch (LMISException e) {
+      if (failedWithErrorDate.get()) {
+        throw new LMISException(e, LMISApp.getContext().getResources().getString(R.string.msg_invalid_stock_movement));
       }
-      return null;
-    });
+      throw e;
+    }
   }
 }

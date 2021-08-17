@@ -117,6 +117,7 @@ public class BulkIssuePresenter extends Presenter {
 
     @Override
     public void onError(Throwable e) {
+      bulkIssueView.loaded();
       if (e instanceof LMISException) {
         bulkIssueView.onSaveMovementFailed((LMISException) e);
       } else {
@@ -224,6 +225,7 @@ public class BulkIssuePresenter extends Presenter {
   }
 
   public void doIssue(String signature) {
+    bulkIssueView.loading();
     Subscription doIssueSubscription = Observable.create(subscriber -> {
       try {
         bulkIssueRepository.saveMovement(FluentIterable.from(currentViewModels).transform(productViewModel -> {
@@ -272,7 +274,7 @@ public class BulkIssuePresenter extends Presenter {
         movementReasonCode = draftBulkIssueProducts.get(0).getMovementReasonCode();
         ImmutableList<StockCard> productIds = FluentIterable
             .from(draftBulkIssueProducts)
-            .transform(draftProduct -> draftProduct.getStockCard())
+            .transform(DraftBulkIssueProduct::getStockCard)
             .toList();
         List<BulkIssueProductViewModel> viewModels = createViewModelFromStockCards(productIds);
         for (BulkIssueProductViewModel viewModel : viewModels) {

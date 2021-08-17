@@ -18,19 +18,26 @@
 
 package org.openlmis.core.model.repository;
 
+import com.google.inject.AbstractModule;
 import java.util.Collections;
 import java.util.List;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftBulkIssueLot;
 import org.openlmis.core.model.DraftBulkIssueProduct;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.LotBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
@@ -47,20 +54,25 @@ public class BulkIssueRepositoryTest {
 
   StockRepository stockRepository;
 
+  StockRepository mockStockRepository;
+
   LotRepository lotRepository;
 
   private StockCard stockCard;
 
   @Before
   public void setUp() throws Exception {
-    bulkIssueRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(BulkIssueRepository.class);
-    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(ProductRepository.class);
-    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(StockRepository.class);
-    lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application)
-        .getInstance(LotRepository.class);
+    productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
+    stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
+    lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LotRepository.class);
+    mockStockRepository = Mockito.mock(StockRepository.class);
+    RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+      @Override
+      protected void configure() {
+        bind(StockRepository.class).toInstance(mockStockRepository);
+      }
+    });
+    bulkIssueRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(BulkIssueRepository.class);
     prepareData();
   }
 
@@ -115,6 +127,43 @@ public class BulkIssueRepositoryTest {
 
     // then
     Assert.assertFalse(bulkIssueRepository.hasDraft());
+  }
+
+  @Test
+  public void shouldCorrectSaveData() throws Exception {
+    // given
+    StockMovementItem mockStockMovementItem = Mockito.mock(StockMovementItem.class);
+    StockCard mockStockCard = Mockito.mock(StockCard.class);
+    Product mockProduct = Mockito.mock(Product.class);
+    Mockito.when(mockStockMovementItem.getStockCard()).thenReturn(mockStockCard);
+    Mockito.when(mockStockCard.getProduct()).thenReturn(mockProduct);
+    Mockito.when(mockStockCard.calculateSOHFromLots()).thenReturn(0L);
+    Mockito.when(mockProduct.isActive()).thenReturn(false);
+
+    // when
+    bulkIssueRepository.saveMovement(Collections.singletonList(mockStockMovementItem));
+
+    // then
+    Mockito.verify(mockStockRepository, Mockito.times(1)).addStockMovementAndUpdateStockCard(mockStockMovementItem);
+    Assert.assertTrue(SharedPreferenceMgr.getInstance().isNeedShowProductsUpdateBanner());
+  }
+
+  @Test
+  public void shouldThrowExceptionWhenErrorData() {
+    // given
+    StockMovementItem mockStockMovementItem = Mockito.mock(StockMovementItem.class);
+    StockCard mockStockCard = Mockito.mock(StockCard.class);
+    Mockito.when(mockStockMovementItem.getStockCard()).thenReturn(mockStockCard);
+    DateTime currentTime = new DateTime();
+    Mockito.when(mockStockCard.getLastStockMovementCreatedTime()).thenReturn(currentTime.toDate());
+    Mockito.when(mockStockMovementItem.getCreatedAt()).thenReturn(currentTime.minusDays(1).toDate());
+
+    // then
+    LMISException lmisException = Assert.assertThrows(LMISException.class, () ->
+        bulkIssueRepository.saveMovement(Collections.singletonList(mockStockMovementItem)));
+
+    Assert.assertEquals(LMISTestApp.getContext().getResources().getString(R.string.msg_invalid_stock_movement),
+        lmisException.getMsg());
   }
 
   private void prepareData() throws LMISException {

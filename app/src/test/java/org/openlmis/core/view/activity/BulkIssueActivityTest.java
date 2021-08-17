@@ -18,19 +18,32 @@
 
 package org.openlmis.core.view.activity;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.openlmis.core.view.activity.AddProductsToBulkEntriesActivity.IS_FROM_BULK_ISSUE;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.content.Intent;
+import android.view.MenuItem;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.inject.AbstractModule;
+import java.util.Collections;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.BulkIssuePresenter;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.adapter.BulkIssueAdapter;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -68,16 +81,60 @@ public class BulkIssueActivityTest {
   }
 
   @Test
-  public void shouldAdapterUpdateAfterRefreshUI(){
+  public void shouldCorrectSaveDraft() {
+    // given
+    RobolectricUtils.resetNextClickTime();
+
+    // when
+    bulkIssueActivity.findViewById(R.id.btn_save).performClick();
+    RobolectricUtils.waitLooperIdle();
+
+    // then
+    verify(mockedPresenter, times(1)).saveDraft();
+  }
+
+  @Test
+  public void shouldCorrectScrollToPositionWhenVerifyFailed() {
+    // when
+    RecyclerView mockRvBulkIssue = mock(RecyclerView.class);
+    when(mockAdapter.validateAll()).thenReturn(1);
+    bulkIssueActivity.setRvBulkIssue(mockRvBulkIssue);
+    RobolectricUtils.resetNextClickTime();
+
+    // then
+    bulkIssueActivity.findViewById(R.id.btn_complete).performClick();
+    RobolectricUtils.waitLooperIdle();
+
+    // then
+    verify(mockRvBulkIssue, times(1)).smoothScrollToPosition(1);
+  }
+
+  @Test
+  public void shouldShowSignatureDialogWhenCompleteClicked() {
+    // when
+    when(mockAdapter.validateAll()).thenReturn(-1);
+    RobolectricUtils.resetNextClickTime();
+
+    // then
+    bulkIssueActivity.findViewById(R.id.btn_complete).performClick();
+    RobolectricUtils.waitLooperIdle();
+
+    // then
+    Fragment signatureDialog = bulkIssueActivity.getSupportFragmentManager().findFragmentByTag("bulk_issue_signature");
+    Assert.assertNotNull(signatureDialog);
+  }
+
+  @Test
+  public void shouldAdapterUpdateAfterRefreshUI() {
     // when
     bulkIssueActivity.onRefreshViewModels();
 
     // then
-    Mockito.verify(mockAdapter,times(1)).notifyDataSetChanged();
+    Mockito.verify(mockAdapter, times(1)).notifyDataSetChanged();
   }
 
   @Test
-  public void shouldFinishOnLoadViewModelsFailed(){
+  public void shouldFinishOnLoadViewModelsFailed() {
     // when
     bulkIssueActivity.onLoadViewModelsFailed(new NullPointerException());
 
@@ -86,17 +143,72 @@ public class BulkIssueActivityTest {
   }
 
   @Test
-  public void shouldCorrectToastOnSaveDraftFinished(){
+  public void shouldCorrectToastOnSaveDraftFinished() {
     // when
     bulkIssueActivity.onSaveDraftFinished(true);
 
     // then
-    Assert.assertEquals("Successfully Saved",ShadowToast.getTextOfLatestToast());
+    Assert.assertEquals("Successfully Saved", ShadowToast.getTextOfLatestToast());
 
     // when
     bulkIssueActivity.onSaveDraftFinished(false);
 
     // then
-    Assert.assertEquals("Unsuccessfully Saved",ShadowToast.getTextOfLatestToast());
+    Assert.assertEquals("Unsuccessfully Saved", ShadowToast.getTextOfLatestToast());
+  }
+
+  @Test
+  public void shouldShowConfirmDialogWhenBackPressed() {
+    // when
+    when(mockedPresenter.needConfirm()).thenReturn(true);
+
+    // then
+    bulkIssueActivity.onBackPressed();
+    RobolectricUtils.waitLooperIdle();
+
+    // then
+    Fragment confirmDialog = bulkIssueActivity.getSupportFragmentManager()
+        .findFragmentByTag("bulk_issue_back_confirm_dialog");
+    Assert.assertNotNull(confirmDialog);
+  }
+
+  @Test
+  public void shouldCorrectOpenAddProducts() {
+    // given
+    MenuItem mockMenuItem = mock(MenuItem.class);
+    when(mockMenuItem.getItemId()).thenReturn(R.id.action_add_product);
+    when(mockedPresenter.getAddedProductCodeList()).thenReturn(Collections.singletonList(""));
+
+    // when
+    bulkIssueActivity.onOptionsItemSelected(mockMenuItem);
+
+    // then
+    Intent intent = shadowOf(bulkIssueActivity).getNextStartedActivity();
+
+    assertThat(intent).isNotNull();
+    assertThat(intent.getComponent().getClassName()).isEqualTo(AddProductsToBulkEntriesActivity.class.getName());
+    assertThat(intent.getBooleanExtra(IS_FROM_BULK_ISSUE, false)).isTrue();
+  }
+
+  @Test
+  public void shouldFinishAfterSaveMovementSuccess() {
+    // when
+    bulkIssueActivity.onSaveMovementSuccess();
+
+    // then
+    assertThat(bulkIssueActivity.isFinishing()).isTrue();
+    assertThat(ShadowToast.getTextOfLatestToast())
+        .isEqualTo(LMISTestApp.getContext().getString(R.string.msg_complete_successfully));
+  }
+
+  @Test
+  public void shouldToastMsgAfterSaveMovementFailed() {
+    // given
+    LMISException lmisException = new LMISException("test msg");
+    // when
+    bulkIssueActivity.onSaveMovementFailed(lmisException);
+
+    // then
+    assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("test msg");
   }
 }
