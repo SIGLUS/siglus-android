@@ -34,6 +34,7 @@ import java.util.Date;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
 
+@SuppressWarnings("squid:S1874")
 public class ProgramDataFormItemAdapter implements JsonDeserializer<ProgramDataFormItem>,
     JsonSerializer<ProgramDataFormItem> {
 

@@ -55,7 +55,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-@SuppressWarnings("PMD")
+@SuppressWarnings("squid:S1874")
 public class RapidTestReportsPresenter extends Presenter {
 
   @Getter

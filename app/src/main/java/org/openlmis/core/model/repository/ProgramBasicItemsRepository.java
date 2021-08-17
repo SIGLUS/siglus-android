@@ -34,6 +34,7 @@ import org.openlmis.core.model.helper.FormHelper;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
+@SuppressWarnings("squid:S1874")
 public class ProgramBasicItemsRepository {
 
   @Inject
@@ -136,7 +137,7 @@ public class ProgramBasicItemsRepository {
     return null;
   }
 
-  private Long lastProgramInventory(Product product, List<ProgramDataForm> rapidTestForms) throws LMISException {
+  private Long lastProgramInventory(Product product, List<ProgramDataForm> rapidTestForms) {
     if (rapidTestForms.isEmpty() || rapidTestForms.size() == 1) {
       return null;
     }

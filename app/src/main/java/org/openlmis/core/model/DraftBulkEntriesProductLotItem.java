@@ -26,6 +26,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,6 +36,7 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 @Setter
 @Getter
 @Builder
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @DatabaseTable(tableName = "draft_bulk_entries_product_lot_item")

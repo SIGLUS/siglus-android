@@ -27,7 +27,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
@@ -67,8 +66,7 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>,
   public JsonElement serialize(RnrFormItem rnrFormItem, Type typeOfSrc,
       JsonSerializationContext context) {
     transformExpireDate(rnrFormItem, SIMPLE_DATE_FORMAT, DB_DATE_FORMAT);
-    JsonObject jsonObject = gson.toJsonTree(rnrFormItem).getAsJsonObject();
-    return jsonObject;
+    return gson.toJsonTree(rnrFormItem).getAsJsonObject();
   }
 
   @Override

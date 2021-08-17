@@ -176,10 +176,8 @@ public class SyncUpManager {
   public boolean fakeSyncRnr() {
     List<RnRForm> forms;
     try {
-      Log.d(TAG, "===> Preparing RnrForm for Syncing: Delete Deactivated Products...");
       forms = rnrFormRepository.queryAllUnsyncedForms();
-      Log.d(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
-      if (forms.size() == 0) {
+      if (forms.isEmpty()) {
         return false;
       }
     } catch (LMISException e) {
@@ -190,10 +188,8 @@ public class SyncUpManager {
     Observable.from(forms).filter(rnRForm -> {
       try {
         syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RNR_FORM, rnRForm.getId());
-        Log.d(TAG, "===> SyncRnr : synced ->");
         return true;
       } catch (Exception e) {
-        Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
         new LMISException(e, "SyncUpManager:fakeSyncRnr,sync failed").reportToFabric();
         syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RNR_FORM, rnRForm.getId()));
         return false;
@@ -217,8 +213,7 @@ public class SyncUpManager {
         new LMISException("SyncUpManager.movementEntriesToSync").reportToFabric();
         return false;
       }
-      SyncUpStockMovementDataSplitResponse response = lmisRestApi
-          .syncUpStockMovementDataSplit(movementEntriesToSync);
+      lmisRestApi.syncUpStockMovementDataSplit(movementEntriesToSync);
 
       List<StockMovementItem> shouldMarkSyncedItems = stockMovementItems;
 
@@ -496,7 +491,7 @@ public class SyncUpManager {
 
       Log.d(TAG, "===> SyncRapidTestForms :" + forms.size() + " ProgramDataForm ready to sync...");
 
-      if (forms.size() == 0) {
+      if (forms.isEmpty()) {
         return;
       }
     } catch (LMISException e) {

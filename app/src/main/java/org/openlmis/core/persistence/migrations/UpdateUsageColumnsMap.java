@@ -14,7 +14,7 @@ public class UpdateUsageColumnsMap extends Migration {
   private static final String INSERT_INTO_USAGE_COLUMNS_MAP = "INSERT INTO usage_columns_map (code,"
       + " testOutcome, testProject, createdAt, updatedAt) ";
   private static final String VALUES = "VALUES (";
-  private static final String formatDate = DateUtil
+  private static final String FORMAT_DATE = DateUtil
       .formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
 
   public void up() {
@@ -32,6 +32,6 @@ public class UpdateUsageColumnsMap extends Migration {
     String usageSqlProject = "'" + testProject + "',";
     execSQL(
         INSERT_INTO_USAGE_COLUMNS_MAP + VALUES + usageSqlCode + usageSqlOutcome + usageSqlProject
-            + "'" + formatDate + "', " + "'" + formatDate + "')");
+            + "'" + FORMAT_DATE + "', " + "'" + FORMAT_DATE + "')");
   }
 }

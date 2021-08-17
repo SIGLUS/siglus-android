@@ -40,7 +40,7 @@ public class UsageInformationLineItemRepository {
 
   public void batchCreateOrUpdate(final List<UsageInformationLineItem> usageInformationLineItems)
       throws LMISException {
-    dbUtil.withDaoAsBatch(UsageInformationLineItem.class, (DbUtil.Operation<UsageInformationLineItem, Void>) dao -> {
+    dbUtil.withDaoAsBatch(UsageInformationLineItem.class, dao -> {
       for (UsageInformationLineItem item : usageInformationLineItems) {
         dao.createOrUpdate(item);
       }
@@ -50,7 +50,7 @@ public class UsageInformationLineItemRepository {
 
   public void batchDelete(final List<UsageInformationLineItem> usageInformationLineItemListWrapper)
       throws LMISException {
-    dbUtil.withDaoAsBatch(UsageInformationLineItem.class, (DbUtil.Operation<UsageInformationLineItem, Void>) dao -> {
+    dbUtil.withDaoAsBatch(UsageInformationLineItem.class, dao -> {
       for (UsageInformationLineItem item : usageInformationLineItemListWrapper) {
         dao.delete(item);
       }

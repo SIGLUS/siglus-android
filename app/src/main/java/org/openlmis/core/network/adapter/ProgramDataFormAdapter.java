@@ -47,7 +47,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import roboguice.RoboGuice;
 
-@SuppressWarnings("PMD")
+@SuppressWarnings("squid:S1874")
 public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>,
     JsonDeserializer<ProgramDataForm> {
 
@@ -86,7 +86,7 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>,
       programDataForm.setProgram(program);
     } catch (LMISException e) {
       new LMISException(e, "ProgramDataFormAdapter.deserialize").reportToFabric();
-      throw new JsonParseException("can not find Program by programCode");
+      throw new JsonParseException("can not find Program by programCode", e);
     }
     programDataForm.setStatus(Status.AUTHORIZED);
     programDataForm.setSynced(true);
@@ -106,20 +106,15 @@ public class ProgramDataFormAdapter implements JsonSerializer<ProgramDataForm>,
   }
 
   @Override
-  public JsonElement serialize(ProgramDataForm src, Type typeOfSrc,
-      JsonSerializationContext context) {
+  public JsonElement serialize(ProgramDataForm src, Type typeOfSrc, JsonSerializationContext context) {
     try {
       return buildProgramDataFormJson(src);
-    } catch (LMISException e) {
-      throw new JsonParseException("can not find Signature by programDataForm");
     } catch (NullPointerException e) {
-      throw new JsonParseException("No Program associated !");
+      throw new JsonParseException("No Program associated !", e);
     }
-
   }
 
-  private JsonElement buildProgramDataFormJson(ProgramDataForm programDataForm)
-      throws LMISException {
+  private JsonElement buildProgramDataFormJson(ProgramDataForm programDataForm) {
     JsonObject root = gson.toJsonTree(programDataForm).getAsJsonObject();
     String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
     String programCode = programDataForm.getProgram().getProgramCode();

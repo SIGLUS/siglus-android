@@ -36,6 +36,7 @@ import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import roboguice.RoboGuice;
 
+@SuppressWarnings("squid:S1874")
 public class ProgramDataFormBasicItemAdapter implements JsonSerializer<ProgramDataFormBasicItem>,
     JsonDeserializer<ProgramDataFormBasicItem> {
 

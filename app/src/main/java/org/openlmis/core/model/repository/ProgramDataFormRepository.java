@@ -49,6 +49,7 @@ import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
+@SuppressWarnings("squid:S1874")
 public class ProgramDataFormRepository {
 
   private static final String WHERE_PERIOD_END =

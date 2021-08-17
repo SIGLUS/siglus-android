@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
@@ -76,7 +77,7 @@ public final class ToastUtil {
     if (view != null) {
       view.setBackgroundResource(R.drawable.toast_bg);
       TextView textView = view.findViewById(android.R.id.message);
-      textView.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_white));
+      textView.setTextColor(ContextCompat.getColor(LMISApp.getContext(), R.color.color_white));
       textView.setTextSize(18);
     }
   }

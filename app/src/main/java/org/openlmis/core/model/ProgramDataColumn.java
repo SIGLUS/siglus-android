@@ -23,6 +23,9 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @deprecated stay for old data
+ */
 @Deprecated
 @Data
 @NoArgsConstructor

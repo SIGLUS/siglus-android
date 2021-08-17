@@ -613,7 +613,7 @@ public class VIARequisitionPresenterTest {
     Product product = new Product();
     RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product).setRequestAmount(100L)
         .build();
-    TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
+    TestSubscriber<Object> testSubscriber = new TestSubscriber<>();
     presenter.removeRnrItem(rnrFormItem).subscribe(testSubscriber);
     testSubscriber.awaitTerminalEvent();
 

@@ -22,12 +22,17 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @deprecated stay for old data
+ */
 @Deprecated
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 @DatabaseTable(tableName = "program_data_Basic_items")
 public class ProgramDataFormBasicItem extends BaseModel {
 

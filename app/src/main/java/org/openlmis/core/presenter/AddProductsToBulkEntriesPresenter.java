@@ -51,28 +51,27 @@ public class AddProductsToBulkEntriesPresenter extends Presenter {
 
   public Observable<List<ProductsToBulkEntriesViewModel>> getProducts(List<String> addedProducts,
       boolean isFromBulkIssue) {
-    return Observable
-        .create((Observable.OnSubscribe<List<ProductsToBulkEntriesViewModel>>) subscriber -> {
-          try {
-            List<Product> products;
-            if (isFromBulkIssue) {
-              products = productRepository.queryProductsInStockCard();
-            } else {
-              products = productRepository.listAllProductsWithoutKit();
-            }
-            Collections.sort(products);
-            for (Product product : products) {
-              if (addedProducts.contains(product.getCode())) {
-                continue;
-              }
-              ProductsToBulkEntriesViewModel currentModel = new ProductsToBulkEntriesViewModel(product);
-              models.add(currentModel);
-            }
-            subscriber.onNext(models);
-            subscriber.onCompleted();
-          } catch (Exception e) {
-            subscriber.onError(e);
+    return Observable.create((Observable.OnSubscribe<List<ProductsToBulkEntriesViewModel>>) subscriber -> {
+      try {
+        List<Product> products;
+        if (isFromBulkIssue) {
+          products = productRepository.queryProductsInStockCard();
+        } else {
+          products = productRepository.listAllProductsWithoutKit();
+        }
+        Collections.sort(products);
+        for (Product product : products) {
+          if (addedProducts.contains(product.getCode())) {
+            continue;
           }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+          ProductsToBulkEntriesViewModel currentModel = new ProductsToBulkEntriesViewModel(product);
+          models.add(currentModel);
+        }
+        subscriber.onNext(models);
+        subscriber.onCompleted();
+      } catch (Exception e) {
+        subscriber.onError(e);
+      }
+    }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
   }
 }

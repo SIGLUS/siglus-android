@@ -35,6 +35,7 @@ import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
 
+@SuppressWarnings("squid:S1874")
 @Data
 public class RapidTestFormItemViewModel {
 

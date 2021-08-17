@@ -30,6 +30,9 @@ import lombok.Data;
 import lombok.Getter;
 import org.openlmis.core.utils.ListUtil;
 
+/**
+ * @deprecated stay for old data
+ */
 @Deprecated
 @Data
 @DatabaseTable(tableName = "program_data_forms")

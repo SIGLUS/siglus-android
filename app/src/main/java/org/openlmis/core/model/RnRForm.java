@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.joda.time.DateTime;
@@ -44,6 +45,7 @@ import org.openlmis.core.view.widget.MMIARegimeThreeLineList.CountType;
 
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 @DatabaseTable(tableName = "rnr_forms")
 public class RnRForm extends BaseModel {
 
@@ -315,7 +317,7 @@ public class RnRForm extends BaseModel {
         from(rnrFormItems).filter(rnrFormItem -> !rnrFormItem.isManualAdd()).toList());
 
     List<RnrFormItem> newlyAddedList = newArrayList(
-        from(rnrFormItems).filter(rnrFormItem -> rnrFormItem.isManualAdd()).toList());
+        from(rnrFormItems).filter(RnrFormItem::isManualAdd).toList());
     sortRnrItemsListBasedOnProductCode(existingList);
     sortRnrItemsListBasedOnProductCode(newlyAddedList);
     rnrFormItems = existingList;

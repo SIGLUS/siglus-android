@@ -26,6 +26,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
 
+@SuppressWarnings("squid:S1874")
 @Data
 public class RapidTestFormGridViewModel {
 

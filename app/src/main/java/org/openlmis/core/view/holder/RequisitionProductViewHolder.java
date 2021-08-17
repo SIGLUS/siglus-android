@@ -78,7 +78,7 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
     dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
       @Override
       public void positiveClick(String tag) {
-        presenter.removeRnrItem(item).subscribe(new Subscriber<Void>() {
+        presenter.removeRnrItem(item).subscribe(new Subscriber<Object>() {
           @Override
           public void onCompleted() {
             presenter.deleteRnRItemFromViewModel(item);
@@ -90,7 +90,7 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
           }
 
           @Override
-          public void onNext(Void aVoid) {
+          public void onNext(Object aVoid) {
             // do nothing
           }
         });

@@ -72,15 +72,13 @@ public class AddProductsToBulkEntriesActivity extends SearchBarActivity {
   @InjectView(R.id.btn_add_products)
   Button btnAddProducts;
 
-  private boolean isFromBulkIssue;
-
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     initRecyclerView();
     loading(getString(R.string.add_all_products_loading_message));
     previouslyProductCodes = (List<String>) getIntent().getSerializableExtra(SELECTED_PRODUCTS);
-    isFromBulkIssue = getIntent().getBooleanExtra(IS_FROM_BULK_ISSUE, false);
+    boolean isFromBulkIssue = getIntent().getBooleanExtra(IS_FROM_BULK_ISSUE, false);
     btnAddProducts.setOnClickListener(addProductsListener());
     Subscription subscription = addProductsToBulkEntriesPresenter
         .getProducts(previouslyProductCodes, isFromBulkIssue)

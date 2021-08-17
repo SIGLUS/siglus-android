@@ -128,8 +128,8 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
   }
 
-  public Observable<Void> removeRnrItem(final RnrFormItem rnrFormItem) {
-    return Observable.create((Observable.OnSubscribe<Void>) subscriber -> {
+  public Observable<Object> removeRnrItem(final RnrFormItem rnrFormItem) {
+    return Observable.create(subscriber -> {
       try {
         rnrFormItemRepository.deleteRnrItem(rnrFormItem);
       } catch (LMISException e) {
@@ -396,7 +396,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
   }
 
 
-  private void convertRnrToViewModel(RnRForm rnrForm) throws LMISException {
+  private void convertRnrToViewModel(RnRForm rnrForm) {
     requisitionFormItemViewModels.clear();
     requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
     viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.YES));

@@ -45,6 +45,7 @@ import org.openlmis.core.model.Signature;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+@SuppressWarnings("squid:S1874")
 @Data
 public class RapidTestReportViewModel {
 
