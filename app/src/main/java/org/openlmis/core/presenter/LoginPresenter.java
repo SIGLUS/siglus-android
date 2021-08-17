@@ -379,9 +379,6 @@ public class LoginPresenter extends Presenter {
       if (dirtyDataRepository.hasOldDate()) {
         dirtyDataRepository.deleteOldData();
       }
-      if (programDataFormRepository.hasOldDate()) {
-        programDataFormRepository.deleteOldData();
-      }
     }).subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(msg -> Log.d(TAG, msg.toString()), Throwable::printStackTrace);
