@@ -173,8 +173,7 @@ public abstract class BaseRequisitionPresenter extends BaseReportPresenter {
         view.loaded();
         view.completeSuccess();
         Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
-        TrackRnREventUtil
-            .trackRnRListEvent(TrackerActions.AUTHORISE_RNR, rnRForm.getProgram().getProgramCode());
+        TrackRnREventUtil.trackRnRListEvent(TrackerActions.AUTHORISE_RNR, rnRForm.getProgram().getProgramCode());
         internetCheck.execute(checkInternetListener());
       }
     };

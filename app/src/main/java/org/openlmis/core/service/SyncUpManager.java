@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.event.SyncRnrFinishEvent;
 import org.openlmis.core.event.SyncStatusEvent;
 import org.openlmis.core.event.SyncStatusEvent.SyncStatus;
 import org.openlmis.core.exceptions.LMISException;
@@ -129,6 +130,7 @@ public class SyncUpManager {
       boolean isSyncRnrSuccessful = syncRnr();
       if (isSyncRnrSuccessful) {
         sharedPreferenceMgr.setRnrLastSyncTime();
+        EventBus.getDefault().post(new SyncRnrFinishEvent());
       }
 
       boolean isSyncStockSuccessful = syncStockCards();
@@ -158,7 +160,7 @@ public class SyncUpManager {
 
       Log.d(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
 
-      if (forms.size() == 0) {
+      if (forms.isEmpty()) {
         return false;
       }
     } catch (LMISException e) {

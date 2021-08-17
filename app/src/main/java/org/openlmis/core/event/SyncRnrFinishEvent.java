@@ -16,33 +16,8 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.fragment;
+package org.openlmis.core.event;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.openlmis.core.event.SyncRnrFinishEvent;
+public class SyncRnrFinishEvent {
 
-public abstract class BaseReportListFragment extends BaseFragment {
-
-  boolean isLoading = false;
-
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onReceiveSyncStatusEvent(SyncRnrFinishEvent event) {
-    loadForms();
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-    EventBus.getDefault().register(this);
-  }
-
-  @Override
-  public void onStop() {
-    EventBus.getDefault().unregister(this);
-    super.onStop();
-  }
-
-  protected abstract void loadForms();
 }
