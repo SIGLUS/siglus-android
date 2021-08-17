@@ -73,7 +73,7 @@
 
   <!--MMIA-->
   <string name="label_mmia_title">MMIA - %1$s to %2$s</string>
-  <string name="label_AL_title">AL - %1$s to %2$s</string>
+  <string name="label_AL_title">Malaria - %1$s to %2$s</string>
   <string name="label_rnrfrom_left_header">PRODUCT</string>
   <string name="label_rnrfrom_left_header_old">Medicine</string>
   <string name="label_regime_header_name">THERAPEUTIC REGIME</string>
