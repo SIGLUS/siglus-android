@@ -47,10 +47,10 @@
       android:hint="@string/hint_movement_reason_negative"
       android:focusableInTouchMode="false"
       android:textSize="@dimen/px_20"
-      android:textColorHint="@color/color_black"
+      android:textColorHint="@color/color_727272"
       android:singleLine="true"
       android:ellipsize="end"
-      android:textColor="@color/color_727272" />
+      android:textColor="@color/color_black" />
   </com.google.android.material.textfield.TextInputLayout>
 
   <ImageView
@@ -83,8 +83,8 @@
       android:textSize="@dimen/px_20"
       android:maxLength="@integer/edit_amount_length"
       android:singleLine="true"
-      android:textColorHint="@color/color_black"
-      android:textColor="@color/color_727272"
+      android:textColorHint="@color/color_727272"
+      android:textColor="@color/color_black"
       android:gravity="center_vertical" />
   </com.google.android.material.textfield.TextInputLayout>
 

@@ -9,7 +9,7 @@
 
   <TextView
     android:id="@+id/tv_lot_number"
-    android:layout_width="0dp"
+    android:layout_width="@dimen/px_238"
     android:layout_height="wrap_content"
     android:textColor="@color/color_6b6b6b"
     android:textStyle="bold"
@@ -17,9 +17,8 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toLeftOf="@id/ll_issued_amount"
-    tools:text="Lot SEM-LOTE_08B02-072021"
-    android:paddingRight="@dimen/px_24" />
+    android:paddingRight="@dimen/px_8"
+    tools:text="SEM-LOTE_08B02-072021" />
 
   <LinearLayout
     android:id="@+id/ll_issued_amount"

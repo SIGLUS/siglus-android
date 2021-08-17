@@ -47,7 +47,7 @@ public class LotMovementViewModel {
   private MovementReasonManager.MovementType movementType;
   private String movementReason;
   private String documentNumber;
-  boolean valid = true;
+  boolean   valid = true;
   boolean quantityLessThanSoh = true;
   boolean isDataChanged = false;
   private String from;

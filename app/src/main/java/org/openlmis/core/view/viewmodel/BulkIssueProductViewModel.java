@@ -66,6 +66,7 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
         .stockCard(stockCard)
         .lotViewModels(FluentIterable
             .from(lotOnHandList)
+            .filter(lotOnHand -> lotOnHand.getQuantityOnHand() != null && lotOnHand.getQuantityOnHand() > 0)
             .transform(BulkIssueLotViewModel::build)
             .toSortedList(BulkIssueLotViewModel::compareTo))
         .build();
@@ -90,9 +91,10 @@ public class BulkIssueProductViewModel implements MultiItemEntity, Comparable<Bu
         }
       }
     }
+
     setDone(draftProduct.isDone() && !hasIllegalAmount);
-    for (BulkIssueLotViewModel lotViewModel : lotViewModels) {
-      lotViewModel.setDone(isDone());
+    if (getFilteredLotViewModels().isEmpty() || isAllLotsExpired()) {
+      setDone(false);
     }
   }
 

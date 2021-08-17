@@ -93,9 +93,14 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
       getView(R.id.rl_trashcan).setOnClickListener(getRemoveClickListener());
       initLots();
       if (viewModel.isDone()) {
-        setText(R.id.tv_requested, itemView.getContext().getString(R.string.label_requested)
-            + ": "
-            + (viewModel.getRequested() == null ? "0" : viewModel.getRequested().toString()));
+        if (viewModel.getRequested() != null) {
+          setGone(R.id.tv_requested, false);
+          setText(R.id.tv_requested, itemView.getContext().getString(R.string.label_requested)
+              + ": "
+              + (viewModel.getRequested() == null ? "0" : viewModel.getRequested().toString()));
+        } else {
+          setGone(R.id.tv_requested, true);
+        }
         setText(R.id.tv_product_title,
             viewModel.getStockCard().getProduct().getFormattedProductNameWithoutStrengthAndType());
         getView(R.id.tv_edit).setOnClickListener(getEditClickListener());
@@ -116,7 +121,12 @@ public class BulkIssueAdapter extends BaseMultiItemQuickAdapter<BulkIssueProduct
     private void initLots() {
       // init lots
       RecyclerView rvLots = getView(R.id.rv_lots);
-      rvLots.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+      rvLots.setLayoutManager(new LinearLayoutManager(itemView.getContext()) {
+        @Override
+        public boolean canScrollVertically() {
+          return false;
+        }
+      });
       BulkIssueLotAdapter lotAdapter = new BulkIssueLotAdapter();
       rvLots.setAdapter(lotAdapter);
       if (!viewModel.isDone()) {
