@@ -162,7 +162,7 @@ public class BulkInitialInventoryActivity extends InventoryActivity<BulkInitialI
       subscriptions.add(subscription);
     } else {
       btnDone.setEnabled(true);
-      ToastUtil.show(getValidateFailedTips());
+      ToastUtil.showForLongTime(getValidateFailedTips());
     }
   }
 

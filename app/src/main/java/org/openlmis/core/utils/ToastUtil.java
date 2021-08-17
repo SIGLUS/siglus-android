@@ -77,7 +77,7 @@ public final class ToastUtil {
       view.setBackgroundResource(R.drawable.toast_bg);
       TextView textView = view.findViewById(android.R.id.message);
       textView.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_white));
-      textView.setTextSize(18);
+      textView.setTextSize(LMISApp.getInstance().getResources().getDimension(R.dimen.px_18));
     }
   }
 }

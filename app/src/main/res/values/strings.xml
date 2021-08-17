@@ -503,7 +503,7 @@
   <string name="error_empty_rapid_test_product">Rapid test report product info cannot be empty.</string>
   <string name="error_empty_rapid_test_list">Rapid test report list cannot be empty.</string>
   <string name="btn_edit">EDIT</string>
-  <string name="msg_initial_inventory_lot_review_add">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Initial</font>]]> of <![CDATA[<font color="#000">%2$d</font>]]> will be made</string>
+  <string name="msg_initial_inventory_lot_review_add">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Inventory</font>]]> of <![CDATA[<font color="#000">%2$d</font>]]> will be made</string>
   <string name="msg_physical_inventory_lot_review_no_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - No adjustment will be made</string>
   <string name="msg_physical_inventory_lot_review_positive_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Positive adjustment</font>]]> of <![CDATA[<font color="#000">%2$d</font>]]> will be made</string>
   <string name="msg_physical_inventory_lot_review_negative_adjustment">Lot <![CDATA[<font color="#000">%1$s</font>]]> - <![CDATA[<font color="#000">Negative adjustment</font>]]> of <![CDATA[<font color="#000">%2$d</font>]]> will be made</string>

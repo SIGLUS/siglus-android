@@ -94,6 +94,4 @@ public class BulkEntriesAdapter extends RecyclerView.Adapter<BulkEntriesViewHold
     this.notifyDataSetChanged();
     return firstInvalidPosition;
   }
-
-
 }

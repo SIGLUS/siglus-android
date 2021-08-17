@@ -23,14 +23,18 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import androidx.core.content.ContextCompat;
 import java.util.List;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 
-@Data
+@Setter
+@Getter
+@EqualsAndHashCode(callSuper = true)
 public class BulkEntriesViewModel extends InventoryViewModel {
 
   public enum ValidationType {
