@@ -17,11 +17,15 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.ProgramDataForm;
-import org.openlmis.core.model.ProgramDataForm.Status;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRForm.Status;
+import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.model.builder.ProgramDataColumnBuilder;
 import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
@@ -35,10 +39,10 @@ import rx.observers.TestSubscriber;
 public class RapidTestReportFormPresenterTest {
 
   @Mock
-  ProgramDataFormRepository programDataFormRepositoryMock;
+  ProgramRepository programRepositoryMock;
 
   @Mock
-  ProgramRepository programRepositoryMock;
+  RnrFormRepository rnrFormRepositoryMock;
 
   @Mock
   RapidTestReportViewModel viewModelMock;
@@ -59,12 +63,9 @@ public class RapidTestReportFormPresenterTest {
 
     //generate new view model
     TestSubscriber<RapidTestReportViewModel> subscriber1 = new TestSubscriber<>();
-    Observable<RapidTestReportViewModel> observable1 = rapidTestReportFormPresenter
-        .loadViewModel(0L, period);
-    observable1.subscribe(subscriber1);
-    subscriber1.awaitTerminalEvent();
+    rapidTestReportFormPresenter.loadData(0L, period.getEnd().toDate());
 
-    verify(programDataFormRepositoryMock, never()).queryById(anyInt());
+    verify(rnrFormRepositoryMock, never()).queryRnRForm(anyInt());
     subscriber1.assertNoErrors();
     RapidTestReportViewModel viewModel1 = subscriber1.getOnNextEvents().get(0);
 
@@ -72,31 +73,28 @@ public class RapidTestReportFormPresenterTest {
     assertEquals(RapidTestReportViewModel.Status.INCOMPLETE, viewModel1.getStatus());
 
     //convert db model to view model
-    ProgramDataForm form = new ProgramDataForm();
-    ProgramDataFormItem programDataFormItem1 = new ProgramDataFormItem();
-    programDataFormItem1.setName("MOBILE_UNIT");
-    programDataFormItem1.setProgramDataColumn(new ProgramDataColumnBuilder()
-        .setCode("CONSUME_" + RapidTestFormGridViewModel.ColumnCode.SYPHILLIS.name()).build());
+    RnRForm form = new RnRForm();
+    TestConsumptionLineItem programDataFormItem1 = new TestConsumptionLineItem();
+    programDataFormItem1.setService("MOBILE_UNIT");
+    programDataFormItem1.setUsageColumnsMap(new UsageColumnsMap().builder()
+        .code("CONSUME_" + RapidTestFormGridViewModel.ColumnCode.SYPHILLIS.name()).build());
     programDataFormItem1.setValue(100);
-    ProgramDataFormItem programDataFormItem2 = new ProgramDataFormItem();
-    programDataFormItem2.setName("PNCTL");
-    programDataFormItem2.setProgramDataColumn(new ProgramDataColumnBuilder()
-        .setCode("POSITIVE_" + RapidTestFormGridViewModel.ColumnCode.SYPHILLIS.name()).build());
+    TestConsumptionLineItem programDataFormItem2 = new TestConsumptionLineItem();
+    programDataFormItem2.setService("PNCTL");
+    programDataFormItem2.setUsageColumnsMap(new UsageColumnsMap().builder()
+        .code("POSITIVE_" + RapidTestFormGridViewModel.ColumnCode.SYPHILLIS.name()).build());
     programDataFormItem2.setValue(300);
-    form.getProgramDataFormItemListWrapper().add(programDataFormItem1);
-    form.getProgramDataFormItemListWrapper().add(programDataFormItem2);
+    form.getTestConsumptionLinesWrapper().add(programDataFormItem1);
+    form.getTestConsumptionLinesWrapper().add(programDataFormItem2);
     form.setStatus(Status.DRAFT);
     form.setPeriodBegin(period.getBegin().toDate());
     form.setPeriodEnd(period.getEnd().toDate());
-    when(programDataFormRepositoryMock.queryById(anyInt())).thenReturn(form);
+    when(rnrFormRepositoryMock.queryRnRForm(anyInt())).thenReturn(form);
     TestSubscriber<RapidTestReportViewModel> subscriber2 = new TestSubscriber<>();
     rapidTestReportFormPresenter.viewModel = null;
-    Observable<RapidTestReportViewModel> observable2 = rapidTestReportFormPresenter
-        .loadViewModel(1L, period);
-    observable2.subscribe(subscriber2);
-    subscriber2.awaitTerminalEvent();
+   rapidTestReportFormPresenter.loadData(1L, period.getEnd().toDate());
 
-    verify(programDataFormRepositoryMock).queryById(1L);
+    verify(rnrFormRepositoryMock).queryById(1L);
     subscriber2.assertNoErrors();
     RapidTestReportViewModel viewModel2 = subscriber2.getOnNextEvents().get(0);
 
@@ -108,14 +106,14 @@ public class RapidTestReportFormPresenterTest {
   @Test
   public void shouldSaveDraftForm() throws Exception {
     rapidTestReportFormPresenter.viewModel = viewModelMock;
-    ProgramDataForm dataForm = new ProgramDataForm();
+    RnRForm dataForm = new RnRForm();
     when(programRepositoryMock.queryByCode(Constants.RAPID_TEST_PROGRAM_CODE)).thenReturn(new Program());
     when(viewModelMock.getRapidTestForm()).thenReturn(dataForm);
 
-    rapidTestReportFormPresenter.saveForm();
+    rapidTestReportFormPresenter.createOrUpdateRapidTest();
 
     verify(viewModelMock).convertFormViewModelToDataModel(any(Program.class));
-    verify(programDataFormRepositoryMock).batchCreateOrUpdate(dataForm);
+    verify(r).batchCreateOrUpdate(dataForm);
   }
 
   @Test
@@ -123,14 +121,14 @@ public class RapidTestReportFormPresenterTest {
     rapidTestReportFormPresenter.viewModel = new RapidTestReportViewModel(
         Period.of(DateUtil.parseString("2015-09-12", DateUtil.DB_DATE_FORMAT)));
     rapidTestReportFormPresenter.deleteDraft();
-    verify(programDataFormRepositoryMock, never()).delete(any(ProgramDataForm.class));
+    verify(programDataFormRepositoryMock, never()).delete(any(RnRForm.class));
 
-    ProgramDataForm rapidTestForm = new ProgramDataForm();
+    RnRForm rapidTestForm = new RnRForm();
     rapidTestForm.setStatus(Status.DRAFT);
     rapidTestForm.setId(1L);
     rapidTestReportFormPresenter.viewModel.setRapidTestForm(rapidTestForm);
     rapidTestReportFormPresenter.deleteDraft();
-    verify(programDataFormRepositoryMock).delete(any(ProgramDataForm.class));
+    verify(programDataFormRepositoryMock).delete(any(RnRForm.class));
   }
 
   private class MyTestModule extends AbstractModule {

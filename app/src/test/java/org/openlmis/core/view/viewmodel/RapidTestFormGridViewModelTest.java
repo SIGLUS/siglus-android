@@ -12,6 +12,9 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.ProgramDataColumn;
 import org.openlmis.core.model.ProgramDataFormItem;
+import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.UsageColumnsMap;
 
 @RunWith(LMISTestRunner.class)
 public class RapidTestFormGridViewModelTest {
@@ -47,28 +50,28 @@ public class RapidTestFormGridViewModelTest {
     viewModel.setConsumptionValue("20");
     viewModel.setPositiveValue("1001");
     viewModel.setUnjustifiedValue("121");
-    ProgramDataColumn consumeColumn = new ProgramDataColumn();
+    UsageColumnsMap consumeColumn = new UsageColumnsMap();
     consumeColumn.setCode("CONSUME_MALARIA");
     viewModel.setConsumeColumn(consumeColumn);
-    ProgramDataColumn positiveColumn = new ProgramDataColumn();
+    UsageColumnsMap positiveColumn = new UsageColumnsMap();
     positiveColumn.setCode("POSITIVE_MALARIA");
     viewModel.setPositiveColumn(positiveColumn);
-    ProgramDataColumn unjustifiedColumn = new ProgramDataColumn();
+    UsageColumnsMap unjustifiedColumn = new UsageColumnsMap();
     unjustifiedColumn.setCode("UNJUSTIFIED_MALARIA");
 
     MovementReasonManager.MovementReason reason = new MovementReasonManager.MovementReason(
         MovementReasonManager.MovementType.ISSUE, ACC_EMERGENCY, "Acc emergency");
-    List<ProgramDataFormItem> programDataFormItems = viewModel
+    List<TestConsumptionLineItem> programDataFormItems = viewModel
         .convertFormGridViewModelToDataModel(reason);
-    assertThat(programDataFormItems.get(0).getName(), is(ACC_EMERGENCY));
-    assertThat(programDataFormItems.get(0).getProgramDataColumn().getCode(), is("CONSUME_MALARIA"));
+    assertThat(programDataFormItems.get(0).getService(), is(ACC_EMERGENCY));
+    assertThat(programDataFormItems.get(0).getUsageColumnsMap().getCode(), is("CONSUME_MALARIA"));
     assertThat(programDataFormItems.get(0).getValue(), is(20));
-    assertThat(programDataFormItems.get(1).getName(), is(ACC_EMERGENCY));
-    assertThat(programDataFormItems.get(1).getProgramDataColumn().getCode(),
+    assertThat(programDataFormItems.get(1).getService(), is(ACC_EMERGENCY));
+    assertThat(programDataFormItems.get(1).getUsageColumnsMap().getCode(),
         is("POSITIVE_MALARIA"));
     assertThat(programDataFormItems.get(1).getValue(), is(1001));
-    assertThat(programDataFormItems.get(2).getName(), is(ACC_EMERGENCY));
-    assertThat(programDataFormItems.get(2).getProgramDataColumn().getCode(),
+    assertThat(programDataFormItems.get(2).getService(), is(ACC_EMERGENCY));
+    assertThat(programDataFormItems.get(2).getUsageColumnsMap().getCode(),
         is("UNJUSTIFIED_MALARIA"));
     assertThat(programDataFormItems.get(2).getValue(), is(121));
   }

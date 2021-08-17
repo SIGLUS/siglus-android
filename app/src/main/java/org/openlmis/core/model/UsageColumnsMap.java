@@ -21,10 +21,14 @@ package org.openlmis.core.model;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @DatabaseTable(tableName = "usage_columns_map")
 public class UsageColumnsMap extends BaseModel {
