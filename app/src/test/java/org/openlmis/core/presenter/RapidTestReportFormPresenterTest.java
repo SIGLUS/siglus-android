@@ -94,7 +94,7 @@ public class RapidTestReportFormPresenterTest {
     rapidTestReportFormPresenter.viewModel = null;
    rapidTestReportFormPresenter.loadData(1L, period.getEnd().toDate());
 
-    verify(rnrFormRepositoryMock).queryById(1L);
+    verify(rnrFormRepositoryMock).queryRnRForm(1L);
     subscriber2.assertNoErrors();
     RapidTestReportViewModel viewModel2 = subscriber2.getOnNextEvents().get(0);
 
@@ -113,7 +113,7 @@ public class RapidTestReportFormPresenterTest {
     rapidTestReportFormPresenter.createOrUpdateRapidTest();
 
     verify(viewModelMock).convertFormViewModelToDataModel(any(Program.class));
-    verify(r).batchCreateOrUpdate(dataForm);
+    verify(rnrFormRepositoryMock).createOrUpdateWithItems(dataForm);
   }
 
   @Test
@@ -121,21 +121,22 @@ public class RapidTestReportFormPresenterTest {
     rapidTestReportFormPresenter.viewModel = new RapidTestReportViewModel(
         Period.of(DateUtil.parseString("2015-09-12", DateUtil.DB_DATE_FORMAT)));
     rapidTestReportFormPresenter.deleteDraft();
-    verify(programDataFormRepositoryMock, never()).delete(any(RnRForm.class));
+
+    verify(rnrFormRepositoryMock, never()).removeRnrForm(any(RnRForm.class));
 
     RnRForm rapidTestForm = new RnRForm();
     rapidTestForm.setStatus(Status.DRAFT);
     rapidTestForm.setId(1L);
     rapidTestReportFormPresenter.viewModel.setRapidTestForm(rapidTestForm);
     rapidTestReportFormPresenter.deleteDraft();
-    verify(programDataFormRepositoryMock).delete(any(RnRForm.class));
+    verify(rnrFormRepositoryMock).removeRnrForm(any(RnRForm.class));
   }
 
   private class MyTestModule extends AbstractModule {
 
     @Override
     public void configure() {
-      bind(ProgramDataFormRepository.class).toInstance(programDataFormRepositoryMock);
+      bind(RnrFormRepository.class).toInstance(rnrFormRepositoryMock);
       bind(ProgramRepository.class).toInstance(programRepositoryMock);
     }
   }
