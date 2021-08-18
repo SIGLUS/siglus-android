@@ -169,13 +169,13 @@
   <string name="msg_stock_movement_is_not_ready">Application is trying to sync down all the stock movements, Please wait for this process to complete before continuing.</string>
 
   <!-- AL -->
-  <string name="msg_al_submit_tip">Your AL form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
-  <string name="msg_uncomplete_hint"> Please Complete AL information. </string>
-  <string name="hint_al_complete_failed">Unable to complete AL form, Please contact your administrator.</string>
+  <string name="msg_al_submit_tip">Your Malaria form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
+  <string name="msg_uncomplete_hint"> Please Complete Malaria information. </string>
+  <string name="hint_al_complete_failed">Unable to complete Malaria form, Please contact your administrator.</string>
   <string name="hint_ptv_complete_failed">Unable to complete PTV form, Please contact your administrator.</string>
-  <string name="msg_requisition_signature_message_notify_al">Please hand the device to the person responsible for approval and submission of AL</string>
-  <string name="msg_al_submit_signature">Enter your initials to approve AL information</string>
-  <string name="msg_approve_signature_al">Enter your initials and then approve the AL</string>
+  <string name="msg_requisition_signature_message_notify_al">Please hand the device to the person responsible for approval and submission of Malaria</string>
+  <string name="msg_al_submit_signature">Enter your initials to approve Malaria information</string>
+  <string name="msg_approve_signature_al">Enter your initials and then approve the Malaria</string>
   <string name="month_year">Month/Year:   </string>
 
   <!-- Rapid Test -->

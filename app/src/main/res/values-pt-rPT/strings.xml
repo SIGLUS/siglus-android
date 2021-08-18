@@ -154,13 +154,13 @@
   <string name="msg_stock_movement_is_not_ready">Aplicativo está tentando sincronizar para todos os movimentos de stock, por favor aguarde até que este processo seja concluído antes de continuar</string>
 
   <!-- AL -->
-  <string name="msg_al_submit_tip">O seu Relatório AL foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
-  <string name="msg_uncomplete_hint"> Por favor, complete as informações do AL.</string>
-  <string name="hint_al_complete_failed">Não foi possível completar o AL, por favor, contacte o administrador.</string>
+  <string name="msg_al_submit_tip">O seu Relatório Malaria foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_uncomplete_hint"> Por favor, complete as informações do Malaria.</string>
+  <string name="hint_al_complete_failed">Não foi possível completar o Malaria, por favor, contacte o administrador.</string>
   <string name="hint_ptv_complete_failed">Não foi possível completar o PTV, por favor, contacte o administrador.</string>
-  <string name="msg_requisition_signature_message_notify_al">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de consumo de AL.</string>
-  <string name="msg_al_submit_signature">Insira as iniciais do seu nome e aprove as quantidades do AL</string>
-  <string name="msg_approve_signature_al">Insira as iniciais do seu nome e aprove o AL</string>
+  <string name="msg_requisition_signature_message_notify_al">Por favor passe o dispositivo ao seu responsável para devida aprovação e submissão do mapa de consumo de Malaria.</string>
+  <string name="msg_al_submit_signature">Insira as iniciais do seu nome e aprove as quantidades do Malaria</string>
+  <string name="msg_approve_signature_al">Insira as iniciais do seu nome e aprove o Malaria</string>
   <string name="month_year">Mês/Ano:   </string>
 
   <!-- Rapid Test -->

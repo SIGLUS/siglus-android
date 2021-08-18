@@ -21,6 +21,7 @@ package org.openlmis.core.utils;
 import static android.widget.Toast.makeText;
 
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -78,7 +79,8 @@ public final class ToastUtil {
       view.setBackgroundResource(R.drawable.toast_bg);
       TextView textView = view.findViewById(android.R.id.message);
       textView.setTextColor(ContextCompat.getColor(LMISApp.getContext(), R.color.color_white));
-      textView.setTextSize(LMISApp.getInstance().getResources().getDimension(R.dimen.px_18));
+      textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, LMISApp.getInstance().getResources()
+          .getDimension(R.dimen.px_18));
     }
   }
 }
