@@ -461,10 +461,6 @@ public class SyncDownManagerIT {
         .addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=1578289583857",
             200, "OK", syncDownKitChagneResponseJson);
 
-    List<ProgramDataForm> programDataForms = programDataFormRepository
-        .listByProgramCode(Constants.RAPID_TEST_PROGRAM_CODE);
-    assertEquals(0, programDataForms.size());
-
   }
 
   @Test
@@ -492,16 +488,12 @@ public class SyncDownManagerIT {
     sharedPreferenceMgr.setIsSyncingLastYearStockCards(false);
     syncDownManager.syncDownServerData();
 
-//        /rest-api/latest-products
+    // /rest-api/latest-products
     String syncDownKitChangeResponseJson = JsonFileReader
         .readJson(getClass(), "fetchKitChangeReponse.json");
     lmisRestManager
         .addNewMockedResponse("/rest-api/temp86-notice-kit-change?afterUpdatedTime=1578289583857",
             200, "OK", syncDownKitChangeResponseJson);
-
-    List<ProgramDataForm> programDataForms = programDataFormRepository
-        .listByProgramCode(Constants.RAPID_TEST_PROGRAM_CODE);
-    assertEquals(16, programDataForms.size());
 
   }
 

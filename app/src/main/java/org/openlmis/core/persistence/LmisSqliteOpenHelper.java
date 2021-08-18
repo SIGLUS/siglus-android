@@ -217,8 +217,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreateBulkEntriesDraftTables());
     MIGRATIONS.add(new CreateBulkIssueDraftTables());
     MIGRATIONS.add(new CreatePodTable());
-    MIGRATIONS.add(new CreatePodProductTable());
-    MIGRATIONS.add(new CreatePodLotItemTable());
+    MIGRATIONS.add(new CreatePodProductItemTable());
+    MIGRATIONS.add(new CreatePodProductLotItemTable());
     MIGRATIONS.add(new CreateTestConsumptionLineItemsTable());
     MIGRATIONS.add(new CreateUsageColumnsMapTable());
     MIGRATIONS.add(new UpdateUsageColumnsMap());

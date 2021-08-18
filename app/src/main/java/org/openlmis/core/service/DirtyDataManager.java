@@ -315,7 +315,6 @@ public class DirtyDataManager {
         stockRepository.resetLotsOnHand(productCodes);
         cmmRepository.resetCmm(productCodes);
         rnrFormRepository.deleteRnrFormDirtyData(productCodes);
-        programDataFormRepository.deleteProgramDirtyData(productCodes);
         sharedPreferenceMgr.setDeletedProduct(new HashSet<>());
       }
     }
