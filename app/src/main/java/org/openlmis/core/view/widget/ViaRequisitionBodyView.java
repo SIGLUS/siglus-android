@@ -113,8 +113,11 @@ public class ViaRequisitionBodyView extends FrameLayout {
     this.requisitionProductAdapter = new RequisitionProductAdapter(context, presenter);
     requisitionFormList.setAdapter(requisitionFormAdapter);
     requisitionProductList.setAdapter(requisitionProductAdapter);
-    requisitionProductList
-        .post(() -> productHeaderView.getLayoutParams().height = bodyHeaderView.getHeight());
+    requisitionProductList.post(() -> {
+      ViewGroup.LayoutParams layoutParams = productHeaderView.getLayoutParams();
+      layoutParams.height = bodyHeaderView.getHeight();
+      productHeaderView.setLayoutParams(layoutParams);
+    });
     scrollInSync(requisitionFormList, requisitionProductList);
   }
 

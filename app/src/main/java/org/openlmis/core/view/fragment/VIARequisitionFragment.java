@@ -91,10 +91,8 @@ public class VIARequisitionFragment extends BaseReportFragment implements VIAReq
     setHasOptionsMenu(true);
 
     formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
-    periodEndDate = ((Date) getActivity().getIntent()
-        .getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
-    isMissedPeriod = getActivity().getIntent()
-        .getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
+    periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+    isMissedPeriod = getActivity().getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
     emergencyStockCards = (ArrayList<StockCard>) getActivity().getIntent()
         .getSerializableExtra(Constants.PARAM_SELECTED_EMERGENCY);
   }
