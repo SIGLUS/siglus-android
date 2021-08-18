@@ -148,7 +148,11 @@ public class StockCardsResponseAdapter implements JsonDeserializer<StockCardsLoc
     stockMovementItem.setMovementQuantity(Math.abs(movementItemResponse.getMovementQuantity()));
     stockMovementItem.setStockOnHand(Long.parseLong(movementItemResponse.getStockOnHand()));
     stockMovementItem.setSignature(movementItemResponse.getSignature());
-    stockMovementItem.setCreatedTime(Instant.parse(movementItemResponse.getProcessedDate()).toDate());
+    String processedDate = movementItemResponse.getProcessedDate();
+    String serverProcessedDate = movementItemResponse.getServerProcessedDate();
+    String createdTime = (processedDate == null || processedDate.isEmpty())
+            ? serverProcessedDate : processedDate;
+    stockMovementItem.setCreatedTime(Instant.parse(createdTime).toDate());
     stockMovementItem.setRequested(movementItemResponse.getRequested());
     stockMovementItem
         .setMovementDate(DateUtil.parseString(movementItemResponse.getOccurredDate(), DateUtil.DB_DATE_FORMAT));

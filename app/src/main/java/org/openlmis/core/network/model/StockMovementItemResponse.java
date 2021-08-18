@@ -29,6 +29,7 @@ public class StockMovementItemResponse {
   private int movementQuantity;
   private Long requested;
   private String processedDate;
+  private String serverProcessedDate;
   private String type;
   private String stockOnHand;
   private String signature;
