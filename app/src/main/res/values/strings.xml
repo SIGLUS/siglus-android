@@ -180,7 +180,7 @@
 
   <!-- Rapid Test -->
   <string name="balance_test_report">Balancete of the rapid tests in the Health Facility</string>
-  <string name="msg_rapid_test_submit_tip">Your rapid tests form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
+  <string name="msg_rapid_test_submit_tip">Your rapid tests form has been successfully saved,\nand will submit automatically when you have a data connection </string>
   <string name="attention_report_in_kit">(Attention: Reported in Kits)</string>
   <string name="hint_rapid_test_complete_failed">Unable to complete MMIT form, Please contact your administrator.</string>
   <string name="unjustified">unjustified</string>
