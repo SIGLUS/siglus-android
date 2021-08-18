@@ -28,7 +28,6 @@ import org.openlmis.core.utils.TextStyleUtil;
 public class NonBasicProductsViewModel {
 
   private final Product product;
-  private final SpannableStringBuilder styledProductName;
   private final String productCode;
   private final String productType;
 
@@ -37,9 +36,12 @@ public class NonBasicProductsViewModel {
 
   public NonBasicProductsViewModel(Product product) {
     this.product = product;
-    this.styledProductName = TextStyleUtil.formatStyledProductName(product);
     this.productCode = product.getCode();
     this.productType = product.getType();
     this.isChecked = false;
+  }
+
+  public SpannableStringBuilder getStyledProductName() {
+    return TextStyleUtil.formatStyledProductName(product);
   }
 }

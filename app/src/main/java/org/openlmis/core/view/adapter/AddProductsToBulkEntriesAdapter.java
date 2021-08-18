@@ -53,10 +53,9 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
 
   @NonNull
   @Override
-  public AddProductsToBulkEntriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-      int viewType) {
-    return new AddProductsToBulkEntriesViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-        R.layout.item_add_product_bulk_entries, parent, false));
+  public AddProductsToBulkEntriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    return new AddProductsToBulkEntriesViewHolder(LayoutInflater.from(parent.getContext())
+        .inflate(R.layout.item_add_product_bulk_entries, parent, false));
   }
 
   @Override
@@ -74,17 +73,16 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
   public void filter(final String keyword) {
     keyWord = keyword;
     List<ProductsToBulkEntriesViewModel> filteredViewModels;
-
     if (TextUtils.isEmpty(keyword)) {
       filteredViewModels = models;
     } else {
       filteredViewModels = from(models)
-          .filter(productsToBulkEntriesViewModel ->
-              productsToBulkEntriesViewModel.getProduct()
-                  .getProductFullName().toLowerCase()
-                  .contains(keyword.toLowerCase())).toList();
+          .filter(productsToBulkEntriesViewModel -> productsToBulkEntriesViewModel.getProduct()
+              .getProductFullName()
+              .toLowerCase()
+              .contains(keyword.toLowerCase()))
+          .toList();
     }
-
     filteredList.clear();
     filteredList.addAll(filteredViewModels);
     this.notifyDataSetChanged();
@@ -103,5 +101,4 @@ public class AddProductsToBulkEntriesAdapter extends RecyclerView.Adapter<AddPro
 
     return models.get(position).getProduct().getPrimaryName().substring(0, 1);
   }
-
 }

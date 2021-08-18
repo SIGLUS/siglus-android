@@ -28,20 +28,18 @@ import org.openlmis.core.utils.TextStyleUtil;
 public class ProductsToBulkEntriesViewModel {
 
   private final Product product;
-  private final SpannableStringBuilder styledProductName;
   private final String productType;
-  private Boolean isAdded;
-
 
   @Setter
   private boolean isChecked;
 
   public ProductsToBulkEntriesViewModel(Product product) {
     this.product = product;
-    this.styledProductName = TextStyleUtil.formatStyledProductNameForAddProductPage(product);
     this.productType = "each";
     this.isChecked = false;
-    this.isAdded = false;
   }
 
+  public SpannableStringBuilder getStyledProductName() {
+    return TextStyleUtil.formatStyledProductNameForAddProductPage(product);
+  }
 }

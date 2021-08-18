@@ -51,8 +51,7 @@ public class NonBasicProductViewHolder extends BaseViewHolder {
   }
 
   @NonNull
-  private CompoundButton.OnCheckedChangeListener setCheckedProductListener(
-      final NonBasicProductsViewModel viewModel) {
+  private CompoundButton.OnCheckedChangeListener setCheckedProductListener(NonBasicProductsViewModel viewModel) {
     return (buttonView, isChecked) -> viewModel.setChecked(isChecked);
   }
 

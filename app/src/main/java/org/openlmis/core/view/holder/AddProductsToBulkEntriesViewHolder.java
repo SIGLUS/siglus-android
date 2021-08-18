@@ -36,11 +36,9 @@ public class AddProductsToBulkEntriesViewHolder extends BaseViewHolder {
   @InjectView(R.id.tv_product_name)
   TextView productName;
 
-
   public AddProductsToBulkEntriesViewHolder(View itemView) {
     super(itemView);
   }
-
 
   public void populate(final ProductsToBulkEntriesViewModel viewModel, String queryKeyWord) {
     checkBox.setChecked(viewModel.isChecked());
@@ -48,14 +46,11 @@ public class AddProductsToBulkEntriesViewHolder extends BaseViewHolder {
   }
 
   @NonNull
-  private CompoundButton.OnCheckedChangeListener setCheckedProductListener(
-      final ProductsToBulkEntriesViewModel viewModel) {
+  private CompoundButton.OnCheckedChangeListener setCheckedProductListener(ProductsToBulkEntriesViewModel viewModel) {
     return (buttonView, isChecked) -> viewModel.setChecked(isChecked);
   }
 
   public void putOnChangedListener(ProductsToBulkEntriesViewModel viewModel) {
     checkBox.setOnCheckedChangeListener(setCheckedProductListener(viewModel));
   }
-
-
 }
