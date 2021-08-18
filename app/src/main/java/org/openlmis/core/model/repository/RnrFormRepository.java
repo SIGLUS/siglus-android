@@ -618,8 +618,8 @@ public class RnrFormRepository {
           .getWritableDatabase().rawQuery(getProgramCodeByProductCode, null);
       String programCode = getProgramCodeCursor.getString(getProgramCodeCursor.getColumnIndexOrThrow(PROGRAM_CODE));
       if (programCode.equals(Constants.AL_PROGRAM_CODE)) {
-            deleteRnrData(Constants.AL_PROGRAM_CODE);
-            deleteRnrData(Constants.VIA_PROGRAM_CODE);
+        deleteRnrData(Constants.AL_PROGRAM_CODE);
+        deleteRnrData(Constants.VIA_PROGRAM_CODE);
       } else {
         deleteRnrData(programCode);
       }

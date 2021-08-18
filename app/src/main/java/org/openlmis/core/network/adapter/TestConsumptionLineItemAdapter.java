@@ -25,18 +25,14 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.inject.Inject;
 import java.lang.reflect.Type;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.TestConsumptionLineItem;
 import org.openlmis.core.model.UsageColumnsMap;
-import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.UsageColumnsMapRepository;
 import roboguice.RoboGuice;
 
@@ -54,7 +50,8 @@ public class TestConsumptionLineItemAdapter implements JsonSerializer<TestConsum
   }
 
   @Override
-  public JsonElement serialize(TestConsumptionLineItem testConsumptionLineItem, Type typeOfSrc, JsonSerializationContext context) {
+  public JsonElement serialize(TestConsumptionLineItem testConsumptionLineItem, Type typeOfSrc,
+                               JsonSerializationContext context) {
     JsonObject result = gson.toJsonTree(testConsumptionLineItem).getAsJsonObject();
     UsageColumnsMap usageColumnsMap = testConsumptionLineItem.getUsageColumnsMap();
     result.addProperty("testOutcome", usageColumnsMap.getTestOutcome());
@@ -64,17 +61,17 @@ public class TestConsumptionLineItemAdapter implements JsonSerializer<TestConsum
 
   @Override
   public TestConsumptionLineItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-      throws JsonParseException {
+          throws JsonParseException {
     TestConsumptionLineItem testConsumptionLineItem = gson.fromJson(json, TestConsumptionLineItem.class);
 
     try {
       UsageColumnsMap usageColumnsMap = usageColumnsMapRepository
-          .getByCode(json.getAsJsonObject().get("code").getAsString());
+              .getByCode(json.getAsJsonObject().get("code").getAsString());
 
       testConsumptionLineItem.setUsageColumnsMap(usageColumnsMap);
     } catch (LMISException e) {
       new LMISException(e, "testConsumptionLineItem.deserialize").reportToFabric();
-      throw new JsonParseException("can not find testConsumptionLineItem by name and category");
+      throw new JsonParseException("can not find testConsumptionLineItem by name and category", e);
     }
     return testConsumptionLineItem;
   }

@@ -10,9 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.ProgramDataColumn;
-import org.openlmis.core.model.ProgramDataFormItem;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.TestConsumptionLineItem;
 import org.openlmis.core.model.UsageColumnsMap;
 

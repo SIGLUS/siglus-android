@@ -7,7 +7,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,23 +17,16 @@ import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.ProgramDataForm;
-import org.openlmis.core.model.ProgramDataFormItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.TestConsumptionLineItem;
 import org.openlmis.core.model.UsageColumnsMap;
-import org.openlmis.core.model.builder.ProgramDataColumnBuilder;
-import org.openlmis.core.model.repository.ProgramDataFormRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel;
 import org.openlmis.core.view.viewmodel.RapidTestReportViewModel;
-import org.robolectric.RuntimeEnvironment;
-import roboguice.RoboGuice;
-import rx.Observable;
 import rx.observers.TestSubscriber;
 
 @RunWith(LMISTestRunner.class)

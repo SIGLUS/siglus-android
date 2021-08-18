@@ -32,7 +32,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.ProgramDataFormBasicItem;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.view.adapter.RapidTestTopProductCodeAdapter;
 import org.openlmis.core.view.adapter.RapidTestTopProductInfoAdapter;

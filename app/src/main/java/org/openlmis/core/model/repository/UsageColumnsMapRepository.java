@@ -24,7 +24,6 @@ import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
