@@ -39,6 +39,9 @@ import roboguice.RoboGuice;
 public class TestConsumptionLineItemAdapter implements JsonSerializer<TestConsumptionItem>,
     JsonDeserializer<TestConsumptionItem> {
 
+  public static final String TEST_OUTCOME = "testOutcome";
+  public static final String TEST_PROJECT = "testProject";
+
   private final Gson gson;
 
   @Inject
@@ -54,8 +57,8 @@ public class TestConsumptionLineItemAdapter implements JsonSerializer<TestConsum
                                JsonSerializationContext context) {
     JsonObject result = gson.toJsonTree(testConsumptionLineItem).getAsJsonObject();
     UsageColumnsMap usageColumnsMap = testConsumptionLineItem.getUsageColumnsMap();
-    result.addProperty("testOutcome", usageColumnsMap.getTestOutcome());
-    result.addProperty("testProject", usageColumnsMap.getTestProject());
+    result.addProperty(TEST_OUTCOME, usageColumnsMap.getTestOutcome());
+    result.addProperty(TEST_PROJECT, usageColumnsMap.getTestProject());
     return result;
   }
 
