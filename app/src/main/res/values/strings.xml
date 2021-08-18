@@ -109,7 +109,7 @@
   <string name="msg_regime_del_confirm">Are you sure that you want to remove this regime?</string>
   <string name="btn_positive">Yes</string>
   <string name="btn_negative">No</string>
-  <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved,\n and will submit automatically when you have a data connection </string>
+  <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved,\nand will submit automatically when you have a data connection.</string>
   <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for mismatch between regime & patient totals]]></string>
   <string name="msg_regime_total_and_patient_total_not_match">The regime and patient totals do not match. Please correct your figures or add a comment that explains why the totals differ</string>
   <string name="btn_ok">OK</string>
@@ -144,7 +144,7 @@
   <string name="label_fnm">FNM</string>
   <string name="label_product_codes">Product Codes</string>
   <string name="label_product_name">Product Name</string>
-  <string name="msg_requisition_submit_tip">Your Requisition form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
+  <string name="msg_requisition_submit_tip">Your Requisition form has been successfully saved,\nand will submit automatically when you have a data connection.</string>
   <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
   <string name="msg_requisition_field_exist_null">Cannot submit requisition with null field!</string>
   <string name="btn_approve">Approve</string>
@@ -169,7 +169,7 @@
   <string name="msg_stock_movement_is_not_ready">Application is trying to sync down all the stock movements, Please wait for this process to complete before continuing.</string>
 
   <!-- AL -->
-  <string name="msg_al_submit_tip">Your Malaria form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
+  <string name="msg_al_submit_tip">Your Malaria form has been successfully saved,\nand will submit automatically when you have a data connection.</string>
   <string name="msg_uncomplete_hint"> Please Complete Malaria information. </string>
   <string name="hint_al_complete_failed">Unable to complete Malaria form, Please contact your administrator.</string>
   <string name="hint_ptv_complete_failed">Unable to complete PTV form, Please contact your administrator.</string>
@@ -188,7 +188,7 @@
   <!-- PTV -->
   <string name="label_ptv_title">PTV - %1$s to %2$s</string>
   <string name="msg_uncompleted_ptv_hint"> Please Complete PTV information. </string>
-  <string name="msg_ptv_submit_tip">Your PTV form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
+  <string name="msg_ptv_submit_tip">Your PTV form has been successfully saved,\nand will submit automatically when you have a data connection.</string>
   <string name="registration">Registration</string>
   <string name="medicines">Medicines</string>
   <string name="dispensation">Dispensation</string>

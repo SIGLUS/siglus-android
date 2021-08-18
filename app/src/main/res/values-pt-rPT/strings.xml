@@ -97,7 +97,7 @@
   <string name="msg_regime_del_confirm">Tem a certeza que pretende remover este regime?</string>
   <string name="btn_positive">Sim</string>
   <string name="btn_negative">Não</string>
-  <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,e vai ser submetido \n automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,\ne vai ser submetido automaticamente quando tiver conexão a internet.</string>
   <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e total de pacientes</string>
   <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
   <string name="btn_ok">OK</string>
@@ -131,7 +131,7 @@
   <string name="label_fnm">FNM</string>
   <string name="label_product_codes">FNM</string>
   <string name="label_product_name">Produto</string>
-  <string name="msg_requisition_submit_tip">A sua Requisição foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_requisition_submit_tip">A sua Requisição foi gravada com sucesso,\ne vai ser submetida automaticamente quando tiver conexão a internet.</string>
   <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
   <string name="btn_approve">Visto</string>
   <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
@@ -154,7 +154,7 @@
   <string name="msg_stock_movement_is_not_ready">Aplicativo está tentando sincronizar para todos os movimentos de stock, por favor aguarde até que este processo seja concluído antes de continuar</string>
 
   <!-- AL -->
-  <string name="msg_al_submit_tip">O seu Relatório Malaria foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_al_submit_tip">O seu Relatório Malaria foi gravado com sucesso,\ne vai ser submetido automaticamente quando tiver conexão a internet.</string>
   <string name="msg_uncomplete_hint"> Por favor, complete as informações do Malaria.</string>
   <string name="hint_al_complete_failed">Não foi possível completar o Malaria, por favor, contacte o administrador.</string>
   <string name="hint_ptv_complete_failed">Não foi possível completar o PTV, por favor, contacte o administrador.</string>
@@ -173,7 +173,7 @@
   <!-- PTV -->
   <string name="label_ptv_title">PTV - %1$s a %2$s</string>
   <string name="msg_uncompleted_ptv_hint"> Por favor, complete as informações do PTV.</string>
-  <string name="msg_ptv_submit_tip">O seu Relatório PTV foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
+  <string name="msg_ptv_submit_tip">O seu Relatório PTV foi gravado com sucesso,\ne vai ser submetido automaticamente quando tiver conexão a internet.</string>
   <string name="registration">Cadastro</string>
   <string name="medicines">Produtos</string>
   <string name="dispensation">Dispensas</string>
@@ -492,7 +492,7 @@
   <string name="loss_and_adjustment">Perdas e Ajustes</string>
   <string name="final_stock">Stock Final</string>
   <string name="loading_report_information">Carregando informações do relatório</string>
-  <string name="report_submitted_synced_pending_message">O seu relatório foi <![CDATA[<b>gravado com sucesso</b>]]>, e vai ser submetido \r\n automaticamente quando tiver conexão a internet.</string>
+  <string name="report_submitted_synced_pending_message">O seu relatório foi <![CDATA[<b>gravado com sucesso</b>]]>, e vai ser submetido \n automaticamente quando tiver conexão a internet.</string>
   <string name="report_synced_successfully">Seu relatório foi <![CDATA[<b>sincronizado com sucesso</b>]]></string>
   <string name="btn_view_patient_data_report">Visualizar relatório</string>
   <string name="malaria_report_incomplete">Relatório de AL está incompleto</string>
