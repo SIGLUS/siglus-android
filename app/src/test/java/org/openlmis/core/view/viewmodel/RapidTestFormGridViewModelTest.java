@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
 
 @RunWith(LMISTestRunner.class)
@@ -58,7 +58,7 @@ public class RapidTestFormGridViewModelTest {
 
     MovementReasonManager.MovementReason reason = new MovementReasonManager.MovementReason(
         MovementReasonManager.MovementType.ISSUE, ACC_EMERGENCY, "Acc emergency");
-    List<TestConsumptionLineItem> programDataFormItems = viewModel
+    List<TestConsumptionItem> programDataFormItems = viewModel
         .convertFormGridViewModelToDataModel(reason);
     assertThat(programDataFormItems.get(0).getService(), is(ACC_EMERGENCY));
     assertThat(programDataFormItems.get(0).getUsageColumnsMap().getCode(), is("CONSUME_MALARIA"));

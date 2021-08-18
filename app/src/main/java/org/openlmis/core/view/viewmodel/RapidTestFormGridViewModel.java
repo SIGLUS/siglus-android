@@ -23,7 +23,7 @@ import java.util.List;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
 
 @SuppressWarnings("squid:S1874")
@@ -120,9 +120,9 @@ public class RapidTestFormGridViewModel {
     }
   }
 
-  public List<TestConsumptionLineItem> convertFormGridViewModelToDataModel(
+  public List<TestConsumptionItem> convertFormGridViewModelToDataModel(
       MovementReasonManager.MovementReason issueReason) {
-    List<TestConsumptionLineItem> testConsumptionLineItems = new ArrayList<>();
+    List<TestConsumptionItem> testConsumptionLineItems = new ArrayList<>();
     setConsumptionFormItem(issueReason, testConsumptionLineItems);
     setPositiveFormItem(issueReason, testConsumptionLineItems);
     setUnjustifiedFormItem(issueReason, testConsumptionLineItems);
@@ -193,39 +193,39 @@ public class RapidTestFormGridViewModel {
   }
 
   private void setUnjustifiedFormItem(MovementReasonManager.MovementReason issueReason,
-      List<TestConsumptionLineItem> programDataFormItems) {
+      List<TestConsumptionItem> programDataFormItems) {
     if (!StringUtils.isEmpty(getUnjustifiedValue())) {
       if (unjustifiedColumn == null) {
         unjustifiedColumn = new UsageColumnsMap();
         unjustifiedColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_UNJUSTIFIED));
       }
-      TestConsumptionLineItem unjustfiedDataFormItem = new TestConsumptionLineItem(issueReason.getCode(),
+      TestConsumptionItem unjustfiedDataFormItem = new TestConsumptionItem(issueReason.getCode(),
           unjustifiedColumn, Integer.parseInt(getUnjustifiedValue()));
       programDataFormItems.add(unjustfiedDataFormItem);
     }
   }
 
   private void setPositiveFormItem(MovementReasonManager.MovementReason issueReason,
-      List<TestConsumptionLineItem> programDataFormItems) {
+      List<TestConsumptionItem> programDataFormItems) {
     if (!StringUtils.isEmpty(getPositiveValue())) {
       if (positiveColumn == null) {
         positiveColumn = new UsageColumnsMap();
         positiveColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_POSITIVE));
       }
-      TestConsumptionLineItem positiveDataFormItem = new TestConsumptionLineItem(issueReason.getCode(),
+      TestConsumptionItem positiveDataFormItem = new TestConsumptionItem(issueReason.getCode(),
           positiveColumn, Integer.parseInt(getPositiveValue()));
       programDataFormItems.add(positiveDataFormItem);
     }
   }
 
   private void setConsumptionFormItem(MovementReasonManager.MovementReason issueReason,
-      List<TestConsumptionLineItem> programDataFormItems) {
+      List<TestConsumptionItem> programDataFormItems) {
     if (!StringUtils.isEmpty(getConsumptionValue())) {
       if (consumeColumn == null) {
         consumeColumn = new UsageColumnsMap();
         consumeColumn.setCode(generateFullColumnName(COLUMN_CODE_PREFIX_CONSUME));
       }
-      TestConsumptionLineItem consumeDataFormItem = new TestConsumptionLineItem(issueReason.getCode(),
+      TestConsumptionItem consumeDataFormItem = new TestConsumptionItem(issueReason.getCode(),
           consumeColumn, Integer.parseInt(getConsumptionValue()));
       programDataFormItems.add(consumeDataFormItem);
     }

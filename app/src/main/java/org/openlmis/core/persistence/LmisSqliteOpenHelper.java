@@ -100,7 +100,7 @@ import org.openlmis.core.persistence.migrations.CreateRegimeThreeLineTable;
 import org.openlmis.core.persistence.migrations.CreateReportTypeTable;
 import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
 import org.openlmis.core.persistence.migrations.CreateServiceTable;
-import org.openlmis.core.persistence.migrations.CreateTestConsumptionLineItemsTable;
+import org.openlmis.core.persistence.migrations.CreateTestConsumptionItemsTable;
 import org.openlmis.core.persistence.migrations.CreateUsageColumnsMapTable;
 import org.openlmis.core.persistence.migrations.DeletePrograms;
 import org.openlmis.core.persistence.migrations.DeleteReportTypes;
@@ -219,7 +219,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     MIGRATIONS.add(new CreatePodTable());
     MIGRATIONS.add(new CreatePodProductItemTable());
     MIGRATIONS.add(new CreatePodProductLotItemTable());
-    MIGRATIONS.add(new CreateTestConsumptionLineItemsTable());
+    MIGRATIONS.add(new CreateTestConsumptionItemsTable());
     MIGRATIONS.add(new CreateUsageColumnsMapTable());
     MIGRATIONS.add(new UpdateUsageColumnsMap());
     MIGRATIONS.add(new CreateAdditionalProductProgramTable());

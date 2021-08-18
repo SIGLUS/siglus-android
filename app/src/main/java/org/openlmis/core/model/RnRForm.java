@@ -79,11 +79,11 @@ public class RnRForm extends BaseModel {
   private List<RegimenItemThreeLines> regimenThreeLinesWrapper;
 
   @ForeignCollectionField()
-  private ForeignCollection<TestConsumptionLineItem> testConsumptionLineList;
+  private ForeignCollection<TestConsumptionItem> testConsumptionItemList;
 
   @Expose
   @SerializedName("testConsumptionLineItems")
-  private List<TestConsumptionLineItem> testConsumptionLinesWrapper;
+  private List<TestConsumptionItem> testConsumptionItemListWrapper;
 
   @ForeignCollectionField()
   private ForeignCollection<BaseInfoItem> baseInfoItemList;
@@ -237,9 +237,9 @@ public class RnRForm extends BaseModel {
     return signaturesWrapper;
   }
 
-  public List<TestConsumptionLineItem> getTestConsumptionLinesWrapper() {
-    testConsumptionLinesWrapper = ListUtil.wrapOrEmpty(testConsumptionLineList, testConsumptionLinesWrapper);
-    return testConsumptionLinesWrapper;
+  public List<TestConsumptionItem> getTestConsumptionItemListWrapper() {
+    testConsumptionItemListWrapper = ListUtil.wrapOrEmpty(testConsumptionItemList, testConsumptionItemListWrapper);
+    return testConsumptionItemListWrapper;
   }
 
   public static void fillFormId(RnRForm rnRForm) {
@@ -255,7 +255,7 @@ public class RnRForm extends BaseModel {
     for (RegimenItemThreeLines itemThreeLines : rnRForm.getRegimenThreeLineListWrapper()) {
       itemThreeLines.setForm(rnRForm);
     }
-    for (TestConsumptionLineItem testConsumptionLineItem : rnRForm.getTestConsumptionLinesWrapper()) {
+    for (TestConsumptionItem testConsumptionLineItem : rnRForm.getTestConsumptionItemListWrapper()) {
       testConsumptionLineItem.setForm(rnRForm);
     }
   }

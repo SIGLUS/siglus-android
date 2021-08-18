@@ -19,7 +19,7 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
-import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -69,18 +69,18 @@ public class RapidTestReportFormPresenterTest {
 
     //convert db model to view model
     RnRForm form = new RnRForm();
-    TestConsumptionLineItem programDataFormItem1 = new TestConsumptionLineItem();
+    TestConsumptionItem programDataFormItem1 = new TestConsumptionItem();
     programDataFormItem1.setService("MOBILE_UNIT");
     programDataFormItem1.setUsageColumnsMap(new UsageColumnsMap().builder()
         .code("CONSUME_" + RapidTestFormGridViewModel.ColumnCode.SYPHILLIS.name()).build());
     programDataFormItem1.setValue(100);
-    TestConsumptionLineItem programDataFormItem2 = new TestConsumptionLineItem();
+    TestConsumptionItem programDataFormItem2 = new TestConsumptionItem();
     programDataFormItem2.setService("PNCTL");
     programDataFormItem2.setUsageColumnsMap(new UsageColumnsMap().builder()
         .code("POSITIVE_" + RapidTestFormGridViewModel.ColumnCode.SYPHILLIS.name()).build());
     programDataFormItem2.setValue(300);
-    form.getTestConsumptionLinesWrapper().add(programDataFormItem1);
-    form.getTestConsumptionLinesWrapper().add(programDataFormItem2);
+    form.getTestConsumptionItemListWrapper().add(programDataFormItem1);
+    form.getTestConsumptionItemListWrapper().add(programDataFormItem2);
     form.setStatus(Status.DRAFT);
     form.setPeriodBegin(period.getBegin().toDate());
     form.setPeriodEnd(period.getEnd().toDate());

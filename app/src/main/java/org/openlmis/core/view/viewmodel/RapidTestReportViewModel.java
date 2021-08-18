@@ -41,7 +41,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.Signature;
-import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -126,11 +126,11 @@ public class RapidTestReportViewModel {
 
     setupCategories();
     setItemViewModelMap();
-    setFormItemViewModels(rnRForm.getTestConsumptionLinesWrapper());
+    setFormItemViewModels(rnRForm.getTestConsumptionItemListWrapper());
   }
 
-  private void setFormItemViewModels(List<TestConsumptionLineItem> testConsumptionLineItemList) {
-    for (TestConsumptionLineItem item : testConsumptionLineItemList) {
+  private void setFormItemViewModels(List<TestConsumptionItem> testConsumptionLineItemList) {
+    for (TestConsumptionItem item : testConsumptionLineItemList) {
       itemViewModelMap.get(item.getService())
           .setColumnValue(item.getUsageColumnsMap(), item.getValue());
     }
@@ -196,16 +196,16 @@ public class RapidTestReportViewModel {
     rapidTestForm.setPeriodBegin(period.getBegin().toDate());
     rapidTestForm.setPeriodEnd(period.getEnd().toDate());
     rapidTestForm.setComments(observation);
-    rapidTestForm.getTestConsumptionLinesWrapper().clear();
+    rapidTestForm.getTestConsumptionItemListWrapper().clear();
     rapidTestForm.setRnrFormItemListWrapper(productItems);
     convertFormItemViewModelToDataModel();
   }
 
   private void convertFormItemViewModelToDataModel() {
     for (RapidTestFormItemViewModel itemViewModel : itemViewModelList) {
-      rapidTestForm.getTestConsumptionLinesWrapper().addAll(itemViewModel.convertToDataModel());
+      rapidTestForm.getTestConsumptionItemListWrapper().addAll(itemViewModel.convertToDataModel());
     }
-    for (TestConsumptionLineItem item : rapidTestForm.getTestConsumptionLinesWrapper()) {
+    for (TestConsumptionItem item : rapidTestForm.getTestConsumptionItemListWrapper()) {
       item.setForm(rapidTestForm);
     }
   }

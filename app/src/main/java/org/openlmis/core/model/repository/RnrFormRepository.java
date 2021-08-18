@@ -289,7 +289,7 @@ public class RnrFormRepository {
       regimenItemRepository.deleteRegimenItems(form.getRegimenItemListWrapper());
       regimenItemThreeLineRepository.deleteRegimeThreeLineItems(form.getRegimenThreeLineListWrapper());
       baseInfoItemRepository.batchDelete(form.getBaseInfoItemListWrapper());
-      testConsumptionLineItemRepository.batchDelete(form.getTestConsumptionLinesWrapper());
+      testConsumptionLineItemRepository.batchDelete(form.getTestConsumptionItemListWrapper());
       signatureRepository.batchDelete(form.getSignaturesWrapper());
       genericDao.delete(form);
     }
@@ -381,9 +381,7 @@ public class RnrFormRepository {
         rnrFormItem = stockFormItem;
       }
 
-      Long lastInventory = lastRnrInventory(product);
-      rnrFormItem.setIsCustomAmount(lastInventory == null);
-      rnrFormItem.setInitialAmount(lastInventory);
+      updateInitialAmount(rnrFormItem, lastRnrInventory(product));
       result.add(rnrFormItem);
 
     }
@@ -577,7 +575,7 @@ public class RnrFormRepository {
     regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
     regimenItemThreeLineRepository.batchCreateOrUpdate(form.getRegimenThreeLineListWrapper());
     baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
-    testConsumptionLineItemRepository.batchCreateOrUpdate(form.getTestConsumptionLinesWrapper());
+    testConsumptionLineItemRepository.batchCreateOrUpdate(form.getTestConsumptionItemListWrapper());
   }
 
   public void deleteOldData() {

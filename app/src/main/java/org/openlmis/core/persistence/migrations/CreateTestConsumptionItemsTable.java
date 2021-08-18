@@ -2,11 +2,11 @@ package org.openlmis.core.persistence.migrations;
 
 import org.openlmis.core.persistence.Migration;
 
-public class CreateTestConsumptionLineItemsTable extends Migration {
+public class CreateTestConsumptionItemsTable extends Migration {
 
   @Override
   public void up() {
-    execSQL("CREATE TABLE `test_consumption_line_items` " +
+    execSQL("CREATE TABLE `test_consumption_items` " +
         "(`usageColumnsMap_id` BIGINT NOT NULL, " +
         "`form_id` BIGINT , " +
         "`service` VARCHAR , " +

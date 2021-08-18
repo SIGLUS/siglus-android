@@ -24,14 +24,14 @@ import android.content.Context;
 import com.google.inject.Inject;
 import java.util.List;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 public class TestConsumptionLineItemRepository {
 
-  GenericDao<TestConsumptionLineItem> genericDao;
+  GenericDao<TestConsumptionItem> genericDao;
 
   @Inject
   DbUtil dbUtil;
@@ -41,14 +41,14 @@ public class TestConsumptionLineItemRepository {
 
   @Inject
   public TestConsumptionLineItemRepository(Context context) {
-    this.genericDao = new GenericDao<>(TestConsumptionLineItem.class, context);
+    this.genericDao = new GenericDao<>(TestConsumptionItem.class, context);
   }
 
-  public void batchCreateOrUpdate(final List<TestConsumptionLineItem> testConsumptionLineItems)
+  public void batchCreateOrUpdate(final List<TestConsumptionItem> testConsumptionLineItems)
       throws LMISException {
     List<UsageColumnsMap> usageColumnsMaps = usageColumnsMapRepository.list();
-    dbUtil.withDaoAsBatch(TestConsumptionLineItem.class, (DbUtil.Operation<TestConsumptionLineItem, Void>) dao -> {
-      for (TestConsumptionLineItem item : testConsumptionLineItems) {
+    dbUtil.withDaoAsBatch(TestConsumptionItem.class, (DbUtil.Operation<TestConsumptionItem, Void>) dao -> {
+      for (TestConsumptionItem item : testConsumptionLineItems) {
         setUsageColumnsMap(item, usageColumnsMaps);
         dao.createOrUpdate(item);
       }
@@ -56,21 +56,21 @@ public class TestConsumptionLineItemRepository {
     });
   }
 
-  public void batchDelete(final List<TestConsumptionLineItem> testConsumptionLineItemListWrapper)
+  public void batchDelete(final List<TestConsumptionItem> testConsumptionLineItemListWrapper)
       throws LMISException {
-    dbUtil.withDaoAsBatch(TestConsumptionLineItem.class, (DbUtil.Operation<TestConsumptionLineItem, Void>) dao -> {
-      for (TestConsumptionLineItem item : testConsumptionLineItemListWrapper) {
+    dbUtil.withDaoAsBatch(TestConsumptionItem.class, (DbUtil.Operation<TestConsumptionItem, Void>) dao -> {
+      for (TestConsumptionItem item : testConsumptionLineItemListWrapper) {
         dao.delete(item);
       }
       return null;
     });
   }
 
-  public List<TestConsumptionLineItem> list() throws LMISException {
+  public List<TestConsumptionItem> list() throws LMISException {
     return genericDao.queryForAll();
   }
 
-  private void setUsageColumnsMap(TestConsumptionLineItem lineItem, List<UsageColumnsMap> usageColumnsMaps) {
+  private void setUsageColumnsMap(TestConsumptionItem lineItem, List<UsageColumnsMap> usageColumnsMaps) {
     List<UsageColumnsMap> usageColumnsMapList = from(usageColumnsMaps).filter(usageColumnsMap ->
         usageColumnsMap.getCode().equals(lineItem.getUsageColumnsMap().getCode()))
         .toList();

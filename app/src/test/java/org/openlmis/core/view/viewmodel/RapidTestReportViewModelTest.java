@@ -25,7 +25,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRForm.Status;
 import org.openlmis.core.model.Signature;
-import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
@@ -140,27 +140,27 @@ public class RapidTestReportViewModelTest {
     rapidTestForm.setPeriodEnd(this.viewModel.getPeriod().getEnd().toDate());
     this.viewModel.setRapidTestForm(rapidTestForm);
 
-    this.viewModel.getRapidTestForm().getTestConsumptionLinesWrapper().add(
-        new TestConsumptionLineItem(PROGRAM_NAME, new UsageColumnsMap().builder().code("code").build(), 100));
+    this.viewModel.getRapidTestForm().getTestConsumptionItemListWrapper().add(
+        new TestConsumptionItem(PROGRAM_NAME, new UsageColumnsMap().builder().code("code").build(), 100));
 
     Program program = new Program(Constants.RAPID_TEST_PROGRAM_CODE, PROGRAM_NAME, "", false, null, null);
     this.viewModel.convertFormViewModelToDataModel(program);
 
-    assertThat(this.viewModel.getRapidTestForm().getTestConsumptionLinesWrapper().size(), is(3));
-    assertThat(this.viewModel.getRapidTestForm().getTestConsumptionLinesWrapper().get(0)
+    assertThat(this.viewModel.getRapidTestForm().getTestConsumptionItemListWrapper().size(), is(3));
+    assertThat(this.viewModel.getRapidTestForm().getTestConsumptionItemListWrapper().get(0)
         .getUsageColumnsMap().getCode(), is("CONSUME_HIVDETERMINE"));
     assertThat(
-        this.viewModel.getRapidTestForm().getTestConsumptionLinesWrapper().get(0).getForm(),
+        this.viewModel.getRapidTestForm().getTestConsumptionItemListWrapper().get(0).getForm(),
         is(viewModel.getRapidTestForm()));
-    assertThat(this.viewModel.getRapidTestForm().getTestConsumptionLinesWrapper().get(1)
+    assertThat(this.viewModel.getRapidTestForm().getTestConsumptionItemListWrapper().get(1)
         .getUsageColumnsMap().getCode(), is("POSITIVE_HIVDETERMINE"));
     assertThat(
-        this.viewModel.getRapidTestForm().getTestConsumptionLinesWrapper().get(1).getForm(),
+        this.viewModel.getRapidTestForm().getTestConsumptionItemListWrapper().get(1).getForm(),
         is(viewModel.getRapidTestForm()));
-    assertThat(this.viewModel.getRapidTestForm().getTestConsumptionLinesWrapper().get(2)
+    assertThat(this.viewModel.getRapidTestForm().getTestConsumptionItemListWrapper().get(2)
         .getUsageColumnsMap().getCode(), is("UNJUSTIFIED_HIVDETERMINE"));
     assertThat(
-        this.viewModel.getRapidTestForm().getTestConsumptionLinesWrapper().get(2).getForm(),
+        this.viewModel.getRapidTestForm().getTestConsumptionItemListWrapper().get(2).getForm(),
         is(viewModel.getRapidTestForm()));
   }
 

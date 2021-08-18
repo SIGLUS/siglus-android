@@ -31,13 +31,13 @@ import com.google.inject.Inject;
 import java.lang.reflect.Type;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.model.repository.UsageColumnsMapRepository;
 import roboguice.RoboGuice;
 
-public class TestConsumptionLineItemAdapter implements JsonSerializer<TestConsumptionLineItem>,
-    JsonDeserializer<TestConsumptionLineItem> {
+public class TestConsumptionLineItemAdapter implements JsonSerializer<TestConsumptionItem>,
+    JsonDeserializer<TestConsumptionItem> {
 
   private final Gson gson;
 
@@ -50,7 +50,7 @@ public class TestConsumptionLineItemAdapter implements JsonSerializer<TestConsum
   }
 
   @Override
-  public JsonElement serialize(TestConsumptionLineItem testConsumptionLineItem, Type typeOfSrc,
+  public JsonElement serialize(TestConsumptionItem testConsumptionLineItem, Type typeOfSrc,
                                JsonSerializationContext context) {
     JsonObject result = gson.toJsonTree(testConsumptionLineItem).getAsJsonObject();
     UsageColumnsMap usageColumnsMap = testConsumptionLineItem.getUsageColumnsMap();
@@ -60,9 +60,9 @@ public class TestConsumptionLineItemAdapter implements JsonSerializer<TestConsum
   }
 
   @Override
-  public TestConsumptionLineItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+  public TestConsumptionItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
           throws JsonParseException {
-    TestConsumptionLineItem testConsumptionLineItem = gson.fromJson(json, TestConsumptionLineItem.class);
+    TestConsumptionItem testConsumptionLineItem = gson.fromJson(json, TestConsumptionItem.class);
 
     try {
       UsageColumnsMap usageColumnsMap = usageColumnsMapRepository

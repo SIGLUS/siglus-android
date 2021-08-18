@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.TestConsumptionLineItem;
+import org.openlmis.core.model.TestConsumptionItem;
 import org.openlmis.core.model.UsageColumnsMap;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.ColumnCode;
 import org.openlmis.core.view.viewmodel.RapidTestFormGridViewModel.RapidTestGridColumnCode;
@@ -87,12 +87,12 @@ public class RapidTestFormItemViewModel {
         StringUtils.isEmpty(viewModel.unjustifiedValue) ? "0" : viewModel.unjustifiedValue;
   }
 
-  public List<TestConsumptionLineItem> convertToDataModel() {
+  public List<TestConsumptionItem> convertToDataModel() {
     if (issueReason.getDescription().equals(LMISApp.getInstance().getString(R.string.total))) {
       return newArrayList();
     }
 
-    List<TestConsumptionLineItem> programDataFormItems = new ArrayList<>();
+    List<TestConsumptionItem> programDataFormItems = new ArrayList<>();
     for (RapidTestFormGridViewModel gridViewModel : rapidTestFormGridViewModelList) {
       programDataFormItems.addAll(gridViewModel.convertFormGridViewModelToDataModel(issueReason));
     }
