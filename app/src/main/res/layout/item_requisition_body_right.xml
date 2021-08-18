@@ -102,7 +102,9 @@
       style="@style/ItemRequisition.Text.Edit"
       android:layout_width="0dp"
       android:layout_height="match_parent"
-      android:layout_weight="1" />
+      android:layout_weight="1"
+      android:inputType="number"
+      />
 
     <EditText
       android:id="@+id/et_approved_amount"
@@ -110,6 +112,7 @@
       android:layout_width="0dp"
       android:layout_height="match_parent"
       android:layout_weight="1"
+      android:inputType="number"
       android:enabled="false" />
   </LinearLayout>
 
