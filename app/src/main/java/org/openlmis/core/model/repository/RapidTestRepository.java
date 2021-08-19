@@ -61,7 +61,6 @@ public class RapidTestRepository extends RnrFormRepository {
     rnrFormItem.setIssued(modifiedItem.getTotalIssued());
     rnrFormItem.setAdjustment(modifiedItem.getTotalAdjustment());
     rnrFormItem.setProduct(stockCard.getProduct());
-    rnrFormItem.setIsCustomAmount(true);
     Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
     if (earliestLotExpiryDate != null) {
       rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
@@ -71,6 +70,7 @@ public class RapidTestRepository extends RnrFormRepository {
 
   @Override
   protected void updateInitialAmount(RnrFormItem rnrFormItem, Long lastInventory) {
+    rnrFormItem.setIsCustomAmount(lastInventory == null);
     rnrFormItem.setInitialAmount(lastInventory);
   }
 
