@@ -49,8 +49,7 @@ public class PodResponse {
         .requisitionProgramCode(order.getRequisition().getProgramCode())
         .requisitionStartDate(new LocalDate(order.getRequisition().getStartDate()).toString())
         .requisitionEndDate(new LocalDate(order.getRequisition().getEndDate()).toString())
-        .requisitionActualStartDate(
-            new LocalDate(order.getRequisition().getActualStartDate()).toString())
+        .requisitionActualStartDate(new LocalDate(order.getRequisition().getActualStartDate()).toString())
         .requisitionActualEndDate(new LocalDate(order.getRequisition().getActualEndDate()).toString())
         .podProductItemsWrapper(buildPodProductItems())
         .build();

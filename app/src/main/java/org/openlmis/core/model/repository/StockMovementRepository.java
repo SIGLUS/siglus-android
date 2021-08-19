@@ -528,7 +528,7 @@ public class StockMovementRepository {
     String rawSql = "SELECT movementDate FROM stock_items s1 "
         + "JOIN stock_cards s2 ON s1.stockCard_id = s2.id "
         + "JOIN products p1 ON s2.product_id = p1.id "
-        + "JOIN additional_product_program p2 ON p2.productCode = p1.code "
+        + "JOIN program_additional_products p2 ON p2.productCode = p1.code "
         + "JOIN programs p3 ON p2.programCode = p3.programCode "
         + "WHERE p1.isActive = 1 AND p1.isArchived = 0 AND p3.programCode = '" + Program.MALARIA_CODE + "' ";
 

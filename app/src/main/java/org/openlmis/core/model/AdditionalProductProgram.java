@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@DatabaseTable(tableName = "additional_product_program")
+@DatabaseTable(tableName = "program_additional_products")
 public class AdditionalProductProgram extends BaseModel {
 
   @DatabaseField

@@ -8,8 +8,8 @@ public class CreatePodProductLotItemTable extends Migration {
   public void up() {
     execSQL("CREATE TABLE `pod_product_lot_items` " +
         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
-        "`podProductItem_id` VARCHAR NOT NULL, " +
-        "`lot_id` VARCHAR NOT NULL, " +
+        "`podProductItem_id` BIGINT NOT NULL, " +
+        "`lot_id` BIGINT NOT NULL, " +
         "`shippedQuantity` BIGINT NOT NULL, " +
         "`acceptedQuantity` BIGINT, " +
         "`rejectedReason` VARCHAR, " +

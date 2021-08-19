@@ -7,7 +7,7 @@ public class CreateAdditionalProductProgramTable extends Migration {
 
   @Override
   public void up() {
-    execSQL("CREATE TABLE `additional_product_program` " +
+    execSQL("CREATE TABLE `program_additional_products` " +
         "(`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
         "`programCode` VARCHAR NOT NULL," +
         "`productCode` VARCHAR NOT NULL, " +

@@ -65,6 +65,7 @@ import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.model.PatientLineItemRequest;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.viewmodel.ALReportViewModel.ALItemType;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import roboguice.RoboGuice;
 
@@ -197,8 +198,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
             .form(rnRForm)
             .regimen(getRegimen(jsonObjectForRegimenItem))
             .amount(calculateAmount(jsonObjectForRegimenItem))
-            .hf(jsonObjectForRegimenItem.get("hf").getAsLong())
-            .chw(jsonObjectForRegimenItem.get("chw").getAsLong())
+            .hf(jsonObjectForRegimenItem.get(ALItemType.HF.getName()).getAsLong())
+            .chw(jsonObjectForRegimenItem.get(ALItemType.CHW.getName()).getAsLong())
             .build();
         regimenItems.add(regimenItem);
       }
@@ -222,7 +223,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
   }
 
   private Long calculateAmount(JsonObject jsonObjectForRegimenItem) {
-    return jsonObjectForRegimenItem.get("hf").getAsLong() + jsonObjectForRegimenItem.get("chw").getAsLong();
+    return jsonObjectForRegimenItem.get(ALItemType.HF.getName()).getAsLong() + jsonObjectForRegimenItem
+        .get(ALItemType.CHW.getName()).getAsLong();
   }
 
   private JsonElement buildRnrFormJson(RnRForm rnRForm) throws LMISException {

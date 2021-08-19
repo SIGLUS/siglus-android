@@ -75,11 +75,11 @@ public class RegimenItem extends BaseModel {
 
   public RegimenItem buildInformationAndProductCode() {
     this.information = getInformation(regimen.getCode());
-    this.productCode = Constants.REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.get(getRegimenStrength(regimen.getCode()));
+    this.productCode = Constants.REGIMEN_CODE_TO_ADDITIONAL_PRODUCT.get(getRegimenUnit(regimen.getCode()));
     return this;
   }
 
-  private String getRegimenStrength(String regimenCode) {
+  private String getRegimenUnit(String regimenCode) {
     return regimenCode.substring(regimenCode.length() - 3);
   }
 
