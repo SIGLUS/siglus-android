@@ -28,10 +28,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.Objects;
+import lombok.Setter;
 import org.openlmis.core.R;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.view.viewmodel.StockMovementHistoryViewModel;
 
 public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryViewModel, BaseViewHolder> {
+
+  @Setter
+  private ScreenName fromPage;
 
   public StockMovementAdapter() {
     super(R.layout.item_stock_movement);
@@ -39,6 +44,31 @@ public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryV
 
   @Override
   protected void convert(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {
+    if (fromPage == ScreenName.STOCK_CARD_MOVEMENT_SCREEN) {
+      covertByProduct(holder, model);
+    }
+    if (fromPage == ScreenName.STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN) {
+      covertByLot(holder, model);
+    }
+  }
+
+  private void covertByProduct(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {
+    holder.setText(R.id.tv_date, model.getMovementDate());
+    holder.setText(R.id.tv_reason,
+        model.isNoStock() ? holder.itemView.getContext().getString(R.string.label_inventory)
+            : model.getReason().getDescription());
+    holder.getView(R.id.tv_lot_code).setVisibility(View.GONE);
+    holder.setText(R.id.tv_document_number, model.getDocumentNumber());
+    holder.setText(R.id.tv_received, model.getReceived());
+    holder.setText(R.id.tv_negative_adjustment, model.getNegativeAdjustment());
+    holder.setText(R.id.tv_positive_adjustment, model.getPositiveAdjustment());
+    holder.setText(R.id.tv_issued, model.getIssued());
+    holder.setText(R.id.tv_stock_on_hand, model.getStockOnHand());
+    holder.setText(R.id.tv_requested, model.getRequested());
+    holder.setText(R.id.tv_signature, model.getSignature());
+  }
+
+  private void covertByLot(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {
     holder.setText(R.id.tv_date, model.getMovementDate());
     holder.setText(R.id.tv_stock_on_hand, model.getStockOnHand());
     holder.setText(R.id.tv_requested, model.getRequested());

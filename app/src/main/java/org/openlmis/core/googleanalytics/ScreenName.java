@@ -48,7 +48,8 @@ public enum ScreenName {
   ADD_PRODUCT_TO_BULK_ENTRIES_SCREEN("Add Products To Bulk Entries Screen"),
   REQUISITION_SCREEN("Requisition Screen"),
   BULK_ISSUE_CHOOSE_DESTINATION("Bulk Issue Choose Destination Screen"),
-  BULK_ISSUE("Bulk Issue Screen");
+  BULK_ISSUE("Bulk Issue Screen"),
+  STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN("STOCK_MOVEMENT_DETAIL_HISTORY_SCREEN");
 
   private final String name;
 

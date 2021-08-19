@@ -26,12 +26,13 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.googleanalytics.ScreenName;
 
 @RunWith(LMISTestRunner.class)
 public class StockMovementHeaderViewTest {
 
   @Test
-  public void shouldCorrectSetValues(){
+  public void shouldCorrectSetValues() {
     // given & when
     final StockMovementHeaderView headerView = new StockMovementHeaderView(LMISTestApp.getContext());
     final TextView tvDate = headerView.findViewById(R.id.tv_date);

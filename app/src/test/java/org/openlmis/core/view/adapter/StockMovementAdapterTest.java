@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.googleanalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
 import org.openlmis.core.model.StockMovementItem;
@@ -52,6 +53,7 @@ public class StockMovementAdapterTest {
         .build();
     StockMovementHistoryViewModel viewModel = new StockMovementHistoryViewModel(movementItem);
     StockMovementAdapter stockMovementAdapter = new StockMovementAdapter();
+    stockMovementAdapter.setFromPage(ScreenName.STOCK_CARD_MOVEMENT_SCREEN);
     BaseViewHolder holder = new BaseViewHolder(
         LayoutInflater.from(LMISTestApp.getContext()).inflate(R.layout.item_stock_movement, null));
 
@@ -63,6 +65,6 @@ public class StockMovementAdapterTest {
     Assert.assertEquals("10", tvReceived.getText());
     Assert.assertEquals(ContextCompat.getColor(LMISTestApp.getContext(), R.color.color_de1313),
         tvReceived.getCurrentTextColor());
-    Assert.assertEquals(View.GONE,holder.getView(R.id.rv_stock_movement_lot_list).getVisibility());
+    Assert.assertEquals(View.GONE, holder.getView(R.id.rv_stock_movement_lot_list).getVisibility());
   }
 }

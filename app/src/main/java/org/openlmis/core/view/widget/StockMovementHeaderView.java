@@ -30,6 +30,8 @@ import org.openlmis.core.R;
 
 public class StockMovementHeaderView extends FrameLayout {
 
+  private TextView tvLotCode;
+
   public StockMovementHeaderView(@NonNull Context context) {
     this(context, null);
   }
@@ -43,6 +45,11 @@ public class StockMovementHeaderView extends FrameLayout {
     initView(context);
   }
 
+  public void hideLotCodeHeaderView() {
+    tvLotCode.setVisibility(GONE);
+
+  }
+
   private void initView(@NonNull Context context) {
     final View rootView = inflate(context, R.layout.view_stock_movement_line, this);
     rootView.findViewById(R.id.ll_stock_movement_root).setBackgroundResource(R.color.color_9c9c9c);
@@ -54,7 +61,7 @@ public class StockMovementHeaderView extends FrameLayout {
     tvReason.setTypeface(Typeface.DEFAULT_BOLD);
     tvReason.setText(context.getString(R.string.label_reason));
 
-    final TextView tvLotCode = rootView.findViewById(R.id.tv_lot_code);
+    tvLotCode = rootView.findViewById(R.id.tv_lot_code);
     tvLotCode.setTypeface(Typeface.DEFAULT_BOLD);
     tvLotCode.setText(context.getString(R.string.label_stockcard_lot_code));
 
