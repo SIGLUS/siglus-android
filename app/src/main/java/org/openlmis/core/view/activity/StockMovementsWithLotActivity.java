@@ -174,7 +174,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements
 
   @Override
   public void updateUnpackKitMenu(boolean unpackable) {
-    unpackContainer.setVisibility(unpackable ? View.VISIBLE : View.GONE);
+//    unpackContainer.setVisibility(unpackable ? View.VISIBLE : View.GONE);
   }
 
   @Override
