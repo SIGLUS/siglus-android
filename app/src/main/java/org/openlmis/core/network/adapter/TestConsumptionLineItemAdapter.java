@@ -68,9 +68,11 @@ public class TestConsumptionLineItemAdapter implements JsonSerializer<TestConsum
     TestConsumptionItem testConsumptionLineItem = gson.fromJson(json, TestConsumptionItem.class);
 
     try {
+      JsonObject jsonObject = json.getAsJsonObject();
+      String testOutcome = jsonObject.get(TEST_OUTCOME).getAsString();
+      String testProject = jsonObject.get(TEST_PROJECT).getAsString();
       UsageColumnsMap usageColumnsMap = usageColumnsMapRepository
-              .getByCode(json.getAsJsonObject().get("code").getAsString());
-
+              .getByCode(testOutcome.concat("_").concat(testProject));
       testConsumptionLineItem.setUsageColumnsMap(usageColumnsMap);
     } catch (LMISException e) {
       new LMISException(e, "testConsumptionLineItem.deserialize").reportToFabric();

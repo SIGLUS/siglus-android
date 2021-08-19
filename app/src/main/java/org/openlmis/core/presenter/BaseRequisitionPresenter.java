@@ -35,6 +35,7 @@ import org.openlmis.core.network.InternetCheck;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;

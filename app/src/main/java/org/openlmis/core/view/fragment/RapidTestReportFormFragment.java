@@ -222,6 +222,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment
           ToastUtil.show(errorMessage);
           return;
         }
+        presenter.updateRnrForm();
         showSignDialog();
       }
 
@@ -261,7 +262,7 @@ public class RapidTestReportFormFragment extends BaseReportFragment
 
   protected Action1<Void> getOnSignedAction() {
     return aVoid -> {
-      if (presenter.getViewModel().isSubmitted()) {
+      if (presenter.getRnRForm().isSubmitted()) {
         presenter.submitRequisition();
         showMessageNotifyDialog();
       } else {

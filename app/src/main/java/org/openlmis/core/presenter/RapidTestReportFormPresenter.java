@@ -80,6 +80,54 @@ public class RapidTestReportFormPresenter extends BaseRequisitionPresenter {
   }
 
   @Override
+  public void updateFormUI() {
+    if (rnRForm != null) {
+      view.refreshRequisitionForm(rnRForm);
+      view.setProcessButtonName(
+              rnRForm.isDraft() ? context.getResources().getString(R.string.btn_submit)
+                      : context.getResources().getString(R.string.btn_complete));
+    }
+  }
+
+  @Override
+  public boolean isDraft() {
+    return viewModel == null ||  viewModel.isDraft();
+  }
+
+  public Observable<RapidTestReportViewModel> createOrUpdateRapidTest() {
+    return Observable.create((Observable.OnSubscribe<RapidTestReportViewModel>) subscriber -> {
+      try {
+        viewModel.convertFormViewModelToDataModel(
+                programRepository.queryByCode(Constants.RAPID_TEST_PROGRAM_CODE));
+        rnrFormRepository.createOrUpdateWithItems(viewModel.getRapidTestForm());
+        subscriber.onNext(viewModel);
+        subscriber.onCompleted();
+      } catch (Exception e) {
+        new LMISException(e, "RapidTestReportFormPresenter.getSaveFormObservable").reportToFabric();
+        subscriber.onError(e);
+      }
+    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+  }
+
+  public boolean isSubmitted() {
+    return viewModel.isSubmitted();
+  }
+
+  public void updateRnrForm() {
+    try {
+      viewModel.convertFormViewModelToDataModel(
+              programRepository.queryByCode(Constants.RAPID_TEST_PROGRAM_CODE));
+      rnRForm = viewModel.getRapidTestForm();
+    } catch (Exception e) {
+      new LMISException(e, "RapidTestReportFormPresenter.getSaveFormObservable").reportToFabric();
+    }
+  }
+
+  private void convertProgramDataFormToRapidTestReportViewModel(RnRForm programDataForm) {
+    viewModel = new RapidTestReportViewModel(programDataForm);
+  }
+
+  @Override
   protected Observable<RnRForm> getRnrFormObservable(final long formId) {
     return Observable.create((Observable.OnSubscribe<RnRForm>) subscriber -> {
       try {
@@ -97,45 +145,6 @@ public class RapidTestReportFormPresenter extends BaseRequisitionPresenter {
   @Override
   protected int getCompleteErrorMessage() {
     return R.string.hint_rapid_test_complete_failed;
-  }
-
-  @Override
-  public void updateFormUI() {
-    if (rnRForm != null) {
-      view.refreshRequisitionForm(rnRForm);
-      view.setProcessButtonName(
-          rnRForm.isDraft() ? context.getResources().getString(R.string.btn_submit)
-              : context.getResources().getString(R.string.btn_complete));
-    }
-  }
-
-  @Override
-  public boolean isDraft() {
-    return viewModel == null ||  viewModel.isDraft();
-  }
-
-
-  private void convertProgramDataFormToRapidTestReportViewModel(RnRForm programDataForm) {
-    viewModel = new RapidTestReportViewModel(programDataForm);
-  }
-
-  public Observable<RapidTestReportViewModel> createOrUpdateRapidTest() {
-    return Observable.create((Observable.OnSubscribe<RapidTestReportViewModel>) subscriber -> {
-      try {
-        viewModel.convertFormViewModelToDataModel(
-            programRepository.queryByCode(Constants.RAPID_TEST_PROGRAM_CODE));
-        rnrFormRepository.createOrUpdateWithItems(viewModel.getRapidTestForm());
-        subscriber.onNext(viewModel);
-        subscriber.onCompleted();
-      } catch (Exception e) {
-        new LMISException(e, "RapidTestReportFormPresenter.getSaveFormObservable").reportToFabric();
-        subscriber.onError(e);
-      }
-    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-  }
-
-  public boolean isSubmitted() {
-    return viewModel.isSubmitted();
   }
 
   public interface RapidTestReportView extends BaseRequisitionView {
