@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.googleanalytics.ScreenName;
 
 @RunWith(LMISTestRunner.class)
 public class StockMovementHeaderViewTest {

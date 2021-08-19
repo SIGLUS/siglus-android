@@ -66,6 +66,19 @@ public class StockMovementAdapter extends BaseQuickAdapter<StockMovementHistoryV
     holder.setText(R.id.tv_stock_on_hand, model.getStockOnHand());
     holder.setText(R.id.tv_requested, model.getRequested());
     holder.setText(R.id.tv_signature, model.getSignature());
+    holder.setTextColorRes(R.id.tv_date, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_reason, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_document_number, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_received, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_negative_adjustment, model.needShowRed()
+        ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_positive_adjustment, model.needShowRed()
+        ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_issued, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_stock_on_hand, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_requested, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.setTextColorRes(R.id.tv_signature, model.needShowRed() ? R.color.color_de1313 : R.color.color_black);
+    holder.getView(R.id.rv_stock_movement_lot_list).setVisibility(View.GONE);
   }
 
   private void covertByLot(@NonNull BaseViewHolder holder, StockMovementHistoryViewModel model) {

@@ -11,7 +11,7 @@ public class StockMovementItemBuilder {
   String movementDate = "2010-10-10";
   int stockExistence = 200;
   String documentNo = "abc";
-  String movementReason = "ISSUE1";
+  String movementReason = "DEFAULT_ISSUE";
   String signature = "signature";
   MovementType movementType = MovementReasonManager.MovementType.ISSUE;
   int quantity = 12;
