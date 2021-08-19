@@ -81,7 +81,7 @@ public class PodProductLotItemRepository {
           Product product = productRepository.getByCode(podProductItem.getCode());
           Lot lot = podProductLotItem.getLot();
           lot.setProduct(product);
-          Lot savedLot = lotRepository.createOrUpdate(lot);
+          Lot savedLot = lotRepository.createOrUpdateWithExistingLot(lot);
           podProductLotItem.setPodProductItem(podProductItem);
           podProductLotItem.setLot(savedLot);
           createOrUpdateItem(podProductLotItem);

@@ -272,11 +272,10 @@ public class BulkIssuePresenter extends Presenter {
         }
         documentNumber = draftBulkIssueProducts.get(0).getDocumentNumber();
         movementReasonCode = draftBulkIssueProducts.get(0).getMovementReasonCode();
-        ImmutableList<StockCard> productIds = FluentIterable
-            .from(draftBulkIssueProducts)
+        ImmutableList<StockCard> stockCards = FluentIterable.from(draftBulkIssueProducts)
             .transform(DraftBulkIssueProduct::getStockCard)
             .toList();
-        List<BulkIssueProductViewModel> viewModels = createViewModelFromStockCards(productIds);
+        List<BulkIssueProductViewModel> viewModels = createViewModelFromStockCards(stockCards);
         for (BulkIssueProductViewModel viewModel : viewModels) {
           for (DraftBulkIssueProduct draftProduct : draftBulkIssueProducts) {
             if (Objects.equals(viewModel.getStockCard(), draftProduct.getStockCard())) {
